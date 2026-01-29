@@ -25,6 +25,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       );
       Navigator.of(context).pop(); // Back to Login
     }
+
   }
 
   @override
