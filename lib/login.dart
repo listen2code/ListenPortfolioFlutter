@@ -23,11 +23,15 @@ class _LoginPageState extends State<LoginPage> {
 
   void _handleLogin() {
     if (_formKey.currentState!.validate()) {
-      // Navigate to HomePage on successful login
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const HomePage()),
-      );
+      _navigateToHome();
     }
+  }
+
+  void _navigateToHome() {
+    // Navigate to HomePage
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => const HomePage()),
+    );
   }
 
   @override
@@ -132,7 +136,16 @@ class _LoginPageState extends State<LoginPage> {
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 8),
+                // Enter without login
+                TextButton(
+                  onPressed: _navigateToHome,
+                  child: const Text(
+                    'Enter without login',
+                    style: TextStyle(color: Colors.blueAccent, fontSize: 16),
+                  ),
+                ),
+                const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
