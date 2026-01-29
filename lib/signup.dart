@@ -1,44 +1,51 @@
 import 'package:flutter/material.dart';
-import 'home.dart';
-import 'signup.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<SignUpPage> createState() => _SignUpPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _SignUpPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
   final _pwdController = TextEditingController();
+  final _confirmPwdController = TextEditingController();
   bool _isPasswordVisible = false;
 
   @override
   void dispose() {
     _nameController.dispose();
+    _emailController.dispose();
     _pwdController.dispose();
+    _confirmPwdController.dispose();
     super.dispose();
   }
 
-  void _handleLogin() {
+  void _handleSignUp() {
     if (_formKey.currentState!.validate()) {
-      _navigateToHome();
+      // Simulate successful registration
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Registration Successful! Please login.')),
+      );
+      Navigator.of(context).pop(); // Back to Login
     }
-  }
-
-  void _navigateToHome() {
-    // Navigate to HomePage
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => const HomePage()),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black87),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -47,41 +54,55 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const SizedBox(height: 80),
-                // Logo or Icon
-                const Icon(
-                  Icons.badge_outlined,
-                  size: 100,
-                  color: Colors.blueAccent,
-                ),
-                const SizedBox(height: 24),
                 const Text(
-                  'Listen Portfolio',
-                  textAlign: TextAlign.center,
+                  'Create Account',
                   style: TextStyle(
-                    fontSize: 28,
+                    fontSize: 32,
                     fontWeight: FontWeight.bold,
                     color: Colors.black87,
-                    letterSpacing: 1.2,
                   ),
                 ),
-                const SizedBox(height: 48),
-                // Name Input
+                const SizedBox(height: 8),
+                const Text(
+                  'Sign up to get started!',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey,
+                  ),
+                ),
+                const SizedBox(height: 40),
+                // Full Name
                 TextFormField(
                   controller: _nameController,
                   decoration: const InputDecoration(
-                    hintText: 'Username',
+                    hintText: 'Full Name',
                     prefixIcon: Icon(Icons.person_outline),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your username';
+                      return 'Please enter your full name';
                     }
                     return null;
                   },
                 ),
                 const SizedBox(height: 16),
-                // Password Input
+                // Email
+                TextFormField(
+                  controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: const InputDecoration(
+                    hintText: 'Email',
+                    prefixIcon: Icon(Icons.email_outlined),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty || !value.contains('@')) {
+                      return 'Please enter a valid email';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                // Password
                 TextFormField(
                   controller: _pwdController,
                   obscureText: !_isPasswordVisible,
@@ -102,27 +123,32 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your password';
-                    }
-                    if (value.length < 6) {
+                    if (value == null || value.isEmpty || value.length < 6) {
                       return 'Password must be at least 6 characters';
                     }
                     return null;
                   },
                 ),
-                const SizedBox(height: 12),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                    onPressed: () {},
-                    child: const Text('Forgot Password?'),
+                const SizedBox(height: 16),
+                // Confirm Password
+                TextFormField(
+                  controller: _confirmPwdController,
+                  obscureText: !_isPasswordVisible,
+                  decoration: const InputDecoration(
+                    hintText: 'Confirm Password',
+                    prefixIcon: Icon(Icons.lock_outline),
                   ),
+                  validator: (value) {
+                    if (value != _pwdController.text) {
+                      return 'Passwords do not match';
+                    }
+                    return null;
+                  },
                 ),
-                const SizedBox(height: 24),
-                // Login Button
+                const SizedBox(height: 40),
+                // Sign Up Button
                 ElevatedButton(
-                  onPressed: _handleLogin,
+                  onPressed: _handleSignUp,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blueAccent,
                     foregroundColor: Colors.white,
@@ -133,31 +159,18 @@ class _LoginPageState extends State<LoginPage> {
                     elevation: 0,
                   ),
                   child: const Text(
-                    'Login',
+                    'Sign Up',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
-                const SizedBox(height: 8),
-                // Enter without login
-                TextButton(
-                  onPressed: _navigateToHome,
-                  child: const Text(
-                    'Enter without login',
-                    style: TextStyle(color: Colors.blueAccent, fontSize: 16),
-                  ),
-                ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 24),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text("Don't have an account? "),
+                    const Text("Already have an account? "),
                     TextButton(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => const SignUpPage()),
-                        );
-                      },
-                      child: const Text('Sign Up'),
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text('Login'),
                     ),
                   ],
                 ),
