@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:listen_portfolio_flutter/login.dart';
+import 'login.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -10,72 +10,197 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Home'),
         centerTitle: true,
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        foregroundColor: Colors.black87,
       ),
+      extendBodyBehindAppBar: true,
       drawer: Drawer(
-
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(30),
+            bottomRight: Radius.circular(30),
+          ),
+        ),
         child: Column(
           children: [
-            UserAccountsDrawerHeader(
-              currentAccountPicture: const CircleAvatar(
-                backgroundColor: Colors.white,
-                child: Icon(Icons.person, size: 40, color: Colors.blueAccent),
-              ),
-              accountName: const Text(
-                'User Name',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              accountEmail: const Text('user@example.com'),
+            // 自定义 Header
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.only(top: 60, bottom: 30, left: 20, right: 20),
               decoration: const BoxDecoration(
-                color: Colors.blueAccent,
+                gradient: LinearGradient(
+                  colors: [Colors.blueAccent, Colors.lightBlue],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(30),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(3),
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const CircleAvatar(
+                      radius: 35,
+                      backgroundColor: Colors.blueAccent,
+                      child: Icon(Icons.person, size: 45, color: Colors.white),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  const Text(
+                    'John Doe',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const Text(
+                    'johndoe@example.com',
+                    style: TextStyle(
+                      color: Colors.white70,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
               ),
             ),
+            const SizedBox(height: 10),
+            // 中部菜单项
             Expanded(
               child: ListView(
-                padding: EdgeInsets.zero,
+                padding: const EdgeInsets.symmetric(horizontal: 10),
                 children: [
-                  ListTile(
-                    leading: const Icon(Icons.home_outlined),
-                    title: const Text('Dashboard'),
+                  _buildDrawerItem(
+                    icon: Icons.dashboard_customize_outlined,
+                    label: 'Dashboard',
+                    isSelected: true,
                     onTap: () => Navigator.pop(context),
                   ),
-                  ListTile(
-                    leading: const Icon(Icons.person_outline),
-                    title: const Text('Profile'),
+                  _buildDrawerItem(
+                    icon: Icons.person_search_outlined,
+                    label: 'Profile',
                     onTap: () {},
                   ),
-                  ListTile(
-                    leading: const Icon(Icons.settings_outlined),
-                    title: const Text('Settings'),
+                  _buildDrawerItem(
+                    icon: Icons.notifications_none_rounded,
+                    label: 'Notifications',
+                    onTap: () {},
+                  ),
+                  _buildDrawerItem(
+                    icon: Icons.settings_suggest_outlined,
+                    label: 'Settings',
+                    onTap: () {},
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                    child: Divider(color: Colors.grey),
+                  ),
+                  _buildDrawerItem(
+                    icon: Icons.help_outline_rounded,
+                    label: 'Help & Support',
                     onTap: () {},
                   ),
                 ],
               ),
             ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(Icons.logout, color: Colors.redAccent),
-              title: const Text(
-                'Logout',
-                style: TextStyle(color: Colors.redAccent),
+            // 底部 Logout
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.redAccent.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: ListTile(
+                  leading: const Icon(Icons.logout_rounded, color: Colors.redAccent),
+                  title: const Text(
+                    'Logout',
+                    style: TextStyle(
+                      color: Colors.redAccent,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  onTap: () {
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (context) => const LoginPage()),
+                      (route) => false,
+                    );
+                  },
+                ),
               ),
-              onTap: () {
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
-                  (route) => false,
-                );
-              },
             ),
-            const SizedBox(height: 20),
           ],
         ),
       ),
-      body: const Center(
-        child: Text(
-          'Welcome to Home Page!',
-          style: TextStyle(fontSize: 20),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.blueAccent.withOpacity(0.1), Colors.white],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: const Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.auto_awesome, size: 80, color: Colors.blueAccent),
+              SizedBox(height: 20),
+              Text(
+                'Welcome to Home Page!',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w300,
+                  color: Colors.black87,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
-}
 
+  Widget _buildDrawerItem({
+    required IconData icon,
+    required String label,
+    bool isSelected = false,
+    required VoidCallback onTap,
+  }) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 2),
+      decoration: BoxDecoration(
+        color: isSelected ? Colors.blueAccent.withOpacity(0.1) : Colors.transparent,
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: ListTile(
+        leading: Icon(
+          icon,
+          color: isSelected ? Colors.blueAccent : Colors.black54,
+        ),
+        title: Text(
+          label,
+          style: TextStyle(
+            color: isSelected ? Colors.blueAccent : Colors.black87,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+          ),
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        onTap: onTap,
+      ),
+    );
+  }
+}

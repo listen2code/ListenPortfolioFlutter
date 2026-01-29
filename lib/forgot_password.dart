@@ -38,12 +38,12 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           icon: const Icon(Icons.arrow_back, color: Colors.black87),
           onPressed: () => Navigator.of(context).pop(),
         ),
+
       ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Form(
-
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
