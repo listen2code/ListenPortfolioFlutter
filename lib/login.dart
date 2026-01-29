@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -23,7 +22,7 @@ class _LoginPageState extends State<LoginPage> {
 
   void _handleLogin() {
     if (_formKey.currentState!.validate()) {
-      // Simulate login success
+      // Simulate successful login
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Login Successful!')),
       );
@@ -45,27 +44,19 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(height: 80),
                 // Logo or Icon
                 const Icon(
-                  Icons.lock_person_rounded,
+                  Icons.badge_outlined,
                   size: 100,
                   color: Colors.blueAccent,
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 24),
                 const Text(
-                  'Welcome Back',
+                  'Listen Portfolio',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
                     color: Colors.black87,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  'Please sign in to your account',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey,
+                    letterSpacing: 1.2,
                   ),
                 ),
                 const SizedBox(height: 48),
