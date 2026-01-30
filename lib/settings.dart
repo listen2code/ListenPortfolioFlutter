@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'appearance.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -12,7 +13,6 @@ class _SettingsPageState extends State<SettingsPage> {
   bool _notificationsEnabled = true;
   String _currentLanguage = 'English';
   String _cacheSize = '128 MB';
-
 
   @override
   Widget build(BuildContext context) {
@@ -45,9 +45,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   title: 'Appearance',
                   subtitle: 'Theme, colors, and fonts',
                   onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => const AppearancePage()),
-                    );
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AppearancePage()));
                   },
                 ),
                 _buildListTile(
@@ -74,13 +72,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               ]),
               const SizedBox(height: 25),
-              _buildSectionTitle('Support & Legal'),
+              _buildSectionTitle('Connect'),
               _buildSettingsCard([
-                _buildListTile(
-                  icon: Icons.help_outline_rounded,
-                  title: 'Help & Support',
-                  onTap: () {},
-                ),
                 _buildListTile(
                   icon: Icons.description_outlined,
                   title: 'Open Source Licenses',
@@ -96,9 +89,12 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                 ),
                 _buildListTile(
-                  icon: Icons.policy_outlined,
-                  title: 'Privacy Policy',
-                  onTap: () {},
+                  icon: Icons.alternate_email_rounded,
+                  title: 'Contact Me',
+                  subtitle: 'Send an email to Listen',
+                  onTap: () {
+                    // 唤起邮件应用
+                  },
                 ),
               ]),
               const SizedBox(height: 25),
@@ -143,9 +139,9 @@ class _SettingsPageState extends State<SettingsPage> {
 
   void _clearCache() {
     setState(() => _cacheSize = '0 MB');
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Cache cleared successfully!'), behavior: SnackBarBehavior.floating),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Cache cleared successfully!'), behavior: SnackBarBehavior.floating));
   }
 
   Widget _buildSectionTitle(String title) {
@@ -163,9 +159,7 @@ class _SettingsPageState extends State<SettingsPage> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10, offset: const Offset(0, 5)),
-        ],
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10, offset: const Offset(0, 5))],
       ),
       child: Column(children: children),
     );
