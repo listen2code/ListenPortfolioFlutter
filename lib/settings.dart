@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'appearance.dart';
 
@@ -74,6 +75,18 @@ class _SettingsPageState extends State<SettingsPage> {
               const SizedBox(height: 25),
               _buildSectionTitle('Connect'),
               _buildSettingsCard([
+                // todo
+                _buildListTile(
+                  icon: Icons.code_rounded,
+                  title: 'Source Code',
+                  subtitle: 'View this project on GitHub',
+                  onTap: () async {
+                    final Uri url = Uri.parse('https://github.com/listen2code');
+                    if (!await launchUrl(url)) {
+                      throw Exception('Could not launch $url');
+                    }
+                  },
+                ),
                 _buildListTile(
                   icon: Icons.description_outlined,
                   title: 'Open Source Licenses',

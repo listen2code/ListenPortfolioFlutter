@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/appearance.dart';
 import 'package:listen_portfolio_flutter/profile.dart';
 import 'package:listen_portfolio_flutter/settings.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'login.dart';
 
@@ -189,8 +190,11 @@ class HomePage extends StatelessWidget {
           Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ProfilePage()));
         }),
         const SizedBox(width: 15),
-        _buildActionButton(context, 'Contact', Icons.alternate_email_rounded, () {
-          // Trigger contact logic
+        _buildActionButton(context, 'GitHub', Icons.code_rounded, () async {
+          final Uri url = Uri.parse('https://github.com/listen2code');
+          if (!await launchUrl(url)) {
+            throw Exception('Could not launch $url');
+          }
         }),
       ],
     );
