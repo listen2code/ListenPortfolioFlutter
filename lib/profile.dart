@@ -11,12 +11,6 @@ class ProfilePage extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         foregroundColor: Colors.black87,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings_outlined),
-            onPressed: () {},
-          ),
-        ],
       ),
       extendBodyBehindAppBar: true,
       body: Container(

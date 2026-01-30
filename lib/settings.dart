@@ -6,10 +6,10 @@ class SettingsPage extends StatefulWidget {
 
   @override
   State<SettingsPage> createState() => _SettingsPageState();
-}
-
-class _SettingsPageState extends State<SettingsPage> {
+}class _SettingsPageState extends State<SettingsPage> {
   bool _notificationsEnabled = true;
+  String _currentLanguage = 'English';
+  String _cacheSize = '128 MB';
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +47,12 @@ class _SettingsPageState extends State<SettingsPage> {
                     );
                   },
                 ),
+                _buildListTile(
+                  icon: Icons.language_outlined,
+                  title: 'Language',
+                  trailing: Text(_currentLanguage, style: const TextStyle(color: Colors.grey)),
+                  onTap: () => _showLanguageDialog(),
+                ),
                 _buildSwitchTile(
                   icon: Icons.notifications_active_outlined,
                   title: 'Notifications',
@@ -55,13 +61,31 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               ]),
               const SizedBox(height: 25),
-              _buildSectionTitle('Support'),
+              _buildSectionTitle('System & Storage'),
+              _buildSettingsCard([
+                _buildListTile(
+                  icon: Icons.delete_outline_rounded,
+                  title: 'Clear Cache',
+                  trailing: Text(_cacheSize, style: const TextStyle(color: Colors.grey)),
+                  onTap: () => _clearCache(),
+                ),
+              ]),
+              const SizedBox(height: 25),
+              _buildSectionTitle('Support & Legal'),
               _buildSettingsCard([
                 _buildListTile(
                   icon: Icons.help_outline_rounded,
                   title: 'Help & Support',
-                  subtitle: 'FAQs and contact us',
                   onTap: () {},
+                ),
+                _buildListTile(
+                  icon: Icons.description_outlined,
+                  title: 'Open Source Licenses',
+                  onTap: () => showLicensePage(
+                    context: context,
+                    applicationName: 'Listen Portfolio',
+                    applicationVersion: '1.0.0',
+                  ),
                 ),
                 _buildListTile(
                   icon: Icons.policy_outlined,
@@ -79,10 +103,40 @@ class _SettingsPageState extends State<SettingsPage> {
                   onTap: () {},
                 ),
               ]),
+              const SizedBox(height: 40),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  void _showLanguageDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Select Language'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(title: const Text('English'), onTap: () => _updateLang('English')),
+            ListTile(title: const Text('Chinese'), onTap: () => _updateLang('Chinese')),
+            ListTile(title: const Text('Japanese'), onTap: () => _updateLang('Japanese')),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _updateLang(String lang) {
+    setState(() => _currentLanguage = lang);
+    Navigator.pop(context);
+  }
+
+  void _clearCache() {
+    setState(() => _cacheSize = '0 MB');
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Cache cleared successfully!'), behavior: SnackBarBehavior.floating),
     );
   }
 
@@ -91,12 +145,7 @@ class _SettingsPageState extends State<SettingsPage> {
       padding: const EdgeInsets.only(left: 10, bottom: 8),
       child: Text(
         title.toUpperCase(),
-        style: const TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.bold,
-          color: Colors.grey,
-          letterSpacing: 1.2,
-        ),
+        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 1.2),
       ),
     );
   }
@@ -107,11 +156,7 @@ class _SettingsPageState extends State<SettingsPage> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
+          BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10, offset: const Offset(0, 5)),
         ],
       ),
       child: Column(children: children),
@@ -128,10 +173,7 @@ class _SettingsPageState extends State<SettingsPage> {
     return ListTile(
       leading: Container(
         padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: Colors.blueAccent.withOpacity(0.1),
-          shape: BoxShape.circle,
-        ),
+        decoration: BoxDecoration(color: Colors.blueAccent.withOpacity(0.1), shape: BoxShape.circle),
         child: Icon(icon, color: Colors.blueAccent, size: 20),
       ),
       title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
@@ -150,10 +192,7 @@ class _SettingsPageState extends State<SettingsPage> {
     return SwitchListTile(
       secondary: Container(
         padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: Colors.blueAccent.withOpacity(0.1),
-          shape: BoxShape.circle,
-        ),
+        decoration: BoxDecoration(color: Colors.blueAccent.withOpacity(0.1), shape: BoxShape.circle),
         child: Icon(icon, color: Colors.blueAccent, size: 20),
       ),
       title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
