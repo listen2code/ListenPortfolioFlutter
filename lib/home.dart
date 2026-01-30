@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:listen_portfolio_flutter/appearance.dart';
 import 'login.dart';
 
 class HomePage extends StatelessWidget {
@@ -38,35 +39,64 @@ class HomePage extends StatelessWidget {
                   topRight: Radius.circular(30),
                 ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Stack(
                 children: [
-                  Container(
-                    padding: const EdgeInsets.all(3),
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const CircleAvatar(
-                      radius: 35,
-                      backgroundColor: Colors.blueAccent,
-                      child: Icon(Icons.person, size: 45, color: Colors.white),
-                    ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(3),
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const CircleAvatar(
+                          radius: 35,
+                          backgroundColor: Colors.blueAccent,
+                          child: Icon(Icons.person, size: 45, color: Colors.white),
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+                      const Text(
+                        'John Doe',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const Text(
+                        'johndoe@example.com',
+                        style: TextStyle(
+                          color: Colors.white70,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 15),
-                  const Text(
-                    'John Doe',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const Text(
-                    'johndoe@example.com',
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 14,
+                  // 右上角外观设置入口
+                  Positioned(
+                    right: 0,
+                    top: 0,
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => const AppearancePage()),
+                        );
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2), // 半透明背景显出主题色
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white.withOpacity(0.3)),
+                        ),
+                        child: const Icon(
+                          Icons.wb_sunny_outlined, // 标志当前为亮色主题
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -97,7 +127,11 @@ class HomePage extends StatelessWidget {
                   _buildDrawerItem(
                     icon: Icons.settings_suggest_outlined,
                     label: 'Settings',
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => const AppearancePage()),
+                      );
+                    },
                   ),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -134,7 +168,7 @@ class HomePage extends StatelessWidget {
                   onTap: () {
                     Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(builder: (context) => const LoginPage()),
-                      (route) => false,
+                          (route) => false,
                     );
                   },
                 ),
