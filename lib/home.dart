@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/appearance.dart';
+import 'package:listen_portfolio_flutter/settings.dart';
 import 'login.dart';
 
 class HomePage extends StatelessWidget {
@@ -74,7 +75,7 @@ class HomePage extends StatelessWidget {
                       ),
                     ],
                   ),
-                  // 右上角外观设置入口
+                  // 右上角外观快速设置入口
                   Positioned(
                     right: 0,
                     top: 0,
@@ -87,12 +88,12 @@ class HomePage extends StatelessWidget {
                       child: Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2), // 半透明背景显出主题色
+                          color: Colors.white.withOpacity(0.2),
                           shape: BoxShape.circle,
                           border: Border.all(color: Colors.white.withOpacity(0.3)),
                         ),
                         child: const Icon(
-                          Icons.wb_sunny_outlined, // 标志当前为亮色主题
+                          Icons.wb_sunny_outlined,
                           color: Colors.white,
                           size: 20,
                         ),
@@ -103,7 +104,7 @@ class HomePage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
-            // 中部菜单项
+            // 中部菜单项 (精简版)
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -119,28 +120,19 @@ class HomePage extends StatelessWidget {
                     label: 'Profile',
                     onTap: () {},
                   ),
-                  _buildDrawerItem(
-                    icon: Icons.notifications_none_rounded,
-                    label: 'Notifications',
-                    onTap: () {},
-                  ),
-                  _buildDrawerItem(
-                    icon: Icons.settings_suggest_outlined,
-                    label: 'Settings',
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => const AppearancePage()),
-                      );
-                    },
-                  ),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                     child: Divider(color: Colors.grey),
                   ),
                   _buildDrawerItem(
-                    icon: Icons.help_outline_rounded,
-                    label: 'Help & Support',
-                    onTap: () {},
+                    icon: Icons.settings_suggest_outlined,
+                    label: 'Settings',
+                    onTap: () {
+                      Navigator.pop(context); // 关闭侧边栏
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => const SettingsPage()),
+                      );
+                    },
                   ),
                 ],
               ),
@@ -168,7 +160,7 @@ class HomePage extends StatelessWidget {
                   onTap: () {
                     Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(builder: (context) => const LoginPage()),
-                          (route) => false,
+                      (route) => false,
                     );
                   },
                 ),
