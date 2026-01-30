@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/appearance.dart';
 import 'package:listen_portfolio_flutter/settings.dart';
+import 'package:listen_portfolio_flutter/profile.dart';
 import 'login.dart';
 
 class HomePage extends StatelessWidget {
@@ -118,7 +119,12 @@ class HomePage extends StatelessWidget {
                   _buildDrawerItem(
                     icon: Icons.person_search_outlined,
                     label: 'Profile',
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => const ProfilePage()),
+                      );
+                    },
                   ),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
