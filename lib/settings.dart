@@ -6,10 +6,13 @@ class SettingsPage extends StatefulWidget {
 
   @override
   State<SettingsPage> createState() => _SettingsPageState();
-}class _SettingsPageState extends State<SettingsPage> {
+}
+
+class _SettingsPageState extends State<SettingsPage> {
   bool _notificationsEnabled = true;
   String _currentLanguage = 'English';
   String _cacheSize = '128 MB';
+
 
   @override
   Widget build(BuildContext context) {
@@ -85,6 +88,11 @@ class SettingsPage extends StatefulWidget {
                     context: context,
                     applicationName: 'Listen Portfolio',
                     applicationVersion: '1.0.0',
+                    applicationIcon: const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Icon(Icons.auto_awesome, size: 48, color: Colors.blueAccent),
+                    ),
+                    applicationLegalese: '© 2026 Listen', // 版权信息
                   ),
                 ),
                 _buildListTile(

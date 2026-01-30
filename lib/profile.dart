@@ -107,10 +107,11 @@ class ProfilePage extends StatelessWidget {
         ),
         const SizedBox(height: 20),
         const Text(
-          'John Doe',
+          'Listen',
           style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
         ),
         const Text(
+
           'Senior Flutter Developer',
           style: TextStyle(fontSize: 16, color: Colors.blueAccent, fontWeight: FontWeight.w500),
         ),

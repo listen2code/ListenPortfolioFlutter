@@ -60,7 +60,7 @@ class HomePage extends StatelessWidget {
                       ),
                       const SizedBox(height: 15),
                       const Text(
-                        'John Doe',
+                        'Listen',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 22,
@@ -68,7 +68,7 @@ class HomePage extends StatelessWidget {
                         ),
                       ),
                       const Text(
-                        'johndoe@example.com',
+                        'listen@example.com',
                         style: TextStyle(
                           color: Colors.white70,
                           fontSize: 14,
