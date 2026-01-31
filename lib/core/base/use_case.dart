@@ -1,4 +1,5 @@
-import 'package:dartz/dartz.dart';
+import 'package:fpdart/fpdart.dart';
+
 import '../errors/failures.dart';
 
 /// Base interface for all use cases in the application

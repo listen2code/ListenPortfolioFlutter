@@ -27,7 +27,7 @@ dependencies:
   retrofit: ^4.9.2
 
   # Functional Programming
-  dartz: ^0.10.1
+  fpdart: ^1.1.0
 
   # Storage
   shared_preferences: ^2.2.3
