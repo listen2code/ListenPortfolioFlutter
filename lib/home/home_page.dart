@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/appearance_page.dart';
+import 'package:listen_portfolio_flutter/home/architecture_widget.dart';
 import 'package:listen_portfolio_flutter/home/dashboard_widget.dart';
 import 'package:listen_portfolio_flutter/home/profile_widget.dart';
 import 'package:listen_portfolio_flutter/settings_page.dart';
@@ -20,7 +21,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_selectedIndex == 0 ? '' : 'About Me', style: const TextStyle(fontWeight: FontWeight.w300)),
+        title: Text(_selectedIndex == 0 ? '' : (_selectedIndex == 1 ? 'About Me' : 'Architecture')),
         centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -37,11 +38,22 @@ class _HomePageState extends State<HomePage> {
             end: Alignment.bottomCenter,
           ),
         ),
-        child: _selectedIndex == 0
-            ? DashboardWidget(onResumeRequested: () => setState(() => _selectedIndex = 1))
-            : const ProfileWidget(),
+        child: _buildBody(),
       ),
     );
+  }
+
+  Widget _buildBody() {
+    switch (_selectedIndex) {
+      case 0:
+        return DashboardWidget(onResumeRequested: () => setState(() => _selectedIndex = 1));
+      case 1:
+        return const ProfileWidget();
+      case 2:
+        return const ArchitectureWidget();
+      default:
+        return DashboardWidget(onResumeRequested: () => setState(() => _selectedIndex = 1));
+    }
   }
 
   Widget _buildDrawer(BuildContext context) {
@@ -71,6 +83,15 @@ class _HomePageState extends State<HomePage> {
                   isSelected: _selectedIndex == 1,
                   onTap: () {
                     setState(() => _selectedIndex = 1);
+                    Navigator.pop(context);
+                  },
+                ),
+                _buildDrawerItem(
+                  icon: Icons.account_tree_outlined,
+                  label: 'Architecture',
+                  isSelected: _selectedIndex == 2,
+                  onTap: () {
+                    setState(() => _selectedIndex = 2);
                     Navigator.pop(context);
                   },
                 ),

@@ -85,12 +85,6 @@ class _SettingsPageState extends State<SettingsPage> {
               _buildSectionTitle('Connect'),
               _buildSettingsCard([
                 _buildListTile(
-                  icon: Icons.code_rounded,
-                  title: 'Source Code',
-                  subtitle: 'View this project on GitHub',
-                  onTap: () => _launchURL('https://github.com/listen2code'),
-                ),
-                _buildListTile(
                   icon: Icons.description_outlined,
                   title: 'Open Source Licenses',
                   onTap: () => showLicensePage(
