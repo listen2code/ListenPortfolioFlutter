@@ -1,8 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-
-import 'login_page.dart';
+import 'package:listen_portfolio_flutter/presentation/features/auth/login/login_page.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});

@@ -3,9 +3,8 @@ import 'package:listen_portfolio_flutter/appearance_page.dart';
 import 'package:listen_portfolio_flutter/home/architecture_widget.dart';
 import 'package:listen_portfolio_flutter/home/dashboard_widget.dart';
 import 'package:listen_portfolio_flutter/home/profile_widget.dart';
+import 'package:listen_portfolio_flutter/presentation/features/auth/login/login_page.dart';
 import 'package:listen_portfolio_flutter/settings_page.dart';
-
-import '../login_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
