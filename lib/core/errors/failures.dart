@@ -1,9 +1,13 @@
+import 'package:equatable/equatable.dart';
+
 /// Base class for all failures in the application
-/// Failures represent errors that have been handled and converted to a domain-friendly format
-abstract class Failure {
+abstract class Failure extends Equatable {
   final String message;
 
   const Failure(this.message);
+
+  @override
+  List<Object?> get props => [message];
 }
 
 class ServerFailure extends Failure {

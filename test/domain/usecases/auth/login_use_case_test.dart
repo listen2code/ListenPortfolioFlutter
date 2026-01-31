@@ -21,31 +21,23 @@ void main() {
   group('LoginUseCase', () {
     const testUsername = 'testuser';
     const testPassword = 'password123';
-    final testUser = User(
-      id: '1',
-      name: 'Test User',
-      email: 'test@example.com',
-      createdAt: DateTime(2024, 1, 1),
-    );
+    final testUser = User(id: '1', name: 'Test User', email: 'test@example.com', createdAt: DateTime(2024, 1, 1));
 
     test('should return User when login is successful', () async {
       // Arrange
-      when(() => mockRepository.login(
-            username: any(named: 'username'),
-            password: any(named: 'password'),
-          )).thenAnswer((_) async => Right(testUser));
+      when(
+        () => mockRepository.login(
+          username: any(named: 'username'),
+          password: any(named: 'password'),
+        ),
+      ).thenAnswer((_) async => Right(testUser));
 
       // Act
-      final result = await useCase(
-        LoginParams(username: testUsername, password: testPassword),
-      );
+      final result = await useCase(LoginParams(username: testUsername, password: testPassword));
 
       // Assert
-      expect(result, Right(testUser));
-      verify(() => mockRepository.login(
-            username: testUsername,
-            password: testPassword,
-          )).called(1);
+      expect(result, Right<Failure, User>(testUser));
+      verify(() => mockRepository.login(username: testUsername, password: testPassword)).called(1);
       verifyNoMoreInteractions(mockRepository);
     });
 
@@ -54,121 +46,105 @@ void main() {
       const emptyUsername = '';
 
       // Act
-      final result = await useCase(
-        LoginParams(username: emptyUsername, password: testPassword),
-      );
+      final result = await useCase(LoginParams(username: emptyUsername, password: testPassword));
 
       // Assert
-      expect(result, const Left(ValidationFailure('Username cannot be empty')));
-      verifyNever(() => mockRepository.login(
-            username: any(named: 'username'),
-            password: any(named: 'password'),
-          ));
+      expect(result, const Left<Failure, User>(ValidationFailure('Username cannot be empty')));
+      verifyNever(
+        () => mockRepository.login(
+          username: any(named: 'username'),
+          password: any(named: 'password'),
+        ),
+      );
     });
 
-    test('should return ValidationFailure when password is less than 6 characters',
-        () async {
+    test('should return ValidationFailure when password is less than 6 characters', () async {
       // Arrange
       const shortPassword = '12345';
 
       // Act
-      final result = await useCase(
-        LoginParams(username: testUsername, password: shortPassword),
-      );
+      final result = await useCase(LoginParams(username: testUsername, password: shortPassword));
 
       // Assert
-      expect(
-        result,
-        const Left(ValidationFailure('Password must be at least 6 characters')),
+      expect(result, const Left<Failure, User>(ValidationFailure('Password must be at least 6 characters')));
+      verifyNever(
+        () => mockRepository.login(
+          username: any(named: 'username'),
+          password: any(named: 'password'),
+        ),
       );
-      verifyNever(() => mockRepository.login(
-            username: any(named: 'username'),
-            password: any(named: 'password'),
-          ));
     });
 
-    test('should return ServerFailure when repository returns server error',
-        () async {
+    test('should return ServerFailure when repository returns server error', () async {
       // Arrange
       const serverFailure = ServerFailure('Server error occurred');
-      when(() => mockRepository.login(
-            username: any(named: 'username'),
-            password: any(named: 'password'),
-          )).thenAnswer((_) async => const Left(serverFailure));
+      when(
+        () => mockRepository.login(
+          username: any(named: 'username'),
+          password: any(named: 'password'),
+        ),
+      ).thenAnswer((_) async => const Left(serverFailure));
 
       // Act
-      final result = await useCase(
-        LoginParams(username: testUsername, password: testPassword),
-      );
+      final result = await useCase(LoginParams(username: testUsername, password: testPassword));
 
       // Assert
-      expect(result, const Left(serverFailure));
-      verify(() => mockRepository.login(
-            username: testUsername,
-            password: testPassword,
-          )).called(1);
+      expect(result, const Left<Failure, User>(serverFailure));
+      verify(() => mockRepository.login(username: testUsername, password: testPassword)).called(1);
     });
 
-    test('should return NetworkFailure when there is no internet connection',
-        () async {
+    test('should return NetworkFailure when there is no internet connection', () async {
       // Arrange
       const networkFailure = NetworkFailure('No internet connection');
-      when(() => mockRepository.login(
-            username: any(named: 'username'),
-            password: any(named: 'password'),
-          )).thenAnswer((_) async => const Left(networkFailure));
+      when(
+        () => mockRepository.login(
+          username: any(named: 'username'),
+          password: any(named: 'password'),
+        ),
+      ).thenAnswer((_) async => const Left(networkFailure));
 
       // Act
-      final result = await useCase(
-        LoginParams(username: testUsername, password: testPassword),
-      );
+      final result = await useCase(LoginParams(username: testUsername, password: testPassword));
 
       // Assert
-      expect(result, const Left(networkFailure));
-      verify(() => mockRepository.login(
-            username: testUsername,
-            password: testPassword,
-          )).called(1);
+      expect(result, const Left<Failure, User>(networkFailure));
+      verify(() => mockRepository.login(username: testUsername, password: testPassword)).called(1);
     });
 
     test('should return AuthFailure when credentials are invalid', () async {
       // Arrange
       const authFailure = AuthFailure('Invalid username or password');
-      when(() => mockRepository.login(
-            username: any(named: 'username'),
-            password: any(named: 'password'),
-          )).thenAnswer((_) async => const Left(authFailure));
+      when(
+        () => mockRepository.login(
+          username: any(named: 'username'),
+          password: any(named: 'password'),
+        ),
+      ).thenAnswer((_) async => const Left(authFailure));
 
       // Act
-      final result = await useCase(
-        LoginParams(username: testUsername, password: 'wrongpassword'),
-      );
+      final result = await useCase(LoginParams(username: testUsername, password: 'wrongpassword'));
 
       // Assert
-      expect(result, const Left(authFailure));
-      verify(() => mockRepository.login(
-            username: testUsername,
-            password: 'wrongpassword',
-          )).called(1);
+      expect(result, const Left<Failure, User>(authFailure));
+      verify(() => mockRepository.login(username: testUsername, password: 'wrongpassword')).called(1);
     });
 
     test('should pass correct parameters to repository', () async {
       // Arrange
       const username = 'john_doe';
       const password = 'securePass123';
-      when(() => mockRepository.login(
-            username: any(named: 'username'),
-            password: any(named: 'password'),
-          )).thenAnswer((_) async => Right(testUser));
+      when(
+        () => mockRepository.login(
+          username: any(named: 'username'),
+          password: any(named: 'password'),
+        ),
+      ).thenAnswer((_) async => Right(testUser));
 
       // Act
       await useCase(LoginParams(username: username, password: password));
 
       // Assert
-      verify(() => mockRepository.login(
-            username: username,
-            password: password,
-          )).called(1);
+      verify(() => mockRepository.login(username: username, password: password)).called(1);
     });
   });
 }

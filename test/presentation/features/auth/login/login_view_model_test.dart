@@ -1,13 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:listen_portfolio_flutter/domain/entities/auth/user.dart';
+import 'package:listen_portfolio_flutter/domain/usecases/auth/login_use_case.dart';
 import 'package:listen_portfolio_flutter/presentation/features/auth/login/login_intent.dart';
 import 'package:listen_portfolio_flutter/presentation/features/auth/login/login_state.dart';
-import 'package:listen_portfolio_flutter/presentation/features/auth/login/login_view_model.dart';
-import 'package:listen_portfolio_flutter/domain/usecases/auth/login_use_case.dart';
-import 'package:listen_portfolio_flutter/domain/entities/auth/user.dart';
-import 'package:listen_portfolio_flutter/core/errors/failures.dart';
-import 'package:fpdart/fpdart.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Mock classes
 class MockLoginUseCase extends Mock implements LoginUseCase {}
@@ -43,11 +39,7 @@ void main() {
       const newUsername = 'testuser';
 
       // Act
-      final newState = initialState.copyWith(
-        username: newUsername,
-        usernameError: null,
-        errorMessage: null,
-      );
+      final newState = initialState.copyWith(username: newUsername, usernameError: null, errorMessage: null);
 
       // Assert
       expect(newState.username, newUsername);
@@ -61,11 +53,7 @@ void main() {
       const newPassword = 'password123';
 
       // Act
-      final newState = initialState.copyWith(
-        password: newPassword,
-        passwordError: null,
-        errorMessage: null,
-      );
+      final newState = initialState.copyWith(password: newPassword, passwordError: null, errorMessage: null);
 
       // Assert
       expect(newState.password, newPassword);
@@ -78,9 +66,7 @@ void main() {
       const initialState = LoginState(isPasswordVisible: false);
 
       // Act
-      final newState = initialState.copyWith(
-        isPasswordVisible: !initialState.isPasswordVisible,
-      );
+      final newState = initialState.copyWith(isPasswordVisible: !initialState.isPasswordVisible);
 
       // Assert
       expect(newState.isPasswordVisible, true);
@@ -91,9 +77,7 @@ void main() {
       const initialState = LoginState(username: '', password: 'password123');
 
       // Act
-      final newState = initialState.copyWith(
-        usernameError: 'Username is required',
-      );
+      final newState = initialState.copyWith(usernameError: 'Username is required');
 
       // Assert
       expect(newState.usernameError, 'Username is required');
@@ -104,9 +88,7 @@ void main() {
       const initialState = LoginState(username: 'testuser', password: '123');
 
       // Act
-      final newState = initialState.copyWith(
-        passwordError: 'Password must be at least 6 characters',
-      );
+      final newState = initialState.copyWith(passwordError: 'Password must be at least 6 characters');
 
       // Assert
       expect(newState.passwordError, 'Password must be at least 6 characters');
@@ -114,16 +96,10 @@ void main() {
 
     test('should set loading state when login starts', () {
       // Arrange
-      const initialState = LoginState(
-        username: 'testuser',
-        password: 'password123',
-      );
+      const initialState = LoginState(username: 'testuser', password: 'password123');
 
       // Act
-      final newState = initialState.copyWith(
-        isLoading: true,
-        errorMessage: null,
-      );
+      final newState = initialState.copyWith(isLoading: true, errorMessage: null);
 
       // Assert
       expect(newState.isLoading, true);
@@ -132,23 +108,11 @@ void main() {
 
     test('should set success state when login succeeds', () async {
       // Arrange
-      const initialState = LoginState(
-        username: 'testuser',
-        password: 'password123',
-        isLoading: true,
-      );
-      final testUser = User(
-        id: '1',
-        name: 'Test User',
-        email: 'test@example.com',
-        createdAt: DateTime(2024, 1, 1),
-      );
+      const initialState = LoginState(username: 'testuser', password: 'password123', isLoading: true);
+      final testUser = User(id: '1', name: 'Test User', email: 'test@example.com', createdAt: DateTime(2024, 1, 1));
 
       // Act
-      final newState = initialState.copyWith(
-        isLoading: false,
-        isSuccess: true,
-      );
+      final newState = initialState.copyWith(isLoading: false, isSuccess: true);
 
       // Assert
       expect(newState.isLoading, false);
@@ -158,18 +122,11 @@ void main() {
 
     test('should set error state when login fails', () {
       // Arrange
-      const initialState = LoginState(
-        username: 'testuser',
-        password: 'wrongpassword',
-        isLoading: true,
-      );
+      const initialState = LoginState(username: 'testuser', password: 'wrongpassword', isLoading: true);
       const errorMessage = 'Invalid username or password';
 
       // Act
-      final newState = initialState.copyWith(
-        isLoading: false,
-        errorMessage: errorMessage,
-      );
+      final newState = initialState.copyWith(isLoading: false, errorMessage: errorMessage);
 
       // Assert
       expect(newState.isLoading, false);
@@ -179,18 +136,11 @@ void main() {
 
     test('should handle network failure', () {
       // Arrange
-      const initialState = LoginState(
-        username: 'testuser',
-        password: 'password123',
-        isLoading: true,
-      );
+      const initialState = LoginState(username: 'testuser', password: 'password123', isLoading: true);
       const errorMessage = 'No internet connection';
 
       // Act
-      final newState = initialState.copyWith(
-        isLoading: false,
-        errorMessage: errorMessage,
-      );
+      final newState = initialState.copyWith(isLoading: false, errorMessage: errorMessage);
 
       // Assert
       expect(newState.isLoading, false);
@@ -199,18 +149,11 @@ void main() {
 
     test('should handle server failure', () {
       // Arrange
-      const initialState = LoginState(
-        username: 'testuser',
-        password: 'password123',
-        isLoading: true,
-      );
+      const initialState = LoginState(username: 'testuser', password: 'password123', isLoading: true);
       const errorMessage = 'Server error occurred';
 
       // Act
-      final newState = initialState.copyWith(
-        isLoading: false,
-        errorMessage: errorMessage,
-      );
+      final newState = initialState.copyWith(isLoading: false, errorMessage: errorMessage);
 
       // Assert
       expect(newState.isLoading, false);
@@ -219,18 +162,10 @@ void main() {
 
     test('should clear errors when username changes', () {
       // Arrange
-      const initialState = LoginState(
-        username: '',
-        usernameError: 'Username is required',
-        errorMessage: 'Login failed',
-      );
+      const initialState = LoginState(username: '', usernameError: 'Username is required', errorMessage: 'Login failed');
 
       // Act
-      final newState = initialState.copyWith(
-        username: 'newuser',
-        usernameError: null,
-        errorMessage: null,
-      );
+      final newState = initialState.copyWith(username: 'newuser', usernameError: null, errorMessage: null);
 
       // Assert
       expect(newState.username, 'newuser');
@@ -240,18 +175,10 @@ void main() {
 
     test('should clear errors when password changes', () {
       // Arrange
-      const initialState = LoginState(
-        password: '123',
-        passwordError: 'Password too short',
-        errorMessage: 'Login failed',
-      );
+      const initialState = LoginState(password: '123', passwordError: 'Password too short', errorMessage: 'Login failed');
 
       // Act
-      final newState = initialState.copyWith(
-        password: 'newpassword123',
-        passwordError: null,
-        errorMessage: null,
-      );
+      final newState = initialState.copyWith(password: 'newpassword123', passwordError: null, errorMessage: null);
 
       // Assert
       expect(newState.password, 'newpassword123');

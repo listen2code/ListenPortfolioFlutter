@@ -36,6 +36,7 @@ void main() {
     );
 
     // Register fallback values for mocktail
+    registerFallbackValue(UserModel(id: '', name: '', email: '', createdAt: DateTime.now()));
     registerFallbackValue(const LoginRequestModel(username: '', password: ''));
   });
 
