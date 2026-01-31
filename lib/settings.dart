@@ -88,12 +88,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   icon: Icons.code_rounded,
                   title: 'Source Code',
                   subtitle: 'View this project on GitHub',
-                  onTap: () async {
-                    final Uri url = Uri.parse('https://github.com/listen2code');
-                    if (!await launchUrl(url)) {
-                      throw Exception('Could not launch $url');
-                    }
-                  },
+                  onTap: () => _launchURL('https://github.com/listen2code'),
                 ),
                 _buildListTile(
                   icon: Icons.description_outlined,
@@ -106,16 +101,14 @@ class _SettingsPageState extends State<SettingsPage> {
                       padding: EdgeInsets.all(8.0),
                       child: Icon(Icons.auto_awesome, size: 48, color: Colors.blueAccent),
                     ),
-                    applicationLegalese: '© 2026 Listen', // 版权信息
+                    applicationLegalese: '© 2026 Listen',
                   ),
                 ),
                 _buildListTile(
                   icon: Icons.alternate_email_rounded,
                   title: 'Contact Me',
                   subtitle: 'Send an email to Listen',
-                  onTap: () {
-                    // 唤起邮件应用
-                  },
+                  onTap: () => _launchURL('mailto:listen2code@gmail.com?subject=Portfolio%20Feedback'),
                 ),
               ]),
               const SizedBox(height: 25),
@@ -136,11 +129,27 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
+  Future<void> _launchURL(String urlString) async {
+    final Uri url = Uri.parse(urlString);
+    if (!await canLaunchUrl(url) && mounted) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('No email apps installed'), behavior: SnackBarBehavior.floating));
+      return;
+    }
+    if (!await launchUrl(url) && mounted) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Could not launch $urlString'), behavior: SnackBarBehavior.floating));
+    }
+  }
+
   void _showLanguageDialog() {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Select Language'),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -177,12 +186,20 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Widget _buildSettingsCard(List<Widget> children) {
     return Container(
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10, offset: const Offset(0, 5))],
       ),
-      child: Column(children: children),
+      child: Column(
+        children: [
+          for (var i = 0; i < children.length; i++) ...[
+            children[i],
+            if (i < children.length - 1) Divider(height: 1, thickness: 0.5, indent: 65, endIndent: 20, color: Colors.grey[100]),
+          ],
+        ],
+      ),
     );
   }
 
@@ -194,14 +211,18 @@ class _SettingsPageState extends State<SettingsPage> {
     required VoidCallback onTap,
   }) {
     return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       leading: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(color: Colors.blueAccent.withOpacity(0.1), shape: BoxShape.circle),
-        child: Icon(icon, color: Colors.blueAccent, size: 20),
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(color: Colors.blueAccent.withOpacity(0.08), borderRadius: BorderRadius.circular(12)),
+        child: Icon(icon, color: Colors.blueAccent, size: 22),
       ),
-      title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
+      title: Text(
+        title,
+        style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.black87),
+      ),
       subtitle: subtitle != null ? Text(subtitle, style: const TextStyle(fontSize: 12)) : null,
-      trailing: trailing ?? const Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey),
+      trailing: trailing ?? Icon(Icons.arrow_forward_ios_rounded, size: 14, color: Colors.grey[400]),
       onTap: onTap,
     );
   }
@@ -214,11 +235,14 @@ class _SettingsPageState extends State<SettingsPage> {
   }) {
     return SwitchListTile(
       secondary: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(color: Colors.blueAccent.withOpacity(0.1), shape: BoxShape.circle),
-        child: Icon(icon, color: Colors.blueAccent, size: 20),
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(color: Colors.blueAccent.withOpacity(0.08), borderRadius: BorderRadius.circular(12)),
+        child: Icon(icon, color: Colors.blueAccent, size: 22),
       ),
-      title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
+      title: Text(
+        title,
+        style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.black87),
+      ),
       value: value,
       activeColor: Colors.blueAccent,
       onChanged: onChanged,
