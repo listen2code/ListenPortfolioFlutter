@@ -1,46 +1,29 @@
 import 'package:flutter/material.dart';
 
-class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
+class ProfileView extends StatelessWidget {
+  const ProfileView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        foregroundColor: Colors.black87,
-      ),
-      extendBodyBehindAppBar: true,
-      body: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.blueAccent.withOpacity(0.05), Colors.white],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            children: [
-              const SizedBox(height: 100),
-              // 头像与基本信息
-              _buildHeader(context),
-              const SizedBox(height: 30),
-              // 个人简介
-              _buildAboutSection(),
-              const SizedBox(height: 25),
-              // 核心技能
-              _buildSkillsSection(),
-              const SizedBox(height: 25),
-              // 教育背景/工作经验 (可选)
-              _buildExperienceSection(),
-              const SizedBox(height: 30),
-            ],
-          ),
+    return SafeArea(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Column(
+          children: [
+            const SizedBox(height: 40),
+            // 头像与基本信息
+            _buildHeader(context),
+            const SizedBox(height: 30),
+            // 个人简介
+            _buildAboutSection(),
+            const SizedBox(height: 25),
+            // 核心技能
+            _buildSkillsSection(),
+            const SizedBox(height: 25),
+            // 教育背景/工作经验 (可选)
+            _buildExperienceSection(),
+            const SizedBox(height: 30),
+          ],
         ),
       ),
     );
@@ -56,20 +39,14 @@ class ProfilePage extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: const LinearGradient(colors: [Colors.blueAccent, Colors.lightBlue]),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.blueAccent.withOpacity(0.2),
-                    blurRadius: 20,
-                    offset: const Offset(0, 10),
-                  ),
-                ],
+                boxShadow: [BoxShadow(color: Colors.blueAccent.withOpacity(0.2), blurRadius: 20, offset: const Offset(0, 10))],
               ),
               child: const CircleAvatar(
                 radius: 65,
                 backgroundColor: Colors.white,
                 child: CircleAvatar(
                   radius: 60,
-                  backgroundImage: NetworkImage('https://api.dicebear.com/7.x/avataaars/svg?seed=John'),
+                  backgroundImage: NetworkImage('https://api.dicebear.com/7.x/avataaars/svg?seed=Listen'),
                   backgroundColor: Colors.blueAccent,
                 ),
               ),
@@ -88,30 +65,17 @@ class ProfilePage extends StatelessWidget {
                     color: Colors.blueAccent,
                     shape: BoxShape.circle,
                     border: Border.all(color: Colors.white, width: 2),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 5,
-                      ),
-                    ],
+                    boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 5)],
                   ),
-                  child: const Icon(
-                    Icons.camera_alt_rounded,
-                    color: Colors.white,
-                    size: 20,
-                  ),
+                  child: const Icon(Icons.camera_alt_rounded, color: Colors.white, size: 20),
                 ),
               ),
             ),
           ],
         ),
         const SizedBox(height: 20),
+        const Text('Listen', style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
         const Text(
-          'Listen',
-          style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
-        ),
-        const Text(
-
           'Senior Flutter Developer',
           style: TextStyle(fontSize: 16, color: Colors.blueAccent, fontWeight: FontWeight.w500),
         ),
@@ -144,19 +108,14 @@ class ProfilePage extends StatelessWidget {
   void _showImageSourceActionSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (context) => SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 15),
-              child: Text(
-                'Change Profile Photo',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
+              child: Text('Change Profile Photo', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             ),
             ListTile(
               leading: const Icon(Icons.photo_library_outlined, color: Colors.blueAccent),
@@ -194,11 +153,7 @@ class ProfilePage extends StatelessWidget {
     final skills = ['Flutter', 'Dart', 'Clean Architecture', 'Riverpod', 'Firebase', 'REST API', 'Git', 'CI/CD'];
     return _buildCard(
       title: 'Core Skills',
-      child: Wrap(
-        spacing: 10,
-        runSpacing: 10,
-        children: skills.map((skill) => _buildSkillChip(skill)).toList(),
-      ),
+      child: Wrap(spacing: 10, runSpacing: 10, children: skills.map((skill) => _buildSkillChip(skill)).toList()),
     );
   }
 
@@ -222,13 +177,7 @@ class ProfilePage extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10, offset: const Offset(0, 5))],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -247,10 +196,7 @@ class ProfilePage extends StatelessWidget {
   Widget _buildSkillChip(String label) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-      decoration: BoxDecoration(
-        color: Colors.blueAccent.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
-      ),
+      decoration: BoxDecoration(color: Colors.blueAccent.withOpacity(0.1), borderRadius: BorderRadius.circular(12)),
       child: Text(
         label,
         style: const TextStyle(color: Colors.blueAccent, fontWeight: FontWeight.w500, fontSize: 13),

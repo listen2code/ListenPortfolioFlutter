@@ -1,61 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:listen_portfolio_flutter/appearance_page.dart';
-import 'package:listen_portfolio_flutter/profile_page.dart';
-import 'package:listen_portfolio_flutter/settings_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'login_page.dart';
+class DashboardView extends StatelessWidget {
+  final VoidCallback onResumeRequested;
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  const DashboardView({super.key, required this.onResumeRequested});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Portfolio', style: TextStyle(fontWeight: FontWeight.w300)),
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        foregroundColor: Colors.black87,
-      ),
-      extendBodyBehindAppBar: true,
-      drawer: _buildDrawer(context),
-      body: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.blueAccent.withOpacity(0.05), Colors.white],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildWelcomeHeader(),
-                const SizedBox(height: 20),
-                _buildStatusTag(),
-                const SizedBox(height: 30),
-                _buildExperienceGrid(),
-                const SizedBox(height: 30),
-                _buildSectionHeader('Expertise & Languages', showSeeAll: false),
-                const SizedBox(height: 15),
-                _buildLanguageChips(),
-                const SizedBox(height: 35),
-                _buildSectionHeader('Quick Actions', showSeeAll: false),
-                const SizedBox(height: 15),
-                _buildQuickActions(context),
-                const SizedBox(height: 35),
-                _buildSectionHeader('Featured Projects'),
-                const SizedBox(height: 15),
-                _buildFeaturedProjects(),
-              ],
-            ),
-          ),
+    return SafeArea(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildWelcomeHeader(),
+            const SizedBox(height: 20),
+            _buildStatusTag(),
+            const SizedBox(height: 30),
+            _buildExperienceGrid(),
+            const SizedBox(height: 30),
+            _buildSectionHeader('Expertise & Languages', showSeeAll: false),
+            const SizedBox(height: 15),
+            _buildLanguageChips(),
+            const SizedBox(height: 35),
+            _buildSectionHeader('Quick Actions', showSeeAll: false),
+            const SizedBox(height: 15),
+            _buildQuickActions(context),
+            const SizedBox(height: 35),
+            _buildSectionHeader('Featured Projects'),
+            const SizedBox(height: 15),
+            _buildFeaturedProjects(),
+          ],
         ),
       ),
     );
@@ -186,9 +162,7 @@ class HomePage extends StatelessWidget {
   Widget _buildQuickActions(BuildContext context) {
     return Row(
       children: [
-        _buildActionButton(context, 'My Resume', Icons.description_outlined, () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ProfilePage()));
-        }),
+        _buildActionButton(context, 'About Me', Icons.description_outlined, onResumeRequested),
         const SizedBox(width: 15),
         _buildActionButton(context, 'GitHub', Icons.code_rounded, () async {
           final Uri url = Uri.parse('https://github.com/listen2code');
@@ -266,131 +240,6 @@ class HomePage extends StatelessWidget {
           ),
           Text(subtitle, style: const TextStyle(color: Colors.white70, fontSize: 12)),
         ],
-      ),
-    );
-  }
-
-  Widget _buildDrawer(BuildContext context) {
-    return Drawer(
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(topRight: Radius.circular(30), bottomRight: Radius.circular(30)),
-      ),
-      child: Column(
-        children: [
-          _buildDrawerHeader(context),
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              children: [
-                _buildDrawerItem(
-                  icon: Icons.dashboard_customize_outlined,
-                  label: 'Dashboard',
-                  isSelected: true,
-                  onTap: () => Navigator.pop(context),
-                ),
-                _buildDrawerItem(
-                  icon: Icons.person_search_outlined,
-                  label: 'About Me',
-                  onTap: () {
-                    Navigator.pop(context);
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ProfilePage()));
-                  },
-                ),
-                const Padding(padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10), child: Divider()),
-                _buildDrawerItem(
-                  icon: Icons.settings_suggest_outlined,
-                  label: 'Settings',
-                  onTap: () {
-                    Navigator.pop(context);
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SettingsPage()));
-                  },
-                ),
-              ],
-            ),
-          ),
-          _buildLogoutButton(context),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDrawerHeader(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.only(top: 60, bottom: 30, left: 20, right: 20),
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(colors: [Colors.blueAccent, Colors.lightBlue]),
-        borderRadius: BorderRadius.only(topRight: Radius.circular(30)),
-      ),
-      child: Stack(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const CircleAvatar(
-                radius: 35,
-                backgroundColor: Colors.white,
-                child: CircleAvatar(
-                  radius: 32,
-                  backgroundImage: NetworkImage('https://api.dicebear.com/7.x/avataaars/svg?seed=Listen'),
-                ),
-              ),
-              const SizedBox(height: 15),
-              const Text(
-                'Listen',
-                style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
-              ),
-              const Text('listen@example.com', style: TextStyle(color: Colors.white70, fontSize: 14)),
-            ],
-          ),
-          Positioned(
-            right: 0,
-            top: 0,
-            child: IconButton(
-              icon: const Icon(Icons.wb_sunny_outlined, color: Colors.white),
-              onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AppearancePage())),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDrawerItem({required IconData icon, required String label, bool isSelected = false, required VoidCallback onTap}) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 2),
-      decoration: BoxDecoration(
-        color: isSelected ? Colors.blueAccent.withOpacity(0.1) : Colors.transparent,
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: ListTile(
-        leading: Icon(icon, color: isSelected ? Colors.blueAccent : Colors.black54),
-        title: Text(
-          label,
-          style: TextStyle(
-            color: isSelected ? Colors.blueAccent : Colors.black87,
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-          ),
-        ),
-        onTap: onTap,
-      ),
-    );
-  }
-
-  Widget _buildLogoutButton(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: ListTile(
-        tileColor: Colors.redAccent.withOpacity(0.1),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        leading: const Icon(Icons.logout_rounded, color: Colors.redAccent),
-        title: const Text(
-          'Logout',
-          style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold),
-        ),
-        onTap: () => Navigator.of(
-          context,
-        ).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const LoginPage()), (route) => false),
       ),
     );
   }
