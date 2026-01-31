@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'appearance.dart';
+import 'change_password.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -55,6 +56,14 @@ class _SettingsPageState extends State<SettingsPage> {
                   trailing: Text(_currentLanguage, style: const TextStyle(color: Colors.grey)),
                   onTap: () => _showLanguageDialog(),
                 ),
+                _buildListTile(
+                  icon: Icons.lock_outline,
+                  title: 'Change Password',
+                  subtitle: 'Update your account security',
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ChangePasswordPage()));
+                  },
+                ),
                 _buildSwitchTile(
                   icon: Icons.notifications_active_outlined,
                   title: 'Notifications',
@@ -75,7 +84,6 @@ class _SettingsPageState extends State<SettingsPage> {
               const SizedBox(height: 25),
               _buildSectionTitle('Connect'),
               _buildSettingsCard([
-                // todo
                 _buildListTile(
                   icon: Icons.code_rounded,
                   title: 'Source Code',

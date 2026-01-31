@@ -13,7 +13,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Listen Portfolio', style: TextStyle(fontWeight: FontWeight.w300)),
+        title: const Text('Portfolio', style: TextStyle(fontWeight: FontWeight.w300)),
         centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.transparent,
