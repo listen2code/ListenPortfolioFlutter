@@ -1,6 +1,8 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
-import 'login.dart';
+
+import 'package:flutter/material.dart';
+
+import 'login_page.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -19,10 +21,8 @@ class _SplashPageState extends State<SplashPage> {
   Future<void> _navigateToNext() async {
     await Future.delayed(const Duration(seconds: 2));
     if (!mounted) return;
-    
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => const LoginPage()),
-    );
+
+    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const LoginPage()));
   }
 
   @override
@@ -47,39 +47,21 @@ class _SplashPageState extends State<SplashPage> {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 20,
-                      spreadRadius: 5,
-                    ),
-                  ],
+                  boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 20, spreadRadius: 5)],
                 ),
-                child: const Icon(
-                  Icons.auto_awesome,
-                  size: 80,
-                  color: Colors.blueAccent,
-                ),
+                child: const Icon(Icons.auto_awesome, size: 80, color: Colors.blueAccent),
               ),
             ),
             const SizedBox(height: 30),
             const Text(
               'Listen Portfolio',
-              style: TextStyle(
-                fontSize: 36,
-                fontWeight: FontWeight.w300,
-                color: Colors.white,
-                letterSpacing: 2.0,
-              ),
+              style: TextStyle(fontSize: 36, fontWeight: FontWeight.w300, color: Colors.white, letterSpacing: 2.0),
             ),
             const SizedBox(height: 40),
             const SizedBox(
               width: 40,
               height: 40,
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                strokeWidth: 2,
-              ),
+              child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white), strokeWidth: 2),
             ),
           ],
         ),

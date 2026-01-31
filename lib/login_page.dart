@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'home.dart';
-import 'signup.dart';
-import 'forgot_password.dart';
+
+import 'forgot_password_page.dart';
+import 'home_page.dart';
+import 'sign_up_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -30,9 +31,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _navigateToHome() {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => const HomePage()),
-    );
+    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const HomePage()));
   }
 
   @override
@@ -65,18 +64,10 @@ class _LoginPageState extends State<LoginPage> {
                           color: Colors.white,
                           shape: BoxShape.circle,
                           boxShadow: [
-                            BoxShadow(
-                              color: Colors.blueAccent.withOpacity(0.1),
-                              blurRadius: 20,
-                              offset: const Offset(0, 10),
-                            ),
+                            BoxShadow(color: Colors.blueAccent.withOpacity(0.1), blurRadius: 20, offset: const Offset(0, 10)),
                           ],
                         ),
-                        child: const Icon(
-                          Icons.auto_awesome,
-                          size: 60,
-                          color: Colors.blueAccent,
-                        ),
+                        child: const Icon(Icons.auto_awesome, size: 60, color: Colors.blueAccent),
                       ),
                     ),
                   ),
@@ -84,20 +75,13 @@ class _LoginPageState extends State<LoginPage> {
                   const Text(
                     'Welcome Back',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.w300,
-                      color: Colors.black87,
-                    ),
+                    style: TextStyle(fontSize: 32, fontWeight: FontWeight.w300, color: Colors.black87),
                   ),
                   const SizedBox(height: 10),
                   const Text(
                     'Sign in to continue',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey,
-                    ),
+                    style: TextStyle(fontSize: 16, color: Colors.grey),
                   ),
                   const SizedBox(height: 50),
                   TextFormField(
@@ -107,10 +91,7 @@ class _LoginPageState extends State<LoginPage> {
                       prefixIcon: const Icon(Icons.person_outline),
                       filled: true,
                       fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        borderSide: BorderSide.none,
-                      ),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(15), borderSide: BorderSide.none),
                     ),
                     validator: (value) => value!.isEmpty ? 'Enter username' : null,
                   ),
@@ -127,10 +108,7 @@ class _LoginPageState extends State<LoginPage> {
                         icon: Icon(_isPasswordVisible ? Icons.visibility : Icons.visibility_off),
                         onPressed: () => setState(() => _isPasswordVisible = !_isPasswordVisible),
                       ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        borderSide: BorderSide.none,
-                      ),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(15), borderSide: BorderSide.none),
                     ),
                     validator: (value) => value!.length < 6 ? 'Min 6 characters' : null,
                   ),
@@ -147,15 +125,9 @@ class _LoginPageState extends State<LoginPage> {
                   Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
-                      gradient: const LinearGradient(
-                        colors: [Colors.blueAccent, Colors.lightBlue],
-                      ),
+                      gradient: const LinearGradient(colors: [Colors.blueAccent, Colors.lightBlue]),
                       boxShadow: [
-                        BoxShadow(
-                          color: Colors.blueAccent.withOpacity(0.3),
-                          blurRadius: 10,
-                          offset: const Offset(0, 5),
-                        ),
+                        BoxShadow(color: Colors.blueAccent.withOpacity(0.3), blurRadius: 10, offset: const Offset(0, 5)),
                       ],
                     ),
                     child: ElevatedButton(

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:listen_portfolio_flutter/appearance.dart';
-import 'package:listen_portfolio_flutter/profile.dart';
-import 'package:listen_portfolio_flutter/settings.dart';
+import 'package:listen_portfolio_flutter/appearance_page.dart';
+import 'package:listen_portfolio_flutter/profile_page.dart';
+import 'package:listen_portfolio_flutter/settings_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'login.dart';
+import 'login_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
