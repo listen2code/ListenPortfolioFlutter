@@ -54,6 +54,9 @@ dev_dependencies:
   freezed: ^2.5.8
   json_serializable: ^6.9.5
 
+  # Testing
+  mocktail: ^1.0.3
+
 flutter_launcher_icons:
   android: "ic_launcher"
   ios: true
