@@ -1,0 +1,15 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+    <!-- 垂直主架构柱 (Core Architecture) -->
+    <rect x="280" y="220" width="130" height="584" rx="25" fill="white" />
+
+    <!-- 融合堆栈层 (Integrated Technology Stack) -->
+    <!-- 基础层：最长、最实，与主柱融合 -->
+    <rect x="280" y="674" width="464" height="130" rx="25" fill="white" />
+
+    <!-- 逻辑层：中等长度，半透明，代表系统逻辑 -->
+    <rect x="440" y="524" width="304" height="120" rx="20" fill="white" fill-opacity="0.5" />
+
+    <!-- 应用层：最短，低透明，代表顶层体验 -->
+    <rect x="560" y="384" width="184" height="110" rx="15" fill="white" fill-opacity="0.2" />
+</svg>

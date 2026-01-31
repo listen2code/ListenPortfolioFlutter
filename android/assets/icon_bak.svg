@@ -1,0 +1,26 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景：深邃的蓝色渐变，增加高级感 -->
+    <defs>
+        <linearGradient id="bg_grad" x1="0" y1="0" x2="1024" y2="1024" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#448AFF" />
+            <stop offset="100%" stop-color="#002F6C" />
+        </linearGradient>
+    </defs>
+    <rect width="1024" height="1024" rx="220" fill="url(#bg_grad)" />
+
+    <!-- 垂直支柱 (Architecture & Stability) -->
+    <rect x="280" y="220" width="120" height="584" rx="20" fill="white" />
+
+    <!-- 堆叠信号/架构层 (Listen & Modulation) -->
+    <!-- 底部最长、最实，代表基础 -->
+    <rect x="430" y="704" width="314" height="100" rx="20" fill="white" />
+
+    <!-- 中层，略带透明度，代表逻辑与连接 -->
+    <rect x="430" y="574" width="240" height="100" rx="20" fill="white" fill-opacity="0.6" />
+
+    <!-- 次高层，透明度更低，代表应用与接口 -->
+    <rect x="430" y="444" width="170" height="100" rx="20" fill="white" fill-opacity="0.3" />
+
+    <!-- 顶层，最轻，代表体验与感知 -->
+    <rect x="430" y="314" width="100" height="100" rx="20" fill="white" fill-opacity="0.1" />
+</svg>
