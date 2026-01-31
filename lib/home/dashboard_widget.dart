@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class DashboardView extends StatelessWidget {
+class DashboardWidget extends StatelessWidget {
   final VoidCallback onResumeRequested;
 
-  const DashboardView({super.key, required this.onResumeRequested});
+  const DashboardWidget({super.key, required this.onResumeRequested});
 
   @override
   Widget build(BuildContext context) {

@@ -20,7 +20,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_selectedIndex == 0 ? 'Dashboard' : 'About Me', style: const TextStyle(fontWeight: FontWeight.w300)),
+        title: Text(_selectedIndex == 0 ? '' : 'About Me', style: const TextStyle(fontWeight: FontWeight.w300)),
         centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -38,8 +38,8 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         child: _selectedIndex == 0
-            ? DashboardView(onResumeRequested: () => setState(() => _selectedIndex = 1))
-            : const ProfileView(),
+            ? DashboardWidget(onResumeRequested: () => setState(() => _selectedIndex = 1))
+            : const ProfileWidget(),
       ),
     );
   }
