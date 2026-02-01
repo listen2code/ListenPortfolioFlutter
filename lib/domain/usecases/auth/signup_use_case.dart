@@ -1,4 +1,5 @@
 import 'package:fpdart/fpdart.dart';
+
 import '../../../core/base/use_case.dart';
 import '../../../core/errors/failures.dart';
 import '../../entities/auth/user.dart';
@@ -26,11 +27,7 @@ class SignupUseCase implements UseCase<User, SignupParams> {
       return const Left(ValidationFailure('Password must be at least 6 characters'));
     }
 
-    return await repository.signup(
-      name: params.name,
-      email: params.email,
-      password: params.password,
-    );
+    return await repository.register(name: params.name, email: params.email, password: params.password);
   }
 }
 
@@ -40,9 +37,5 @@ class SignupParams {
   final String email;
   final String password;
 
-  SignupParams({
-    required this.name,
-    required this.email,
-    required this.password,
-  });
+  SignupParams({required this.name, required this.email, required this.password});
 }

@@ -25,5 +25,35 @@
     "api": "users/",
     "method": "delete",
     "httpCode": 200
+  },
+  {
+    "api": "auth/login",
+    "method": "post",
+    "timeout": 500,
+    "httpCode": 200
+  },
+  {
+    "api": "auth/register",
+    "method": "post",
+    "timeout": 500,
+    "httpCode": 200
+  },
+  {
+    "api": "auth/logout",
+    "method": "post",
+    "timeout": 500,
+    "httpCode": 200
+  },
+  {
+    "api": "auth/forgot-password",
+    "method": "post",
+    "timeout": 500,
+    "httpCode": 200
+  },
+  {
+    "api": "auth/change-password",
+    "method": "post",
+    "timeout": 500,
+    "httpCode": 200
   }
 ]

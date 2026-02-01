@@ -21,12 +21,11 @@ const server = http.createServer((req, res) => {
 });
 
 async function handleRequest(req, res) {
-    const jsonPath = 'json';
     const parsedUrl = url.parse(req.url, true);
     const pathname = parsedUrl.pathname;
     const method = req.method.toLowerCase();
 
-    console.log(`${getDate()} [${req.method}] ${req.url} (Path: ${jsonPath})`);
+    console.log(`${getDate()} [${req.method}] ${req.url}`);
 
     // 1. Load config
     const configPath = path.join(__dirname, 'config.json');
@@ -42,14 +41,12 @@ async function handleRequest(req, res) {
     let matchedApiName = "";
 
     for (const entry of config) {
-        // Match HTTP method
         if (entry.method.toLowerCase() !== method) continue;
 
         const configApi = entry.api;
 
         if (configApi.endsWith('/')) {
-            // Read mode: match "api/" suffix followed by ID
-            // e.g. /v1/users/123 -> prefix is /v1/users/
+            // Read mode: e.g. /v1/users/123 matches "users/"
             const lastSlashIndex = pathname.lastIndexOf('/');
             if (lastSlashIndex !== -1) {
                 const prefix = pathname.substring(0, lastSlashIndex + 1);
@@ -60,8 +57,7 @@ async function handleRequest(req, res) {
                 }
             }
         } else {
-            // List mode: match exact "api" suffix
-            // e.g. /v1/users
+            // List/Action mode: e.g. /v1/auth/login matches "auth/login"
             if (pathname.endsWith(configApi)) {
                 apiConfig = entry;
                 matchedApiName = configApi;
@@ -82,20 +78,27 @@ async function handleRequest(req, res) {
     }
 
     // 4. Set data file path
-    let targetFile = "";
-    const baseDir = path.join(__dirname, jsonPath);
+    // Detect version prefix (e.g., v1)
+    const pathParts = pathname.split('/').filter(p => p);
+    let versionDir = "";
+    if (pathParts.length > 0 && /^v\d+$/.test(pathParts[0])) {
+        versionDir = pathParts[0];
+    }
+
+    const baseDir = path.join(__dirname, 'json', versionDir);
     const resourceName = matchedApiName.endsWith('/') ? matchedApiName.slice(0, -1) : matchedApiName;
 
+    let targetFile = "";
     if (method === "get") {
         if (matchedApiName.endsWith('/')) {
-            // Read: jsonPath/get/res.json
+            // Read: json/[v1]/get/resource.json
             targetFile = path.join(baseDir, 'get', `${resourceName}.json`);
         } else {
-            // List: jsonPath/get/list/res.json
+            // List: json/[v1]/get/list/resource.json
             targetFile = path.join(baseDir, 'get', 'list', `${resourceName}.json`);
         }
     } else {
-        // Other methods: jsonPath/method/res.json
+        // Other methods (post, put, delete): json/[v1]/method/resource.json
         targetFile = path.join(baseDir, method, `${resourceName}.json`);
     }
 
@@ -118,5 +121,5 @@ async function handleRequest(req, res) {
 
 server.listen(port, () => {
     console.log(`Mock Server started on port ${port}`);
-    console.log(`Matching rules: Dynamic RESTful paths based on config.json`);
+    console.log(`Dynamic versioning and RESTful paths enabled.`);
 });

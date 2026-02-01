@@ -1,4 +1,5 @@
 import 'package:fpdart/fpdart.dart';
+
 import '../../core/errors/exceptions.dart';
 import '../../core/errors/failures.dart';
 import '../../core/network/network_info.dart';
@@ -18,26 +19,16 @@ class AuthRepositoryImpl implements AuthRepository {
   final AuthLocalDataSource localDataSource;
   final NetworkInfo networkInfo;
 
-  AuthRepositoryImpl({
-    required this.remoteDataSource,
-    required this.localDataSource,
-    required this.networkInfo,
-  });
+  AuthRepositoryImpl({required this.remoteDataSource, required this.localDataSource, required this.networkInfo});
 
   @override
-  Future<Either<Failure, User>> login({
-    required String username,
-    required String password,
-  }) async {
+  Future<Either<Failure, User>> login({required String username, required String password}) async {
     if (!await networkInfo.isConnected) {
       return const Left(NetworkFailure('No internet connection'));
     }
 
     try {
-      final request = LoginRequestModel(
-        username: username,
-        password: password,
-      );
+      final request = LoginRequestModel(username: username, password: password);
 
       final response = await remoteDataSource.login(request);
 
@@ -63,23 +54,15 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, User>> signup({
-    required String name,
-    required String email,
-    required String password,
-  }) async {
+  Future<Either<Failure, User>> register({required String name, required String email, required String password}) async {
     if (!await networkInfo.isConnected) {
       return const Left(NetworkFailure('No internet connection'));
     }
 
     try {
-      final request = SignupRequestModel(
-        name: name,
-        email: email,
-        password: password,
-      );
+      final request = SignupRequestModel(name: name, email: email, password: password);
 
-      final user = await remoteDataSource.signup(request);
+      final user = await remoteDataSource.register(request);
 
       appLogger.i('AuthRepository: Signup successful');
       return Right(user.toEntity());
@@ -113,9 +96,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, void>> forgotPassword({
-    required String email,
-  }) async {
+  Future<Either<Failure, void>> forgotPassword({required String email}) async {
     if (!await networkInfo.isConnected) {
       return const Left(NetworkFailure('No internet connection'));
     }
@@ -138,10 +119,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, void>> changePassword({
-    required String oldPassword,
-    required String newPassword,
-  }) async {
+  Future<Either<Failure, void>> changePassword({required String oldPassword, required String newPassword}) async {
     if (!await networkInfo.isConnected) {
       return const Left(NetworkFailure('No internet connection'));
     }

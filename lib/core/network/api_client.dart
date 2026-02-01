@@ -1,24 +1,26 @@
 import 'package:dio/dio.dart';
+
 import '../constants/app_constants.dart';
 import '../utils/logger.dart';
 
-/// Creates and configures a Dio instance for API calls
+/// Creates and configures a single Dio instance for the entire application
 class ApiClient {
-  static Dio createDio() {
+  ApiClient._();
+
+  static final Dio _dio = _initDio();
+
+  static Dio get dio => _dio;
+
+  static Dio _initDio() {
     final dio = Dio(
       BaseOptions(
-        baseUrl: AppConstants.apiBaseUrl,
         connectTimeout: const Duration(milliseconds: AppConstants.connectTimeout),
         receiveTimeout: const Duration(milliseconds: AppConstants.receiveTimeout),
         sendTimeout: const Duration(milliseconds: AppConstants.apiTimeout),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
+        headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
       ),
     );
 
-    // Add interceptors
     dio.interceptors.add(_LoggingInterceptor());
     dio.interceptors.add(_AuthInterceptor());
 
@@ -38,18 +40,14 @@ class _LoggingInterceptor extends Interceptor {
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    appLogger.i(
-      'RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions.path}',
-    );
+    appLogger.i('RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions.path}');
     appLogger.d('Data: ${response.data}');
     super.onResponse(response, handler);
   }
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
-    appLogger.e(
-      'ERROR[${err.response?.statusCode}] => PATH: ${err.requestOptions.path}',
-    );
+    appLogger.e('ERROR[${err.response?.statusCode}] => PATH: ${err.requestOptions.path}');
     appLogger.e('Message: ${err.message}');
     appLogger.e('Data: ${err.response?.data}');
     super.onError(err, handler);

@@ -3,7 +3,8 @@ class AppConstants {
   AppConstants._();
 
   // API Configuration
-  static const String apiBaseUrl = 'https://api.example.com/v1';
+  // Updated to local mock server address
+  static const String apiBaseUrl = 'http://192.168.0.224:9898';
   static const int apiTimeout = 30000; // 30 seconds
   static const int connectTimeout = 15000; // 15 seconds
   static const int receiveTimeout = 15000; // 15 seconds

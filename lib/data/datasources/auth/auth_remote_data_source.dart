@@ -1,3 +1,7 @@
+import 'package:dio/dio.dart';
+import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
+import 'package:listen_portfolio_flutter/core/network/api_client.dart';
+
 import '../../../core/utils/logger.dart';
 import '../../models/auth/login_request_model.dart';
 import '../../models/auth/login_response_model.dart';
@@ -5,66 +9,77 @@ import '../../models/auth/signup_request_model.dart';
 import '../../models/auth/user_model.dart';
 
 /// Remote data source for authentication
-/// Mock implementation that simulates API calls
 class AuthRemoteDataSource {
-  /// Mock login - simulates API call with delay
+  AuthRemoteDataSource();
+
   Future<LoginResponseModel> login(LoginRequestModel request) async {
-    appLogger.d('AuthRemoteDataSource: login called with username: ${request.username}');
+    appLogger.d('AuthRemoteDataSource: login called for ${request.username}');
 
-    // Simulate network delay
-    await Future.delayed(const Duration(seconds: 1));
+    try {
+      final response = await ApiClient.dio.post('${AppConstants.apiBaseUrl}/v1/auth/login', data: request.toJson());
 
-    // Mock successful response
-    return LoginResponseModel(
-      token: 'mock_jwt_token_12345',
-      refreshToken: 'mock_refresh_token_67890',
-      user: UserModel(id: '1', name: 'John Doe', email: 'john@example.com', avatarUrl: null, createdAt: DateTime.now()),
-    );
+      return LoginResponseModel.fromJson(response.data);
+    } on DioException catch (e) {
+      appLogger.e('AuthRemoteDataSource: login failed', error: e);
+      rethrow;
+    }
   }
 
-  /// Mock signup - simulates API call with delay
-  Future<UserModel> signup(SignupRequestModel request) async {
-    appLogger.d('AuthRemoteDataSource: signup called with email: ${request.email}');
+  Future<UserModel> register(SignupRequestModel request) async {
+    appLogger.d('AuthRemoteDataSource: register called');
 
-    // Simulate network delay
-    await Future.delayed(const Duration(seconds: 1));
+    try {
+      final response = await ApiClient.dio.post('${AppConstants.apiBaseUrl}/v1/auth/register', data: request.toJson());
 
-    // Mock successful response
-    return UserModel(id: '2', name: request.name, email: request.email, avatarUrl: null, createdAt: DateTime.now());
+      return UserModel.fromJson(response.data);
+    } on DioException catch (e) {
+      appLogger.e('AuthRemoteDataSource: register failed', error: e);
+      rethrow;
+    }
   }
 
-  /// Mock logout - simulates API call
   Future<void> logout() async {
     appLogger.d('AuthRemoteDataSource: logout called');
-
-    // Simulate network delay
-    await Future.delayed(const Duration(milliseconds: 500));
+    try {
+      await ApiClient.dio.post('${AppConstants.apiBaseUrl}/v1/auth/logout');
+    } on DioException catch (e) {
+      appLogger.e('AuthRemoteDataSource: logout failed', error: e);
+      rethrow;
+    }
   }
 
-  /// Mock forgot password - simulates sending reset email
   Future<void> forgotPassword(String email) async {
-    appLogger.d('AuthRemoteDataSource: forgotPassword called with email: $email');
-
-    // Simulate network delay
-    await Future.delayed(const Duration(seconds: 1));
+    appLogger.d('AuthRemoteDataSource: forgotPassword called');
+    try {
+      await ApiClient.dio.post('${AppConstants.apiBaseUrl}/v1/auth/forgot-password', data: {'email': email});
+    } on DioException catch (e) {
+      appLogger.e('AuthRemoteDataSource: forgotPassword failed', error: e);
+      rethrow;
+    }
   }
 
-  /// Mock change password - simulates API call
   Future<void> changePassword(String oldPassword, String newPassword) async {
     appLogger.d('AuthRemoteDataSource: changePassword called');
-
-    // Simulate network delay
-    await Future.delayed(const Duration(seconds: 1));
+    try {
+      // In a real app, you'd have the user ID. Using a placeholder for mock.
+      await ApiClient.dio.post(
+        '${AppConstants.apiBaseUrl}/v1/auth/change-password',
+        data: {'oldPassword': oldPassword, 'newPassword': newPassword},
+      );
+    } on DioException catch (e) {
+      appLogger.e('AuthRemoteDataSource: changePassword failed', error: e);
+      rethrow;
+    }
   }
 
-  /// Mock get current user - simulates API call
-  Future<UserModel> getCurrentUser() async {
-    appLogger.d('AuthRemoteDataSource: getCurrentUser called');
-
-    // Simulate network delay
-    await Future.delayed(const Duration(milliseconds: 500));
-
-    // Mock response
-    return UserModel(id: '1', name: 'John Doe', email: 'john@example.com', avatarUrl: null, createdAt: DateTime.now());
+  Future<UserModel> getUserById(String id) async {
+    appLogger.d('AuthRemoteDataSource: getUserById called');
+    try {
+      final response = await ApiClient.dio.get('${AppConstants.apiBaseUrl}/v1/users/$id');
+      return UserModel.fromJson(response.data);
+    } on DioException catch (e) {
+      appLogger.e('AuthRemoteDataSource: getUserById failed', error: e);
+      rethrow;
+    }
   }
 }
