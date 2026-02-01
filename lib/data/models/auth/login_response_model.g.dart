@@ -6,9 +6,9 @@ part of 'login_response_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$LoginResponseModelImpl _$$LoginResponseModelImplFromJson(Map json) =>
-    $checkedCreate(r'_$LoginResponseModelImpl', json, ($checkedConvert) {
-      final val = _$LoginResponseModelImpl(
+_LoginResponseModel _$LoginResponseModelFromJson(Map json) =>
+    $checkedCreate('_LoginResponseModel', json, ($checkedConvert) {
+      final val = _LoginResponseModel(
         token: $checkedConvert('token', (v) => v as String),
         refreshToken: $checkedConvert('refreshToken', (v) => v as String),
         user: $checkedConvert(
@@ -19,10 +19,9 @@ _$LoginResponseModelImpl _$$LoginResponseModelImplFromJson(Map json) =>
       return val;
     });
 
-Map<String, dynamic> _$$LoginResponseModelImplToJson(
-  _$LoginResponseModelImpl instance,
-) => <String, dynamic>{
-  'token': instance.token,
-  'refreshToken': instance.refreshToken,
-  'user': instance.user.toJson(),
-};
+Map<String, dynamic> _$LoginResponseModelToJson(_LoginResponseModel instance) =>
+    <String, dynamic>{
+      'token': instance.token,
+      'refreshToken': instance.refreshToken,
+      'user': instance.user.toJson(),
+    };

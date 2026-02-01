@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,970 +9,456 @@ part of 'login_intent.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
-);
-
 /// @nodoc
 mixin _$LoginIntent {
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(String username) usernameChanged,
-    required TResult Function(String password) passwordChanged,
-    required TResult Function() togglePasswordVisibility,
-    required TResult Function() submitLogin,
-    required TResult Function() navigateToSignup,
-    required TResult Function() navigateToForgotPassword,
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String username)? usernameChanged,
-    TResult? Function(String password)? passwordChanged,
-    TResult? Function()? togglePasswordVisibility,
-    TResult? Function()? submitLogin,
-    TResult? Function()? navigateToSignup,
-    TResult? Function()? navigateToForgotPassword,
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String username)? usernameChanged,
-    TResult Function(String password)? passwordChanged,
-    TResult Function()? togglePasswordVisibility,
-    TResult Function()? submitLogin,
-    TResult Function()? navigateToSignup,
-    TResult Function()? navigateToForgotPassword,
-    required TResult orElse(),
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(UsernameChanged value) usernameChanged,
-    required TResult Function(PasswordChanged value) passwordChanged,
-    required TResult Function(TogglePasswordVisibility value)
-    togglePasswordVisibility,
-    required TResult Function(SubmitLogin value) submitLogin,
-    required TResult Function(NavigateToSignup value) navigateToSignup,
-    required TResult Function(NavigateToForgotPassword value)
-    navigateToForgotPassword,
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(UsernameChanged value)? usernameChanged,
-    TResult? Function(PasswordChanged value)? passwordChanged,
-    TResult? Function(TogglePasswordVisibility value)? togglePasswordVisibility,
-    TResult? Function(SubmitLogin value)? submitLogin,
-    TResult? Function(NavigateToSignup value)? navigateToSignup,
-    TResult? Function(NavigateToForgotPassword value)? navigateToForgotPassword,
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(UsernameChanged value)? usernameChanged,
-    TResult Function(PasswordChanged value)? passwordChanged,
-    TResult Function(TogglePasswordVisibility value)? togglePasswordVisibility,
-    TResult Function(SubmitLogin value)? submitLogin,
-    TResult Function(NavigateToSignup value)? navigateToSignup,
-    TResult Function(NavigateToForgotPassword value)? navigateToForgotPassword,
-    required TResult orElse(),
-  }) => throw _privateConstructorUsedError;
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoginIntent);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'LoginIntent()';
+}
+
+
 }
 
 /// @nodoc
-abstract class $LoginIntentCopyWith<$Res> {
-  factory $LoginIntentCopyWith(
-    LoginIntent value,
-    $Res Function(LoginIntent) then,
-  ) = _$LoginIntentCopyWithImpl<$Res, LoginIntent>;
+class $LoginIntentCopyWith<$Res>  {
+$LoginIntentCopyWith(LoginIntent _, $Res Function(LoginIntent) __);
 }
 
-/// @nodoc
-class _$LoginIntentCopyWithImpl<$Res, $Val extends LoginIntent>
-    implements $LoginIntentCopyWith<$Res> {
-  _$LoginIntentCopyWithImpl(this._value, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+/// Adds pattern-matching-related methods to [LoginIntent].
+extension LoginIntentPatterns on LoginIntent {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
 
-  /// Create a copy of LoginIntent
-  /// with the given fields replaced by the non-null parameter values.
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( UsernameChanged value)?  usernameChanged,TResult Function( PasswordChanged value)?  passwordChanged,TResult Function( TogglePasswordVisibility value)?  togglePasswordVisibility,TResult Function( SubmitLogin value)?  submitLogin,TResult Function( NavigateToSignup value)?  navigateToSignup,TResult Function( NavigateToForgotPassword value)?  navigateToForgotPassword,required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case UsernameChanged() when usernameChanged != null:
+return usernameChanged(_that);case PasswordChanged() when passwordChanged != null:
+return passwordChanged(_that);case TogglePasswordVisibility() when togglePasswordVisibility != null:
+return togglePasswordVisibility(_that);case SubmitLogin() when submitLogin != null:
+return submitLogin(_that);case NavigateToSignup() when navigateToSignup != null:
+return navigateToSignup(_that);case NavigateToForgotPassword() when navigateToForgotPassword != null:
+return navigateToForgotPassword(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( UsernameChanged value)  usernameChanged,required TResult Function( PasswordChanged value)  passwordChanged,required TResult Function( TogglePasswordVisibility value)  togglePasswordVisibility,required TResult Function( SubmitLogin value)  submitLogin,required TResult Function( NavigateToSignup value)  navigateToSignup,required TResult Function( NavigateToForgotPassword value)  navigateToForgotPassword,}){
+final _that = this;
+switch (_that) {
+case UsernameChanged():
+return usernameChanged(_that);case PasswordChanged():
+return passwordChanged(_that);case TogglePasswordVisibility():
+return togglePasswordVisibility(_that);case SubmitLogin():
+return submitLogin(_that);case NavigateToSignup():
+return navigateToSignup(_that);case NavigateToForgotPassword():
+return navigateToForgotPassword(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( UsernameChanged value)?  usernameChanged,TResult? Function( PasswordChanged value)?  passwordChanged,TResult? Function( TogglePasswordVisibility value)?  togglePasswordVisibility,TResult? Function( SubmitLogin value)?  submitLogin,TResult? Function( NavigateToSignup value)?  navigateToSignup,TResult? Function( NavigateToForgotPassword value)?  navigateToForgotPassword,}){
+final _that = this;
+switch (_that) {
+case UsernameChanged() when usernameChanged != null:
+return usernameChanged(_that);case PasswordChanged() when passwordChanged != null:
+return passwordChanged(_that);case TogglePasswordVisibility() when togglePasswordVisibility != null:
+return togglePasswordVisibility(_that);case SubmitLogin() when submitLogin != null:
+return submitLogin(_that);case NavigateToSignup() when navigateToSignup != null:
+return navigateToSignup(_that);case NavigateToForgotPassword() when navigateToForgotPassword != null:
+return navigateToForgotPassword(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String username)?  usernameChanged,TResult Function( String password)?  passwordChanged,TResult Function()?  togglePasswordVisibility,TResult Function()?  submitLogin,TResult Function()?  navigateToSignup,TResult Function()?  navigateToForgotPassword,required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case UsernameChanged() when usernameChanged != null:
+return usernameChanged(_that.username);case PasswordChanged() when passwordChanged != null:
+return passwordChanged(_that.password);case TogglePasswordVisibility() when togglePasswordVisibility != null:
+return togglePasswordVisibility();case SubmitLogin() when submitLogin != null:
+return submitLogin();case NavigateToSignup() when navigateToSignup != null:
+return navigateToSignup();case NavigateToForgotPassword() when navigateToForgotPassword != null:
+return navigateToForgotPassword();case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String username)  usernameChanged,required TResult Function( String password)  passwordChanged,required TResult Function()  togglePasswordVisibility,required TResult Function()  submitLogin,required TResult Function()  navigateToSignup,required TResult Function()  navigateToForgotPassword,}) {final _that = this;
+switch (_that) {
+case UsernameChanged():
+return usernameChanged(_that.username);case PasswordChanged():
+return passwordChanged(_that.password);case TogglePasswordVisibility():
+return togglePasswordVisibility();case SubmitLogin():
+return submitLogin();case NavigateToSignup():
+return navigateToSignup();case NavigateToForgotPassword():
+return navigateToForgotPassword();case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String username)?  usernameChanged,TResult? Function( String password)?  passwordChanged,TResult? Function()?  togglePasswordVisibility,TResult? Function()?  submitLogin,TResult? Function()?  navigateToSignup,TResult? Function()?  navigateToForgotPassword,}) {final _that = this;
+switch (_that) {
+case UsernameChanged() when usernameChanged != null:
+return usernameChanged(_that.username);case PasswordChanged() when passwordChanged != null:
+return passwordChanged(_that.password);case TogglePasswordVisibility() when togglePasswordVisibility != null:
+return togglePasswordVisibility();case SubmitLogin() when submitLogin != null:
+return submitLogin();case NavigateToSignup() when navigateToSignup != null:
+return navigateToSignup();case NavigateToForgotPassword() when navigateToForgotPassword != null:
+return navigateToForgotPassword();case _:
+  return null;
+
+}
 }
 
-/// @nodoc
-abstract class _$$UsernameChangedImplCopyWith<$Res> {
-  factory _$$UsernameChangedImplCopyWith(
-    _$UsernameChangedImpl value,
-    $Res Function(_$UsernameChangedImpl) then,
-  ) = __$$UsernameChangedImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({String username});
-}
-
-/// @nodoc
-class __$$UsernameChangedImplCopyWithImpl<$Res>
-    extends _$LoginIntentCopyWithImpl<$Res, _$UsernameChangedImpl>
-    implements _$$UsernameChangedImplCopyWith<$Res> {
-  __$$UsernameChangedImplCopyWithImpl(
-    _$UsernameChangedImpl _value,
-    $Res Function(_$UsernameChangedImpl) _then,
-  ) : super(_value, _then);
-
-  /// Create a copy of LoginIntent
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({Object? username = null}) {
-    return _then(
-      _$UsernameChangedImpl(
-        null == username
-            ? _value.username
-            : username // ignore: cast_nullable_to_non_nullable
-                  as String,
-      ),
-    );
-  }
-}
-
-/// @nodoc
-
-class _$UsernameChangedImpl implements UsernameChanged {
-  const _$UsernameChangedImpl(this.username);
-
-  @override
-  final String username;
-
-  @override
-  String toString() {
-    return 'LoginIntent.usernameChanged(username: $username)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$UsernameChangedImpl &&
-            (identical(other.username, username) ||
-                other.username == username));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, username);
-
-  /// Create a copy of LoginIntent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$UsernameChangedImplCopyWith<_$UsernameChangedImpl> get copyWith =>
-      __$$UsernameChangedImplCopyWithImpl<_$UsernameChangedImpl>(
-        this,
-        _$identity,
-      );
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(String username) usernameChanged,
-    required TResult Function(String password) passwordChanged,
-    required TResult Function() togglePasswordVisibility,
-    required TResult Function() submitLogin,
-    required TResult Function() navigateToSignup,
-    required TResult Function() navigateToForgotPassword,
-  }) {
-    return usernameChanged(username);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String username)? usernameChanged,
-    TResult? Function(String password)? passwordChanged,
-    TResult? Function()? togglePasswordVisibility,
-    TResult? Function()? submitLogin,
-    TResult? Function()? navigateToSignup,
-    TResult? Function()? navigateToForgotPassword,
-  }) {
-    return usernameChanged?.call(username);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String username)? usernameChanged,
-    TResult Function(String password)? passwordChanged,
-    TResult Function()? togglePasswordVisibility,
-    TResult Function()? submitLogin,
-    TResult Function()? navigateToSignup,
-    TResult Function()? navigateToForgotPassword,
-    required TResult orElse(),
-  }) {
-    if (usernameChanged != null) {
-      return usernameChanged(username);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(UsernameChanged value) usernameChanged,
-    required TResult Function(PasswordChanged value) passwordChanged,
-    required TResult Function(TogglePasswordVisibility value)
-    togglePasswordVisibility,
-    required TResult Function(SubmitLogin value) submitLogin,
-    required TResult Function(NavigateToSignup value) navigateToSignup,
-    required TResult Function(NavigateToForgotPassword value)
-    navigateToForgotPassword,
-  }) {
-    return usernameChanged(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(UsernameChanged value)? usernameChanged,
-    TResult? Function(PasswordChanged value)? passwordChanged,
-    TResult? Function(TogglePasswordVisibility value)? togglePasswordVisibility,
-    TResult? Function(SubmitLogin value)? submitLogin,
-    TResult? Function(NavigateToSignup value)? navigateToSignup,
-    TResult? Function(NavigateToForgotPassword value)? navigateToForgotPassword,
-  }) {
-    return usernameChanged?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(UsernameChanged value)? usernameChanged,
-    TResult Function(PasswordChanged value)? passwordChanged,
-    TResult Function(TogglePasswordVisibility value)? togglePasswordVisibility,
-    TResult Function(SubmitLogin value)? submitLogin,
-    TResult Function(NavigateToSignup value)? navigateToSignup,
-    TResult Function(NavigateToForgotPassword value)? navigateToForgotPassword,
-    required TResult orElse(),
-  }) {
-    if (usernameChanged != null) {
-      return usernameChanged(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class UsernameChanged implements LoginIntent {
-  const factory UsernameChanged(final String username) = _$UsernameChangedImpl;
-
-  String get username;
-
-  /// Create a copy of LoginIntent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$UsernameChangedImplCopyWith<_$UsernameChangedImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$PasswordChangedImplCopyWith<$Res> {
-  factory _$$PasswordChangedImplCopyWith(
-    _$PasswordChangedImpl value,
-    $Res Function(_$PasswordChangedImpl) then,
-  ) = __$$PasswordChangedImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({String password});
-}
-
-/// @nodoc
-class __$$PasswordChangedImplCopyWithImpl<$Res>
-    extends _$LoginIntentCopyWithImpl<$Res, _$PasswordChangedImpl>
-    implements _$$PasswordChangedImplCopyWith<$Res> {
-  __$$PasswordChangedImplCopyWithImpl(
-    _$PasswordChangedImpl _value,
-    $Res Function(_$PasswordChangedImpl) _then,
-  ) : super(_value, _then);
-
-  /// Create a copy of LoginIntent
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({Object? password = null}) {
-    return _then(
-      _$PasswordChangedImpl(
-        null == password
-            ? _value.password
-            : password // ignore: cast_nullable_to_non_nullable
-                  as String,
-      ),
-    );
-  }
 }
 
 /// @nodoc
 
-class _$PasswordChangedImpl implements PasswordChanged {
-  const _$PasswordChangedImpl(this.password);
 
-  @override
-  final String password;
+class UsernameChanged implements LoginIntent {
+  const UsernameChanged(this.username);
+  
 
-  @override
-  String toString() {
-    return 'LoginIntent.passwordChanged(password: $password)';
-  }
+ final  String username;
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$PasswordChangedImpl &&
-            (identical(other.password, password) ||
-                other.password == password));
-  }
+/// Create a copy of LoginIntent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$UsernameChangedCopyWith<UsernameChanged> get copyWith => _$UsernameChangedCopyWithImpl<UsernameChanged>(this, _$identity);
 
-  @override
-  int get hashCode => Object.hash(runtimeType, password);
 
-  /// Create a copy of LoginIntent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$PasswordChangedImplCopyWith<_$PasswordChangedImpl> get copyWith =>
-      __$$PasswordChangedImplCopyWithImpl<_$PasswordChangedImpl>(
-        this,
-        _$identity,
-      );
 
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(String username) usernameChanged,
-    required TResult Function(String password) passwordChanged,
-    required TResult Function() togglePasswordVisibility,
-    required TResult Function() submitLogin,
-    required TResult Function() navigateToSignup,
-    required TResult Function() navigateToForgotPassword,
-  }) {
-    return passwordChanged(password);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String username)? usernameChanged,
-    TResult? Function(String password)? passwordChanged,
-    TResult? Function()? togglePasswordVisibility,
-    TResult? Function()? submitLogin,
-    TResult? Function()? navigateToSignup,
-    TResult? Function()? navigateToForgotPassword,
-  }) {
-    return passwordChanged?.call(password);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String username)? usernameChanged,
-    TResult Function(String password)? passwordChanged,
-    TResult Function()? togglePasswordVisibility,
-    TResult Function()? submitLogin,
-    TResult Function()? navigateToSignup,
-    TResult Function()? navigateToForgotPassword,
-    required TResult orElse(),
-  }) {
-    if (passwordChanged != null) {
-      return passwordChanged(password);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(UsernameChanged value) usernameChanged,
-    required TResult Function(PasswordChanged value) passwordChanged,
-    required TResult Function(TogglePasswordVisibility value)
-    togglePasswordVisibility,
-    required TResult Function(SubmitLogin value) submitLogin,
-    required TResult Function(NavigateToSignup value) navigateToSignup,
-    required TResult Function(NavigateToForgotPassword value)
-    navigateToForgotPassword,
-  }) {
-    return passwordChanged(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(UsernameChanged value)? usernameChanged,
-    TResult? Function(PasswordChanged value)? passwordChanged,
-    TResult? Function(TogglePasswordVisibility value)? togglePasswordVisibility,
-    TResult? Function(SubmitLogin value)? submitLogin,
-    TResult? Function(NavigateToSignup value)? navigateToSignup,
-    TResult? Function(NavigateToForgotPassword value)? navigateToForgotPassword,
-  }) {
-    return passwordChanged?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(UsernameChanged value)? usernameChanged,
-    TResult Function(PasswordChanged value)? passwordChanged,
-    TResult Function(TogglePasswordVisibility value)? togglePasswordVisibility,
-    TResult Function(SubmitLogin value)? submitLogin,
-    TResult Function(NavigateToSignup value)? navigateToSignup,
-    TResult Function(NavigateToForgotPassword value)? navigateToForgotPassword,
-    required TResult orElse(),
-  }) {
-    if (passwordChanged != null) {
-      return passwordChanged(this);
-    }
-    return orElse();
-  }
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UsernameChanged&&(identical(other.username, username) || other.username == username));
 }
 
-abstract class PasswordChanged implements LoginIntent {
-  const factory PasswordChanged(final String password) = _$PasswordChangedImpl;
 
-  String get password;
+@override
+int get hashCode => Object.hash(runtimeType,username);
 
-  /// Create a copy of LoginIntent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$PasswordChangedImplCopyWith<_$PasswordChangedImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+String toString() {
+  return 'LoginIntent.usernameChanged(username: $username)';
+}
+
+
 }
 
 /// @nodoc
-abstract class _$$TogglePasswordVisibilityImplCopyWith<$Res> {
-  factory _$$TogglePasswordVisibilityImplCopyWith(
-    _$TogglePasswordVisibilityImpl value,
-    $Res Function(_$TogglePasswordVisibilityImpl) then,
-  ) = __$$TogglePasswordVisibilityImplCopyWithImpl<$Res>;
+abstract mixin class $UsernameChangedCopyWith<$Res> implements $LoginIntentCopyWith<$Res> {
+  factory $UsernameChangedCopyWith(UsernameChanged value, $Res Function(UsernameChanged) _then) = _$UsernameChangedCopyWithImpl;
+@useResult
+$Res call({
+ String username
+});
+
+
+
+
+}
+/// @nodoc
+class _$UsernameChangedCopyWithImpl<$Res>
+    implements $UsernameChangedCopyWith<$Res> {
+  _$UsernameChangedCopyWithImpl(this._self, this._then);
+
+  final UsernameChanged _self;
+  final $Res Function(UsernameChanged) _then;
+
+/// Create a copy of LoginIntent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? username = null,}) {
+  return _then(UsernameChanged(
+null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
 }
 
-/// @nodoc
-class __$$TogglePasswordVisibilityImplCopyWithImpl<$Res>
-    extends _$LoginIntentCopyWithImpl<$Res, _$TogglePasswordVisibilityImpl>
-    implements _$$TogglePasswordVisibilityImplCopyWith<$Res> {
-  __$$TogglePasswordVisibilityImplCopyWithImpl(
-    _$TogglePasswordVisibilityImpl _value,
-    $Res Function(_$TogglePasswordVisibilityImpl) _then,
-  ) : super(_value, _then);
 
-  /// Create a copy of LoginIntent
-  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
 
-class _$TogglePasswordVisibilityImpl implements TogglePasswordVisibility {
-  const _$TogglePasswordVisibilityImpl();
 
-  @override
-  String toString() {
-    return 'LoginIntent.togglePasswordVisibility()';
-  }
+class PasswordChanged implements LoginIntent {
+  const PasswordChanged(this.password);
+  
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$TogglePasswordVisibilityImpl);
-  }
+ final  String password;
 
-  @override
-  int get hashCode => runtimeType.hashCode;
+/// Create a copy of LoginIntent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$PasswordChangedCopyWith<PasswordChanged> get copyWith => _$PasswordChangedCopyWithImpl<PasswordChanged>(this, _$identity);
 
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(String username) usernameChanged,
-    required TResult Function(String password) passwordChanged,
-    required TResult Function() togglePasswordVisibility,
-    required TResult Function() submitLogin,
-    required TResult Function() navigateToSignup,
-    required TResult Function() navigateToForgotPassword,
-  }) {
-    return togglePasswordVisibility();
-  }
 
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String username)? usernameChanged,
-    TResult? Function(String password)? passwordChanged,
-    TResult? Function()? togglePasswordVisibility,
-    TResult? Function()? submitLogin,
-    TResult? Function()? navigateToSignup,
-    TResult? Function()? navigateToForgotPassword,
-  }) {
-    return togglePasswordVisibility?.call();
-  }
 
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String username)? usernameChanged,
-    TResult Function(String password)? passwordChanged,
-    TResult Function()? togglePasswordVisibility,
-    TResult Function()? submitLogin,
-    TResult Function()? navigateToSignup,
-    TResult Function()? navigateToForgotPassword,
-    required TResult orElse(),
-  }) {
-    if (togglePasswordVisibility != null) {
-      return togglePasswordVisibility();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(UsernameChanged value) usernameChanged,
-    required TResult Function(PasswordChanged value) passwordChanged,
-    required TResult Function(TogglePasswordVisibility value)
-    togglePasswordVisibility,
-    required TResult Function(SubmitLogin value) submitLogin,
-    required TResult Function(NavigateToSignup value) navigateToSignup,
-    required TResult Function(NavigateToForgotPassword value)
-    navigateToForgotPassword,
-  }) {
-    return togglePasswordVisibility(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(UsernameChanged value)? usernameChanged,
-    TResult? Function(PasswordChanged value)? passwordChanged,
-    TResult? Function(TogglePasswordVisibility value)? togglePasswordVisibility,
-    TResult? Function(SubmitLogin value)? submitLogin,
-    TResult? Function(NavigateToSignup value)? navigateToSignup,
-    TResult? Function(NavigateToForgotPassword value)? navigateToForgotPassword,
-  }) {
-    return togglePasswordVisibility?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(UsernameChanged value)? usernameChanged,
-    TResult Function(PasswordChanged value)? passwordChanged,
-    TResult Function(TogglePasswordVisibility value)? togglePasswordVisibility,
-    TResult Function(SubmitLogin value)? submitLogin,
-    TResult Function(NavigateToSignup value)? navigateToSignup,
-    TResult Function(NavigateToForgotPassword value)? navigateToForgotPassword,
-    required TResult orElse(),
-  }) {
-    if (togglePasswordVisibility != null) {
-      return togglePasswordVisibility(this);
-    }
-    return orElse();
-  }
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PasswordChanged&&(identical(other.password, password) || other.password == password));
 }
 
-abstract class TogglePasswordVisibility implements LoginIntent {
-  const factory TogglePasswordVisibility() = _$TogglePasswordVisibilityImpl;
+
+@override
+int get hashCode => Object.hash(runtimeType,password);
+
+@override
+String toString() {
+  return 'LoginIntent.passwordChanged(password: $password)';
+}
+
+
 }
 
 /// @nodoc
-abstract class _$$SubmitLoginImplCopyWith<$Res> {
-  factory _$$SubmitLoginImplCopyWith(
-    _$SubmitLoginImpl value,
-    $Res Function(_$SubmitLoginImpl) then,
-  ) = __$$SubmitLoginImplCopyWithImpl<$Res>;
+abstract mixin class $PasswordChangedCopyWith<$Res> implements $LoginIntentCopyWith<$Res> {
+  factory $PasswordChangedCopyWith(PasswordChanged value, $Res Function(PasswordChanged) _then) = _$PasswordChangedCopyWithImpl;
+@useResult
+$Res call({
+ String password
+});
+
+
+
+
+}
+/// @nodoc
+class _$PasswordChangedCopyWithImpl<$Res>
+    implements $PasswordChangedCopyWith<$Res> {
+  _$PasswordChangedCopyWithImpl(this._self, this._then);
+
+  final PasswordChanged _self;
+  final $Res Function(PasswordChanged) _then;
+
+/// Create a copy of LoginIntent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? password = null,}) {
+  return _then(PasswordChanged(
+null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
 }
 
-/// @nodoc
-class __$$SubmitLoginImplCopyWithImpl<$Res>
-    extends _$LoginIntentCopyWithImpl<$Res, _$SubmitLoginImpl>
-    implements _$$SubmitLoginImplCopyWith<$Res> {
-  __$$SubmitLoginImplCopyWithImpl(
-    _$SubmitLoginImpl _value,
-    $Res Function(_$SubmitLoginImpl) _then,
-  ) : super(_value, _then);
 
-  /// Create a copy of LoginIntent
-  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
 
-class _$SubmitLoginImpl implements SubmitLogin {
-  const _$SubmitLoginImpl();
 
-  @override
-  String toString() {
-    return 'LoginIntent.submitLogin()';
-  }
+class TogglePasswordVisibility implements LoginIntent {
+  const TogglePasswordVisibility();
+  
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$SubmitLoginImpl);
-  }
 
-  @override
-  int get hashCode => runtimeType.hashCode;
 
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(String username) usernameChanged,
-    required TResult Function(String password) passwordChanged,
-    required TResult Function() togglePasswordVisibility,
-    required TResult Function() submitLogin,
-    required TResult Function() navigateToSignup,
-    required TResult Function() navigateToForgotPassword,
-  }) {
-    return submitLogin();
-  }
 
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String username)? usernameChanged,
-    TResult? Function(String password)? passwordChanged,
-    TResult? Function()? togglePasswordVisibility,
-    TResult? Function()? submitLogin,
-    TResult? Function()? navigateToSignup,
-    TResult? Function()? navigateToForgotPassword,
-  }) {
-    return submitLogin?.call();
-  }
 
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String username)? usernameChanged,
-    TResult Function(String password)? passwordChanged,
-    TResult Function()? togglePasswordVisibility,
-    TResult Function()? submitLogin,
-    TResult Function()? navigateToSignup,
-    TResult Function()? navigateToForgotPassword,
-    required TResult orElse(),
-  }) {
-    if (submitLogin != null) {
-      return submitLogin();
-    }
-    return orElse();
-  }
 
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(UsernameChanged value) usernameChanged,
-    required TResult Function(PasswordChanged value) passwordChanged,
-    required TResult Function(TogglePasswordVisibility value)
-    togglePasswordVisibility,
-    required TResult Function(SubmitLogin value) submitLogin,
-    required TResult Function(NavigateToSignup value) navigateToSignup,
-    required TResult Function(NavigateToForgotPassword value)
-    navigateToForgotPassword,
-  }) {
-    return submitLogin(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(UsernameChanged value)? usernameChanged,
-    TResult? Function(PasswordChanged value)? passwordChanged,
-    TResult? Function(TogglePasswordVisibility value)? togglePasswordVisibility,
-    TResult? Function(SubmitLogin value)? submitLogin,
-    TResult? Function(NavigateToSignup value)? navigateToSignup,
-    TResult? Function(NavigateToForgotPassword value)? navigateToForgotPassword,
-  }) {
-    return submitLogin?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(UsernameChanged value)? usernameChanged,
-    TResult Function(PasswordChanged value)? passwordChanged,
-    TResult Function(TogglePasswordVisibility value)? togglePasswordVisibility,
-    TResult Function(SubmitLogin value)? submitLogin,
-    TResult Function(NavigateToSignup value)? navigateToSignup,
-    TResult Function(NavigateToForgotPassword value)? navigateToForgotPassword,
-    required TResult orElse(),
-  }) {
-    if (submitLogin != null) {
-      return submitLogin(this);
-    }
-    return orElse();
-  }
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TogglePasswordVisibility);
 }
 
-abstract class SubmitLogin implements LoginIntent {
-  const factory SubmitLogin() = _$SubmitLoginImpl;
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'LoginIntent.togglePasswordVisibility()';
 }
 
-/// @nodoc
-abstract class _$$NavigateToSignupImplCopyWith<$Res> {
-  factory _$$NavigateToSignupImplCopyWith(
-    _$NavigateToSignupImpl value,
-    $Res Function(_$NavigateToSignupImpl) then,
-  ) = __$$NavigateToSignupImplCopyWithImpl<$Res>;
+
 }
 
-/// @nodoc
-class __$$NavigateToSignupImplCopyWithImpl<$Res>
-    extends _$LoginIntentCopyWithImpl<$Res, _$NavigateToSignupImpl>
-    implements _$$NavigateToSignupImplCopyWith<$Res> {
-  __$$NavigateToSignupImplCopyWithImpl(
-    _$NavigateToSignupImpl _value,
-    $Res Function(_$NavigateToSignupImpl) _then,
-  ) : super(_value, _then);
 
-  /// Create a copy of LoginIntent
-  /// with the given fields replaced by the non-null parameter values.
-}
+
 
 /// @nodoc
 
-class _$NavigateToSignupImpl implements NavigateToSignup {
-  const _$NavigateToSignupImpl();
 
-  @override
-  String toString() {
-    return 'LoginIntent.navigateToSignup()';
-  }
+class SubmitLogin implements LoginIntent {
+  const SubmitLogin();
+  
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$NavigateToSignupImpl);
-  }
 
-  @override
-  int get hashCode => runtimeType.hashCode;
 
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(String username) usernameChanged,
-    required TResult Function(String password) passwordChanged,
-    required TResult Function() togglePasswordVisibility,
-    required TResult Function() submitLogin,
-    required TResult Function() navigateToSignup,
-    required TResult Function() navigateToForgotPassword,
-  }) {
-    return navigateToSignup();
-  }
 
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String username)? usernameChanged,
-    TResult? Function(String password)? passwordChanged,
-    TResult? Function()? togglePasswordVisibility,
-    TResult? Function()? submitLogin,
-    TResult? Function()? navigateToSignup,
-    TResult? Function()? navigateToForgotPassword,
-  }) {
-    return navigateToSignup?.call();
-  }
 
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String username)? usernameChanged,
-    TResult Function(String password)? passwordChanged,
-    TResult Function()? togglePasswordVisibility,
-    TResult Function()? submitLogin,
-    TResult Function()? navigateToSignup,
-    TResult Function()? navigateToForgotPassword,
-    required TResult orElse(),
-  }) {
-    if (navigateToSignup != null) {
-      return navigateToSignup();
-    }
-    return orElse();
-  }
 
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(UsernameChanged value) usernameChanged,
-    required TResult Function(PasswordChanged value) passwordChanged,
-    required TResult Function(TogglePasswordVisibility value)
-    togglePasswordVisibility,
-    required TResult Function(SubmitLogin value) submitLogin,
-    required TResult Function(NavigateToSignup value) navigateToSignup,
-    required TResult Function(NavigateToForgotPassword value)
-    navigateToForgotPassword,
-  }) {
-    return navigateToSignup(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(UsernameChanged value)? usernameChanged,
-    TResult? Function(PasswordChanged value)? passwordChanged,
-    TResult? Function(TogglePasswordVisibility value)? togglePasswordVisibility,
-    TResult? Function(SubmitLogin value)? submitLogin,
-    TResult? Function(NavigateToSignup value)? navigateToSignup,
-    TResult? Function(NavigateToForgotPassword value)? navigateToForgotPassword,
-  }) {
-    return navigateToSignup?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(UsernameChanged value)? usernameChanged,
-    TResult Function(PasswordChanged value)? passwordChanged,
-    TResult Function(TogglePasswordVisibility value)? togglePasswordVisibility,
-    TResult Function(SubmitLogin value)? submitLogin,
-    TResult Function(NavigateToSignup value)? navigateToSignup,
-    TResult Function(NavigateToForgotPassword value)? navigateToForgotPassword,
-    required TResult orElse(),
-  }) {
-    if (navigateToSignup != null) {
-      return navigateToSignup(this);
-    }
-    return orElse();
-  }
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubmitLogin);
 }
 
-abstract class NavigateToSignup implements LoginIntent {
-  const factory NavigateToSignup() = _$NavigateToSignupImpl;
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'LoginIntent.submitLogin()';
 }
 
-/// @nodoc
-abstract class _$$NavigateToForgotPasswordImplCopyWith<$Res> {
-  factory _$$NavigateToForgotPasswordImplCopyWith(
-    _$NavigateToForgotPasswordImpl value,
-    $Res Function(_$NavigateToForgotPasswordImpl) then,
-  ) = __$$NavigateToForgotPasswordImplCopyWithImpl<$Res>;
+
 }
 
-/// @nodoc
-class __$$NavigateToForgotPasswordImplCopyWithImpl<$Res>
-    extends _$LoginIntentCopyWithImpl<$Res, _$NavigateToForgotPasswordImpl>
-    implements _$$NavigateToForgotPasswordImplCopyWith<$Res> {
-  __$$NavigateToForgotPasswordImplCopyWithImpl(
-    _$NavigateToForgotPasswordImpl _value,
-    $Res Function(_$NavigateToForgotPasswordImpl) _then,
-  ) : super(_value, _then);
 
-  /// Create a copy of LoginIntent
-  /// with the given fields replaced by the non-null parameter values.
-}
+
 
 /// @nodoc
 
-class _$NavigateToForgotPasswordImpl implements NavigateToForgotPassword {
-  const _$NavigateToForgotPasswordImpl();
 
-  @override
-  String toString() {
-    return 'LoginIntent.navigateToForgotPassword()';
-  }
+class NavigateToSignup implements LoginIntent {
+  const NavigateToSignup();
+  
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$NavigateToForgotPasswordImpl);
-  }
 
-  @override
-  int get hashCode => runtimeType.hashCode;
 
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(String username) usernameChanged,
-    required TResult Function(String password) passwordChanged,
-    required TResult Function() togglePasswordVisibility,
-    required TResult Function() submitLogin,
-    required TResult Function() navigateToSignup,
-    required TResult Function() navigateToForgotPassword,
-  }) {
-    return navigateToForgotPassword();
-  }
 
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String username)? usernameChanged,
-    TResult? Function(String password)? passwordChanged,
-    TResult? Function()? togglePasswordVisibility,
-    TResult? Function()? submitLogin,
-    TResult? Function()? navigateToSignup,
-    TResult? Function()? navigateToForgotPassword,
-  }) {
-    return navigateToForgotPassword?.call();
-  }
 
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String username)? usernameChanged,
-    TResult Function(String password)? passwordChanged,
-    TResult Function()? togglePasswordVisibility,
-    TResult Function()? submitLogin,
-    TResult Function()? navigateToSignup,
-    TResult Function()? navigateToForgotPassword,
-    required TResult orElse(),
-  }) {
-    if (navigateToForgotPassword != null) {
-      return navigateToForgotPassword();
-    }
-    return orElse();
-  }
 
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(UsernameChanged value) usernameChanged,
-    required TResult Function(PasswordChanged value) passwordChanged,
-    required TResult Function(TogglePasswordVisibility value)
-    togglePasswordVisibility,
-    required TResult Function(SubmitLogin value) submitLogin,
-    required TResult Function(NavigateToSignup value) navigateToSignup,
-    required TResult Function(NavigateToForgotPassword value)
-    navigateToForgotPassword,
-  }) {
-    return navigateToForgotPassword(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(UsernameChanged value)? usernameChanged,
-    TResult? Function(PasswordChanged value)? passwordChanged,
-    TResult? Function(TogglePasswordVisibility value)? togglePasswordVisibility,
-    TResult? Function(SubmitLogin value)? submitLogin,
-    TResult? Function(NavigateToSignup value)? navigateToSignup,
-    TResult? Function(NavigateToForgotPassword value)? navigateToForgotPassword,
-  }) {
-    return navigateToForgotPassword?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(UsernameChanged value)? usernameChanged,
-    TResult Function(PasswordChanged value)? passwordChanged,
-    TResult Function(TogglePasswordVisibility value)? togglePasswordVisibility,
-    TResult Function(SubmitLogin value)? submitLogin,
-    TResult Function(NavigateToSignup value)? navigateToSignup,
-    TResult Function(NavigateToForgotPassword value)? navigateToForgotPassword,
-    required TResult orElse(),
-  }) {
-    if (navigateToForgotPassword != null) {
-      return navigateToForgotPassword(this);
-    }
-    return orElse();
-  }
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NavigateToSignup);
 }
 
-abstract class NavigateToForgotPassword implements LoginIntent {
-  const factory NavigateToForgotPassword() = _$NavigateToForgotPasswordImpl;
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'LoginIntent.navigateToSignup()';
 }
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class NavigateToForgotPassword implements LoginIntent {
+  const NavigateToForgotPassword();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NavigateToForgotPassword);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'LoginIntent.navigateToForgotPassword()';
+}
+
+
+}
+
+
+
+
+// dart format on

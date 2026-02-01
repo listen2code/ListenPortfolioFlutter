@@ -5,7 +5,9 @@ part 'login_state.freezed.dart';
 /// Immutable state for login feature
 /// Represents the complete UI state at any point in time
 @freezed
-class LoginState with _$LoginState {
+abstract class LoginState with _$LoginState {
+  const LoginState._();
+
   const factory LoginState({
     @Default('') String username,
     @Default('') String password,

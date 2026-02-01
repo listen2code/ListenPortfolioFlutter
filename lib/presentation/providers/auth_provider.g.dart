@@ -6,269 +6,611 @@ part of 'auth_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$secureStorageHash() => r'77df30c7098a9f252222741225993ef719fafe36';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+/// Provides FlutterSecureStorage instance
+
+@ProviderFor(secureStorage)
+final secureStorageProvider = SecureStorageProvider._();
 
 /// Provides FlutterSecureStorage instance
-///
-/// Copied from [secureStorage].
-@ProviderFor(secureStorage)
-final secureStorageProvider =
-    AutoDisposeProvider<FlutterSecureStorage>.internal(
-      secureStorage,
-      name: r'secureStorageProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$secureStorageHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef SecureStorageRef = AutoDisposeProviderRef<FlutterSecureStorage>;
-String _$sharedPreferencesHash() => r'7cd30c9640ca952d1bcf1772c709fc45dc47c8b3';
+final class SecureStorageProvider
+    extends
+        $FunctionalProvider<
+          FlutterSecureStorage,
+          FlutterSecureStorage,
+          FlutterSecureStorage
+        >
+    with $Provider<FlutterSecureStorage> {
+  /// Provides FlutterSecureStorage instance
+  SecureStorageProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'secureStorageProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$secureStorageHash();
+
+  @$internal
+  @override
+  $ProviderElement<FlutterSecureStorage> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  FlutterSecureStorage create(Ref ref) {
+    return secureStorage(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(FlutterSecureStorage value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<FlutterSecureStorage>(value),
+    );
+  }
+}
+
+String _$secureStorageHash() => r'273dc403a965c1f24962aaf4d40776611a26f8b8';
 
 /// Provides SharedPreferences instance
-///
-/// Copied from [sharedPreferences].
-@ProviderFor(sharedPreferences)
-final sharedPreferencesProvider =
-    AutoDisposeFutureProvider<SharedPreferences>.internal(
-      sharedPreferences,
-      name: r'sharedPreferencesProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$sharedPreferencesHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef SharedPreferencesRef = AutoDisposeFutureProviderRef<SharedPreferences>;
-String _$connectivityHash() => r'da8080dfc40288eff97ff9cb96e9d9577714a9a0';
+@ProviderFor(sharedPreferences)
+final sharedPreferencesProvider = SharedPreferencesProvider._();
+
+/// Provides SharedPreferences instance
+
+final class SharedPreferencesProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<SharedPreferences>,
+          SharedPreferences,
+          FutureOr<SharedPreferences>
+        >
+    with
+        $FutureModifier<SharedPreferences>,
+        $FutureProvider<SharedPreferences> {
+  /// Provides SharedPreferences instance
+  SharedPreferencesProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'sharedPreferencesProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$sharedPreferencesHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<SharedPreferences> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<SharedPreferences> create(Ref ref) {
+    return sharedPreferences(ref);
+  }
+}
+
+String _$sharedPreferencesHash() => r'dc403fbb1d968c7d5ab4ae1721a29ffe173701c7';
 
 /// Provides Connectivity instance
-///
-/// Copied from [connectivity].
-@ProviderFor(connectivity)
-final connectivityProvider = AutoDisposeProvider<Connectivity>.internal(
-  connectivity,
-  name: r'connectivityProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$connectivityHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef ConnectivityRef = AutoDisposeProviderRef<Connectivity>;
-String _$networkInfoHash() => r'beab523a04badc03212a1fa1eaa7814b1207b8ab';
+@ProviderFor(connectivity)
+final connectivityProvider = ConnectivityProvider._();
+
+/// Provides Connectivity instance
+
+final class ConnectivityProvider
+    extends $FunctionalProvider<Connectivity, Connectivity, Connectivity>
+    with $Provider<Connectivity> {
+  /// Provides Connectivity instance
+  ConnectivityProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'connectivityProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$connectivityHash();
+
+  @$internal
+  @override
+  $ProviderElement<Connectivity> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  Connectivity create(Ref ref) {
+    return connectivity(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Connectivity value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<Connectivity>(value),
+    );
+  }
+}
+
+String _$connectivityHash() => r'6d67af0ea4110f6ee0246dd332f90f8901380eda';
 
 /// Provides NetworkInfo instance
-///
-/// Copied from [networkInfo].
-@ProviderFor(networkInfo)
-final networkInfoProvider = AutoDisposeProvider<NetworkInfo>.internal(
-  networkInfo,
-  name: r'networkInfoProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$networkInfoHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef NetworkInfoRef = AutoDisposeProviderRef<NetworkInfo>;
-String _$authRemoteDataSourceHash() =>
-    r'f103dffb9604159d2928a0c1e4dc2fdc346f4dca';
+@ProviderFor(networkInfo)
+final networkInfoProvider = NetworkInfoProvider._();
+
+/// Provides NetworkInfo instance
+
+final class NetworkInfoProvider
+    extends $FunctionalProvider<NetworkInfo, NetworkInfo, NetworkInfo>
+    with $Provider<NetworkInfo> {
+  /// Provides NetworkInfo instance
+  NetworkInfoProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'networkInfoProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$networkInfoHash();
+
+  @$internal
+  @override
+  $ProviderElement<NetworkInfo> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  NetworkInfo create(Ref ref) {
+    return networkInfo(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(NetworkInfo value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<NetworkInfo>(value),
+    );
+  }
+}
+
+String _$networkInfoHash() => r'ff5904d9b92850789e49524fa786994adf155a46';
 
 /// Provides AuthRemoteDataSource instance
-///
-/// Copied from [authRemoteDataSource].
-@ProviderFor(authRemoteDataSource)
-final authRemoteDataSourceProvider =
-    AutoDisposeProvider<AuthRemoteDataSource>.internal(
-      authRemoteDataSource,
-      name: r'authRemoteDataSourceProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$authRemoteDataSourceHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef AuthRemoteDataSourceRef = AutoDisposeProviderRef<AuthRemoteDataSource>;
-String _$authLocalDataSourceHash() =>
-    r'65ea7c1bb8cc8b60202015c63fd2de206663fdc3';
+@ProviderFor(authRemoteDataSource)
+final authRemoteDataSourceProvider = AuthRemoteDataSourceProvider._();
+
+/// Provides AuthRemoteDataSource instance
+
+final class AuthRemoteDataSourceProvider
+    extends
+        $FunctionalProvider<
+          AuthRemoteDataSource,
+          AuthRemoteDataSource,
+          AuthRemoteDataSource
+        >
+    with $Provider<AuthRemoteDataSource> {
+  /// Provides AuthRemoteDataSource instance
+  AuthRemoteDataSourceProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'authRemoteDataSourceProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$authRemoteDataSourceHash();
+
+  @$internal
+  @override
+  $ProviderElement<AuthRemoteDataSource> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  AuthRemoteDataSource create(Ref ref) {
+    return authRemoteDataSource(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AuthRemoteDataSource value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<AuthRemoteDataSource>(value),
+    );
+  }
+}
+
+String _$authRemoteDataSourceHash() =>
+    r'658669e045fddd6384e1e92f282c05d4573e6df0';
 
 /// Provides AuthLocalDataSource instance
-///
-/// Copied from [authLocalDataSource].
-@ProviderFor(authLocalDataSource)
-final authLocalDataSourceProvider =
-    AutoDisposeFutureProvider<AuthLocalDataSource>.internal(
-      authLocalDataSource,
-      name: r'authLocalDataSourceProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$authLocalDataSourceHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef AuthLocalDataSourceRef =
-    AutoDisposeFutureProviderRef<AuthLocalDataSource>;
-String _$authRepositoryHash() => r'95cebe74e7863e5563adb60f9651490b5a0f161c';
+@ProviderFor(authLocalDataSource)
+final authLocalDataSourceProvider = AuthLocalDataSourceProvider._();
+
+/// Provides AuthLocalDataSource instance
+
+final class AuthLocalDataSourceProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<AuthLocalDataSource>,
+          AuthLocalDataSource,
+          FutureOr<AuthLocalDataSource>
+        >
+    with
+        $FutureModifier<AuthLocalDataSource>,
+        $FutureProvider<AuthLocalDataSource> {
+  /// Provides AuthLocalDataSource instance
+  AuthLocalDataSourceProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'authLocalDataSourceProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$authLocalDataSourceHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<AuthLocalDataSource> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<AuthLocalDataSource> create(Ref ref) {
+    return authLocalDataSource(ref);
+  }
+}
+
+String _$authLocalDataSourceHash() =>
+    r'22f51e070afc311adc8a65c4a9f25d29b033e86c';
 
 /// Provides AuthRepository instance
-///
-/// Copied from [authRepository].
-@ProviderFor(authRepository)
-final authRepositoryProvider =
-    AutoDisposeFutureProvider<AuthRepository>.internal(
-      authRepository,
-      name: r'authRepositoryProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$authRepositoryHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef AuthRepositoryRef = AutoDisposeFutureProviderRef<AuthRepository>;
-String _$loginUseCaseHash() => r'c4ceff106b906f48140dbdd2c5a70fd902e4f7f0';
+@ProviderFor(authRepository)
+final authRepositoryProvider = AuthRepositoryProvider._();
+
+/// Provides AuthRepository instance
+
+final class AuthRepositoryProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<AuthRepository>,
+          AuthRepository,
+          FutureOr<AuthRepository>
+        >
+    with $FutureModifier<AuthRepository>, $FutureProvider<AuthRepository> {
+  /// Provides AuthRepository instance
+  AuthRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'authRepositoryProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$authRepositoryHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<AuthRepository> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<AuthRepository> create(Ref ref) {
+    return authRepository(ref);
+  }
+}
+
+String _$authRepositoryHash() => r'8f79e1e626bb4c356578071ff051f675f53c55a7';
 
 /// Provides LoginUseCase instance
-///
-/// Copied from [loginUseCase].
-@ProviderFor(loginUseCase)
-final loginUseCaseProvider = AutoDisposeFutureProvider<LoginUseCase>.internal(
-  loginUseCase,
-  name: r'loginUseCaseProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$loginUseCaseHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef LoginUseCaseRef = AutoDisposeFutureProviderRef<LoginUseCase>;
-String _$signupUseCaseHash() => r'2b21bdd05bd59c2a00eb92cac62ff84ed9559d00';
+@ProviderFor(loginUseCase)
+final loginUseCaseProvider = LoginUseCaseProvider._();
+
+/// Provides LoginUseCase instance
+
+final class LoginUseCaseProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<LoginUseCase>,
+          LoginUseCase,
+          FutureOr<LoginUseCase>
+        >
+    with $FutureModifier<LoginUseCase>, $FutureProvider<LoginUseCase> {
+  /// Provides LoginUseCase instance
+  LoginUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'loginUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$loginUseCaseHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<LoginUseCase> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<LoginUseCase> create(Ref ref) {
+    return loginUseCase(ref);
+  }
+}
+
+String _$loginUseCaseHash() => r'c2181e2bdc5e5daad91364700bacf4f904222209';
 
 /// Provides SignupUseCase instance
-///
-/// Copied from [signupUseCase].
-@ProviderFor(signupUseCase)
-final signupUseCaseProvider = AutoDisposeFutureProvider<SignupUseCase>.internal(
-  signupUseCase,
-  name: r'signupUseCaseProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$signupUseCaseHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef SignupUseCaseRef = AutoDisposeFutureProviderRef<SignupUseCase>;
-String _$logoutUseCaseHash() => r'2fdbb903bceff0d972e9cf1370f9bd29f50c9f39';
+@ProviderFor(signupUseCase)
+final signupUseCaseProvider = SignupUseCaseProvider._();
+
+/// Provides SignupUseCase instance
+
+final class SignupUseCaseProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<SignupUseCase>,
+          SignupUseCase,
+          FutureOr<SignupUseCase>
+        >
+    with $FutureModifier<SignupUseCase>, $FutureProvider<SignupUseCase> {
+  /// Provides SignupUseCase instance
+  SignupUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'signupUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$signupUseCaseHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<SignupUseCase> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<SignupUseCase> create(Ref ref) {
+    return signupUseCase(ref);
+  }
+}
+
+String _$signupUseCaseHash() => r'5e1835d31b185193fab8613542ecffe6967c5b1a';
 
 /// Provides LogoutUseCase instance
-///
-/// Copied from [logoutUseCase].
-@ProviderFor(logoutUseCase)
-final logoutUseCaseProvider = AutoDisposeFutureProvider<LogoutUseCase>.internal(
-  logoutUseCase,
-  name: r'logoutUseCaseProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$logoutUseCaseHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef LogoutUseCaseRef = AutoDisposeFutureProviderRef<LogoutUseCase>;
-String _$forgotPasswordUseCaseHash() =>
-    r'c423d1105b0ff04a7d894e627b6ccb35e6066fbc';
+@ProviderFor(logoutUseCase)
+final logoutUseCaseProvider = LogoutUseCaseProvider._();
+
+/// Provides LogoutUseCase instance
+
+final class LogoutUseCaseProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<LogoutUseCase>,
+          LogoutUseCase,
+          FutureOr<LogoutUseCase>
+        >
+    with $FutureModifier<LogoutUseCase>, $FutureProvider<LogoutUseCase> {
+  /// Provides LogoutUseCase instance
+  LogoutUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'logoutUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$logoutUseCaseHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<LogoutUseCase> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<LogoutUseCase> create(Ref ref) {
+    return logoutUseCase(ref);
+  }
+}
+
+String _$logoutUseCaseHash() => r'c2f70f215323b3aac11ccdc866fe03376d9247e5';
 
 /// Provides ForgotPasswordUseCase instance
-///
-/// Copied from [forgotPasswordUseCase].
-@ProviderFor(forgotPasswordUseCase)
-final forgotPasswordUseCaseProvider =
-    AutoDisposeFutureProvider<ForgotPasswordUseCase>.internal(
-      forgotPasswordUseCase,
-      name: r'forgotPasswordUseCaseProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$forgotPasswordUseCaseHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef ForgotPasswordUseCaseRef =
-    AutoDisposeFutureProviderRef<ForgotPasswordUseCase>;
-String _$changePasswordUseCaseHash() =>
-    r'03f16798e90233574c7a03c30babe8311cae7fcb';
+@ProviderFor(forgotPasswordUseCase)
+final forgotPasswordUseCaseProvider = ForgotPasswordUseCaseProvider._();
+
+/// Provides ForgotPasswordUseCase instance
+
+final class ForgotPasswordUseCaseProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<ForgotPasswordUseCase>,
+          ForgotPasswordUseCase,
+          FutureOr<ForgotPasswordUseCase>
+        >
+    with
+        $FutureModifier<ForgotPasswordUseCase>,
+        $FutureProvider<ForgotPasswordUseCase> {
+  /// Provides ForgotPasswordUseCase instance
+  ForgotPasswordUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'forgotPasswordUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$forgotPasswordUseCaseHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<ForgotPasswordUseCase> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<ForgotPasswordUseCase> create(Ref ref) {
+    return forgotPasswordUseCase(ref);
+  }
+}
+
+String _$forgotPasswordUseCaseHash() =>
+    r'2f1e121d8ffd5fef9c26db8aa8ffad2bb7777a9f';
 
 /// Provides ChangePasswordUseCase instance
-///
-/// Copied from [changePasswordUseCase].
-@ProviderFor(changePasswordUseCase)
-final changePasswordUseCaseProvider =
-    AutoDisposeFutureProvider<ChangePasswordUseCase>.internal(
-      changePasswordUseCase,
-      name: r'changePasswordUseCaseProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$changePasswordUseCaseHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef ChangePasswordUseCaseRef =
-    AutoDisposeFutureProviderRef<ChangePasswordUseCase>;
-String _$getCurrentUserUseCaseHash() =>
-    r'3f8c5f7b9d6c90a6b831081a3bfe90879e509b23';
+@ProviderFor(changePasswordUseCase)
+final changePasswordUseCaseProvider = ChangePasswordUseCaseProvider._();
+
+/// Provides ChangePasswordUseCase instance
+
+final class ChangePasswordUseCaseProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<ChangePasswordUseCase>,
+          ChangePasswordUseCase,
+          FutureOr<ChangePasswordUseCase>
+        >
+    with
+        $FutureModifier<ChangePasswordUseCase>,
+        $FutureProvider<ChangePasswordUseCase> {
+  /// Provides ChangePasswordUseCase instance
+  ChangePasswordUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'changePasswordUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$changePasswordUseCaseHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<ChangePasswordUseCase> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<ChangePasswordUseCase> create(Ref ref) {
+    return changePasswordUseCase(ref);
+  }
+}
+
+String _$changePasswordUseCaseHash() =>
+    r'e325c24a80cc16aa279822656c3ccf70e68557b8';
 
 /// Provides GetCurrentUserUseCase instance
-///
-/// Copied from [getCurrentUserUseCase].
-@ProviderFor(getCurrentUserUseCase)
-final getCurrentUserUseCaseProvider =
-    AutoDisposeFutureProvider<GetCurrentUserUseCase>.internal(
-      getCurrentUserUseCase,
-      name: r'getCurrentUserUseCaseProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$getCurrentUserUseCaseHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef GetCurrentUserUseCaseRef =
-    AutoDisposeFutureProviderRef<GetCurrentUserUseCase>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+@ProviderFor(getCurrentUserUseCase)
+final getCurrentUserUseCaseProvider = GetCurrentUserUseCaseProvider._();
+
+/// Provides GetCurrentUserUseCase instance
+
+final class GetCurrentUserUseCaseProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<GetCurrentUserUseCase>,
+          GetCurrentUserUseCase,
+          FutureOr<GetCurrentUserUseCase>
+        >
+    with
+        $FutureModifier<GetCurrentUserUseCase>,
+        $FutureProvider<GetCurrentUserUseCase> {
+  /// Provides GetCurrentUserUseCase instance
+  GetCurrentUserUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'getCurrentUserUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$getCurrentUserUseCaseHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<GetCurrentUserUseCase> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<GetCurrentUserUseCase> create(Ref ref) {
+    return getCurrentUserUseCase(ref);
+  }
+}
+
+String _$getCurrentUserUseCaseHash() =>
+    r'5befefa06ce2b648b012af5ebb103d66dc61ab65';

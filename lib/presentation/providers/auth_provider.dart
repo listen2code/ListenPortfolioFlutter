@@ -23,25 +23,25 @@ part 'auth_provider.g.dart';
 
 /// Provides FlutterSecureStorage instance
 @riverpod
-FlutterSecureStorage secureStorage(SecureStorageRef ref) {
+FlutterSecureStorage secureStorage(Ref ref) {
   return const FlutterSecureStorage();
 }
 
 /// Provides SharedPreferences instance
 @riverpod
-Future<SharedPreferences> sharedPreferences(SharedPreferencesRef ref) async {
+Future<SharedPreferences> sharedPreferences(Ref ref) async {
   return await SharedPreferences.getInstance();
 }
 
 /// Provides Connectivity instance
 @riverpod
-Connectivity connectivity(ConnectivityRef ref) {
+Connectivity connectivity(Ref ref) {
   return Connectivity();
 }
 
 /// Provides NetworkInfo instance
 @riverpod
-NetworkInfo networkInfo(NetworkInfoRef ref) {
+NetworkInfo networkInfo(Ref ref) {
   final connectivity = ref.watch(connectivityProvider);
   return NetworkInfoImpl(connectivity);
 }
@@ -52,13 +52,13 @@ NetworkInfo networkInfo(NetworkInfoRef ref) {
 
 /// Provides AuthRemoteDataSource instance
 @riverpod
-AuthRemoteDataSource authRemoteDataSource(AuthRemoteDataSourceRef ref) {
+AuthRemoteDataSource authRemoteDataSource(Ref ref) {
   return AuthRemoteDataSource();
 }
 
 /// Provides AuthLocalDataSource instance
 @riverpod
-Future<AuthLocalDataSource> authLocalDataSource(AuthLocalDataSourceRef ref) async {
+Future<AuthLocalDataSource> authLocalDataSource(Ref ref) async {
   final secureStorage = ref.watch(secureStorageProvider);
   final sharedPrefs = await ref.watch(sharedPreferencesProvider.future);
 
@@ -71,7 +71,7 @@ Future<AuthLocalDataSource> authLocalDataSource(AuthLocalDataSourceRef ref) asyn
 
 /// Provides AuthRepository instance
 @riverpod
-Future<AuthRepository> authRepository(AuthRepositoryRef ref) async {
+Future<AuthRepository> authRepository(Ref ref) async {
   final remoteDataSource = ref.watch(authRemoteDataSourceProvider);
   final localDataSource = await ref.watch(authLocalDataSourceProvider.future);
   final networkInfo = ref.watch(networkInfoProvider);
@@ -85,42 +85,42 @@ Future<AuthRepository> authRepository(AuthRepositoryRef ref) async {
 
 /// Provides LoginUseCase instance
 @riverpod
-Future<LoginUseCase> loginUseCase(LoginUseCaseRef ref) async {
+Future<LoginUseCase> loginUseCase(Ref ref) async {
   final repository = await ref.watch(authRepositoryProvider.future);
   return LoginUseCase(repository);
 }
 
 /// Provides SignupUseCase instance
 @riverpod
-Future<SignupUseCase> signupUseCase(SignupUseCaseRef ref) async {
+Future<SignupUseCase> signupUseCase(Ref ref) async {
   final repository = await ref.watch(authRepositoryProvider.future);
   return SignupUseCase(repository);
 }
 
 /// Provides LogoutUseCase instance
 @riverpod
-Future<LogoutUseCase> logoutUseCase(LogoutUseCaseRef ref) async {
+Future<LogoutUseCase> logoutUseCase(Ref ref) async {
   final repository = await ref.watch(authRepositoryProvider.future);
   return LogoutUseCase(repository);
 }
 
 /// Provides ForgotPasswordUseCase instance
 @riverpod
-Future<ForgotPasswordUseCase> forgotPasswordUseCase(ForgotPasswordUseCaseRef ref) async {
+Future<ForgotPasswordUseCase> forgotPasswordUseCase(Ref ref) async {
   final repository = await ref.watch(authRepositoryProvider.future);
   return ForgotPasswordUseCase(repository);
 }
 
 /// Provides ChangePasswordUseCase instance
 @riverpod
-Future<ChangePasswordUseCase> changePasswordUseCase(ChangePasswordUseCaseRef ref) async {
+Future<ChangePasswordUseCase> changePasswordUseCase(Ref ref) async {
   final repository = await ref.watch(authRepositoryProvider.future);
   return ChangePasswordUseCase(repository);
 }
 
 /// Provides GetCurrentUserUseCase instance
 @riverpod
-Future<GetCurrentUserUseCase> getCurrentUserUseCase(GetCurrentUserUseCaseRef ref) async {
+Future<GetCurrentUserUseCase> getCurrentUserUseCase(Ref ref) async {
   final repository = await ref.watch(authRepositoryProvider.future);
   return GetCurrentUserUseCase(repository);
 }
