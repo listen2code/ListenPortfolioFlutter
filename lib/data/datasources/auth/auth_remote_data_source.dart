@@ -18,14 +18,7 @@ class AuthRemoteDataSource {
     return LoginResponseModel(
       token: 'mock_jwt_token_12345',
       refreshToken: 'mock_refresh_token_67890',
-      user: UserModel(
-        id: '1',
-        name: 'John Doe',
-        email: 'john@example.com',
-        avatarUrl: null,
-        bio: 'Flutter Developer',
-        createdAt: DateTime.now(),
-      ),
+      user: UserModel(id: '1', name: 'John Doe', email: 'john@example.com', avatarUrl: null, createdAt: DateTime.now()),
     );
   }
 
@@ -37,14 +30,7 @@ class AuthRemoteDataSource {
     await Future.delayed(const Duration(seconds: 1));
 
     // Mock successful response
-    return UserModel(
-      id: '2',
-      name: request.name,
-      email: request.email,
-      avatarUrl: null,
-      bio: null,
-      createdAt: DateTime.now(),
-    );
+    return UserModel(id: '2', name: request.name, email: request.email, avatarUrl: null, createdAt: DateTime.now());
   }
 
   /// Mock logout - simulates API call
@@ -79,13 +65,6 @@ class AuthRemoteDataSource {
     await Future.delayed(const Duration(milliseconds: 500));
 
     // Mock response
-    return UserModel(
-      id: '1',
-      name: 'John Doe',
-      email: 'john@example.com',
-      avatarUrl: null,
-      bio: 'Flutter Developer',
-      createdAt: DateTime.now(),
-    );
+    return UserModel(id: '1', name: 'John Doe', email: 'john@example.com', avatarUrl: null, createdAt: DateTime.now());
   }
 }

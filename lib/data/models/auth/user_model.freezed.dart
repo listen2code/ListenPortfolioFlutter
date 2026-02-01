@@ -25,7 +25,6 @@ mixin _$UserModel {
   String get name => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
   String? get avatarUrl => throw _privateConstructorUsedError;
-  String? get bio => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
 
   @optionalTypeArgs
@@ -62,7 +61,6 @@ abstract class $UserModelCopyWith<$Res> {
     String name,
     String email,
     String? avatarUrl,
-    String? bio,
     DateTime createdAt,
   });
 }
@@ -86,7 +84,6 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
     Object? name = null,
     Object? email = null,
     Object? avatarUrl = freezed,
-    Object? bio = freezed,
     Object? createdAt = null,
   }) {
     return _then(
@@ -106,10 +103,6 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
             avatarUrl: freezed == avatarUrl
                 ? _value.avatarUrl
                 : avatarUrl // ignore: cast_nullable_to_non_nullable
-                      as String?,
-            bio: freezed == bio
-                ? _value.bio
-                : bio // ignore: cast_nullable_to_non_nullable
                       as String?,
             createdAt: null == createdAt
                 ? _value.createdAt
@@ -135,7 +128,6 @@ abstract class _$$UserModelImplCopyWith<$Res>
     String name,
     String email,
     String? avatarUrl,
-    String? bio,
     DateTime createdAt,
   });
 }
@@ -158,7 +150,6 @@ class __$$UserModelImplCopyWithImpl<$Res>
     Object? name = null,
     Object? email = null,
     Object? avatarUrl = freezed,
-    Object? bio = freezed,
     Object? createdAt = null,
   }) {
     return _then(
@@ -179,10 +170,6 @@ class __$$UserModelImplCopyWithImpl<$Res>
             ? _value.avatarUrl
             : avatarUrl // ignore: cast_nullable_to_non_nullable
                   as String?,
-        bio: freezed == bio
-            ? _value.bio
-            : bio // ignore: cast_nullable_to_non_nullable
-                  as String?,
         createdAt: null == createdAt
             ? _value.createdAt
             : createdAt // ignore: cast_nullable_to_non_nullable
@@ -200,7 +187,6 @@ class _$UserModelImpl extends _UserModel {
     required this.name,
     required this.email,
     this.avatarUrl,
-    this.bio,
     required this.createdAt,
   }) : super._();
 
@@ -216,13 +202,11 @@ class _$UserModelImpl extends _UserModel {
   @override
   final String? avatarUrl;
   @override
-  final String? bio;
-  @override
   final DateTime createdAt;
 
   @override
   String toString() {
-    return 'UserModel(id: $id, name: $name, email: $email, avatarUrl: $avatarUrl, bio: $bio, createdAt: $createdAt)';
+    return 'UserModel(id: $id, name: $name, email: $email, avatarUrl: $avatarUrl, createdAt: $createdAt)';
   }
 
   @override
@@ -235,7 +219,6 @@ class _$UserModelImpl extends _UserModel {
             (identical(other.email, email) || other.email == email) &&
             (identical(other.avatarUrl, avatarUrl) ||
                 other.avatarUrl == avatarUrl) &&
-            (identical(other.bio, bio) || other.bio == bio) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt));
   }
@@ -243,7 +226,7 @@ class _$UserModelImpl extends _UserModel {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
-      Object.hash(runtimeType, id, name, email, avatarUrl, bio, createdAt);
+      Object.hash(runtimeType, id, name, email, avatarUrl, createdAt);
 
   /// Create a copy of UserModel
   /// with the given fields replaced by the non-null parameter values.
@@ -293,7 +276,6 @@ abstract class _UserModel extends UserModel {
     required final String name,
     required final String email,
     final String? avatarUrl,
-    final String? bio,
     required final DateTime createdAt,
   }) = _$UserModelImpl;
   const _UserModel._() : super._();
@@ -309,8 +291,6 @@ abstract class _UserModel extends UserModel {
   String get email;
   @override
   String? get avatarUrl;
-  @override
-  String? get bio;
   @override
   DateTime get createdAt;
 

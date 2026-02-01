@@ -13,7 +13,6 @@ _$UserModelImpl _$$UserModelImplFromJson(Map json) =>
         name: $checkedConvert('name', (v) => v as String),
         email: $checkedConvert('email', (v) => v as String),
         avatarUrl: $checkedConvert('avatarUrl', (v) => v as String?),
-        bio: $checkedConvert('bio', (v) => v as String?),
         createdAt: $checkedConvert(
           'createdAt',
           (v) => DateTime.parse(v as String),
@@ -28,6 +27,5 @@ Map<String, dynamic> _$$UserModelImplToJson(_$UserModelImpl instance) =>
       'name': instance.name,
       'email': instance.email,
       'avatarUrl': instance.avatarUrl,
-      'bio': instance.bio,
       'createdAt': instance.createdAt.toIso8601String(),
     };

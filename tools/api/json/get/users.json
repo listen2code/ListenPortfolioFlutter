@@ -5,6 +5,8 @@
   "body": {
     "id": "1",
     "name": "listen",
-    "age": "18"
+    "email": "18",
+    "avatarUrl": "18",
+    "createdAt": "2026-02-01 12:22:35.123456"
   }
 }
