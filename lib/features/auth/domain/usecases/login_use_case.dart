@@ -1,7 +1,5 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:listen_portfolio_flutter/core/base/use_case.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
-import 'package:listen_portfolio_flutter/core/errors/failures.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/entities/user.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/repositories/auth_repository.dart';
 

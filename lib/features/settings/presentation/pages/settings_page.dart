@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:listen_portfolio_flutter/features/auth/presentation/pages/password/change_password_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../auth/presentation/pages/password/change_password_page.dart';
 import 'appearance_page.dart';
 
 class SettingsPage extends StatefulWidget {

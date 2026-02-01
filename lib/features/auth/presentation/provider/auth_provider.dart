@@ -1,6 +1,7 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:listen_portfolio_flutter/core/network/network_info.dart';
+import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_portfolio_flutter/core/network/api_client.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/datasources/auth_local_data_source.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/repositories/auth_repository_impl.dart';
@@ -52,7 +53,7 @@ NetworkInfo networkInfo(Ref ref) {
 /// Provides AuthRemoteDataSource instance
 @riverpod
 AuthRemoteDataSource authRemoteDataSource(Ref ref) {
-  return AuthRemoteDataSource();
+  return AuthRemoteDataSource(ApiClient.dio);
 }
 
 /// Provides AuthLocalDataSource instance

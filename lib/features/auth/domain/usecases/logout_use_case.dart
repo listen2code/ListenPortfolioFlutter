@@ -1,8 +1,7 @@
 import 'package:fpdart/fpdart.dart';
-
-import '../../../../core/base/use_case.dart';
-import '../../../../core/errors/failures.dart';
-import '../repositories/auth_repository.dart';
+import 'package:listen_portfolio_flutter/core/base/use_case.dart';
+import 'package:listen_portfolio_flutter/core/errors/failures.dart';
+import 'package:listen_portfolio_flutter/features/auth/domain/repositories/auth_repository.dart';
 
 /// Use case for user logout
 class LogoutUseCase implements UseCase<void, NoParams> {

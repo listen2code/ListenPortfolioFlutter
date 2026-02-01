@@ -1,3 +1,4 @@
+export 'base/use_case.dart';
 export 'constants/app_constants.dart';
 export 'errors/exceptions.dart';
 export 'errors/failures.dart';

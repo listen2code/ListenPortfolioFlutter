@@ -18,4 +18,4 @@ targets:
       riverpod_generator:
         enabled: true
       retrofit_generator:
-        enabled: false
+        enabled: true

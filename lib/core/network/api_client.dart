@@ -1,7 +1,5 @@
 import 'package:dio/dio.dart';
-
-import '../constants/app_constants.dart';
-import '../utils/logger.dart';
+import 'package:listen_portfolio_flutter/core/core.dart';
 
 /// Creates and configures a single Dio instance for the entire application
 class ApiClient {
@@ -33,6 +31,7 @@ class _LoggingInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     appLogger.d('REQUEST[${options.method}] => PATH: ${options.path}');
+    appLogger.d('Full URL: ${options.baseUrl}${options.path}');
     appLogger.d('Headers: ${options.headers}');
     appLogger.d('Data: ${options.data}');
     super.onRequest(options, handler);
@@ -54,15 +53,9 @@ class _LoggingInterceptor extends Interceptor {
   }
 }
 
-/// Interceptor for adding authentication token to requests
 class _AuthInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
-    // TODO: Get token from secure storage and add to headers
-    // final token = await secureStorage.read(key: AppConstants.authTokenKey);
-    // if (token != null) {
-    //   options.headers['Authorization'] = 'Bearer $token';
-    // }
     super.onRequest(options, handler);
   }
 }

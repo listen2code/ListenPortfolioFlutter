@@ -1,8 +1,6 @@
 import 'package:fpdart/fpdart.dart';
-
-import '../../../../core/base/use_case.dart';
-import '../../../../core/errors/failures.dart';
-import '../repositories/auth_repository.dart';
+import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_portfolio_flutter/features/auth/domain/repositories/auth_repository.dart';
 
 /// Use case for changing user password
 class ChangePasswordUseCase implements UseCase<void, ChangePasswordParams> {
