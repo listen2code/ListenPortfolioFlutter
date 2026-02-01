@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:listen_portfolio_flutter/domain/entities/auth/user.dart';
-import 'package:listen_portfolio_flutter/domain/usecases/auth/login_use_case.dart';
-import 'package:listen_portfolio_flutter/presentation/features/auth/login/login_intent.dart';
-import 'package:listen_portfolio_flutter/presentation/features/auth/login/login_state.dart';
+import 'package:listen_portfolio_flutter/features/auth/domain/entities/user.dart';
+import 'package:listen_portfolio_flutter/features/auth/domain/usecases/login_use_case.dart';
+import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_intent.dart';
+import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_state.dart';
 import 'package:mocktail/mocktail.dart';
 
 // Mock classes
@@ -13,7 +13,7 @@ void main() {
 
   setUp(() {
     mockLoginUseCase = MockLoginUseCase();
-    // Register fallback values
+    // Sign Up fallback values
     registerFallbackValue(LoginParams(username: '', password: ''));
   });
 

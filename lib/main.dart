@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
+import 'package:listen_portfolio_flutter/features/splash/presentation/pages/splash_page.dart';
 
 import 'core/theme/app_theme.dart';
-import 'splash_page.dart';
 
 void main() {
   runApp(const ProviderScope(child: MyApp()));

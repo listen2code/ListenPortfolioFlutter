@@ -1,15 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:listen_portfolio_flutter/core/errors/exceptions.dart';
-import 'package:listen_portfolio_flutter/core/errors/failures.dart';
-import 'package:listen_portfolio_flutter/core/network/network_info.dart';
-import 'package:listen_portfolio_flutter/data/datasources/auth/auth_local_data_source.dart';
-import 'package:listen_portfolio_flutter/data/datasources/auth/auth_remote_data_source.dart';
-import 'package:listen_portfolio_flutter/data/models/auth/login_request_model.dart';
-import 'package:listen_portfolio_flutter/data/models/auth/login_response_model.dart';
-import 'package:listen_portfolio_flutter/data/models/auth/user_model.dart';
-import 'package:listen_portfolio_flutter/data/repositories/auth_repository_impl.dart';
-import 'package:listen_portfolio_flutter/domain/entities/auth/user.dart';
+import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/datasources/auth_local_data_source.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/datasources/auth_remote_data_source.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/login_request_model.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/login_response_model.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:listen_portfolio_flutter/features/auth/domain/entities/user.dart';
 import 'package:mocktail/mocktail.dart';
 
 // Mock classes

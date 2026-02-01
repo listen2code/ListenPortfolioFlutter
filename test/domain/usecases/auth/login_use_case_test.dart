@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:listen_portfolio_flutter/core/errors/failures.dart';
-import 'package:listen_portfolio_flutter/domain/entities/auth/user.dart';
-import 'package:listen_portfolio_flutter/domain/repositories/auth_repository.dart';
-import 'package:listen_portfolio_flutter/domain/usecases/auth/login_use_case.dart';
+import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_portfolio_flutter/features/auth/domain/entities/user.dart';
+import 'package:listen_portfolio_flutter/features/auth/domain/repositories/auth_repository.dart';
+import 'package:listen_portfolio_flutter/features/auth/domain/usecases/login_use_case.dart';
 import 'package:mocktail/mocktail.dart';
 
 // Mock repository
