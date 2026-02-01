@@ -16,4 +16,16 @@ For help getting started with Flutter development, view the
 samples, guidance on mobile development, and a full API reference.
 
 ## todo
+
+* base
+    * key store
+    * play store
+    * base use case; widget; view model
+    * theme language fontSize
+* setting function
+* other MVI
+* db data design
+* web data
+* core to package
+* widget to package
 * build web
