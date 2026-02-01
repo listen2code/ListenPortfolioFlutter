@@ -1,0 +1,29 @@
+[
+  {
+    "api": "users",
+    "method": "get",
+    "timeout": 500,
+    "httpCode": 200
+  },
+  {
+    "api": "users/",
+    "method": "get",
+    "timeout": 500,
+    "httpCode": 200
+  },
+  {
+    "api": "users/",
+    "method": "post",
+    "httpCode": 200
+  },
+  {
+    "api": "users/",
+    "method": "put",
+    "httpCode": 200
+  },
+  {
+    "api": "users/",
+    "method": "delete",
+    "httpCode": 200
+  }
+]
