@@ -18,7 +18,6 @@ samples, guidance on mobile development, and a full API reference.
 ## todo
 
 * base
-    * key store
     * play store
     * base use case; widget; view model
     * theme language fontSize
@@ -29,3 +28,4 @@ samples, guidance on mobile development, and a full API reference.
 * core to package
 * widget to package
 * build web
+* env switch
