@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
-import 'package:listen_portfolio_flutter/core/network/model/base_response_model.dart';
+import 'package:listen_portfolio_flutter/core/network/base_response_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/login_request_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/login_response_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/signup_request_model.dart';
