@@ -1,5 +1,16 @@
 {
   "result": "0",
-  "messageId": "",
-  "message": ""
+  "messageId": "messageId",
+  "message": "message",
+  "body": {
+    "token": "token1",
+    "refreshToken": "refreshToken1",
+    "user": {
+      "id": "1",
+      "name": "listen",
+      "email": "18",
+      "avatarUrl": "18",
+      "createdAt": "2026-02-01 12:22:35.123456"
+    }
+  }
 }

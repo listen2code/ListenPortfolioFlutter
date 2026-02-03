@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_portfolio_flutter/core/network/model/base_response_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/datasources/auth_local_data_source.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/login_request_model.dart';
@@ -45,7 +46,9 @@ void main() {
 
     final testUserModel = UserModel(id: '1', name: 'Test UserModel', email: 'test@example.com', createdAt: "2026-02-03");
 
-    final testLoginResponse = LoginResponseModel(token: testToken, refreshToken: testRefreshToken, user: testUserModel);
+    final testLoginResponse = BaseResponseModel<LoginResponseModel>(
+      body: LoginResponseModel(token: testToken, refreshToken: testRefreshToken, user: testUserModel),
+    );
 
     test('should check if device is online', () async {
       // Arrange

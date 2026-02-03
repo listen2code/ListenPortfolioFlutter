@@ -20,12 +20,14 @@ class _AuthRemoteDataSource implements AuthRemoteDataSource {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<LoginResponseModel> login(LoginRequestModel request) async {
+  Future<BaseResponseModel<LoginResponseModel>> login(
+    LoginRequestModel request,
+  ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = request;
-    final _options = _setStreamType<LoginResponseModel>(
+    final _options = _setStreamType<BaseResponseModel<LoginResponseModel>>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -35,10 +37,13 @@ class _AuthRemoteDataSource implements AuthRemoteDataSource {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    final _result = await _dio.fetch<Map<String, Object?>>(_options);
-    late LoginResponseModel _value;
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseResponseModel<LoginResponseModel> _value;
     try {
-      _value = LoginResponseModel.fromJson(_result.data!);
+      _value = BaseResponseModel<LoginResponseModel>.fromJson(
+        _result.data!,
+        (json) => LoginResponseModel.fromJson(json as Map<String, dynamic>),
+      );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
@@ -47,12 +52,14 @@ class _AuthRemoteDataSource implements AuthRemoteDataSource {
   }
 
   @override
-  Future<UserModel> signUp(SignupRequestModel request) async {
+  Future<BaseResponseModel<UserModel>> signUp(
+    SignupRequestModel request,
+  ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = request;
-    final _options = _setStreamType<UserModel>(
+    final _options = _setStreamType<BaseResponseModel<UserModel>>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -62,10 +69,13 @@ class _AuthRemoteDataSource implements AuthRemoteDataSource {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    final _result = await _dio.fetch<Map<String, Object?>>(_options);
-    late UserModel _value;
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseResponseModel<UserModel> _value;
     try {
-      _value = UserModel.fromJson(_result.data!);
+      _value = BaseResponseModel<UserModel>.fromJson(
+        _result.data!,
+        (json) => UserModel.fromJson(json as Map<String, dynamic>),
+      );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
@@ -74,12 +84,12 @@ class _AuthRemoteDataSource implements AuthRemoteDataSource {
   }
 
   @override
-  Future<void> logout() async {
+  Future<BaseResponseModel<void>> logout() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<void>(
+    final _options = _setStreamType<BaseResponseModel<void>>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -89,16 +99,27 @@ class _AuthRemoteDataSource implements AuthRemoteDataSource {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    await _dio.fetch<void>(_options);
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseResponseModel<void> _value;
+    try {
+      _value = BaseResponseModel<void>.fromJson(
+        _result.data!,
+        (json) => () {}(),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
   }
 
   @override
-  Future<void> forgotPassword(String email) async {
+  Future<BaseResponseModel<void>> forgotPassword(String email) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = {'email': email};
-    final _options = _setStreamType<void>(
+    final _options = _setStreamType<BaseResponseModel<void>>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -108,16 +129,30 @@ class _AuthRemoteDataSource implements AuthRemoteDataSource {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    await _dio.fetch<void>(_options);
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseResponseModel<void> _value;
+    try {
+      _value = BaseResponseModel<void>.fromJson(
+        _result.data!,
+        (json) => () {}(),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
   }
 
   @override
-  Future<void> changePassword(String oldPassword, String newPassword) async {
+  Future<BaseResponseModel<void>> changePassword(
+    String oldPassword,
+    String newPassword,
+  ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = {'oldPassword': oldPassword, 'newPassword': newPassword};
-    final _options = _setStreamType<void>(
+    final _options = _setStreamType<BaseResponseModel<void>>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -127,16 +162,27 @@ class _AuthRemoteDataSource implements AuthRemoteDataSource {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    await _dio.fetch<void>(_options);
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseResponseModel<void> _value;
+    try {
+      _value = BaseResponseModel<void>.fromJson(
+        _result.data!,
+        (json) => () {}(),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
   }
 
   @override
-  Future<UserModel> getUserById(String id) async {
+  Future<BaseResponseModel<UserModel>> getUserById(String id) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<UserModel>(
+    final _options = _setStreamType<BaseResponseModel<UserModel>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -146,10 +192,13 @@ class _AuthRemoteDataSource implements AuthRemoteDataSource {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    final _result = await _dio.fetch<Map<String, Object?>>(_options);
-    late UserModel _value;
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseResponseModel<UserModel> _value;
     try {
-      _value = UserModel.fromJson(_result.data!);
+      _value = BaseResponseModel<UserModel>.fromJson(
+        _result.data!,
+        (json) => UserModel.fromJson(json as Map<String, dynamic>),
+      );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;

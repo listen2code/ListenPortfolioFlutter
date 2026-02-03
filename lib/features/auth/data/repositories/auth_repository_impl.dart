@@ -29,11 +29,11 @@ class AuthRepositoryImpl implements AuthRepository {
       final response = await remoteDataSource.login(request);
 
       // Cache token and user
-      await localDataSource.cacheAuthToken(response.token);
-      await localDataSource.cacheUser(response.user);
+      await localDataSource.cacheAuthToken(response.body?.token);
+      await localDataSource.cacheUser(response.body?.user);
 
       appLogger.i('AuthRepository: Login successful');
-      return Right(response.user);
+      return Right(response.body?.user);
     } on ServerException catch (e) {
       appLogger.e('AuthRepository: Server error during login: ${e.message}');
       return Left(ServerFailure(e.message));
@@ -50,7 +50,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, UserModel>> signUp({required String name, required String email, required String password}) async {
+  Future<Either<Failure, UserModel?>> signUp({required String name, required String email, required String password}) async {
     if (!await networkInfo.isConnected) {
       return const Left(NetworkFailure('No internet connection'));
     }
@@ -61,7 +61,7 @@ class AuthRepositoryImpl implements AuthRepository {
       final user = await remoteDataSource.signUp(request);
 
       appLogger.i('AuthRepository: Signup successful');
-      return Right(user);
+      return Right(user.body);
     } on ServerException catch (e) {
       appLogger.e('AuthRepository: Server error during signup: ${e.message}');
       return Left(ServerFailure(e.message));
