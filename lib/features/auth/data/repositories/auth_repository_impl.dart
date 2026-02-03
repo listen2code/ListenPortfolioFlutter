@@ -4,7 +4,7 @@ import 'package:listen_portfolio_flutter/features/auth/data/datasources/auth_loc
 import 'package:listen_portfolio_flutter/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/login_request_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/signup_request_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/domain/entities/user.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/repositories/auth_repository.dart';
 
 /// Implementation of AuthRepository
@@ -18,7 +18,7 @@ class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl({required this.remoteDataSource, required this.localDataSource, required this.networkInfo});
 
   @override
-  Future<Either<Failure, User>> login({required String username, required String password}) async {
+  Future<Either<Failure, UserModel?>> login({required String username, required String password}) async {
     if (!await networkInfo.isConnected) {
       return const Left(NetworkFailure('No internet connection'));
     }
@@ -33,7 +33,7 @@ class AuthRepositoryImpl implements AuthRepository {
       await localDataSource.cacheUser(response.user);
 
       appLogger.i('AuthRepository: Login successful');
-      return Right(response.user.toEntity());
+      return Right(response.user);
     } on ServerException catch (e) {
       appLogger.e('AuthRepository: Server error during login: ${e.message}');
       return Left(ServerFailure(e.message));
@@ -50,7 +50,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, User>> signUp({required String name, required String email, required String password}) async {
+  Future<Either<Failure, UserModel>> signUp({required String name, required String email, required String password}) async {
     if (!await networkInfo.isConnected) {
       return const Left(NetworkFailure('No internet connection'));
     }
@@ -61,7 +61,7 @@ class AuthRepositoryImpl implements AuthRepository {
       final user = await remoteDataSource.signUp(request);
 
       appLogger.i('AuthRepository: Signup successful');
-      return Right(user.toEntity());
+      return Right(user);
     } on ServerException catch (e) {
       appLogger.e('AuthRepository: Server error during signup: ${e.message}');
       return Left(ServerFailure(e.message));
@@ -138,12 +138,12 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, User?>> getCurrentUser() async {
+  Future<Either<Failure, UserModel?>> getCurrentUser() async {
     try {
       final cachedUser = await localDataSource.getCachedUser();
       if (cachedUser != null) {
-        appLogger.d('AuthRepository: User retrieved from cache');
-        return Right(cachedUser.toEntity());
+        appLogger.d('AuthRepository: UserModel retrieved from cache');
+        return Right(cachedUser);
       }
       appLogger.d('AuthRepository: No cached user found');
       return const Right(null);

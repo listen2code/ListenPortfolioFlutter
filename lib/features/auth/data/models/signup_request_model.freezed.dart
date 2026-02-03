@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SignupRequestModel {
 
- String get name; String get email; String get password;
+ String? get name; String? get email; String? get password;
 /// Create a copy of SignupRequestModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $SignupRequestModelCopyWith<$Res>  {
   factory $SignupRequestModelCopyWith(SignupRequestModel value, $Res Function(SignupRequestModel) _then) = _$SignupRequestModelCopyWithImpl;
 @useResult
 $Res call({
- String name, String email, String password
+ String? name, String? email, String? password
 });
 
 
@@ -65,12 +65,12 @@ class _$SignupRequestModelCopyWithImpl<$Res>
 
 /// Create a copy of SignupRequestModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? email = null,Object? password = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? name = freezed,Object? email = freezed,Object? password = freezed,}) {
   return _then(_self.copyWith(
-name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
-as String,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
-as String,
+name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String?,email: freezed == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as String?,password: freezed == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -155,7 +155,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  String email,  String password)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? name,  String? email,  String? password)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SignupRequestModel() when $default != null:
 return $default(_that.name,_that.email,_that.password);case _:
@@ -176,7 +176,7 @@ return $default(_that.name,_that.email,_that.password);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  String email,  String password)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? name,  String? email,  String? password)  $default,) {final _that = this;
 switch (_that) {
 case _SignupRequestModel():
 return $default(_that.name,_that.email,_that.password);case _:
@@ -196,7 +196,7 @@ return $default(_that.name,_that.email,_that.password);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  String email,  String password)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? name,  String? email,  String? password)?  $default,) {final _that = this;
 switch (_that) {
 case _SignupRequestModel() when $default != null:
 return $default(_that.name,_that.email,_that.password);case _:
@@ -210,13 +210,13 @@ return $default(_that.name,_that.email,_that.password);case _:
 /// @nodoc
 @JsonSerializable()
 
-class _SignupRequestModel extends SignupRequestModel {
-  const _SignupRequestModel({required this.name, required this.email, required this.password}): super._();
+class _SignupRequestModel implements SignupRequestModel {
+  const _SignupRequestModel({this.name, this.email, this.password});
   factory _SignupRequestModel.fromJson(Map<String, dynamic> json) => _$SignupRequestModelFromJson(json);
 
-@override final  String name;
-@override final  String email;
-@override final  String password;
+@override final  String? name;
+@override final  String? email;
+@override final  String? password;
 
 /// Create a copy of SignupRequestModel
 /// with the given fields replaced by the non-null parameter values.
@@ -251,7 +251,7 @@ abstract mixin class _$SignupRequestModelCopyWith<$Res> implements $SignupReques
   factory _$SignupRequestModelCopyWith(_SignupRequestModel value, $Res Function(_SignupRequestModel) _then) = __$SignupRequestModelCopyWithImpl;
 @override @useResult
 $Res call({
- String name, String email, String password
+ String? name, String? email, String? password
 });
 
 
@@ -268,12 +268,12 @@ class __$SignupRequestModelCopyWithImpl<$Res>
 
 /// Create a copy of SignupRequestModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? email = null,Object? password = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? name = freezed,Object? email = freezed,Object? password = freezed,}) {
   return _then(_SignupRequestModel(
-name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
-as String,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
-as String,
+name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String?,email: freezed == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as String?,password: freezed == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

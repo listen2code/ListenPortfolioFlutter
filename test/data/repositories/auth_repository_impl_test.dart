@@ -7,7 +7,6 @@ import 'package:listen_portfolio_flutter/features/auth/data/models/login_request
 import 'package:listen_portfolio_flutter/features/auth/data/models/login_response_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/repositories/auth_repository_impl.dart';
-import 'package:listen_portfolio_flutter/features/auth/domain/entities/user.dart';
 import 'package:mocktail/mocktail.dart';
 
 // Mock classes
@@ -34,7 +33,7 @@ void main() {
     );
 
     // Register fallback values for mocktail
-    registerFallbackValue(UserModel(id: '', name: '', email: '', createdAt: DateTime.now()));
+    registerFallbackValue(UserModel(id: '', name: '', email: '', createdAt: ''));
     registerFallbackValue(const LoginRequestModel(username: '', password: ''));
   });
 
@@ -44,7 +43,7 @@ void main() {
     const testToken = 'test_token_12345';
     const testRefreshToken = 'test_refresh_token_67890';
 
-    final testUserModel = UserModel(id: '1', name: 'Test User', email: 'test@example.com', createdAt: DateTime(2024, 1, 1));
+    final testUserModel = UserModel(id: '1', name: 'Test UserModel', email: 'test@example.com', createdAt: "2026-02-03");
 
     final testLoginResponse = LoginResponseModel(token: testToken, refreshToken: testRefreshToken, user: testUserModel);
 
@@ -103,7 +102,7 @@ void main() {
       verify(() => mockLocalDataSource.cacheUser(testUserModel)).called(1);
     });
 
-    test('should return User entity when login is successful', () async {
+    test('should return UserModel entity when login is successful', () async {
       // Arrange
       when(() => mockNetworkInfo.isConnected).thenAnswer((_) async => true);
       when(() => mockRemoteDataSource.login(any())).thenAnswer((_) async => testLoginResponse);
@@ -116,10 +115,10 @@ void main() {
       // Assert
       expect(result.isRight(), true);
       result.fold((failure) => fail('Should return Right'), (user) {
-        expect(user, isA<User>());
-        expect(user.id, testUserModel.id);
-        expect(user.name, testUserModel.name);
-        expect(user.email, testUserModel.email);
+        expect(user, isA<UserModel>());
+        expect(user?.id, testUserModel.id);
+        expect(user?.name, testUserModel.name);
+        expect(user?.email, testUserModel.email);
       });
     });
 
@@ -178,9 +177,9 @@ void main() {
   });
 
   group('AuthRepositoryImpl - getCurrentUser', () {
-    final testUserModel = UserModel(id: '1', name: 'Test User', email: 'test@example.com', createdAt: DateTime(2024, 1, 1));
+    final testUserModel = UserModel(id: '1', name: 'Test UserModel', email: 'test@example.com', createdAt: "2026-02-03");
 
-    test('should return User when cached user exists', () async {
+    test('should return UserModel when cached user exists', () async {
       // Arrange
       when(() => mockLocalDataSource.getCachedUser()).thenAnswer((_) async => testUserModel);
 
@@ -190,7 +189,7 @@ void main() {
       // Assert
       expect(result.isRight(), true);
       result.fold((failure) => fail('Should return Right'), (user) {
-        expect(user, isA<User>());
+        expect(user, isA<UserModel>());
         expect(user?.id, testUserModel.id);
         expect(user?.name, testUserModel.name);
       });

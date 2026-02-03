@@ -78,7 +78,7 @@ class LoginViewModel extends _$LoginViewModel {
         state = state.copyWith(isLoading: false, errorMessage: failure.message);
       },
       (user) {
-        appLogger.i('LoginViewModel: login successful for user: ${user.name}');
+        appLogger.i('LoginViewModel: login successful for user: ${user?.name}');
         state = state.copyWith(isLoading: false, isSuccess: true);
       },
     );

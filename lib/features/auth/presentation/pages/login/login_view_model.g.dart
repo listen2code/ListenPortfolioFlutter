@@ -50,7 +50,7 @@ final class LoginViewModelProvider
   }
 }
 
-String _$loginViewModelHash() => r'55adcaf68686b64cb4118d5491d56dab8142d956';
+String _$loginViewModelHash() => r'91a9dc1b86fb147a8dc286c27eab65cb8663a5a3';
 
 /// ViewModel for login feature
 /// Handles user intents and emits new states

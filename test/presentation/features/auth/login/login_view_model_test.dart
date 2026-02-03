@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:listen_portfolio_flutter/features/auth/domain/entities/user.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/usecases/login_use_case.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_intent.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_state.dart';
@@ -109,7 +109,7 @@ void main() {
     test('should set success state when login succeeds', () async {
       // Arrange
       const initialState = LoginState(username: 'testuser', password: 'password123', isLoading: true);
-      final testUser = User(id: '1', name: 'Test User', email: 'test@example.com', createdAt: DateTime(2024, 1, 1));
+      final testUser = UserModel(id: '1', name: 'Test UserModel', email: 'test@example.com', createdAt: "2026-02-03");
 
       // Act
       final newState = initialState.copyWith(isLoading: false, isSuccess: true);

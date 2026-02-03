@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
-import 'package:listen_portfolio_flutter/features/auth/domain/entities/user.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/repositories/auth_repository.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/usecases/login_use_case.dart';
 import 'package:mocktail/mocktail.dart';
@@ -21,9 +21,9 @@ void main() {
   group('LoginUseCase', () {
     const testUsername = 'testuser';
     const testPassword = 'password123';
-    final testUser = User(id: '1', name: 'Test User', email: 'test@example.com', createdAt: DateTime(2024, 1, 1));
+    final testUser = UserModel(id: '1', name: 'Test UserModel', email: 'test@example.com', createdAt: "2026-02-03");
 
-    test('should return User when login is successful', () async {
+    test('should return UserModel when login is successful', () async {
       // Arrange
       when(
         () => mockRepository.login(
@@ -36,7 +36,7 @@ void main() {
       final result = await useCase(LoginParams(username: testUsername, password: testPassword));
 
       // Assert
-      expect(result, Right<Failure, User>(testUser));
+      expect(result, Right<Failure, UserModel>(testUser));
       verify(() => mockRepository.login(username: testUsername, password: testPassword)).called(1);
       verifyNoMoreInteractions(mockRepository);
     });
@@ -49,7 +49,7 @@ void main() {
       final result = await useCase(LoginParams(username: emptyUsername, password: testPassword));
 
       // Assert
-      expect(result, const Left<Failure, User>(ValidationFailure('Username cannot be empty')));
+      expect(result, const Left<Failure, UserModel>(ValidationFailure('Username cannot be empty')));
       verifyNever(
         () => mockRepository.login(
           username: any(named: 'username'),
@@ -66,7 +66,7 @@ void main() {
       final result = await useCase(LoginParams(username: testUsername, password: shortPassword));
 
       // Assert
-      expect(result, const Left<Failure, User>(ValidationFailure('Password must be at least 6 characters')));
+      expect(result, const Left<Failure, UserModel>(ValidationFailure('Password must be at least 6 characters')));
       verifyNever(
         () => mockRepository.login(
           username: any(named: 'username'),
@@ -89,7 +89,7 @@ void main() {
       final result = await useCase(LoginParams(username: testUsername, password: testPassword));
 
       // Assert
-      expect(result, const Left<Failure, User>(serverFailure));
+      expect(result, const Left<Failure, UserModel>(serverFailure));
       verify(() => mockRepository.login(username: testUsername, password: testPassword)).called(1);
     });
 
@@ -107,7 +107,7 @@ void main() {
       final result = await useCase(LoginParams(username: testUsername, password: testPassword));
 
       // Assert
-      expect(result, const Left<Failure, User>(networkFailure));
+      expect(result, const Left<Failure, UserModel>(networkFailure));
       verify(() => mockRepository.login(username: testUsername, password: testPassword)).called(1);
     });
 
@@ -125,7 +125,7 @@ void main() {
       final result = await useCase(LoginParams(username: testUsername, password: 'wrongpassword'));
 
       // Assert
-      expect(result, const Left<Failure, User>(authFailure));
+      expect(result, const Left<Failure, UserModel>(authFailure));
       verify(() => mockRepository.login(username: testUsername, password: 'wrongpassword')).called(1);
     });
 

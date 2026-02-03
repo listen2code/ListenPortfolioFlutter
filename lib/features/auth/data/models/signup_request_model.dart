@@ -1,15 +1,11 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'signup_request_model.freezed.dart';
-
 part 'signup_request_model.g.dart';
 
-/// Request model for signup API call
 @freezed
 abstract class SignupRequestModel with _$SignupRequestModel {
-  const SignupRequestModel._();
+  const factory SignupRequestModel({String? name, String? email, String? password}) = _SignupRequestModel;
 
-  const factory SignupRequestModel({required String name, required String email, required String password}) = _SignupRequestModel;
-
-  factory SignupRequestModel.fromJson(Map<String, dynamic> json) => _$SignupRequestModelFromJson(json);
+  factory SignupRequestModel.fromJson(Map<String, Object?> json) => _$SignupRequestModelFromJson(json);
 }

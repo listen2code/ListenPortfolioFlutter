@@ -16,7 +16,7 @@ class AuthLocalDataSource {
   AuthLocalDataSource({required this.secureStorage, required this.sharedPreferences});
 
   /// Cache authentication token securely
-  Future<void> cacheAuthToken(String token) async {
+  Future<void> cacheAuthToken(String? token) async {
     try {
       await secureStorage.write(key: AppConstants.authTokenKey, value: token);
       appLogger.d('AuthLocalDataSource: Token cached successfully');
@@ -39,11 +39,11 @@ class AuthLocalDataSource {
   }
 
   /// Cache user data
-  Future<void> cacheUser(UserModel user) async {
+  Future<void> cacheUser(UserModel? user) async {
     try {
-      final userJson = json.encode(user.toJson());
+      final userJson = json.encode(user?.toJson());
       await sharedPreferences.setString(AppConstants.userDataKey, userJson);
-      appLogger.d('AuthLocalDataSource: User cached successfully');
+      appLogger.d('AuthLocalDataSource: UserModel cached successfully');
     } catch (e) {
       appLogger.e('AuthLocalDataSource: Failed to cache user: $e');
       throw CacheException('Failed to cache user data');
@@ -56,7 +56,7 @@ class AuthLocalDataSource {
       final userJson = sharedPreferences.getString(AppConstants.userDataKey);
       if (userJson != null) {
         final user = UserModel.fromJson(json.decode(userJson));
-        appLogger.d('AuthLocalDataSource: User retrieved from cache');
+        appLogger.d('AuthLocalDataSource: UserModel retrieved from cache');
         return user;
       }
       appLogger.d('AuthLocalDataSource: No cached user found');
