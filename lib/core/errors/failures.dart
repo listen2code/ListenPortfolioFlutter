@@ -30,6 +30,10 @@ class AuthFailure extends Failure {
   const AuthFailure(super.message);
 }
 
+class ParseFailure extends Failure {
+  const ParseFailure(super.message);
+}
+
 class UnknownFailure extends Failure {
   const UnknownFailure(super.message);
 }

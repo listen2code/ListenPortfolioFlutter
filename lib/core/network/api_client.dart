@@ -22,6 +22,7 @@ class ApiClient {
 
     dio.interceptors.add(_LoggingInterceptor());
     dio.interceptors.add(_AuthInterceptor());
+    dio.interceptors.add(_ErrorInterceptor());
 
     return dio;
   }
@@ -59,4 +60,48 @@ class _AuthInterceptor extends Interceptor {
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
     super.onRequest(options, handler);
   }
+}
+
+class _ErrorInterceptor extends Interceptor {
+  @override
+  void onError(DioException err, ErrorInterceptorHandler handler) {
+    AppException exception;
+
+    switch (err.type) {
+      case DioExceptionType.connectionTimeout:
+      case DioExceptionType.sendTimeout:
+      case DioExceptionType.receiveTimeout:
+        exception = NetworkException('Network connection timeout');
+        break;
+      case DioExceptionType.badResponse:
+        final statusCode = err.response?.statusCode;
+        final message = err.response?.data?['message'] ?? err.message;
+
+        if (statusCode == 401 || statusCode == 403) {
+          exception = AuthException(message, statusCode);
+        } else if (statusCode != null && statusCode >= 500) {
+          exception = ServerException('Internal Server Error: $message', statusCode);
+        } else {
+          exception = ServerException(message, statusCode);
+        }
+        break;
+      case DioExceptionType.cancel:
+        exception = AppException('Request cancelled');
+        break;
+      default:
+        exception = ServerException(err.message ?? 'Unknown network error');
+    }
+
+    return handler.next(
+      DioException(requestOptions: err.requestOptions, error: exception, type: err.type, response: err.response),
+    );
+  }
+}
+
+class ApiResult {
+  ApiResult._();
+
+  static const String success = "0";
+  static const String serverError = "1";
+  static const String sessionTimeout = "3";
 }

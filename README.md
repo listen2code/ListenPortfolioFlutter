@@ -28,4 +28,3 @@ samples, guidance on mobile development, and a full API reference.
 * core to package
 * widget to package
 * build web
-* env switch
