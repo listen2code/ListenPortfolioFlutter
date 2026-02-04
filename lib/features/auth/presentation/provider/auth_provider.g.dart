@@ -249,7 +249,7 @@ final class AuthRemoteDataSourceProvider
 }
 
 String _$authRemoteDataSourceHash() =>
-    r'b2d585d982e03a5a0a137eadb5ad54e402699e04';
+    r'd976bfb9861c8f7e05efe1bcc1b810e3fba98b9d';
 
 /// Provides AuthLocalDataSource instance
 

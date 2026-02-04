@@ -31,7 +31,7 @@ class _AuthRemoteDataSource implements AuthRemoteDataSource {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            'http://192.168.0.224:9898/v1/auth/login',
+            '/v1/auth/login',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -63,7 +63,7 @@ class _AuthRemoteDataSource implements AuthRemoteDataSource {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            'http://192.168.0.224:9898/v1/auth/signUp',
+            '/v1/auth/signUp',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -93,7 +93,7 @@ class _AuthRemoteDataSource implements AuthRemoteDataSource {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            'http://192.168.0.224:9898/v1/auth/logout',
+            '/v1/auth/logout',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -123,7 +123,7 @@ class _AuthRemoteDataSource implements AuthRemoteDataSource {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            'http://192.168.0.224:9898/v1/auth/forgot-password',
+            '/v1/auth/forgot-password',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -156,7 +156,7 @@ class _AuthRemoteDataSource implements AuthRemoteDataSource {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            'http://192.168.0.224:9898/v1/auth/change-password',
+            '/v1/auth/change-password',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -186,7 +186,7 @@ class _AuthRemoteDataSource implements AuthRemoteDataSource {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            'http://192.168.0.224:9898/v1/users/${id}',
+            '/v1/users/${id}',
             queryParameters: queryParameters,
             data: _data,
           )

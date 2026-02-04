@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:listen_portfolio_flutter/core/constants/app_env.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
 
 /// Creates and configures a single Dio instance for the entire application
@@ -12,9 +13,9 @@ class ApiClient {
   static Dio _initDio() {
     final dio = Dio(
       BaseOptions(
-        connectTimeout: const Duration(milliseconds: AppConstants.connectTimeout),
-        receiveTimeout: const Duration(milliseconds: AppConstants.receiveTimeout),
-        sendTimeout: const Duration(milliseconds: AppConstants.apiTimeout),
+        connectTimeout: Duration(milliseconds: AppEnv.connectTimeout),
+        receiveTimeout: Duration(milliseconds: AppEnv.receiveTimeout),
+        sendTimeout: Duration(milliseconds: AppEnv.apiTimeout),
         headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
       ),
     );
