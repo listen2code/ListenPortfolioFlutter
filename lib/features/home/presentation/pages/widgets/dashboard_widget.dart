@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DashboardWidget extends StatelessWidget {
@@ -45,7 +46,7 @@ class DashboardWidget extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Hello, I\'m Listen', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
+              const Text('Hello, I\'m ${AppConstants.author}', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
               Text(
                 'Full Stack Mobile Architect (Graduated 2013)',
                 style: TextStyle(color: Colors.blueAccent, fontSize: 14, fontWeight: FontWeight.w500),
@@ -56,7 +57,7 @@ class DashboardWidget extends StatelessWidget {
         const CircleAvatar(
           radius: 25,
           backgroundColor: Colors.blueAccent,
-          backgroundImage: NetworkImage('https://api.dicebear.com/7.x/avataaars/svg?seed=Listen'),
+          backgroundImage: NetworkImage('https://api.dicebear.com/7.x/avataaars/svg?seed=${AppConstants.author}'),
         ),
       ],
     );

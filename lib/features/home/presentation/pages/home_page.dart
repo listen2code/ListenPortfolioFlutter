@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_page.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/widgets/architecture_widget.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/widgets/dashboard_widget.dart';
@@ -130,12 +131,12 @@ class _HomePageState extends State<HomePage> {
                 backgroundColor: Colors.white,
                 child: CircleAvatar(
                   radius: 32,
-                  backgroundImage: NetworkImage('https://api.dicebear.com/7.x/avataaars/svg?seed=Listen'),
+                  backgroundImage: NetworkImage('https://api.dicebear.com/7.x/avataaars/svg?seed=${AppConstants.author}'),
                 ),
               ),
               const SizedBox(height: 15),
               const Text(
-                'Listen',
+                AppConstants.author,
                 style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
               ),
               const Text('listen@example.com', style: TextStyle(color: Colors.white70, fontSize: 14)),

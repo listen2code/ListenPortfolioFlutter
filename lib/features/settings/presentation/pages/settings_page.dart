@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
+import 'package:listen_portfolio_flutter/core/constants/app_env.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/password/change_password_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -89,19 +91,19 @@ class _SettingsPageState extends State<SettingsPage> {
                   title: 'Open Source Licenses',
                   onTap: () => showLicensePage(
                     context: context,
-                    applicationName: 'Listen Portfolio',
-                    applicationVersion: '1.0.0',
+                    applicationName: '${AppConstants.appVersion} Portfolio',
+                    applicationVersion: AppConstants.appVersion,
                     applicationIcon: const Padding(
                       padding: EdgeInsets.all(8.0),
                       child: Icon(Icons.auto_awesome, size: 48, color: Colors.blueAccent),
                     ),
-                    applicationLegalese: '© 2026 Listen',
+                    applicationLegalese: '© 2026 ${AppConstants.author}',
                   ),
                 ),
                 _buildListTile(
                   icon: Icons.alternate_email_rounded,
                   title: 'Contact Me',
-                  subtitle: 'Send an email to Listen',
+                  subtitle: 'Send an email to ${AppConstants.appVersion}',
                   onTap: () => _launchURL('mailto:listen2code@gmail.com?subject=Portfolio%20Feedback'),
                 ),
               ]),
@@ -111,8 +113,18 @@ class _SettingsPageState extends State<SettingsPage> {
                 _buildListTile(
                   icon: Icons.info_outline,
                   title: 'App Version',
-                  trailing: const Text('1.0.0', style: TextStyle(color: Colors.grey)),
-                  onTap: () {},
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        '${AppConstants.appVersion}${!AppEnv.isProd() ? ' (${AppEnv.env})' : ''}',
+                        style: const TextStyle(color: Colors.grey),
+                      ),
+                      const SizedBox(width: 4),
+                      const Icon(Icons.arrow_forward_ios_rounded, size: 12, color: Colors.grey),
+                    ],
+                  ),
+                  onTap: () => _showEnvSwitchDialog(),
                 ),
               ]),
               const SizedBox(height: 40),
@@ -123,12 +135,47 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
+  void _showEnvSwitchDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Switch Environment'),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [_buildEnvTile('Development', 'dev'), _buildEnvTile('Testing', 'test'), _buildEnvTile('Production', 'prod')],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEnvTile(String label, String envCode) {
+    final bool isCurrent = AppEnv.env == envCode;
+    return ListTile(
+      title: Text(label),
+      subtitle: Text(isCurrent ? 'Currently Active' : 'Switch to $envCode'),
+      trailing: isCurrent ? const Icon(Icons.check_circle, color: Colors.green) : null,
+      onTap: () {
+        AppEnv.setEnvironment(envCode);
+        setState(() {}); // Refresh UI
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Environment switched to: $label'),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.blueAccent,
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> _launchURL(String urlString) async {
     final Uri url = Uri.parse(urlString);
     if (!await canLaunchUrl(url) && mounted) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('No email apps installed'), behavior: SnackBarBehavior.floating));
+      ).showSnackBar(const SnackBar(content: Text('No email apps installed'), behavior: SnackBarBehavior.floating));
       return;
     }
     if (!await launchUrl(url) && mounted) {

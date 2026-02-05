@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
 
 class ProfileWidget extends StatelessWidget {
   const ProfileWidget({super.key});
@@ -46,7 +47,7 @@ class ProfileWidget extends StatelessWidget {
                 backgroundColor: Colors.white,
                 child: CircleAvatar(
                   radius: 60,
-                  backgroundImage: NetworkImage('https://api.dicebear.com/7.x/avataaars/svg?seed=Listen'),
+                  backgroundImage: NetworkImage('https://api.dicebear.com/7.x/avataaars/svg?seed=${AppConstants.author}'),
                   backgroundColor: Colors.blueAccent,
                 ),
               ),
@@ -74,7 +75,7 @@ class ProfileWidget extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 20),
-        const Text('Listen', style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
+        const Text('${AppConstants.author}', style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
         const Text(
           'Senior Flutter Developer',
           style: TextStyle(fontSize: 16, color: Colors.blueAccent, fontWeight: FontWeight.w500),

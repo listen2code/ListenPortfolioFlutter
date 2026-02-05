@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_page.dart';
 
 class SplashPage extends StatefulWidget {
@@ -53,7 +54,7 @@ class _SplashPageState extends State<SplashPage> {
             ),
             const SizedBox(height: 30),
             const Text(
-              'Listen Portfolio',
+              '${AppConstants.author} Portfolio',
               style: TextStyle(fontSize: 36, fontWeight: FontWeight.w300, color: Colors.white, letterSpacing: 2.0),
             ),
             const SizedBox(height: 40),

@@ -7,6 +7,8 @@ class AppEnv {
   static const String _test = 'test';
   static const String _prod = 'prod';
 
+  static bool isProd() => _env == _prod;
+
   static String _env = const String.fromEnvironment('APP_ENV', defaultValue: _dev);
 
   static const _devConfig = (

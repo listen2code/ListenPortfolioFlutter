@@ -8,6 +8,7 @@ class AppConstants {
   static const String notificationsKey = 'notifications_enabled';
   static const String appName = 'lPortfolio';
   static const String appVersion = '1.0.0';
+  static const String author = 'Listen';
   static const int defaultPageSize = 20;
   static const int maxPageSize = 100;
 }
