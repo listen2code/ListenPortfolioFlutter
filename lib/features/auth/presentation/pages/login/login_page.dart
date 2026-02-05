@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_intent.dart';
+import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_navigation_handler.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_state.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_view_model.dart';
-import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_page.dart';
 
 /// Login page with MVI pattern
-/// Stateless widget that renders UI based on state and sends intents to ViewModel
+/// Uses LoginNavigationHandler to isolate side effects from UI declaration
 class LoginPage extends ConsumerWidget {
   const LoginPage({super.key});
 
@@ -15,46 +15,41 @@ class LoginPage extends ConsumerWidget {
     final state = ref.watch(loginViewModelProvider);
     final viewModel = ref.read(loginViewModelProvider.notifier);
 
-    // Listen for success and navigate
-    ref.listen(loginViewModelProvider, (previous, next) {
-      if (next.isSuccess) {
-        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const HomePage()));
-      }
-    });
-
-    return Scaffold(
-      body: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.blueAccent.withValues(alpha: 0.05), Colors.white],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+    return LoginNavigationHandler(
+      child: Scaffold(
+        body: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.blueAccent.withValues(alpha: 0.05), Colors.white],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
           ),
-        ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 30.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SizedBox(height: 60),
-                _buildLogo(),
-                const SizedBox(height: 30),
-                _buildTitle(),
-                const SizedBox(height: 50),
-                _buildUsernameField(state, viewModel),
-                const SizedBox(height: 20),
-                _buildPasswordField(state, viewModel),
-                _buildForgotPasswordButton(context),
-                const SizedBox(height: 30),
-                _buildLoginButton(state, viewModel),
-                const SizedBox(height: 15),
-                _buildSkipButton(context),
-                const SizedBox(height: 30),
-                _buildSignupLink(context),
-                if (state.errorMessage != null) ...[const SizedBox(height: 20), _buildErrorMessage(state.errorMessage!)],
-              ],
+          child: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 30.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: 60),
+                  _buildLogo(),
+                  const SizedBox(height: 30),
+                  _buildTitle(),
+                  const SizedBox(height: 50),
+                  _buildUsernameField(state, viewModel),
+                  const SizedBox(height: 20),
+                  _buildPasswordField(state, viewModel),
+                  _buildForgotPasswordButton(viewModel),
+                  const SizedBox(height: 30),
+                  _buildLoginButton(state, viewModel),
+                  const SizedBox(height: 15),
+                  _buildSkipButton(viewModel),
+                  const SizedBox(height: 30),
+                  _buildSignupLink(viewModel),
+                  if (state.errorMessage != null) ...[const SizedBox(height: 20), _buildErrorMessage(state.errorMessage!)],
+                ],
+              ),
             ),
           ),
         ),
@@ -125,13 +120,11 @@ class LoginPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildForgotPasswordButton(BuildContext context) {
+  Widget _buildForgotPasswordButton(LoginViewModel viewModel) {
     return Align(
       alignment: Alignment.centerRight,
       child: TextButton(
-        onPressed: () {
-          // TODO: Navigate to forgot password page
-        },
+        onPressed: () => viewModel.handleIntent(const LoginIntent.navigateToForgotPassword()),
         child: const Text('Forgot Password?', style: TextStyle(color: Colors.blueAccent)),
       ),
     );
@@ -166,24 +159,20 @@ class LoginPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildSkipButton(BuildContext context) {
+  Widget _buildSkipButton(LoginViewModel viewModel) {
     return TextButton(
-      onPressed: () {
-        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const HomePage()));
-      },
+      onPressed: () => viewModel.handleIntent(const LoginIntent.skipLogin()),
       child: const Text('Skip for now', style: TextStyle(color: Colors.grey)),
     );
   }
 
-  Widget _buildSignupLink(BuildContext context) {
+  Widget _buildSignupLink(LoginViewModel viewModel) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const Text("Don't have an account? ", style: TextStyle(color: Colors.grey)),
         TextButton(
-          onPressed: () {
-            // TODO: Navigate to signup page
-          },
+          onPressed: () => viewModel.handleIntent(const LoginIntent.navigateToSignup()),
           child: const Text(
             'Sign Up',
             style: TextStyle(color: Colors.blueAccent, fontWeight: FontWeight.bold),

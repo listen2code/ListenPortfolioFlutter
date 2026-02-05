@@ -34,8 +34,12 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
+      extendBodyBehindAppBar: true,
+      extendBody: true,
+      appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0, foregroundColor: Colors.black87),
       body: Container(
-        width: double.infinity,
+        constraints: const BoxConstraints.expand(),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [Colors.blueAccent.withOpacity(0.05), Colors.white],
@@ -44,6 +48,7 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
         ),
         child: SafeArea(
+          bottom: false,
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 30.0),
             child: Form(
@@ -51,7 +56,7 @@ class _SignUpPageState extends State<SignUpPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 20),
                   const Text(
                     'Create Account',
                     textAlign: TextAlign.center,
@@ -124,6 +129,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 40),
                 ],
               ),
             ),

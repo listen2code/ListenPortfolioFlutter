@@ -55,7 +55,7 @@ extension LoginIntentPatterns on LoginIntent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( UsernameChanged value)?  usernameChanged,TResult Function( PasswordChanged value)?  passwordChanged,TResult Function( TogglePasswordVisibility value)?  togglePasswordVisibility,TResult Function( SubmitLogin value)?  submitLogin,TResult Function( NavigateToSignup value)?  navigateToSignup,TResult Function( NavigateToForgotPassword value)?  navigateToForgotPassword,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( UsernameChanged value)?  usernameChanged,TResult Function( PasswordChanged value)?  passwordChanged,TResult Function( TogglePasswordVisibility value)?  togglePasswordVisibility,TResult Function( SubmitLogin value)?  submitLogin,TResult Function( NavigateToSignup value)?  navigateToSignup,TResult Function( NavigateToForgotPassword value)?  navigateToForgotPassword,TResult Function( SkipLogin value)?  skipLogin,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case UsernameChanged() when usernameChanged != null:
@@ -64,7 +64,8 @@ return passwordChanged(_that);case TogglePasswordVisibility() when togglePasswor
 return togglePasswordVisibility(_that);case SubmitLogin() when submitLogin != null:
 return submitLogin(_that);case NavigateToSignup() when navigateToSignup != null:
 return navigateToSignup(_that);case NavigateToForgotPassword() when navigateToForgotPassword != null:
-return navigateToForgotPassword(_that);case _:
+return navigateToForgotPassword(_that);case SkipLogin() when skipLogin != null:
+return skipLogin(_that);case _:
   return orElse();
 
 }
@@ -82,7 +83,7 @@ return navigateToForgotPassword(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( UsernameChanged value)  usernameChanged,required TResult Function( PasswordChanged value)  passwordChanged,required TResult Function( TogglePasswordVisibility value)  togglePasswordVisibility,required TResult Function( SubmitLogin value)  submitLogin,required TResult Function( NavigateToSignup value)  navigateToSignup,required TResult Function( NavigateToForgotPassword value)  navigateToForgotPassword,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( UsernameChanged value)  usernameChanged,required TResult Function( PasswordChanged value)  passwordChanged,required TResult Function( TogglePasswordVisibility value)  togglePasswordVisibility,required TResult Function( SubmitLogin value)  submitLogin,required TResult Function( NavigateToSignup value)  navigateToSignup,required TResult Function( NavigateToForgotPassword value)  navigateToForgotPassword,required TResult Function( SkipLogin value)  skipLogin,}){
 final _that = this;
 switch (_that) {
 case UsernameChanged():
@@ -91,7 +92,8 @@ return passwordChanged(_that);case TogglePasswordVisibility():
 return togglePasswordVisibility(_that);case SubmitLogin():
 return submitLogin(_that);case NavigateToSignup():
 return navigateToSignup(_that);case NavigateToForgotPassword():
-return navigateToForgotPassword(_that);case _:
+return navigateToForgotPassword(_that);case SkipLogin():
+return skipLogin(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -108,7 +110,7 @@ return navigateToForgotPassword(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( UsernameChanged value)?  usernameChanged,TResult? Function( PasswordChanged value)?  passwordChanged,TResult? Function( TogglePasswordVisibility value)?  togglePasswordVisibility,TResult? Function( SubmitLogin value)?  submitLogin,TResult? Function( NavigateToSignup value)?  navigateToSignup,TResult? Function( NavigateToForgotPassword value)?  navigateToForgotPassword,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( UsernameChanged value)?  usernameChanged,TResult? Function( PasswordChanged value)?  passwordChanged,TResult? Function( TogglePasswordVisibility value)?  togglePasswordVisibility,TResult? Function( SubmitLogin value)?  submitLogin,TResult? Function( NavigateToSignup value)?  navigateToSignup,TResult? Function( NavigateToForgotPassword value)?  navigateToForgotPassword,TResult? Function( SkipLogin value)?  skipLogin,}){
 final _that = this;
 switch (_that) {
 case UsernameChanged() when usernameChanged != null:
@@ -117,7 +119,8 @@ return passwordChanged(_that);case TogglePasswordVisibility() when togglePasswor
 return togglePasswordVisibility(_that);case SubmitLogin() when submitLogin != null:
 return submitLogin(_that);case NavigateToSignup() when navigateToSignup != null:
 return navigateToSignup(_that);case NavigateToForgotPassword() when navigateToForgotPassword != null:
-return navigateToForgotPassword(_that);case _:
+return navigateToForgotPassword(_that);case SkipLogin() when skipLogin != null:
+return skipLogin(_that);case _:
   return null;
 
 }
@@ -134,7 +137,7 @@ return navigateToForgotPassword(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String username)?  usernameChanged,TResult Function( String password)?  passwordChanged,TResult Function()?  togglePasswordVisibility,TResult Function()?  submitLogin,TResult Function()?  navigateToSignup,TResult Function()?  navigateToForgotPassword,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String username)?  usernameChanged,TResult Function( String password)?  passwordChanged,TResult Function()?  togglePasswordVisibility,TResult Function()?  submitLogin,TResult Function()?  navigateToSignup,TResult Function()?  navigateToForgotPassword,TResult Function()?  skipLogin,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case UsernameChanged() when usernameChanged != null:
 return usernameChanged(_that.username);case PasswordChanged() when passwordChanged != null:
@@ -142,7 +145,8 @@ return passwordChanged(_that.password);case TogglePasswordVisibility() when togg
 return togglePasswordVisibility();case SubmitLogin() when submitLogin != null:
 return submitLogin();case NavigateToSignup() when navigateToSignup != null:
 return navigateToSignup();case NavigateToForgotPassword() when navigateToForgotPassword != null:
-return navigateToForgotPassword();case _:
+return navigateToForgotPassword();case SkipLogin() when skipLogin != null:
+return skipLogin();case _:
   return orElse();
 
 }
@@ -160,7 +164,7 @@ return navigateToForgotPassword();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String username)  usernameChanged,required TResult Function( String password)  passwordChanged,required TResult Function()  togglePasswordVisibility,required TResult Function()  submitLogin,required TResult Function()  navigateToSignup,required TResult Function()  navigateToForgotPassword,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String username)  usernameChanged,required TResult Function( String password)  passwordChanged,required TResult Function()  togglePasswordVisibility,required TResult Function()  submitLogin,required TResult Function()  navigateToSignup,required TResult Function()  navigateToForgotPassword,required TResult Function()  skipLogin,}) {final _that = this;
 switch (_that) {
 case UsernameChanged():
 return usernameChanged(_that.username);case PasswordChanged():
@@ -168,7 +172,8 @@ return passwordChanged(_that.password);case TogglePasswordVisibility():
 return togglePasswordVisibility();case SubmitLogin():
 return submitLogin();case NavigateToSignup():
 return navigateToSignup();case NavigateToForgotPassword():
-return navigateToForgotPassword();case _:
+return navigateToForgotPassword();case SkipLogin():
+return skipLogin();case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -185,7 +190,7 @@ return navigateToForgotPassword();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String username)?  usernameChanged,TResult? Function( String password)?  passwordChanged,TResult? Function()?  togglePasswordVisibility,TResult? Function()?  submitLogin,TResult? Function()?  navigateToSignup,TResult? Function()?  navigateToForgotPassword,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String username)?  usernameChanged,TResult? Function( String password)?  passwordChanged,TResult? Function()?  togglePasswordVisibility,TResult? Function()?  submitLogin,TResult? Function()?  navigateToSignup,TResult? Function()?  navigateToForgotPassword,TResult? Function()?  skipLogin,}) {final _that = this;
 switch (_that) {
 case UsernameChanged() when usernameChanged != null:
 return usernameChanged(_that.username);case PasswordChanged() when passwordChanged != null:
@@ -193,7 +198,8 @@ return passwordChanged(_that.password);case TogglePasswordVisibility() when togg
 return togglePasswordVisibility();case SubmitLogin() when submitLogin != null:
 return submitLogin();case NavigateToSignup() when navigateToSignup != null:
 return navigateToSignup();case NavigateToForgotPassword() when navigateToForgotPassword != null:
-return navigateToForgotPassword();case _:
+return navigateToForgotPassword();case SkipLogin() when skipLogin != null:
+return skipLogin();case _:
   return null;
 
 }
@@ -453,6 +459,38 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'LoginIntent.navigateToForgotPassword()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class SkipLogin implements LoginIntent {
+  const SkipLogin();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SkipLogin);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'LoginIntent.skipLogin()';
 }
 
 

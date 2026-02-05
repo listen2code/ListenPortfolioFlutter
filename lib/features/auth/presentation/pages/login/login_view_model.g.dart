@@ -8,21 +8,12 @@ part of 'login_view_model.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// ViewModel for login feature
-/// Handles user intents and emits new states
-/// Implements unidirectional data flow (MVI pattern)
 
 @ProviderFor(LoginViewModel)
 final loginViewModelProvider = LoginViewModelProvider._();
 
-/// ViewModel for login feature
-/// Handles user intents and emits new states
-/// Implements unidirectional data flow (MVI pattern)
 final class LoginViewModelProvider
     extends $NotifierProvider<LoginViewModel, LoginState> {
-  /// ViewModel for login feature
-  /// Handles user intents and emits new states
-  /// Implements unidirectional data flow (MVI pattern)
   LoginViewModelProvider._()
     : super(
         from: null,
@@ -50,11 +41,7 @@ final class LoginViewModelProvider
   }
 }
 
-String _$loginViewModelHash() => r'91a9dc1b86fb147a8dc286c27eab65cb8663a5a3';
-
-/// ViewModel for login feature
-/// Handles user intents and emits new states
-/// Implements unidirectional data flow (MVI pattern)
+String _$loginViewModelHash() => r'c279420bf73f03b8e136795f113ad3de34e628ee';
 
 abstract class _$LoginViewModel extends $Notifier<LoginState> {
   LoginState build();
