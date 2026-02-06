@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_portfolio_flutter/core/theme/theme_provider.dart';
 
-class AppearancePage extends ConsumerStatefulWidget {
+class AppearancePage extends StatefulWidget {
   const AppearancePage({super.key});
 
   @override
-  ConsumerState<AppearancePage> createState() => _AppearancePageState();
+  State<AppearancePage> createState() => _AppearancePageState();
 }
 
-class _AppearancePageState extends ConsumerState<AppearancePage> {
+class _AppearancePageState extends State<AppearancePage> {
   Color _selectedAccentColor = Colors.blueAccent;
 
   final List<Color> _accentColors = [
@@ -25,66 +24,68 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
 
   @override
   Widget build(BuildContext context) {
-    // 1. Watch the global theme mode
-    final themeMode = ref.watch(themeControllerProvider);
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Appearance', style: TextStyle(fontWeight: FontWeight.w300)),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        foregroundColor: Colors.black87,
-      ),
-      extendBodyBehindAppBar: true,
-      body: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.blueAccent.withOpacity(0.05), Colors.white],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+    return ListenableBuilder(
+      listenable: themeManager,
+      builder: (context, child) {
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Appearance', style: TextStyle(fontWeight: FontWeight.w300)),
+            centerTitle: true,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            foregroundColor: Colors.black87,
           ),
-        ),
-        child: SafeArea(
-          child: ListView(
-            padding: const EdgeInsets.all(20),
-            children: [
-              _buildSectionTitle('Theme Mode'),
-              _buildSettingsCard([
-                _buildThemeOption('System', Icons.settings_brightness_outlined, ThemeMode.system, themeMode),
-                _buildThemeOption('Light', Icons.light_mode_outlined, ThemeMode.light, themeMode),
-                _buildThemeOption('Dark', Icons.dark_mode_outlined, ThemeMode.dark, themeMode),
-              ]),
-              const SizedBox(height: 25),
-              _buildSectionTitle('Accent Color'),
-              _buildSettingsCard([
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Wrap(
-                    spacing: 15,
-                    runSpacing: 15,
-                    children: _accentColors.map((color) => _buildColorOption(color)).toList(),
-                  ),
-                ),
-              ]),
-              const SizedBox(height: 25),
-              _buildSectionTitle('Font Size'),
-              _buildSettingsCard([
-                const ListTile(
-                  leading: Icon(Icons.text_fields, color: Colors.blueAccent),
-                  title: Text('Standard'),
-                  trailing: Icon(Icons.check, color: Colors.blueAccent),
-                ),
-                const ListTile(
-                  leading: Icon(Icons.text_fields, color: Colors.blueAccent, size: 28),
-                  title: Text('Large'),
-                ),
-              ]),
-            ],
+          extendBodyBehindAppBar: true,
+          body: Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.blueAccent.withOpacity(0.05), Colors.white],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+            child: SafeArea(
+              child: ListView(
+                padding: const EdgeInsets.all(20),
+                children: [
+                  _buildSectionTitle('Theme Mode'),
+                  _buildSettingsCard([
+                    _buildThemeOption('System', Icons.settings_brightness_outlined, ThemeMode.system, themeManager.themeMode),
+                    _buildThemeOption('Light', Icons.light_mode_outlined, ThemeMode.light, themeManager.themeMode),
+                    _buildThemeOption('Dark', Icons.dark_mode_outlined, ThemeMode.dark, themeManager.themeMode),
+                  ]),
+                  const SizedBox(height: 25),
+                  _buildSectionTitle('Accent Color'),
+                  _buildSettingsCard([
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Wrap(
+                        spacing: 15,
+                        runSpacing: 15,
+                        children: _accentColors.map((color) => _buildColorOption(color)).toList(),
+                      ),
+                    ),
+                  ]),
+                  const SizedBox(height: 25),
+                  _buildSectionTitle('Font Size'),
+                  _buildSettingsCard([
+                    const ListTile(
+                      leading: Icon(Icons.text_fields, color: Colors.blueAccent),
+                      title: Text('Standard'),
+                      trailing: Icon(Icons.check, color: Colors.blueAccent),
+                    ),
+                    const ListTile(
+                      leading: Icon(Icons.text_fields, color: Colors.blueAccent, size: 28),
+                      title: Text('Large'),
+                    ),
+                  ]),
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -93,12 +94,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
       padding: const EdgeInsets.only(left: 10, bottom: 8),
       child: Text(
         title.toUpperCase(),
-        style: const TextStyle(
-          fontSize: 13,
-          fontWeight: FontWeight.bold,
-          color: Colors.grey,
-          letterSpacing: 1.2,
-        ),
+        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 1.2),
       ),
     );
   }
@@ -108,13 +104,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10, offset: const Offset(0, 5))],
       ),
       child: Column(children: children),
     );
@@ -127,8 +117,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
       title: Text(label),
       trailing: isSelected ? const Icon(Icons.check_circle, color: Colors.blueAccent) : null,
       onTap: () {
-        // 2. Update global theme state
-        ref.read(themeControllerProvider.notifier).setThemeMode(mode);
+        themeManager.setThemeMode(mode);
       },
     );
   }
@@ -144,9 +133,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
           color: color,
           shape: BoxShape.circle,
           border: isSelected ? Border.all(color: Colors.white, width: 3) : null,
-          boxShadow: isSelected
-              ? [BoxShadow(color: color.withOpacity(0.4), blurRadius: 10, spreadRadius: 2)]
-              : null,
+          boxShadow: isSelected ? [BoxShadow(color: color.withOpacity(0.4), blurRadius: 10, spreadRadius: 2)] : null,
         ),
         child: isSelected ? const Icon(Icons.check, color: Colors.white) : null,
       ),

@@ -1,34 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Provider for the theme mode, allowing dynamic switching and persistence.
-/// Using a standard NotifierProvider (manual implementation).
-final themeControllerProvider = NotifierProvider<ThemeController, ThemeMode>(() {
-  return ThemeController();
-});
+class ThemeManager extends ChangeNotifier {
+  static final ThemeManager _instance = ThemeManager._internal();
 
-class ThemeController extends Notifier<ThemeMode> {
-  late SharedPreferences _prefs;
+  factory ThemeManager() => _instance;
 
-  @override
-  ThemeMode build() {
-    // Initial state is system, but we trigger a load immediately.
+  ThemeManager._internal() {
     _loadTheme();
-    return ThemeMode.system;
   }
 
+  ThemeMode _themeMode = ThemeMode.system;
+
+  ThemeMode get themeMode => _themeMode;
+
   Future<void> _loadTheme() async {
-    _prefs = await SharedPreferences.getInstance();
-    final themeIndex = _prefs.getInt(AppConstants.themeKey);
+    final prefs = await SharedPreferences.getInstance();
+    final themeIndex = prefs.getInt(AppConstants.themeKey);
     if (themeIndex != null) {
-      state = ThemeMode.values[themeIndex];
+      _themeMode = ThemeMode.values[themeIndex];
+      notifyListeners();
     }
   }
 
   Future<void> setThemeMode(ThemeMode mode) async {
-    state = mode;
-    await _prefs.setInt(AppConstants.themeKey, mode.index);
+    if (_themeMode == mode) return;
+    _themeMode = mode;
+    notifyListeners();
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(AppConstants.themeKey, mode.index);
   }
 }
+
+final themeManager = ThemeManager();

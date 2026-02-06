@@ -10,21 +10,23 @@ void main() {
   runApp(const ProviderScope(child: MyApp()));
 }
 
-class MyApp extends ConsumerWidget {
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // 1. Watch the global theme mode
-    final themeMode = ref.watch(themeControllerProvider);
-
-    return MaterialApp(
-      title: AppConstants.appName,
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
-      themeMode: themeMode,
-      home: const SplashPage(),
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: themeManager,
+      builder: (context, child) {
+        return MaterialApp(
+          title: AppConstants.appName,
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: themeManager.themeMode,
+          home: const SplashPage(),
+        );
+      },
     );
   }
 }
