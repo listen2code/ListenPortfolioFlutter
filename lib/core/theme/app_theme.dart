@@ -10,6 +10,14 @@ class AppTheme {
       useMaterial3: true,
       brightness: Brightness.light,
       colorScheme: ColorScheme.fromSeed(seedColor: accentColor, brightness: Brightness.light),
+
+      // 全局图标主题
+      iconTheme: IconThemeData(color: accentColor),
+      primaryIconTheme: IconThemeData(color: accentColor),
+
+      // 关键修复：显式配置 ListTile 的图标颜色
+      listTileTheme: ListTileThemeData(iconColor: accentColor),
+
       appBarTheme: const AppBarTheme(centerTitle: true, elevation: 0),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
@@ -38,6 +46,14 @@ class AppTheme {
       useMaterial3: true,
       brightness: Brightness.dark,
       colorScheme: ColorScheme.fromSeed(seedColor: accentColor, brightness: Brightness.dark),
+
+      // 全局图标主题
+      iconTheme: IconThemeData(color: accentColor),
+      primaryIconTheme: IconThemeData(color: accentColor),
+
+      // 关键修复：显式配置 ListTile 的图标颜色
+      listTileTheme: ListTileThemeData(iconColor: accentColor),
+
       appBarTheme: const AppBarTheme(centerTitle: true, elevation: 0),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,

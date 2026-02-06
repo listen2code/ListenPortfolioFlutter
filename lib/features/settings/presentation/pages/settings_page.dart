@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_env.dart';
+import 'package:listen_portfolio_flutter/core/theme/theme_provider.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/password/change_password_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -20,118 +21,120 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Settings', style: TextStyle(fontWeight: FontWeight.w300)),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        foregroundColor: Colors.black87,
-      ),
-      extendBodyBehindAppBar: true,
-      body: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.blueAccent.withOpacity(0.05), Colors.white],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+    return ListenableBuilder(
+      listenable: themeManager,
+      builder: (context, child) {
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Settings', style: TextStyle(fontWeight: FontWeight.w300)),
+            centerTitle: true,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            foregroundColor: Colors.black87,
           ),
-        ),
-        child: SafeArea(
-          child: ListView(
-            padding: const EdgeInsets.all(20),
-            children: [
-              _buildSectionTitle('General'),
-              _buildSettingsCard([
-                _buildListTile(
-                  icon: Icons.palette_outlined,
-                  title: 'Appearance',
-                  subtitle: 'Theme, colors, and fonts',
-                  onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AppearancePage()));
-                  },
-                ),
-                _buildListTile(
-                  icon: Icons.language_outlined,
-                  title: 'Language',
-                  trailing: Text(_currentLanguage, style: const TextStyle(color: Colors.grey)),
-                  onTap: () => _showLanguageDialog(),
-                ),
-                _buildListTile(
-                  icon: Icons.lock_outline,
-                  title: 'Change Password',
-                  subtitle: 'Update your account security',
-                  onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ChangePasswordPage()));
-                  },
-                ),
-                _buildSwitchTile(
-                  icon: Icons.notifications_active_outlined,
-                  title: 'Notifications',
-                  value: _notificationsEnabled,
-                  onChanged: (val) => setState(() => _notificationsEnabled = val),
-                ),
-              ]),
-              const SizedBox(height: 25),
-              _buildSectionTitle('System & Storage'),
-              _buildSettingsCard([
-                _buildListTile(
-                  icon: Icons.delete_outline_rounded,
-                  title: 'Clear Cache',
-                  trailing: Text(_cacheSize, style: const TextStyle(color: Colors.grey)),
-                  onTap: () => _clearCache(),
-                ),
-              ]),
-              const SizedBox(height: 25),
-              _buildSectionTitle('Connect'),
-              _buildSettingsCard([
-                _buildListTile(
-                  icon: Icons.description_outlined,
-                  title: 'Open Source Licenses',
-                  onTap: () => showLicensePage(
-                    context: context,
-                    applicationName: '${AppConstants.appVersion} Portfolio',
-                    applicationVersion: AppConstants.appVersion,
-                    applicationIcon: const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Icon(Icons.auto_awesome, size: 48, color: Colors.blueAccent),
+          extendBodyBehindAppBar: true,
+          body: Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [themeManager.accentColor.withOpacity(0.05), Colors.white],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+            child: SafeArea(
+              child: ListView(
+                padding: const EdgeInsets.all(20),
+                children: [
+                  _buildSectionTitle('General'),
+                  _buildSettingsCard([
+                    _buildListTile(
+                      icon: Icons.palette_outlined,
+                      title: 'Appearance',
+                      subtitle: 'Theme, colors, and fonts',
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AppearancePage()));
+                      },
                     ),
-                    applicationLegalese: '© 2026 ${AppConstants.author}',
-                  ),
-                ),
-                _buildListTile(
-                  icon: Icons.alternate_email_rounded,
-                  title: 'Contact Me',
-                  subtitle: 'Send an email to ${AppConstants.appVersion}',
-                  onTap: () => _launchURL('mailto:listen2code@gmail.com?subject=Portfolio%20Feedback'),
-                ),
-              ]),
-              const SizedBox(height: 25),
-              _buildSectionTitle('About'),
-              _buildSettingsCard([
-                _buildListTile(
-                  icon: Icons.info_outline,
-                  title: 'App Version',
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        '${AppConstants.appVersion}${!AppEnv.isProd() ? ' (${AppEnv.env})' : ''}',
-                        style: const TextStyle(color: Colors.grey),
+                    _buildListTile(
+                      icon: Icons.language_outlined,
+                      title: 'Language',
+                      trailing: Text(_currentLanguage, style: const TextStyle(color: Colors.grey)),
+                      onTap: () => _showLanguageDialog(),
+                    ),
+                    _buildListTile(
+                      icon: Icons.lock_outline,
+                      title: 'Change Password',
+                      subtitle: 'Update your account security',
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ChangePasswordPage()));
+                      },
+                    ),
+                    _buildSwitchTile(
+                      icon: Icons.notifications_active_outlined,
+                      title: 'Notifications',
+                      value: _notificationsEnabled,
+                      onChanged: (val) => setState(() => _notificationsEnabled = val),
+                    ),
+                  ]),
+                  const SizedBox(height: 25),
+                  _buildSectionTitle('System & Storage'),
+                  _buildSettingsCard([
+                    _buildListTile(
+                      icon: Icons.delete_outline_rounded,
+                      title: 'Clear Cache',
+                      trailing: Text(_cacheSize, style: const TextStyle(color: Colors.grey)),
+                      onTap: () => _clearCache(),
+                    ),
+                  ]),
+                  const SizedBox(height: 25),
+                  _buildSectionTitle('Connect'),
+                  _buildSettingsCard([
+                    _buildListTile(
+                      icon: Icons.description_outlined,
+                      title: 'Open Source Licenses',
+                      onTap: () => showLicensePage(
+                        context: context,
+                        applicationName: '${AppConstants.appVersion} Portfolio',
+                        applicationVersion: AppConstants.appVersion,
+                        applicationIcon: const Padding(padding: EdgeInsets.all(8.0), child: Icon(Icons.auto_awesome, size: 48)),
+                        applicationLegalese: '© 2026 ${AppConstants.author}',
                       ),
-                      const SizedBox(width: 4),
-                      const Icon(Icons.arrow_forward_ios_rounded, size: 12, color: Colors.grey),
-                    ],
-                  ),
-                  onTap: () => _showEnvSwitchDialog(),
-                ),
-              ]),
-              const SizedBox(height: 40),
-            ],
+                    ),
+                    _buildListTile(
+                      icon: Icons.alternate_email_rounded,
+                      title: 'Contact Me',
+                      subtitle: 'Send an email to ${AppConstants.appVersion}',
+                      onTap: () => _launchURL('mailto:listen2code@gmail.com?subject=Portfolio%20Feedback'),
+                    ),
+                  ]),
+                  const SizedBox(height: 25),
+                  _buildSectionTitle('About'),
+                  _buildSettingsCard([
+                    _buildListTile(
+                      icon: Icons.info_outline,
+                      title: 'App Version',
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            '${AppConstants.appVersion}${!AppEnv.isProd() ? ' (${AppEnv.env})' : ''}',
+                            style: const TextStyle(color: Colors.grey),
+                          ),
+                          const SizedBox(width: 4),
+                          const Icon(Icons.arrow_forward_ios_rounded, size: 12, color: Colors.grey),
+                        ],
+                      ),
+                      onTap: () => _showEnvSwitchDialog(),
+                    ),
+                  ]),
+                  const SizedBox(height: 40),
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -154,7 +157,7 @@ class _SettingsPageState extends State<SettingsPage> {
     return ListTile(
       title: Text(label),
       subtitle: Text(isCurrent ? 'Currently Active' : 'Switch to $envCode'),
-      trailing: isCurrent ? const Icon(Icons.check_circle, color: Colors.green) : null,
+      trailing: isCurrent ? const Icon(Icons.check_circle) : null,
       onTap: () {
         AppEnv.setEnvironment(envCode);
         setState(() {}); // Refresh UI
@@ -163,7 +166,7 @@ class _SettingsPageState extends State<SettingsPage> {
           SnackBar(
             content: Text('Environment switched to: $label'),
             behavior: SnackBarBehavior.floating,
-            backgroundColor: Colors.blueAccent,
+            backgroundColor: themeManager.accentColor,
           ),
         );
       },
@@ -255,9 +258,10 @@ class _SettingsPageState extends State<SettingsPage> {
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       leading: Container(
         padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(color: Colors.blueAccent.withOpacity(0.08), borderRadius: BorderRadius.circular(12)),
-        child: Icon(icon, color: Colors.blueAccent, size: 22),
+        decoration: BoxDecoration(color: themeManager.accentColor.withOpacity(0.08), borderRadius: BorderRadius.circular(12)),
+        child: Icon(icon, size: 22),
       ),
+
       title: Text(
         title,
         style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.black87),
@@ -277,15 +281,15 @@ class _SettingsPageState extends State<SettingsPage> {
     return SwitchListTile(
       secondary: Container(
         padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(color: Colors.blueAccent.withOpacity(0.08), borderRadius: BorderRadius.circular(12)),
-        child: Icon(icon, color: Colors.blueAccent, size: 22),
+        decoration: BoxDecoration(color: themeManager.accentColor.withOpacity(0.08), borderRadius: BorderRadius.circular(12)),
+        child: Icon(icon, size: 22),
       ),
       title: Text(
         title,
         style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.black87),
       ),
       value: value,
-      activeColor: Colors.blueAccent,
+      activeThumbColor: themeManager.accentColor,
       onChanged: onChanged,
     );
   }
