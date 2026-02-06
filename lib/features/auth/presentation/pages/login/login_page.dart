@@ -13,11 +13,22 @@ class LoginPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    _setupNavigation(context, ref);
-
     final state = ref.watch(loginViewModelProvider);
     final viewModel = ref.read(loginViewModelProvider.notifier);
 
+    ref.listenNavigation<LoginState, LoginNavigationTarget>(loginViewModelProvider, (target) {
+      switch (target) {
+        case LoginNavigationTarget.signup:
+          Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SignUpPage()));
+          break;
+        case LoginNavigationTarget.forgotPassword:
+          Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ForgotPasswordPage()));
+          break;
+        case LoginNavigationTarget.home:
+          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const HomePage()));
+          break;
+      }
+    });
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -56,26 +67,6 @@ class LoginPage extends ConsumerWidget {
         ),
       ),
     );
-  }
-
-  // ---------------------------------------------------------------------------
-  // Navigation Logic (Side Effects)
-  // ---------------------------------------------------------------------------
-
-  void _setupNavigation(BuildContext context, WidgetRef ref) {
-    ref.listenNavigation<LoginState, LoginNavigationTarget>(loginViewModelProvider, (target) {
-      switch (target) {
-        case LoginNavigationTarget.signup:
-          Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SignUpPage()));
-          break;
-        case LoginNavigationTarget.forgotPassword:
-          Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ForgotPasswordPage()));
-          break;
-        case LoginNavigationTarget.home:
-          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const HomePage()));
-          break;
-      }
-    });
   }
 
   // ---------------------------------------------------------------------------
