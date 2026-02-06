@@ -21,8 +21,8 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           title: AppConstants.appName,
           debugShowCheckedModeBanner: false,
-          theme: AppTheme.lightTheme,
-          darkTheme: AppTheme.darkTheme,
+          theme: AppTheme.getLightTheme(themeManager.accentColor),
+          darkTheme: AppTheme.getDarkTheme(themeManager.accentColor),
           themeMode: themeManager.themeMode,
           home: const SplashPage(),
         );

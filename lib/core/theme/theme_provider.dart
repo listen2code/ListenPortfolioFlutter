@@ -8,20 +8,32 @@ class ThemeManager extends ChangeNotifier {
   factory ThemeManager() => _instance;
 
   ThemeManager._internal() {
-    _loadTheme();
+    _loadSettings();
   }
 
   ThemeMode _themeMode = ThemeMode.system;
+  Color _accentColor = Colors.blueAccent;
 
   ThemeMode get themeMode => _themeMode;
 
-  Future<void> _loadTheme() async {
+  Color get accentColor => _accentColor;
+
+  Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
+
+    // Load Theme Mode
     final themeIndex = prefs.getInt(AppConstants.themeKey);
     if (themeIndex != null) {
       _themeMode = ThemeMode.values[themeIndex];
-      notifyListeners();
     }
+
+    // Load Accent Color
+    final colorValue = prefs.getInt(AppConstants.accentColorKey);
+    if (colorValue != null) {
+      _accentColor = Color(colorValue);
+    }
+
+    notifyListeners();
   }
 
   Future<void> setThemeMode(ThemeMode mode) async {
@@ -31,6 +43,15 @@ class ThemeManager extends ChangeNotifier {
 
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(AppConstants.themeKey, mode.index);
+  }
+
+  Future<void> setAccentColor(Color color) async {
+    if (_accentColor == color) return;
+    _accentColor = color;
+    notifyListeners();
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(AppConstants.accentColorKey, color.toARGB32());
   }
 }
 

@@ -9,8 +9,6 @@ class AppearancePage extends StatefulWidget {
 }
 
 class _AppearancePageState extends State<AppearancePage> {
-  Color _selectedAccentColor = Colors.blueAccent;
-
   final List<Color> _accentColors = [
     Colors.blueAccent,
     Colors.indigo,
@@ -27,6 +25,8 @@ class _AppearancePageState extends State<AppearancePage> {
     return ListenableBuilder(
       listenable: themeManager,
       builder: (context, child) {
+        final currentAccentColor = themeManager.accentColor;
+
         return Scaffold(
           appBar: AppBar(
             title: const Text('Appearance', style: TextStyle(fontWeight: FontWeight.w300)),
@@ -40,7 +40,7 @@ class _AppearancePageState extends State<AppearancePage> {
             width: double.infinity,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [Colors.blueAccent.withOpacity(0.05), Colors.white],
+                colors: [currentAccentColor.withValues(alpha: 0.05), Colors.white],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
@@ -51,9 +51,27 @@ class _AppearancePageState extends State<AppearancePage> {
                 children: [
                   _buildSectionTitle('Theme Mode'),
                   _buildSettingsCard([
-                    _buildThemeOption('System', Icons.settings_brightness_outlined, ThemeMode.system, themeManager.themeMode),
-                    _buildThemeOption('Light', Icons.light_mode_outlined, ThemeMode.light, themeManager.themeMode),
-                    _buildThemeOption('Dark', Icons.dark_mode_outlined, ThemeMode.dark, themeManager.themeMode),
+                    _buildThemeOption(
+                      'System',
+                      Icons.settings_brightness_outlined,
+                      ThemeMode.system,
+                      themeManager.themeMode,
+                      currentAccentColor,
+                    ),
+                    _buildThemeOption(
+                      'Light',
+                      Icons.light_mode_outlined,
+                      ThemeMode.light,
+                      themeManager.themeMode,
+                      currentAccentColor,
+                    ),
+                    _buildThemeOption(
+                      'Dark',
+                      Icons.dark_mode_outlined,
+                      ThemeMode.dark,
+                      themeManager.themeMode,
+                      currentAccentColor,
+                    ),
                   ]),
                   const SizedBox(height: 25),
                   _buildSectionTitle('Accent Color'),
@@ -63,21 +81,21 @@ class _AppearancePageState extends State<AppearancePage> {
                       child: Wrap(
                         spacing: 15,
                         runSpacing: 15,
-                        children: _accentColors.map((color) => _buildColorOption(color)).toList(),
+                        children: _accentColors.map((color) => _buildColorOption(color, currentAccentColor)).toList(),
                       ),
                     ),
                   ]),
                   const SizedBox(height: 25),
                   _buildSectionTitle('Font Size'),
                   _buildSettingsCard([
-                    const ListTile(
-                      leading: Icon(Icons.text_fields, color: Colors.blueAccent),
-                      title: Text('Standard'),
-                      trailing: Icon(Icons.check, color: Colors.blueAccent),
+                    ListTile(
+                      leading: Icon(Icons.text_fields, color: currentAccentColor),
+                      title: const Text('Standard'),
+                      trailing: Icon(Icons.check, color: currentAccentColor),
                     ),
-                    const ListTile(
-                      leading: Icon(Icons.text_fields, color: Colors.blueAccent, size: 28),
-                      title: Text('Large'),
+                    ListTile(
+                      leading: Icon(Icons.text_fields, color: currentAccentColor, size: 28),
+                      title: const Text('Large'),
                     ),
                   ]),
                 ],
@@ -110,22 +128,20 @@ class _AppearancePageState extends State<AppearancePage> {
     );
   }
 
-  Widget _buildThemeOption(String label, IconData icon, ThemeMode mode, ThemeMode currentMode) {
+  Widget _buildThemeOption(String label, IconData icon, ThemeMode mode, ThemeMode currentMode, Color accentColor) {
     final isSelected = mode == currentMode;
     return ListTile(
-      leading: Icon(icon, color: isSelected ? Colors.blueAccent : Colors.grey),
+      leading: Icon(icon, color: isSelected ? accentColor : Colors.grey),
       title: Text(label),
-      trailing: isSelected ? const Icon(Icons.check_circle, color: Colors.blueAccent) : null,
-      onTap: () {
-        themeManager.setThemeMode(mode);
-      },
+      trailing: isSelected ? Icon(Icons.check_circle, color: accentColor) : null,
+      onTap: () => themeManager.setThemeMode(mode),
     );
   }
 
-  Widget _buildColorOption(Color color) {
-    final isSelected = _selectedAccentColor == color;
+  Widget _buildColorOption(Color color, Color currentAccentColor) {
+    final isSelected = currentAccentColor.value == color.value;
     return GestureDetector(
-      onTap: () => setState(() => _selectedAccentColor = color),
+      onTap: () => themeManager.setAccentColor(color),
       child: Container(
         width: 45,
         height: 45,
