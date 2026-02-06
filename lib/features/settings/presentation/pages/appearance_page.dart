@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:listen_portfolio_flutter/core/theme/theme_provider.dart';
 
-class AppearancePage extends StatefulWidget {
+class AppearancePage extends ConsumerStatefulWidget {
   const AppearancePage({super.key});
 
   @override
-  State<AppearancePage> createState() => _AppearancePageState();
+  ConsumerState<AppearancePage> createState() => _AppearancePageState();
 }
 
-class _AppearancePageState extends State<AppearancePage> {
-  String _selectedTheme = 'System';
+class _AppearancePageState extends ConsumerState<AppearancePage> {
   Color _selectedAccentColor = Colors.blueAccent;
 
   final List<Color> _accentColors = [
@@ -24,6 +25,9 @@ class _AppearancePageState extends State<AppearancePage> {
 
   @override
   Widget build(BuildContext context) {
+    // 1. Watch the global theme mode
+    final themeMode = ref.watch(themeControllerProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Appearance', style: TextStyle(fontWeight: FontWeight.w300)),
@@ -48,9 +52,9 @@ class _AppearancePageState extends State<AppearancePage> {
             children: [
               _buildSectionTitle('Theme Mode'),
               _buildSettingsCard([
-                _buildThemeOption('System', Icons.settings_brightness_outlined),
-                _buildThemeOption('Light', Icons.light_mode_outlined),
-                _buildThemeOption('Dark', Icons.dark_mode_outlined),
+                _buildThemeOption('System', Icons.settings_brightness_outlined, ThemeMode.system, themeMode),
+                _buildThemeOption('Light', Icons.light_mode_outlined, ThemeMode.light, themeMode),
+                _buildThemeOption('Dark', Icons.dark_mode_outlined, ThemeMode.dark, themeMode),
               ]),
               const SizedBox(height: 25),
               _buildSectionTitle('Accent Color'),
@@ -116,13 +120,16 @@ class _AppearancePageState extends State<AppearancePage> {
     );
   }
 
-  Widget _buildThemeOption(String theme, IconData icon) {
-    final isSelected = _selectedTheme == theme;
+  Widget _buildThemeOption(String label, IconData icon, ThemeMode mode, ThemeMode currentMode) {
+    final isSelected = mode == currentMode;
     return ListTile(
       leading: Icon(icon, color: isSelected ? Colors.blueAccent : Colors.grey),
-      title: Text(theme),
+      title: Text(label),
       trailing: isSelected ? const Icon(Icons.check_circle, color: Colors.blueAccent) : null,
-      onTap: () => setState(() => _selectedTheme = theme),
+      onTap: () {
+        // 2. Update global theme state
+        ref.read(themeControllerProvider.notifier).setThemeMode(mode);
+      },
     );
   }
 
