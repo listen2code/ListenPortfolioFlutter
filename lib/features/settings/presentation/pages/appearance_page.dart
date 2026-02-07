@@ -68,8 +68,8 @@ class _AppearancePageState extends State<AppearancePage> {
                   const SizedBox(height: 25),
                   _buildSectionTitle('Font Size'),
                   _buildSettingsCard([
-                    ListTile(leading: Icon(Icons.text_fields), title: const Text('Standard'), trailing: Icon(Icons.check)),
-                    ListTile(leading: Icon(Icons.text_fields, size: 28), title: const Text('Large')),
+                    _buildFontSizeOption('Standard', 1.0, Icons.text_fields, 20),
+                    _buildFontSizeOption('Large', 1.2, Icons.text_fields, 28),
                   ]),
                 ],
               ),
@@ -106,8 +106,18 @@ class _AppearancePageState extends State<AppearancePage> {
     return ListTile(
       leading: Icon(icon, color: isSelected ? null : Colors.grey),
       title: Text(label),
-      trailing: isSelected ? Icon(Icons.check_circle) : null,
+      trailing: isSelected ? const Icon(Icons.check_circle) : null,
       onTap: () => themeManager.setThemeMode(mode),
+    );
+  }
+
+  Widget _buildFontSizeOption(String label, double factor, IconData icon, double iconSize) {
+    final isSelected = themeManager.fontSizeFactor == factor;
+    return ListTile(
+      leading: Icon(icon, size: iconSize),
+      title: Text(label),
+      trailing: isSelected ? const Icon(Icons.check_circle) : null,
+      onTap: () => themeManager.setFontSizeFactor(factor),
     );
   }
 

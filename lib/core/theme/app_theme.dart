@@ -1,23 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:listen_portfolio_flutter/core/theme/theme_provider.dart';
 
 /// Application theme configuration
 class AppTheme {
   AppTheme._();
 
-  /// Generates Light theme based on accent color
-  static ThemeData getLightTheme(Color accentColor) {
-    return ThemeData(
+  /// Generates Light theme based on accent color and font size factor
+  static ThemeData getLightTheme(ThemeManager themeManager) {
+    final accentColor = themeManager.accentColor;
+    final fontSizeFactor = themeManager.fontSizeFactor;
+    final theme = ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
       colorScheme: ColorScheme.fromSeed(seedColor: accentColor, brightness: Brightness.light),
-
-      // 全局图标主题
       iconTheme: IconThemeData(color: accentColor),
       primaryIconTheme: IconThemeData(color: accentColor),
-
-      // 关键修复：显式配置 ListTile 的图标颜色
       listTileTheme: ListTileThemeData(iconColor: accentColor),
-
       appBarTheme: const AppBarTheme(centerTitle: true, elevation: 0),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
@@ -38,22 +36,25 @@ class AppTheme {
         ),
       ),
     );
+
+    final baseTextTheme = Typography.englishLike2021
+        .merge(Typography.material2021(platform: theme.platform).black)
+        .merge(theme.textTheme);
+
+    return theme.copyWith(textTheme: baseTextTheme.apply(fontSizeFactor: fontSizeFactor));
   }
 
-  /// Generates Dark theme based on accent color
-  static ThemeData getDarkTheme(Color accentColor) {
-    return ThemeData(
+  /// Generates Dark theme based on accent color and font size factor
+  static ThemeData getDarkTheme(ThemeManager themeManager) {
+    final accentColor = themeManager.accentColor;
+    final fontSizeFactor = themeManager.fontSizeFactor;
+    final theme = ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
       colorScheme: ColorScheme.fromSeed(seedColor: accentColor, brightness: Brightness.dark),
-
-      // 全局图标主题
       iconTheme: IconThemeData(color: accentColor),
       primaryIconTheme: IconThemeData(color: accentColor),
-
-      // 关键修复：显式配置 ListTile 的图标颜色
       listTileTheme: ListTileThemeData(iconColor: accentColor),
-
       appBarTheme: const AppBarTheme(centerTitle: true, elevation: 0),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
@@ -73,5 +74,11 @@ class AppTheme {
         ),
       ),
     );
+
+    final baseTextTheme = Typography.englishLike2021
+        .merge(Typography.material2021(platform: theme.platform).white)
+        .merge(theme.textTheme);
+
+    return theme.copyWith(textTheme: baseTextTheme.apply(fontSizeFactor: fontSizeFactor));
   }
 }

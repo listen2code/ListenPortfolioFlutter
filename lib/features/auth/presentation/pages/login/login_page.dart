@@ -186,7 +186,7 @@ class LoginPage extends ConsumerWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text("Don't have an account? "),
+        Expanded(child: FittedBox(child: const Text("Don't have an account? "))),
         TextButton(
           onPressed: () => viewModel.handleIntent(const LoginIntent.navigateToSignup()),
           child: const Text(

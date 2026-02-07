@@ -13,10 +13,13 @@ class ThemeManager extends ChangeNotifier {
 
   ThemeMode _themeMode = ThemeMode.system;
   Color _accentColor = Colors.blueAccent;
+  double _fontSizeFactor = 1.0;
 
   ThemeMode get themeMode => _themeMode;
 
   Color get accentColor => _accentColor;
+
+  double get fontSizeFactor => _fontSizeFactor;
 
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
@@ -52,6 +55,15 @@ class ThemeManager extends ChangeNotifier {
 
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(AppConstants.accentColorKey, color.toARGB32());
+  }
+
+  Future<void> setFontSizeFactor(double factor) async {
+    if (_fontSizeFactor == factor) return;
+    _fontSizeFactor = factor;
+    notifyListeners();
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble(AppConstants.fontSizeKey, factor);
   }
 }
 
