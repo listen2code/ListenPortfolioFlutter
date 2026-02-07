@@ -14,12 +14,12 @@ class ThemeManager extends ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.system;
   Color _accentColor = Colors.blueAccent;
   double _fontSizeFactor = 1.0;
+  String _language = 'English';
 
   ThemeMode get themeMode => _themeMode;
-
   Color get accentColor => _accentColor;
-
   double get fontSizeFactor => _fontSizeFactor;
+  String get language => _language;
 
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
@@ -35,6 +35,12 @@ class ThemeManager extends ChangeNotifier {
     if (colorValue != null) {
       _accentColor = Color(colorValue);
     }
+
+    // Load Font Size
+    _fontSizeFactor = prefs.getDouble(AppConstants.fontSizeKey) ?? 1.0;
+
+    // Load Language
+    _language = prefs.getString(AppConstants.languageKey) ?? 'English';
 
     notifyListeners();
   }
@@ -64,6 +70,15 @@ class ThemeManager extends ChangeNotifier {
 
     final prefs = await SharedPreferences.getInstance();
     await prefs.setDouble(AppConstants.fontSizeKey, factor);
+  }
+
+  Future<void> setLanguage(String lang) async {
+    if (_language == lang) return;
+    _language = lang;
+    notifyListeners();
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(AppConstants.languageKey, lang);
   }
 }
 

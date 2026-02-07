@@ -17,7 +17,6 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   bool _notificationsEnabled = true;
-  String _currentLanguage = 'English';
   String _cacheSize = '128 MB';
 
   @override
@@ -60,7 +59,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     _buildListTile(
                       icon: Icons.language_outlined,
                       title: 'Language',
-                      trailing: Text(_currentLanguage, style: const TextStyle(color: Colors.grey)),
+                      trailing: Text(themeManager.language, style: const TextStyle(color: Colors.grey)),
                       onTap: () => _showLanguageDialog(),
                     ),
                     _buildListTile(
@@ -105,7 +104,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     _buildListTile(
                       icon: Icons.alternate_email_rounded,
                       title: 'Contact Me',
-                      subtitle: 'Send an email to ${AppConstants.appVersion}',
+                      subtitle: 'Send an email to ${AppConstants.author}',
                       onTap: () => _launchURL('mailto:${AppConstants.mail}?subject=Portfolio%20Feedback'),
                     ),
                   ]),
@@ -143,7 +142,7 @@ class _SettingsPageState extends State<SettingsPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Expanded(child: const CommonText('Switch Environment')),
+        title: const CommonText('Switch Environment'),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -190,6 +189,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   void _showLanguageDialog() {
+    final currentLang = themeManager.language;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -198,17 +198,32 @@ class _SettingsPageState extends State<SettingsPage> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ListTile(title: const Text('English'), onTap: () => _updateLang('English')),
-            ListTile(title: const Text('Chinese'), onTap: () => _updateLang('Chinese')),
-            ListTile(title: const Text('Japanese'), onTap: () => _updateLang('Japanese')),
+            _buildLanguageOption('English', currentLang),
+            _buildLanguageOption('Chinese', currentLang),
+            _buildLanguageOption('Japanese', currentLang),
           ],
         ),
       ),
     );
   }
 
+  Widget _buildLanguageOption(String lang, String currentLang) {
+    final isSelected = lang == currentLang;
+    return ListTile(
+      title: Text(
+        lang,
+        style: TextStyle(
+          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+          color: isSelected ? themeManager.accentColor : Colors.black87,
+        ),
+      ),
+      trailing: isSelected ? Icon(Icons.check_circle, color: themeManager.accentColor) : null,
+      onTap: () => _updateLang(lang),
+    );
+  }
+
   void _updateLang(String lang) {
-    setState(() => _currentLanguage = lang);
+    themeManager.setLanguage(lang);
     Navigator.pop(context);
   }
 
@@ -262,7 +277,6 @@ class _SettingsPageState extends State<SettingsPage> {
         decoration: BoxDecoration(color: themeManager.accentColor.withOpacity(0.08), borderRadius: BorderRadius.circular(12)),
         child: Icon(icon, size: 22),
       ),
-
       title: CommonText(
         title,
         style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.black87),
