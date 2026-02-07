@@ -3,6 +3,7 @@ import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_env.dart';
 import 'package:listen_portfolio_flutter/core/theme/theme_provider.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/password/change_password_page.dart';
+import 'package:listen_portfolio_flutter/shared/widget/common_text.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'appearance_page.dart';
@@ -142,7 +143,7 @@ class _SettingsPageState extends State<SettingsPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Switch Environment'),
+        title: Expanded(child: const CommonText('Switch Environment')),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -262,7 +263,7 @@ class _SettingsPageState extends State<SettingsPage> {
         child: Icon(icon, size: 22),
       ),
 
-      title: Text(
+      title: CommonText(
         title,
         style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.black87),
       ),
