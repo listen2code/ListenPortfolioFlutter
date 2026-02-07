@@ -1,36 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
+import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
+import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
+import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 
 class ProfileWidget extends StatelessWidget {
   const ProfileWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          children: [
-            const SizedBox(height: 40),
-            // 头像与基本信息
-            _buildHeader(context),
-            const SizedBox(height: 30),
-            // 个人简介
-            _buildAboutSection(),
-            const SizedBox(height: 25),
-            // 核心技能
-            _buildSkillsSection(),
-            const SizedBox(height: 25),
-            // 教育背景/工作经验 (可选)
-            _buildExperienceSection(),
-            const SizedBox(height: 30),
-          ],
-        ),
-      ),
+    return ListenableBuilder(
+      listenable: settingManager,
+      builder: (context, child) {
+        final theme = Theme.of(context);
+        final accentColor = settingManager.accentColor;
+
+        return SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              children: [
+                const SizedBox(height: 40),
+                _buildHeader(context, theme, accentColor),
+                const SizedBox(height: 30),
+                _buildAboutSection(theme, accentColor),
+                const SizedBox(height: 25),
+                _buildSkillsSection(theme, accentColor),
+                const SizedBox(height: 25),
+                _buildExperienceSection(theme, accentColor),
+                const SizedBox(height: 40),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context, ThemeData theme, Color accentColor) {
     return Column(
       children: [
         Stack(
@@ -39,34 +46,30 @@ class ProfileWidget extends StatelessWidget {
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                gradient: const LinearGradient(colors: [Colors.blueAccent, Colors.lightBlue]),
-                boxShadow: [BoxShadow(color: Colors.blueAccent.withOpacity(0.2), blurRadius: 20, offset: const Offset(0, 10))],
+                gradient: LinearGradient(colors: [accentColor, accentColor.withValues(alpha: 0.6)]),
+                boxShadow: [BoxShadow(color: accentColor.withValues(alpha: 0.2), blurRadius: 20, offset: const Offset(0, 10))],
               ),
               child: const CircleAvatar(
                 radius: 65,
                 backgroundColor: Colors.white,
                 child: CircleAvatar(
                   radius: 60,
-                  backgroundImage: NetworkImage('https://api.dicebear.com/7.x/avataaars/svg?seed=${AppConstants.author}'),
-                  backgroundColor: Colors.blueAccent,
+                  backgroundImage: NetworkImage('https://api.dicebear.com/7.x/avataaars/svg?seed=Listen'),
                 ),
               ),
             ),
-            // 修改/上传头像按钮
             Positioned(
               bottom: 5,
               right: 5,
               child: GestureDetector(
-                onTap: () {
-                  _showImageSourceActionSheet(context);
-                },
+                onTap: () => _showImageSourceActionSheet(context, accentColor),
                 child: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.blueAccent,
+                    color: accentColor,
                     shape: BoxShape.circle,
                     border: Border.all(color: Colors.white, width: 2),
-                    boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 5)],
+                    boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 5)],
                   ),
                   child: const Icon(Icons.camera_alt_rounded, color: Colors.white, size: 20),
                 ),
@@ -75,38 +78,37 @@ class ProfileWidget extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 20),
-        const Text('${AppConstants.author}', style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
-        const Text(
+        Text(AppConstants.author, style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold)),
+        Text(
           'Senior Flutter Developer',
-          style: TextStyle(fontSize: 16, color: Colors.blueAccent, fontWeight: FontWeight.w500),
+          style: TextStyle(fontSize: 16, color: accentColor, fontWeight: FontWeight.w500),
         ),
         const SizedBox(height: 12),
-        // 修改基本资料按钮
         OutlinedButton.icon(
           onPressed: () {},
           icon: const Icon(Icons.edit_note_rounded, size: 18),
-          label: const Text('Edit Information'),
+          label: Text(I18nKeys.editInformation.tr),
           style: OutlinedButton.styleFrom(
-            foregroundColor: Colors.blueAccent,
-            side: const BorderSide(color: Colors.blueAccent, width: 1),
+            foregroundColor: accentColor,
+            side: BorderSide(color: accentColor, width: 1),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
           ),
         ),
         const SizedBox(height: 12),
-        const Row(
+        Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.location_on_outlined, size: 16, color: Colors.grey),
-            SizedBox(width: 4),
-            Text('San Francisco, CA', style: TextStyle(color: Colors.grey)),
+            const Icon(Icons.location_on_outlined, size: 16, color: Colors.grey),
+            const SizedBox(width: 4),
+            Text('San Francisco, CA', style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey)),
           ],
         ),
       ],
     );
   }
 
-  void _showImageSourceActionSheet(BuildContext context) {
+  void _showImageSourceActionSheet(BuildContext context, Color accentColor) {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
@@ -114,23 +116,23 @@ class ProfileWidget extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 15),
-              child: Text('Change Profile Photo', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 15),
+              child: Text(I18nKeys.changeProfilePhoto.tr, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             ),
             ListTile(
-              leading: const Icon(Icons.photo_library_outlined, color: Colors.blueAccent),
-              title: const Text('Choose from Gallery'),
+              leading: Icon(Icons.photo_library_outlined, color: accentColor),
+              title: Text(I18nKeys.chooseFromGallery.tr),
               onTap: () => Navigator.pop(context),
             ),
             ListTile(
-              leading: const Icon(Icons.camera_alt_outlined, color: Colors.blueAccent),
-              title: const Text('Take a Photo'),
+              leading: Icon(Icons.camera_alt_outlined, color: accentColor),
+              title: Text(I18nKeys.takePhoto.tr),
               onTap: () => Navigator.pop(context),
             ),
             ListTile(
               leading: const Icon(Icons.delete_outline_rounded, color: Colors.redAccent),
-              title: const Text('Remove Current Photo', style: TextStyle(color: Colors.redAccent)),
+              title: Text(I18nKeys.removePhoto.tr, style: const TextStyle(color: Colors.redAccent)),
               onTap: () => Navigator.pop(context),
             ),
             const SizedBox(height: 10),
@@ -140,52 +142,62 @@ class ProfileWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildAboutSection() {
+  Widget _buildAboutSection(ThemeData theme, Color accentColor) {
     return _buildCard(
-      title: 'About Me',
-      child: const Text(
+      theme: theme,
+      accentColor: accentColor,
+      title: I18nKeys.aboutMe.tr,
+      child: Text(
         'Passionate Flutter developer with 5+ years of experience in building high-quality, cross-platform mobile applications. I love turning complex problems into simple, beautiful, and intuitive designs.',
-        style: TextStyle(fontSize: 15, color: Colors.black87, height: 1.6),
+        style: theme.textTheme.bodyMedium?.copyWith(height: 1.6),
       ),
     );
   }
 
-  Widget _buildSkillsSection() {
+  Widget _buildSkillsSection(ThemeData theme, Color accentColor) {
     final skills = ['Flutter', 'Dart', 'Clean Architecture', 'Riverpod', 'Firebase', 'REST API', 'Git', 'CI/CD'];
     return _buildCard(
-      title: 'Core Skills',
-      child: Wrap(spacing: 10, runSpacing: 10, children: skills.map((skill) => _buildSkillChip(skill)).toList()),
+      theme: theme,
+      accentColor: accentColor,
+      title: I18nKeys.coreSkills.tr,
+      child: Wrap(
+        spacing: 10,
+        runSpacing: 10,
+        children: skills.map((skill) => _buildSkillChip(skill, accentColor)).toList(),
+      ),
     );
   }
 
-  Widget _buildExperienceSection() {
+  Widget _buildExperienceSection(ThemeData theme, Color accentColor) {
     return _buildCard(
-      title: 'Experience',
+      theme: theme,
+      accentColor: accentColor,
+      title: I18nKeys.experience.tr,
       child: Column(
         children: [
-          _buildExperienceItem('Senior Developer', 'Tech Corp', '2020 - Present'),
-          const Divider(height: 30),
-          _buildExperienceItem('Mobile Developer', 'App Studio', '2018 - 2020'),
+          _buildExperienceItem(theme, 'Senior Developer', 'Tech Corp', '2020 - ${I18nKeys.present.tr}'),
+          Divider(height: 30, color: theme.dividerColor.withValues(alpha: 0.1)),
+          _buildExperienceItem(theme, 'Mobile Developer', 'App Studio', '2018 - 2020'),
         ],
       ),
     );
   }
 
-  Widget _buildCard({required String title, required Widget child}) {
+  Widget _buildCard({required ThemeData theme, required Color accentColor, required String title, required Widget child}) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10, offset: const Offset(0, 5))],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10, offset: const Offset(0, 5))],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             title,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blueAccent),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: accentColor),
           ),
           const SizedBox(height: 15),
           child,
@@ -194,18 +206,18 @@ class ProfileWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildSkillChip(String label) {
+  Widget _buildSkillChip(String label, Color accentColor) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-      decoration: BoxDecoration(color: Colors.blueAccent.withOpacity(0.1), borderRadius: BorderRadius.circular(12)),
+      decoration: BoxDecoration(color: accentColor.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(12)),
       child: Text(
         label,
-        style: const TextStyle(color: Colors.blueAccent, fontWeight: FontWeight.w500, fontSize: 13),
+        style: TextStyle(color: accentColor, fontWeight: FontWeight.w500, fontSize: 13),
       ),
     );
   }
 
-  Widget _buildExperienceItem(String role, String company, String period) {
+  Widget _buildExperienceItem(ThemeData theme, String role, String company, String period) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

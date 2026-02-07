@@ -26,20 +26,23 @@ class _SettingsPageState extends State<SettingsPage> {
     return ListenableBuilder(
       listenable: settingManager,
       builder: (context, child) {
+        final theme = Theme.of(context);
+        final accentColor = settingManager.accentColor;
+
         return Scaffold(
           appBar: AppBar(
             title: Text(I18nKeys.settings.tr, style: const TextStyle(fontWeight: FontWeight.w300)),
             centerTitle: true,
             backgroundColor: Colors.transparent,
             elevation: 0,
-            foregroundColor: Colors.black87,
+            foregroundColor: theme.brightness == Brightness.light ? Colors.black87 : Colors.white,
           ),
           extendBodyBehindAppBar: true,
           body: Container(
             width: double.infinity,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [settingManager.accentColor.withValues(alpha: 0.05), Colors.white],
+                colors: [accentColor.withValues(alpha: 0.05), theme.scaffoldBackgroundColor],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
@@ -49,7 +52,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 padding: const EdgeInsets.all(20),
                 children: [
                   _buildSectionTitle(I18nKeys.general.tr),
-                  _buildSettingsCard([
+                  _buildSettingsCard(context, [
                     _buildListTile(
                       icon: Icons.palette_outlined,
                       title: I18nKeys.appearance.tr,
@@ -81,7 +84,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   ]),
                   const SizedBox(height: 25),
                   _buildSectionTitle(I18nKeys.systemStorage.tr),
-                  _buildSettingsCard([
+                  _buildSettingsCard(context, [
                     _buildListTile(
                       icon: Icons.delete_outline_rounded,
                       title: I18nKeys.clearCache.tr,
@@ -91,7 +94,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   ]),
                   const SizedBox(height: 25),
                   _buildSectionTitle(I18nKeys.connect.tr),
-                  _buildSettingsCard([
+                  _buildSettingsCard(context, [
                     _buildListTile(
                       icon: Icons.description_outlined,
                       title: I18nKeys.licenses.tr,
@@ -112,7 +115,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   ]),
                   const SizedBox(height: 25),
                   _buildSectionTitle(I18nKeys.about.tr),
-                  _buildSettingsCard([
+                  _buildSettingsCard(context, [
                     _buildListTile(
                       icon: Icons.info_outline,
                       title: I18nKeys.appVersion.tr,
@@ -221,7 +224,7 @@ class _SettingsPageState extends State<SettingsPage> {
         lang.label,
         style: TextStyle(
           fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-          color: isSelected ? settingManager.accentColor : Colors.black87,
+          color: isSelected ? settingManager.accentColor : null,
         ),
       ),
       trailing: isSelected ? Icon(Icons.check_circle, color: settingManager.accentColor) : null,
@@ -251,21 +254,25 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Widget _buildSettingsCard(List<Widget> children) {
+  Widget _buildSettingsCard(BuildContext context, List<Widget> children) {
+    final theme = Theme.of(context);
     return Container(
-      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
         boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10, offset: const Offset(0, 5))],
       ),
-      child: Column(
-        children: [
-          for (var i = 0; i < children.length; i++) ...[
-            children[i],
-            if (i < children.length - 1) Divider(height: 1, thickness: 0.5, indent: 65, endIndent: 20, color: Colors.grey[100]),
+      child: Material(
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(20),
+        clipBehavior: Clip.antiAlias,
+        child: Column(
+          children: [
+            for (var i = 0; i < children.length; i++) ...[
+              children[i],
+              if (i < children.length - 1)
+                Divider(height: 1, thickness: 0.5, indent: 65, endIndent: 20, color: theme.dividerColor.withOpacity(0.1)),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
@@ -287,10 +294,7 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
         child: Icon(icon, size: 22),
       ),
-      title: CommonText(
-        title,
-        style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.black87),
-      ),
+      title: CommonText(title, style: const TextStyle(fontWeight: FontWeight.w600)),
       subtitle: subtitle != null ? Text(subtitle, style: const TextStyle(fontSize: 12)) : null,
       trailing: trailing ?? Icon(Icons.arrow_forward_ios_rounded, size: 14, color: Colors.grey[400]),
       onTap: onTap,
@@ -312,12 +316,9 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
         child: Icon(icon, size: 22),
       ),
-      title: Text(
-        title,
-        style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.black87),
-      ),
+      title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
       value: value,
-      activeTrackColor: settingManager.accentColor,
+      activeColor: settingManager.accentColor,
       onChanged: onChanged,
     );
   }

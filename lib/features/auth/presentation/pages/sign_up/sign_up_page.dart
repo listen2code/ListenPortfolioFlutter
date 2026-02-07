@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
+import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
+import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -24,118 +27,157 @@ class _SignUpPageState extends State<SignUpPage> {
     super.dispose();
   }
 
-  void _handleSignUp() {
+  void _handleSignUp(Color accentColor) {
     if (_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Registration Successful! Please login.')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(I18nKeys.registrationSuccess.tr),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: accentColor,
+        ),
+      );
       Navigator.of(context).pop();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      extendBodyBehindAppBar: true,
-      extendBody: true,
-      appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0, foregroundColor: Colors.black87),
-      body: Container(
-        constraints: const BoxConstraints.expand(),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.blueAccent.withOpacity(0.05), Colors.white],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+    return ListenableBuilder(
+      listenable: settingManager,
+      builder: (context, child) {
+        final theme = Theme.of(context);
+        final accentColor = settingManager.accentColor;
+
+        return Scaffold(
+          backgroundColor: theme.scaffoldBackgroundColor,
+          extendBodyBehindAppBar: true,
+          extendBody: true,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            foregroundColor: theme.brightness == Brightness.light ? Colors.black87 : Colors.white,
           ),
-        ),
-        child: SafeArea(
-          bottom: false,
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 30.0),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const SizedBox(height: 20),
-                  const Text(
-                    'Create Account',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 32, fontWeight: FontWeight.w300, color: Colors.black87),
-                  ),
-                  const SizedBox(height: 10),
-                  const Text(
-                    'Sign up to get started!',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
-                  ),
-                  const SizedBox(height: 40),
-                  _buildTextField(controller: _nameController, hintText: 'Full Name', icon: Icons.person_outline),
-                  const SizedBox(height: 20),
-                  _buildTextField(
-                    controller: _emailController,
-                    hintText: 'Email',
-                    icon: Icons.email_outlined,
-                    keyboardType: TextInputType.emailAddress,
-                  ),
-                  const SizedBox(height: 20),
-                  _buildTextField(
-                    controller: _pwdController,
-                    hintText: 'Password',
-                    icon: Icons.lock_outline,
-                    obscureText: !_isPasswordVisible,
-                    suffixIcon: IconButton(
-                      icon: Icon(_isPasswordVisible ? Icons.visibility : Icons.visibility_off),
-                      onPressed: () => setState(() => _isPasswordVisible = !_isPasswordVisible),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  _buildTextField(
-                    controller: _confirmPwdController,
-                    hintText: 'Confirm Password',
-                    icon: Icons.lock_outline,
-                    obscureText: !_isPasswordVisible,
-                  ),
-                  const SizedBox(height: 40),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      gradient: const LinearGradient(colors: [Colors.blueAccent, Colors.lightBlue]),
-                      boxShadow: [
-                        BoxShadow(color: Colors.blueAccent.withOpacity(0.3), blurRadius: 10, offset: const Offset(0, 5)),
-                      ],
-                    ),
-                    child: ElevatedButton(
-                      onPressed: _handleSignUp,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.transparent,
-                        shadowColor: Colors.transparent,
-                        padding: const EdgeInsets.symmetric(vertical: 18),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                      ),
-                      child: const Text(
-                        'Sign Up',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 30),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+          body: Container(
+            constraints: const BoxConstraints.expand(),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [accentColor.withValues(alpha: 0.05), theme.scaffoldBackgroundColor],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+            child: SafeArea(
+              bottom: false,
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      const Text("Already have an account? "),
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        child: const Text('Login', style: TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 20),
+                      Text(
+                        I18nKeys.createAccount.tr,
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.headlineMedium?.copyWith(
+                          fontWeight: FontWeight.w300,
+                          color: theme.brightness == Brightness.light ? Colors.black87 : Colors.white,
+                        ),
                       ),
+                      const SizedBox(height: 10),
+                      Text(
+                        I18nKeys.signUpSubtitle.tr,
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey),
+                      ),
+                      const SizedBox(height: 40),
+                      _buildTextField(
+                        controller: _nameController,
+                        hintText: I18nKeys.fullName.tr,
+                        icon: Icons.person_outline,
+                        accentColor: accentColor,
+                      ),
+                      const SizedBox(height: 20),
+                      _buildTextField(
+                        controller: _emailController,
+                        hintText: I18nKeys.email.tr,
+                        icon: Icons.email_outlined,
+                        keyboardType: TextInputType.emailAddress,
+                        accentColor: accentColor,
+                      ),
+                      const SizedBox(height: 20),
+                      _buildTextField(
+                        controller: _pwdController,
+                        hintText: I18nKeys.password.tr,
+                        icon: Icons.lock_outline,
+                        obscureText: !_isPasswordVisible,
+                        accentColor: accentColor,
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                            color: accentColor,
+                          ),
+                          onPressed: () => setState(() => _isPasswordVisible = !_isPasswordVisible),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      _buildTextField(
+                        controller: _confirmPwdController,
+                        hintText: I18nKeys.confirmPassword.tr,
+                        icon: Icons.lock_outline,
+                        accentColor: accentColor,
+                        obscureText: !_isPasswordVisible,
+                      ),
+                      const SizedBox(height: 40),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          gradient: LinearGradient(colors: [accentColor, accentColor.withValues(alpha: 0.8)]),
+                          boxShadow: [
+                            BoxShadow(
+                              color: accentColor.withValues(alpha: 0.3),
+                              blurRadius: 10,
+                              offset: const Offset(0, 5),
+                            ),
+                          ],
+                        ),
+                        child: ElevatedButton(
+                          onPressed: () => _handleSignUp(accentColor),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                            shadowColor: Colors.transparent,
+                            padding: const EdgeInsets.symmetric(vertical: 18),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                          ),
+                          child: Text(
+                            I18nKeys.signUp.tr,
+                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 30),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(I18nKeys.alreadyHaveAccount.tr, style: const TextStyle(color: Colors.grey)),
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: Text(
+                              I18nKeys.loginLink.tr,
+                              style: TextStyle(color: accentColor, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 40),
                     ],
                   ),
-                  const SizedBox(height: 40),
-                ],
+                ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -143,6 +185,7 @@ class _SignUpPageState extends State<SignUpPage> {
     required TextEditingController controller,
     required String hintText,
     required IconData icon,
+    required Color accentColor,
     bool obscureText = false,
     TextInputType? keyboardType,
     Widget? suffixIcon,
@@ -153,13 +196,10 @@ class _SignUpPageState extends State<SignUpPage> {
       keyboardType: keyboardType,
       decoration: InputDecoration(
         hintText: hintText,
-        prefixIcon: Icon(icon),
+        prefixIcon: Icon(icon, color: accentColor),
         suffixIcon: suffixIcon,
-        filled: true,
-        fillColor: Colors.white,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(15), borderSide: BorderSide.none),
       ),
-      validator: (value) => value!.isEmpty ? 'Field required' : null,
+      validator: (value) => value!.isEmpty ? I18nKeys.fieldRequired.tr : null,
     );
   }
 }

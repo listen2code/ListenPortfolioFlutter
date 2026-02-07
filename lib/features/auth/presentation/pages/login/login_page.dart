@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
+import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
+import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_intent.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_state.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_view_model.dart';
@@ -8,14 +11,70 @@ import 'package:listen_portfolio_flutter/features/auth/presentation/pages/sign_u
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_page.dart';
 import 'package:listen_portfolio_flutter/shared/extension/navigation_extension.dart';
 
+/// Login page with MVI pattern
+/// Uses ListenableBuilder to respond to global theme and language changes
 class LoginPage extends ConsumerWidget {
   const LoginPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // 1. Listen for navigation intents
+    _setupNavigation(context, ref);
+
     final state = ref.watch(loginViewModelProvider);
     final viewModel = ref.read(loginViewModelProvider.notifier);
 
+    // 2. Wrap with ListenableBuilder for dynamic theme/language updates
+    return ListenableBuilder(
+      listenable: settingManager,
+
+      builder: (context, child) {
+        final theme = Theme.of(context);
+        final accentColor = settingManager.accentColor;
+
+        return Scaffold(
+          body: Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [accentColor.withValues(alpha: 0.05), theme.scaffoldBackgroundColor],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+            child: SafeArea(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const SizedBox(height: 60),
+                    _buildLogo(accentColor),
+                    const SizedBox(height: 30),
+                    _buildTitle(theme),
+                    const SizedBox(height: 50),
+                    _buildUsernameField(state, viewModel, theme, accentColor),
+                    const SizedBox(height: 20),
+                    _buildPasswordField(state, viewModel, theme, accentColor),
+                    _buildForgotPasswordButton(viewModel, accentColor),
+                    const SizedBox(height: 30),
+                    _buildLoginButton(state, viewModel, accentColor),
+                    const SizedBox(height: 15),
+                    _buildSkipButton(viewModel),
+                    const SizedBox(height: 30),
+                    _buildSignupLink(viewModel, accentColor),
+                    if (state.errorMessage != null) ...[const SizedBox(height: 20), _buildErrorMessage(state.errorMessage!)],
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _setupNavigation(BuildContext context, WidgetRef ref) {
     ref.listenNavigation<LoginState, LoginNavigationTarget>(loginViewModelProvider, (target) {
       switch (target) {
         case LoginNavigationTarget.signup:
@@ -29,51 +88,13 @@ class LoginPage extends ConsumerWidget {
           break;
       }
     });
-    return Scaffold(
-      body: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.blueAccent.withValues(alpha: 0.05), Colors.white],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 30.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SizedBox(height: 60),
-                _buildLogo(),
-                const SizedBox(height: 30),
-                _buildTitle(),
-                const SizedBox(height: 50),
-                _buildUsernameField(state, viewModel),
-                const SizedBox(height: 20),
-                _buildPasswordField(state, viewModel),
-                _buildForgotPasswordButton(viewModel),
-                const SizedBox(height: 30),
-                _buildLoginButton(state, viewModel),
-                const SizedBox(height: 15),
-                _buildSkipButton(viewModel),
-                const SizedBox(height: 30),
-                _buildSignupLink(viewModel),
-                if (state.errorMessage != null) ...[const SizedBox(height: 20), _buildErrorMessage(state.errorMessage!)],
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
   }
 
   // ---------------------------------------------------------------------------
-  // UI Components (Declarative)
+  // UI Components
   // ---------------------------------------------------------------------------
 
-  Widget _buildLogo() {
+  Widget _buildLogo(Color accentColor) {
     return Hero(
       tag: 'logo',
       child: Center(
@@ -82,76 +103,68 @@ class LoginPage extends ConsumerWidget {
           decoration: BoxDecoration(
             color: Colors.white,
             shape: BoxShape.circle,
-            boxShadow: [BoxShadow(color: Colors.blueAccent.withValues(alpha: 0.3), blurRadius: 20, offset: const Offset(0, 10))],
+            boxShadow: [BoxShadow(color: accentColor.withValues(alpha: 0.3), blurRadius: 20, offset: const Offset(0, 10))],
           ),
-          child: const Icon(Icons.auto_awesome, size: 60, color: Colors.blueAccent),
+          child: Icon(Icons.auto_awesome, size: 60, color: accentColor),
         ),
       ),
     );
   }
 
-  Widget _buildTitle() {
-    return const Column(
+  Widget _buildTitle(ThemeData theme) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(
-          'Welcome Back!',
-          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87),
-        ),
-        SizedBox(height: 8),
-        Text('Sign in to continue', style: TextStyle(fontSize: 16, color: Colors.grey)),
+        Text(I18nKeys.welcomeBack.tr, style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold)),
+        const SizedBox(height: 8),
+        Text(I18nKeys.signInToContinue.tr, style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey)),
       ],
     );
   }
 
-  Widget _buildUsernameField(LoginState state, LoginViewModel viewModel) {
+  Widget _buildUsernameField(LoginState state, LoginViewModel viewModel, ThemeData theme, Color accentColor) {
     return TextFormField(
       onChanged: (value) => viewModel.handleIntent(LoginIntent.usernameChanged(value)),
       decoration: InputDecoration(
-        hintText: 'Username',
-        prefixIcon: const Icon(Icons.person_outline),
+        hintText: I18nKeys.username.tr,
+        prefixIcon: Icon(Icons.person_outline, color: accentColor),
         errorText: state.usernameError,
-        filled: true,
-        fillColor: Colors.white,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(15), borderSide: BorderSide.none),
       ),
     );
   }
 
-  Widget _buildPasswordField(LoginState state, LoginViewModel viewModel) {
+  Widget _buildPasswordField(LoginState state, LoginViewModel viewModel, ThemeData theme, Color accentColor) {
     return TextFormField(
       onChanged: (value) => viewModel.handleIntent(LoginIntent.passwordChanged(value)),
       obscureText: !state.isPasswordVisible,
       decoration: InputDecoration(
-        hintText: 'Password',
-        prefixIcon: const Icon(Icons.lock_outline),
+        hintText: I18nKeys.password.tr,
+        prefixIcon: Icon(Icons.lock_outline, color: accentColor),
         errorText: state.passwordError,
-        filled: true,
-        fillColor: Colors.white,
         suffixIcon: IconButton(
-          icon: Icon(state.isPasswordVisible ? Icons.visibility : Icons.visibility_off),
+          icon: Icon(state.isPasswordVisible ? Icons.visibility : Icons.visibility_off, color: accentColor),
           onPressed: () => viewModel.handleIntent(const LoginIntent.togglePasswordVisibility()),
         ),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(15), borderSide: BorderSide.none),
       ),
     );
   }
 
-  Widget _buildForgotPasswordButton(LoginViewModel viewModel) {
+  Widget _buildForgotPasswordButton(LoginViewModel viewModel, Color accentColor) {
     return Align(
       alignment: Alignment.centerRight,
       child: TextButton(
         onPressed: () => viewModel.handleIntent(const LoginIntent.navigateToForgotPassword()),
-        child: const Text('Forgot Password?', style: TextStyle(color: Colors.blueAccent)),
+        child: Text(I18nKeys.forgotPassword.tr, style: TextStyle(color: accentColor)),
       ),
     );
   }
 
-  Widget _buildLoginButton(LoginState state, LoginViewModel viewModel) {
+  Widget _buildLoginButton(LoginState state, LoginViewModel viewModel, Color accentColor) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
-        gradient: const LinearGradient(colors: [Colors.blueAccent, Colors.lightBlue]),
-        boxShadow: [BoxShadow(color: Colors.blueAccent.withValues(alpha: 0.3), blurRadius: 10, offset: const Offset(0, 5))],
+        gradient: LinearGradient(colors: [accentColor, accentColor.withValues(alpha: 0.8)]),
+        boxShadow: [BoxShadow(color: accentColor.withValues(alpha: 0.3), blurRadius: 10, offset: const Offset(0, 5))],
       ),
       child: ElevatedButton(
         onPressed: state.isLoading ? null : () => viewModel.handleIntent(const LoginIntent.submitLogin()),
@@ -167,9 +180,9 @@ class LoginPage extends ConsumerWidget {
                 width: 20,
                 child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color>(Colors.white)),
               )
-            : const Text(
-                'LOGIN',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+            : Text(
+                I18nKeys.login.tr,
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
               ),
       ),
     );
@@ -178,20 +191,20 @@ class LoginPage extends ConsumerWidget {
   Widget _buildSkipButton(LoginViewModel viewModel) {
     return TextButton(
       onPressed: () => viewModel.handleIntent(const LoginIntent.skipLogin()),
-      child: const Text('Skip for now', style: TextStyle(color: Colors.grey)),
+      child: Text(I18nKeys.skipForNow.tr, style: const TextStyle(color: Colors.grey)),
     );
   }
 
-  Widget _buildSignupLink(LoginViewModel viewModel) {
+  Widget _buildSignupLink(LoginViewModel viewModel, Color accentColor) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Expanded(child: FittedBox(child: const Text("Don't have an account? "))),
+        Text(I18nKeys.noAccount.tr, style: const TextStyle(color: Colors.grey)),
         TextButton(
           onPressed: () => viewModel.handleIntent(const LoginIntent.navigateToSignup()),
-          child: const Text(
-            'Sign Up',
-            style: TextStyle(color: Colors.blueAccent, fontWeight: FontWeight.bold),
+          child: Text(
+            I18nKeys.signUp.tr,
+            style: TextStyle(color: accentColor, fontWeight: FontWeight.bold),
           ),
         ),
       ],

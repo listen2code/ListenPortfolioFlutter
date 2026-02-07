@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
+import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 
 class AppearancePage extends StatefulWidget {
@@ -11,6 +13,7 @@ class AppearancePage extends StatefulWidget {
 class _AppearancePageState extends State<AppearancePage> {
   final List<Color> _accentColors = [
     Colors.blueAccent,
+
     Colors.indigo,
     Colors.purple,
     Colors.pink,
@@ -25,20 +28,23 @@ class _AppearancePageState extends State<AppearancePage> {
     return ListenableBuilder(
       listenable: settingManager,
       builder: (context, child) {
+        final theme = Theme.of(context);
+        final currentAccentColor = settingManager.accentColor;
+
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Appearance', style: TextStyle(fontWeight: FontWeight.w300)),
+            title: Text(I18nKeys.appearance.tr, style: const TextStyle(fontWeight: FontWeight.w300)),
             centerTitle: true,
             backgroundColor: Colors.transparent,
             elevation: 0,
-            foregroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black87 : Colors.white,
+            foregroundColor: theme.brightness == Brightness.light ? Colors.black87 : Colors.white,
           ),
           extendBodyBehindAppBar: true,
           body: Container(
             width: double.infinity,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [settingManager.accentColor.withValues(alpha: 0.05), Theme.of(context).scaffoldBackgroundColor],
+                colors: [currentAccentColor.withValues(alpha: 0.05), theme.scaffoldBackgroundColor],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
@@ -47,29 +53,34 @@ class _AppearancePageState extends State<AppearancePage> {
               child: ListView(
                 padding: const EdgeInsets.all(20),
                 children: [
-                  _buildSectionTitle('Theme Mode'),
-                  _buildSettingsCard([
-                    _buildThemeOption('System', Icons.settings_brightness_outlined, ThemeMode.system, settingManager.themeMode),
-                    _buildThemeOption('Light', Icons.light_mode_outlined, ThemeMode.light, settingManager.themeMode),
-                    _buildThemeOption('Dark', Icons.dark_mode_outlined, ThemeMode.dark, settingManager.themeMode),
+                  _buildSectionTitle(I18nKeys.themeMode.tr),
+                  _buildSettingsCard(context, [
+                    _buildThemeOption(
+                      I18nKeys.system.tr,
+                      Icons.settings_brightness_outlined,
+                      ThemeMode.system,
+                      settingManager.themeMode,
+                    ),
+                    _buildThemeOption(I18nKeys.light.tr, Icons.light_mode_outlined, ThemeMode.light, settingManager.themeMode),
+                    _buildThemeOption(I18nKeys.dark.tr, Icons.dark_mode_outlined, ThemeMode.dark, settingManager.themeMode),
                   ]),
                   const SizedBox(height: 25),
-                  _buildSectionTitle('Accent Color'),
-                  _buildSettingsCard([
+                  _buildSectionTitle(I18nKeys.accentColor.tr),
+                  _buildSettingsCard(context, [
                     Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Wrap(
                         spacing: 15,
                         runSpacing: 15,
-                        children: _accentColors.map((color) => _buildColorOption(color)).toList(),
+                        children: _accentColors.map((color) => _buildColorOption(color, currentAccentColor)).toList(),
                       ),
                     ),
                   ]),
                   const SizedBox(height: 25),
-                  _buildSectionTitle('Font Size'),
-                  _buildSettingsCard([
-                    _buildFontSizeOption('Standard', 1.0, Icons.text_fields, 20),
-                    _buildFontSizeOption('Large', 1.2, Icons.text_fields, 28),
+                  _buildSectionTitle(I18nKeys.fontSize.tr),
+                  _buildSettingsCard(context, [
+                    _buildFontSizeOption(I18nKeys.standard.tr, 1.0, Icons.text_fields, 20),
+                    _buildFontSizeOption(I18nKeys.large.tr, 1.2, Icons.text_fields, 28),
                   ]),
                 ],
               ),
@@ -90,14 +101,26 @@ class _AppearancePageState extends State<AppearancePage> {
     );
   }
 
-  Widget _buildSettingsCard(List<Widget> children) {
+  Widget _buildSettingsCard(BuildContext context, List<Widget> children) {
+    final theme = Theme.of(context);
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(20),
         boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10, offset: const Offset(0, 5))],
       ),
-      child: Column(children: children),
+      child: Material(
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(20),
+        clipBehavior: Clip.antiAlias,
+        child: Column(
+          children: [
+            for (var i = 0; i < children.length; i++) ...[
+              children[i],
+              if (i < children.length - 1)
+                Divider(height: 1, thickness: 0.5, indent: 65, endIndent: 20, color: theme.dividerColor.withOpacity(0.1)),
+            ],
+          ],
+        ),
+      ),
     );
   }
 
@@ -106,7 +129,7 @@ class _AppearancePageState extends State<AppearancePage> {
     return ListTile(
       leading: Icon(icon, color: isSelected ? null : Colors.grey),
       title: Text(label),
-      trailing: isSelected ? const Icon(Icons.check_circle) : null,
+      trailing: isSelected ? Icon(Icons.check_circle, color: settingManager.accentColor) : null,
       onTap: () => settingManager.setThemeMode(mode),
     );
   }
@@ -116,13 +139,13 @@ class _AppearancePageState extends State<AppearancePage> {
     return ListTile(
       leading: Icon(icon, size: iconSize),
       title: Text(label),
-      trailing: isSelected ? const Icon(Icons.check_circle) : null,
+      trailing: isSelected ? Icon(Icons.check_circle, color: settingManager.accentColor) : null,
       onTap: () => settingManager.setFontSizeFactor(factor),
     );
   }
 
-  Widget _buildColorOption(Color color) {
-    final isSelected = settingManager.accentColor.value == color.value;
+  Widget _buildColorOption(Color color, Color currentAccentColor) {
+    final isSelected = currentAccentColor.value == color.value;
     return GestureDetector(
       onTap: () => settingManager.setAccentColor(color),
       child: Container(
