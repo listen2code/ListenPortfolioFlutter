@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:listen_portfolio_flutter/core/theme/theme_provider.dart';
+import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 
 /// Application theme configuration
 class AppTheme {
   AppTheme._();
 
   /// Generates Light theme based on accent color and font size factor
-  static ThemeData getLightTheme(ThemeManager themeManager) {
+  static ThemeData getLightTheme(SettingManager themeManager) {
     final accentColor = themeManager.accentColor;
     final fontSizeFactor = themeManager.fontSizeFactor;
 
@@ -46,7 +46,7 @@ class AppTheme {
   }
 
   /// Generates Dark theme based on accent color and font size factor
-  static ThemeData getDarkTheme(ThemeManager themeManager) {
+  static ThemeData getDarkTheme(SettingManager themeManager) {
     final accentColor = themeManager.accentColor;
     final fontSizeFactor = themeManager.fontSizeFactor;
 

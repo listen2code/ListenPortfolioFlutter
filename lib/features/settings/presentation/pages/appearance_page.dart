@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:listen_portfolio_flutter/core/theme/theme_provider.dart';
+import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 
 class AppearancePage extends StatefulWidget {
   const AppearancePage({super.key});
@@ -23,7 +23,7 @@ class _AppearancePageState extends State<AppearancePage> {
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: themeManager,
+      listenable: settingManager,
       builder: (context, child) {
         return Scaffold(
           appBar: AppBar(
@@ -38,7 +38,7 @@ class _AppearancePageState extends State<AppearancePage> {
             width: double.infinity,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [themeManager.accentColor.withValues(alpha: 0.05), Theme.of(context).scaffoldBackgroundColor],
+                colors: [settingManager.accentColor.withValues(alpha: 0.05), Theme.of(context).scaffoldBackgroundColor],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
@@ -49,9 +49,9 @@ class _AppearancePageState extends State<AppearancePage> {
                 children: [
                   _buildSectionTitle('Theme Mode'),
                   _buildSettingsCard([
-                    _buildThemeOption('System', Icons.settings_brightness_outlined, ThemeMode.system, themeManager.themeMode),
-                    _buildThemeOption('Light', Icons.light_mode_outlined, ThemeMode.light, themeManager.themeMode),
-                    _buildThemeOption('Dark', Icons.dark_mode_outlined, ThemeMode.dark, themeManager.themeMode),
+                    _buildThemeOption('System', Icons.settings_brightness_outlined, ThemeMode.system, settingManager.themeMode),
+                    _buildThemeOption('Light', Icons.light_mode_outlined, ThemeMode.light, settingManager.themeMode),
+                    _buildThemeOption('Dark', Icons.dark_mode_outlined, ThemeMode.dark, settingManager.themeMode),
                   ]),
                   const SizedBox(height: 25),
                   _buildSectionTitle('Accent Color'),
@@ -107,24 +107,24 @@ class _AppearancePageState extends State<AppearancePage> {
       leading: Icon(icon, color: isSelected ? null : Colors.grey),
       title: Text(label),
       trailing: isSelected ? const Icon(Icons.check_circle) : null,
-      onTap: () => themeManager.setThemeMode(mode),
+      onTap: () => settingManager.setThemeMode(mode),
     );
   }
 
   Widget _buildFontSizeOption(String label, double factor, IconData icon, double iconSize) {
-    final isSelected = themeManager.fontSizeFactor == factor;
+    final isSelected = settingManager.fontSizeFactor == factor;
     return ListTile(
       leading: Icon(icon, size: iconSize),
       title: Text(label),
       trailing: isSelected ? const Icon(Icons.check_circle) : null,
-      onTap: () => themeManager.setFontSizeFactor(factor),
+      onTap: () => settingManager.setFontSizeFactor(factor),
     );
   }
 
   Widget _buildColorOption(Color color) {
-    final isSelected = themeManager.accentColor.value == color.value;
+    final isSelected = settingManager.accentColor.value == color.value;
     return GestureDetector(
-      onTap: () => themeManager.setAccentColor(color),
+      onTap: () => settingManager.setAccentColor(color),
       child: Container(
         width: 45,
         height: 45,

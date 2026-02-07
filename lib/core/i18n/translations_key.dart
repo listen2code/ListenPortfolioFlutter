@@ -1,0 +1,35 @@
+class I18nKeys {
+  static const String settings = 'Settings';
+  static const String appearance = 'Appearance';
+  static const String appearanceSubtitle = 'Theme, colors, and fonts';
+  static const String language = 'Language';
+  static const String general = 'General';
+  static const String changePassword = 'Change Password';
+  static const String changePasswordSubtitle = 'Update your account security';
+  static const String notifications = 'Notifications';
+  static const String systemStorage = 'System & Storage';
+  static const String clearCache = 'Clear Cache';
+  static const String cacheCleared = 'Cache cleared successfully!';
+  static const String connect = 'Connect';
+  static const String licenses = 'Open Source Licenses';
+  static const String contactMe = 'Contact Me';
+  static const String contactMeSubtitle = 'Send an email to author';
+  static const String about = 'About';
+  static const String appVersion = 'App Version';
+  static const String themeMode = 'Theme Mode';
+  static const String accentColor = 'Accent Color';
+  static const String fontSize = 'Font Size';
+  static const String system = 'System';
+  static const String light = 'Light';
+  static const String dark = 'Dark';
+  static const String standard = 'Standard';
+  static const String large = 'Large';
+  static const String selectLanguage = 'Select Language';
+  static const String switchEnv = 'Switch Environment';
+  static const String envDev = 'Development';
+  static const String envTest = 'Testing';
+  static const String envProd = 'Production';
+  static const String currentlyActive = 'Currently Active';
+  static const String envSwitched = 'Environment switched to:';
+  static const String noEmailApp = 'No email apps installed';
+}

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_env.dart';
-import 'package:listen_portfolio_flutter/core/theme/theme_provider.dart';
+import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
+import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
+import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/password/change_password_page.dart';
 import 'package:listen_portfolio_flutter/shared/widget/common_text.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -22,11 +24,11 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: themeManager,
+      listenable: settingManager,
       builder: (context, child) {
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Settings', style: TextStyle(fontWeight: FontWeight.w300)),
+            title: Text(I18nKeys.settings.tr, style: const TextStyle(fontWeight: FontWeight.w300)),
             centerTitle: true,
             backgroundColor: Colors.transparent,
             elevation: 0,
@@ -37,7 +39,7 @@ class _SettingsPageState extends State<SettingsPage> {
             width: double.infinity,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [themeManager.accentColor.withOpacity(0.05), Colors.white],
+                colors: [settingManager.accentColor.withValues(alpha: 0.05), Colors.white],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
@@ -46,56 +48,56 @@ class _SettingsPageState extends State<SettingsPage> {
               child: ListView(
                 padding: const EdgeInsets.all(20),
                 children: [
-                  _buildSectionTitle('General'),
+                  _buildSectionTitle(I18nKeys.general.tr),
                   _buildSettingsCard([
                     _buildListTile(
                       icon: Icons.palette_outlined,
-                      title: 'Appearance',
-                      subtitle: 'Theme, colors, and fonts',
+                      title: I18nKeys.appearance.tr,
+                      subtitle: I18nKeys.appearanceSubtitle.tr,
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AppearancePage()));
                       },
                     ),
                     _buildListTile(
                       icon: Icons.language_outlined,
-                      title: 'Language',
-                      trailing: Text(themeManager.language, style: const TextStyle(color: Colors.grey)),
+                      title: I18nKeys.language.tr,
+                      trailing: Text(settingManager.language.label, style: const TextStyle(color: Colors.grey)),
                       onTap: () => _showLanguageDialog(),
                     ),
                     _buildListTile(
                       icon: Icons.lock_outline,
-                      title: 'Change Password',
-                      subtitle: 'Update your account security',
+                      title: I18nKeys.changePassword.tr,
+                      subtitle: I18nKeys.changePasswordSubtitle.tr,
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ChangePasswordPage()));
                       },
                     ),
                     _buildSwitchTile(
                       icon: Icons.notifications_active_outlined,
-                      title: 'Notifications',
+                      title: I18nKeys.notifications.tr,
                       value: _notificationsEnabled,
                       onChanged: (val) => setState(() => _notificationsEnabled = val),
                     ),
                   ]),
                   const SizedBox(height: 25),
-                  _buildSectionTitle('System & Storage'),
+                  _buildSectionTitle(I18nKeys.systemStorage.tr),
                   _buildSettingsCard([
                     _buildListTile(
                       icon: Icons.delete_outline_rounded,
-                      title: 'Clear Cache',
+                      title: I18nKeys.clearCache.tr,
                       trailing: Text(_cacheSize, style: const TextStyle(color: Colors.grey)),
                       onTap: () => _clearCache(),
                     ),
                   ]),
                   const SizedBox(height: 25),
-                  _buildSectionTitle('Connect'),
+                  _buildSectionTitle(I18nKeys.connect.tr),
                   _buildSettingsCard([
                     _buildListTile(
                       icon: Icons.description_outlined,
-                      title: 'Open Source Licenses',
+                      title: I18nKeys.licenses.tr,
                       onTap: () => showLicensePage(
                         context: context,
-                        applicationName: '${AppConstants.appVersion} Portfolio',
+                        applicationName: '${AppConstants.appName} Portfolio',
                         applicationVersion: AppConstants.appVersion,
                         applicationIcon: const Padding(padding: EdgeInsets.all(8.0), child: Icon(Icons.auto_awesome, size: 48)),
                         applicationLegalese: '© ${AppConstants.date} ${AppConstants.author}',
@@ -103,17 +105,17 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     _buildListTile(
                       icon: Icons.alternate_email_rounded,
-                      title: 'Contact Me',
-                      subtitle: 'Send an email to ${AppConstants.author}',
+                      title: I18nKeys.contactMe.tr,
+                      subtitle: I18nKeys.contactMeSubtitle.tr,
                       onTap: () => _launchURL('mailto:${AppConstants.mail}?subject=Portfolio%20Feedback'),
                     ),
                   ]),
                   const SizedBox(height: 25),
-                  _buildSectionTitle('About'),
+                  _buildSectionTitle(I18nKeys.about.tr),
                   _buildSettingsCard([
                     _buildListTile(
                       icon: Icons.info_outline,
-                      title: 'App Version',
+                      title: I18nKeys.appVersion.tr,
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -142,11 +144,15 @@ class _SettingsPageState extends State<SettingsPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const CommonText('Switch Environment'),
+        title: CommonText(I18nKeys.switchEnv.tr),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
-          children: [_buildEnvTile('Development', 'dev'), _buildEnvTile('Testing', 'test'), _buildEnvTile('Production', 'prod')],
+          children: [
+            _buildEnvTile(I18nKeys.envDev.tr, 'dev'),
+            _buildEnvTile(I18nKeys.envTest.tr, 'test'),
+            _buildEnvTile(I18nKeys.envProd.tr, 'prod'),
+          ],
         ),
       ),
     );
@@ -156,7 +162,7 @@ class _SettingsPageState extends State<SettingsPage> {
     final bool isCurrent = AppEnv.env == envCode;
     return ListTile(
       title: Text(label),
-      subtitle: Text(isCurrent ? 'Currently Active' : 'Switch to $envCode'),
+      subtitle: Text(isCurrent ? I18nKeys.currentlyActive.tr : envCode),
       trailing: isCurrent ? const Icon(Icons.check_circle) : null,
       onTap: () {
         AppEnv.setEnvironment(envCode);
@@ -164,9 +170,9 @@ class _SettingsPageState extends State<SettingsPage> {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Environment switched to: $label'),
+            content: Text('${I18nKeys.envSwitched.tr} $label'),
             behavior: SnackBarBehavior.floating,
-            backgroundColor: themeManager.accentColor,
+            backgroundColor: settingManager.accentColor,
           ),
         );
       },
@@ -178,7 +184,7 @@ class _SettingsPageState extends State<SettingsPage> {
     if (!await canLaunchUrl(url) && mounted) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('No email apps installed'), behavior: SnackBarBehavior.floating));
+      ).showSnackBar(SnackBar(content: Text(I18nKeys.noEmailApp.tr), behavior: SnackBarBehavior.floating));
       return;
     }
     if (!await launchUrl(url) && mounted) {
@@ -189,41 +195,41 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   void _showLanguageDialog() {
-    final currentLang = themeManager.language;
+    final currentLang = settingManager.language;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Select Language'),
+        title: Text(I18nKeys.selectLanguage.tr),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _buildLanguageOption('English', currentLang),
-            _buildLanguageOption('Chinese', currentLang),
-            _buildLanguageOption('Japanese', currentLang),
+            _buildLanguageOption(AppLanguage.english),
+            _buildLanguageOption(AppLanguage.chinese),
+            _buildLanguageOption(AppLanguage.japanese),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildLanguageOption(String lang, String currentLang) {
-    final isSelected = lang == currentLang;
+  Widget _buildLanguageOption(AppLanguage lang) {
+    final isSelected = lang == settingManager.language;
     return ListTile(
       title: Text(
-        lang,
+        lang.label,
         style: TextStyle(
           fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-          color: isSelected ? themeManager.accentColor : Colors.black87,
+          color: isSelected ? settingManager.accentColor : Colors.black87,
         ),
       ),
-      trailing: isSelected ? Icon(Icons.check_circle, color: themeManager.accentColor) : null,
+      trailing: isSelected ? Icon(Icons.check_circle, color: settingManager.accentColor) : null,
       onTap: () => _updateLang(lang),
     );
   }
 
-  void _updateLang(String lang) {
-    themeManager.setLanguage(lang);
+  void _updateLang(AppLanguage lang) {
+    settingManager.setLanguage(lang);
     Navigator.pop(context);
   }
 
@@ -231,7 +237,7 @@ class _SettingsPageState extends State<SettingsPage> {
     setState(() => _cacheSize = '0 MB');
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(const SnackBar(content: Text('Cache cleared successfully!'), behavior: SnackBarBehavior.floating));
+    ).showSnackBar(SnackBar(content: Text(I18nKeys.cacheCleared.tr), behavior: SnackBarBehavior.floating));
   }
 
   Widget _buildSectionTitle(String title) {
@@ -274,7 +280,10 @@ class _SettingsPageState extends State<SettingsPage> {
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       leading: Container(
         padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(color: themeManager.accentColor.withOpacity(0.08), borderRadius: BorderRadius.circular(12)),
+        decoration: BoxDecoration(
+          color: settingManager.accentColor.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(12),
+        ),
         child: Icon(icon, size: 22),
       ),
       title: CommonText(
@@ -296,7 +305,10 @@ class _SettingsPageState extends State<SettingsPage> {
     return SwitchListTile(
       secondary: Container(
         padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(color: themeManager.accentColor.withOpacity(0.08), borderRadius: BorderRadius.circular(12)),
+        decoration: BoxDecoration(
+          color: settingManager.accentColor.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(12),
+        ),
         child: Icon(icon, size: 22),
       ),
       title: Text(
@@ -304,7 +316,7 @@ class _SettingsPageState extends State<SettingsPage> {
         style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.black87),
       ),
       value: value,
-      activeThumbColor: themeManager.accentColor,
+      activeTrackColor: settingManager.accentColor,
       onChanged: onChanged,
     );
   }
