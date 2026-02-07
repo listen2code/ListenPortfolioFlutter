@@ -29,3 +29,14 @@ samples, guidance on mobile development, and a full API reference.
 * widget to package
     * commonText, commonImage, commonDialog, commonToast
 * build web
+* framework
+  --library
+  --package_base: only dart
+  ----package_libs: basic third util, network, sp, event_bus, theme, globalization
+  ------package_widget: base widgets, button, text, image, dialog, toast, loading, refreshList, tabView,
+  --------package_biz: base biz
+  ----------package_webView: webView
+  ----------package_splash: splash module
+  ----------package_login: login module
+  ----------package_share: share module
+  ------plugin_native: plugin for native basic info
