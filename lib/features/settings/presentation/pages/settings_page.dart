@@ -204,6 +204,7 @@ class _SettingsPageState extends State<SettingsPage> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            _buildLanguageOption(AppLanguage.system),
             _buildLanguageOption(AppLanguage.english),
             _buildLanguageOption(AppLanguage.chinese),
             _buildLanguageOption(AppLanguage.japanese),

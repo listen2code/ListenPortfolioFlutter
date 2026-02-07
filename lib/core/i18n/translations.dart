@@ -3,17 +3,39 @@ import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 
 enum AppLanguage {
+  system("System", null),
   english('English', Locale('en')),
-  chinese('Chinese', Locale('zh')),
-  japanese('Japanese', Locale('ja'));
+  chinese('中文', Locale('zh')),
+  japanese('日本語', Locale('ja'));
 
-  final String label;
-  final Locale locale;
+  final String _label;
+  final Locale? _locale;
 
-  const AppLanguage(this.label, this.locale);
+  const AppLanguage(this._label, this._locale);
+
+  /// Gets the actual locale. If [system] is selected, it maps the system language
+  /// to supported languages (en, zh, ja), defaulting to [en].
+  Locale get locale {
+    if (this == AppLanguage.system) {
+      final systemLocale = WidgetsBinding.instance.platformDispatcher.locale;
+      final languageCode = systemLocale.languageCode;
+
+      if (languageCode == 'zh') return const Locale('zh');
+      if (languageCode == 'ja') return const Locale('ja');
+      return const Locale('en');
+    }
+    return _locale!;
+  }
+
+  String get label {
+    if (this == AppLanguage.system) {
+      return I18nKeys.system.tr;
+    }
+    return _label;
+  }
 
   static AppLanguage fromLabel(String? label) {
-    return AppLanguage.values.firstWhere((e) => e.label == label, orElse: () => AppLanguage.english);
+    return AppLanguage.values.firstWhere((e) => e.label == label, orElse: () => AppLanguage.system);
   }
 }
 
@@ -132,6 +154,7 @@ class Translations {
   };
 
   static String translate(String key) {
+    // 获取经过跟随系统逻辑处理后的实际 languageCode
     final languageCode = settingManager.locale.languageCode;
     return _data[languageCode]?[key] ?? key;
   }
