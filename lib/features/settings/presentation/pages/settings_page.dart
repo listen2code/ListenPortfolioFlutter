@@ -152,24 +152,23 @@ class _SettingsPageState extends State<SettingsPage> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _buildEnvTile(I18nKeys.envDev.tr, 'dev'),
-            _buildEnvTile(I18nKeys.envTest.tr, 'test'),
-            _buildEnvTile(I18nKeys.envProd.tr, 'prod'),
+            _buildEnvTile(I18nKeys.envDev.tr, AppEnvironment.dev),
+            _buildEnvTile(I18nKeys.envTest.tr, AppEnvironment.test),
+            _buildEnvTile(I18nKeys.envProd.tr, AppEnvironment.prod),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildEnvTile(String label, String envCode) {
-    final bool isCurrent = AppEnv.env == envCode;
+  Widget _buildEnvTile(String label, AppEnvironment envCode) {
+    final bool isCurrent = AppEnv.env == envCode.name;
     return ListTile(
       title: Text(label),
-      subtitle: Text(isCurrent ? I18nKeys.currentlyActive.tr : envCode),
+      subtitle: Text(isCurrent ? I18nKeys.currentlyActive.tr : envCode.name),
       trailing: isCurrent ? const Icon(Icons.check_circle) : null,
       onTap: () {
         AppEnv.setEnvironment(envCode);
-        setState(() {}); // Refresh UI
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

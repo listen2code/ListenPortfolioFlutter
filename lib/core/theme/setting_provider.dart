@@ -1,7 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
+import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+/// Font size options for the app
+enum AppFontSize {
+  standard(I18nKeys.standard, 1.0, 20.0),
+  large(I18nKeys.large, 1.2, 28.0);
+
+  final String label;
+  final double factor;
+  final double iconSize;
+
+  const AppFontSize(this.label, this.factor, this.iconSize);
+
+  static AppFontSize fromFactor(double? factor) {
+    return AppFontSize.values.firstWhere((e) => e.factor == factor, orElse: () => AppFontSize.standard);
+  }
+}
 
 class SettingManager extends ChangeNotifier {
   static final SettingManager _instance = SettingManager._internal();
@@ -14,15 +31,14 @@ class SettingManager extends ChangeNotifier {
 
   ThemeMode _themeMode = ThemeMode.system;
   Color _accentColor = Colors.blueAccent;
-  double _fontSizeFactor = 1.0;
-
+  AppFontSize _fontSize = AppFontSize.standard;
   AppLanguage _language = AppLanguage.english;
 
   ThemeMode get themeMode => _themeMode;
 
   Color get accentColor => _accentColor;
 
-  double get fontSizeFactor => _fontSizeFactor;
+  AppFontSize get fontSize => _fontSize;
 
   AppLanguage get language => _language;
 
@@ -40,8 +56,10 @@ class SettingManager extends ChangeNotifier {
     if (colorValue != null) _accentColor = Color(colorValue);
 
     // Load Font Size
-    _fontSizeFactor = prefs.getDouble(AppConstants.fontSizeKey) ?? 1.0;
+    final factor = prefs.getDouble(AppConstants.fontSizeKey);
+    _fontSize = AppFontSize.fromFactor(factor);
 
+    // Load Language
     final langLabel = prefs.getString(AppConstants.languageKey);
     _language = AppLanguage.fromLabel(langLabel);
 
@@ -64,12 +82,12 @@ class SettingManager extends ChangeNotifier {
     await prefs.setInt(AppConstants.accentColorKey, color.toARGB32());
   }
 
-  Future<void> setFontSizeFactor(double factor) async {
-    if (_fontSizeFactor == factor) return;
-    _fontSizeFactor = factor;
+  Future<void> setFontSize(AppFontSize size) async {
+    if (_fontSize == size) return;
+    _fontSize = size;
     notifyListeners();
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setDouble(AppConstants.fontSizeKey, factor);
+    await prefs.setDouble(AppConstants.fontSizeKey, size.factor);
   }
 
   Future<void> setLanguage(AppLanguage lang) async {

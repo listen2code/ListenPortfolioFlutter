@@ -29,7 +29,7 @@ class _AppearancePageState extends State<AppearancePage> {
       listenable: settingManager,
       builder: (context, child) {
         final theme = Theme.of(context);
-        final currentAccentColor = settingManager.accentColor;
+        final accentColor = settingManager.accentColor;
 
         return Scaffold(
           appBar: AppBar(
@@ -44,7 +44,7 @@ class _AppearancePageState extends State<AppearancePage> {
             width: double.infinity,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [currentAccentColor.withValues(alpha: 0.05), theme.scaffoldBackgroundColor],
+                colors: [accentColor.withValues(alpha: 0.05), theme.scaffoldBackgroundColor],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
@@ -72,15 +72,17 @@ class _AppearancePageState extends State<AppearancePage> {
                       child: Wrap(
                         spacing: 15,
                         runSpacing: 15,
-                        children: _accentColors.map((color) => _buildColorOption(color, currentAccentColor)).toList(),
+                        children: _accentColors
+                            .map((color) => _buildColorOption(color, currentAccentColor: accentColor))
+                            .toList(),
                       ),
                     ),
                   ]),
                   const SizedBox(height: 25),
                   _buildSectionTitle(I18nKeys.fontSize.tr),
                   _buildSettingsCard(context, [
-                    _buildFontSizeOption(I18nKeys.standard.tr, 1.0, Icons.text_fields, 20),
-                    _buildFontSizeOption(I18nKeys.large.tr, 1.2, Icons.text_fields, 28),
+                    _buildFontSizeOption(I18nKeys.standard.tr, AppFontSize.standard),
+                    _buildFontSizeOption(I18nKeys.large.tr, AppFontSize.large),
                   ]),
                 ],
               ),
@@ -127,24 +129,24 @@ class _AppearancePageState extends State<AppearancePage> {
   Widget _buildThemeOption(String label, IconData icon, ThemeMode mode, ThemeMode currentMode) {
     final isSelected = mode == currentMode;
     return ListTile(
-      leading: Icon(icon, color: isSelected ? null : Colors.grey),
+      leading: SizedBox(width: 20, child: Icon(icon, color: isSelected ? null : Colors.grey)),
       title: Text(label),
       trailing: isSelected ? Icon(Icons.check_circle, color: settingManager.accentColor) : null,
       onTap: () => settingManager.setThemeMode(mode),
     );
   }
 
-  Widget _buildFontSizeOption(String label, double factor, IconData icon, double iconSize) {
-    final isSelected = settingManager.fontSizeFactor == factor;
+  Widget _buildFontSizeOption(String label, AppFontSize fontSize) {
+    final isSelected = settingManager.fontSize == fontSize;
     return ListTile(
-      leading: Icon(icon, size: iconSize),
+      leading: SizedBox(width: 20, child: Icon(Icons.text_fields, size: fontSize.iconSize)),
       title: Text(label),
       trailing: isSelected ? Icon(Icons.check_circle, color: settingManager.accentColor) : null,
-      onTap: () => settingManager.setFontSizeFactor(factor),
+      onTap: () => settingManager.setFontSize(fontSize),
     );
   }
 
-  Widget _buildColorOption(Color color, Color currentAccentColor) {
+  Widget _buildColorOption(Color color, {required Color currentAccentColor}) {
     final isSelected = currentAccentColor.value == color.value;
     return GestureDetector(
       onTap: () => settingManager.setAccentColor(color),
@@ -155,7 +157,9 @@ class _AppearancePageState extends State<AppearancePage> {
           color: color,
           shape: BoxShape.circle,
           border: isSelected ? Border.all(color: Colors.white, width: 3) : null,
-          boxShadow: isSelected ? [BoxShadow(color: color.withOpacity(0.4), blurRadius: 10, spreadRadius: 2)] : null,
+          boxShadow: isSelected
+              ? [BoxShadow(color: color.withAlpha((255.0 * 0.4).round()), blurRadius: 10, spreadRadius: 2)]
+              : null,
         ),
         child: isSelected ? const Icon(Icons.check, color: Colors.white) : null,
       ),

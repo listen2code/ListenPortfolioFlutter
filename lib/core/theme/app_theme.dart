@@ -8,7 +8,7 @@ class AppTheme {
   /// Generates Light theme based on accent color and font size factor
   static ThemeData getLightTheme(SettingManager themeManager) {
     final accentColor = themeManager.accentColor;
-    final fontSizeFactor = themeManager.fontSizeFactor;
+    final fontSizeFactor = themeManager.fontSize.factor;
 
     final theme = ThemeData(
       useMaterial3: true,
@@ -48,7 +48,7 @@ class AppTheme {
   /// Generates Dark theme based on accent color and font size factor
   static ThemeData getDarkTheme(SettingManager themeManager) {
     final accentColor = themeManager.accentColor;
-    final fontSizeFactor = themeManager.fontSizeFactor;
+    final fontSizeFactor = themeManager.fontSize.factor;
 
     final theme = ThemeData(
       useMaterial3: true,

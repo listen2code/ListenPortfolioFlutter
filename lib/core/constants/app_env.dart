@@ -1,15 +1,27 @@
 import 'package:listen_portfolio_flutter/shared/network/api_client.dart';
 
+enum AppEnvironment {
+  dev('dev'),
+  test('test'),
+  prod('prod');
+
+  final String name;
+
+  const AppEnvironment(this.name);
+
+  static AppEnvironment fromString(String env) {
+    return AppEnvironment.values.firstWhere((e) => e.name == env, orElse: () => AppEnvironment.dev);
+  }
+}
+
 class AppEnv {
   AppEnv._();
 
-  static const String _dev = 'dev';
-  static const String _test = 'test';
-  static const String _prod = 'prod';
+  static AppEnvironment _env = AppEnvironment.fromString(
+    String.fromEnvironment('APP_ENV', defaultValue: AppEnvironment.dev.name),
+  );
 
-  static bool isProd() => _env == _prod;
-
-  static String _env = const String.fromEnvironment('APP_ENV', defaultValue: _dev);
+  static bool isProd() => _env == AppEnvironment.prod;
 
   static const _devConfig = (
     baseUrl: 'http://192.168.0.224:9898',
@@ -32,27 +44,27 @@ class AppEnv {
     receiveTimeout: 30000,
   );
 
-  static String get env => _env;
+  static AppEnvironment get currentEnv => _env;
+
+  static String get env => _env.name;
 
   static dynamic get _current {
     switch (_env) {
-      case _prod:
+      case AppEnvironment.prod:
         return _prodConfig;
-      case _test:
+      case AppEnvironment.test:
         return _testConfig;
-      default:
+      case AppEnvironment.dev:
         return _devConfig;
     }
   }
 
-  static void setEnvironment(String newEnv) {
-    if (newEnv == _prod || newEnv == _test || newEnv == _dev) {
-      _env = newEnv;
-      ApiClient.dio.options.baseUrl = apiBaseUrl;
-      ApiClient.dio.options.connectTimeout = Duration(milliseconds: connectTimeout);
-      ApiClient.dio.options.receiveTimeout = Duration(milliseconds: receiveTimeout);
-      ApiClient.dio.options.sendTimeout = Duration(milliseconds: apiTimeout);
-    }
+  static void setEnvironment(AppEnvironment newEnv) {
+    _env = newEnv;
+    ApiClient.dio.options.baseUrl = apiBaseUrl;
+    ApiClient.dio.options.connectTimeout = Duration(milliseconds: connectTimeout);
+    ApiClient.dio.options.receiveTimeout = Duration(milliseconds: receiveTimeout);
+    ApiClient.dio.options.sendTimeout = Duration(milliseconds: apiTimeout);
   }
 
   static String get apiBaseUrl => _current.baseUrl;
