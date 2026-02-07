@@ -1,12 +1,12 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:listen_portfolio_flutter/core/base/mvi_navigation.dart';
+import 'package:listen_portfolio_flutter/core/base/base_view_model.dart';
 
 part 'login_state.freezed.dart';
 
 enum LoginNavigationTarget { signup, forgotPassword, home }
 
 @freezed
-abstract class LoginState with _$LoginState implements NavigableState<LoginNavigationTarget> {
+abstract class LoginState with _$LoginState implements BaseState<LoginNavigationTarget> {
   const LoginState._();
 
   const factory LoginState({

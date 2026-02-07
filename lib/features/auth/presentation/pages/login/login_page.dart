@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:listen_portfolio_flutter/core/base/mvi_navigation.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_intent.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_state.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_view_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/password/forgot_password_page.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/sign_up/sign_up_page.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_page.dart';
+import 'package:listen_portfolio_flutter/shared/navigation_extension.dart';
 
 class LoginPage extends ConsumerWidget {
   const LoginPage({super.key});

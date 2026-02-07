@@ -9,6 +9,7 @@ class AppTheme {
   static ThemeData getLightTheme(ThemeManager themeManager) {
     final accentColor = themeManager.accentColor;
     final fontSizeFactor = themeManager.fontSizeFactor;
+
     final theme = ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
@@ -48,6 +49,7 @@ class AppTheme {
   static ThemeData getDarkTheme(ThemeManager themeManager) {
     final accentColor = themeManager.accentColor;
     final fontSizeFactor = themeManager.fontSizeFactor;
+
     final theme = ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,

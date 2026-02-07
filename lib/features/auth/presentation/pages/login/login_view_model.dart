@@ -1,8 +1,8 @@
-import 'package:listen_portfolio_flutter/core/base/mvi_navigation.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/usecases/login_use_case.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_intent.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/provider/auth_provider.dart';
+import 'package:listen_portfolio_flutter/shared/navigation_extension.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'login_state.dart';
@@ -10,7 +10,7 @@ import 'login_state.dart';
 part 'login_view_model.g.dart';
 
 @riverpod
-class LoginViewModel extends _$LoginViewModel with NavigableViewModel {
+class LoginViewModel extends _$LoginViewModel with ConsumeNavigableViewModel<LoginState> {
   @override
   LoginState build() {
     return const LoginState();
