@@ -1,5 +1,4 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:listen_portfolio_flutter/core/base/base_repository.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/datasources/auth_local_data_source.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/datasources/auth_remote_data_source.dart';
@@ -8,6 +7,7 @@ import 'package:listen_portfolio_flutter/features/auth/data/models/login_respons
 import 'package:listen_portfolio_flutter/features/auth/data/models/signup_request_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/repositories/auth_repository.dart';
+import 'package:listen_portfolio_flutter/shared/shared.dart';
 
 class AuthRepositoryImpl with BaseRepository implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;

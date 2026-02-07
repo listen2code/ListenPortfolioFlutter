@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:listen_portfolio_flutter/core/constants/app_env.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_portfolio_flutter/shared/shared.dart';
 
 /// Creates and configures a single Dio instance for the entire application
 class ApiClient {

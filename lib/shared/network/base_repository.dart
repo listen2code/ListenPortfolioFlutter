@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
-import 'package:listen_portfolio_flutter/core/network/api_client.dart';
-import 'package:listen_portfolio_flutter/core/network/base_response_model.dart';
+import 'package:listen_portfolio_flutter/shared/network/api_client.dart';
+import 'package:listen_portfolio_flutter/shared/network/base_response_model.dart';
+import 'package:listen_portfolio_flutter/shared/network/network_info.dart';
+import 'package:listen_portfolio_flutter/shared/util/logger.dart';
 
 mixin BaseRepository {
   Future<Either<Failure, T>> safeCall<T>({

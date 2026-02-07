@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
-import 'package:listen_portfolio_flutter/core/network/base_response_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/login_request_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/login_response_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/signup_request_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
+import 'package:listen_portfolio_flutter/shared/network/base_response_model.dart';
 import 'package:retrofit/retrofit.dart';
 
 part 'auth_remote_data_source.g.dart';

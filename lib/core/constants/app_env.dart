@@ -1,4 +1,4 @@
-import 'package:listen_portfolio_flutter/core/network/api_client.dart';
+import 'package:listen_portfolio_flutter/shared/network/api_client.dart';
 
 class AppEnv {
   AppEnv._();
