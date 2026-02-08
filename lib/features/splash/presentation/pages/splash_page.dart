@@ -1,7 +1,6 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
+import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_page.dart';
 
 class SplashPage extends StatefulWidget {
@@ -11,61 +10,80 @@ class SplashPage extends StatefulWidget {
   State<SplashPage> createState() => _SplashPageState();
 }
 
-class _SplashPageState extends State<SplashPage> {
+class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _fadeAnimation;
+
   @override
   void initState() {
     super.initState();
-    _navigateToNext();
+    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 1500));
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
+
+    _controller.forward();
+    _navigateToLogin();
   }
 
-  Future<void> _navigateToNext() async {
-    await Future.delayed(const Duration(seconds: 2));
-    if (!mounted) return;
+  Future<void> _navigateToLogin() async {
+    await Future.delayed(const Duration(seconds: 3));
+    if (mounted) {
+      Navigator.of(context).pushAndRemoveUntil(
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) => const LoginPage(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+          transitionDuration: const Duration(milliseconds: 800),
+        ),
+        (route) => false,
+      );
+    }
+  }
 
-    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const LoginPage()));
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        width: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.blueAccent, Colors.lightBlue],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Hero(
-              tag: 'logo',
-              child: Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                  boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 20, spreadRadius: 5)],
+    return ListenableBuilder(
+      listenable: settingManager,
+      builder: (context, child) {
+        final theme = Theme.of(context);
+        final accentColor = settingManager.accentColor;
+
+        return Scaffold(
+          resizeToAvoidBottomInset: false,
+          backgroundColor: theme.scaffoldBackgroundColor,
+          body: SafeArea(
+            child: Center(
+              child: FadeTransition(
+                opacity: _fadeAnimation,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset(
+                      'assets/images/ic_launcher_adaptive_fore.png',
+                      width: 120,
+                      height: 120,
+                      color: accentColor,
+                      colorBlendMode: BlendMode.srcIn,
+                    ),
+                    const SizedBox(height: 24),
+                    Text(
+                      AppConstants.appName,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 28, fontWeight: FontWeight.w300, color: accentColor, letterSpacing: 1.2),
+                    ),
+                  ],
                 ),
-                child: const Icon(Icons.auto_awesome, size: 80, color: Colors.blueAccent),
               ),
             ),
-            const SizedBox(height: 30),
-            const Text(
-              '${AppConstants.author} Portfolio',
-              style: TextStyle(fontSize: 36, fontWeight: FontWeight.w300, color: Colors.white, letterSpacing: 2.0),
-            ),
-            const SizedBox(height: 40),
-            const SizedBox(
-              width: 40,
-              height: 40,
-              child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white), strokeWidth: 2),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }
