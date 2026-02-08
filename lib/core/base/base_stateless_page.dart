@@ -120,7 +120,7 @@ class BaseStatelessPage extends StatelessWidget {
 
   AppBar _createAppBar(ThemeData theme, BuildContext context) {
     return AppBar(
-      title: Text(title!, style: const TextStyle(fontWeight: FontWeight.w300)),
+      title: Text(title ?? "", style: const TextStyle(fontWeight: FontWeight.w300)),
       centerTitle: true,
       backgroundColor: Colors.transparent,
       elevation: 0,
