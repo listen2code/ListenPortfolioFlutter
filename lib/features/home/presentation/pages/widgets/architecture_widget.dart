@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:listen_portfolio_flutter/core/base/base_stateless_page.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
@@ -10,26 +9,33 @@ class ArchitectureWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final accentColor = settingManager.accentColor;
+    return ListenableBuilder(
+      listenable: settingManager,
+      builder: (context, child) {
+        final theme = Theme.of(context);
+        final accentColor = settingManager.accentColor;
 
-    return BaseStatelessPage(
-      padding: const EdgeInsets.all(20),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildHeader(theme),
-          const SizedBox(height: 30),
-          _buildCleanMVISection(theme, accentColor),
-          const SizedBox(height: 25),
-          _buildLibSection(theme, accentColor),
-          const SizedBox(height: 25),
-          _buildSourceCodeSection(context, theme, accentColor),
-          const SizedBox(height: 25),
-          _buildBackendSection(theme, accentColor),
-          const SizedBox(height: 30),
-        ],
-      ),
+        return SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildHeader(theme),
+                const SizedBox(height: 30),
+                _buildCleanMVISection(theme, accentColor),
+                const SizedBox(height: 25),
+                _buildLibSection(theme, accentColor),
+                const SizedBox(height: 25),
+                _buildSourceCodeSection(context, theme, accentColor),
+                const SizedBox(height: 25),
+                _buildBackendSection(theme, accentColor),
+                const SizedBox(height: 30),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
