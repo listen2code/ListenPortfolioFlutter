@@ -160,12 +160,6 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     onTap: () {
                       if (isSwitchingEnvDisabled) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Switching environment is disabled in release build.'),
-                            behavior: SnackBarBehavior.floating,
-                          ),
-                        );
                         return;
                       }
                       _showEnvSwitchDialog();
