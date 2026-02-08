@@ -6,7 +6,7 @@ import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 /// A common wrapper for pages to provide consistent theme listening,
 /// background gradient, and basic layout structure.
 class BaseStatelessPage extends StatelessWidget {
-  final Widget body;
+  final TransitionBuilder body;
   final String? title;
   final PreferredSizeWidget? appBar;
   final Widget? drawer;
@@ -18,6 +18,7 @@ class BaseStatelessPage extends StatelessWidget {
   final bool extendBodyBehindAppBar;
   final bool useStatusBar;
   final bool useBottomBar;
+  final bool isEmptyTitle;
   final Color statusBarColor;
   final Color bottomBarColor;
 
@@ -35,6 +36,7 @@ class BaseStatelessPage extends StatelessWidget {
     this.extendBodyBehindAppBar = true,
     this.useStatusBar = false,
     this.useBottomBar = false,
+    this.isEmptyTitle = false,
     this.statusBarColor = Colors.transparent,
     this.bottomBarColor = Colors.transparent,
   });
@@ -47,7 +49,7 @@ class BaseStatelessPage extends StatelessWidget {
         final accentColor = settingManager.accentColor;
         final isDark = theme.brightness == Brightness.dark;
 
-        Widget content = body;
+        Widget content = body(context, child);
 
         if (padding != null) {
           content = Padding(padding: padding!, child: content);
@@ -71,7 +73,7 @@ class BaseStatelessPage extends StatelessWidget {
 
         // Determine which AppBar to use
         PreferredSizeWidget? effectiveAppBar = appBar;
-        if (effectiveAppBar == null && title != null) {
+        if (effectiveAppBar == null && (title != null || isEmptyTitle)) {
           effectiveAppBar = _createAppBar(theme, context);
         }
 

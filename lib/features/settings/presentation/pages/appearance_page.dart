@@ -25,46 +25,48 @@ class _AppearancePageState extends State<AppearancePage> {
 
   @override
   Widget build(BuildContext context) {
-    final accentColor = settingManager.accentColor;
-
     return BaseStatelessPage(
       title: I18nKeys.appearance.tr,
       padding: const EdgeInsets.all(20),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildSectionTitle(I18nKeys.themeMode.tr),
-          _buildSettingsCard(context, [
-            _buildThemeOption(
-              I18nKeys.system.tr,
-              Icons.settings_brightness_outlined,
-              ThemeMode.system,
-              settingManager.themeMode,
-            ),
-            _buildThemeOption(I18nKeys.light.tr, Icons.light_mode_outlined, ThemeMode.light, settingManager.themeMode),
-            _buildThemeOption(I18nKeys.dark.tr, Icons.dark_mode_outlined, ThemeMode.dark, settingManager.themeMode),
-          ]),
-          const SizedBox(height: 25),
-          _buildSectionTitle(I18nKeys.accentColor.tr),
-          _buildSettingsCard(context, [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Wrap(
-                spacing: 15,
-                runSpacing: 15,
-                children: _accentColors.map((color) => _buildColorOption(color, currentAccentColor: accentColor)).toList(),
+      body: (context, child) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildSectionTitle(I18nKeys.themeMode.tr),
+            _buildSettingsCard(context, [
+              _buildThemeOption(
+                I18nKeys.system.tr,
+                Icons.settings_brightness_outlined,
+                ThemeMode.system,
+                settingManager.themeMode,
               ),
-            ),
-          ]),
-          const SizedBox(height: 25),
-          _buildSectionTitle(I18nKeys.fontSize.tr),
-          _buildSettingsCard(context, [
-            _buildFontSizeOption(I18nKeys.standard.tr, AppFontSize.standard),
-            _buildFontSizeOption(I18nKeys.large.tr, AppFontSize.large),
-          ]),
-          const SizedBox(height: 40),
-        ],
-      ),
+              _buildThemeOption(I18nKeys.light.tr, Icons.light_mode_outlined, ThemeMode.light, settingManager.themeMode),
+              _buildThemeOption(I18nKeys.dark.tr, Icons.dark_mode_outlined, ThemeMode.dark, settingManager.themeMode),
+            ]),
+            const SizedBox(height: 25),
+            _buildSectionTitle(I18nKeys.accentColor.tr),
+            _buildSettingsCard(context, [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Wrap(
+                  spacing: 15,
+                  runSpacing: 15,
+                  children: _accentColors
+                      .map((color) => _buildColorOption(color, currentAccentColor: settingManager.accentColor))
+                      .toList(),
+                ),
+              ),
+            ]),
+            const SizedBox(height: 25),
+            _buildSectionTitle(I18nKeys.fontSize.tr),
+            _buildSettingsCard(context, [
+              _buildFontSizeOption(I18nKeys.standard.tr, AppFontSize.standard),
+              _buildFontSizeOption(I18nKeys.large.tr, AppFontSize.large),
+            ]),
+            const SizedBox(height: 40),
+          ],
+        );
+      },
     );
   }
 
@@ -132,7 +134,9 @@ class _AppearancePageState extends State<AppearancePage> {
           color: color,
           shape: BoxShape.circle,
           border: isSelected ? Border.all(color: Colors.white, width: 3) : null,
-          boxShadow: isSelected ? [BoxShadow(color: color.withAlpha((255.0 * 0.4).round()), blurRadius: 10, spreadRadius: 2)] : null,
+          boxShadow: isSelected
+              ? [BoxShadow(color: color.withAlpha((255.0 * 0.4).round()), blurRadius: 10, spreadRadius: 2)]
+              : null,
         ),
         child: isSelected ? const Icon(Icons.check, color: Colors.white) : null,
       ),

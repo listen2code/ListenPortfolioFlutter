@@ -29,10 +29,12 @@ class _HomePageState extends State<HomePage> {
     return BaseStatelessPage(
       title: _selectedIndex == 0 ? '' : (_selectedIndex == 1 ? I18nKeys.aboutMe.tr : I18nKeys.architecture.tr),
       drawer: _buildDrawer(context, theme, accentColor),
-      // Important: Disable internal scrolling for HomePage since child widgets 
+      // Important: Disable internal scrolling for HomePage since child widgets
       // like OverviewWidget already handle their own scrolling
       isScrollable: false,
-      body: _buildBody(),
+      body: (context, child) {
+        return _buildBody();
+      },
     );
   }
 

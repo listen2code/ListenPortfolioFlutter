@@ -39,113 +39,114 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final accentColor = settingManager.accentColor;
-    final isSwitchingEnvDisabled = AppEnv.isProd() && kReleaseMode;
-
     return BaseStatelessPage(
       title: I18nKeys.settings.tr,
       padding: const EdgeInsets.all(20),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildSectionTitle(I18nKeys.general.tr),
-          _buildSettingsCard(context, [
-            _buildListTile(
-              icon: Icons.palette_outlined,
-              title: I18nKeys.appearance.tr,
-              subtitle: I18nKeys.appearanceSubtitle.tr,
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AppearancePage()));
-              },
-            ),
-            _buildListTile(
-              icon: Icons.language_outlined,
-              title: I18nKeys.language.tr,
-              trailing: Text(settingManager.language.label, style: const TextStyle(color: Colors.grey)),
-              onTap: () => _showLanguageDialog(),
-            ),
-            _buildListTile(
-              icon: Icons.lock_outline,
-              title: I18nKeys.changePassword.tr,
-              subtitle: I18nKeys.changePasswordSubtitle.tr,
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ChangePasswordPage()));
-              },
-            ),
-            _buildSwitchTile(
-              icon: Icons.notifications_active_outlined,
-              title: I18nKeys.notifications.tr,
-              value: _notificationsEnabled,
-              onChanged: (val) => setState(() => _notificationsEnabled = val),
-            ),
-          ]),
-          const SizedBox(height: 25),
-          _buildSectionTitle(I18nKeys.systemStorage.tr),
-          _buildSettingsCard(context, [
-            _buildListTile(
-              icon: Icons.delete_outline_rounded,
-              title: I18nKeys.clearCache.tr,
-              trailing: Text(_cacheSize, style: const TextStyle(color: Colors.grey)),
-              onTap: () => _handleClearCache(accentColor),
-            ),
-          ]),
-          const SizedBox(height: 25),
-          _buildSectionTitle(I18nKeys.about.tr),
-          _buildSettingsCard(context, [
-            _buildListTile(
-              icon: Icons.description_outlined,
-              title: I18nKeys.licenses.tr,
-              onTap: () => showLicensePage(
-                context: context,
-                applicationName: AppConstants.appName,
-                applicationVersion: AppConstants.appVersion,
-                applicationIcon: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Image.asset(
-                    R.imagesIcLauncherAdaptiveFore,
-                    width: 48,
-                    height: 48,
-                    color: settingManager.accentColor,
-                    colorBlendMode: BlendMode.srcIn,
+      body: (context, child) {
+        final isSwitchingEnvDisabled = AppEnv.isProd() && kReleaseMode;
+        final accentColor = settingManager.accentColor;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildSectionTitle(I18nKeys.general.tr),
+            _buildSettingsCard(context, [
+              _buildListTile(
+                icon: Icons.palette_outlined,
+                title: I18nKeys.appearance.tr,
+                subtitle: I18nKeys.appearanceSubtitle.tr,
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AppearancePage()));
+                },
+              ),
+              _buildListTile(
+                icon: Icons.language_outlined,
+                title: I18nKeys.language.tr,
+                trailing: Text(settingManager.language.label, style: const TextStyle(color: Colors.grey)),
+                onTap: () => _showLanguageDialog(),
+              ),
+              _buildListTile(
+                icon: Icons.lock_outline,
+                title: I18nKeys.changePassword.tr,
+                subtitle: I18nKeys.changePasswordSubtitle.tr,
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ChangePasswordPage()));
+                },
+              ),
+              _buildSwitchTile(
+                icon: Icons.notifications_active_outlined,
+                title: I18nKeys.notifications.tr,
+                value: _notificationsEnabled,
+                onChanged: (val) => setState(() => _notificationsEnabled = val),
+              ),
+            ]),
+            const SizedBox(height: 25),
+            _buildSectionTitle(I18nKeys.systemStorage.tr),
+            _buildSettingsCard(context, [
+              _buildListTile(
+                icon: Icons.delete_outline_rounded,
+                title: I18nKeys.clearCache.tr,
+                trailing: Text(_cacheSize, style: const TextStyle(color: Colors.grey)),
+                onTap: () => _handleClearCache(accentColor),
+              ),
+            ]),
+            const SizedBox(height: 25),
+            _buildSectionTitle(I18nKeys.about.tr),
+            _buildSettingsCard(context, [
+              _buildListTile(
+                icon: Icons.description_outlined,
+                title: I18nKeys.licenses.tr,
+                onTap: () => showLicensePage(
+                  context: context,
+                  applicationName: AppConstants.appName,
+                  applicationVersion: AppConstants.appVersion,
+                  applicationIcon: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Image.asset(
+                      R.imagesIcLauncherAdaptiveFore,
+                      width: 48,
+                      height: 48,
+                      color: settingManager.accentColor,
+                      colorBlendMode: BlendMode.srcIn,
+                    ),
                   ),
+                  applicationLegalese: '© ${AppConstants.date} ${AppConstants.author}',
                 ),
-                applicationLegalese: '© ${AppConstants.date} ${AppConstants.author}',
               ),
-            ),
-            _buildListTile(
-              icon: Icons.info_outline,
-              title: I18nKeys.appVersion.tr,
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    '${AppConstants.appVersion}${!AppEnv.isProd() ? ' (${AppEnv.env})' : ''}',
-                    style: const TextStyle(color: Colors.grey),
-                  ),
-                  if (!isSwitchingEnvDisabled)
-                    const Padding(
-                      padding: EdgeInsets.only(left: 4.0),
-                      child: Icon(Icons.arrow_forward_ios_rounded, size: 12, color: Colors.grey),
+              _buildListTile(
+                icon: Icons.info_outline,
+                title: I18nKeys.appVersion.tr,
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      '${AppConstants.appVersion}${!AppEnv.isProd() ? ' (${AppEnv.env})' : ''}',
+                      style: const TextStyle(color: Colors.grey),
                     ),
-                ],
+                    if (!isSwitchingEnvDisabled)
+                      const Padding(
+                        padding: EdgeInsets.only(left: 4.0),
+                        child: Icon(Icons.arrow_forward_ios_rounded, size: 12, color: Colors.grey),
+                      ),
+                  ],
+                ),
+                onTap: () {
+                  if (isSwitchingEnvDisabled) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Switching environment is disabled in release build.'),
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                    return;
+                  }
+                  _showEnvSwitchDialog();
+                },
               ),
-              onTap: () {
-                if (isSwitchingEnvDisabled) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Switching environment is disabled in release build.'),
-                      behavior: SnackBarBehavior.floating,
-                    ),
-                  );
-                  return;
-                }
-                _showEnvSwitchDialog();
-              },
-            ),
-          ]),
-          const SizedBox(height: 40),
-        ],
-      ),
+            ]),
+            const SizedBox(height: 40),
+          ],
+        );
+      },
     );
   }
 

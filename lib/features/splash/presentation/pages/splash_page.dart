@@ -49,36 +49,37 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    final accentColor = settingManager.accentColor;
-
     return BaseStatelessPage(
       isScrollable: false,
-      body: Center(
-        child: FadeTransition(
-          opacity: _fadeAnimation,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Hero(
-                tag: 'logo',
-                child: Image.asset(
-                  R.imagesIcLauncherAdaptiveFore,
-                  width: 120,
-                  height: 120,
-                  color: accentColor,
-                  colorBlendMode: BlendMode.srcIn,
+      body: (context, child) {
+        final accentColor = settingManager.accentColor;
+        return Center(
+          child: FadeTransition(
+            opacity: _fadeAnimation,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Hero(
+                  tag: 'logo',
+                  child: Image.asset(
+                    R.imagesIcLauncherAdaptiveFore,
+                    width: 120,
+                    height: 120,
+                    color: accentColor,
+                    colorBlendMode: BlendMode.srcIn,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 24),
-              Text(
-                AppConstants.appName,
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 28, fontWeight: FontWeight.w300, color: accentColor, letterSpacing: 1.2),
-              ),
-            ],
+                const SizedBox(height: 24),
+                Text(
+                  AppConstants.appName,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.w300, color: accentColor, letterSpacing: 1.2),
+                ),
+              ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
