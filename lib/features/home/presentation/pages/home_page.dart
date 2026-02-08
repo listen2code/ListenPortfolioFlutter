@@ -8,6 +8,7 @@ import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/widgets/about_me_widget.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/widgets/architecture_widget.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/widgets/overview_widget.dart';
+import 'package:listen_portfolio_flutter/features/home/presentation/pages/widgets/projects_widget.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/appearance_page.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/settings_page.dart';
 
@@ -21,20 +22,29 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
+  String _getPageTitle() {
+    switch (_selectedIndex) {
+      case 1:
+        return I18nKeys.aboutMe.tr;
+      case 2:
+        return I18nKeys.featuredProjects.tr;
+      case 3:
+        return I18nKeys.architecture.tr;
+      default:
+        return '';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final accentColor = settingManager.accentColor;
 
     return BaseStatelessPage(
-      title: _selectedIndex == 0 ? '' : (_selectedIndex == 1 ? I18nKeys.aboutMe.tr : I18nKeys.architecture.tr),
+      title: _getPageTitle(),
       drawer: _buildDrawer(context, theme, accentColor),
-      // Important: Disable internal scrolling for HomePage since child widgets
-      // like OverviewWidget already handle their own scrolling
       isScrollable: false,
-      body: (context, child) {
-        return _buildBody();
-      },
+      body: (context, child) => _buildBody(),
     );
   }
 
@@ -43,17 +53,17 @@ class _HomePageState extends State<HomePage> {
       case 0:
         return OverviewWidget(
           onResumeRequested: () => setState(() => _selectedIndex = 1),
-          onArchitectureRequested: () => setState(() => _selectedIndex = 2),
+          onProjectsRequested: () => setState(() => _selectedIndex = 2),
+          onArchitectureRequested: () => setState(() => _selectedIndex = 3),
         );
       case 1:
         return const AboutMeWidget();
       case 2:
+        return const ProjectsWidget();
+      case 3:
         return const ArchitectureWidget();
       default:
-        return OverviewWidget(
-          onResumeRequested: () => setState(() => _selectedIndex = 1),
-          onArchitectureRequested: () => setState(() => _selectedIndex = 2),
-        );
+        return _buildBody(); // Fallback
     }
   }
 
@@ -92,12 +102,22 @@ class _HomePageState extends State<HomePage> {
                   },
                 ),
                 _buildDrawerItem(
-                  icon: Icons.account_tree_outlined,
-                  label: I18nKeys.architecture.tr,
+                  icon: Icons.rocket_launch_outlined,
+                  label: I18nKeys.featuredProjects.tr,
                   isSelected: _selectedIndex == 2,
                   accentColor: accentColor,
                   onTap: () {
                     setState(() => _selectedIndex = 2);
+                    Navigator.pop(context);
+                  },
+                ),
+                _buildDrawerItem(
+                  icon: Icons.account_tree_outlined,
+                  label: I18nKeys.architecture.tr,
+                  isSelected: _selectedIndex == 3,
+                  accentColor: accentColor,
+                  onTap: () {
+                    setState(() => _selectedIndex = 3);
                     Navigator.pop(context);
                   },
                 ),
@@ -146,10 +166,10 @@ class _HomePageState extends State<HomePage> {
       ),
       child: Stack(
         children: [
-          Column(
+          const Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const CircleAvatar(
+              CircleAvatar(
                 radius: 35,
                 backgroundColor: Colors.white,
                 child: CircleAvatar(
@@ -157,12 +177,12 @@ class _HomePageState extends State<HomePage> {
                   backgroundImage: NetworkImage('https://api.dicebear.com/7.x/avataaars/svg?seed=${AppConstants.author}'),
                 ),
               ),
-              const SizedBox(height: 15),
-              const Text(
+              SizedBox(height: 15),
+              Text(
                 AppConstants.author,
                 style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
               ),
-              const Text(AppConstants.mail, style: TextStyle(color: Colors.white70, fontSize: 14)),
+              Text(AppConstants.mail, style: TextStyle(color: Colors.white70, fontSize: 14)),
             ],
           ),
           Positioned(

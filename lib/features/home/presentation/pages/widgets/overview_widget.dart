@@ -8,9 +8,15 @@ import 'package:url_launcher/url_launcher.dart';
 
 class OverviewWidget extends StatelessWidget {
   final VoidCallback onResumeRequested;
+  final VoidCallback onProjectsRequested;
   final VoidCallback onArchitectureRequested;
 
-  const OverviewWidget({super.key, required this.onResumeRequested, required this.onArchitectureRequested});
+  const OverviewWidget({
+    super.key,
+    required this.onResumeRequested,
+    required this.onProjectsRequested,
+    required this.onArchitectureRequested,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +31,9 @@ class OverviewWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildWelcomeHeader(theme, accentColor),
-              const SizedBox(height: 12), // Reduced height
+              const SizedBox(height: 12),
               _buildStatusTag(),
-              const SizedBox(height: 20), // Reduced height
+              const SizedBox(height: 20),
               _buildExperienceGrid(theme),
               const SizedBox(height: 28),
               _buildSectionHeader(I18nKeys.quickActions.tr, showSeeAll: false),
@@ -342,7 +348,7 @@ class OverviewWidget extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        if (showSeeAll) TextButton(onPressed: () {}, child: Text(I18nKeys.viewAll.tr)),
+        if (showSeeAll) TextButton(onPressed: onProjectsRequested, child: Text(I18nKeys.viewAll.tr)),
       ],
     );
   }
@@ -353,7 +359,7 @@ class OverviewWidget extends StatelessWidget {
       child: ListView(
         scrollDirection: Axis.horizontal,
         children: [
-          _buildProjectCard('E-Commerce App', 'Flutter & Firebase', accentColor),
+          _buildProjectCard('lPortfolio', 'Current App', accentColor),
           _buildProjectCard('AI Chatbot', 'Dart & OpenAI', Colors.purple),
         ],
       ),
