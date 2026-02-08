@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_env.dart';
@@ -43,6 +44,7 @@ class _SettingsPageState extends State<SettingsPage> {
       builder: (context, child) {
         final theme = Theme.of(context);
         final accentColor = settingManager.accentColor;
+        final isSwitchingEnvDisabled = AppEnv.isProd() && kReleaseMode;
 
         return Scaffold(
           appBar: AppBar(
@@ -150,11 +152,25 @@ class _SettingsPageState extends State<SettingsPage> {
                             '${AppConstants.appVersion}${!AppEnv.isProd() ? ' (${AppEnv.env})' : ''}',
                             style: const TextStyle(color: Colors.grey),
                           ),
-                          const SizedBox(width: 4),
-                          const Icon(Icons.arrow_forward_ios_rounded, size: 12, color: Colors.grey),
+                          if (!isSwitchingEnvDisabled)
+                            const Padding(
+                              padding: EdgeInsets.only(left: 4.0),
+                              child: Icon(Icons.arrow_forward_ios_rounded, size: 12, color: Colors.grey),
+                            ),
                         ],
                       ),
-                      onTap: () => _showEnvSwitchDialog(),
+                      onTap: () {
+                        if (isSwitchingEnvDisabled) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Switching environment is disabled in release build.'),
+                              behavior: SnackBarBehavior.floating,
+                            ),
+                          );
+                          return;
+                        }
+                        _showEnvSwitchDialog();
+                      },
                     ),
                   ]),
                   const SizedBox(height: 40),
@@ -166,8 +182,6 @@ class _SettingsPageState extends State<SettingsPage> {
       },
     );
   }
-
-  // ... dialog methods ...
 
   void _handleClearCache(Color accentColor) async {
     await CacheManager.clearAllCache();
@@ -204,7 +218,10 @@ class _SettingsPageState extends State<SettingsPage> {
       subtitle: Text(isCurrent ? I18nKeys.currentlyActive.tr : envCode.name),
       trailing: isCurrent ? const Icon(Icons.check_circle) : null,
       onTap: () {
-        AppEnv.setEnvironment(envCode);
+        // Trigger UI update after setting environment
+        setState(() {
+          AppEnv.setEnvironment(envCode);
+        });
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -219,21 +236,25 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Future<void> _launchURL(String urlString) async {
     final Uri url = Uri.parse(urlString);
-    if (!await canLaunchUrl(url) && mounted) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(I18nKeys.noEmailApp.tr), behavior: SnackBarBehavior.floating));
-      return;
-    }
-    if (!await launchUrl(url) && mounted) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Could not launch $urlString'), behavior: SnackBarBehavior.floating));
+    try {
+      // Use externalApplication mode for Android 11+ compatibility
+      if (await canLaunchUrl(url)) {
+        await launchUrl(url, mode: LaunchMode.externalApplication);
+      } else if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(I18nKeys.noEmailApp.tr), behavior: SnackBarBehavior.floating));
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Could not launch mail client'), behavior: SnackBarBehavior.floating));
+      }
     }
   }
 
   void _showLanguageDialog() {
-    final currentLang = settingManager.language;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -315,11 +336,11 @@ class _SettingsPageState extends State<SettingsPage> {
           color: settingManager.accentColor.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(12),
         ),
-        child: Icon(icon, size: 22),
+        child: Icon(icon, color: settingManager.accentColor, size: 22),
       ),
-      title: CommonText(title, style: const TextStyle(fontWeight: FontWeight.w600)),
-      subtitle: subtitle != null ? Text(subtitle, style: const TextStyle(fontSize: 12)) : null,
-      trailing: trailing ?? Icon(Icons.arrow_forward_ios_rounded, size: 14, color: Colors.grey[400]),
+      title: Text(title, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
+      subtitle: subtitle != null ? Text(subtitle, style: const TextStyle(fontSize: 12, color: Colors.grey)) : null,
+      trailing: trailing ?? const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: Colors.grey),
       onTap: onTap,
     );
   }
@@ -328,18 +349,18 @@ class _SettingsPageState extends State<SettingsPage> {
     required IconData icon,
     required String title,
     required bool value,
-    required Function(bool) onChanged,
+    required ValueChanged<bool> onChanged,
   }) {
-    return SwitchListTile(
+    return SwitchListTile.adaptive(
       secondary: Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           color: settingManager.accentColor.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(12),
         ),
-        child: Icon(icon, size: 22),
+        child: Icon(icon, color: settingManager.accentColor, size: 22),
       ),
-      title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
+      title: Text(title, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
       value: value,
       activeColor: settingManager.accentColor,
       onChanged: onChanged,

@@ -123,7 +123,6 @@ class _HomePageState extends State<HomePage> {
                   label: I18nKeys.settings.tr,
                   accentColor: accentColor,
                   onTap: () {
-                    Navigator.pop(context);
                     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SettingsPage()));
                   },
                 ),
