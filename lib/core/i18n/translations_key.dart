@@ -91,6 +91,9 @@ class I18nKeys {
   static const String featuredProjects = 'Featured Projects';
   static const String viewAll = 'View All';
   static const String github = 'GitHub';
+  static const String graduated = 'Graduated';
+  static const String yearsShort = 'y';
+  static const String couldNotLaunchGithub = 'Could not launch GitHub';
 
   // Profile Page
   static const String editInformation = 'Edit Information';
@@ -107,7 +110,8 @@ class I18nKeys {
   static const String cleanMVITitle = 'Clean Architecture + MVI';
   static const String coreLibrariesTitle = 'Core Libraries';
   static const String openSourceTitle = 'Open Source';
-  static const String openSourceDesc = 'The entire source code of this portfolio app is available on GitHub. Feel free to explore the repository.';
+  static const String openSourceDesc =
+      'The entire source code of this portfolio app is available on GitHub. Feel free to explore the repository.';
   static const String backendDevOpsTitle = 'Backend & DevOps';
 
   // Common Language Names

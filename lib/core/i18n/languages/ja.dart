@@ -81,6 +81,9 @@ final Map<String, String> ja = {
   I18nKeys.featuredProjects: '注目のプロジェクト',
   I18nKeys.viewAll: 'すべて見る',
   I18nKeys.github: 'GitHub',
+  I18nKeys.graduated: '卒業',
+  I18nKeys.yearsShort: '年',
+  I18nKeys.couldNotLaunchGithub: 'GitHubを開けませんでした',
   I18nKeys.editInformation: '情報の編集',
   I18nKeys.changeProfilePhoto: 'プロフ写真の変更',
   I18nKeys.chooseFromGallery: 'ギャラリーから選択',
@@ -96,6 +99,6 @@ final Map<String, String> ja = {
   I18nKeys.openSourceDesc: 'このアプリのソースコードはGitHubで公開されています。',
   I18nKeys.backendDevOpsTitle: 'バックエンドとDevOps',
   I18nKeys.english: '英語',
-  I18nKeys.chinese: '中国語',
+  I18nKeys.chinese: '中国语',
   I18nKeys.japanese: '日本語',
 };

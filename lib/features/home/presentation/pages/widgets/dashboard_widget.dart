@@ -63,7 +63,7 @@ class DashboardWidget extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                'Full Stack Mobile Architect (Graduated 2013)',
+                'Full Stack Mobile Architect (${I18nKeys.graduated.tr} 2013)',
                 style: TextStyle(color: accentColor, fontSize: 14, fontWeight: FontWeight.w600),
               ),
             ],
@@ -109,17 +109,17 @@ class DashboardWidget extends StatelessWidget {
       children: [
         Row(
           children: [
-            _buildStatCard(theme, '10y+', I18nKeys.androidExp.tr, Icons.android_rounded, Colors.green),
+            _buildStatCard(theme, '10${I18nKeys.yearsShort.tr}+', I18nKeys.androidExp.tr, Icons.android_rounded, Colors.green),
             const SizedBox(width: 15),
-            _buildStatCard(theme, '2y+', I18nKeys.flutterExp.tr, Icons.flutter_dash_rounded, Colors.blue),
+            _buildStatCard(theme, '2${I18nKeys.yearsShort.tr}+', I18nKeys.flutterExp.tr, Icons.flutter_dash_rounded, Colors.blue),
           ],
         ),
         const SizedBox(height: 15),
         Row(
           children: [
-            _buildStatCard(theme, '1y', I18nKeys.javaWeb.tr, Icons.web_rounded, Colors.orange),
+            _buildStatCard(theme, '1${I18nKeys.yearsShort.tr}', I18nKeys.javaWeb.tr, Icons.web_rounded, Colors.orange),
             const SizedBox(width: 15),
-            _buildStatCard(theme, '13y', I18nKeys.totalJourney.tr, Icons.timeline_rounded, Colors.purple),
+            _buildStatCard(theme, '13${I18nKeys.yearsShort.tr}', I18nKeys.totalJourney.tr, Icons.timeline_rounded, Colors.purple),
           ],
         ),
       ],
@@ -188,7 +188,7 @@ class DashboardWidget extends StatelessWidget {
           final Uri url = Uri.parse('https://github.com/listen2code');
           if (!await launchUrl(url)) {
             if (context.mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Could not launch GitHub')));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(I18nKeys.couldNotLaunchGithub.tr)));
             }
           }
         }),
