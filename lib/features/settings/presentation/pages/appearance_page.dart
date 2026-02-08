@@ -12,17 +12,6 @@ class AppearancePage extends StatefulWidget {
 }
 
 class _AppearancePageState extends State<AppearancePage> {
-  final List<Color> _accentColors = [
-    Colors.blueAccent,
-    Colors.indigo,
-    Colors.purple,
-    Colors.pink,
-    Colors.redAccent,
-    Colors.orange,
-    Colors.green,
-    Colors.teal,
-  ];
-
   @override
   Widget build(BuildContext context) {
     return BaseStatelessPage(
@@ -51,7 +40,7 @@ class _AppearancePageState extends State<AppearancePage> {
                 child: Wrap(
                   spacing: 15,
                   runSpacing: 15,
-                  children: _accentColors
+                  children: SettingManager.accentColors
                       .map((color) => _buildColorOption(color, currentAccentColor: settingManager.accentColor))
                       .toList(),
                 ),

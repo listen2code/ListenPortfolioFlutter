@@ -21,6 +21,16 @@ enum AppFontSize {
 }
 
 class SettingManager extends ChangeNotifier {
+  static List<Color> accentColors = [
+    Colors.blueAccent,
+    Colors.indigo,
+    Colors.purple,
+    Colors.pink,
+    Colors.redAccent,
+    Colors.orange,
+    Colors.green,
+    Colors.teal,
+  ];
   static final SettingManager _instance = SettingManager._internal();
 
   factory SettingManager() => _instance;
@@ -101,7 +111,7 @@ class SettingManager extends ChangeNotifier {
 
   Future<void> resetSettings() async {
     _themeMode = ThemeMode.system;
-    _accentColor = Colors.blueAccent;
+    _accentColor = accentColors.first;
     _fontSize = AppFontSize.standard;
     _language = AppLanguage.system;
     notifyListeners();
