@@ -53,7 +53,6 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
 
     return BaseStatelessPage(
       isScrollable: false,
-      resizeToAvoidBottomInset: false,
       body: Center(
         child: FadeTransition(
           opacity: _fadeAnimation,

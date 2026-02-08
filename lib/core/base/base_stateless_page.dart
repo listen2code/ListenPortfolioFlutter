@@ -72,35 +72,42 @@ class BaseStatelessPage extends StatelessWidget {
         // Determine which AppBar to use
         PreferredSizeWidget? effectiveAppBar = appBar;
         if (effectiveAppBar == null && title != null) {
-          effectiveAppBar = AppBar(
-            title: Text(title!, style: const TextStyle(fontWeight: FontWeight.w300)),
-            centerTitle: true,
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            foregroundColor: theme.brightness == Brightness.light ? Colors.black87 : Colors.white,
-          );
+          effectiveAppBar = _createAppBar(theme, context);
         }
 
-        return Scaffold(
-          appBar: effectiveAppBar,
-          drawer: drawer,
-          floatingActionButton: floatingActionButton,
-          resizeToAvoidBottomInset: resizeToAvoidBottomInset,
-          extendBodyBehindAppBar: extendBodyBehindAppBar,
-          body: Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [accentColor.withValues(alpha: 0.05), theme.scaffoldBackgroundColor],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
+        return GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          child: Scaffold(
+            appBar: effectiveAppBar,
+            drawer: drawer,
+            floatingActionButton: floatingActionButton,
+            resizeToAvoidBottomInset: resizeToAvoidBottomInset,
+            extendBodyBehindAppBar: extendBodyBehindAppBar,
+            body: Container(
+              width: double.infinity,
+              height: double.infinity,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [accentColor.withValues(alpha: 0.05), theme.scaffoldBackgroundColor],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
               ),
+              child: content,
             ),
-            child: content,
           ),
         );
       },
+    );
+  }
+
+  AppBar _createAppBar(ThemeData theme, BuildContext context) {
+    return AppBar(
+      title: Text(title!, style: const TextStyle(fontWeight: FontWeight.w300)),
+      centerTitle: true,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      foregroundColor: theme.brightness == Brightness.light ? Colors.black87 : Colors.white,
     );
   }
 
