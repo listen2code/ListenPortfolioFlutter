@@ -74,12 +74,12 @@ class I18nKeys {
   static const String invalidEmail = 'Please enter a valid email address';
 
   // Home Page
-  static const String dashboard = 'Dashboard';
+  static const String overview = 'Overview';
   static const String aboutMe = 'About Me';
   static const String architecture = 'Architecture';
   static const String logout = 'Logout';
 
-  // Dashboard Page
+  // Overview Page
   static const String hello = "Hello, I'm";
   static const String availableStatus = 'Available for high-impact roles';
   static const String androidExp = 'Android Exp';
@@ -94,6 +94,12 @@ class I18nKeys {
   static const String graduated = 'Graduated';
   static const String yearsShort = 'y';
   static const String couldNotLaunchGithub = 'Could not launch GitHub';
+  static const String softwareEngineering = 'Software Engineering';
+  static const String certifications = 'Certifications';
+  static const String jlptN1 = 'JLPT N1';
+  static const String bjtJ2 = 'BJT J2';
+  static const String archDesign = 'Arch Design';
+  static const String perfOptimization = 'Perf Optimization';
 
   // Profile Page
   static const String editInformation = 'Edit Information';
@@ -104,6 +110,7 @@ class I18nKeys {
   static const String coreSkills = 'Core Skills';
   static const String experience = 'Experience';
   static const String present = 'Present';
+  static const String education = 'Education';
 
   // Architecture Page
   static const String architectureHeader = 'A robust and scalable foundation for modern mobile apps.';

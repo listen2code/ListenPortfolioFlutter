@@ -4,9 +4,9 @@ import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_page.dart';
+import 'package:listen_portfolio_flutter/features/home/presentation/pages/widgets/about_me_widget.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/widgets/architecture_widget.dart';
-import 'package:listen_portfolio_flutter/features/home/presentation/pages/widgets/dashboard_widget.dart';
-import 'package:listen_portfolio_flutter/features/home/presentation/pages/widgets/profile_widget.dart';
+import 'package:listen_portfolio_flutter/features/home/presentation/pages/widgets/overview_widget.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/appearance_page.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/settings_page.dart';
 
@@ -60,13 +60,19 @@ class _HomePageState extends State<HomePage> {
   Widget _buildBody() {
     switch (_selectedIndex) {
       case 0:
-        return DashboardWidget(onResumeRequested: () => setState(() => _selectedIndex = 1));
+        return OverviewWidget(
+          onResumeRequested: () => setState(() => _selectedIndex = 1),
+          onArchitectureRequested: () => setState(() => _selectedIndex = 2),
+        );
       case 1:
-        return const ProfileWidget();
+        return const AboutMeWidget();
       case 2:
         return const ArchitectureWidget();
       default:
-        return DashboardWidget(onResumeRequested: () => setState(() => _selectedIndex = 1));
+        return OverviewWidget(
+          onResumeRequested: () => setState(() => _selectedIndex = 1),
+          onArchitectureRequested: () => setState(() => _selectedIndex = 2),
+        );
     }
   }
 
@@ -86,7 +92,7 @@ class _HomePageState extends State<HomePage> {
               children: [
                 _buildDrawerItem(
                   icon: Icons.dashboard_customize_outlined,
-                  label: I18nKeys.dashboard.tr,
+                  label: I18nKeys.overview.tr,
                   isSelected: _selectedIndex == 0,
                   accentColor: accentColor,
                   onTap: () {

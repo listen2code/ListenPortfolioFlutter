@@ -9,7 +9,6 @@ import 'package:listen_portfolio_flutter/core/utils/cache_manager.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/password/change_password_page.dart';
 import 'package:listen_portfolio_flutter/generated/r.dart';
 import 'package:listen_portfolio_flutter/shared/widget/common_text.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'appearance_page.dart';
 
@@ -132,12 +131,6 @@ class _SettingsPageState extends State<SettingsPage> {
                         applicationLegalese: '© ${AppConstants.date} ${AppConstants.author}',
                       ),
                     ),
-                    _buildListTile(
-                      icon: Icons.alternate_email_rounded,
-                      title: I18nKeys.contactMe.tr,
-                      subtitle: I18nKeys.contactMeSubtitle.tr,
-                      onTap: () => _launchURL('mailto:${AppConstants.mail}?subject=Portfolio%20Feedback'),
-                    ),
                   ]),
                   const SizedBox(height: 25),
                   _buildSectionTitle(I18nKeys.about.tr),
@@ -234,26 +227,6 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Future<void> _launchURL(String urlString) async {
-    final Uri url = Uri.parse(urlString);
-    try {
-      // Use externalApplication mode for Android 11+ compatibility
-      if (await canLaunchUrl(url)) {
-        await launchUrl(url, mode: LaunchMode.externalApplication);
-      } else if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(I18nKeys.noEmailApp.tr), behavior: SnackBarBehavior.floating));
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Could not launch mail client'), behavior: SnackBarBehavior.floating));
-      }
-    }
-  }
-
   void _showLanguageDialog() {
     showDialog(
       context: context,
@@ -345,12 +318,7 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Widget _buildSwitchTile({
-    required IconData icon,
-    required String title,
-    required bool value,
-    required ValueChanged<bool> onChanged,
-  }) {
+  Widget _buildSwitchTile({required IconData icon, required String title, required bool value, required ValueChanged<bool> onChanged}) {
     return SwitchListTile.adaptive(
       secondary: Container(
         padding: const EdgeInsets.all(10),
