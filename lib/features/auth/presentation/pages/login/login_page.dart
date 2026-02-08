@@ -93,7 +93,6 @@ class LoginPage extends ConsumerWidget {
   // ---------------------------------------------------------------------------
   // UI Components
   // ---------------------------------------------------------------------------
-
   Widget _buildLogo(Color accentColor) {
     return Hero(
       tag: 'logo',
@@ -105,7 +104,13 @@ class LoginPage extends ConsumerWidget {
             shape: BoxShape.circle,
             boxShadow: [BoxShadow(color: accentColor.withValues(alpha: 0.3), blurRadius: 20, offset: const Offset(0, 10))],
           ),
-          child: Icon(Icons.auto_awesome, size: 60, color: accentColor),
+          child: Image.asset(
+            'assets/images/ic_launcher_adaptive_fore.png',
+            width: 60,
+            height: 60,
+            color: accentColor,
+            colorBlendMode: BlendMode.srcIn,
+          ),
         ),
       ),
     );

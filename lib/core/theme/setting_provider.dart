@@ -32,7 +32,7 @@ class SettingManager extends ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.system;
   Color _accentColor = Colors.blueAccent;
   AppFontSize _fontSize = AppFontSize.standard;
-  AppLanguage _language = AppLanguage.english;
+  AppLanguage _language = AppLanguage.system;
 
   ThemeMode get themeMode => _themeMode;
 
@@ -47,9 +47,9 @@ class SettingManager extends ChangeNotifier {
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
 
-    // Load Theme Mode
+    // Load Theme Mode (Index 0 is System)
     final themeIndex = prefs.getInt(AppConstants.themeKey);
-    if (themeIndex != null) _themeMode = ThemeMode.values[themeIndex];
+    _themeMode = themeIndex != null ? ThemeMode.values[themeIndex] : ThemeMode.system;
 
     // Load Accent Color
     final colorValue = prefs.getInt(AppConstants.accentColorKey);

@@ -114,9 +114,18 @@ class _SettingsPageState extends State<SettingsPage> {
                       title: I18nKeys.licenses.tr,
                       onTap: () => showLicensePage(
                         context: context,
-                        applicationName: '${AppConstants.appName} Portfolio',
+                        applicationName: AppConstants.appName,
                         applicationVersion: AppConstants.appVersion,
-                        applicationIcon: const Padding(padding: EdgeInsets.all(8.0), child: Icon(Icons.auto_awesome, size: 48)),
+                        applicationIcon: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Image.asset(
+                            'assets/images/ic_launcher_adaptive_fore.png',
+                            width: 48,
+                            height: 48,
+                            color: settingManager.accentColor,
+                            colorBlendMode: BlendMode.srcIn,
+                          ),
+                        ),
                         applicationLegalese: '© ${AppConstants.date} ${AppConstants.author}',
                       ),
                     ),
@@ -164,11 +173,7 @@ class _SettingsPageState extends State<SettingsPage> {
     await _updateCacheSize();
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(I18nKeys.cacheCleared.tr),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: accentColor,
-        ),
+        SnackBar(content: Text(I18nKeys.cacheCleared.tr), behavior: SnackBarBehavior.floating, backgroundColor: accentColor),
       );
     }
   }
@@ -286,13 +291,7 @@ class _SettingsPageState extends State<SettingsPage> {
             for (var i = 0; i < children.length; i++) ...[
               children[i],
               if (i < children.length - 1)
-                Divider(
-                  height: 1,
-                  thickness: 0.5,
-                  indent: 65,
-                  endIndent: 20,
-                  color: theme.dividerColor.withOpacity(0.1),
-                ),
+                Divider(height: 1, thickness: 0.5, indent: 65, endIndent: 20, color: theme.dividerColor.withOpacity(0.1)),
             ],
           ],
         ),
