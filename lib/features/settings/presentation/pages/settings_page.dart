@@ -6,6 +6,7 @@ import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/core/utils/cache_manager.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/password/change_password_page.dart';
+import 'package:listen_portfolio_flutter/generated/r.dart';
 import 'package:listen_portfolio_flutter/shared/widget/common_text.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -119,7 +120,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         applicationIcon: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Image.asset(
-                            'assets/images/ic_launcher_adaptive_fore.png',
+                            R.imagesIcLauncherAdaptiveFore,
                             width: 48,
                             height: 48,
                             color: settingManager.accentColor,

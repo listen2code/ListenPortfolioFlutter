@@ -31,9 +31,7 @@ class _HomePageState extends State<HomePage> {
         return Scaffold(
           appBar: AppBar(
             title: Text(
-              _selectedIndex == 0
-                  ? ''
-                  : (_selectedIndex == 1 ? I18nKeys.aboutMe.tr : I18nKeys.architecture.tr),
+              _selectedIndex == 0 ? '' : (_selectedIndex == 1 ? I18nKeys.aboutMe.tr : I18nKeys.architecture.tr),
               style: const TextStyle(fontWeight: FontWeight.w300),
             ),
             centerTitle: true,
@@ -80,7 +78,7 @@ class _HomePageState extends State<HomePage> {
       ),
       child: Column(
         children: [
-          _buildDrawerHeader(context, accentColor),
+          _buildDrawerHeader(context, theme, accentColor),
           const SizedBox(height: 10),
           Expanded(
             child: ListView(
@@ -139,7 +137,20 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildDrawerHeader(BuildContext context, Color accentColor) {
+  Widget _buildDrawerHeader(BuildContext context, ThemeData theme, Color accentColor) {
+    final themeMode = settingManager.themeMode;
+
+    IconData getModeIcon() {
+      switch (themeMode) {
+        case ThemeMode.system:
+          return Icons.brightness_auto_outlined;
+        case ThemeMode.light:
+          return Icons.wb_sunny_outlined;
+        case ThemeMode.dark:
+          return Icons.dark_mode_outlined;
+      }
+    }
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.only(top: 60, bottom: 30, left: 20, right: 20),
@@ -172,7 +183,7 @@ class _HomePageState extends State<HomePage> {
             right: 0,
             top: 0,
             child: IconButton(
-              icon: const Icon(Icons.wb_sunny_outlined, color: Colors.white),
+              icon: Icon(getModeIcon(), color: Colors.white),
               onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AppearancePage())),
             ),
           ),

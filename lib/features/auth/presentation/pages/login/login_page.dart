@@ -9,6 +9,7 @@ import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/password/forgot_password_page.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/sign_up/sign_up_page.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_page.dart';
+import 'package:listen_portfolio_flutter/generated/r.dart';
 import 'package:listen_portfolio_flutter/shared/extension/navigation_extension.dart';
 
 /// Login page with MVI pattern
@@ -105,7 +106,7 @@ class LoginPage extends ConsumerWidget {
             boxShadow: [BoxShadow(color: accentColor.withValues(alpha: 0.3), blurRadius: 20, offset: const Offset(0, 10))],
           ),
           child: Image.asset(
-            'assets/images/ic_launcher_adaptive_fore.png',
+            R.imagesIcLauncherAdaptiveFore,
             width: 60,
             height: 60,
             color: accentColor,

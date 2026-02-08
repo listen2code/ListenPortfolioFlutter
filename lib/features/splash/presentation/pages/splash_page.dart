@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_page.dart';
+import 'package:listen_portfolio_flutter/generated/r.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -66,7 +67,7 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
                     Hero(
                       tag: 'logo',
                       child: Image.asset(
-                        'assets/images/ic_launcher_adaptive_fore.png',
+                        R.imagesIcLauncherAdaptiveFore,
                         width: 120,
                         height: 120,
                         color: accentColor,
