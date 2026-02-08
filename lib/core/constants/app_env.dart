@@ -17,8 +17,9 @@ enum AppEnvironment {
 class AppEnv {
   AppEnv._();
 
+  // Added 'const' to ensure the environment variable is picked up at compile time
   static AppEnvironment _env = AppEnvironment.fromString(
-    String.fromEnvironment('APP_ENV', defaultValue: AppEnvironment.dev.name),
+    const String.fromEnvironment('APP_ENV', defaultValue: 'dev'),
   );
 
   static bool isProd() => _env == AppEnvironment.prod;
