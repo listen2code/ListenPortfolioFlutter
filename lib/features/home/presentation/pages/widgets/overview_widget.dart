@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:listen_portfolio_flutter/core/base/base_listenable_page.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
@@ -13,33 +14,30 @@ class OverviewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: settingManager,
+    return BaseListenablePage(
       builder: (context, child) {
         final theme = Theme.of(context);
         final accentColor = settingManager.accentColor;
 
-        return SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildWelcomeHeader(theme, accentColor),
-                const SizedBox(height: 12), // Reduced height
-                _buildStatusTag(),
-                const SizedBox(height: 20), // Reduced height
-                _buildExperienceGrid(theme),
-                const SizedBox(height: 28),
-                _buildSectionHeader(I18nKeys.quickActions.tr, showSeeAll: false),
-                const SizedBox(height: 12),
-                _buildQuickActions(context, accentColor),
-                const SizedBox(height: 28),
-                _buildSectionHeader(I18nKeys.featuredProjects.tr),
-                const SizedBox(height: 12),
-                _buildFeaturedProjects(accentColor),
-              ],
-            ),
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildWelcomeHeader(theme, accentColor),
+              const SizedBox(height: 12), // Reduced height
+              _buildStatusTag(),
+              const SizedBox(height: 20), // Reduced height
+              _buildExperienceGrid(theme),
+              const SizedBox(height: 28),
+              _buildSectionHeader(I18nKeys.quickActions.tr, showSeeAll: false),
+              const SizedBox(height: 12),
+              _buildQuickActions(context, accentColor),
+              const SizedBox(height: 28),
+              _buildSectionHeader(I18nKeys.featuredProjects.tr),
+              const SizedBox(height: 12),
+              _buildFeaturedProjects(accentColor),
+            ],
           ),
         );
       },

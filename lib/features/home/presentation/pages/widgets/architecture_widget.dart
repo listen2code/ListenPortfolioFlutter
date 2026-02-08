@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:listen_portfolio_flutter/core/base/base_listenable_page.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
@@ -9,30 +10,27 @@ class ArchitectureWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: settingManager,
+    return BaseListenablePage(
       builder: (context, child) {
         final theme = Theme.of(context);
         final accentColor = settingManager.accentColor;
 
-        return SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildHeader(theme),
-                const SizedBox(height: 30),
-                _buildCleanMVISection(theme, accentColor),
-                const SizedBox(height: 25),
-                _buildLibSection(theme, accentColor),
-                const SizedBox(height: 25),
-                _buildSourceCodeSection(context, theme, accentColor),
-                const SizedBox(height: 25),
-                _buildBackendSection(theme, accentColor),
-                const SizedBox(height: 30),
-              ],
-            ),
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildHeader(theme),
+              const SizedBox(height: 30),
+              _buildCleanMVISection(theme, accentColor),
+              const SizedBox(height: 25),
+              _buildLibSection(theme, accentColor),
+              const SizedBox(height: 25),
+              _buildSourceCodeSection(context, theme, accentColor),
+              const SizedBox(height: 25),
+              _buildBackendSection(theme, accentColor),
+              const SizedBox(height: 30),
+            ],
           ),
         );
       },
@@ -40,10 +38,7 @@ class ArchitectureWidget extends StatelessWidget {
   }
 
   Widget _buildHeader(ThemeData theme) {
-    return Text(
-      I18nKeys.architectureHeader.tr,
-      style: theme.textTheme.bodyLarge?.copyWith(color: Colors.grey, height: 1.5),
-    );
+    return Text(I18nKeys.architectureHeader.tr, style: theme.textTheme.bodyLarge?.copyWith(color: Colors.grey, height: 1.5));
   }
 
   Widget _buildCleanMVISection(ThemeData theme, Color accentColor) {
@@ -73,9 +68,7 @@ class ArchitectureWidget extends StatelessWidget {
       accentColor: accentColor,
       title: I18nKeys.coreLibrariesTitle.tr,
       icon: Icons.library_books_outlined,
-      child: Column(
-        children: libs.map((lib) => _buildLibItem(theme, accentColor, lib['name']!, lib['desc']!)).toList(),
-      ),
+      child: Column(children: libs.map((lib) => _buildLibItem(theme, accentColor, lib['name']!, lib['desc']!)).toList()),
     );
   }
 
@@ -88,10 +81,7 @@ class ArchitectureWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            I18nKeys.openSourceDesc.tr,
-            style: theme.textTheme.bodyMedium?.copyWith(height: 1.6),
-          ),
+          Text(I18nKeys.openSourceDesc.tr, style: theme.textTheme.bodyMedium?.copyWith(height: 1.6)),
           const SizedBox(height: 15),
           InkWell(
             onTap: () => _launchURL(context, 'https://github.com/listen2code'),
@@ -105,11 +95,7 @@ class ArchitectureWidget extends StatelessWidget {
                   const SizedBox(width: 8),
                   Text(
                     'github.com/listen2code',
-                    style: TextStyle(
-                      color: accentColor,
-                      fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.underline,
-                    ),
+                    style: TextStyle(color: accentColor, fontWeight: FontWeight.bold, decoration: TextDecoration.underline),
                   ),
                 ],
               ),
@@ -183,7 +169,10 @@ class ArchitectureWidget extends StatelessWidget {
               text: TextSpan(
                 style: theme.textTheme.bodyMedium,
                 children: [
-                  TextSpan(text: '$name: ', style: const TextStyle(fontWeight: FontWeight.bold)),
+                  TextSpan(
+                    text: '$name: ',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   TextSpan(text: desc),
                 ],
               ),
@@ -198,9 +187,7 @@ class ArchitectureWidget extends StatelessWidget {
     final Uri url = Uri.parse(urlString);
     if (!await launchUrl(url)) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('${I18nKeys.noEmailApp.tr}: $urlString')),
-        );
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${I18nKeys.noEmailApp.tr}: $urlString')));
       }
     }
   }

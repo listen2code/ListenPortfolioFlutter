@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:listen_portfolio_flutter/core/base/base_listenable_page.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 
 /// A common wrapper for pages to provide consistent theme listening,
@@ -40,8 +41,7 @@ class BaseStatelessPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: settingManager,
+    return BaseListenablePage(
       builder: (context, child) {
         final theme = Theme.of(context);
         final accentColor = settingManager.accentColor;

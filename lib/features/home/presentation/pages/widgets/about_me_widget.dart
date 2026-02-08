@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:listen_portfolio_flutter/core/base/base_listenable_page.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
@@ -79,31 +80,27 @@ class _AboutMeWidgetState extends State<AboutMeWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: settingManager,
+    return BaseListenablePage(
       builder: (context, child) {
         final theme = Theme.of(context);
         final accentColor = settingManager.accentColor;
-
-        return SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 40),
-                _buildHeader(context, theme, accentColor),
-                const SizedBox(height: 35),
-                _buildBioSection(theme, accentColor),
-                const SizedBox(height: 25),
-                _buildDetailedExperience(theme, accentColor),
-                const SizedBox(height: 25),
-                _buildEducationSection(theme, accentColor),
-                const SizedBox(height: 25),
-                _buildComprehensiveSkills(theme, accentColor),
-                const SizedBox(height: 40),
-              ],
-            ),
+        return SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 40),
+              _buildHeader(context, theme, accentColor),
+              const SizedBox(height: 35),
+              _buildBioSection(theme, accentColor),
+              const SizedBox(height: 25),
+              _buildDetailedExperience(theme, accentColor),
+              const SizedBox(height: 25),
+              _buildEducationSection(theme, accentColor),
+              const SizedBox(height: 25),
+              _buildComprehensiveSkills(theme, accentColor),
+              const SizedBox(height: 40),
+            ],
           ),
         );
       },
