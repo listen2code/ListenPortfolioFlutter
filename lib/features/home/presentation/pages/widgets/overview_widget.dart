@@ -26,9 +26,9 @@ class OverviewWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildWelcomeHeader(theme, accentColor),
-                const SizedBox(height: 16),
+                const SizedBox(height: 12), // Reduced height
                 _buildStatusTag(),
-                const SizedBox(height: 24),
+                const SizedBox(height: 20), // Reduced height
                 _buildExperienceGrid(theme),
                 const SizedBox(height: 28),
                 _buildSectionHeader(I18nKeys.quickActions.tr, showSeeAll: false),
@@ -47,41 +47,25 @@ class OverviewWidget extends StatelessWidget {
   }
 
   Widget _buildWelcomeHeader(ThemeData theme, Color accentColor) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '${I18nKeys.hello.tr} ${AppConstants.author}',
-                style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                'Full Stack Mobile Architect (${I18nKeys.graduated.tr} 2013 | ${I18nKeys.softwareEngineering.tr})',
-                style: TextStyle(color: accentColor, fontSize: 13, fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  _buildCertBadge(accentColor, I18nKeys.jlptN1.tr),
-                  const SizedBox(width: 8),
-                  _buildCertBadge(accentColor, I18nKeys.bjtJ2.tr),
-                ],
-              ),
-            ],
-          ),
+        Text(
+          '${I18nKeys.hello.tr} ${AppConstants.author}',
+          style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
         ),
-        CircleAvatar(
-          radius: 28,
-          backgroundColor: accentColor.withValues(alpha: 0.2),
-          child: CircleAvatar(
-            radius: 25,
-            backgroundColor: accentColor,
-            backgroundImage: const NetworkImage('https://api.dicebear.com/7.x/avataaars/svg?seed=Listen'),
-          ),
+        const SizedBox(height: 4),
+        Text(
+          'Full Stack Mobile Architect (${I18nKeys.graduated.tr} 2013 | ${I18nKeys.softwareEngineering.tr})',
+          style: TextStyle(color: accentColor, fontSize: 13, fontWeight: FontWeight.w600),
+        ),
+        const SizedBox(height: 10),
+        Row(
+          children: [
+            _buildCertBadge(accentColor, I18nKeys.jlptN1.tr),
+            const SizedBox(width: 8),
+            _buildCertBadge(accentColor, I18nKeys.bjtJ2.tr),
+          ],
         ),
       ],
     );
@@ -156,7 +140,7 @@ class OverviewWidget extends StatelessWidget {
 
   Widget _buildAndroidStatCard(ThemeData theme, String value, String label, IconData icon, Color iconColor) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(20),
