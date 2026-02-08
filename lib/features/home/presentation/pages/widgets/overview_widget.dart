@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:listen_portfolio_flutter/core/base/base_stateless_page.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
@@ -13,36 +14,28 @@ class OverviewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: settingManager,
-      builder: (context, child) {
-        final theme = Theme.of(context);
-        final accentColor = settingManager.accentColor;
+    final accentColor = settingManager.accentColor;
 
-        return SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildWelcomeHeader(theme, accentColor),
-                const SizedBox(height: 12), // Reduced height
-                _buildStatusTag(),
-                const SizedBox(height: 20), // Reduced height
-                _buildExperienceGrid(theme),
-                const SizedBox(height: 28),
-                _buildSectionHeader(I18nKeys.quickActions.tr, showSeeAll: false),
-                const SizedBox(height: 12),
-                _buildQuickActions(context, accentColor),
-                const SizedBox(height: 28),
-                _buildSectionHeader(I18nKeys.featuredProjects.tr),
-                const SizedBox(height: 12),
-                _buildFeaturedProjects(accentColor),
-              ],
-            ),
-          ),
-        );
-      },
+    return BaseStatelessPage(
+      padding: const EdgeInsets.all(20),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildWelcomeHeader(Theme.of(context), accentColor),
+          const SizedBox(height: 12),
+          _buildStatusTag(),
+          const SizedBox(height: 20),
+          _buildExperienceGrid(Theme.of(context)),
+          const SizedBox(height: 28),
+          _buildSectionHeader(I18nKeys.quickActions.tr, showSeeAll: false),
+          const SizedBox(height: 12),
+          _buildQuickActions(context, accentColor),
+          const SizedBox(height: 28),
+          _buildSectionHeader(I18nKeys.featuredProjects.tr),
+          const SizedBox(height: 12),
+          _buildFeaturedProjects(accentColor),
+        ],
+      ),
     );
   }
 
@@ -140,7 +133,7 @@ class OverviewWidget extends StatelessWidget {
 
   Widget _buildAndroidStatCard(ThemeData theme, String value, String label, IconData icon, Color iconColor) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(20),
