@@ -122,6 +122,16 @@ class I18nKeys {
       'The entire source code of this portfolio app is available on GitHub. Feel free to explore the repository.';
   static const String backendDevOpsTitle = 'Backend & DevOps';
 
+  // Developer & Reset Settings
+  static const String developer = 'Developer';
+  static const String viewLogs = 'View App Logs';
+  static const String resetSettings = 'Reset All Settings';
+  static const String resetConfirmTitle = 'Reset Settings?';
+  static const String resetConfirmContent = 'This will restore all settings to their default values. Are you sure?';
+  static const String cancel = 'Cancel';
+  static const String reset = 'Reset';
+  static const String settingsResetSuccess = 'All settings have been reset.';
+
   // Common Language Names
   static const String english = 'English';
   static const String chinese = 'Chinese';

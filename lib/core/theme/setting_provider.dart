@@ -98,6 +98,17 @@ class SettingManager extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(AppConstants.languageKey, lang.label);
   }
+
+  Future<void> resetSettings() async {
+    _themeMode = ThemeMode.system;
+    _accentColor = Colors.blueAccent;
+    _fontSize = AppFontSize.standard;
+    _language = AppLanguage.system;
+    notifyListeners();
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+  }
 }
 
 final settingManager = SettingManager();

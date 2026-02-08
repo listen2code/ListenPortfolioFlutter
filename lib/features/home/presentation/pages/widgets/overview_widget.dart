@@ -144,7 +144,7 @@ class OverviewWidget extends StatelessWidget {
 
   Widget _buildAndroidStatCard(ThemeData theme, String value, String label, IconData icon, Color iconColor) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(20),
