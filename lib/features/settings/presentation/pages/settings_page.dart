@@ -109,7 +109,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   ]),
                   const SizedBox(height: 25),
-                  _buildSectionTitle(I18nKeys.connect.tr),
+                  _buildSectionTitle(I18nKeys.about.tr),
                   _buildSettingsCard(context, [
                     _buildListTile(
                       icon: Icons.description_outlined,
@@ -131,10 +131,6 @@ class _SettingsPageState extends State<SettingsPage> {
                         applicationLegalese: '© ${AppConstants.date} ${AppConstants.author}',
                       ),
                     ),
-                  ]),
-                  const SizedBox(height: 25),
-                  _buildSectionTitle(I18nKeys.about.tr),
-                  _buildSettingsCard(context, [
                     _buildListTile(
                       icon: Icons.info_outline,
                       title: I18nKeys.appVersion.tr,
@@ -318,7 +314,12 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Widget _buildSwitchTile({required IconData icon, required String title, required bool value, required ValueChanged<bool> onChanged}) {
+  Widget _buildSwitchTile({
+    required IconData icon,
+    required String title,
+    required bool value,
+    required ValueChanged<bool> onChanged,
+  }) {
     return SwitchListTile.adaptive(
       secondary: Container(
         padding: const EdgeInsets.all(10),
