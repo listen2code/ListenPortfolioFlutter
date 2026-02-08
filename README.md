@@ -29,8 +29,6 @@ samples, guidance on mobile development, and a full API reference.
 * widget to package
     * commonText, commonImage, commonDialog, commonToast
 * build web
-* ide plugin
-  --assets
 * framework
   --library
   --package_base: only dart
