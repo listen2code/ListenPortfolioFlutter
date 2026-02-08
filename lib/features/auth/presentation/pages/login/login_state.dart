@@ -12,6 +12,7 @@ abstract class LoginState with _$LoginState implements BaseState<LoginNavigation
   const factory LoginState({
     @Default('') String username,
     @Default('') String password,
+    @Default(false) bool rememberMe,
     @Default(false) bool isPasswordVisible,
     @Default(false) bool isLoading,
     String? errorMessage,

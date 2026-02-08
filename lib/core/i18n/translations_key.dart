@@ -43,6 +43,7 @@ class I18nKeys {
   static const String skipForNow = 'Skip for now';
   static const String noAccount = "Don't have an account? ";
   static const String signUp = 'Sign Up';
+  static const String rememberMe = 'Remember Me';
 
   // Sign Up Page
   static const String createAccount = 'Create Account';

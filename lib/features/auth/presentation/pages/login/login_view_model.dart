@@ -4,6 +4,7 @@ import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/
 import 'package:listen_portfolio_flutter/features/auth/presentation/provider/auth_provider.dart';
 import 'package:listen_portfolio_flutter/shared/extension/navigation_extension.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'login_state.dart';
 
@@ -11,9 +12,24 @@ part 'login_view_model.g.dart';
 
 @riverpod
 class LoginViewModel extends _$LoginViewModel with ConsumeNavigableViewModel<LoginState> {
+  static const String _keyUsername = 'saved_username';
+  static const String _keyPassword = 'saved_password';
+  static const String _keyRememberMe = 'remember_me';
+
   @override
   LoginState build() {
+    _loadSavedCredentials();
     return const LoginState();
+  }
+
+  Future<void> _loadSavedCredentials() async {
+    final prefs = await SharedPreferences.getInstance();
+    final rememberMe = prefs.getBool(_keyRememberMe) ?? false;
+    if (rememberMe) {
+      final username = prefs.getString(_keyUsername) ?? '';
+      final password = prefs.getString(_keyPassword) ?? '';
+      state = state.copyWith(username: username, password: password, rememberMe: true);
+    }
   }
 
   FutureOr handleIntent(LoginIntent intent) {
@@ -21,6 +37,7 @@ class LoginViewModel extends _$LoginViewModel with ConsumeNavigableViewModel<Log
       usernameChanged: _onUsernameChanged,
       passwordChanged: _onPasswordChanged,
       togglePasswordVisibility: _onTogglePasswordVisibility,
+      toggleRememberMe: _onToggleRememberMe,
       submitLogin: _onSubmitLogin,
       navigateToSignup: _onNavigateToSignup,
       navigateToForgotPassword: _onNavigateToForgotPassword,
@@ -38,6 +55,10 @@ class LoginViewModel extends _$LoginViewModel with ConsumeNavigableViewModel<Log
 
   void _onTogglePasswordVisibility() {
     state = state.copyWith(isPasswordVisible: !state.isPasswordVisible);
+  }
+
+  void _onToggleRememberMe() {
+    state = state.copyWith(rememberMe: !state.rememberMe);
   }
 
   Future<void> _onSubmitLogin() async {
@@ -58,10 +79,24 @@ class LoginViewModel extends _$LoginViewModel with ConsumeNavigableViewModel<Log
       (failure) {
         state = state.copyWith(isLoading: false, errorMessage: failure.message);
       },
-      (user) {
+      (user) async {
+        await _saveOrClearCredentials();
         state = state.copyWith(isLoading: false, pendingNavigation: LoginNavigationTarget.home);
       },
     );
+  }
+
+  Future<void> _saveOrClearCredentials() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (state.rememberMe) {
+      await prefs.setString(_keyUsername, state.username);
+      await prefs.setString(_keyPassword, state.password);
+      await prefs.setBool(_keyRememberMe, true);
+    } else {
+      await prefs.remove(_keyUsername);
+      await prefs.remove(_keyPassword);
+      await prefs.setBool(_keyRememberMe, false);
+    }
   }
 
   void _onNavigateToSignup() {

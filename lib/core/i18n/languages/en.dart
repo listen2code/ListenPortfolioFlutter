@@ -43,6 +43,7 @@ final Map<String, String> en = {
   I18nKeys.skipForNow: 'Skip for now',
   I18nKeys.noAccount: "Don't have an account? ",
   I18nKeys.signUp: 'Sign Up',
+  I18nKeys.rememberMe: 'Remember Me',
   I18nKeys.createAccount: 'Create Account',
   I18nKeys.signUpSubtitle: 'Sign up to get started!',
   I18nKeys.fullName: 'Full Name',

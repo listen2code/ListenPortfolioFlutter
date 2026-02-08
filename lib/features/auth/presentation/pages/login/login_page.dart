@@ -12,23 +12,67 @@ import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_p
 import 'package:listen_portfolio_flutter/generated/r.dart';
 import 'package:listen_portfolio_flutter/shared/extension/navigation_extension.dart';
 
-/// Login page with MVI pattern
-/// Uses ListenableBuilder to respond to global theme and language changes
-class LoginPage extends ConsumerWidget {
+class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // 1. Listen for navigation intents
-    _setupNavigation(context, ref);
+  ConsumerState<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends ConsumerState<LoginPage> {
+  late TextEditingController _usernameController;
+  late TextEditingController _passwordController;
+
+  @override
+  void initState() {
+    super.initState();
+    _usernameController = TextEditingController();
+    _passwordController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void _setupNavigation(BuildContext context) {
+    ref.listenNavigation<LoginState, LoginNavigationTarget>(loginViewModelProvider, (target) {
+      switch (target) {
+        case LoginNavigationTarget.signup:
+          Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SignUpPage()));
+          break;
+        case LoginNavigationTarget.forgotPassword:
+          Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ForgotPasswordPage()));
+          break;
+        case LoginNavigationTarget.home:
+          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const HomePage()));
+          break;
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    _setupNavigation(context);
+
+    // Listen for state changes to perform auto-fill only once when data is loaded from SP
+    ref.listen<LoginState>(loginViewModelProvider, (previous, next) {
+      // Only auto-fill if the controllers are empty and the state has values (usually after initial load)
+      if (_usernameController.text.isEmpty && next.username.isNotEmpty) {
+        _usernameController.text = next.username;
+      }
+      if (_passwordController.text.isEmpty && next.password.isNotEmpty) {
+        _passwordController.text = next.password;
+      }
+    });
 
     final state = ref.watch(loginViewModelProvider);
     final viewModel = ref.read(loginViewModelProvider.notifier);
 
-    // 2. Wrap with ListenableBuilder for dynamic theme/language updates
     return ListenableBuilder(
       listenable: settingManager,
-
       builder: (context, child) {
         final theme = Theme.of(context);
         final accentColor = settingManager.accentColor;
@@ -54,10 +98,10 @@ class LoginPage extends ConsumerWidget {
                     const SizedBox(height: 30),
                     _buildTitle(theme),
                     const SizedBox(height: 50),
-                    _buildUsernameField(state, viewModel, theme, accentColor),
+                    _buildUsernameField(state, viewModel, accentColor),
                     const SizedBox(height: 20),
-                    _buildPasswordField(state, viewModel, theme, accentColor),
-                    _buildForgotPasswordButton(viewModel, accentColor),
+                    _buildPasswordField(state, viewModel, accentColor),
+                    _buildRememberAndForgot(state, viewModel, accentColor),
                     const SizedBox(height: 30),
                     _buildLoginButton(state, viewModel, accentColor),
                     const SizedBox(height: 15),
@@ -75,25 +119,6 @@ class LoginPage extends ConsumerWidget {
     );
   }
 
-  void _setupNavigation(BuildContext context, WidgetRef ref) {
-    ref.listenNavigation<LoginState, LoginNavigationTarget>(loginViewModelProvider, (target) {
-      switch (target) {
-        case LoginNavigationTarget.signup:
-          Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SignUpPage()));
-          break;
-        case LoginNavigationTarget.forgotPassword:
-          Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ForgotPasswordPage()));
-          break;
-        case LoginNavigationTarget.home:
-          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const HomePage()));
-          break;
-      }
-    });
-  }
-
-  // ---------------------------------------------------------------------------
-  // UI Components
-  // ---------------------------------------------------------------------------
   Widget _buildLogo(Color accentColor) {
     return Hero(
       tag: 'logo',
@@ -128,8 +153,9 @@ class LoginPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildUsernameField(LoginState state, LoginViewModel viewModel, ThemeData theme, Color accentColor) {
+  Widget _buildUsernameField(LoginState state, LoginViewModel viewModel, Color accentColor) {
     return TextFormField(
+      controller: _usernameController,
       onChanged: (value) => viewModel.handleIntent(LoginIntent.usernameChanged(value)),
       decoration: InputDecoration(
         hintText: I18nKeys.username.tr,
@@ -139,8 +165,9 @@ class LoginPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildPasswordField(LoginState state, LoginViewModel viewModel, ThemeData theme, Color accentColor) {
+  Widget _buildPasswordField(LoginState state, LoginViewModel viewModel, Color accentColor) {
     return TextFormField(
+      controller: _passwordController,
       onChanged: (value) => viewModel.handleIntent(LoginIntent.passwordChanged(value)),
       obscureText: !state.isPasswordVisible,
       decoration: InputDecoration(
@@ -155,13 +182,34 @@ class LoginPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildForgotPasswordButton(LoginViewModel viewModel, Color accentColor) {
-    return Align(
-      alignment: Alignment.centerRight,
-      child: TextButton(
-        onPressed: () => viewModel.handleIntent(const LoginIntent.navigateToForgotPassword()),
-        child: Text(I18nKeys.forgotPassword.tr, style: TextStyle(color: accentColor)),
-      ),
+  Widget _buildRememberAndForgot(LoginState state, LoginViewModel viewModel, Color accentColor) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              width: 24,
+              height: 24,
+              child: Checkbox(
+                value: state.rememberMe,
+                activeColor: accentColor,
+                onChanged: (value) => viewModel.handleIntent(const LoginIntent.toggleRememberMe()),
+              ),
+            ),
+            const SizedBox(width: 8),
+            GestureDetector(
+              onTap: () => viewModel.handleIntent(const LoginIntent.toggleRememberMe()),
+              child: Text(I18nKeys.rememberMe.tr, style: const TextStyle(fontSize: 14, color: Colors.grey)),
+            ),
+          ],
+        ),
+        TextButton(
+          onPressed: () => viewModel.handleIntent(const LoginIntent.navigateToForgotPassword()),
+          child: Text(I18nKeys.forgotPassword.tr, style: TextStyle(color: accentColor)),
+        ),
+      ],
     );
   }
 
