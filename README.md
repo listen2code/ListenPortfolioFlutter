@@ -18,10 +18,7 @@ samples, guidance on mobile development, and a full API reference.
 ## todo
 
 * base
-    * play store
     * base use case; widget; view model
-    * theme language fontSize
-* setting function
 * other MVI
 * db data design
 * web data
