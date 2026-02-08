@@ -4,6 +4,7 @@ import 'package:listen_portfolio_flutter/core/constants/app_env.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
+import 'package:listen_portfolio_flutter/core/utils/cache_manager.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/password/change_password_page.dart';
 import 'package:listen_portfolio_flutter/shared/widget/common_text.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -19,7 +20,20 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   bool _notificationsEnabled = true;
-  String _cacheSize = '128 MB';
+  String _cacheSize = '...';
+
+  @override
+  void initState() {
+    super.initState();
+    _updateCacheSize();
+  }
+
+  Future<void> _updateCacheSize() async {
+    final size = await CacheManager.getCacheSize();
+    if (mounted) {
+      setState(() => _cacheSize = size);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +103,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       icon: Icons.delete_outline_rounded,
                       title: I18nKeys.clearCache.tr,
                       trailing: Text(_cacheSize, style: const TextStyle(color: Colors.grey)),
-                      onTap: () => _clearCache(),
+                      onTap: () => _handleClearCache(accentColor),
                     ),
                   ]),
                   const SizedBox(height: 25),
@@ -141,6 +155,22 @@ class _SettingsPageState extends State<SettingsPage> {
         );
       },
     );
+  }
+
+  // ... dialog methods ...
+
+  void _handleClearCache(Color accentColor) async {
+    await CacheManager.clearAllCache();
+    await _updateCacheSize();
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(I18nKeys.cacheCleared.tr),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: accentColor,
+        ),
+      );
+    }
   }
 
   void _showEnvSwitchDialog() {
@@ -205,12 +235,7 @@ class _SettingsPageState extends State<SettingsPage> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
-          children: [
-            _buildLanguageOption(AppLanguage.system),
-            _buildLanguageOption(AppLanguage.english),
-            _buildLanguageOption(AppLanguage.chinese),
-            _buildLanguageOption(AppLanguage.japanese),
-          ],
+          children: AppLanguage.values.map((lang) => _buildLanguageOption(lang)).toList(),
         ),
       ),
     );
@@ -234,13 +259,6 @@ class _SettingsPageState extends State<SettingsPage> {
   void _updateLang(AppLanguage lang) {
     settingManager.setLanguage(lang);
     Navigator.pop(context);
-  }
-
-  void _clearCache() {
-    setState(() => _cacheSize = '0 MB');
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(I18nKeys.cacheCleared.tr), behavior: SnackBarBehavior.floating));
   }
 
   Widget _buildSectionTitle(String title) {
@@ -268,7 +286,13 @@ class _SettingsPageState extends State<SettingsPage> {
             for (var i = 0; i < children.length; i++) ...[
               children[i],
               if (i < children.length - 1)
-                Divider(height: 1, thickness: 0.5, indent: 65, endIndent: 20, color: theme.dividerColor.withOpacity(0.1)),
+                Divider(
+                  height: 1,
+                  thickness: 0.5,
+                  indent: 65,
+                  endIndent: 20,
+                  color: theme.dividerColor.withOpacity(0.1),
+                ),
             ],
           ],
         ),
