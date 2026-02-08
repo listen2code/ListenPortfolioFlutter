@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 
 /// A common wrapper for pages to provide consistent theme listening,
@@ -44,6 +45,7 @@ class BaseStatelessPage extends StatelessWidget {
       builder: (context, child) {
         final theme = Theme.of(context);
         final accentColor = settingManager.accentColor;
+        final isDark = theme.brightness == Brightness.dark;
 
         Widget content = body;
 
@@ -55,18 +57,16 @@ class BaseStatelessPage extends StatelessWidget {
           content = SingleChildScrollView(physics: const AlwaysScrollableScrollPhysics(), child: content);
         }
 
+        content = Column(
+          children: [
+            Offstage(offstage: !useStatusBar, child: _createStatusBar(context)),
+            Expanded(child: content),
+            Offstage(offstage: !useBottomBar, child: _createBottomBar(context)),
+          ],
+        );
+
         if (useSafeArea) {
-          content = SafeArea(
-            top: !useStatusBar,
-            bottom: !useBottomBar,
-            child: Column(
-              children: [
-                Offstage(offstage: !useStatusBar, child: _createStatusBar(context)),
-                Expanded(child: content),
-                Offstage(offstage: !useBottomBar, child: _createBottomBar(context)),
-              ],
-            ),
-          );
+          content = SafeArea(top: !useStatusBar, bottom: !useBottomBar, child: content);
         }
 
         // Determine which AppBar to use
@@ -75,25 +75,40 @@ class BaseStatelessPage extends StatelessWidget {
           effectiveAppBar = _createAppBar(theme, context);
         }
 
-        return GestureDetector(
-          behavior: HitTestBehavior.translucent,
-          child: Scaffold(
-            appBar: effectiveAppBar,
-            drawer: drawer,
-            floatingActionButton: floatingActionButton,
-            resizeToAvoidBottomInset: resizeToAvoidBottomInset,
-            extendBodyBehindAppBar: extendBodyBehindAppBar,
-            body: Container(
-              width: double.infinity,
-              height: double.infinity,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [accentColor.withValues(alpha: 0.05), theme.scaffoldBackgroundColor],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
+        // System UI Style configuration for immersive look
+        final systemUiOverlayStyle = SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+          // Android
+          statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
+          // iOS
+          systemNavigationBarColor: theme.scaffoldBackgroundColor,
+          systemNavigationBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+        );
+
+        return AnnotatedRegion<SystemUiOverlayStyle>(
+          value: systemUiOverlayStyle,
+          child: GestureDetector(
+            onTap: () => FocusScope.of(context).unfocus(), // Dismiss keyboard on tap
+            behavior: HitTestBehavior.translucent,
+            child: Scaffold(
+              appBar: effectiveAppBar,
+              drawer: drawer,
+              floatingActionButton: floatingActionButton,
+              resizeToAvoidBottomInset: resizeToAvoidBottomInset,
+              extendBodyBehindAppBar: extendBodyBehindAppBar,
+              body: Container(
+                width: double.infinity,
+                height: double.infinity,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [accentColor.withValues(alpha: 0.05), theme.scaffoldBackgroundColor],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
                 ),
+                child: content,
               ),
-              child: content,
             ),
           ),
         );
