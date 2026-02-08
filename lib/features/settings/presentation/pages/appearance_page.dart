@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:listen_portfolio_flutter/core/base/base_stateless_page.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
@@ -13,7 +14,6 @@ class AppearancePage extends StatefulWidget {
 class _AppearancePageState extends State<AppearancePage> {
   final List<Color> _accentColors = [
     Colors.blueAccent,
-
     Colors.indigo,
     Colors.purple,
     Colors.pink,
@@ -25,71 +25,46 @@ class _AppearancePageState extends State<AppearancePage> {
 
   @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: settingManager,
-      builder: (context, child) {
-        final theme = Theme.of(context);
-        final accentColor = settingManager.accentColor;
+    final accentColor = settingManager.accentColor;
 
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(I18nKeys.appearance.tr, style: const TextStyle(fontWeight: FontWeight.w300)),
-            centerTitle: true,
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            foregroundColor: theme.brightness == Brightness.light ? Colors.black87 : Colors.white,
-          ),
-          extendBodyBehindAppBar: true,
-          body: Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [accentColor.withValues(alpha: 0.05), theme.scaffoldBackgroundColor],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
+    return BaseStatelessPage(
+      title: I18nKeys.appearance.tr,
+      padding: const EdgeInsets.all(20),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionTitle(I18nKeys.themeMode.tr),
+          _buildSettingsCard(context, [
+            _buildThemeOption(
+              I18nKeys.system.tr,
+              Icons.settings_brightness_outlined,
+              ThemeMode.system,
+              settingManager.themeMode,
+            ),
+            _buildThemeOption(I18nKeys.light.tr, Icons.light_mode_outlined, ThemeMode.light, settingManager.themeMode),
+            _buildThemeOption(I18nKeys.dark.tr, Icons.dark_mode_outlined, ThemeMode.dark, settingManager.themeMode),
+          ]),
+          const SizedBox(height: 25),
+          _buildSectionTitle(I18nKeys.accentColor.tr),
+          _buildSettingsCard(context, [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Wrap(
+                spacing: 15,
+                runSpacing: 15,
+                children: _accentColors.map((color) => _buildColorOption(color, currentAccentColor: accentColor)).toList(),
               ),
             ),
-            child: SafeArea(
-              child: ListView(
-                padding: const EdgeInsets.all(20),
-                children: [
-                  _buildSectionTitle(I18nKeys.themeMode.tr),
-                  _buildSettingsCard(context, [
-                    _buildThemeOption(
-                      I18nKeys.system.tr,
-                      Icons.settings_brightness_outlined,
-                      ThemeMode.system,
-                      settingManager.themeMode,
-                    ),
-                    _buildThemeOption(I18nKeys.light.tr, Icons.light_mode_outlined, ThemeMode.light, settingManager.themeMode),
-                    _buildThemeOption(I18nKeys.dark.tr, Icons.dark_mode_outlined, ThemeMode.dark, settingManager.themeMode),
-                  ]),
-                  const SizedBox(height: 25),
-                  _buildSectionTitle(I18nKeys.accentColor.tr),
-                  _buildSettingsCard(context, [
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Wrap(
-                        spacing: 15,
-                        runSpacing: 15,
-                        children: _accentColors
-                            .map((color) => _buildColorOption(color, currentAccentColor: accentColor))
-                            .toList(),
-                      ),
-                    ),
-                  ]),
-                  const SizedBox(height: 25),
-                  _buildSectionTitle(I18nKeys.fontSize.tr),
-                  _buildSettingsCard(context, [
-                    _buildFontSizeOption(I18nKeys.standard.tr, AppFontSize.standard),
-                    _buildFontSizeOption(I18nKeys.large.tr, AppFontSize.large),
-                  ]),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
+          ]),
+          const SizedBox(height: 25),
+          _buildSectionTitle(I18nKeys.fontSize.tr),
+          _buildSettingsCard(context, [
+            _buildFontSizeOption(I18nKeys.standard.tr, AppFontSize.standard),
+            _buildFontSizeOption(I18nKeys.large.tr, AppFontSize.large),
+          ]),
+          const SizedBox(height: 40),
+        ],
+      ),
     );
   }
 
@@ -157,9 +132,7 @@ class _AppearancePageState extends State<AppearancePage> {
           color: color,
           shape: BoxShape.circle,
           border: isSelected ? Border.all(color: Colors.white, width: 3) : null,
-          boxShadow: isSelected
-              ? [BoxShadow(color: color.withAlpha((255.0 * 0.4).round()), blurRadius: 10, spreadRadius: 2)]
-              : null,
+          boxShadow: isSelected ? [BoxShadow(color: color.withAlpha((255.0 * 0.4).round()), blurRadius: 10, spreadRadius: 2)] : null,
         ),
         child: isSelected ? const Icon(Icons.check, color: Colors.white) : null,
       ),

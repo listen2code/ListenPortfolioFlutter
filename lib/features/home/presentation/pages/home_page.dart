@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:listen_portfolio_flutter/core/base/base_stateless_page.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
@@ -22,38 +23,16 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: settingManager,
-      builder: (context, child) {
-        final theme = Theme.of(context);
-        final accentColor = settingManager.accentColor;
+    final theme = Theme.of(context);
+    final accentColor = settingManager.accentColor;
 
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(
-              _selectedIndex == 0 ? '' : (_selectedIndex == 1 ? I18nKeys.aboutMe.tr : I18nKeys.architecture.tr),
-              style: const TextStyle(fontWeight: FontWeight.w300),
-            ),
-            centerTitle: true,
-            elevation: 0,
-            backgroundColor: Colors.transparent,
-            foregroundColor: theme.brightness == Brightness.light ? Colors.black87 : Colors.white,
-          ),
-          extendBodyBehindAppBar: true,
-          drawer: _buildDrawer(context, theme, accentColor),
-          body: Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [accentColor.withValues(alpha: 0.05), theme.scaffoldBackgroundColor],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-            ),
-            child: _buildBody(),
-          ),
-        );
-      },
+    return BaseStatelessPage(
+      title: _selectedIndex == 0 ? '' : (_selectedIndex == 1 ? I18nKeys.aboutMe.tr : I18nKeys.architecture.tr),
+      drawer: _buildDrawer(context, theme, accentColor),
+      // Important: Disable internal scrolling for HomePage since child widgets 
+      // like OverviewWidget already handle their own scrolling
+      isScrollable: false,
+      body: _buildBody(),
     );
   }
 

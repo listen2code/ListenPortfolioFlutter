@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:listen_portfolio_flutter/core/base/base_stateless_page.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_page.dart';
@@ -48,45 +49,37 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: settingManager,
-      builder: (context, child) {
-        final theme = Theme.of(context);
-        final accentColor = settingManager.accentColor;
+    final accentColor = settingManager.accentColor;
 
-        return Scaffold(
-          resizeToAvoidBottomInset: false,
-          backgroundColor: theme.scaffoldBackgroundColor,
-          body: SafeArea(
-            child: Center(
-              child: FadeTransition(
-                opacity: _fadeAnimation,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Hero(
-                      tag: 'logo',
-                      child: Image.asset(
-                        R.imagesIcLauncherAdaptiveFore,
-                        width: 120,
-                        height: 120,
-                        color: accentColor,
-                        colorBlendMode: BlendMode.srcIn,
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    Text(
-                      AppConstants.appName,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 28, fontWeight: FontWeight.w300, color: accentColor, letterSpacing: 1.2),
-                    ),
-                  ],
+    return BaseStatelessPage(
+      isScrollable: false,
+      resizeToAvoidBottomInset: false,
+      body: Center(
+        child: FadeTransition(
+          opacity: _fadeAnimation,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Hero(
+                tag: 'logo',
+                child: Image.asset(
+                  R.imagesIcLauncherAdaptiveFore,
+                  width: 120,
+                  height: 120,
+                  color: accentColor,
+                  colorBlendMode: BlendMode.srcIn,
                 ),
               ),
-            ),
+              const SizedBox(height: 24),
+              Text(
+                AppConstants.appName,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 28, fontWeight: FontWeight.w300, color: accentColor, letterSpacing: 1.2),
+              ),
+            ],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:listen_portfolio_flutter/core/base/base_stateless_page.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
@@ -57,9 +58,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   Widget build(BuildContext context) {
     _setupNavigation(context);
 
-    // Listen for state changes to perform auto-fill only once when data is loaded from SP
     ref.listen<LoginState>(loginViewModelProvider, (previous, next) {
-      // Only auto-fill if the controllers are empty and the state has values (usually after initial load)
       if (_usernameController.text.isEmpty && next.username.isNotEmpty) {
         _usernameController.text = next.username;
       }
@@ -70,52 +69,32 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
     final state = ref.watch(loginViewModelProvider);
     final viewModel = ref.read(loginViewModelProvider.notifier);
+    final accentColor = settingManager.accentColor;
 
-    return ListenableBuilder(
-      listenable: settingManager,
-      builder: (context, child) {
-        final theme = Theme.of(context);
-        final accentColor = settingManager.accentColor;
-
-        return Scaffold(
-          body: Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [accentColor.withValues(alpha: 0.05), theme.scaffoldBackgroundColor],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-            ),
-            child: SafeArea(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const SizedBox(height: 60),
-                    _buildLogo(accentColor),
-                    const SizedBox(height: 30),
-                    _buildTitle(theme),
-                    const SizedBox(height: 50),
-                    _buildUsernameField(state, viewModel, accentColor),
-                    const SizedBox(height: 20),
-                    _buildPasswordField(state, viewModel, accentColor),
-                    _buildRememberAndForgot(state, viewModel, accentColor),
-                    const SizedBox(height: 30),
-                    _buildLoginButton(state, viewModel, accentColor),
-                    const SizedBox(height: 15),
-                    _buildSkipButton(viewModel),
-                    const SizedBox(height: 30),
-                    _buildSignupLink(viewModel, accentColor),
-                    if (state.errorMessage != null) ...[const SizedBox(height: 20), _buildErrorMessage(state.errorMessage!)],
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      },
+    return BaseStatelessPage(
+      padding: const EdgeInsets.symmetric(horizontal: 30.0),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const SizedBox(height: 60),
+          _buildLogo(accentColor),
+          const SizedBox(height: 30),
+          _buildTitle(Theme.of(context)),
+          const SizedBox(height: 50),
+          _buildUsernameField(state, viewModel, accentColor),
+          const SizedBox(height: 20),
+          _buildPasswordField(state, viewModel, accentColor),
+          _buildRememberAndForgot(state, viewModel, accentColor),
+          const SizedBox(height: 30),
+          _buildLoginButton(state, viewModel, accentColor),
+          const SizedBox(height: 15),
+          _buildSkipButton(viewModel),
+          const SizedBox(height: 30),
+          _buildSignupLink(viewModel, accentColor),
+          if (state.errorMessage != null) ...[const SizedBox(height: 20), _buildErrorMessage(state.errorMessage!)],
+          const SizedBox(height: 40),
+        ],
+      ),
     );
   }
 
