@@ -137,12 +137,13 @@ class _SettingsPageState extends State<SettingsPage> {
                         accentColor: accentColor,
                         trailing: Switch.adaptive(
                           value: LogOverlayManager.isShowing,
-                          activeColor: accentColor,
+                          activeTrackColor: accentColor,
                           onChanged: (val) {
-                            if (val)
+                            if (val) {
                               LogOverlayManager.show(context);
-                            else
+                            } else {
                               LogOverlayManager.hide();
+                            }
                             setState(() {});
                           },
                         ),

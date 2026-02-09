@@ -12,30 +12,36 @@ final appLogger = Logger(
     printEmojis: true,
     dateTimeFormat: DateTimeFormat.onlyTimeAndSinceStart,
   ),
-  output: MultiOutput([ConsoleOutput(), LogManagerOutput()]),
+  output: MultiOutput([
+    ConsoleOutput(), // Normal logs with boxes in IDE console
+    _LogManagerOutput(), // Cleaned logs for the App's UI LogViewer
+  ]),
 );
+
+/// Custom output to feed the App's internal LogManager
+class _LogManagerOutput extends LogOutput {
+  @override
+  void output(OutputEvent event) {
+    // Use the original message instead of formatted lines to avoid box characters
+    final message = event.origin.message.toString();
+    
+    if (message.isNotEmpty) {
+      LogManager.addLog(message, level: _mapLevel(event.level));
+    }
+
+    // Also capture error information if present
+    if (event.origin.error != null) {
+      LogManager.addLog('Error: ${event.origin.error}', level: LogLevel.error);
+    }
+  }
+
+  LogLevel _mapLevel(Level level) {
+    if (level == Level.error) return LogLevel.error;
+    if (level == Level.warning) return LogLevel.warning;
+    if (level == Level.debug) return LogLevel.debug;
+    return LogLevel.info;
+  }
+}
 
 /// Logger for production builds with minimal output
 final productionLogger = Logger(printer: SimplePrinter(), level: Level.warning);
-
-class LogManagerOutput extends LogOutput {
-  @override
-  void output(OutputEvent event) {
-    for (var line in event.lines) {
-      LogManager.addLog(line, level: _convertLevel(event.level));
-    }
-  }
-
-  LogLevel _convertLevel(Level level) {
-    switch (level) {
-      case Level.debug:
-        return LogLevel.debug;
-      case Level.error:
-        return LogLevel.error;
-      case Level.warning:
-        return LogLevel.warning;
-      default:
-        return LogLevel.info;
-    }
-  }
-}

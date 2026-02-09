@@ -1,28 +1,63 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'log_manager.dart';
 
 class LogOverlayManager {
   static OverlayEntry? _overlayEntry;
-  static bool _isExpanded = false;
   static Offset _offset = const Offset(20, 100);
+  static VoidCallback? _onStateChanged;
 
-  static void show(BuildContext context) {
-    if (_overlayEntry != null) return;
+  static Future<void> init(BuildContext context, {VoidCallback? onStateChanged}) async {
+    _onStateChanged = onStateChanged;
+    final prefs = await SharedPreferences.getInstance();
+    final isEnabled = prefs.getBool(AppConstants.logOverlayKey) ?? false;
+    
+    if (isEnabled && context.mounted) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (context.mounted) show(context);
+      });
+    }
+  }
+
+  /// [startExpanded] if true, the overlay will open in full-dialog mode directly.
+  static Future<void> show(BuildContext context, {bool startExpanded = false}) async {
+    if (_overlayEntry != null) {
+      // If already showing but we want to expand it
+      if (startExpanded) {
+        // We can't easily reach the state of the existing entry from here, 
+        // so we hide and re-show.
+        hide();
+      } else {
+        return;
+      }
+    }
 
     _overlayEntry = OverlayEntry(
       builder: (context) => _LogOverlayWidget(
         initialOffset: _offset,
+        startExpanded: startExpanded,
         onPositionChanged: (newOffset) => _offset = newOffset,
+        onClose: () {
+          hide();
+          if (_onStateChanged != null) _onStateChanged!();
+        },
       ),
     );
 
     Overlay.of(context).insert(_overlayEntry!);
+    
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(AppConstants.logOverlayKey, true);
   }
 
-  static void hide() {
+  static Future<void> hide() async {
     _overlayEntry?.remove();
     _overlayEntry = null;
-    _isExpanded = false;
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(AppConstants.logOverlayKey, false);
   }
 
   static bool get isShowing => _overlayEntry != null;
@@ -30,9 +65,16 @@ class LogOverlayManager {
 
 class _LogOverlayWidget extends StatefulWidget {
   final Offset initialOffset;
+  final bool startExpanded;
   final Function(Offset) onPositionChanged;
+  final VoidCallback onClose;
 
-  const _LogOverlayWidget({required this.initialOffset, required this.onPositionChanged});
+  const _LogOverlayWidget({
+    required this.initialOffset, 
+    this.startExpanded = false,
+    required this.onPositionChanged,
+    required this.onClose,
+  });
 
   @override
   State<_LogOverlayWidget> createState() => _LogOverlayWidgetState();
@@ -40,12 +82,13 @@ class _LogOverlayWidget extends StatefulWidget {
 
 class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
   late Offset offset;
-  bool isExpanded = false;
+  late bool isExpanded;
 
   @override
   void initState() {
     super.initState();
     offset = widget.initialOffset;
+    isExpanded = widget.startExpanded;
   }
 
   @override
@@ -107,12 +150,25 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
                   const Text('App Logs', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                   const Spacer(),
                   IconButton(
+                    icon: const Icon(Icons.copy_rounded, color: Colors.white70, size: 20),
+                    onPressed: () {
+                      Clipboard.setData(ClipboardData(text: LogManager.getAllLogsAsText()));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Logs copied to clipboard'), behavior: SnackBarBehavior.floating),
+                      );
+                    },
+                  ),
+                  IconButton(
                     icon: const Icon(Icons.delete_sweep_outlined, color: Colors.white70, size: 20),
                     onPressed: () => LogManager.clear(),
                   ),
                   IconButton(
                     icon: const Icon(Icons.close_fullscreen_rounded, color: Colors.white, size: 20),
                     onPressed: () => setState(() => isExpanded = false),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.power_settings_new_rounded, color: Colors.redAccent, size: 20),
+                    onPressed: widget.onClose,
                   ),
                 ],
               ),
@@ -126,10 +182,8 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
                 return ListView.builder(
                   padding: const EdgeInsets.all(12),
                   itemCount: logs.length,
-                  reverse: true, // Show latest logs at bottom/start
                   itemBuilder: (context, index) {
                     final log = logs[logs.length - 1 - index];
-                    Color logColor = _getLogColor(log.level);
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 4.0),
                       child: RichText(
@@ -137,7 +191,7 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
                           style: const TextStyle(fontSize: 10, fontFamily: 'monospace'),
                           children: [
                             TextSpan(text: '[${log.formattedTime}] ', style: const TextStyle(color: Colors.white38)),
-                            TextSpan(text: log.message, style: TextStyle(color: logColor)),
+                            TextSpan(text: log.message, style: TextStyle(color: _getLogColor(log.level))),
                           ],
                         ),
                       ),
