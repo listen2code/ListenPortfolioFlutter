@@ -15,6 +15,8 @@ import 'package:listen_portfolio_flutter/generated/r.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 
 import 'appearance_page.dart';
+import 'privacy_policy_page.dart';
+import 'terms_of_service_page.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -43,7 +45,7 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return BaseListenablePage(
-      builder: (context, _) {
+      builder: (context, child) {
         final accentColor = settingManager.accentColor;
         final isSwitchingEnvDisabled = AppEnv.isProd() && kReleaseMode;
 
@@ -119,6 +121,22 @@ class _SettingsPageState extends State<SettingsPage> {
                 const SizedBox(height: 25),
                 _buildSectionTitle(I18nKeys.about.tr),
                 _buildSettingsCard(context, [
+                  _buildListTile(
+                    icon: Icons.privacy_tip_outlined,
+                    title: I18nKeys.privacyPolicy.tr,
+                    accentColor: accentColor,
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => const PrivacyPolicyPage()));
+                    },
+                  ),
+                  _buildListTile(
+                    icon: Icons.gavel_outlined,
+                    title: I18nKeys.termsOfService.tr,
+                    accentColor: accentColor,
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => const TermsOfServicePage()));
+                    },
+                  ),
                   _buildListTile(
                     icon: Icons.description_outlined,
                     title: I18nKeys.licenses.tr,
@@ -422,7 +440,7 @@ class _SettingsPageState extends State<SettingsPage> {
             for (var i = 0; i < children.length; i++) ...[
               children[i],
               if (i < children.length - 1)
-                Divider(height: 1, thickness: 0.5, indent: 65, endIndent: 20, color: theme.dividerColor.withOpacity(0.1)),
+                Divider(height: 1, thickness: 0.5, indent: 65, endIndent: 20, color: theme.dividerColor.withValues(alpha: 0.1)),
             ],
           ],
         ),

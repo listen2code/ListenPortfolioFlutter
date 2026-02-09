@@ -114,6 +114,8 @@ final Map<String, String> zh = {
   I18nKeys.cancel: '取消',
   I18nKeys.reset: '重置',
   I18nKeys.settingsResetSuccess: '所有设置已恢复默认。',
+  I18nKeys.privacyPolicy: '隐私政策',
+  I18nKeys.termsOfService: '使用条款',
   I18nKeys.english: '英文',
   I18nKeys.chinese: '中文',
   I18nKeys.japanese: '日文',

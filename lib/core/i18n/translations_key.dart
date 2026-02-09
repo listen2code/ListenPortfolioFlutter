@@ -33,6 +33,10 @@ class I18nKeys {
   static const String envSwitched = 'Environment switched to:';
   static const String noEmailApp = 'No email apps installed';
 
+  // Privacy & Terms
+  static const String privacyPolicy = 'Privacy Policy';
+  static const String termsOfService = 'Terms of Service';
+
   // Login Page
   static const String welcomeBack = 'Welcome Back!';
   static const String signInToContinue = 'Sign in to continue';
