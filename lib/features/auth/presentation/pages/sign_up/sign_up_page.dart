@@ -3,6 +3,7 @@ import 'package:listen_portfolio_flutter/core/base/base_stateless_page.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
+import 'package:listen_portfolio_flutter/shared/widget/common_text.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -43,107 +44,109 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final accentColor = settingManager.accentColor;
+
     return BaseStatelessPage(
       isEmptyTitle: true,
       padding: const EdgeInsets.symmetric(horizontal: 30.0),
-      body: (context, child) {
-        final theme = Theme.of(context);
-        final accentColor = settingManager.accentColor;
-        return Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: 20),
-              Text(
-                I18nKeys.createAccount.tr,
-                textAlign: TextAlign.center,
-                style: theme.textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.w300,
-                  color: theme.brightness == Brightness.light ? Colors.black87 : Colors.white,
+      body: (context, child) => Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const SizedBox(height: 20),
+            Text(
+              I18nKeys.createAccount.tr,
+              textAlign: TextAlign.center,
+              style: theme.textTheme.headlineMedium?.copyWith(
+                fontWeight: FontWeight.w300,
+                color: theme.brightness == Brightness.light ? Colors.black87 : Colors.white,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              I18nKeys.signUpSubtitle.tr,
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey),
+            ),
+            const SizedBox(height: 40),
+            _buildTextField(
+              controller: _nameController,
+              hintText: I18nKeys.fullName.tr,
+              icon: Icons.person_outline,
+              accentColor: accentColor,
+            ),
+            const SizedBox(height: 20),
+            _buildTextField(
+              controller: _emailController,
+              hintText: I18nKeys.email.tr,
+              icon: Icons.email_outlined,
+              keyboardType: TextInputType.emailAddress,
+              accentColor: accentColor,
+            ),
+            const SizedBox(height: 20),
+            _buildTextField(
+              controller: _pwdController,
+              hintText: I18nKeys.password.tr,
+              icon: Icons.lock_outline,
+              obscureText: !_isPasswordVisible,
+              accentColor: accentColor,
+              suffixIcon: IconButton(
+                icon: Icon(_isPasswordVisible ? Icons.visibility : Icons.visibility_off, color: accentColor),
+                onPressed: () => setState(() => _isPasswordVisible = !_isPasswordVisible),
+              ),
+            ),
+            const SizedBox(height: 20),
+            _buildTextField(
+              controller: _confirmPwdController,
+              hintText: I18nKeys.confirmPassword.tr,
+              icon: Icons.lock_outline,
+              accentColor: accentColor,
+              obscureText: !_isPasswordVisible,
+            ),
+            const SizedBox(height: 40),
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                gradient: LinearGradient(colors: [accentColor, accentColor.withValues(alpha: 0.8)]),
+                boxShadow: [BoxShadow(color: accentColor.withValues(alpha: 0.3), blurRadius: 10, offset: const Offset(0, 5))],
+              ),
+              child: ElevatedButton(
+                onPressed: () => _handleSignUp(accentColor),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.transparent,
+                  shadowColor: Colors.transparent,
+                  padding: const EdgeInsets.symmetric(vertical: 18),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                ),
+                child: Text(
+                  I18nKeys.signUp.tr,
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
                 ),
               ),
-              const SizedBox(height: 10),
-              Text(
-                I18nKeys.signUpSubtitle.tr,
-                textAlign: TextAlign.center,
-                style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey),
-              ),
-              const SizedBox(height: 40),
-              _buildTextField(
-                controller: _nameController,
-                hintText: I18nKeys.fullName.tr,
-                icon: Icons.person_outline,
-                accentColor: accentColor,
-              ),
-              const SizedBox(height: 20),
-              _buildTextField(
-                controller: _emailController,
-                hintText: I18nKeys.email.tr,
-                icon: Icons.email_outlined,
-                keyboardType: TextInputType.emailAddress,
-                accentColor: accentColor,
-              ),
-              const SizedBox(height: 20),
-              _buildTextField(
-                controller: _pwdController,
-                hintText: I18nKeys.password.tr,
-                icon: Icons.lock_outline,
-                obscureText: !_isPasswordVisible,
-                accentColor: accentColor,
-                suffixIcon: IconButton(
-                  icon: Icon(_isPasswordVisible ? Icons.visibility : Icons.visibility_off, color: accentColor),
-                  onPressed: () => setState(() => _isPasswordVisible = !_isPasswordVisible),
+            ),
+            const SizedBox(height: 30),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Flexible(
+                  child: CommonText(I18nKeys.alreadyHaveAccount.tr, style: const TextStyle(color: Colors.grey), maxLines: 1),
                 ),
-              ),
-              const SizedBox(height: 20),
-              _buildTextField(
-                controller: _confirmPwdController,
-                hintText: I18nKeys.confirmPassword.tr,
-                icon: Icons.lock_outline,
-                accentColor: accentColor,
-                obscureText: !_isPasswordVisible,
-              ),
-              const SizedBox(height: 40),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  gradient: LinearGradient(colors: [accentColor, accentColor.withValues(alpha: 0.8)]),
-                  boxShadow: [BoxShadow(color: accentColor.withValues(alpha: 0.3), blurRadius: 10, offset: const Offset(0, 5))],
-                ),
-                child: ElevatedButton(
-                  onPressed: () => _handleSignUp(accentColor),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent,
-                    shadowColor: Colors.transparent,
-                    padding: const EdgeInsets.symmetric(vertical: 18),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: CommonText(
+                    I18nKeys.loginLink.tr,
+                    style: TextStyle(color: accentColor, fontWeight: FontWeight.bold),
+                    maxLines: 1,
                   ),
-                  child: Text(
-                    I18nKeys.signUp.tr,
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-                  ),
                 ),
-              ),
-              const SizedBox(height: 30),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(I18nKeys.alreadyHaveAccount.tr, style: const TextStyle(color: Colors.grey)),
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: Text(
-                      I18nKeys.loginLink.tr,
-                      style: TextStyle(color: accentColor, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 40),
-            ],
-          ),
-        );
-      },
+              ],
+            ),
+            const SizedBox(height: 40),
+          ],
+        ),
+      ),
     );
   }
 

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:listen_portfolio_flutter/core/base/base_stateless_page.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
@@ -12,6 +11,8 @@ import 'package:listen_portfolio_flutter/features/auth/presentation/pages/sign_u
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_page.dart';
 import 'package:listen_portfolio_flutter/generated/r.dart';
 import 'package:listen_portfolio_flutter/shared/extension/navigation_extension.dart';
+import 'package:listen_portfolio_flutter/core/base/base_stateless_page.dart';
+import 'package:listen_portfolio_flutter/shared/widget/common_text.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
@@ -167,28 +168,47 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(
-              width: 24,
-              height: 24,
-              child: Checkbox(
-                value: state.rememberMe,
-                activeColor: accentColor,
-                onChanged: (value) => viewModel.handleIntent(const LoginIntent.toggleRememberMe()),
+        Expanded(
+          flex: 3,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                width: 24,
+                height: 24,
+                child: Checkbox(
+                  value: state.rememberMe,
+                  activeColor: accentColor,
+                  onChanged: (value) => viewModel.handleIntent(const LoginIntent.toggleRememberMe()),
+                ),
               ),
-            ),
-            const SizedBox(width: 8),
-            GestureDetector(
-              onTap: () => viewModel.handleIntent(const LoginIntent.toggleRememberMe()),
-              child: Text(I18nKeys.rememberMe.tr, style: const TextStyle(fontSize: 14, color: Colors.grey)),
-            ),
-          ],
+              const SizedBox(width: 8),
+              Flexible(
+                child: GestureDetector(
+                  onTap: () => viewModel.handleIntent(const LoginIntent.toggleRememberMe()),
+                  child: CommonText(
+                    I18nKeys.rememberMe.tr,
+                    style: const TextStyle(fontSize: 14, color: Colors.grey),
+                    maxLines: 1,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
-        TextButton(
-          onPressed: () => viewModel.handleIntent(const LoginIntent.navigateToForgotPassword()),
-          child: Text(I18nKeys.forgotPassword.tr, style: TextStyle(color: accentColor)),
+        const SizedBox(width: 10),
+        Flexible(
+          flex: 2,
+          child: TextButton(
+            onPressed: () => viewModel.handleIntent(const LoginIntent.navigateToForgotPassword()),
+            style: TextButton.styleFrom(padding: EdgeInsets.zero, alignment: Alignment.centerRight),
+            child: CommonText(
+              I18nKeys.forgotPassword.tr,
+              style: TextStyle(color: accentColor, fontSize: 13),
+              textAlign: TextAlign.right,
+              maxLines: 1,
+            ),
+          ),
         ),
       ],
     );
@@ -234,12 +254,19 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(I18nKeys.noAccount.tr, style: const TextStyle(color: Colors.grey)),
+        Flexible(
+          child: CommonText(
+            I18nKeys.noAccount.tr,
+            style: const TextStyle(color: Colors.grey),
+            maxLines: 1,
+          ),
+        ),
         TextButton(
           onPressed: () => viewModel.handleIntent(const LoginIntent.navigateToSignup()),
-          child: Text(
+          child: CommonText(
             I18nKeys.signUp.tr,
             style: TextStyle(color: accentColor, fontWeight: FontWeight.bold),
+            maxLines: 1,
           ),
         ),
       ],
