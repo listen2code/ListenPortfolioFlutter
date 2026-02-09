@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/base/base_listenable_page.dart';
+import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
@@ -85,7 +86,7 @@ class ArchitectureWidget extends StatelessWidget {
           Text(I18nKeys.openSourceDesc.tr, style: theme.textTheme.bodyMedium?.copyWith(height: 1.6)),
           const SizedBox(height: 15),
           InkWell(
-            onTap: () => _launchURL(context, 'https://github.com/listen2code'),
+            onTap: () => _launchURL(context, AppConstants.fullMail),
             borderRadius: BorderRadius.circular(8),
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 4),

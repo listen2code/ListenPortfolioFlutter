@@ -27,23 +27,31 @@ class OverviewWidget extends StatelessWidget {
         final accentColor = settingManager.accentColor;
 
         return SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.symmetric(vertical: 20), // Only vertical padding
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildWelcomeHeader(theme, accentColor),
-              const SizedBox(height: 16),
-              _buildStatusTag(),
-              const SizedBox(height: 24),
-              _buildExperienceGrid(theme),
-              const SizedBox(height: 28),
-              _buildSectionHeader(I18nKeys.quickActions.tr, showSeeAll: false),
-              const SizedBox(height: 12),
-              _buildQuickActions(context, accentColor),
-              const SizedBox(height: 28),
-              _buildSectionHeader(I18nKeys.featuredProjects.tr),
-              const SizedBox(height: 12),
-              _buildFeaturedProjects(accentColor),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildWelcomeHeader(theme, accentColor),
+                    const SizedBox(height: 16),
+                    _buildStatusTag(),
+                    const SizedBox(height: 24),
+                    _buildExperienceGrid(theme),
+                    const SizedBox(height: 28),
+                    _buildSectionHeader(I18nKeys.quickActions.tr, showSeeAll: false, onPressed: () {}),
+                    const SizedBox(height: 12),
+                    _buildQuickActions(context, accentColor),
+                    const SizedBox(height: 28),
+                    _buildSectionHeader(I18nKeys.featuredProjects.tr, showSeeAll: true, onPressed: onProjectsRequested),
+                    const SizedBox(height: 12),
+                  ],
+                ),
+              ),
+              _buildFeaturedProjects(accentColor), // No horizontal padding here
             ],
           ),
         );
@@ -255,7 +263,7 @@ class OverviewWidget extends StatelessWidget {
         Row(
           children: [
             _buildActionButton(context, I18nKeys.github.tr, Icons.code_rounded, Colors.grey, () async {
-              final Uri url = Uri.parse('https://github.com/listen2code');
+              final Uri url = Uri.parse(AppConstants.fullMail);
               if (!await launchUrl(url)) {
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(I18nKeys.couldNotLaunchGithub.tr)));
@@ -350,12 +358,12 @@ class OverviewWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildSectionHeader(String title, {bool showSeeAll = true}) {
+  Widget _buildSectionHeader(String title, {required bool showSeeAll, required VoidCallback onPressed}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Expanded(child: CommonText(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold), maxLines: 1)),
-        if (showSeeAll) TextButton(onPressed: onProjectsRequested, child: Text(I18nKeys.viewAll.tr)),
+        if (showSeeAll) TextButton(onPressed: onPressed, child: Text(I18nKeys.viewAll.tr)),
       ],
     );
   }
@@ -365,6 +373,7 @@ class OverviewWidget extends StatelessWidget {
       height: 150,
       child: ListView(
         scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 20), // Edge-to-edge initial offset
         children: [
           _buildProjectCard('lPortfolio', 'Current App', accentColor),
           _buildProjectCard('AI Chatbot', 'Dart & OpenAI', Colors.purple),
