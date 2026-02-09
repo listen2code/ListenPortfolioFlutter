@@ -492,7 +492,7 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
       title: CommonText(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500), maxLines: 1),
       value: value,
-      activeColor: accentColor,
+      activeTrackColor: accentColor,
       onChanged: onChanged,
     );
   }
