@@ -12,7 +12,7 @@ import 'package:listen_portfolio_flutter/features/auth/presentation/pages/passwo
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/sign_up/sign_up_page.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_page.dart';
 import 'package:listen_portfolio_flutter/generated/r.dart';
-import 'package:listen_portfolio_flutter/shared/widget/common_text.dart';
+import 'package:listen_portfolio_flutter/shared/shared.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});

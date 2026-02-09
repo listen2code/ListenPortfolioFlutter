@@ -3,7 +3,7 @@ import 'package:listen_portfolio_flutter/core/base/base_stateless_page.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
-import 'package:listen_portfolio_flutter/shared/widget/common_text.dart';
+import 'package:listen_portfolio_flutter/shared/shared.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
@@ -103,11 +103,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Flexible(
-                  child: CommonText(
-                    I18nKeys.rememberPassword.tr,
-                    style: const TextStyle(color: Colors.grey),
-                    maxLines: 1,
-                  ),
+                  child: CommonText(I18nKeys.rememberPassword.tr, style: const TextStyle(color: Colors.grey), maxLines: 1),
                 ),
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),

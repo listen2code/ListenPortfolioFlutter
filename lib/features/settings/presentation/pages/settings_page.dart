@@ -12,7 +12,7 @@ import 'package:listen_portfolio_flutter/core/utils/cache_manager.dart';
 import 'package:listen_portfolio_flutter/core/utils/log_manager.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/password/change_password_page.dart';
 import 'package:listen_portfolio_flutter/generated/r.dart';
-import 'package:listen_portfolio_flutter/shared/widget/common_text.dart';
+import 'package:listen_portfolio_flutter/shared/shared.dart';
 
 import 'appearance_page.dart';
 
