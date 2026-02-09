@@ -26,6 +26,7 @@ samples, guidance on mobile development, and a full API reference.
 * widget to package
     * commonText, commonImage, commonDialog, commonToast
 * build web
+* core -> shared
 * ide plugin
   --assets
 * framework
