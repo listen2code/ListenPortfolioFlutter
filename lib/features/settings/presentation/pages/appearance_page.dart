@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:listen_portfolio_flutter/core/base/base_listenable_page.dart';
 import 'package:listen_portfolio_flutter/core/base/base_stateless_page.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
@@ -14,46 +15,60 @@ class AppearancePage extends StatefulWidget {
 class _AppearancePageState extends State<AppearancePage> {
   @override
   Widget build(BuildContext context) {
-    return BaseStatelessPage(
-      title: I18nKeys.appearance.tr,
-      padding: const EdgeInsets.all(20),
-      body: (context, child) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildSectionTitle(I18nKeys.themeMode.tr),
-            _buildSettingsCard(context, [
-              _buildThemeOption(
-                I18nKeys.system.tr,
-                Icons.settings_brightness_outlined,
-                ThemeMode.system,
-                settingManager.themeMode,
-              ),
-              _buildThemeOption(I18nKeys.light.tr, Icons.light_mode_outlined, ThemeMode.light, settingManager.themeMode),
-              _buildThemeOption(I18nKeys.dark.tr, Icons.dark_mode_outlined, ThemeMode.dark, settingManager.themeMode),
-            ]),
-            const SizedBox(height: 25),
-            _buildSectionTitle(I18nKeys.accentColor.tr),
-            _buildSettingsCard(context, [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Wrap(
-                  spacing: 15,
-                  runSpacing: 15,
-                  children: SettingManager.accentColors
-                      .map((color) => _buildColorOption(color, currentAccentColor: settingManager.accentColor))
-                      .toList(),
-                ),
-              ),
-            ]),
-            const SizedBox(height: 25),
-            _buildSectionTitle(I18nKeys.fontSize.tr),
-            _buildSettingsCard(context, [
-              _buildFontSizeOption(I18nKeys.standard.tr, AppFontSize.standard),
-              _buildFontSizeOption(I18nKeys.large.tr, AppFontSize.large),
-            ]),
-            const SizedBox(height: 40),
-          ],
+    return BaseListenablePage(
+      builder: (context, child) {
+        final accentColor = settingManager.accentColor;
+
+        return BaseStatelessPage(
+          title: I18nKeys.appearance.tr,
+          padding: const EdgeInsets.all(20),
+          body: (context, child) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildSectionTitle(I18nKeys.themeMode.tr),
+                _buildSettingsCard(context, [
+                  _buildThemeOption(
+                    I18nKeys.system.tr,
+                    Icons.settings_brightness_outlined,
+                    ThemeMode.system,
+                    settingManager.themeMode,
+                  ),
+                  _buildThemeOption(I18nKeys.light.tr, Icons.light_mode_outlined, ThemeMode.light, settingManager.themeMode),
+                  _buildThemeOption(I18nKeys.dark.tr, Icons.dark_mode_outlined, ThemeMode.dark, settingManager.themeMode),
+                ]),
+                const SizedBox(height: 25),
+                _buildSectionTitle(I18nKeys.accentColor.tr),
+                _buildSettingsCard(context, [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
+                    child: GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: SettingManager.accentColors.length,
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 4, // 4 items per row
+                        mainAxisSpacing: 10,
+                        crossAxisSpacing: 20,
+                        childAspectRatio: 1.0,
+                      ),
+                      itemBuilder: (context, index) {
+                        final color = SettingManager.accentColors[index];
+                        return _buildColorOption(color, currentAccentColor: accentColor);
+                      },
+                    ),
+                  ),
+                ]),
+                const SizedBox(height: 25),
+                _buildSectionTitle(I18nKeys.fontSize.tr),
+                _buildSettingsCard(context, [
+                  _buildFontSizeOption(I18nKeys.standard.tr, AppFontSize.standard),
+                  _buildFontSizeOption(I18nKeys.large.tr, AppFontSize.large),
+                ]),
+                const SizedBox(height: 40),
+              ],
+            );
+          },
         );
       },
     );
@@ -114,20 +129,23 @@ class _AppearancePageState extends State<AppearancePage> {
 
   Widget _buildColorOption(Color color, {required Color currentAccentColor}) {
     final isSelected = currentAccentColor.value == color.value;
-    return GestureDetector(
-      onTap: () => settingManager.setAccentColor(color),
-      child: Container(
-        width: 45,
-        height: 45,
-        decoration: BoxDecoration(
-          color: color,
-          shape: BoxShape.circle,
-          border: isSelected ? Border.all(color: Colors.white, width: 3) : null,
-          boxShadow: isSelected
-              ? [BoxShadow(color: color.withAlpha((255.0 * 0.4).round()), blurRadius: 10, spreadRadius: 2)]
-              : null,
+    return Center(
+      // Added Center to ensure circular shape is not stretched
+      child: GestureDetector(
+        onTap: () => settingManager.setAccentColor(color),
+        child: Container(
+          width: 48, // Slightly larger for better touch target
+          height: 48,
+          decoration: BoxDecoration(
+            color: color,
+            shape: BoxShape.circle,
+            border: isSelected ? Border.all(color: Colors.white, width: 3) : null,
+            boxShadow: isSelected
+                ? [BoxShadow(color: color.withAlpha((255.0 * 0.4).round()), blurRadius: 10, spreadRadius: 2)]
+                : null,
+          ),
+          child: isSelected ? const Icon(Icons.check, color: Colors.white) : null,
         ),
-        child: isSelected ? const Icon(Icons.check, color: Colors.white) : null,
       ),
     );
   }
