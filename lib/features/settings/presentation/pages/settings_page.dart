@@ -12,7 +12,7 @@ import 'package:listen_portfolio_flutter/core/utils/cache_manager.dart';
 import 'package:listen_portfolio_flutter/core/utils/log_manager.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/password/change_password_page.dart';
 import 'package:listen_portfolio_flutter/generated/r.dart';
-import 'package:listen_portfolio_flutter/shared/shared.dart';
+import 'package:listen_portfolio_flutter/shared/widgets/common_text.dart';
 
 import 'appearance_page.dart';
 import 'privacy_policy_page.dart';
@@ -47,15 +47,17 @@ class _SettingsPageState extends State<SettingsPage> {
     return BaseListenablePage(
       builder: (context, child) {
         final accentColor = settingManager.accentColor;
-        final isSwitchingEnvDisabled = AppEnv.isProd() && kReleaseMode;
+        final isRelease = kReleaseMode;
+        final isProd = AppEnv.isProd();
 
         return BaseStatelessPage(
           title: I18nKeys.settings.tr,
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           body: (BuildContext context, Widget? child) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // 1. PREFERENCES
                 _buildSectionTitle(I18nKeys.general.tr),
                 _buildSettingsCard(context, [
                   _buildListTile(
@@ -63,42 +65,47 @@ class _SettingsPageState extends State<SettingsPage> {
                     title: I18nKeys.appearance.tr,
                     subtitle: I18nKeys.appearanceSubtitle.tr,
                     accentColor: accentColor,
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AppearancePage()));
-                    },
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const AppearancePage())),
                   ),
                   _buildListTile(
                     icon: Icons.language_outlined,
                     title: I18nKeys.language.tr,
                     accentColor: accentColor,
-                    trailing: Text(settingManager.language.label, style: const TextStyle(color: Colors.grey)),
+                    trailing: Text(settingManager.language.label, style: const TextStyle(color: Colors.grey, fontSize: 13)),
                     onTap: () => _showLanguageDialog(),
                   ),
+                ]),
+
+                const SizedBox(height: 25),
+
+                // 2. ACCOUNT & SECURITY
+                _buildSectionTitle(I18nKeys.account.tr), // Reusing key for 'Account'
+                _buildSettingsCard(context, [
                   _buildListTile(
-                    icon: Icons.lock_outline,
+                    icon: Icons.lock_outline_rounded,
                     title: I18nKeys.changePassword.tr,
-                    subtitle: I18nKeys.changePasswordSubtitle.tr,
                     accentColor: accentColor,
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ChangePasswordPage()));
-                    },
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ChangePasswordPage())),
                   ),
                   _buildSwitchTile(
-                    icon: Icons.notifications_active_outlined,
+                    icon: Icons.notifications_none_rounded,
                     title: I18nKeys.notifications.tr,
                     value: _notificationsEnabled,
                     accentColor: accentColor,
                     onChanged: (val) => setState(() => _notificationsEnabled = val),
                   ),
                 ]),
+
                 const SizedBox(height: 25),
+
+                // 3. STORAGE & MAINTENANCE
                 _buildSectionTitle(I18nKeys.systemStorage.tr),
                 _buildSettingsCard(context, [
                   _buildListTile(
-                    icon: Icons.delete_outline_rounded,
+                    icon: Icons.cleaning_services_outlined,
                     title: I18nKeys.clearCache.tr,
                     accentColor: accentColor,
-                    trailing: Text(_cacheSize, style: const TextStyle(color: Colors.grey)),
+                    trailing: Text(_cacheSize, style: const TextStyle(color: Colors.grey, fontSize: 13)),
                     onTap: () => _handleClearCache(accentColor),
                   ),
                   _buildListTile(
@@ -108,37 +115,47 @@ class _SettingsPageState extends State<SettingsPage> {
                     onTap: () => _showResetConfirmation(accentColor),
                   ),
                 ]),
+
                 const SizedBox(height: 25),
-                _buildSectionTitle(I18nKeys.developer.tr),
-                _buildSettingsCard(context, [
-                  _buildListTile(
-                    icon: Icons.terminal_rounded,
-                    title: I18nKeys.viewLogs.tr,
-                    accentColor: accentColor,
-                    onTap: () => _showLogViewer(accentColor),
-                  ),
-                ]),
-                const SizedBox(height: 25),
+
+                // 4. DEVELOPER (Visible in debug or if not prod)
+                if (!isRelease || !isProd) ...[
+                  _buildSectionTitle(I18nKeys.developer.tr),
+                  _buildSettingsCard(context, [
+                    _buildListTile(
+                      icon: Icons.terminal_rounded,
+                      title: I18nKeys.viewLogs.tr,
+                      accentColor: accentColor,
+                      onTap: () => _showLogViewer(accentColor),
+                    ),
+                    _buildListTile(
+                      icon: Icons.settings_input_antenna_rounded,
+                      title: I18nKeys.switchEnv.tr,
+                      subtitle: '${I18nKeys.currentlyActive.tr}: ${AppEnv.env}',
+                      accentColor: accentColor,
+                      onTap: () => _showEnvSwitchDialog(),
+                    ),
+                  ]),
+                  const SizedBox(height: 25),
+                ],
+
+                // 5. LEGAL & ABOUT
                 _buildSectionTitle(I18nKeys.about.tr),
                 _buildSettingsCard(context, [
                   _buildListTile(
                     icon: Icons.privacy_tip_outlined,
                     title: I18nKeys.privacyPolicy.tr,
                     accentColor: accentColor,
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => const PrivacyPolicyPage()));
-                    },
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const PrivacyPolicyPage())),
                   ),
                   _buildListTile(
                     icon: Icons.gavel_outlined,
                     title: I18nKeys.termsOfService.tr,
                     accentColor: accentColor,
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => const TermsOfServicePage()));
-                    },
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const TermsOfServicePage())),
                   ),
                   _buildListTile(
-                    icon: Icons.description_outlined,
+                    icon: Icons.info_outline_rounded,
                     title: I18nKeys.licenses.tr,
                     accentColor: accentColor,
                     onTap: () => showLicensePage(
@@ -158,30 +175,13 @@ class _SettingsPageState extends State<SettingsPage> {
                       applicationLegalese: '© ${AppConstants.date} ${AppConstants.author}',
                     ),
                   ),
-                  _buildListTile(
-                    icon: Icons.info_outline,
-                    title: I18nKeys.appVersion.tr,
-                    accentColor: accentColor,
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          '${AppConstants.appVersion}${!AppEnv.isProd() ? ' (${AppEnv.env})' : ''}',
-                          style: const TextStyle(color: Colors.grey),
-                        ),
-                        if (!isSwitchingEnvDisabled)
-                          const Padding(
-                            padding: EdgeInsets.only(left: 4.0),
-                            child: Icon(Icons.arrow_forward_ios_rounded, size: 12, color: Colors.grey),
-                          ),
-                      ],
+                  ListTile(
+                    title: Center(
+                      child: Text(
+                        '${I18nKeys.appVersion.tr} ${AppConstants.appVersion}',
+                        style: const TextStyle(color: Colors.grey, fontSize: 12),
+                      ),
                     ),
-                    onTap: () {
-                      if (isSwitchingEnvDisabled) {
-                        return;
-                      }
-                      _showEnvSwitchDialog();
-                    },
                   ),
                 ]),
                 const SizedBox(height: 40),
@@ -192,6 +192,8 @@ class _SettingsPageState extends State<SettingsPage> {
       },
     );
   }
+
+  // --- Helper Methods ---
 
   void _handleClearCache(Color accentColor) async {
     await CacheManager.clearAllCache();
@@ -270,10 +272,8 @@ class _SettingsPageState extends State<SettingsPage> {
                         IconButton(
                           icon: const Icon(Icons.copy_rounded),
                           onPressed: () {
-                            // Copy to clipboard or share logic
                             final allLogs = LogManager.getAllLogsAsText();
                             Clipboard.setData(ClipboardData(text: allLogs));
-
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(content: Text('Logs copied to clipboard'), behavior: SnackBarBehavior.floating),
                             );
@@ -295,25 +295,18 @@ class _SettingsPageState extends State<SettingsPage> {
                         itemCount: LogManager.logs.length,
                         itemBuilder: (context, index) {
                           final log = LogManager.logs[index];
-                          Color logColor;
-                          switch (log.level) {
-                            case LogLevel.error:
-                              logColor = Colors.redAccent;
-                              break;
-                            case LogLevel.warning:
-                              logColor = Colors.orangeAccent;
-                              break;
-                            case LogLevel.debug:
-                              logColor = Colors.blueAccent;
-                              break;
-                            default:
-                              logColor = Colors.grey;
-                          }
+                          Color logColor = log.level == LogLevel.error
+                              ? Colors.redAccent
+                              : log.level == LogLevel.warning
+                              ? Colors.orangeAccent
+                              : log.level == LogLevel.debug
+                              ? Colors.blueAccent
+                              : Colors.grey;
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 8.0),
                             child: RichText(
                               text: TextSpan(
-                                style: const TextStyle(fontSize: 12, fontFamily: 'monospace'),
+                                style: const TextStyle(fontSize: 11, fontFamily: 'monospace'),
                                 children: [
                                   TextSpan(
                                     text: '[${log.formattedTime}] ',
@@ -366,17 +359,8 @@ class _SettingsPageState extends State<SettingsPage> {
       subtitle: Text(isCurrent ? I18nKeys.currentlyActive.tr : envCode.name),
       trailing: isCurrent ? const Icon(Icons.check_circle) : null,
       onTap: () {
-        setState(() {
-          AppEnv.setEnvironment(envCode);
-        });
+        setState(() => AppEnv.setEnvironment(envCode));
         Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${I18nKeys.envSwitched.tr} $label'),
-            behavior: SnackBarBehavior.floating,
-            backgroundColor: settingManager.accentColor,
-          ),
-        );
       },
     );
   }
@@ -406,21 +390,19 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
       ),
       trailing: isSelected ? Icon(Icons.check_circle, color: settingManager.accentColor) : null,
-      onTap: () => _updateLang(lang),
+      onTap: () {
+        settingManager.setLanguage(lang);
+        Navigator.pop(context);
+      },
     );
-  }
-
-  void _updateLang(AppLanguage lang) {
-    settingManager.setLanguage(lang);
-    Navigator.pop(context);
   }
 
   Widget _buildSectionTitle(String title) {
     return Padding(
-      padding: const EdgeInsets.only(left: 10, bottom: 8),
+      padding: const EdgeInsets.only(left: 10, bottom: 8, top: 5),
       child: Text(
         title.toUpperCase(),
-        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 1.2),
+        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 1.1),
       ),
     );
   }
@@ -429,7 +411,7 @@ class _SettingsPageState extends State<SettingsPage> {
     final theme = Theme.of(context);
     return Container(
       decoration: BoxDecoration(
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10, offset: const Offset(0, 5))],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 8, offset: const Offset(0, 4))],
       ),
       child: Material(
         color: theme.cardColor,
@@ -440,7 +422,7 @@ class _SettingsPageState extends State<SettingsPage> {
             for (var i = 0; i < children.length; i++) ...[
               children[i],
               if (i < children.length - 1)
-                Divider(height: 1, thickness: 0.5, indent: 65, endIndent: 20, color: theme.dividerColor.withValues(alpha: 0.1)),
+                Divider(height: 1, thickness: 0.5, indent: 60, endIndent: 20, color: theme.dividerColor.withValues(alpha: 0.05)),
             ],
           ],
         ),
@@ -457,15 +439,15 @@ class _SettingsPageState extends State<SettingsPage> {
     required VoidCallback onTap,
   }) {
     return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      dense: true,
       leading: Container(
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(color: accentColor.withValues(alpha: 0.08), borderRadius: BorderRadius.circular(12)),
-        child: Icon(icon, color: accentColor, size: 22),
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(color: accentColor.withValues(alpha: 0.08), borderRadius: BorderRadius.circular(10)),
+        child: Icon(icon, color: accentColor, size: 20),
       ),
-      title: CommonText(title, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
-      subtitle: subtitle != null ? Text(subtitle, style: const TextStyle(fontSize: 12, color: Colors.grey)) : null,
-      trailing: trailing ?? const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: Colors.grey),
+      title: CommonText(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500), maxLines: 1),
+      subtitle: subtitle != null ? Text(subtitle, style: const TextStyle(fontSize: 11, color: Colors.grey)) : null,
+      trailing: trailing ?? const Icon(Icons.chevron_right_rounded, size: 20, color: Colors.grey),
       onTap: onTap,
     );
   }
@@ -478,12 +460,13 @@ class _SettingsPageState extends State<SettingsPage> {
     required ValueChanged<bool> onChanged,
   }) {
     return SwitchListTile.adaptive(
+      dense: true,
       secondary: Container(
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(color: accentColor.withValues(alpha: 0.08), borderRadius: BorderRadius.circular(12)),
-        child: Icon(icon, color: accentColor, size: 22),
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(color: accentColor.withValues(alpha: 0.08), borderRadius: BorderRadius.circular(10)),
+        child: Icon(icon, color: accentColor, size: 20),
       ),
-      title: Text(title, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
+      title: CommonText(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500), maxLines: 1),
       value: value,
       activeColor: accentColor,
       onChanged: onChanged,

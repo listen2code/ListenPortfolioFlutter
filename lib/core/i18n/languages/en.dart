@@ -120,4 +120,5 @@ final Map<String, String> en = {
   I18nKeys.japanese: 'Japanese',
   I18nKeys.privacyPolicy: 'Privacy Policy',
   I18nKeys.termsOfService: 'Terms of Service',
+  I18nKeys.account: 'Account',
 };

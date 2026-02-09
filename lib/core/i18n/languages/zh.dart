@@ -119,4 +119,5 @@ final Map<String, String> zh = {
   I18nKeys.english: '英文',
   I18nKeys.chinese: '中文',
   I18nKeys.japanese: '日文',
+  I18nKeys.account: '账号',
 };

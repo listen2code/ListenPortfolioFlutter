@@ -85,7 +85,7 @@ class I18nKeys {
   static const String logout = 'Logout';
 
   // Overview Page
-  static const String hello = "Hello, I'm";
+  static const String hello = "Hello, I'm %s";
   static const String availableStatus = 'Available for high-impact roles';
   static const String androidExp = 'Android Exp';
   static const String flutterExp = 'Flutter Exp';
@@ -135,6 +135,15 @@ class I18nKeys {
   static const String cancel = 'Cancel';
   static const String reset = 'Reset';
   static const String settingsResetSuccess = 'All settings have been reset.';
+
+  // Account Deletion (Google Play Compliance)
+  static const String deleteAccount = 'Delete Account';
+  static const String deleteAccountConfirmTitle = 'Delete Your Account?';
+  static const String deleteAccountConfirmContent = 'This action is permanent and will delete all your data. This cannot be undone.';
+  static const String deleteAccountSuccess = 'Account deleted successfully.';
+
+  // General terms
+  static const String account = 'Account';
 
   // Common Language Names
   static const String english = 'English';
