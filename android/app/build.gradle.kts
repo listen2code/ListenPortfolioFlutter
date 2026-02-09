@@ -13,6 +13,14 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
 
+// Print Flutter properties for debugging
+println(">>> Flutter compileSdkVersion: ${flutter.compileSdkVersion}")
+println(">>> Flutter minSdkVersion: ${flutter.minSdkVersion}")
+println(">>> Flutter targetSdkVersion: ${flutter.targetSdkVersion}")
+println(">>> Flutter ndkVersion: ${flutter.ndkVersion}")
+println(">>> App versionCode: ${flutter.versionCode}")
+println(">>> App versionName: ${flutter.versionName}")
+
 android {
     namespace = "com.listen.portfolio.listen_portfolio_flutter"
     compileSdk = flutter.compileSdkVersion
