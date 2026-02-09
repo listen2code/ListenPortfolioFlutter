@@ -1,4 +1,4 @@
-import 'package:listen_portfolio_flutter/shared/network/api_client.dart';
+import 'package:listen_portfolio_flutter/core/network/api_client.dart';
 
 enum AppEnvironment {
   dev('dev'),
@@ -18,9 +18,7 @@ class AppEnv {
   AppEnv._();
 
   // Added 'const' to ensure the environment variable is picked up at compile time
-  static AppEnvironment _env = AppEnvironment.fromString(
-    const String.fromEnvironment('APP_ENV', defaultValue: 'dev'),
-  );
+  static AppEnvironment _env = AppEnvironment.fromString(const String.fromEnvironment('APP_ENV', defaultValue: 'dev'));
 
   static bool isProd() => _env == AppEnvironment.prod;
 
