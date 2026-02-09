@@ -47,7 +47,7 @@ class _AppearancePageState extends State<AppearancePage> {
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: SettingManager.accentColors.length,
                       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 4, // 4 items per row
+                        crossAxisCount: 4,
                         mainAxisSpacing: 10,
                         crossAxisSpacing: 20,
                         childAspectRatio: 1.0,
@@ -88,7 +88,7 @@ class _AppearancePageState extends State<AppearancePage> {
     final theme = Theme.of(context);
     return Container(
       decoration: BoxDecoration(
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10, offset: const Offset(0, 5))],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10, offset: const Offset(0, 5))],
       ),
       child: Material(
         color: theme.cardColor,
@@ -99,7 +99,7 @@ class _AppearancePageState extends State<AppearancePage> {
             for (var i = 0; i < children.length; i++) ...[
               children[i],
               if (i < children.length - 1)
-                Divider(height: 1, thickness: 0.5, indent: 65, endIndent: 20, color: theme.dividerColor.withOpacity(0.1)),
+                Divider(height: 1, thickness: 0.5, indent: 65, endIndent: 20, color: theme.dividerColor.withValues(alpha: 0.1)),
             ],
           ],
         ),
@@ -130,18 +130,17 @@ class _AppearancePageState extends State<AppearancePage> {
   Widget _buildColorOption(Color color, {required Color currentAccentColor}) {
     final isSelected = currentAccentColor.value == color.value;
     return Center(
-      // Added Center to ensure circular shape is not stretched
       child: GestureDetector(
         onTap: () => settingManager.setAccentColor(color),
         child: Container(
-          width: 48, // Slightly larger for better touch target
+          width: 48,
           height: 48,
           decoration: BoxDecoration(
             color: color,
             shape: BoxShape.circle,
             border: isSelected ? Border.all(color: Colors.white, width: 3) : null,
             boxShadow: isSelected
-                ? [BoxShadow(color: color.withAlpha((255.0 * 0.4).round()), blurRadius: 10, spreadRadius: 2)]
+                ? [BoxShadow(color: color.withValues(alpha: 0.4), blurRadius: 10, spreadRadius: 2)]
                 : null,
           ),
           child: isSelected ? const Icon(Icons.check, color: Colors.white) : null,

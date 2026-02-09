@@ -13,6 +13,9 @@ import 'package:listen_portfolio_flutter/features/settings/presentation/pages/ap
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/settings_page.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 
+/// Enum to manage home page tabs instead of hardcoded indices
+enum HomeTab { overview, aboutMe, projects, architecture }
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -21,17 +24,17 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _selectedIndex = 0;
+  HomeTab _currentTab = HomeTab.overview;
 
   String _getPageTitle() {
-    switch (_selectedIndex) {
-      case 1:
+    switch (_currentTab) {
+      case HomeTab.aboutMe:
         return I18nKeys.aboutMe.tr;
-      case 2:
+      case HomeTab.projects:
         return I18nKeys.featuredProjects.tr;
-      case 3:
+      case HomeTab.architecture:
         return I18nKeys.architecture.tr;
-      default:
+      case HomeTab.overview:
         return '';
     }
   }
@@ -41,30 +44,39 @@ class _HomePageState extends State<HomePage> {
     final theme = Theme.of(context);
     final accentColor = settingManager.accentColor;
 
-    return BaseStatelessPage(
-      title: _getPageTitle(),
-      drawer: _buildDrawer(context, theme, accentColor),
-      isScrollable: false,
-      body: (context, child) => _buildBody(),
+    return PopScope(
+      // Only allow app exit when on the Overview tab
+      canPop: _currentTab == HomeTab.overview,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        // If not on overview, back button takes user back to overview
+        if (_currentTab != HomeTab.overview) {
+          setState(() => _currentTab = HomeTab.overview);
+        }
+      },
+      child: BaseStatelessPage(
+        title: _getPageTitle(),
+        drawer: _buildDrawer(context, theme, accentColor),
+        isScrollable: false,
+        body: (context, child) => _buildBody(),
+      ),
     );
   }
 
   Widget _buildBody() {
-    switch (_selectedIndex) {
-      case 0:
+    switch (_currentTab) {
+      case HomeTab.overview:
         return OverviewWidget(
-          onResumeRequested: () => setState(() => _selectedIndex = 1),
-          onProjectsRequested: () => setState(() => _selectedIndex = 2),
-          onArchitectureRequested: () => setState(() => _selectedIndex = 3),
+          onResumeRequested: () => setState(() => _currentTab = HomeTab.aboutMe),
+          onProjectsRequested: () => setState(() => _currentTab = HomeTab.projects),
+          onArchitectureRequested: () => setState(() => _currentTab = HomeTab.architecture),
         );
-      case 1:
+      case HomeTab.aboutMe:
         return const AboutMeWidget();
-      case 2:
+      case HomeTab.projects:
         return const ProjectsWidget();
-      case 3:
+      case HomeTab.architecture:
         return const ArchitectureWidget();
-      default:
-        return _buildBody(); // Fallback
     }
   }
 
@@ -85,40 +97,40 @@ class _HomePageState extends State<HomePage> {
                 _buildDrawerItem(
                   icon: Icons.dashboard_customize_outlined,
                   label: I18nKeys.overview.tr,
-                  isSelected: _selectedIndex == 0,
+                  isSelected: _currentTab == HomeTab.overview,
                   accentColor: accentColor,
                   onTap: () {
-                    setState(() => _selectedIndex = 0);
+                    setState(() => _currentTab = HomeTab.overview);
                     Navigator.pop(context);
                   },
                 ),
                 _buildDrawerItem(
                   icon: Icons.person_search_outlined,
                   label: I18nKeys.aboutMe.tr,
-                  isSelected: _selectedIndex == 1,
+                  isSelected: _currentTab == HomeTab.aboutMe,
                   accentColor: accentColor,
                   onTap: () {
-                    setState(() => _selectedIndex = 1);
+                    setState(() => _currentTab = HomeTab.aboutMe);
                     Navigator.pop(context);
                   },
                 ),
                 _buildDrawerItem(
                   icon: Icons.rocket_launch_outlined,
                   label: I18nKeys.featuredProjects.tr,
-                  isSelected: _selectedIndex == 2,
+                  isSelected: _currentTab == HomeTab.projects,
                   accentColor: accentColor,
                   onTap: () {
-                    setState(() => _selectedIndex = 2);
+                    setState(() => _currentTab = HomeTab.projects);
                     Navigator.pop(context);
                   },
                 ),
                 _buildDrawerItem(
                   icon: Icons.account_tree_outlined,
                   label: I18nKeys.architecture.tr,
-                  isSelected: _selectedIndex == 3,
+                  isSelected: _currentTab == HomeTab.architecture,
                   accentColor: accentColor,
                   onTap: () {
-                    setState(() => _selectedIndex = 3);
+                    setState(() => _currentTab = HomeTab.architecture);
                     Navigator.pop(context);
                   },
                 ),
@@ -175,7 +187,7 @@ class _HomePageState extends State<HomePage> {
                 backgroundColor: Colors.white,
                 child: CircleAvatar(
                   radius: 32,
-                  backgroundImage: NetworkImage('https://api.dicebear.com/7.x/avataaars/svg?seed=${AppConstants.author}'),
+                  backgroundImage: NetworkImage('https://api.dicebear.com/7.x/avataaars/svg?seed=Listen'),
                 ),
               ),
               SizedBox(height: 15),
