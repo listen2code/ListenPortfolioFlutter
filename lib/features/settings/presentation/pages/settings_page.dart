@@ -445,7 +445,7 @@ class _SettingsPageState extends State<SettingsPage> {
         decoration: BoxDecoration(color: accentColor.withValues(alpha: 0.08), borderRadius: BorderRadius.circular(12)),
         child: Icon(icon, color: accentColor, size: 22),
       ),
-      title: Text(title, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
+      title: CommonText(title, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
       subtitle: subtitle != null ? Text(subtitle, style: const TextStyle(fontSize: 12, color: Colors.grey)) : null,
       trailing: trailing ?? const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: Colors.grey),
       onTap: onTap,

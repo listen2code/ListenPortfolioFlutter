@@ -3,6 +3,7 @@ import 'package:listen_portfolio_flutter/core/base/base_stateless_page.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
+import 'package:listen_portfolio_flutter/shared/widget/common_text.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
@@ -36,84 +37,91 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final accentColor = settingManager.accentColor;
+
     return BaseStatelessPage(
       isEmptyTitle: true,
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
-      body: (context, child) {
-        final theme = Theme.of(context);
-        final accentColor = settingManager.accentColor;
-        return Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: 20),
-              Text(
-                I18nKeys.forgotPassword.tr,
-                style: theme.textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: theme.brightness == Brightness.light ? Colors.black87 : Colors.white,
+      body: (context, child) => Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const SizedBox(height: 20),
+            CommonText(
+              I18nKeys.forgotPassword.tr,
+              style: theme.textTheme.headlineMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: theme.brightness == Brightness.light ? Colors.black87 : Colors.white,
+              ),
+              maxLines: 1,
+            ),
+            const SizedBox(height: 12),
+            Text(
+              I18nKeys.forgotPasswordSubtitle.tr,
+              style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey, height: 1.5),
+            ),
+            const SizedBox(height: 48),
+            TextFormField(
+              controller: _emailController,
+              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecoration(
+                hintText: I18nKeys.emailAddress.tr,
+                prefixIcon: Icon(Icons.email_outlined, color: accentColor),
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty || !value.contains('@')) {
+                  return I18nKeys.invalidEmail.tr;
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 32),
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                gradient: LinearGradient(colors: [accentColor, accentColor.withValues(alpha: 0.8)]),
+                boxShadow: [BoxShadow(color: accentColor.withValues(alpha: 0.3), blurRadius: 10, offset: const Offset(0, 5))],
+              ),
+              child: ElevatedButton(
+                onPressed: () => _handleResetPassword(accentColor),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.transparent,
+                  shadowColor: Colors.transparent,
+                  padding: const EdgeInsets.symmetric(vertical: 18),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                ),
+                child: Text(
+                  I18nKeys.sendResetLink.tr,
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
                 ),
               ),
-              const SizedBox(height: 12),
-              Text(
-                I18nKeys.forgotPasswordSubtitle.tr,
-                style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey, height: 1.5),
-              ),
-              const SizedBox(height: 48),
-              TextFormField(
-                controller: _emailController,
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                  hintText: I18nKeys.emailAddress.tr,
-                  prefixIcon: Icon(Icons.email_outlined, color: accentColor),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty || !value.contains('@')) {
-                    return I18nKeys.invalidEmail.tr;
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 32),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  gradient: LinearGradient(colors: [accentColor, accentColor.withValues(alpha: 0.8)]),
-                  boxShadow: [BoxShadow(color: accentColor.withValues(alpha: 0.3), blurRadius: 10, offset: const Offset(0, 5))],
-                ),
-                child: ElevatedButton(
-                  onPressed: () => _handleResetPassword(accentColor),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent,
-                    shadowColor: Colors.transparent,
-                    padding: const EdgeInsets.symmetric(vertical: 18),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+            ),
+            const SizedBox(height: 40),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Flexible(
+                  child: CommonText(
+                    I18nKeys.rememberPassword.tr,
+                    style: const TextStyle(color: Colors.grey),
+                    maxLines: 1,
                   ),
-                  child: Text(
-                    I18nKeys.sendResetLink.tr,
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: CommonText(
+                    I18nKeys.loginLink.tr,
+                    style: TextStyle(color: accentColor, fontWeight: FontWeight.bold),
+                    maxLines: 1,
                   ),
                 ),
-              ),
-              const SizedBox(height: 40),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(I18nKeys.rememberPassword.tr, style: const TextStyle(color: Colors.grey)),
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: Text(
-                      I18nKeys.loginLink.tr,
-                      style: TextStyle(color: accentColor, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

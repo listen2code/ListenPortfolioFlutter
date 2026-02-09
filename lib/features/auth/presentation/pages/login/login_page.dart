@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:listen_portfolio_flutter/core/base/base_stateless_page.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
@@ -11,7 +12,6 @@ import 'package:listen_portfolio_flutter/features/auth/presentation/pages/sign_u
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_page.dart';
 import 'package:listen_portfolio_flutter/generated/r.dart';
 import 'package:listen_portfolio_flutter/shared/extension/navigation_extension.dart';
-import 'package:listen_portfolio_flutter/core/base/base_stateless_page.dart';
 import 'package:listen_portfolio_flutter/shared/widget/common_text.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
@@ -78,7 +78,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const SizedBox(height: 60),
+            const SizedBox(height: 20),
             _buildLogo(accentColor),
             const SizedBox(height: 30),
             _buildTitle(Theme.of(context)),
@@ -91,10 +91,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             _buildLoginButton(state, viewModel, accentColor),
             const SizedBox(height: 15),
             _buildSkipButton(viewModel),
-            const SizedBox(height: 30),
+            const SizedBox(height: 10),
             _buildSignupLink(viewModel, accentColor),
             if (state.errorMessage != null) ...[const SizedBox(height: 20), _buildErrorMessage(state.errorMessage!)],
-            const SizedBox(height: 40),
           ],
         );
       },
@@ -128,9 +127,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(I18nKeys.welcomeBack.tr, style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold)),
+        CommonText(I18nKeys.welcomeBack.tr, style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold)),
         const SizedBox(height: 8),
-        Text(I18nKeys.signInToContinue.tr, style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey)),
+        CommonText(I18nKeys.signInToContinue.tr, style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey)),
       ],
     );
   }
@@ -255,11 +254,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Flexible(
-          child: CommonText(
-            I18nKeys.noAccount.tr,
-            style: const TextStyle(color: Colors.grey),
-            maxLines: 1,
-          ),
+          child: CommonText(I18nKeys.noAccount.tr, style: const TextStyle(color: Colors.grey), maxLines: 1),
         ),
         TextButton(
           onPressed: () => viewModel.handleIntent(const LoginIntent.navigateToSignup()),

@@ -56,13 +56,14 @@ class _SignUpPageState extends State<SignUpPage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const SizedBox(height: 20),
-            Text(
+            CommonText(
               I18nKeys.createAccount.tr,
               textAlign: TextAlign.center,
               style: theme.textTheme.headlineMedium?.copyWith(
                 fontWeight: FontWeight.w300,
                 color: theme.brightness == Brightness.light ? Colors.black87 : Colors.white,
               ),
+              maxLines: 1,
             ),
             const SizedBox(height: 10),
             Text(
@@ -131,7 +132,11 @@ class _SignUpPageState extends State<SignUpPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Flexible(
-                  child: CommonText(I18nKeys.alreadyHaveAccount.tr, style: const TextStyle(color: Colors.grey), maxLines: 1),
+                  child: CommonText(
+                    I18nKeys.alreadyHaveAccount.tr,
+                    style: const TextStyle(color: Colors.grey),
+                    maxLines: 1,
+                  ),
                 ),
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
