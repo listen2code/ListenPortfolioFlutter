@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:listen_portfolio_flutter/core/base/base_listenable_page.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
+import 'package:listen_portfolio_flutter/shared/widgets/common_text.dart';
 
 /// A common wrapper for pages to provide consistent theme listening,
 /// background gradient, and basic layout structure.
@@ -120,7 +121,7 @@ class BaseStatelessPage extends StatelessWidget {
 
   AppBar _createAppBar(ThemeData theme, BuildContext context) {
     return AppBar(
-      title: Text(title ?? "", style: const TextStyle(fontWeight: FontWeight.w300)),
+      title: CommonText(title ?? "", style: const TextStyle(fontWeight: FontWeight.w300)),
       centerTitle: true,
       backgroundColor: Colors.transparent,
       elevation: 0,

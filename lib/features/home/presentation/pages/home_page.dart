@@ -11,6 +11,7 @@ import 'package:listen_portfolio_flutter/features/home/presentation/pages/widget
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/widgets/projects_widget.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/appearance_page.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/settings_page.dart';
+import 'package:listen_portfolio_flutter/shared/shared.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -213,7 +214,7 @@ class _HomePageState extends State<HomePage> {
         clipBehavior: Clip.antiAlias,
         child: ListTile(
           leading: Icon(icon, color: isSelected ? accentColor : null),
-          title: Text(
+          title: CommonText(
             label,
             style: TextStyle(
               color: isSelected ? accentColor : null,

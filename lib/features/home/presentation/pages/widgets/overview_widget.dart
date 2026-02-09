@@ -4,6 +4,7 @@ import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
+import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class OverviewWidget extends StatelessWidget {
@@ -31,9 +32,9 @@ class OverviewWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildWelcomeHeader(theme, accentColor),
-              const SizedBox(height: 12),
+              const SizedBox(height: 16),
               _buildStatusTag(),
-              const SizedBox(height: 20),
+              const SizedBox(height: 24),
               _buildExperienceGrid(theme),
               const SizedBox(height: 28),
               _buildSectionHeader(I18nKeys.quickActions.tr, showSeeAll: false),
@@ -54,16 +55,18 @@ class OverviewWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          '${I18nKeys.hello.tr} ${AppConstants.author}',
+        CommonText(
+          I18nKeys.hello.trArgs([AppConstants.author]),
           style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
+          maxLines: 1,
         ),
         const SizedBox(height: 4),
-        Text(
+        CommonText(
           'Full Stack Mobile Architect (${I18nKeys.graduated.tr} 2013 | ${I18nKeys.softwareEngineering.tr})',
           style: TextStyle(color: accentColor, fontSize: 13, fontWeight: FontWeight.w600),
+          maxLines: 1,
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 8),
         Row(
           children: [
             _buildCertBadge(accentColor, I18nKeys.jlptN1.tr),
@@ -158,12 +161,13 @@ class OverviewWidget extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(value, style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
+                CommonText(value, style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold), maxLines: 1),
                 const SizedBox(height: 4),
-                Text(label, style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey)),
+                CommonText(label, style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey), maxLines: 1),
               ],
             ),
           ),
+          const SizedBox(width: 10),
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
@@ -181,9 +185,10 @@ class OverviewWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(6)),
-      child: Text(
+      child: CommonText(
         label,
         style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.bold),
+        maxLines: 1,
       ),
     );
   }
@@ -207,12 +212,11 @@ class OverviewWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(value, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-                  Text(
+                  CommonText(value, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold), maxLines: 1),
+                  CommonText(
                     label,
                     style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey, fontSize: 11),
                     maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
@@ -306,8 +310,8 @@ class OverviewWidget extends StatelessWidget {
               children: [
                 Icon(icon, color: color, size: 24),
                 const SizedBox(height: 8),
-                Text(label, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                Text(subtitle, style: const TextStyle(color: Colors.grey, fontSize: 11)),
+                CommonText(label, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15), maxLines: 1),
+                CommonText(subtitle, style: const TextStyle(color: Colors.grey, fontSize: 11), maxLines: 1),
               ],
             ),
           ),
@@ -331,9 +335,12 @@ class OverviewWidget extends StatelessWidget {
               children: [
                 Icon(icon, color: color, size: 18),
                 const SizedBox(width: 8),
-                Text(
-                  label,
-                  style: TextStyle(color: color, fontWeight: FontWeight.bold),
+                Flexible(
+                  child: CommonText(
+                    label,
+                    style: TextStyle(color: color, fontWeight: FontWeight.bold),
+                    maxLines: 1,
+                  ),
                 ),
               ],
             ),
@@ -347,7 +354,7 @@ class OverviewWidget extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        Expanded(child: CommonText(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold), maxLines: 1)),
         if (showSeeAll) TextButton(onPressed: onProjectsRequested, child: Text(I18nKeys.viewAll.tr)),
       ],
     );
@@ -383,12 +390,13 @@ class OverviewWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          Text(
+          CommonText(
             title,
             style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+            maxLines: 1,
           ),
           const SizedBox(height: 4),
-          Text(subtitle, style: const TextStyle(color: Colors.white70, fontSize: 12)),
+          CommonText(subtitle, style: const TextStyle(color: Colors.white70, fontSize: 12), maxLines: 1),
         ],
       ),
     );

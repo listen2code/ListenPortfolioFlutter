@@ -71,7 +71,7 @@ final Map<String, String> zh = {
   I18nKeys.aboutMe: '关于我',
   I18nKeys.architecture: '架构设计',
   I18nKeys.logout: '退出登录',
-  I18nKeys.hello: "你好，我是",
+  I18nKeys.hello: "你好，我是 %s",
   I18nKeys.availableStatus: '随时待命，迎接挑战',
   I18nKeys.androidExp: 'Android 经验',
   I18nKeys.flutterExp: 'Flutter 经验',

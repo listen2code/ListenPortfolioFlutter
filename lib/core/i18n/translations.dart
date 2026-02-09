@@ -43,6 +43,15 @@ enum AppLanguage {
 
 extension TranslationExtension on String {
   String get tr => Translations.translate(this);
+
+  /// Supports argument replacement: "Hello %s" -> trArgs(["Listen"]) -> "Hello Listen"
+  String trArgs(List<dynamic> args) {
+    String translated = tr;
+    for (var arg in args) {
+      translated = translated.replaceFirst('%s', arg.toString());
+    }
+    return translated;
+  }
 }
 
 class Translations {

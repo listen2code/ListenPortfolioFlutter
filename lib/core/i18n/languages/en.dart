@@ -71,7 +71,7 @@ final Map<String, String> en = {
   I18nKeys.aboutMe: 'About Me',
   I18nKeys.architecture: 'Architecture',
   I18nKeys.logout: 'Logout',
-  I18nKeys.hello: "Hello, I'm",
+  I18nKeys.hello: "Hello, I'm %s",
   I18nKeys.availableStatus: 'Available for high-impact roles',
   I18nKeys.androidExp: 'Android Exp',
   I18nKeys.flutterExp: 'Flutter Exp',

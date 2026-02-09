@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/base/base_listenable_page.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
+import 'package:listen_portfolio_flutter/shared/shared.dart';
 
 class ProjectsWidget extends StatelessWidget {
   const ProjectsWidget({super.key});
@@ -133,7 +134,7 @@ class ProjectsWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Expanded(
-                      child: Text(title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                      child: CommonText(title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                     ),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -143,20 +144,13 @@ class ProjectsWidget extends StatelessWidget {
                       ),
                       child: Text(
                         subtitle,
-                        style: TextStyle(
-                          color: isTodo ? Colors.grey : baseColor,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style: TextStyle(color: isTodo ? Colors.grey : baseColor, fontSize: 12, fontWeight: FontWeight.w600),
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 12),
-                Text(
-                  desc,
-                  style: const TextStyle(color: Colors.grey, height: 1.5, fontSize: 14),
-                ),
+                Text(desc, style: const TextStyle(color: Colors.grey, height: 1.5, fontSize: 14)),
                 const SizedBox(height: 20),
                 if (!isTodo)
                   Row(
