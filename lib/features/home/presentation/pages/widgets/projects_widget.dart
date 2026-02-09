@@ -35,7 +35,7 @@ class ProjectsWidget extends StatelessWidget {
             'title': 'Android Perf Toolkit',
             'subtitle': 'Optimization',
             'desc':
-                'A android project focused on advanced profiling, memory leak detection, and rendering optimization tools for complex Android apps.',
+                'An Android project focused on advanced profiling, memory leak detection, and rendering optimization tools for complex Android apps.',
             'color': Colors.redAccent,
           },
           {
@@ -59,6 +59,20 @@ class ProjectsWidget extends StatelessWidget {
                 'A reusable widget library designed to speed up development and ensure design consistency across multiple Flutter projects.',
             'color': Colors.pink,
           },
+          {
+            'title': 'English Learning App',
+            'subtitle': 'TODO',
+            'desc':
+                'A comprehensive language learning platform featuring spaced repetition, AI speech recognition, and interactive lessons.',
+            'color': Colors.amber,
+          },
+          {
+            'title': 'Video Player App',
+            'subtitle': 'TODO',
+            'desc':
+                'A high-performance media player supporting local/network streaming, background playback, and picture-in-picture mode.',
+            'color': Colors.cyan,
+          },
         ];
 
         return ListView.builder(
@@ -79,6 +93,8 @@ class ProjectsWidget extends StatelessWidget {
   }
 
   Widget _buildProjectCard(String title, String subtitle, String desc, Color baseColor) {
+    final bool isTodo = subtitle == 'TODO';
+
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
       decoration: BoxDecoration(
@@ -100,7 +116,13 @@ class ProjectsWidget extends StatelessWidget {
                 end: Alignment.bottomRight,
               ),
             ),
-            child: Center(child: Icon(Icons.rocket_launch_rounded, size: 48, color: Colors.white.withValues(alpha: 0.9))),
+            child: Center(
+              child: Icon(
+                isTodo ? Icons.hourglass_empty_rounded : Icons.rocket_launch_rounded,
+                size: 48,
+                color: Colors.white.withValues(alpha: 0.9),
+              ),
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(20),
@@ -115,24 +137,35 @@ class ProjectsWidget extends StatelessWidget {
                     ),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(color: baseColor.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)),
+                      decoration: BoxDecoration(
+                        color: isTodo ? Colors.grey.withValues(alpha: 0.1) : baseColor.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                       child: Text(
                         subtitle,
-                        style: TextStyle(color: baseColor, fontSize: 12, fontWeight: FontWeight.w600),
+                        style: TextStyle(
+                          color: isTodo ? Colors.grey : baseColor,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 12),
-                Text(desc, style: const TextStyle(color: Colors.grey, height: 1.5, fontSize: 14)),
-                const SizedBox(height: 20),
-                Row(
-                  children: [
-                    _buildActionChip(Icons.link, 'Live Demo', baseColor),
-                    const SizedBox(width: 12),
-                    _buildActionChip(Icons.code, 'Source Code', Colors.grey),
-                  ],
+                Text(
+                  desc,
+                  style: const TextStyle(color: Colors.grey, height: 1.5, fontSize: 14),
                 ),
+                const SizedBox(height: 20),
+                if (!isTodo)
+                  Row(
+                    children: [
+                      _buildActionChip(Icons.link, 'Live Demo', baseColor),
+                      const SizedBox(width: 12),
+                      _buildActionChip(Icons.code, 'Source Code', Colors.grey),
+                    ],
+                  ),
               ],
             ),
           ),
