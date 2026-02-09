@@ -75,26 +75,28 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       padding: const EdgeInsets.symmetric(horizontal: 30.0),
       body: (context, child) {
         final accentColor = settingManager.accentColor;
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const SizedBox(height: 20),
-            _buildLogo(accentColor),
-            const SizedBox(height: 30),
-            _buildTitle(Theme.of(context)),
-            const SizedBox(height: 50),
-            _buildUsernameField(state, viewModel, accentColor),
-            const SizedBox(height: 20),
-            _buildPasswordField(state, viewModel, accentColor),
-            _buildRememberAndForgot(state, viewModel, accentColor),
-            const SizedBox(height: 30),
-            _buildLoginButton(state, viewModel, accentColor),
-            const SizedBox(height: 15),
-            _buildSkipButton(viewModel),
-            const SizedBox(height: 10),
-            _buildSignupLink(viewModel, accentColor),
-            if (state.errorMessage != null) ...[const SizedBox(height: 20), _buildErrorMessage(state.errorMessage!)],
-          ],
+        return SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const SizedBox(height: 20),
+              _buildLogo(accentColor),
+              const SizedBox(height: 30),
+              _buildTitle(Theme.of(context)),
+              const SizedBox(height: 50),
+              _buildUsernameField(state, viewModel, accentColor),
+              const SizedBox(height: 20),
+              _buildPasswordField(state, viewModel, accentColor),
+              _buildRememberAndForgot(state, viewModel, accentColor),
+              const SizedBox(height: 30),
+              _buildLoginButton(state, viewModel, accentColor),
+              const SizedBox(height: 15),
+              _buildSkipButton(viewModel),
+              const SizedBox(height: 10),
+              _buildSignupLink(viewModel, accentColor),
+              if (state.errorMessage != null) ...[const SizedBox(height: 20), _buildErrorMessage(state.errorMessage!)],
+            ],
+          ),
         );
       },
     );

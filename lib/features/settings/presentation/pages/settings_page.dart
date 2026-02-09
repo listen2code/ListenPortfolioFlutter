@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:listen_portfolio_flutter/core/base/base_listenable_page.dart';
 import 'package:listen_portfolio_flutter/core/base/base_stateless_page.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_env.dart';
@@ -9,6 +10,7 @@ import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/core/utils/cache_manager.dart';
 import 'package:listen_portfolio_flutter/core/utils/log_manager.dart';
+import 'package:listen_portfolio_flutter/core/utils/log_overlay_manager.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/password/change_password_page.dart';
 import 'package:listen_portfolio_flutter/generated/r.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
@@ -44,159 +46,173 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BaseStatelessPage(
-      title: I18nKeys.settings.tr,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      body: (BuildContext context, Widget? child) {
+    return BaseListenablePage(
+      builder: (context, child) {
         final accentColor = settingManager.accentColor;
         final isRelease = kReleaseMode;
         final isProd = AppEnv.isProd();
-        return SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 1. PREFERENCES
-              _buildSectionTitle(I18nKeys.general.tr),
-              _buildSettingsCard(context, [
-                _buildListTile(
-                  icon: Icons.palette_outlined,
-                  title: I18nKeys.appearance.tr,
-                  subtitle: I18nKeys.appearanceSubtitle.tr,
-                  accentColor: accentColor,
-                  onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const AppearancePage())),
-                ),
-                _buildListTile(
-                  icon: Icons.language_outlined,
-                  title: I18nKeys.language.tr,
-                  accentColor: accentColor,
-                  trailing: Text(settingManager.language.label, style: const TextStyle(color: Colors.grey, fontSize: 13)),
-                  onTap: () => _showLanguageDialog(),
-                ),
-              ]),
 
-              const SizedBox(height: 25),
+        return BaseStatelessPage(
+          title: I18nKeys.settings.tr,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          body: (BuildContext context, Widget? child) {
+            return SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // 1. PREFERENCES
+                  _buildSectionTitle(I18nKeys.general.tr),
+                  _buildSettingsCard(context, [
+                    _buildListTile(
+                      icon: Icons.palette_outlined,
+                      title: I18nKeys.appearance.tr,
+                      subtitle: I18nKeys.appearanceSubtitle.tr,
+                      accentColor: accentColor,
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const AppearancePage())),
+                    ),
+                    _buildListTile(
+                      icon: Icons.language_outlined,
+                      title: I18nKeys.language.tr,
+                      accentColor: accentColor,
+                      trailing: Text(settingManager.language.label, style: const TextStyle(color: Colors.grey, fontSize: 13)),
+                      onTap: () => _showLanguageDialog(),
+                    ),
+                  ]),
 
-              // 2. ACCOUNT & SECURITY
-              _buildSectionTitle(I18nKeys.account.tr), // Reusing key for 'Account'
-              _buildSettingsCard(context, [
-                _buildListTile(
-                  icon: Icons.lock_outline_rounded,
-                  title: I18nKeys.changePassword.tr,
-                  accentColor: accentColor,
-                  onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ChangePasswordPage())),
-                ),
-                _buildSwitchTile(
-                  icon: Icons.notifications_none_rounded,
-                  title: I18nKeys.notifications.tr,
-                  value: _notificationsEnabled,
-                  accentColor: accentColor,
-                  onChanged: (val) => setState(() => _notificationsEnabled = val),
-                ),
-                _buildListTile(
-                  icon: Icons.no_accounts_outlined,
-                  title: I18nKeys.deleteAccount.tr,
-                  accentColor: accentColor,
-                  onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const DeleteAccountPage())),
-                ),
-              ]),
+                  const SizedBox(height: 25),
 
-              const SizedBox(height: 25),
+                  // 2. ACCOUNT & SECURITY
+                  _buildSectionTitle(I18nKeys.account.tr),
+                  _buildSettingsCard(context, [
+                    _buildListTile(
+                      icon: Icons.lock_outline_rounded,
+                      title: I18nKeys.changePassword.tr,
+                      accentColor: accentColor,
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ChangePasswordPage())),
+                    ),
+                    _buildSwitchTile(
+                      icon: Icons.notifications_none_rounded,
+                      title: I18nKeys.notifications.tr,
+                      value: _notificationsEnabled,
+                      accentColor: accentColor,
+                      onChanged: (val) => setState(() => _notificationsEnabled = val),
+                    ),
+                    _buildListTile(
+                      icon: Icons.no_accounts_outlined,
+                      title: I18nKeys.deleteAccount.tr,
+                      accentColor: accentColor,
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const DeleteAccountPage())),
+                    ),
+                  ]),
 
-              // 3. STORAGE & MAINTENANCE
-              _buildSectionTitle(I18nKeys.systemStorage.tr),
-              _buildSettingsCard(context, [
-                _buildListTile(
-                  icon: Icons.cleaning_services_outlined,
-                  title: I18nKeys.clearCache.tr,
-                  accentColor: accentColor,
-                  trailing: Text(_cacheSize, style: const TextStyle(color: Colors.grey, fontSize: 13)),
-                  onTap: () => _handleClearCache(accentColor),
-                ),
-                _buildListTile(
-                  icon: Icons.restart_alt_rounded,
-                  title: I18nKeys.resetSettings.tr,
-                  accentColor: accentColor,
-                  onTap: () => _showResetConfirmation(accentColor),
-                ),
-              ]),
+                  const SizedBox(height: 25),
 
-              const SizedBox(height: 25),
+                  // 3. STORAGE & MAINTENANCE
+                  _buildSectionTitle(I18nKeys.systemStorage.tr),
+                  _buildSettingsCard(context, [
+                    _buildListTile(
+                      icon: Icons.cleaning_services_outlined,
+                      title: I18nKeys.clearCache.tr,
+                      accentColor: accentColor,
+                      trailing: Text(_cacheSize, style: const TextStyle(color: Colors.grey, fontSize: 13)),
+                      onTap: () => _handleClearCache(accentColor),
+                    ),
+                    _buildListTile(
+                      icon: Icons.restart_alt_rounded,
+                      title: I18nKeys.resetSettings.tr,
+                      accentColor: accentColor,
+                      onTap: () => _showResetConfirmation(accentColor),
+                    ),
+                  ]),
 
-              // 4. DEVELOPER (Visible in debug or if not prod)
-              if (!isRelease || !isProd) ...[
-                _buildSectionTitle(I18nKeys.developer.tr),
-                _buildSettingsCard(context, [
-                  _buildListTile(
-                    icon: Icons.terminal_rounded,
-                    title: I18nKeys.viewLogs.tr,
-                    accentColor: accentColor,
-                    onTap: () => _showLogViewer(accentColor),
-                  ),
-                  _buildListTile(
-                    icon: Icons.settings_input_antenna_rounded,
-                    title: I18nKeys.switchEnv.tr,
-                    subtitle: '${I18nKeys.currentlyActive.tr}: ${AppEnv.env}',
-                    accentColor: accentColor,
-                    onTap: () => _showEnvSwitchDialog(),
-                  ),
-                ]),
-                const SizedBox(height: 25),
-              ],
+                  const SizedBox(height: 25),
 
-              // 5. LEGAL & ABOUT
-              _buildSectionTitle(I18nKeys.about.tr),
-              _buildSettingsCard(context, [
-                _buildListTile(
-                  icon: Icons.privacy_tip_outlined,
-                  title: I18nKeys.privacyPolicy.tr,
-                  accentColor: accentColor,
-                  onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const PrivacyPolicyPage())),
-                ),
-                _buildListTile(
-                  icon: Icons.gavel_outlined,
-                  title: I18nKeys.termsOfService.tr,
-                  accentColor: accentColor,
-                  onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const TermsOfServicePage())),
-                ),
-                _buildListTile(
-                  icon: Icons.info_outline_rounded,
-                  title: I18nKeys.licenses.tr,
-                  accentColor: accentColor,
-                  onTap: () => showLicensePage(
-                    context: context,
-                    applicationName: AppConstants.appName,
-                    applicationVersion: AppConstants.appVersion,
-                    applicationIcon: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Image.asset(
-                        R.imagesIcLauncherAdaptiveFore,
-                        width: 48,
-                        height: 48,
-                        color: accentColor,
-                        colorBlendMode: BlendMode.srcIn,
+                  // 4. DEVELOPER
+                  if (!isRelease || !isProd) ...[
+                    _buildSectionTitle(I18nKeys.developer.tr),
+                    _buildSettingsCard(context, [
+                      _buildListTile(
+                        icon: Icons.terminal_rounded,
+                        title: I18nKeys.viewLogs.tr,
+                        accentColor: accentColor,
+                        trailing: Switch.adaptive(
+                          value: LogOverlayManager.isShowing,
+                          activeColor: accentColor,
+                          onChanged: (val) {
+                            if (val)
+                              LogOverlayManager.show(context);
+                            else
+                              LogOverlayManager.hide();
+                            setState(() {});
+                          },
+                        ),
+                        onTap: () => _showLogViewer(accentColor),
+                      ),
+                      _buildListTile(
+                        icon: Icons.settings_input_antenna_rounded,
+                        title: I18nKeys.switchEnv.tr,
+                        subtitle: '${I18nKeys.currentlyActive.tr}: ${AppEnv.env}',
+                        accentColor: accentColor,
+                        onTap: () => _showEnvSwitchDialog(),
+                      ),
+                    ]),
+                    const SizedBox(height: 25),
+                  ],
+
+                  // 5. LEGAL & ABOUT
+                  _buildSectionTitle(I18nKeys.about.tr),
+                  _buildSettingsCard(context, [
+                    _buildListTile(
+                      icon: Icons.privacy_tip_outlined,
+                      title: I18nKeys.privacyPolicy.tr,
+                      accentColor: accentColor,
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const PrivacyPolicyPage())),
+                    ),
+                    _buildListTile(
+                      icon: Icons.gavel_outlined,
+                      title: I18nKeys.termsOfService.tr,
+                      accentColor: accentColor,
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const TermsOfServicePage())),
+                    ),
+                    _buildListTile(
+                      icon: Icons.info_outline_rounded,
+                      title: I18nKeys.licenses.tr,
+                      accentColor: accentColor,
+                      onTap: () => showLicensePage(
+                        context: context,
+                        applicationName: AppConstants.appName,
+                        applicationVersion: AppConstants.appVersion,
+                        applicationIcon: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Image.asset(
+                            R.imagesIcLauncherAdaptiveFore,
+                            width: 48,
+                            height: 48,
+                            color: accentColor,
+                            colorBlendMode: BlendMode.srcIn,
+                          ),
+                        ),
+                        applicationLegalese: '© ${AppConstants.date} ${AppConstants.author}',
                       ),
                     ),
-                    applicationLegalese: '© ${AppConstants.date} ${AppConstants.author}',
-                  ),
-                ),
-                ListTile(
-                  title: Center(
-                    child: Text(
-                      '${I18nKeys.appVersion.tr} ${AppConstants.appVersion}',
-                      style: const TextStyle(color: Colors.grey, fontSize: 12),
+                    ListTile(
+                      title: Center(
+                        child: Text(
+                          '${I18nKeys.appVersion.tr} ${AppConstants.appVersion}',
+                          style: const TextStyle(color: Colors.grey, fontSize: 12),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ]),
-              const SizedBox(height: 40),
-            ],
-          ),
+                  ]),
+                  const SizedBox(height: 40),
+                ],
+              ),
+            );
+          },
         );
       },
     );
   }
-
-  // --- Helper Methods ---
 
   void _handleClearCache(Color accentColor) async {
     await CacheManager.clearAllCache();
@@ -266,6 +282,15 @@ class _SettingsPageState extends State<SettingsPage> {
                     Row(
                       children: [
                         IconButton(
+                          icon: const Icon(Icons.open_in_new_rounded, color: Colors.blueAccent),
+                          tooltip: 'Float Window',
+                          onPressed: () {
+                            LogOverlayManager.show(context);
+                            Navigator.pop(context);
+                            setState(() {}); // Refresh the switch state in SettingsPage
+                          },
+                        ),
+                        IconButton(
                           icon: const Icon(Icons.delete_sweep_outlined, color: Colors.redAccent),
                           onPressed: () {
                             LogManager.clear();
@@ -275,10 +300,8 @@ class _SettingsPageState extends State<SettingsPage> {
                         IconButton(
                           icon: const Icon(Icons.copy_rounded),
                           onPressed: () {
-                            // Copy to clipboard or share logic
                             final allLogs = LogManager.getAllLogsAsText();
                             Clipboard.setData(ClipboardData(text: allLogs));
-
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(content: Text('Logs copied to clipboard'), behavior: SnackBarBehavior.floating),
                             );
@@ -291,53 +314,52 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               const Divider(),
               Expanded(
-                child: LogManager.logs.isEmpty
-                    ? const Center(
+                child: ValueListenableBuilder<List<LogEntry>>(
+                  valueListenable: LogManager.logNotifier,
+                  builder: (context, logs, _) {
+                    if (logs.isEmpty) {
+                      return const Center(
                         child: Text('No logs captured yet.', style: TextStyle(color: Colors.grey)),
-                      )
-                    : ListView.builder(
-                        padding: const EdgeInsets.all(15),
-                        itemCount: LogManager.logs.length,
-                        itemBuilder: (context, index) {
-                          final log = LogManager.logs[index];
-                          Color logColor;
-                          switch (log.level) {
-                            case LogLevel.error:
-                              logColor = Colors.redAccent;
-                              break;
-                            case LogLevel.warning:
-                              logColor = Colors.orangeAccent;
-                              break;
-                            case LogLevel.debug:
-                              logColor = Colors.blueAccent;
-                              break;
-                            default:
-                              logColor = Colors.grey;
-                          }
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 8.0),
-                            child: RichText(
-                              text: TextSpan(
-                                style: const TextStyle(fontSize: 12, fontFamily: 'monospace'),
-                                children: [
-                                  TextSpan(
-                                    text: '[${log.formattedTime}] ',
-                                    style: const TextStyle(color: Colors.grey),
-                                  ),
-                                  TextSpan(
-                                    text: '[${log.level.name.toUpperCase()}] ',
-                                    style: TextStyle(color: logColor, fontWeight: FontWeight.bold),
-                                  ),
-                                  TextSpan(
-                                    text: log.message,
-                                    style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
-                                  ),
-                                ],
-                              ),
+                      );
+                    }
+                    return ListView.builder(
+                      padding: const EdgeInsets.all(15),
+                      itemCount: logs.length,
+                      itemBuilder: (context, index) {
+                        final log = logs[logs.length - 1 - index];
+                        Color logColor = log.level == LogLevel.error
+                            ? Colors.redAccent
+                            : log.level == LogLevel.warning
+                            ? Colors.orangeAccent
+                            : log.level == LogLevel.debug
+                            ? Colors.blueAccent
+                            : Colors.grey;
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: RichText(
+                            text: TextSpan(
+                              style: const TextStyle(fontSize: 11, fontFamily: 'monospace'),
+                              children: [
+                                TextSpan(
+                                  text: '[${log.formattedTime}] ',
+                                  style: const TextStyle(color: Colors.grey),
+                                ),
+                                TextSpan(
+                                  text: '[${log.level.name.toUpperCase()}] ',
+                                  style: TextStyle(color: logColor, fontWeight: FontWeight.bold),
+                                ),
+                                TextSpan(
+                                  text: log.message,
+                                  style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
+                                ),
+                              ],
                             ),
-                          );
-                        },
-                      ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
               ),
             ],
           ),
@@ -371,17 +393,8 @@ class _SettingsPageState extends State<SettingsPage> {
       subtitle: Text(isCurrent ? I18nKeys.currentlyActive.tr : envCode.name),
       trailing: isCurrent ? const Icon(Icons.check_circle) : null,
       onTap: () {
-        setState(() {
-          AppEnv.setEnvironment(envCode);
-        });
+        setState(() => AppEnv.setEnvironment(envCode));
         Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${I18nKeys.envSwitched.tr} $label'),
-            behavior: SnackBarBehavior.floating,
-            backgroundColor: settingManager.accentColor,
-          ),
-        );
       },
     );
   }
@@ -411,13 +424,11 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
       ),
       trailing: isSelected ? Icon(Icons.check_circle, color: settingManager.accentColor) : null,
-      onTap: () => _updateLang(lang),
+      onTap: () {
+        settingManager.setLanguage(lang);
+        Navigator.pop(context);
+      },
     );
-  }
-
-  void _updateLang(AppLanguage lang) {
-    settingManager.setLanguage(lang);
-    Navigator.pop(context);
   }
 
   Widget _buildSectionTitle(String title) {
@@ -492,7 +503,7 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
       title: CommonText(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500), maxLines: 1),
       value: value,
-      activeTrackColor: accentColor,
+      activeColor: accentColor,
       onChanged: onChanged,
     );
   }

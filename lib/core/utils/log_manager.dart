@@ -16,18 +16,23 @@ class LogEntry {
 class LogManager {
   static final List<LogEntry> _logs = [];
   static const int _maxLogs = 100;
+  
+  // Use ValueNotifier to notify listeners when logs change
+  static final ValueNotifier<List<LogEntry>> logNotifier = ValueNotifier([]);
 
   static void addLog(String message, {LogLevel level = LogLevel.info}) {
     if (_logs.length >= _maxLogs) {
       _logs.removeAt(0);
     }
     _logs.add(LogEntry(timestamp: DateTime.now(), level: level, message: message));
+    logNotifier.value = List.from(_logs); // Trigger update
   }
 
   static List<LogEntry> get logs => List.unmodifiable(_logs);
 
   static void clear() {
     _logs.clear();
+    logNotifier.value = [];
   }
 
   static String getAllLogsAsText() {
