@@ -4,6 +4,7 @@ import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/shared/widgets/common_text.dart';
 
+// todo details
 class PrivacyPolicyPage extends StatelessWidget {
   const PrivacyPolicyPage({super.key});
 
@@ -15,30 +16,37 @@ class PrivacyPolicyPage extends StatelessWidget {
       body: (context, child) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Text('Last Updated: May 2024', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey)),
+          const SizedBox(height: 20),
           _buildSection(
             context,
-            'Introduction',
-            'This Privacy Policy describes how lPortfolio collects, uses, and shares your personal information.',
+            '1. Information Collection',
+            'We collect limited information to provide a better experience. This includes account data (if provided) and local configuration settings stored on your device via SharedPreferences and Secure Storage.',
           ),
           _buildSection(
             context,
-            'Data Collection',
-            'We collect information you provide directly to us, such as when you create an account or contact us. This may include your name, email, and preferences.',
+            '2. Third-Party Services',
+            'This app may use third-party libraries for networking (Dio) and state management (Riverpod). These libraries do not collect personally identifiable information unless explicitly stated.',
           ),
           _buildSection(
             context,
-            'Data Usage',
-            'Your data is used to provide and improve the app services, customize your experience, and communicate with you about updates.',
+            '3. Data Security',
+            'We value your trust in providing us your Personal Information, thus we are striving to use commercially acceptable means of protecting it. But remember that no method of transmission over the internet, or method of electronic storage is 100% secure.',
           ),
           _buildSection(
             context,
-            'Data Storage',
-            'We use industry-standard security measures to protect your data stored locally and on our secure servers.',
+            '4. Children\'s Privacy',
+            'These Services do not address anyone under the age of 13. We do not knowingly collect personally identifiable information from children.',
           ),
           _buildSection(
             context,
-            'Your Rights',
-            'You have the right to access, correct, or delete your personal information at any time through the app settings.',
+            '5. Data Deletion',
+            'Users can request the deletion of their local data by using the "Reset All Settings" and "Clear Cache" features in the app settings.',
+          ),
+          _buildSection(
+            context,
+            'Contact Us',
+            'If you have any questions or suggestions about our Privacy Policy, do not hesitate to contact us at listen2code@gmail.com.',
           ),
           const SizedBox(height: 40),
         ],
