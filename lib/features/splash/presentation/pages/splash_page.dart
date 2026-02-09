@@ -50,7 +50,6 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return BaseStatelessPage(
-      isScrollable: false,
       body: (context, child) {
         final accentColor = settingManager.accentColor;
         return Center(

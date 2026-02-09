@@ -57,7 +57,6 @@ class _HomePageState extends State<HomePage> {
       child: BaseStatelessPage(
         title: _getPageTitle(),
         drawer: _buildDrawer(context, theme, accentColor),
-        isScrollable: false,
         body: (context, child) => _buildBody(),
       ),
     );

@@ -116,8 +116,12 @@ final Map<String, String> zh = {
   I18nKeys.settingsResetSuccess: '所有设置已恢复默认。',
   I18nKeys.privacyPolicy: '隐私政策',
   I18nKeys.termsOfService: '使用条款',
+  I18nKeys.account: '账号',
+  I18nKeys.deleteAccount: '注销账号',
+  I18nKeys.deleteAccountConfirmTitle: '注销您的账号？',
+  I18nKeys.deleteAccountConfirmContent: '此操作将永久删除您的所有数据，且无法撤销。您确定要继续吗？',
+  I18nKeys.deleteAccountSuccess: '账号已成功注销。',
   I18nKeys.english: '英文',
   I18nKeys.chinese: '中文',
   I18nKeys.japanese: '日文',
-  I18nKeys.account: '账号',
 };

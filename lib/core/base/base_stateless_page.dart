@@ -13,7 +13,6 @@ class BaseStatelessPage extends StatelessWidget {
   final Widget? drawer;
   final Widget? floatingActionButton;
   final bool useSafeArea;
-  final bool isScrollable;
   final EdgeInsetsGeometry? padding;
   final bool resizeToAvoidBottomInset;
   final bool extendBodyBehindAppBar;
@@ -31,7 +30,6 @@ class BaseStatelessPage extends StatelessWidget {
     this.drawer,
     this.floatingActionButton,
     this.useSafeArea = true,
-    this.isScrollable = true,
     this.padding,
     this.resizeToAvoidBottomInset = true,
     this.extendBodyBehindAppBar = true,
@@ -54,10 +52,6 @@ class BaseStatelessPage extends StatelessWidget {
 
         if (padding != null) {
           content = Padding(padding: padding!, child: content);
-        }
-
-        if (isScrollable) {
-          content = SingleChildScrollView(physics: const AlwaysScrollableScrollPhysics(), child: content);
         }
 
         content = Column(
