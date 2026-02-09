@@ -35,12 +35,15 @@ flutter clean
 echo ">>> flutter pub get"
 flutter pub get
 
-echo ">>> build $TARGET_TYPE [$ENV]"
-# Use --dart-define to pass the environment variable to Dart code
+echo ">>> Extracting version from pubspec.yaml"
+APP_VERSION=$(grep '^version: ' pubspec.yaml | cut -d ' ' -f 2 | cut -d '+' -f 1)
+
+echo ">>> build $TARGET_TYPE [$ENV] version [$APP_VERSION]"
 flutter build $build_cmd --release --no-pub \
     --obfuscate --split-debug-info=apkOutput \
     --extra-gen-snapshot-options=--save-obfuscation-map=apkOutput/mapping.json \
-    --dart-define=APP_ENV=$ENV
+    --dart-define=APP_ENV=$ENV \
+    --dart-define=APP_VERSION=$APP_VERSION
 
 # Copy result to output folder
 if [ -f "$from/$file_name" ]; then

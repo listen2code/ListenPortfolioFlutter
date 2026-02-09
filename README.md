@@ -17,7 +17,6 @@ samples, guidance on mobile development, and a full API reference.
 
 ## todo
 
-* version code, name
 * base
     * base use case; widget; view model
 * other MVI

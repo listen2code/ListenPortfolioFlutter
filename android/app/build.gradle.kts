@@ -18,8 +18,8 @@ println(">>> Flutter compileSdkVersion: ${flutter.compileSdkVersion}")
 println(">>> Flutter minSdkVersion: ${flutter.minSdkVersion}")
 println(">>> Flutter targetSdkVersion: ${flutter.targetSdkVersion}")
 println(">>> Flutter ndkVersion: ${flutter.ndkVersion}")
-println(">>> App versionCode: ${flutter.versionCode}")
-println(">>> App versionName: ${flutter.versionName}")
+println(">>> Original App versionCode: ${flutter.versionCode}")
+println(">>> Original App versionName: ${flutter.versionName}")
 
 android {
     namespace = "com.listen.portfolio.listen_portfolio_flutter"
@@ -36,11 +36,26 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.listen.portfolio.listen_portfolio_flutter"
+        applicationId = "zhcom.listen.portfolio.listen_portfolio_flutter"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
+
+        val vName = flutter.versionName ?: "1.0.0"
+        versionName = vName
+
+        // Auto-generate versionCode based on versionName: 1.2.3 -> 10203
+        versionCode = try {
+            val parts = vName.split(".")
+            val major = parts.getOrNull(0)?.toInt() ?: 0
+            val minor = parts.getOrNull(1)?.toInt() ?: 0
+            // Handle case where patch might have extra info (like 1.0.1-rc)
+            val patch = parts.getOrNull(2)?.filter { it.isDigit() }?.toInt() ?: 0
+            major * 10000 + minor * 100 + patch
+        } catch (e: Exception) {
+            flutter.versionCode ?: 1
+        }
+
+        println(">>> Calculated Auto-Increment versionCode: $versionCode")
     }
 
     signingConfigs {
@@ -66,9 +81,6 @@ android {
 
 dependencies {
     // Because Android 12+ introduced a new Splash Screen API.
-    // On Android 12 and higher, the system ignores the old windowBackground settings
-    // and instead uses the new mandatory launch screen. If not properly adapted,
-    // it will display the system's default dark (or white) background.
     implementation("androidx.core:core-splashscreen:1.0.1")
 }
 

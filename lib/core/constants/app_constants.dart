@@ -1,6 +1,8 @@
 class AppConstants {
   AppConstants._();
 
+  static const String appVersion = String.fromEnvironment('APP_VERSION', defaultValue: '0.0.9');
+
   static const String authTokenKey = 'auth_token';
   static const String userDataKey = 'user_data';
   static const String themeKey = 'theme_mode';
@@ -9,7 +11,7 @@ class AppConstants {
   static const String languageKey = 'language';
   static const String notificationsKey = 'notifications_enabled';
   static const String appName = 'lPortfolio';
-  static const String appVersion = '1.0.1';
+
   static const String author = 'Listen';
   static const String date = '2026';
   static const String mail = 'listen2code@gmail.com';
