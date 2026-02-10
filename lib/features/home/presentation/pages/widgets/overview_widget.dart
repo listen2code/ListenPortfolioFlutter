@@ -5,6 +5,7 @@ import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
+import 'package:listen_portfolio_flutter/shared/widgets/common_auth_text.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class OverviewWidget extends StatelessWidget {
@@ -69,10 +70,24 @@ class OverviewWidget extends StatelessWidget {
           maxLines: 1,
         ),
         const SizedBox(height: 4),
-        CommonText(
-          'Full Stack Mobile Architect (${I18nKeys.graduated.tr} 2013 | ${I18nKeys.softwareEngineering.tr})',
-          style: TextStyle(color: accentColor, fontSize: 13, fontWeight: FontWeight.w600),
-          maxLines: 1,
+        Wrap(
+          children: [
+            CommonText(
+              'Full Stack Mobile Architect (${I18nKeys.graduated.tr}',
+              style: TextStyle(color: accentColor, fontSize: 11, fontWeight: FontWeight.w600),
+              maxLines: 1,
+            ),
+            CommonAuthText(
+              ' 2013 ',
+              style: TextStyle(color: accentColor, fontSize: 11, fontWeight: FontWeight.w600),
+              maxLines: 1,
+            ),
+            CommonText(
+              '| ${I18nKeys.softwareEngineering.tr})',
+              style: TextStyle(color: accentColor, fontSize: 11, fontWeight: FontWeight.w600),
+              maxLines: 1,
+            ),
+          ],
         ),
         const SizedBox(height: 8),
         Row(
@@ -221,11 +236,7 @@ class OverviewWidget extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   CommonText(value, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold), maxLines: 1),
-                  CommonText(
-                    label,
-                    style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey, fontSize: 11),
-                    maxLines: 1,
-                  ),
+                  CommonText(label, style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey, fontSize: 11), maxLines: 1),
                 ],
               ),
             ),
@@ -362,7 +373,9 @@ class OverviewWidget extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Expanded(child: CommonText(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold), maxLines: 1)),
+        Expanded(
+          child: CommonText(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold), maxLines: 1),
+        ),
         if (showSeeAll) TextButton(onPressed: onPressed, child: Text(I18nKeys.viewAll.tr)),
       ],
     );

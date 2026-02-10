@@ -110,7 +110,7 @@ class _HomePageState extends State<HomePage> {
                 _buildDrawerItem(
                   icon: Icons.person_search_outlined,
                   label: I18nKeys.aboutMe.tr,
-                  blurSigma: 8.0,
+                  blurSigma: 2.0,
                   isSelected: _currentTab == HomeTab.aboutMe,
                   accentColor: accentColor,
                   onTap: () {
