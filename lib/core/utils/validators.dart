@@ -3,7 +3,11 @@ class Validators {
   Validators._();
 
   /// Validates email format with provided error messages
-  static String? validateEmail(String? value, {required String requiredMsg, required String invalidMsg}) {
+  static String? validateEmail(
+    String? value, {
+    required String requiredMsg,
+    required String invalidMsg,
+  }) {
     if (value == null || value.isEmpty) return requiredMsg;
 
     final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
@@ -13,14 +17,22 @@ class Validators {
   }
 
   /// Validates password with minimum length and custom messages
-  static String? validatePassword(String? value, {required String requiredMsg, required String minLengthMsg}) {
+  static String? validatePassword(
+    String? value, {
+    required String requiredMsg,
+    required String minLengthMsg,
+  }) {
     if (value == null || value.isEmpty) return requiredMsg;
     if (value.length < 6) return minLengthMsg;
     return null;
   }
 
   /// Validates username with custom messages
-  static String? validateUsername(String? value, {required String requiredMsg, required String minLengthMsg}) {
+  static String? validateUsername(
+    String? value, {
+    required String requiredMsg,
+    required String minLengthMsg,
+  }) {
     if (value == null || value.isEmpty) return requiredMsg;
     if (value.length < 3) return minLengthMsg;
     return null;

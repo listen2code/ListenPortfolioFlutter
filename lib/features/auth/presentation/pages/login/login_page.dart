@@ -217,6 +217,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
   Widget _buildLoginButton(LoginState state, LoginViewModel viewModel, Color accentColor) {
     return Container(
+      height: 56, // Use fixed height to prevent layout jumping
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
         gradient: LinearGradient(colors: [accentColor, accentColor.withValues(alpha: 0.8)]),
@@ -227,14 +228,16 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
-          padding: const EdgeInsets.symmetric(vertical: 18),
+          padding: EdgeInsets.zero, // Sizing controlled by Container
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         ),
         child: state.isLoading
-            ? const SizedBox(
-                height: 20,
-                width: 20,
-                child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color>(Colors.white)),
+            ? const Center(
+                child: SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color>(Colors.white)),
+                ),
               )
             : Text(
                 I18nKeys.login.tr,

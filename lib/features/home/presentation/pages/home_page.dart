@@ -12,6 +12,7 @@ import 'package:listen_portfolio_flutter/features/home/presentation/pages/widget
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/appearance_page.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/settings_page.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
+import 'package:listen_portfolio_flutter/shared/widgets/common_auth_text.dart';
 
 /// Enum to manage home page tabs instead of hardcoded indices
 enum HomeTab { overview, aboutMe, projects, architecture }
@@ -26,6 +27,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   HomeTab _currentTab = HomeTab.overview;
 
+  // Get localized title based on selected tab
   String _getPageTitle() {
     switch (_currentTab) {
       case HomeTab.aboutMe:
@@ -62,6 +64,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  // Render content based on current tab
   Widget _buildBody() {
     switch (_currentTab) {
       case HomeTab.overview:
@@ -79,6 +82,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  // Build sidebar drawer
   Widget _buildDrawer(BuildContext context, ThemeData theme, Color accentColor) {
     return Drawer(
       backgroundColor: theme.canvasColor,
@@ -106,6 +110,7 @@ class _HomePageState extends State<HomePage> {
                 _buildDrawerItem(
                   icon: Icons.person_search_outlined,
                   label: I18nKeys.aboutMe.tr,
+                  blurSigma: 8.0,
                   isSelected: _currentTab == HomeTab.aboutMe,
                   accentColor: accentColor,
                   onTap: () {
@@ -135,7 +140,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                  child: Divider(color: theme.dividerColor.withOpacity(0.1)),
+                  child: Divider(color: theme.dividerColor.withValues(alpha: 0.1)),
                 ),
                 _buildDrawerItem(
                   icon: Icons.settings_suggest_outlined,
@@ -148,15 +153,17 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
-          _buildLogoutButton(context, theme),
+          _buildLogoutButton(context, theme, accentColor, authManager.state.isGuest),
           const SizedBox(height: 20),
         ],
       ),
     );
   }
 
+  // Build drawer user profile section
   Widget _buildDrawerHeader(BuildContext context, ThemeData theme, Color accentColor) {
     final themeMode = settingManager.themeMode;
+    final bool isLoggedIn = !authManager.state.isGuest;
 
     IconData getModeIcon() {
       switch (themeMode) {
@@ -178,7 +185,7 @@ class _HomePageState extends State<HomePage> {
       ),
       child: Stack(
         children: [
-          const Column(
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CircleAvatar(
@@ -186,15 +193,21 @@ class _HomePageState extends State<HomePage> {
                 backgroundColor: Colors.white,
                 child: CircleAvatar(
                   radius: 32,
-                  backgroundImage: NetworkImage('https://api.dicebear.com/7.x/avataaars/svg?seed=Listen'),
+                  backgroundImage: isLoggedIn
+                      ? const NetworkImage('https://api.dicebear.com/7.x/avataaars/svg?seed=Listen')
+                      : null,
+                  child: isLoggedIn ? null : const Icon(Icons.person, size: 35, color: Colors.grey),
                 ),
               ),
-              SizedBox(height: 15),
-              Text(
-                AppConstants.author,
-                style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
+              const SizedBox(height: 15),
+              CommonAuthText(
+                authManager.state.user?.name ?? AppConstants.author,
+                style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
               ),
-              Text(AppConstants.mail, style: TextStyle(color: Colors.white70, fontSize: 14)),
+              CommonAuthText(
+                authManager.state.user?.email ?? AppConstants.mail,
+                style: const TextStyle(color: Colors.white70, fontSize: 14),
+              ),
             ],
           ),
           Positioned(
@@ -210,12 +223,14 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  // Build individual drawer menu items
   Widget _buildDrawerItem({
     required IconData icon,
     required String label,
     required Color accentColor,
     bool isSelected = false,
     required VoidCallback onTap,
+    double blurSigma = 0,
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2),
@@ -225,8 +240,9 @@ class _HomePageState extends State<HomePage> {
         clipBehavior: Clip.antiAlias,
         child: ListTile(
           leading: Icon(icon, color: isSelected ? accentColor : null),
-          title: CommonText(
+          title: CommonAuthText(
             label,
+            blurSigma: blurSigma,
             style: TextStyle(
               color: isSelected ? accentColor : null,
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
@@ -238,23 +254,32 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildLogoutButton(BuildContext context, ThemeData theme) {
+  // Build Login or Logout button at the bottom of drawer
+  Widget _buildLogoutButton(BuildContext context, ThemeData theme, Color accentColor, bool isGuest) {
     final errorColor = theme.colorScheme.error;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Material(
-        color: errorColor.withValues(alpha: 0.1),
+        color: (isGuest ? accentColor : errorColor).withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(15),
         clipBehavior: Clip.antiAlias,
         child: ListTile(
-          leading: Icon(Icons.logout_rounded, color: errorColor),
-          title: Text(
-            I18nKeys.logout.tr,
-            style: TextStyle(color: errorColor, fontWeight: FontWeight.bold),
+          leading: Icon(isGuest ? Icons.login_rounded : Icons.logout_rounded, color: isGuest ? accentColor : errorColor),
+          title: CommonText(
+            isGuest ? I18nKeys.login.tr : I18nKeys.logout.tr,
+            style: TextStyle(color: isGuest ? accentColor : errorColor, fontWeight: FontWeight.bold),
+            maxLines: 1,
           ),
-          onTap: () => Navigator.of(
-            context,
-          ).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const LoginPage()), (route) => false),
+          onTap: () {
+            if (!isGuest) {
+              authManager.logout();
+            }
+
+            Navigator.of(
+              context,
+            ).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const LoginPage()), (route) => false);
+          },
         ),
       ),
     );

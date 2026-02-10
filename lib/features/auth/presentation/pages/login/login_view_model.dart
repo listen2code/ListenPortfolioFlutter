@@ -5,6 +5,7 @@ import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/usecases/login_use_case.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_intent.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/provider/auth_provider.dart';
+import 'package:listen_portfolio_flutter/shared/base_auth_listenable_page.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -24,6 +25,7 @@ class LoginViewModel extends _$LoginViewModel with ConsumeNavigableViewModel<Log
     return const LoginState();
   }
 
+  // Load saved credentials from local storage
   Future<void> _loadSavedCredentials() async {
     final prefs = await SharedPreferences.getInstance();
     final rememberMe = prefs.getBool(_keyRememberMe) ?? false;
@@ -49,16 +51,12 @@ class LoginViewModel extends _$LoginViewModel with ConsumeNavigableViewModel<Log
 
   void _onUsernameChanged(String username) {
     state = state.copyWith(username: username, usernameError: null, errorMessage: null);
-    if (state.rememberMe) {
-      _saveOrClearCredentials();
-    }
+    if (state.rememberMe) _saveOrClearCredentials();
   }
 
   void _onPasswordChanged(String password) {
     state = state.copyWith(password: password, passwordError: null, errorMessage: null);
-    if (state.rememberMe) {
-      _saveOrClearCredentials();
-    }
+    if (state.rememberMe) _saveOrClearCredentials();
   }
 
   void _onTogglePasswordVisibility() {
@@ -71,15 +69,16 @@ class LoginViewModel extends _$LoginViewModel with ConsumeNavigableViewModel<Log
   }
 
   Future<void> _onSubmitLogin() async {
+    // Basic validation
     final usernameError = Validators.validateUsername(
       state.username,
       requiredMsg: I18nKeys.fieldRequired.tr,
-      minLengthMsg: I18nKeys.minLengthMsg.trArgs([3]),
+      minLengthMsg: I18nKeys.minLengthMsg.trArgs(['3']),
     );
     final passwordError = Validators.validatePassword(
       state.password,
       requiredMsg: I18nKeys.fieldRequired.tr,
-      minLengthMsg: I18nKeys.minLengthMsg.trArgs([6]),
+      minLengthMsg: I18nKeys.minLengthMsg.trArgs(['6']),
     );
 
     if (usernameError != null || passwordError != null) {
@@ -92,16 +91,14 @@ class LoginViewModel extends _$LoginViewModel with ConsumeNavigableViewModel<Log
     final loginUseCase = await ref.read(loginUseCaseProvider.future);
     final result = await loginUseCase(LoginParams(username: state.username, password: state.password));
 
-    result.fold(
-      (failure) {
-        state = state.copyWith(isLoading: false, errorMessage: failure.message);
-      },
-      (user) {
-        state = state.copyWith(isLoading: false, pendingNavigation: LoginNavigationTarget.home);
-      },
-    );
+    result.fold((failure) => state = state.copyWith(isLoading: false, errorMessage: failure.message), (user) {
+      // Global Auth state update
+      authManager.login(user);
+      state = state.copyWith(isLoading: false, pendingNavigation: LoginNavigationTarget.home);
+    });
   }
 
+  // Persist or remove credentials based on Remember Me toggle
   Future<void> _saveOrClearCredentials() async {
     final prefs = await SharedPreferences.getInstance();
     if (state.rememberMe) {
@@ -115,15 +112,9 @@ class LoginViewModel extends _$LoginViewModel with ConsumeNavigableViewModel<Log
     }
   }
 
-  void _onNavigateToSignup() {
-    state = state.copyWith(pendingNavigation: LoginNavigationTarget.signup);
-  }
+  void _onNavigateToSignup() => state = state.copyWith(pendingNavigation: LoginNavigationTarget.signup);
 
-  void _onNavigateToForgotPassword() {
-    state = state.copyWith(pendingNavigation: LoginNavigationTarget.forgotPassword);
-  }
+  void _onNavigateToForgotPassword() => state = state.copyWith(pendingNavigation: LoginNavigationTarget.forgotPassword);
 
-  void _onNavigateToHome() {
-    state = state.copyWith(pendingNavigation: LoginNavigationTarget.home);
-  }
+  void _onNavigateToHome() => state = state.copyWith(pendingNavigation: LoginNavigationTarget.home);
 }

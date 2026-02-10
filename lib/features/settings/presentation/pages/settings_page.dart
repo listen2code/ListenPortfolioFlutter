@@ -53,6 +53,7 @@ class _SettingsPageState extends State<SettingsPage> {
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           body: (BuildContext context, Widget? child) {
             return SingleChildScrollView(
+              // Explicitly added as requested
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
