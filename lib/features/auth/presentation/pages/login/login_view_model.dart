@@ -1,5 +1,7 @@
 import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:listen_portfolio_flutter/core/extension/navigation_extension.dart';
+import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
+import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/usecases/login_use_case.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_intent.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/provider/auth_provider.dart';
@@ -69,8 +71,16 @@ class LoginViewModel extends _$LoginViewModel with ConsumeNavigableViewModel<Log
   }
 
   Future<void> _onSubmitLogin() async {
-    final usernameError = Validators.validateUsername(state.username);
-    final passwordError = Validators.validatePassword(state.password);
+    final usernameError = Validators.validateUsername(
+      state.username,
+      requiredMsg: I18nKeys.fieldRequired.tr,
+      minLengthMsg: I18nKeys.minLengthMsg.trArgs([3]),
+    );
+    final passwordError = Validators.validatePassword(
+      state.password,
+      requiredMsg: I18nKeys.fieldRequired.tr,
+      minLengthMsg: I18nKeys.minLengthMsg.trArgs([6]),
+    );
 
     if (usernameError != null || passwordError != null) {
       state = state.copyWith(usernameError: usernameError, passwordError: passwordError);

@@ -34,6 +34,7 @@ class _SettingsPageState extends State<SettingsPage> {
     _updateCacheSize();
   }
 
+  // Fetch and update cache size from manager
   Future<void> _updateCacheSize() async {
     final size = await CacheManager.getCacheSize();
     if (mounted) {
@@ -55,7 +56,7 @@ class _SettingsPageState extends State<SettingsPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // 1. PREFERENCES
+                  // 1. PREFERENCES: UI and localization
                   _buildSectionTitle(I18nKeys.general.tr),
                   _buildSettingsCard(context, [
                     _buildListTile(
@@ -76,7 +77,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
                   const SizedBox(height: 25),
 
-                  // 2. ACCOUNT & SECURITY
+                  // 2. ACCOUNT & SECURITY: User identity and protection
                   _buildSectionTitle(I18nKeys.account.tr),
                   _buildSettingsCard(context, [
                     _buildListTile(
@@ -84,13 +85,6 @@ class _SettingsPageState extends State<SettingsPage> {
                       title: I18nKeys.changePassword.tr,
                       accentColor: accentColor,
                       onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ChangePasswordPage())),
-                    ),
-                    _buildSwitchTile(
-                      icon: Icons.notifications_none_rounded,
-                      title: I18nKeys.notifications.tr,
-                      value: _notificationsEnabled,
-                      accentColor: accentColor,
-                      onChanged: (val) => setState(() => _notificationsEnabled = val),
                     ),
                     _buildListTile(
                       icon: Icons.no_accounts_outlined,
@@ -102,9 +96,16 @@ class _SettingsPageState extends State<SettingsPage> {
 
                   const SizedBox(height: 25),
 
-                  // 3. STORAGE & MAINTENANCE
+                  // 3. APP SETTINGS: Functional behaviors
                   _buildSectionTitle(I18nKeys.systemStorage.tr),
                   _buildSettingsCard(context, [
+                    _buildSwitchTile(
+                      icon: Icons.notifications_none_rounded,
+                      title: I18nKeys.notifications.tr,
+                      value: _notificationsEnabled,
+                      accentColor: accentColor,
+                      onChanged: (val) => setState(() => _notificationsEnabled = val),
+                    ),
                     _buildListTile(
                       icon: Icons.cleaning_services_outlined,
                       title: I18nKeys.clearCache.tr,
@@ -122,7 +123,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
                   const SizedBox(height: 25),
 
-                  // 4. DEVELOPER
+                  // 4. DEVELOPER: Debug tools (Visible in non-prod)
                   _buildSectionTitle(I18nKeys.developer.tr),
                   _buildSettingsCard(context, [
                     _buildSwitchTile(
@@ -150,7 +151,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   ]),
                   const SizedBox(height: 25),
 
-                  // 5. LEGAL & ABOUT
+                  // 5. ABOUT: Legal and version info
                   _buildSectionTitle(I18nKeys.about.tr),
                   _buildSettingsCard(context, [
                     _buildListTile(
@@ -186,6 +187,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         applicationLegalese: '© ${AppConstants.date} ${AppConstants.author}',
                       ),
                     ),
+                    // Version indicator at the very bottom
                     ListTile(
                       title: Center(
                         child: Text(
@@ -204,6 +206,8 @@ class _SettingsPageState extends State<SettingsPage> {
       },
     );
   }
+
+  // --- Logic Helpers ---
 
   void _handleClearCache(Color accentColor) async {
     await CacheManager.clearAllCache();
@@ -306,6 +310,8 @@ class _SettingsPageState extends State<SettingsPage> {
       },
     );
   }
+
+  // --- UI Reusable Builders ---
 
   Widget _buildSectionTitle(String title) {
     return Padding(

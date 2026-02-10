@@ -48,6 +48,7 @@ class I18nKeys {
   static const String noAccount = "Don't have an account? ";
   static const String signUp = 'Sign Up';
   static const String rememberMe = 'Remember Me';
+  static const String minLengthMsg = 'Must be at least %s characters';
 
   // Sign Up Page
   static const String createAccount = 'Create Account';
@@ -139,7 +140,8 @@ class I18nKeys {
   // Account Deletion (Google Play Compliance)
   static const String deleteAccount = 'Delete Account';
   static const String deleteAccountConfirmTitle = 'Delete Your Account?';
-  static const String deleteAccountConfirmContent = 'This action is permanent and will delete all your data. This cannot be undone.';
+  static const String deleteAccountConfirmContent =
+      'This action is permanent and will delete all your data. This cannot be undone.';
   static const String deleteAccountSuccess = 'Account deleted successfully.';
 
   // General terms
