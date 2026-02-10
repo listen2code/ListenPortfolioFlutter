@@ -1,8 +1,8 @@
-/// Utility class for form validation
+/// Utility class for form validation with dynamic error messages
 class Validators {
   Validators._();
 
-  /// Validates email format
+  /// Validates email format with provided error messages
   static String? validateEmail(String? value, {required String requiredMsg, required String invalidMsg}) {
     if (value == null || value.isEmpty) return requiredMsg;
 
@@ -12,27 +12,27 @@ class Validators {
     return null;
   }
 
-  /// Validates password strength
+  /// Validates password with minimum length and custom messages
   static String? validatePassword(String? value, {required String requiredMsg, required String minLengthMsg}) {
     if (value == null || value.isEmpty) return requiredMsg;
     if (value.length < 6) return minLengthMsg;
     return null;
   }
 
-  /// Validates username
+  /// Validates username with custom messages
   static String? validateUsername(String? value, {required String requiredMsg, required String minLengthMsg}) {
     if (value == null || value.isEmpty) return requiredMsg;
     if (value.length < 3) return minLengthMsg;
     return null;
   }
 
-  /// Validates required field
+  /// Basic required field check
   static String? validateRequired(String? value, {required String errorMsg}) {
     if (value == null || value.isEmpty) return errorMsg;
     return null;
   }
 
-  /// Validates password confirmation
+  /// Validates if confirmation matches original password
   static String? validatePasswordConfirmation(
     String? password,
     String? confirmation, {

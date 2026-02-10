@@ -34,7 +34,7 @@ class _SettingsPageState extends State<SettingsPage> {
     _updateCacheSize();
   }
 
-  // Fetch and update cache size from manager
+  // Fetch and update cache size display
   Future<void> _updateCacheSize() async {
     final size = await CacheManager.getCacheSize();
     if (mounted) {
@@ -86,6 +86,13 @@ class _SettingsPageState extends State<SettingsPage> {
                       accentColor: accentColor,
                       onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ChangePasswordPage())),
                     ),
+                    _buildSwitchTile(
+                      icon: Icons.notifications_none_rounded,
+                      title: I18nKeys.notifications.tr,
+                      value: _notificationsEnabled,
+                      accentColor: accentColor,
+                      onChanged: (val) => setState(() => _notificationsEnabled = val),
+                    ),
                     _buildListTile(
                       icon: Icons.no_accounts_outlined,
                       title: I18nKeys.deleteAccount.tr,
@@ -96,16 +103,9 @@ class _SettingsPageState extends State<SettingsPage> {
 
                   const SizedBox(height: 25),
 
-                  // 3. APP SETTINGS: Functional behaviors
+                  // 3. STORAGE & MAINTENANCE
                   _buildSectionTitle(I18nKeys.systemStorage.tr),
                   _buildSettingsCard(context, [
-                    _buildSwitchTile(
-                      icon: Icons.notifications_none_rounded,
-                      title: I18nKeys.notifications.tr,
-                      value: _notificationsEnabled,
-                      accentColor: accentColor,
-                      onChanged: (val) => setState(() => _notificationsEnabled = val),
-                    ),
                     _buildListTile(
                       icon: Icons.cleaning_services_outlined,
                       title: I18nKeys.clearCache.tr,
@@ -123,7 +123,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
                   const SizedBox(height: 25),
 
-                  // 4. DEVELOPER: Debug tools (Visible in non-prod)
+                  // 4. DEVELOPER: Debug tools (Always visible as requested)
                   _buildSectionTitle(I18nKeys.developer.tr),
                   _buildSettingsCard(context, [
                     _buildSwitchTile(
@@ -149,6 +149,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       onTap: () => _showEnvSwitchDialog(),
                     ),
                   ]),
+
                   const SizedBox(height: 25),
 
                   // 5. ABOUT: Legal and version info
@@ -187,7 +188,6 @@ class _SettingsPageState extends State<SettingsPage> {
                         applicationLegalese: '© ${AppConstants.date} ${AppConstants.author}',
                       ),
                     ),
-                    // Version indicator at the very bottom
                     ListTile(
                       title: Center(
                         child: Text(
