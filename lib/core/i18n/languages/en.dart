@@ -121,4 +121,8 @@ final Map<String, String> en = {
   I18nKeys.privacyPolicy: 'Privacy Policy',
   I18nKeys.termsOfService: 'Terms of Service',
   I18nKeys.account: 'Account',
+  I18nKeys.deleteAccount: 'Delete Account',
+  I18nKeys.deleteAccountConfirmTitle: 'Delete Your Account?',
+  I18nKeys.deleteAccountConfirmContent: 'This action is permanent and will delete all your data. This cannot be undone.',
+  I18nKeys.deleteAccountSuccess: 'Account deleted successfully.',
 };
