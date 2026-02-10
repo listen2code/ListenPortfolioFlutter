@@ -24,7 +24,7 @@ samples, guidance on mobile development, and a full API reference.
 * web data
 * core to package
 * widget to package
-    * commonText, commonImage, commonDialog, commonToast
+    * commonText, commonImage, commonDialog, commonToast, input,
 * build web
 * core -> shared
 * ide plugin
@@ -41,4 +41,6 @@ samples, guidance on mobile development, and a full API reference.
   ----------package_share: share module
   ------plugin_native: plugin for native basic info
 * server i18
-* visitor login
+* visitor login: Skeleton
+* switch env: input url; mock api; config each api;
+* dev tools: layout check; lag check; launch; app launch; apk size;
