@@ -1,6 +1,4 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:listen_portfolio_flutter/core/base/base_listenable_page.dart';
 import 'package:listen_portfolio_flutter/core/base/base_stateless_page.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
@@ -9,7 +7,6 @@ import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/core/utils/cache_manager.dart';
-import 'package:listen_portfolio_flutter/core/utils/log_manager.dart';
 import 'package:listen_portfolio_flutter/core/utils/log_overlay_manager.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/password/change_password_page.dart';
 import 'package:listen_portfolio_flutter/generated/r.dart';
@@ -49,8 +46,6 @@ class _SettingsPageState extends State<SettingsPage> {
     return BaseListenablePage(
       builder: (context, child) {
         final accentColor = settingManager.accentColor;
-        final isRelease = kReleaseMode;
-        final isProd = AppEnv.isProd();
 
         return BaseStatelessPage(
           title: I18nKeys.settings.tr,
@@ -128,37 +123,32 @@ class _SettingsPageState extends State<SettingsPage> {
                   const SizedBox(height: 25),
 
                   // 4. DEVELOPER
-                  if (!isRelease || !isProd) ...[
-                    _buildSectionTitle(I18nKeys.developer.tr),
-                    _buildSettingsCard(context, [
-                      _buildListTile(
-                        icon: Icons.terminal_rounded,
-                        title: I18nKeys.viewLogs.tr,
-                        accentColor: accentColor,
-                        trailing: Switch.adaptive(
-                          value: LogOverlayManager.isShowing,
-                          activeTrackColor: accentColor,
-                          onChanged: (val) {
-                            if (val) {
-                              LogOverlayManager.show(context);
-                            } else {
-                              LogOverlayManager.hide();
-                            }
-                            setState(() {});
-                          },
-                        ),
-                        onTap: () => _showLogViewer(accentColor),
-                      ),
-                      _buildListTile(
-                        icon: Icons.settings_input_antenna_rounded,
-                        title: I18nKeys.switchEnv.tr,
-                        subtitle: '${I18nKeys.currentlyActive.tr}: ${AppEnv.env}',
-                        accentColor: accentColor,
-                        onTap: () => _showEnvSwitchDialog(),
-                      ),
-                    ]),
-                    const SizedBox(height: 25),
-                  ],
+                  _buildSectionTitle(I18nKeys.developer.tr),
+                  _buildSettingsCard(context, [
+                    _buildSwitchTile(
+                      icon: Icons.terminal_rounded,
+                      title: I18nKeys.viewLogs.tr,
+                      value: LogOverlayManager.isShowing,
+                      accentColor: accentColor,
+                      onChanged: (val) {
+                        setState(() {
+                          if (LogOverlayManager.isShowing) {
+                            LogOverlayManager.hide();
+                          } else {
+                            LogOverlayManager.show(context);
+                          }
+                        });
+                      },
+                    ),
+                    _buildListTile(
+                      icon: Icons.settings_input_antenna_rounded,
+                      title: I18nKeys.switchEnv.tr,
+                      subtitle: '${I18nKeys.currentlyActive.tr}: ${AppEnv.env}',
+                      accentColor: accentColor,
+                      onTap: () => _showEnvSwitchDialog(),
+                    ),
+                  ]),
+                  const SizedBox(height: 25),
 
                   // 5. LEGAL & ABOUT
                   _buildSectionTitle(I18nKeys.about.tr),
@@ -250,121 +240,6 @@ class _SettingsPageState extends State<SettingsPage> {
             child: Text(I18nKeys.reset.tr, style: const TextStyle(color: Colors.red)),
           ),
         ],
-      ),
-    );
-  }
-
-  void _showLogViewer(Color accentColor) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setModalState) => Container(
-          height: MediaQuery.of(context).size.height * 0.85,
-          decoration: BoxDecoration(
-            color: Theme.of(context).scaffoldBackgroundColor,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(25)),
-          ),
-          child: Column(
-            children: [
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 12),
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(color: Colors.grey.withValues(alpha: 0.3), borderRadius: BorderRadius.circular(2)),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(I18nKeys.viewLogs.tr, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                    Row(
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.open_in_new_rounded, color: Colors.blueAccent),
-                          tooltip: 'Float Window',
-                          onPressed: () {
-                            LogOverlayManager.show(context);
-                            Navigator.pop(context);
-                            setState(() {}); // Refresh the switch state in SettingsPage
-                          },
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete_sweep_outlined, color: Colors.redAccent),
-                          onPressed: () {
-                            LogManager.clear();
-                            setModalState(() {});
-                          },
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.copy_rounded),
-                          onPressed: () {
-                            final allLogs = LogManager.getAllLogsAsText();
-                            Clipboard.setData(ClipboardData(text: allLogs));
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Logs copied to clipboard'), behavior: SnackBarBehavior.floating),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              const Divider(),
-              Expanded(
-                child: ValueListenableBuilder<List<LogEntry>>(
-                  valueListenable: LogManager.logNotifier,
-                  builder: (context, logs, _) {
-                    if (logs.isEmpty) {
-                      return const Center(
-                        child: Text('No logs captured yet.', style: TextStyle(color: Colors.grey)),
-                      );
-                    }
-                    return ListView.builder(
-                      padding: const EdgeInsets.all(15),
-                      itemCount: logs.length,
-                      itemBuilder: (context, index) {
-                        final log = logs[logs.length - 1 - index];
-                        Color logColor = log.level == LogLevel.error
-                            ? Colors.redAccent
-                            : log.level == LogLevel.warning
-                            ? Colors.orangeAccent
-                            : log.level == LogLevel.debug
-                            ? Colors.blueAccent
-                            : Colors.grey;
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
-                          child: RichText(
-                            text: TextSpan(
-                              style: const TextStyle(fontSize: 11, fontFamily: 'monospace'),
-                              children: [
-                                TextSpan(
-                                  text: '[${log.formattedTime}] ',
-                                  style: const TextStyle(color: Colors.grey),
-                                ),
-                                TextSpan(
-                                  text: '[${log.level.name.toUpperCase()}] ',
-                                  style: TextStyle(color: logColor, fontWeight: FontWeight.bold),
-                                ),
-                                TextSpan(
-                                  text: log.message,
-                                  style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
