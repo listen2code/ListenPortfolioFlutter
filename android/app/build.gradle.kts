@@ -36,19 +36,23 @@ android {
     }
 
     defaultConfig {
-        applicationId = "zhcom.listen.portfolio.listen_portfolio_flutter"
+        applicationId = "com.listen.portfolio.listen_portfolio_flutter"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
+
+        // Define which ABIs to include in the output (Exclude x86/x86_64)
+        ndk {
+            abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a"))
+        }
 
         val vName = flutter.versionName ?: "1.0.0"
         versionName = vName
 
-        // Auto-generate versionCode based on versionName: 1.2.3 -> 10203
+        // Auto-generate versionCode: 1.2.3 -> 10203
         versionCode = try {
             val parts = vName.split(".")
             val major = parts.getOrNull(0)?.toInt() ?: 0
             val minor = parts.getOrNull(1)?.toInt() ?: 0
-            // Handle case where patch might have extra info (like 1.0.1-rc)
             val patch = parts.getOrNull(2)?.filter { it.isDigit() }?.toInt() ?: 0
             major * 10000 + minor * 100 + patch
         } catch (e: Exception) {
