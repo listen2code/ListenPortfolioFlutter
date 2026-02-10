@@ -14,19 +14,42 @@ function getDate() {
 }
 
 const server = http.createServer((req, res) => {
-    handleRequest(req, res).catch(error => {
-        console.error(`${getDate()} Global Error: ${error}`);
-        res.writeHead(500, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ result: "1", message: "Internal Server Error" }));
+    // Collect body data for non-GET requests
+    let body = '';
+    req.on('data', chunk => {
+        body += chunk.toString();
+    });
+
+    req.on('end', () => {
+        handleRequest(req, res, body).catch(error => {
+            console.error(`${getDate()} Global Error: ${error}`);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ result: "1", message: "Internal Server Error" }));
+        });
     });
 });
 
-async function handleRequest(req, res) {
+async function handleRequest(req, res, requestBody) {
     const parsedUrl = url.parse(req.url, true);
     const pathname = parsedUrl.pathname;
     const method = req.method.toLowerCase();
+    const queryParams = parsedUrl.query;
 
-    console.log(`${getDate()} [${req.method}] ${req.url}`);
+    console.log(`\n${getDate()} >>> [${req.method.toUpperCase()}] ${pathname}`);
+
+    // Log Request Parameters
+    if (method === 'get') {
+        if (Object.keys(queryParams).length > 0) {
+            console.log(`${getDate()} [Request Query]:\n${JSON.stringify(queryParams, null, 2)}`);
+        }
+    } else if (requestBody) {
+        try {
+            const jsonBody = JSON.parse(requestBody);
+            console.log(`${getDate()} [Request Body]:\n${JSON.stringify(jsonBody, null, 2)}`);
+        } catch (e) {
+            console.log(`${getDate()} [Request Body (Raw)]: ${requestBody}`);
+        }
+    }
 
     // 1. Load configuration
     const configPath = path.join(__dirname, 'config.json');
@@ -47,7 +70,6 @@ async function handleRequest(req, res) {
         const configApi = entry.api;
 
         if (configApi.endsWith('/')) {
-            // Read mode: matches prefix
             const lastSlashIndex = pathname.lastIndexOf('/');
             if (lastSlashIndex !== -1) {
                 const prefix = pathname.substring(0, lastSlashIndex + 1);
@@ -58,7 +80,6 @@ async function handleRequest(req, res) {
                 }
             }
         } else {
-            // Action/List mode: matches suffix
             if (pathname.endsWith(configApi)) {
                 apiConfig = entry;
                 matchedApiName = configApi;
@@ -68,7 +89,7 @@ async function handleRequest(req, res) {
     }
 
     if (!apiConfig) {
-        console.log(`${getDate()} No match in config for Path: ${pathname} [${method}]`);
+        console.log(`${getDate()} [404] No match in config for: ${pathname}`);
         res.writeHead(404, { 'Content-Type': 'application/json' });
         return res.end(JSON.stringify({ result: "1", message: "API route not matched in config" }));
     }
@@ -107,7 +128,7 @@ async function handleRequest(req, res) {
 
         const responseData = await readFileAsync(targetFile, 'utf-8');
 
-        // Log formatted JSON response for better debugging
+        // Log formatted JSON response
         try {
             const formattedJson = JSON.stringify(JSON.parse(responseData), null, 2);
             console.log(`${getDate()} [Response JSON]:\n${formattedJson}`);
