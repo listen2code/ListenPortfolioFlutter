@@ -47,18 +47,25 @@ class LoginViewModel extends _$LoginViewModel with ConsumeNavigableViewModel<Log
 
   void _onUsernameChanged(String username) {
     state = state.copyWith(username: username, usernameError: null, errorMessage: null);
+    if (state.rememberMe) {
+      _saveOrClearCredentials();
+    }
   }
 
   void _onPasswordChanged(String password) {
     state = state.copyWith(password: password, passwordError: null, errorMessage: null);
+    if (state.rememberMe) {
+      _saveOrClearCredentials();
+    }
   }
 
   void _onTogglePasswordVisibility() {
     state = state.copyWith(isPasswordVisible: !state.isPasswordVisible);
   }
 
-  void _onToggleRememberMe() {
+  void _onToggleRememberMe() async {
     state = state.copyWith(rememberMe: !state.rememberMe);
+    await _saveOrClearCredentials();
   }
 
   Future<void> _onSubmitLogin() async {
@@ -79,8 +86,7 @@ class LoginViewModel extends _$LoginViewModel with ConsumeNavigableViewModel<Log
       (failure) {
         state = state.copyWith(isLoading: false, errorMessage: failure.message);
       },
-      (user) async {
-        await _saveOrClearCredentials();
+      (user) {
         state = state.copyWith(isLoading: false, pendingNavigation: LoginNavigationTarget.home);
       },
     );
