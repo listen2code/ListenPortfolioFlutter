@@ -79,7 +79,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 20),
+              const SizedBox(height: 40),
               _buildLogo(accentColor),
               const SizedBox(height: 30),
               _buildTitle(Theme.of(context)),
