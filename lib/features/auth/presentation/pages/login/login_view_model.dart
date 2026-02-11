@@ -1,5 +1,5 @@
+import 'package:listen_portfolio_flutter/core/base/base_view_model.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
-import 'package:listen_portfolio_flutter/core/extension/navigation_extension.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/usecases/login_use_case.dart';
@@ -14,7 +14,7 @@ import 'login_state.dart';
 part 'login_view_model.g.dart';
 
 @riverpod
-class LoginViewModel extends _$LoginViewModel with ConsumeNavigableViewModel<LoginState> {
+class LoginViewModel extends _$LoginViewModel with ConsumeViewModel<LoginState> {
   static const String _keyUsername = 'saved_username';
   static const String _keyPassword = 'saved_password';
   static const String _keyRememberMe = 'remember_me';
@@ -45,7 +45,7 @@ class LoginViewModel extends _$LoginViewModel with ConsumeNavigableViewModel<Log
       submitLogin: _onSubmitLogin,
       navigateToSignup: _onNavigateToSignup,
       navigateToForgotPassword: _onNavigateToForgotPassword,
-      skipLogin: _onNavigateToSkip,
+      skipLogin: _onNavigateToBack,
     );
   }
 
@@ -69,7 +69,6 @@ class LoginViewModel extends _$LoginViewModel with ConsumeNavigableViewModel<Log
   }
 
   Future<void> _onSubmitLogin() async {
-    // Basic validation
     final usernameError = Validators.validateUsername(
       state.username,
       requiredMsg: I18nKeys.fieldRequired.tr,
@@ -92,13 +91,11 @@ class LoginViewModel extends _$LoginViewModel with ConsumeNavigableViewModel<Log
     final result = await loginUseCase(LoginParams(username: state.username, password: state.password));
 
     result.fold((failure) => state = state.copyWith(isLoading: false, errorMessage: failure.message), (user) {
-      // Global Auth state update
       authManager.login(user);
       state = state.copyWith(isLoading: false, pendingNavigation: LoginNavigationTarget.success);
     });
   }
 
-  // Persist or remove credentials based on Remember Me toggle
   Future<void> _saveOrClearCredentials() async {
     final prefs = await SharedPreferences.getInstance();
     if (state.rememberMe) {
@@ -117,5 +114,5 @@ class LoginViewModel extends _$LoginViewModel with ConsumeNavigableViewModel<Log
   void _onNavigateToForgotPassword() =>
       state = state.copyWith(pendingNavigation: LoginNavigationTarget.forgotPassword);
 
-  void _onNavigateToSkip() => state = state.copyWith(pendingNavigation: LoginNavigationTarget.back);
+  void _onNavigateToBack() => state = state.copyWith(pendingNavigation: LoginNavigationTarget.back);
 }

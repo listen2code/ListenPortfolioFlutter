@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_portfolio_flutter/core/base/base_stateless_page.dart';
-import 'package:listen_portfolio_flutter/core/extension/navigation_extension.dart';
+import 'package:listen_portfolio_flutter/core/extension/base_ref_extension.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
@@ -66,6 +66,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   Widget build(BuildContext context) {
     _setupNavigation(context);
 
+    // Common UI state listeners for errors and general messages
+    ref.listenError(loginViewModelProvider);
+    ref.listenMessage(loginViewModelProvider);
+
     // Sync controllers with state
     ref.listen<LoginState>(loginViewModelProvider, (previous, next) {
       if (_usernameController.text.isEmpty && next.username.isNotEmpty) {
@@ -102,10 +106,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               _buildSkipButton(viewModel),
               const SizedBox(height: 10),
               _buildSignupLink(viewModel, accentColor),
-              if (state.errorMessage != null) ...[
-                const SizedBox(height: 20),
-                _buildErrorMessage(state.errorMessage!),
-              ],
             ],
           ),
         );
@@ -166,7 +166,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       controller: _usernameController,
       type: TextFieldType.text,
       labelText: I18nKeys.username.tr,
-      // Changed from hintText to labelText
       prefixIcon: Icons.person_outline,
       errorText: state.usernameError,
       onChanged: (value) => viewModel.handleIntent(LoginIntent.usernameChanged(value)),
@@ -178,7 +177,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       controller: _passwordController,
       type: TextFieldType.password,
       labelText: I18nKeys.password.tr,
-      // Changed from hintText to labelText
       prefixIcon: Icons.lock_outline,
       errorText: state.passwordError,
       onChanged: (value) => viewModel.handleIntent(LoginIntent.passwordChanged(value)),
@@ -237,7 +235,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
   Widget _buildLoginButton(LoginState state, LoginViewModel viewModel, Color accentColor) {
     return Container(
-      height: 56, // Fixed height to prevent layout jumping during loading
+      height: 56,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
         gradient: LinearGradient(colors: [accentColor, accentColor.withValues(alpha: 0.8)]),
@@ -295,26 +293,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildErrorMessage(String message) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.red.shade50,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.red.shade200),
-      ),
-      child: Row(
-        children: [
-          Icon(Icons.error_outline, color: Colors.red.shade700),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(message, style: TextStyle(color: Colors.red.shade700)),
-          ),
-        ],
-      ),
     );
   }
 }

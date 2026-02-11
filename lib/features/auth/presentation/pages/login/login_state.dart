@@ -19,6 +19,7 @@ abstract class LoginState with _$LoginState implements BaseState<LoginNavigation
     String? usernameError,
     String? passwordError,
     String? errorMessage,
+    String? message,
     LoginNavigationTarget? pendingNavigation,
   }) = _LoginState;
 }
