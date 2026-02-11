@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/base/base_stateless_page.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
+import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/core/utils/log_overlay_manager.dart';
-import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_page.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_page.dart';
 import 'package:listen_portfolio_flutter/generated/r.dart';
 
@@ -34,27 +34,14 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
       LogOverlayManager.init(context);
     });
 
-    _navigateToLogin();
+    _navigateToHome();
   }
 
-  Future<void> _navigateToLogin() async {
+  // Transition to HomePage. RouteInterceptor handles guest redirection if needed.
+  Future<void> _navigateToHome() async {
     await Future.delayed(const Duration(seconds: 3));
     if (mounted) {
-      Navigator.of(context)
-          .push(
-            PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) => const LoginPage(),
-              transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                return FadeTransition(opacity: animation, child: child);
-              },
-              transitionDuration: const Duration(milliseconds: 1000),
-            ),
-          )
-          .then((_) {
-            if (mounted) {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const HomePage()));
-            }
-          });
+      Nav.off(const HomePage());
     }
   }
 

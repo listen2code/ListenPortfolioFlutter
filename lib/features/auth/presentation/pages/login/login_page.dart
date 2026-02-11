@@ -4,6 +4,7 @@ import 'package:listen_portfolio_flutter/core/base/base_stateless_page.dart';
 import 'package:listen_portfolio_flutter/core/extension/navigation_extension.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
+import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_intent.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_state.dart';
@@ -43,18 +44,18 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     ref.listenNavigation<LoginState, LoginNavigationTarget>(loginViewModelProvider, (target) {
       switch (target) {
         case LoginNavigationTarget.signup:
-          Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SignUpPage()));
+          Nav.to(const SignUpPage());
           break;
         case LoginNavigationTarget.forgotPassword:
-          Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ForgotPasswordPage()));
+          Nav.to(const ForgotPasswordPage());
           break;
         case LoginNavigationTarget.success:
           // Close login page and return true to inform the caller (interceptor) about success
-          Navigator.of(context).pop(true);
+          Nav.back(true);
           break;
         case LoginNavigationTarget.back:
           // Close login page and return false to indicate it was dismissed/skipped
-          Navigator.of(context).pop(false);
+          Nav.back(false);
           break;
       }
     });

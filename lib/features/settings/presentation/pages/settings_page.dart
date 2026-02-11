@@ -5,10 +5,10 @@ import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_env.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
+import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/core/utils/cache_manager.dart';
 import 'package:listen_portfolio_flutter/core/utils/log_overlay_manager.dart';
-import 'package:listen_portfolio_flutter/core/utils/route_interceptor.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/password/change_password_page.dart';
 import 'package:listen_portfolio_flutter/generated/r.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
@@ -55,11 +55,10 @@ class _SettingsPageState extends State<SettingsPage> {
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           body: (BuildContext context, Widget? child) {
             return SingleChildScrollView(
-              // Explicitly added as requested
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // 1. PREFERENCES: UI and localization
+                  // 1. PREFERENCES: UI related settings
                   _buildSectionTitle(I18nKeys.general.tr),
                   _buildSettingsCard(context, [
                     _buildListTile(
@@ -67,9 +66,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       title: I18nKeys.appearance.tr,
                       subtitle: I18nKeys.appearanceSubtitle.tr,
                       accentColor: accentColor,
-                      onTap: () => Navigator.of(
-                        context,
-                      ).push(MaterialPageRoute(builder: (_) => const AppearancePage())),
+                      onTap: () => Nav.to(const AppearancePage()),
                     ),
                     _buildListTile(
                       icon: Icons.language_outlined,
@@ -85,7 +82,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
                   const SizedBox(height: 25),
 
-                  // 2. ACCOUNT & SECURITY: User identity and protection
+                  // 2. ACCOUNT & SECURITY
                   _buildSectionTitle(I18nKeys.account.tr),
                   _buildSettingsCard(context, [
                     _buildListTile(
@@ -93,15 +90,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       title: I18nKeys.changePassword.tr,
                       accentColor: accentColor,
                       blurLevel: AuthBlurLevel.low,
-                      onTap: () {
-                        runOnRedirect(needLogin: true)?.then((isLoginSuccess) {
-                          if (isLoginSuccess && context.mounted) {
-                            Navigator.of(
-                              context,
-                            ).push(MaterialPageRoute(builder: (_) => const ChangePasswordPage()));
-                          }
-                        });
-                      },
+                      onTap: () => Nav.to(const ChangePasswordPage(), needLogin: true),
                     ),
                     _buildSwitchTile(
                       icon: Icons.notifications_none_rounded,
@@ -115,15 +104,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       title: I18nKeys.deleteAccount.tr,
                       accentColor: accentColor,
                       blurLevel: AuthBlurLevel.low,
-                      onTap: () {
-                        runOnRedirect(needLogin: true)?.then((isLoginSuccess) {
-                          if (isLoginSuccess && context.mounted) {
-                            Navigator.of(
-                              context,
-                            ).push(MaterialPageRoute(builder: (_) => const DeleteAccountPage()));
-                          }
-                        });
-                      },
+                      onTap: () => Nav.to(const DeleteAccountPage(), needLogin: true),
                     ),
                   ]),
 
@@ -149,7 +130,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
                   const SizedBox(height: 25),
 
-                  // 4. DEVELOPER: Debug tools (Always visible as requested)
+                  // 4. DEVELOPER TOOLS
                   _buildSectionTitle(I18nKeys.developer.tr),
                   _buildSettingsCard(context, [
                     _buildSwitchTile(
@@ -159,11 +140,10 @@ class _SettingsPageState extends State<SettingsPage> {
                       accentColor: accentColor,
                       onChanged: (val) {
                         setState(() {
-                          if (LogOverlayManager.isShowing) {
-                            LogOverlayManager.hide();
-                          } else {
+                          if (val)
                             LogOverlayManager.show(context);
-                          }
+                          else
+                            LogOverlayManager.hide();
                         });
                       },
                     ),
@@ -178,24 +158,20 @@ class _SettingsPageState extends State<SettingsPage> {
 
                   const SizedBox(height: 25),
 
-                  // 5. ABOUT: Legal and version info
+                  // 5. LEGAL & ABOUT
                   _buildSectionTitle(I18nKeys.about.tr),
                   _buildSettingsCard(context, [
                     _buildListTile(
                       icon: Icons.privacy_tip_outlined,
                       title: I18nKeys.privacyPolicy.tr,
                       accentColor: accentColor,
-                      onTap: () => Navigator.of(
-                        context,
-                      ).push(MaterialPageRoute(builder: (_) => const PrivacyPolicyPage())),
+                      onTap: () => Nav.to(const PrivacyPolicyPage()),
                     ),
                     _buildListTile(
                       icon: Icons.gavel_outlined,
                       title: I18nKeys.termsOfService.tr,
                       accentColor: accentColor,
-                      onTap: () => Navigator.of(
-                        context,
-                      ).push(MaterialPageRoute(builder: (_) => const TermsOfServicePage())),
+                      onTap: () => Nav.to(const TermsOfServicePage()),
                     ),
                     _buildListTile(
                       icon: Icons.info_outline_rounded,
@@ -260,12 +236,12 @@ class _SettingsPageState extends State<SettingsPage> {
         title: Text(I18nKeys.resetConfirmTitle.tr),
         content: Text(I18nKeys.resetConfirmContent.tr),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text(I18nKeys.cancel.tr)),
+          TextButton(onPressed: () => Nav.back(), child: Text(I18nKeys.cancel.tr)),
           TextButton(
             onPressed: () async {
               await settingManager.resetSettings();
               if (mounted) {
-                Navigator.pop(context);
+                Nav.back();
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(I18nKeys.settingsResetSuccess.tr),
@@ -308,7 +284,7 @@ class _SettingsPageState extends State<SettingsPage> {
       trailing: isCurrent ? const Icon(Icons.check_circle) : null,
       onTap: () {
         setState(() => AppEnv.setEnvironment(envCode));
-        Navigator.pop(context);
+        Nav.back();
       },
     );
   }
@@ -340,7 +316,7 @@ class _SettingsPageState extends State<SettingsPage> {
       trailing: isSelected ? Icon(Icons.check_circle, color: settingManager.accentColor) : null,
       onTap: () {
         settingManager.setLanguage(lang);
-        Navigator.pop(context);
+        Nav.back();
       },
     );
   }

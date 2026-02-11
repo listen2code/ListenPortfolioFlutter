@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/base/base_stateless_page.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
+import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 
@@ -31,7 +32,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           backgroundColor: accentColor,
         ),
       );
-      Navigator.of(context).pop();
+      // Close page after reset request
+      Nav.back();
     }
   }
 
@@ -82,7 +84,13 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
                 gradient: LinearGradient(colors: [accentColor, accentColor.withValues(alpha: 0.8)]),
-                boxShadow: [BoxShadow(color: accentColor.withValues(alpha: 0.3), blurRadius: 10, offset: const Offset(0, 5))],
+                boxShadow: [
+                  BoxShadow(
+                    color: accentColor.withValues(alpha: 0.3),
+                    blurRadius: 10,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
               ),
               child: ElevatedButton(
                 onPressed: () => _handleResetPassword(accentColor),
@@ -103,10 +111,14 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Flexible(
-                  child: CommonText(I18nKeys.rememberPassword.tr, style: const TextStyle(color: Colors.grey), maxLines: 1),
+                  child: CommonText(
+                    I18nKeys.rememberPassword.tr,
+                    style: const TextStyle(color: Colors.grey),
+                    maxLines: 1,
+                  ),
                 ),
                 TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
+                  onPressed: () => Nav.back(),
                   child: CommonText(
                     I18nKeys.loginLink.tr,
                     style: TextStyle(color: accentColor, fontWeight: FontWeight.bold),

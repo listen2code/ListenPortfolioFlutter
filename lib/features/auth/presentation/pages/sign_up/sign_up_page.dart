@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/base/base_stateless_page.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
+import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 
@@ -38,7 +39,8 @@ class _SignUpPageState extends State<SignUpPage> {
           backgroundColor: accentColor,
         ),
       );
-      Navigator.of(context).pop();
+      // Return to login screen
+      Nav.back();
     }
   }
 
@@ -95,7 +97,10 @@ class _SignUpPageState extends State<SignUpPage> {
                 obscureText: !_isPasswordVisible,
                 accentColor: accentColor,
                 suffixIcon: IconButton(
-                  icon: Icon(_isPasswordVisible ? Icons.visibility : Icons.visibility_off, color: accentColor),
+                  icon: Icon(
+                    _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                    color: accentColor,
+                  ),
                   onPressed: () => setState(() => _isPasswordVisible = !_isPasswordVisible),
                 ),
               ),
@@ -112,7 +117,13 @@ class _SignUpPageState extends State<SignUpPage> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
                   gradient: LinearGradient(colors: [accentColor, accentColor.withValues(alpha: 0.8)]),
-                  boxShadow: [BoxShadow(color: accentColor.withValues(alpha: 0.3), blurRadius: 10, offset: const Offset(0, 5))],
+                  boxShadow: [
+                    BoxShadow(
+                      color: accentColor.withValues(alpha: 0.3),
+                      blurRadius: 10,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
                 ),
                 child: ElevatedButton(
                   onPressed: () => _handleSignUp(accentColor),
@@ -133,10 +144,14 @@ class _SignUpPageState extends State<SignUpPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Flexible(
-                    child: CommonText(I18nKeys.alreadyHaveAccount.tr, style: const TextStyle(color: Colors.grey), maxLines: 1),
+                    child: CommonText(
+                      I18nKeys.alreadyHaveAccount.tr,
+                      style: const TextStyle(color: Colors.grey),
+                      maxLines: 1,
+                    ),
                   ),
                   TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
+                    onPressed: () => Nav.back(),
                     child: CommonText(
                       I18nKeys.loginLink.tr,
                       style: TextStyle(color: accentColor, fontWeight: FontWeight.bold),

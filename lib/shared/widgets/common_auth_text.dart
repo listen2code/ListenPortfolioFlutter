@@ -3,7 +3,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
-import 'package:listen_portfolio_flutter/core/utils/route_interceptor.dart';
+import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
+import 'package:listen_portfolio_flutter/core/route/route_interceptor.dart';
 import 'package:listen_portfolio_flutter/shared/base_auth_listenable_page.dart';
 import 'package:listen_portfolio_flutter/shared/widgets/common_text.dart';
 
@@ -99,7 +100,7 @@ class CommonAuthText extends StatelessWidget {
         content: Text(I18nKeys.signInToContinue.tr),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
+            onPressed: () => Nav.back(),
             child: Text(I18nKeys.cancel.tr, style: const TextStyle(color: Colors.grey)),
           ),
           TextButton(
@@ -107,7 +108,7 @@ class CommonAuthText extends StatelessWidget {
               runOnRedirect(needLogin: true)?.then((isLoginSuccess) {
                 // Ensure dialog is still active before attempting to close
                 if (isLoginSuccess == true && dialogContext.mounted) {
-                  Navigator.pop(dialogContext);
+                  Nav.back();
                   onTap?.call();
                 }
               });

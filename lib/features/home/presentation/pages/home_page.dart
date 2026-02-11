@@ -3,8 +3,9 @@ import 'package:listen_portfolio_flutter/core/base/base_stateless_page.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
+import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
+import 'package:listen_portfolio_flutter/core/route/route_interceptor.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
-import 'package:listen_portfolio_flutter/core/utils/route_interceptor.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_page.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/widgets/about_me_widget.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/widgets/architecture_widget.dart';
@@ -114,7 +115,7 @@ class _HomePageState extends State<HomePage> {
                       accentColor: accentColor,
                       onTap: () {
                         setState(() => _currentTab = HomeTab.overview);
-                        Navigator.pop(context);
+                        Nav.back();
                       },
                     ),
                     _buildDrawerItem(
@@ -126,9 +127,9 @@ class _HomePageState extends State<HomePage> {
                       accentColor: accentColor,
                       onTap: () {
                         runOnRedirect(needLogin: true)?.then((isLoginSuccess) {
-                          if (isLoginSuccess && context.mounted) {
+                          if (isLoginSuccess && mounted) {
                             setState(() => _currentTab = HomeTab.aboutMe);
-                            Navigator.pop(context);
+                            Nav.back();
                           }
                         });
                       },
@@ -140,7 +141,7 @@ class _HomePageState extends State<HomePage> {
                       accentColor: accentColor,
                       onTap: () {
                         setState(() => _currentTab = HomeTab.projects);
-                        Navigator.pop(context);
+                        Nav.back();
                       },
                     ),
                     _buildDrawerItem(
@@ -150,7 +151,7 @@ class _HomePageState extends State<HomePage> {
                       accentColor: accentColor,
                       onTap: () {
                         setState(() => _currentTab = HomeTab.architecture);
-                        Navigator.pop(context);
+                        Nav.back();
                       },
                     ),
                     Padding(
@@ -162,9 +163,7 @@ class _HomePageState extends State<HomePage> {
                       label: I18nKeys.settings.tr,
                       accentColor: accentColor,
                       onTap: () {
-                        Navigator.of(
-                          context,
-                        ).push(MaterialPageRoute(builder: (context) => const SettingsPage()));
+                        Nav.to(const SettingsPage());
                       },
                     ),
                   ],
@@ -236,8 +235,7 @@ class _HomePageState extends State<HomePage> {
             top: 0,
             child: IconButton(
               icon: Icon(getModeIcon(), color: Colors.white),
-              onPressed: () =>
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AppearancePage())),
+              onPressed: () => Nav.to(const AppearancePage()),
             ),
           ),
         ],
@@ -301,12 +299,14 @@ class _HomePageState extends State<HomePage> {
           onTap: () {
             if (!isGuest) {
               authManager.logout();
+              // Reset tab to overview if user was on a protected page
               if (_currentTab == HomeTab.aboutMe) {
                 setState(() => _currentTab = HomeTab.overview);
               }
             }
 
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const LoginPage()));
+            // Use offAll to clear session and return to login safely
+            Nav.to(const LoginPage());
           },
         ),
       ),

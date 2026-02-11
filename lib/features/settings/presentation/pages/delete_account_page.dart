@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/base/base_stateless_page.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
+import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_page.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
@@ -23,7 +24,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
     await settingManager.resetSettings();
 
     if (mounted) {
-      Navigator.of(context).push(MaterialPageRoute(builder: (_) => const LoginPage()));
+      Nav.to(LoginPage());
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(I18nKeys.deleteAccountSuccess.tr),

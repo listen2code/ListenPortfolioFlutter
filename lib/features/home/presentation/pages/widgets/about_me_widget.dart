@@ -6,6 +6,7 @@ import 'package:listen_portfolio_flutter/core/base/base_listenable_page.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
+import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 
 class AboutMeWidget extends StatefulWidget {
@@ -51,7 +52,7 @@ class _AboutMeWidgetState extends State<AboutMeWidget> {
                 title: Text(I18nKeys.chooseFromGallery.tr),
                 onTap: () {
                   _pickImage(ImageSource.gallery);
-                  Navigator.of(context).pop();
+                  Nav.back();
                 },
               ),
               ListTile(
@@ -59,7 +60,7 @@ class _AboutMeWidgetState extends State<AboutMeWidget> {
                 title: Text(I18nKeys.takePhoto.tr),
                 onTap: () {
                   _pickImage(ImageSource.camera);
-                  Navigator.of(context).pop();
+                  Nav.back();
                 },
               ),
               if (_imageFile != null)
@@ -68,7 +69,7 @@ class _AboutMeWidgetState extends State<AboutMeWidget> {
                   title: Text(I18nKeys.removePhoto.tr, style: const TextStyle(color: Colors.red)),
                   onTap: () {
                     _removeImage();
-                    Navigator.of(context).pop();
+                    Nav.back();
                   },
                 ),
             ],
@@ -148,7 +149,10 @@ class _AboutMeWidgetState extends State<AboutMeWidget> {
             ],
           ),
           const SizedBox(height: 16),
-          Text(AppConstants.author, style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
+          Text(
+            AppConstants.author,
+            style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+          ),
           Text('Full Stack Mobile Architect', style: TextStyle(color: accentColor, fontSize: 16)),
           const SizedBox(height: 8),
           const Row(
