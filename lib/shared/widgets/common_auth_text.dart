@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
-import 'package:listen_portfolio_flutter/core/route/route_interceptor.dart';
 import 'package:listen_portfolio_flutter/shared/base_auth_listenable_page.dart';
 import 'package:listen_portfolio_flutter/shared/widgets/common_text.dart';
 
@@ -21,7 +20,7 @@ enum AuthBlurLevel {
 }
 
 /// A text widget that blurs content for guest users and shows it for authenticated users.
-/// Uses [AuthBlurLevel] to control the intensity of the mask.
+/// Automatically handles login redirection on click if in guest mode.
 class CommonAuthText extends StatelessWidget {
   final String text;
   final TextStyle? style;
@@ -76,14 +75,12 @@ class CommonAuthText extends StatelessWidget {
           );
         }
 
-        // Determine effective tap action
-        // If blurred for guest, force login dialog. Otherwise use provided onTap.
-        // If both are null, GestureDetector won't capture the event (pass-through).
+        // Intercept taps if content is blurred for guest.
+        // Otherwise, use provided onTap or let it pass through.
         final VoidCallback? finalTap = shouldBlur ? () => _showLoginRequiredDialog(context) : onTap;
 
         return GestureDetector(
           onTap: finalTap,
-          // Only use opaque behavior when we need to block/intercept taps
           behavior: shouldBlur ? HitTestBehavior.opaque : HitTestBehavior.deferToChild,
           child: content,
         );
@@ -105,13 +102,13 @@ class CommonAuthText extends StatelessWidget {
           ),
           TextButton(
             onPressed: () {
-              runOnRedirect(needLogin: true)?.then((isLoginSuccess) {
-                // Ensure dialog is still active before attempting to close
-                if (isLoginSuccess == true && dialogContext.mounted) {
-                  Nav.back();
-                  onTap?.call();
-                }
-              });
+              // Trigger login flow via global interceptor
+              Nav.tryLogin(
+                onSuccess: () {
+                  Nav.back(); // Pop the AlertDialog
+                  onTap?.call(); // Execute the original intended action
+                },
+              );
             },
             child: Text(I18nKeys.login.tr, style: const TextStyle(fontWeight: FontWeight.bold)),
           ),

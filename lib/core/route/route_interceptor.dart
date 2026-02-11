@@ -37,7 +37,6 @@ abstract class _RouteInterceptor {
   int? priority;
 
   /// Logic to run before navigation.
-  /// Returns a Future if it intercepts the flow, null otherwise.
   Future<T?>? runOnRedirect<T>({Route<T>? toRoute, bool needLogin = false});
 }
 
@@ -56,40 +55,38 @@ class LoginRouteInterceptor extends CommonRouteInterceptor {
 
   @override
   Future<T?>? runOnRedirect<T>({Route<T>? toRoute, bool needLogin = false}) {
-    // Check guest status via registered callback
+    // Check current auth status via registered callback
     final bool isGuest = RouteInterceptorConfig.isGuestCheck?.call() ?? true;
 
-    // Helper to convert dynamic values to generic T
-    Future<T?> convert(value) {
-      if (T == bool || T == dynamic) return Future.value(value as T);
-      return Future.value(null);
-    }
-
-    // Intercept if login is required but user is a guest
+    // Intercept navigation if login is required but user is a guest
     if (needLogin && isGuest) {
       final context = RouteInterceptorConfig.context;
       if (context != null && RouteInterceptorConfig.onLoginRedirect != null) {
-        appLogger.d("RouteInterceptor: Login required. Redirecting...");
+        appLogger.d("RouteInterceptor: Access denied. Redirecting to login...");
 
-        // Execute the registered login logic and wait for result
+        // Start login flow and return its completion future
         return RouteInterceptorConfig.onLoginRedirect!(context).then((isLoginSuccess) {
           if (isLoginSuccess) {
             RouteInterceptorConfig.onLoginSuccessCallback?.call();
-            appLogger.d("RouteInterceptor: Login success. Resuming navigation.");
-            // If original route exists, push it now.
-            if (toRoute != null && context.mounted) {
-              return Navigator.of(context).push(toRoute);
+            appLogger.d("RouteInterceptor: Auth success. Executing target route.");
+
+            // If there's a target route, perform the push now using global navigator state
+            if (toRoute != null) {
+              return RouteInterceptorConfig.navigatorKey.currentState?.push(toRoute);
             }
-            // If no specific route, just return success flag
-            return convert(true);
+
+            // If just checking permission, return true
+            return true as T;
           }
-          appLogger.d("RouteInterceptor: Login cancelled or failed.");
-          return convert(false);
+
+          appLogger.d("RouteInterceptor: Auth cancelled or failed.");
+          return false as T;
         });
       }
     }
 
-    // No interception occurred
+    appLogger.d("RouteInterceptor: No interception isGuest=$isGuest");
+    // No interception: Proceed to next interceptor or default runner logic
     return null;
   }
 }
@@ -100,28 +97,30 @@ class RouteInterceptorRunner {
   final List<CommonRouteInterceptor>? _routeInterceptors;
 
   List<CommonRouteInterceptor> _getInterceptors() {
-    final m = _routeInterceptors ?? <CommonRouteInterceptor>[];
-    return m..sort((a, b) => (a.priority ?? 0).compareTo(b.priority ?? 0));
+    final list = _routeInterceptors ?? <CommonRouteInterceptor>[];
+    return list..sort((a, b) => (a.priority ?? 0).compareTo(b.priority ?? 0));
   }
 
   Future<T?>? runOnRedirect<T>({Route<T>? toRoute, bool needLogin = false}) {
     for (final element in _getInterceptors()) {
-      final result = element.runOnRedirect(toRoute: toRoute, needLogin: needLogin);
-      if (result != null) return result;
+      final interceptedResult = element.runOnRedirect(toRoute: toRoute, needLogin: needLogin);
+      // If an interceptor captures the flow, return its result immediately
+      if (interceptedResult != null) return interceptedResult;
     }
 
-    // Default behavior: If not intercepted, proceed with navigation if route is provided
+    // Default Fallback: If no interceptors caught the request
     if (toRoute != null) {
+      // Execute the navigation normally
       return RouteInterceptorConfig.navigatorKey.currentState?.push(toRoute);
     }
 
-    // Return default success if no route was provided (e.g., just a check)
+    // No route to push, just return a "Permission Granted" flag
     if (T == bool || T == dynamic) return Future.value(true as T);
     return null;
   }
 }
 
-/// Main entry point for performing intercepted navigation.
+/// Helper function to trigger route redirection logic.
 Future<T?>? runOnRedirect<T>({
   Route<T>? toRoute,
   bool needLogin = false,

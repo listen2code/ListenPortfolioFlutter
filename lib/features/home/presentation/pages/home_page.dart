@@ -4,7 +4,6 @@ import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
-import 'package:listen_portfolio_flutter/core/route/route_interceptor.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_page.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/widgets/about_me_widget.dart';
@@ -72,12 +71,11 @@ class _HomePageState extends State<HomePage> {
       case HomeTab.overview:
         return OverviewWidget(
           onResumeRequested: () {
-            runOnRedirect(needLogin: true)?.then((success) {
-              // Ensure widget is still alive and login was successful
-              if (mounted && success == true) {
+            Nav.tryLogin(
+              onSuccess: () {
                 setState(() => _currentTab = HomeTab.aboutMe);
-              }
-            });
+              },
+            );
           },
           onProjectsRequested: () => setState(() => _currentTab = HomeTab.projects),
           onArchitectureRequested: () => setState(() => _currentTab = HomeTab.architecture),
@@ -126,12 +124,12 @@ class _HomePageState extends State<HomePage> {
                       isSelected: _currentTab == HomeTab.aboutMe,
                       accentColor: accentColor,
                       onTap: () {
-                        runOnRedirect(needLogin: true)?.then((isLoginSuccess) {
-                          if (isLoginSuccess && mounted) {
+                        Nav.tryLogin(
+                          onSuccess: () {
                             setState(() => _currentTab = HomeTab.aboutMe);
                             Nav.back();
-                          }
-                        });
+                          },
+                        );
                       },
                     ),
                     _buildDrawerItem(
