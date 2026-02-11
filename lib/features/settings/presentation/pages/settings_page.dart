@@ -186,7 +186,13 @@ class _SettingsPageState extends State<SettingsPage> {
                         applicationVersion: AppConstants.appVersion,
                         applicationIcon: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Image.asset(R.imagesIcLauncherAdaptiveFore, width: 48, height: 48, color: accentColor, colorBlendMode: BlendMode.srcIn),
+                          child: Image.asset(
+                            R.imagesIcLauncherAdaptiveFore,
+                            width: 48,
+                            height: 48,
+                            color: accentColor,
+                            colorBlendMode: BlendMode.srcIn,
+                          ),
                         ),
                         applicationLegalese: '© ${AppConstants.date} ${AppConstants.author}',
                       ),
@@ -235,38 +241,35 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   void _showEnvSwitchDialog() {
-    // Selection dialog using switch items for environments
+    // Selection dialog for environments
     CommonDialog.showSwitchDialog(
       title: I18nKeys.switchEnv.tr,
       items: [
         DialogSwitchItem(
           label: I18nKeys.envDev.tr,
-          value: AppEnv.env == AppEnvironment.dev.name,
-          onChanged: (val) {
-            if (val) {
-              setState(() => AppEnv.setEnvironment(AppEnvironment.dev));
-              AppNav.back();
-            }
+          value: AppEnv.currentEnv == AppEnvironment.dev,
+          onChanged: (_) async {
+            await AppEnv.setEnvironment(AppEnvironment.dev);
+            if (mounted) setState(() {});
+            AppNav.back();
           },
         ),
         DialogSwitchItem(
           label: I18nKeys.envTest.tr,
-          value: AppEnv.env == AppEnvironment.test.name,
-          onChanged: (val) {
-            if (val) {
-              setState(() => AppEnv.setEnvironment(AppEnvironment.test));
-              AppNav.back();
-            }
+          value: AppEnv.currentEnv == AppEnvironment.test,
+          onChanged: (_) async {
+            await AppEnv.setEnvironment(AppEnvironment.test);
+            if (mounted) setState(() {});
+            AppNav.back();
           },
         ),
         DialogSwitchItem(
           label: I18nKeys.envProd.tr,
-          value: AppEnv.env == AppEnvironment.prod.name,
-          onChanged: (val) {
-            if (val) {
-              setState(() => AppEnv.setEnvironment(AppEnvironment.prod));
-              AppNav.back();
-            }
+          value: AppEnv.currentEnv == AppEnvironment.prod,
+          onChanged: (_) async {
+            await AppEnv.setEnvironment(AppEnvironment.prod);
+            if (mounted) setState(() {});
+            AppNav.back();
           },
         ),
       ],
@@ -274,18 +277,17 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   void _showLanguageDialog() {
-    // Selection dialog using switch items for languages
+    // Selection dialog for languages
     CommonDialog.showSwitchDialog(
       title: I18nKeys.selectLanguage.tr,
       items: AppLanguage.values.map((lang) {
         return DialogSwitchItem(
           label: lang.label,
           value: settingManager.language == lang,
-          onChanged: (val) {
-            if (val) {
-              settingManager.setLanguage(lang);
-              AppNav.back();
-            }
+          onChanged: (_) {
+            settingManager.setLanguage(lang);
+            // No need for setState here as BaseListenablePage listens to settingManager
+            AppNav.back();
           },
         );
       }).toList(),
@@ -297,14 +299,26 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget _buildSectionTitle(String title) {
     return Padding(
       padding: const EdgeInsets.only(left: 10, bottom: 8, top: 5),
-      child: Text(title.toUpperCase(), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 1.1)),
+      child: Text(
+        title.toUpperCase(),
+        style: const TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.bold,
+          color: Colors.grey,
+          letterSpacing: 1.1,
+        ),
+      ),
     );
   }
 
   Widget _buildSettingsCard(BuildContext context, List<Widget> children) {
     final theme = Theme.of(context);
     return Container(
-      decoration: BoxDecoration(boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 8, offset: const Offset(0, 4))]),
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 8, offset: const Offset(0, 4)),
+        ],
+      ),
       child: Material(
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(20),
@@ -313,7 +327,14 @@ class _SettingsPageState extends State<SettingsPage> {
           children: [
             for (var i = 0; i < children.length; i++) ...[
               children[i],
-              if (i < children.length - 1) Divider(height: 1, thickness: 0.5, indent: 60, endIndent: 20, color: theme.dividerColor.withValues(alpha: 0.05)),
+              if (i < children.length - 1)
+                Divider(
+                  height: 1,
+                  thickness: 0.5,
+                  indent: 60,
+                  endIndent: 20,
+                  color: theme.dividerColor.withValues(alpha: 0.05),
+                ),
             ],
           ],
         ),
@@ -321,31 +342,63 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Widget _buildListTile({required IconData icon, required String title, required Color accentColor, String? subtitle, Widget? trailing, required VoidCallback onTap, AuthBlurLevel blurLevel = AuthBlurLevel.none}) {
+  Widget _buildListTile({
+    required IconData icon,
+    required String title,
+    required Color accentColor,
+    String? subtitle,
+    Widget? trailing,
+    required VoidCallback onTap,
+    AuthBlurLevel blurLevel = AuthBlurLevel.none,
+  }) {
     return ListTile(
       dense: true,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16),
       leading: Container(
         padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(color: accentColor.withValues(alpha: 0.08), borderRadius: BorderRadius.circular(10)),
+        decoration: BoxDecoration(
+          color: accentColor.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(10),
+        ),
         child: Icon(icon, color: accentColor, size: 20),
       ),
-      title: CommonAuthText(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500), maxLines: 1, blurLevel: blurLevel, onTap: onTap),
-      subtitle: subtitle != null ? Text(subtitle, style: const TextStyle(fontSize: 11, color: Colors.grey)) : null,
+      title: CommonAuthText(
+        title,
+        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+        maxLines: 1,
+        blurLevel: blurLevel,
+        onTap: onTap,
+      ),
+      subtitle: subtitle != null
+          ? Text(subtitle, style: const TextStyle(fontSize: 11, color: Colors.grey))
+          : null,
       trailing: trailing ?? const Icon(Icons.chevron_right_rounded, size: 20, color: Colors.grey),
       onTap: onTap,
     );
   }
 
-  Widget _buildSwitchTile({required IconData icon, required String title, required bool value, required Color accentColor, required ValueChanged<bool> onChanged}) {
+  Widget _buildSwitchTile({
+    required IconData icon,
+    required String title,
+    required bool value,
+    required Color accentColor,
+    required ValueChanged<bool> onChanged,
+  }) {
     return SwitchListTile.adaptive(
       dense: true,
       secondary: Container(
         padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(color: accentColor.withValues(alpha: 0.08), borderRadius: BorderRadius.circular(10)),
+        decoration: BoxDecoration(
+          color: accentColor.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(10),
+        ),
         child: Icon(icon, color: accentColor, size: 20),
       ),
-      title: CommonText(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500), maxLines: 1),
+      title: CommonText(
+        title,
+        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+        maxLines: 1,
+      ),
       value: value,
       activeColor: accentColor,
       onChanged: onChanged,

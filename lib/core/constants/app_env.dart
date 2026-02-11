@@ -1,4 +1,6 @@
+import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
 import 'package:listen_portfolio_flutter/core/network/api_client.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 enum AppEnvironment {
   dev('dev'),
@@ -17,8 +19,20 @@ enum AppEnvironment {
 class AppEnv {
   AppEnv._();
 
-  // Added 'const' to ensure the environment variable is picked up at compile time
-  static AppEnvironment _env = AppEnvironment.fromString(const String.fromEnvironment('APP_ENV', defaultValue: 'dev'));
+  // Internal state, defaults to compile-time define
+  static AppEnvironment _env = AppEnvironment.fromString(
+    const String.fromEnvironment('APP_ENV', defaultValue: 'dev'),
+  );
+
+  /// Initializes the environment by checking local storage
+  static Future<void> init() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedEnv = prefs.getString(AppConstants.envKey);
+    if (savedEnv != null) {
+      _env = AppEnvironment.fromString(savedEnv);
+    }
+    _applyDioConfig();
+  }
 
   static bool isProd() => _env == AppEnvironment.prod;
 
@@ -58,8 +72,17 @@ class AppEnv {
     }
   }
 
-  static void setEnvironment(AppEnvironment newEnv) {
+  /// Updates current environment and persists the result to local storage
+  static Future<void> setEnvironment(AppEnvironment newEnv) async {
     _env = newEnv;
+    _applyDioConfig();
+
+    // Save to SharedPreferences for persistence across restarts
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(AppConstants.envKey, newEnv.name);
+  }
+
+  static void _applyDioConfig() {
     ApiClient.dio.options.baseUrl = apiBaseUrl;
     ApiClient.dio.options.connectTimeout = Duration(milliseconds: connectTimeout);
     ApiClient.dio.options.receiveTimeout = Duration(milliseconds: receiveTimeout);

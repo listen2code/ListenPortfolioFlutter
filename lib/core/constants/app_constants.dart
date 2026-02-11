@@ -11,6 +11,7 @@ class AppConstants {
   static const String languageKey = 'language';
   static const String notificationsKey = 'notifications_enabled';
   static const String logOverlayKey = 'log_overlay_enabled';
+  static const String envKey = 'env_setting';
   static const String appName = 'lPortfolio';
 
   static const String author = 'Listen';
