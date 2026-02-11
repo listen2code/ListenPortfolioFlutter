@@ -4,13 +4,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_portfolio_flutter/core/base/base_listenable_page.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
+import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
-import 'package:listen_portfolio_flutter/core/route/route_interceptor.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_page.dart';
 import 'package:listen_portfolio_flutter/features/splash/presentation/pages/splash_page.dart';
 import 'package:listen_portfolio_flutter/shared/base/base_auth_listenable_page.dart';
 import 'package:listen_portfolio_flutter/shared/utils/snack_bar_util.dart';
+import 'package:listen_portfolio_flutter/shared/widgets/common_dialog.dart';
 
 import 'core/theme/app_theme.dart';
 
@@ -18,16 +19,24 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Register auth and navigation logic to the core interceptor
-  RouteInterceptorConfig.register(
+  AppNavConfig.register(
     isGuest: () => authManager.state.isGuest,
+    // The actual login navigation logic
     onLogin: (context) async {
-      return await AppNav.to(LoginPage());
+      final result = await AppNav.to(const LoginPage());
+      return result == true;
     },
+    // Global feedback after successful authentication
     onLoginSuccess: () {
-      final context = RouteInterceptorConfig.context;
-      if (context != null) {
-        SnackBarUtil.show("Login success!");
-      }
+      SnackBarUtil.show("Login success!");
+    },
+    // Registration of the "Login Required" confirmation dialog
+    onShowLoginDialog: (context) async {
+      final result = await CommonDialog.showConfirm(
+        title: I18nKeys.loginLink.tr,
+        message: I18nKeys.signInToContinue.tr,
+      );
+      return result == true; // Only proceed to login flow if user clicked OK
     },
   );
 
@@ -42,7 +51,7 @@ class MyApp extends StatelessWidget {
     return BaseListenablePage(
       builder: (context, child) {
         return MaterialApp(
-          navigatorKey: RouteInterceptorConfig.navigatorKey,
+          navigatorKey: AppNavConfig.navigatorKey,
           scaffoldMessengerKey: SnackBarUtil.messengerKey,
           title: AppConstants.appName,
           debugShowCheckedModeBanner: false,
@@ -60,7 +69,6 @@ class MyApp extends StatelessWidget {
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
-
           home: const SplashPage(),
         );
       },

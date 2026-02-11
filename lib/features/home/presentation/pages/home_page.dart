@@ -14,6 +14,7 @@ import 'package:listen_portfolio_flutter/features/settings/presentation/pages/ap
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/settings_page.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_portfolio_flutter/shared/widgets/common_auth_text.dart';
+import 'package:listen_portfolio_flutter/shared/widgets/common_dialog.dart';
 
 /// Enum to manage home page tabs instead of hardcoded indices
 enum HomeTab { overview, aboutMe, projects, architecture }
@@ -295,16 +296,24 @@ class _HomePageState extends State<HomePage> {
             maxLines: 1,
           ),
           onTap: () {
-            if (!isGuest) {
-              authManager.logout();
-              // Reset tab to overview if user was on a protected page
-              if (_currentTab == HomeTab.aboutMe) {
-                setState(() => _currentTab = HomeTab.overview);
-              }
+            if (isGuest) {
+              AppNav.to(const LoginPage());
+            } else {
+              // Confirm logout before action
+              CommonDialog.showConfirm(
+                title: I18nKeys.logout.tr,
+                message: 'Are you sure you want to log out?',
+              ).then((confirmed) {
+                if (confirmed == true) {
+                  authManager.logout();
+                  // Reset tab to overview if user was on a protected page
+                  if (_currentTab == HomeTab.aboutMe) {
+                    setState(() => _currentTab = HomeTab.overview);
+                  }
+                  AppNav.to(const LoginPage());
+                }
+              });
             }
-
-            // Use offAll to clear session and return to login safely
-            AppNav.to(const LoginPage());
           },
         ),
       ),

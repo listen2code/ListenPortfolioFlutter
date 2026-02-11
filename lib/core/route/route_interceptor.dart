@@ -1,40 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
 
-/// Global configuration for route interception to avoid reverse dependencies.
-class RouteInterceptorConfig {
-  RouteInterceptorConfig._();
-
-  /// Global key to access the navigator without passing BuildContext manually.
-  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-
-  /// Shortcut to get current context from navigator key.
-  static BuildContext? get context => navigatorKey.currentContext;
-
-  /// Callback to check if the user is a guest. Registered at app startup.
-  static bool Function()? isGuestCheck;
-
-  /// Callback to handle redirection to the login page. Returns true if login succeeded.
-  static Future<bool> Function(BuildContext context)? onLoginRedirect;
-
-  /// Optional callback triggered globally on successful login.
-  static void Function()? onLoginSuccessCallback;
-
-  /// Setup the registry at app startup.
-  static void register({
-    required bool Function() isGuest,
-    required Future<bool> Function(BuildContext context) onLogin,
-    void Function()? onLoginSuccess,
-  }) {
-    isGuestCheck = isGuest;
-    onLoginRedirect = onLogin;
-    onLoginSuccessCallback = onLoginSuccess;
-  }
-}
+import 'app_nav.dart';
 
 abstract class _RouteInterceptor {
+  /// Priority of the interceptor. Lower value means higher priority.
   int? priority;
 
+  /// Logic to run before navigation.
   Future<T?>? runOnRedirect<T>({Route<T>? toRoute, bool needLogin = false});
 }
 
@@ -46,33 +19,38 @@ class CommonRouteInterceptor implements _RouteInterceptor {
   Future<T?>? runOnRedirect<T>({Route<T>? toRoute, bool needLogin = false}) => null;
 }
 
+/// Specialized interceptor for checking authentication status.
 class LoginRouteInterceptor extends CommonRouteInterceptor {
   @override
   int? get priority => -1;
 
   @override
   Future<T?>? runOnRedirect<T>({Route<T>? toRoute, bool needLogin = false}) {
-    final bool isGuest = RouteInterceptorConfig.isGuestCheck?.call() ?? true;
+    // Check current auth status via registered callback in AppNav config
+    final bool isGuest = AppNavConfig.isGuestCheck?.call() ?? true;
 
+    // Intercept navigation if login is required but user is a guest
     if (needLogin && isGuest) {
-      final context = RouteInterceptorConfig.context;
-      if (context != null && RouteInterceptorConfig.onLoginRedirect != null) {
-        appLogger.d("RouteInterceptor: Login required. Redirecting...");
+      final context = AppNavConfig.context;
+      if (context != null && AppNavConfig.onLoginRedirect != null) {
+        appLogger.d("RouteInterceptor: Access denied. Redirecting to login...");
 
-        return RouteInterceptorConfig.onLoginRedirect!(context).then((isLoginSuccess) {
+        // Start login flow and return its completion future
+        return AppNavConfig.onLoginRedirect!(context).then((isLoginSuccess) {
           if (isLoginSuccess) {
-            appLogger.d("RouteInterceptor: Auth successful.");
-            RouteInterceptorConfig.onLoginSuccessCallback?.call();
+            appLogger.d("RouteInterceptor: Auth success. Executing target route.");
+            AppNavConfig.onLoginSuccessCallback?.call();
 
+            // If there's a target route, perform the push now using global navigator state
             if (toRoute != null && context.mounted) {
-              return Navigator.of(context).push(toRoute);
+              return AppNavConfig.navigatorKey.currentState?.push(toRoute);
             }
             return true as T;
           }
           return false as T;
         });
       } else {
-        // Critical: If we intended to intercept but can't (no context/config), return false
+        // Explicitly return false if interception was intended but configuration is missing
         appLogger.e("RouteInterceptor: Interception failed due to missing context or config.");
         return Future.value(false as T);
       }
@@ -98,7 +76,7 @@ class RouteInterceptorRunner {
     }
 
     if (toRoute != null) {
-      return RouteInterceptorConfig.navigatorKey.currentState?.push(toRoute);
+      return AppNavConfig.navigatorKey.currentState?.push(toRoute);
     }
 
     // Default to true only if no interceptor captured the request
@@ -107,6 +85,7 @@ class RouteInterceptorRunner {
   }
 }
 
+/// Helper function to trigger route redirection logic.
 Future<T?>? runOnRedirect<T>({
   Route<T>? toRoute,
   bool needLogin = false,

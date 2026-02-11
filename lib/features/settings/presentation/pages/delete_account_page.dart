@@ -7,6 +7,7 @@ import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_page.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_portfolio_flutter/shared/utils/snack_bar_util.dart';
+import 'package:listen_portfolio_flutter/shared/widgets/common_dialog.dart';
 
 class DeleteAccountPage extends StatefulWidget {
   const DeleteAccountPage({super.key});
@@ -18,19 +19,28 @@ class DeleteAccountPage extends StatefulWidget {
 class _DeleteAccountPageState extends State<DeleteAccountPage> {
   bool _isConfirmed = false;
 
-  // Cleanup session and notify user via SnackBar
-  void _handleDeleteAccount() async {
+  // Cleanup session and notify user after double confirmation
+  void _handleDeleteAccount() {
     if (!_isConfirmed) return;
 
-    // Reset all global and local settings
-    await settingManager.resetSettings();
+    CommonDialog.showConfirm(
+      title: I18nKeys.deleteAccountConfirmTitle.tr,
+      message: I18nKeys.deleteAccountConfirmContent.tr,
+      okText: I18nKeys.reset.tr,
+      okColor: Colors.red,
+    ).then((confirmed) async {
+      if (confirmed == true) {
+        // Reset all global and local settings
+        await settingManager.resetSettings();
 
-    if (mounted) {
-      authManager.logout();
-      // Redirect to login and show success message
-      AppNav.off(const LoginPage());
-      SnackBarUtil.show(I18nKeys.deleteAccountSuccess.tr);
-    }
+        if (mounted) {
+          authManager.logout();
+          // Redirect to login and show success message
+          AppNav.off(const LoginPage());
+          SnackBarUtil.show(I18nKeys.deleteAccountSuccess.tr);
+        }
+      }
+    });
   }
 
   @override

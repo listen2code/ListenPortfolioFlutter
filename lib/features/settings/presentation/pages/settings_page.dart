@@ -14,6 +14,7 @@ import 'package:listen_portfolio_flutter/generated/r.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_portfolio_flutter/shared/utils/snack_bar_util.dart';
 import 'package:listen_portfolio_flutter/shared/widgets/common_auth_text.dart';
+import 'package:listen_portfolio_flutter/shared/widgets/common_dialog.dart';
 
 import 'appearance_page.dart';
 import 'delete_account_page.dart';
@@ -59,7 +60,7 @@ class _SettingsPageState extends State<SettingsPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // 1. PREFERENCES: UI related settings
+                  // 1. PREFERENCES: UI and localization
                   _buildSectionTitle(I18nKeys.general.tr),
                   _buildSettingsCard(context, [
                     _buildListTile(
@@ -131,7 +132,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
                   const SizedBox(height: 25),
 
-                  // 4. DEVELOPER TOOLS
+                  // 4. DEVELOPER TOOLS: Always visible
                   _buildSectionTitle(I18nKeys.developer.tr),
                   _buildSettingsCard(context, [
                     _buildSwitchTile(
@@ -185,13 +186,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         applicationVersion: AppConstants.appVersion,
                         applicationIcon: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Image.asset(
-                            R.imagesIcLauncherAdaptiveFore,
-                            width: 48,
-                            height: 48,
-                            color: accentColor,
-                            colorBlendMode: BlendMode.srcIn,
-                          ),
+                          child: Image.asset(R.imagesIcLauncherAdaptiveFore, width: 48, height: 48, color: accentColor, colorBlendMode: BlendMode.srcIn),
                         ),
                         applicationLegalese: '© ${AppConstants.date} ${AppConstants.author}',
                       ),
@@ -215,7 +210,7 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  // --- Logic Helpers ---
+  // --- Logic Handlers ---
 
   void _handleClearCache(Color accentColor) async {
     await CacheManager.clearAllCache();
@@ -226,116 +221,90 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   void _showResetConfirmation(Color accentColor) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(I18nKeys.resetConfirmTitle.tr),
-        content: Text(I18nKeys.resetConfirmContent.tr),
-        actions: [
-          TextButton(onPressed: () => AppNav.back(), child: Text(I18nKeys.cancel.tr)),
-          TextButton(
-            onPressed: () async {
-              await settingManager.resetSettings();
-              if (mounted) {
-                AppNav.back();
-                SnackBarUtil.show(I18nKeys.settingsResetSuccess.tr);
-              }
-            },
-            child: Text(I18nKeys.reset.tr, style: const TextStyle(color: Colors.red)),
-          ),
-        ],
-      ),
-    );
+    CommonDialog.showConfirm(
+      title: I18nKeys.resetConfirmTitle.tr,
+      message: I18nKeys.resetConfirmContent.tr,
+      okText: I18nKeys.reset.tr,
+      okColor: Colors.red,
+    ).then((confirmed) async {
+      if (confirmed == true) {
+        await settingManager.resetSettings();
+        SnackBarUtil.show(I18nKeys.settingsResetSuccess.tr);
+      }
+    });
   }
 
   void _showEnvSwitchDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: CommonText(I18nKeys.switchEnv.tr),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _buildEnvTile(I18nKeys.envDev.tr, AppEnvironment.dev),
-            _buildEnvTile(I18nKeys.envTest.tr, AppEnvironment.test),
-            _buildEnvTile(I18nKeys.envProd.tr, AppEnvironment.prod),
-          ],
+    // Selection dialog using switch items for environments
+    CommonDialog.showSwitchDialog(
+      title: I18nKeys.switchEnv.tr,
+      items: [
+        DialogSwitchItem(
+          label: I18nKeys.envDev.tr,
+          value: AppEnv.env == AppEnvironment.dev.name,
+          onChanged: (val) {
+            if (val) {
+              setState(() => AppEnv.setEnvironment(AppEnvironment.dev));
+              AppNav.back();
+            }
+          },
         ),
-      ),
-    );
-  }
-
-  Widget _buildEnvTile(String label, AppEnvironment envCode) {
-    final bool isCurrent = AppEnv.env == envCode.name;
-    return ListTile(
-      title: Text(label),
-      subtitle: Text(isCurrent ? I18nKeys.currentlyActive.tr : envCode.name),
-      trailing: isCurrent ? const Icon(Icons.check_circle) : null,
-      onTap: () {
-        setState(() => AppEnv.setEnvironment(envCode));
-        AppNav.back();
-      },
+        DialogSwitchItem(
+          label: I18nKeys.envTest.tr,
+          value: AppEnv.env == AppEnvironment.test.name,
+          onChanged: (val) {
+            if (val) {
+              setState(() => AppEnv.setEnvironment(AppEnvironment.test));
+              AppNav.back();
+            }
+          },
+        ),
+        DialogSwitchItem(
+          label: I18nKeys.envProd.tr,
+          value: AppEnv.env == AppEnvironment.prod.name,
+          onChanged: (val) {
+            if (val) {
+              setState(() => AppEnv.setEnvironment(AppEnvironment.prod));
+              AppNav.back();
+            }
+          },
+        ),
+      ],
     );
   }
 
   void _showLanguageDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(I18nKeys.selectLanguage.tr),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: AppLanguage.values.map((lang) => _buildLanguageOption(lang)).toList(),
-        ),
-      ),
+    // Selection dialog using switch items for languages
+    CommonDialog.showSwitchDialog(
+      title: I18nKeys.selectLanguage.tr,
+      items: AppLanguage.values.map((lang) {
+        return DialogSwitchItem(
+          label: lang.label,
+          value: settingManager.language == lang,
+          onChanged: (val) {
+            if (val) {
+              settingManager.setLanguage(lang);
+              AppNav.back();
+            }
+          },
+        );
+      }).toList(),
     );
   }
 
-  Widget _buildLanguageOption(AppLanguage lang) {
-    final isSelected = lang == settingManager.language;
-    return ListTile(
-      title: Text(
-        lang.label,
-        style: TextStyle(
-          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-          color: isSelected ? settingManager.accentColor : null,
-        ),
-      ),
-      trailing: isSelected ? Icon(Icons.check_circle, color: settingManager.accentColor) : null,
-      onTap: () {
-        settingManager.setLanguage(lang);
-        AppNav.back();
-      },
-    );
-  }
-
-  // --- UI Reusable Builders ---
+  // --- UI Builders ---
 
   Widget _buildSectionTitle(String title) {
     return Padding(
       padding: const EdgeInsets.only(left: 10, bottom: 8, top: 5),
-      child: Text(
-        title.toUpperCase(),
-        style: const TextStyle(
-          fontSize: 11,
-          fontWeight: FontWeight.bold,
-          color: Colors.grey,
-          letterSpacing: 1.1,
-        ),
-      ),
+      child: Text(title.toUpperCase(), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 1.1)),
     );
   }
 
   Widget _buildSettingsCard(BuildContext context, List<Widget> children) {
     final theme = Theme.of(context);
     return Container(
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 8, offset: const Offset(0, 4)),
-        ],
-      ),
+      decoration: BoxDecoration(boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 8, offset: const Offset(0, 4))]),
       child: Material(
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(20),
@@ -344,14 +313,7 @@ class _SettingsPageState extends State<SettingsPage> {
           children: [
             for (var i = 0; i < children.length; i++) ...[
               children[i],
-              if (i < children.length - 1)
-                Divider(
-                  height: 1,
-                  thickness: 0.5,
-                  indent: 60,
-                  endIndent: 20,
-                  color: theme.dividerColor.withValues(alpha: 0.05),
-                ),
+              if (i < children.length - 1) Divider(height: 1, thickness: 0.5, indent: 60, endIndent: 20, color: theme.dividerColor.withValues(alpha: 0.05)),
             ],
           ],
         ),
@@ -359,63 +321,31 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Widget _buildListTile({
-    required IconData icon,
-    required String title,
-    required Color accentColor,
-    String? subtitle,
-    Widget? trailing,
-    required VoidCallback onTap,
-    AuthBlurLevel blurLevel = AuthBlurLevel.none,
-  }) {
+  Widget _buildListTile({required IconData icon, required String title, required Color accentColor, String? subtitle, Widget? trailing, required VoidCallback onTap, AuthBlurLevel blurLevel = AuthBlurLevel.none}) {
     return ListTile(
       dense: true,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16),
       leading: Container(
         padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: accentColor.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(10),
-        ),
+        decoration: BoxDecoration(color: accentColor.withValues(alpha: 0.08), borderRadius: BorderRadius.circular(10)),
         child: Icon(icon, color: accentColor, size: 20),
       ),
-      title: CommonAuthText(
-        title,
-        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-        maxLines: 1,
-        blurLevel: blurLevel,
-        onTap: onTap,
-      ),
-      subtitle: subtitle != null
-          ? Text(subtitle, style: const TextStyle(fontSize: 11, color: Colors.grey))
-          : null,
+      title: CommonAuthText(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500), maxLines: 1, blurLevel: blurLevel, onTap: onTap),
+      subtitle: subtitle != null ? Text(subtitle, style: const TextStyle(fontSize: 11, color: Colors.grey)) : null,
       trailing: trailing ?? const Icon(Icons.chevron_right_rounded, size: 20, color: Colors.grey),
       onTap: onTap,
     );
   }
 
-  Widget _buildSwitchTile({
-    required IconData icon,
-    required String title,
-    required bool value,
-    required Color accentColor,
-    required ValueChanged<bool> onChanged,
-  }) {
+  Widget _buildSwitchTile({required IconData icon, required String title, required bool value, required Color accentColor, required ValueChanged<bool> onChanged}) {
     return SwitchListTile.adaptive(
       dense: true,
       secondary: Container(
         padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: accentColor.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(10),
-        ),
+        decoration: BoxDecoration(color: accentColor.withValues(alpha: 0.08), borderRadius: BorderRadius.circular(10)),
         child: Icon(icon, color: accentColor, size: 20),
       ),
-      title: CommonText(
-        title,
-        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-        maxLines: 1,
-      ),
+      title: CommonText(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500), maxLines: 1),
       value: value,
       activeColor: accentColor,
       onChanged: onChanged,
