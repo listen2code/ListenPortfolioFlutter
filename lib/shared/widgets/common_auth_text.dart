@@ -11,7 +11,7 @@ import 'package:listen_portfolio_flutter/shared/widgets/common_text.dart';
 /// Predefined blur intensities for unauthorized content
 enum AuthBlurLevel {
   none(0.0),
-  low(3.0),
+  low(2.0),
   medium(8.0),
   high(16.0);
 

@@ -41,6 +41,5 @@ samples, guidance on mobile development, and a full API reference.
   ----------package_share: share module
   ------plugin_native: plugin for native basic info
 * server i18
-* visitor login: Skeleton
 * switch env: input url; mock api; config each api;
 * dev tools: layout check; lag check; launch; app launch; apk size;
