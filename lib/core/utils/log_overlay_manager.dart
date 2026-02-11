@@ -189,7 +189,7 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
                       padding: const EdgeInsets.only(bottom: 4.0),
                       child: RichText(
                         text: TextSpan(
-                          style: const TextStyle(fontSize: 10, fontFamily: 'monospace'),
+                          style: const TextStyle(fontSize: 10),
                           children: [
                             TextSpan(
                               text: '[${log.formattedTime}] ',
