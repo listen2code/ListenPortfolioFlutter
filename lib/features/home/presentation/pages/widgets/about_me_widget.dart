@@ -52,7 +52,7 @@ class _AboutMeWidgetState extends State<AboutMeWidget> {
                 title: Text(I18nKeys.chooseFromGallery.tr),
                 onTap: () {
                   _pickImage(ImageSource.gallery);
-                  Nav.back();
+                  AppNav.back();
                 },
               ),
               ListTile(
@@ -60,7 +60,7 @@ class _AboutMeWidgetState extends State<AboutMeWidget> {
                 title: Text(I18nKeys.takePhoto.tr),
                 onTap: () {
                   _pickImage(ImageSource.camera);
-                  Nav.back();
+                  AppNav.back();
                 },
               ),
               if (_imageFile != null)
@@ -69,7 +69,7 @@ class _AboutMeWidgetState extends State<AboutMeWidget> {
                   title: Text(I18nKeys.removePhoto.tr, style: const TextStyle(color: Colors.red)),
                   onTap: () {
                     _removeImage();
-                    Nav.back();
+                    AppNav.back();
                   },
                 ),
             ],

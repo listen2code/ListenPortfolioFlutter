@@ -17,7 +17,7 @@ class RouteInterceptorConfig {
   /// Callback to handle redirection to the login page. Returns true if login succeeded.
   static Future<bool> Function(BuildContext context)? onLoginRedirect;
 
-  /// Callback to show a SnackBar message. Added as requested.
+  /// Optional callback triggered globally on successful login.
   static void Function()? onLoginSuccessCallback;
 
   /// Setup the registry at app startup.
@@ -33,10 +33,8 @@ class RouteInterceptorConfig {
 }
 
 abstract class _RouteInterceptor {
-  /// Priority of the interceptor. Lower value means higher priority.
   int? priority;
 
-  /// Logic to run before navigation.
   Future<T?>? runOnRedirect<T>({Route<T>? toRoute, bool needLogin = false});
 }
 
@@ -48,46 +46,38 @@ class CommonRouteInterceptor implements _RouteInterceptor {
   Future<T?>? runOnRedirect<T>({Route<T>? toRoute, bool needLogin = false}) => null;
 }
 
-/// Specialized interceptor for checking authentication status.
 class LoginRouteInterceptor extends CommonRouteInterceptor {
   @override
   int? get priority => -1;
 
   @override
   Future<T?>? runOnRedirect<T>({Route<T>? toRoute, bool needLogin = false}) {
-    // Check current auth status via registered callback
     final bool isGuest = RouteInterceptorConfig.isGuestCheck?.call() ?? true;
 
-    // Intercept navigation if login is required but user is a guest
     if (needLogin && isGuest) {
       final context = RouteInterceptorConfig.context;
       if (context != null && RouteInterceptorConfig.onLoginRedirect != null) {
-        appLogger.d("RouteInterceptor: Access denied. Redirecting to login...");
+        appLogger.d("RouteInterceptor: Login required. Redirecting...");
 
-        // Start login flow and return its completion future
         return RouteInterceptorConfig.onLoginRedirect!(context).then((isLoginSuccess) {
           if (isLoginSuccess) {
+            appLogger.d("RouteInterceptor: Auth successful.");
             RouteInterceptorConfig.onLoginSuccessCallback?.call();
-            appLogger.d("RouteInterceptor: Auth success. Executing target route.");
 
-            // If there's a target route, perform the push now using global navigator state
-            if (toRoute != null) {
-              return RouteInterceptorConfig.navigatorKey.currentState?.push(toRoute);
+            if (toRoute != null && context.mounted) {
+              return Navigator.of(context).push(toRoute);
             }
-
-            // If just checking permission, return true
             return true as T;
           }
-
-          appLogger.d("RouteInterceptor: Auth cancelled or failed.");
           return false as T;
         });
+      } else {
+        // Critical: If we intended to intercept but can't (no context/config), return false
+        appLogger.e("RouteInterceptor: Interception failed due to missing context or config.");
+        return Future.value(false as T);
       }
     }
-
-    appLogger.d("RouteInterceptor: No interception isGuest=$isGuest");
-    // No interception: Proceed to next interceptor or default runner logic
-    return null;
+    return null; // No interception needed
   }
 }
 
@@ -104,23 +94,19 @@ class RouteInterceptorRunner {
   Future<T?>? runOnRedirect<T>({Route<T>? toRoute, bool needLogin = false}) {
     for (final element in _getInterceptors()) {
       final interceptedResult = element.runOnRedirect(toRoute: toRoute, needLogin: needLogin);
-      // If an interceptor captures the flow, return its result immediately
       if (interceptedResult != null) return interceptedResult;
     }
 
-    // Default Fallback: If no interceptors caught the request
     if (toRoute != null) {
-      // Execute the navigation normally
       return RouteInterceptorConfig.navigatorKey.currentState?.push(toRoute);
     }
 
-    // No route to push, just return a "Permission Granted" flag
+    // Default to true only if no interceptor captured the request
     if (T == bool || T == dynamic) return Future.value(true as T);
     return null;
   }
 }
 
-/// Helper function to trigger route redirection logic.
 Future<T?>? runOnRedirect<T>({
   Route<T>? toRoute,
   bool needLogin = false,

@@ -44,18 +44,18 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     ref.listenNavigation<LoginState, LoginNavigationTarget>(loginViewModelProvider, (target) {
       switch (target) {
         case LoginNavigationTarget.signup:
-          Nav.to(const SignUpPage());
+          AppNav.to(const SignUpPage());
           break;
         case LoginNavigationTarget.forgotPassword:
-          Nav.to(const ForgotPasswordPage());
+          AppNav.to(const ForgotPasswordPage());
           break;
         case LoginNavigationTarget.success:
           // Close login page and return true to inform the caller (interceptor) about success
-          Nav.back(true);
+          AppNav.back(true);
           break;
         case LoginNavigationTarget.back:
           // Close login page and return false to indicate it was dismissed/skipped
-          Nav.back(false);
+          AppNav.back(false);
           break;
       }
     });

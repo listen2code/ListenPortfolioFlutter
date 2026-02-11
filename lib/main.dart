@@ -20,7 +20,7 @@ void main() {
   RouteInterceptorConfig.register(
     isGuest: () => authManager.state.isGuest,
     onLogin: (context) async {
-      return await Nav.to(LoginPage());
+      return await AppNav.to(LoginPage());
     },
     onLoginSuccess: () {
       final context = RouteInterceptorConfig.context;

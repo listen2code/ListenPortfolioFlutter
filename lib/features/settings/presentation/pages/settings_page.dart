@@ -66,7 +66,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       title: I18nKeys.appearance.tr,
                       subtitle: I18nKeys.appearanceSubtitle.tr,
                       accentColor: accentColor,
-                      onTap: () => Nav.to(const AppearancePage()),
+                      onTap: () => AppNav.to(const AppearancePage()),
                     ),
                     _buildListTile(
                       icon: Icons.language_outlined,
@@ -90,7 +90,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       title: I18nKeys.changePassword.tr,
                       accentColor: accentColor,
                       blurLevel: AuthBlurLevel.low,
-                      onTap: () => Nav.to(const ChangePasswordPage(), needLogin: true),
+                      onTap: () => AppNav.to(const ChangePasswordPage(), needLogin: true),
                     ),
                     _buildSwitchTile(
                       icon: Icons.notifications_none_rounded,
@@ -104,7 +104,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       title: I18nKeys.deleteAccount.tr,
                       accentColor: accentColor,
                       blurLevel: AuthBlurLevel.low,
-                      onTap: () => Nav.to(const DeleteAccountPage(), needLogin: true),
+                      onTap: () => AppNav.to(const DeleteAccountPage(), needLogin: true),
                     ),
                   ]),
 
@@ -166,13 +166,13 @@ class _SettingsPageState extends State<SettingsPage> {
                       icon: Icons.privacy_tip_outlined,
                       title: I18nKeys.privacyPolicy.tr,
                       accentColor: accentColor,
-                      onTap: () => Nav.to(const PrivacyPolicyPage()),
+                      onTap: () => AppNav.to(const PrivacyPolicyPage()),
                     ),
                     _buildListTile(
                       icon: Icons.gavel_outlined,
                       title: I18nKeys.termsOfService.tr,
                       accentColor: accentColor,
-                      onTap: () => Nav.to(const TermsOfServicePage()),
+                      onTap: () => AppNav.to(const TermsOfServicePage()),
                     ),
                     _buildListTile(
                       icon: Icons.info_outline_rounded,
@@ -237,12 +237,12 @@ class _SettingsPageState extends State<SettingsPage> {
         title: Text(I18nKeys.resetConfirmTitle.tr),
         content: Text(I18nKeys.resetConfirmContent.tr),
         actions: [
-          TextButton(onPressed: () => Nav.back(), child: Text(I18nKeys.cancel.tr)),
+          TextButton(onPressed: () => AppNav.back(), child: Text(I18nKeys.cancel.tr)),
           TextButton(
             onPressed: () async {
               await settingManager.resetSettings();
               if (mounted) {
-                Nav.back();
+                AppNav.back();
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(I18nKeys.settingsResetSuccess.tr),
@@ -285,7 +285,7 @@ class _SettingsPageState extends State<SettingsPage> {
       trailing: isCurrent ? const Icon(Icons.check_circle) : null,
       onTap: () {
         setState(() => AppEnv.setEnvironment(envCode));
-        Nav.back();
+        AppNav.back();
       },
     );
   }
@@ -317,7 +317,7 @@ class _SettingsPageState extends State<SettingsPage> {
       trailing: isSelected ? Icon(Icons.check_circle, color: settingManager.accentColor) : null,
       onTap: () {
         settingManager.setLanguage(lang);
-        Nav.back();
+        AppNav.back();
       },
     );
   }

@@ -24,7 +24,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
     await settingManager.resetSettings();
 
     if (mounted) {
-      Nav.to(LoginPage());
+      AppNav.to(LoginPage());
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(I18nKeys.deleteAccountSuccess.tr),
@@ -42,64 +42,65 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
     return BaseStatelessPage(
       title: I18nKeys.deleteAccount.tr,
       padding: const EdgeInsets.all(24),
-      body: (context, child) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Icon(Icons.warning_amber_rounded, size: 64, color: Colors.red),
-          const SizedBox(height: 24),
-          CommonText(
-            I18nKeys.deleteAccountConfirmTitle.tr,
-            style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
-            maxLines: 1,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            I18nKeys.deleteAccountConfirmContent.tr,
-            style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey, height: 1.6),
-          ),
-          const SizedBox(height: 32),
-          _buildWarningItem('All your personal data will be wiped.'),
-          _buildWarningItem('Account cannot be recovered.'),
-          _buildWarningItem('Active subscriptions (if any) will be canceled.'),
-          const Spacer(), // This now works correctly
-          Row(
+      body: (context, child) =>
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const Icon(Icons.warning_amber_rounded, size: 64, color: Colors.red),
+              const SizedBox(height: 24),
+              CommonText(
+                I18nKeys.deleteAccountConfirmTitle.tr,
+                style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+                maxLines: 1,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                I18nKeys.deleteAccountConfirmContent.tr,
+                style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey, height: 1.6),
+              ),
+              const SizedBox(height: 32),
+              _buildWarningItem('All your personal data will be wiped.'),
+              _buildWarningItem('Account cannot be recovered.'),
+              _buildWarningItem('Active subscriptions (if any) will be canceled.'),
+              const Spacer(), // This now works correctly
+              Row(
+                children: [
+                  SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: Checkbox(
+                      value: _isConfirmed,
+                      onChanged: (val) => setState(() => _isConfirmed = val ?? false),
+                      activeColor: Colors.red,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => setState(() => _isConfirmed = !_isConfirmed),
+                      child: Text('I understand the consequences.', style: theme.textTheme.bodySmall),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
               SizedBox(
-                width: 24,
-                height: 24,
-                child: Checkbox(
-                  value: _isConfirmed,
-                  onChanged: (val) => setState(() => _isConfirmed = val ?? false),
-                  activeColor: Colors.red,
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _isConfirmed ? _handleDeleteAccount : null,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    elevation: 0,
+                  ),
+                  child: Text(I18nKeys.reset.tr, style: const TextStyle(fontWeight: FontWeight.bold)),
                 ),
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: GestureDetector(
-                  onTap: () => setState(() => _isConfirmed = !_isConfirmed),
-                  child: Text('I understand the consequences.', style: theme.textTheme.bodySmall),
-                ),
-              ),
+              const SizedBox(height: 20),
             ],
           ),
-          const SizedBox(height: 16),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: _isConfirmed ? _handleDeleteAccount : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                elevation: 0,
-              ),
-              child: Text(I18nKeys.reset.tr, style: const TextStyle(fontWeight: FontWeight.bold)),
-            ),
-          ),
-          const SizedBox(height: 20),
-        ],
-      ),
     );
   }
 

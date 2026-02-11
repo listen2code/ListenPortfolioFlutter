@@ -38,7 +38,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
           backgroundColor: accentColor,
         ),
       );
-      Nav.back();
+      AppNav.back();
     }
   }
 

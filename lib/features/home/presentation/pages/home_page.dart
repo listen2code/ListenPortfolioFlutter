@@ -71,7 +71,7 @@ class _HomePageState extends State<HomePage> {
       case HomeTab.overview:
         return OverviewWidget(
           onResumeRequested: () {
-            Nav.tryLogin(
+            AppNav.tryLogin(
               onSuccess: () {
                 setState(() => _currentTab = HomeTab.aboutMe);
               },
@@ -113,7 +113,7 @@ class _HomePageState extends State<HomePage> {
                       accentColor: accentColor,
                       onTap: () {
                         setState(() => _currentTab = HomeTab.overview);
-                        Nav.back();
+                        AppNav.back();
                       },
                     ),
                     _buildDrawerItem(
@@ -124,10 +124,10 @@ class _HomePageState extends State<HomePage> {
                       isSelected: _currentTab == HomeTab.aboutMe,
                       accentColor: accentColor,
                       onTap: () {
-                        Nav.tryLogin(
+                        AppNav.tryLogin(
                           onSuccess: () {
                             setState(() => _currentTab = HomeTab.aboutMe);
-                            Nav.back();
+                            AppNav.back();
                           },
                         );
                       },
@@ -139,7 +139,7 @@ class _HomePageState extends State<HomePage> {
                       accentColor: accentColor,
                       onTap: () {
                         setState(() => _currentTab = HomeTab.projects);
-                        Nav.back();
+                        AppNav.back();
                       },
                     ),
                     _buildDrawerItem(
@@ -149,7 +149,7 @@ class _HomePageState extends State<HomePage> {
                       accentColor: accentColor,
                       onTap: () {
                         setState(() => _currentTab = HomeTab.architecture);
-                        Nav.back();
+                        AppNav.back();
                       },
                     ),
                     Padding(
@@ -161,7 +161,7 @@ class _HomePageState extends State<HomePage> {
                       label: I18nKeys.settings.tr,
                       accentColor: accentColor,
                       onTap: () {
-                        Nav.to(const SettingsPage());
+                        AppNav.to(const SettingsPage());
                       },
                     ),
                   ],
@@ -233,7 +233,7 @@ class _HomePageState extends State<HomePage> {
             top: 0,
             child: IconButton(
               icon: Icon(getModeIcon(), color: Colors.white),
-              onPressed: () => Nav.to(const AppearancePage()),
+              onPressed: () => AppNav.to(const AppearancePage()),
             ),
           ),
         ],
@@ -304,7 +304,7 @@ class _HomePageState extends State<HomePage> {
             }
 
             // Use offAll to clear session and return to login safely
-            Nav.to(const LoginPage());
+            AppNav.to(const LoginPage());
           },
         ),
       ),

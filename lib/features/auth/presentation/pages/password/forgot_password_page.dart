@@ -33,7 +33,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         ),
       );
       // Close page after reset request
-      Nav.back();
+      AppNav.back();
     }
   }
 
@@ -118,7 +118,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   ),
                 ),
                 TextButton(
-                  onPressed: () => Nav.back(),
+                  onPressed: () => AppNav.back(),
                   child: CommonText(
                     I18nKeys.loginLink.tr,
                     style: TextStyle(color: accentColor, fontWeight: FontWeight.bold),

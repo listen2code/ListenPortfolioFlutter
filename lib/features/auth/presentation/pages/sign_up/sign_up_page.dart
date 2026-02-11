@@ -40,7 +40,7 @@ class _SignUpPageState extends State<SignUpPage> {
         ),
       );
       // Return to login screen
-      Nav.back();
+      AppNav.back();
     }
   }
 
@@ -151,7 +151,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                   ),
                   TextButton(
-                    onPressed: () => Nav.back(),
+                    onPressed: () => AppNav.back(),
                     child: CommonText(
                       I18nKeys.loginLink.tr,
                       style: TextStyle(color: accentColor, fontWeight: FontWeight.bold),

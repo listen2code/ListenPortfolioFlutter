@@ -1,8 +1,6 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
-import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
 import 'package:listen_portfolio_flutter/shared/base_auth_listenable_page.dart';
 import 'package:listen_portfolio_flutter/shared/widgets/common_text.dart';
@@ -77,7 +75,9 @@ class CommonAuthText extends StatelessWidget {
 
         // Intercept taps if content is blurred for guest.
         // Otherwise, use provided onTap or let it pass through.
-        final VoidCallback? finalTap = shouldBlur ? () => _showLoginRequiredDialog(context) : onTap;
+        final VoidCallback? finalTap = shouldBlur
+            ? () => AppNav.tryLogin(onSuccess: () => onTap?.call())
+            : onTap;
 
         return GestureDetector(
           onTap: finalTap,
@@ -85,35 +85,6 @@ class CommonAuthText extends StatelessWidget {
           child: content,
         );
       },
-    );
-  }
-
-  // Show a standard dialog prompting the guest to sign in
-  void _showLoginRequiredDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(I18nKeys.loginLink.tr),
-        content: Text(I18nKeys.signInToContinue.tr),
-        actions: [
-          TextButton(
-            onPressed: () => Nav.back(),
-            child: Text(I18nKeys.cancel.tr, style: const TextStyle(color: Colors.grey)),
-          ),
-          TextButton(
-            onPressed: () {
-              // Trigger login flow via global interceptor
-              Nav.tryLogin(
-                onSuccess: () {
-                  Nav.back(); // Pop the AlertDialog
-                  onTap?.call(); // Execute the original intended action
-                },
-              );
-            },
-            child: Text(I18nKeys.login.tr, style: const TextStyle(fontWeight: FontWeight.bold)),
-          ),
-        ],
-      ),
     );
   }
 }
