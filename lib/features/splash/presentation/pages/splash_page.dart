@@ -4,6 +4,7 @@ import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/core/utils/log_overlay_manager.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_page.dart';
+import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_page.dart';
 import 'package:listen_portfolio_flutter/generated/r.dart';
 
 class SplashPage extends StatefulWidget {
@@ -21,10 +22,13 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
   void initState() {
     super.initState();
     _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 1500));
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
 
     _controller.forward();
-    
+
     // Check and show Log Overlay if it was enabled
     WidgetsBinding.instance.addPostFrameCallback((_) {
       LogOverlayManager.init(context);
@@ -36,15 +40,21 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
   Future<void> _navigateToLogin() async {
     await Future.delayed(const Duration(seconds: 3));
     if (mounted) {
-      Navigator.of(context).pushReplacement(
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) => const LoginPage(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(opacity: animation, child: child);
-          },
-          transitionDuration: const Duration(milliseconds: 1000),
-        ),
-      );
+      Navigator.of(context)
+          .push(
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) => const LoginPage(),
+              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                return FadeTransition(opacity: animation, child: child);
+              },
+              transitionDuration: const Duration(milliseconds: 1000),
+            ),
+          )
+          .then((_) {
+            if (mounted) {
+              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const HomePage()));
+            }
+          });
     }
   }
 
@@ -79,7 +89,12 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
                 Text(
                   AppConstants.appName,
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.w300, color: accentColor, letterSpacing: 1.2),
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.w300,
+                    color: accentColor,
+                    letterSpacing: 1.2,
+                  ),
                 ),
               ],
             ),

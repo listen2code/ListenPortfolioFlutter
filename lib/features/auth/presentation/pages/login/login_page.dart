@@ -10,7 +10,6 @@ import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_view_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/password/forgot_password_page.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/sign_up/sign_up_page.dart';
-import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_page.dart';
 import 'package:listen_portfolio_flutter/generated/r.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 
@@ -39,6 +38,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     super.dispose();
   }
 
+  // Set up navigation listeners
   void _setupNavigation(BuildContext context) {
     ref.listenNavigation<LoginState, LoginNavigationTarget>(loginViewModelProvider, (target) {
       switch (target) {
@@ -48,8 +48,13 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         case LoginNavigationTarget.forgotPassword:
           Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ForgotPasswordPage()));
           break;
-        case LoginNavigationTarget.home:
-          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const HomePage()));
+        case LoginNavigationTarget.success:
+          // Close login page and return true to inform the caller (interceptor) about success
+          Navigator.of(context).pop(true);
+          break;
+        case LoginNavigationTarget.back:
+          // Close login page and return false to indicate it was dismissed/skipped
+          Navigator.of(context).pop(false);
           break;
       }
     });
@@ -59,6 +64,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   Widget build(BuildContext context) {
     _setupNavigation(context);
 
+    // Sync controllers with state
     ref.listen<LoginState>(loginViewModelProvider, (previous, next) {
       if (_usernameController.text.isEmpty && next.username.isNotEmpty) {
         _usernameController.text = next.username;
@@ -94,13 +100,18 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               _buildSkipButton(viewModel),
               const SizedBox(height: 10),
               _buildSignupLink(viewModel, accentColor),
-              if (state.errorMessage != null) ...[const SizedBox(height: 20), _buildErrorMessage(state.errorMessage!)],
+              if (state.errorMessage != null) ...[
+                const SizedBox(height: 20),
+                _buildErrorMessage(state.errorMessage!),
+              ],
             ],
           ),
         );
       },
     );
   }
+
+  // --- Sub-widgets builders ---
 
   Widget _buildLogo(Color accentColor) {
     return Hero(
@@ -111,7 +122,13 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           decoration: BoxDecoration(
             color: Colors.white,
             shape: BoxShape.circle,
-            boxShadow: [BoxShadow(color: accentColor.withValues(alpha: 0.3), blurRadius: 20, offset: const Offset(0, 10))],
+            boxShadow: [
+              BoxShadow(
+                color: accentColor.withValues(alpha: 0.3),
+                blurRadius: 20,
+                offset: const Offset(0, 10),
+              ),
+            ],
           ),
           child: Image.asset(
             R.imagesIcLauncherAdaptiveFore,
@@ -129,9 +146,15 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        CommonText(I18nKeys.welcomeBack.tr, style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold)),
+        CommonText(
+          I18nKeys.welcomeBack.tr,
+          style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
+        ),
         const SizedBox(height: 8),
-        CommonText(I18nKeys.signInToContinue.tr, style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey)),
+        CommonText(
+          I18nKeys.signInToContinue.tr,
+          style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey),
+        ),
       ],
     );
   }
@@ -217,18 +240,20 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
   Widget _buildLoginButton(LoginState state, LoginViewModel viewModel, Color accentColor) {
     return Container(
-      height: 56, // Use fixed height to prevent layout jumping
+      height: 56, // Fixed height to prevent layout jumping during loading
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
         gradient: LinearGradient(colors: [accentColor, accentColor.withValues(alpha: 0.8)]),
-        boxShadow: [BoxShadow(color: accentColor.withValues(alpha: 0.3), blurRadius: 10, offset: const Offset(0, 5))],
+        boxShadow: [
+          BoxShadow(color: accentColor.withValues(alpha: 0.3), blurRadius: 10, offset: const Offset(0, 5)),
+        ],
       ),
       child: ElevatedButton(
         onPressed: state.isLoading ? null : () => viewModel.handleIntent(const LoginIntent.submitLogin()),
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
-          padding: EdgeInsets.zero, // Sizing controlled by Container
+          padding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         ),
         child: state.isLoading
@@ -236,7 +261,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 child: SizedBox(
                   height: 20,
                   width: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color>(Colors.white)),
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  ),
                 ),
               )
             : Text(

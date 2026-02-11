@@ -4,6 +4,7 @@ import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
+import 'package:listen_portfolio_flutter/core/utils/route_interceptor.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_page.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/widgets/about_me_widget.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/widgets/architecture_widget.dart';
@@ -69,7 +70,14 @@ class _HomePageState extends State<HomePage> {
     switch (_currentTab) {
       case HomeTab.overview:
         return OverviewWidget(
-          onResumeRequested: () => setState(() => _currentTab = HomeTab.aboutMe),
+          onResumeRequested: () {
+            runOnRedirect(needLogin: true)?.then((success) {
+              // Ensure widget is still alive and login was successful
+              if (mounted && success == true) {
+                setState(() => _currentTab = HomeTab.aboutMe);
+              }
+            });
+          },
           onProjectsRequested: () => setState(() => _currentTab = HomeTab.projects),
           onArchitectureRequested: () => setState(() => _currentTab = HomeTab.architecture),
         );
@@ -89,73 +97,84 @@ class _HomePageState extends State<HomePage> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(topRight: Radius.circular(30), bottomRight: Radius.circular(30)),
       ),
-      child: Column(
-        children: [
-          _buildDrawerHeader(context, theme, accentColor),
-          const SizedBox(height: 10),
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              children: [
-                _buildDrawerItem(
-                  icon: Icons.dashboard_customize_outlined,
-                  label: I18nKeys.overview.tr,
-                  isSelected: _currentTab == HomeTab.overview,
-                  accentColor: accentColor,
-                  onTap: () {
-                    setState(() => _currentTab = HomeTab.overview);
-                    Navigator.pop(context);
-                  },
+      child: BaseAuthListenablePage(
+        builder: (BuildContext context, Widget? child) {
+          return Column(
+            children: [
+              _buildDrawerHeader(context, theme, accentColor),
+              const SizedBox(height: 10),
+              Expanded(
+                child: ListView(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  children: [
+                    _buildDrawerItem(
+                      icon: Icons.dashboard_customize_outlined,
+                      label: I18nKeys.overview.tr,
+                      isSelected: _currentTab == HomeTab.overview,
+                      accentColor: accentColor,
+                      onTap: () {
+                        setState(() => _currentTab = HomeTab.overview);
+                        Navigator.pop(context);
+                      },
+                    ),
+                    _buildDrawerItem(
+                      icon: Icons.person_search_outlined,
+                      label: I18nKeys.aboutMe.tr,
+                      blurLevel: AuthBlurLevel.low,
+                      // This item will be protected and blurred if guest
+                      isSelected: _currentTab == HomeTab.aboutMe,
+                      accentColor: accentColor,
+                      onTap: () {
+                        runOnRedirect(needLogin: true)?.then((isLoginSuccess) {
+                          if (isLoginSuccess && context.mounted) {
+                            setState(() => _currentTab = HomeTab.aboutMe);
+                            Navigator.pop(context);
+                          }
+                        });
+                      },
+                    ),
+                    _buildDrawerItem(
+                      icon: Icons.rocket_launch_outlined,
+                      label: I18nKeys.featuredProjects.tr,
+                      isSelected: _currentTab == HomeTab.projects,
+                      accentColor: accentColor,
+                      onTap: () {
+                        setState(() => _currentTab = HomeTab.projects);
+                        Navigator.pop(context);
+                      },
+                    ),
+                    _buildDrawerItem(
+                      icon: Icons.account_tree_outlined,
+                      label: I18nKeys.architecture.tr,
+                      isSelected: _currentTab == HomeTab.architecture,
+                      accentColor: accentColor,
+                      onTap: () {
+                        setState(() => _currentTab = HomeTab.architecture);
+                        Navigator.pop(context);
+                      },
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                      child: Divider(color: theme.dividerColor.withValues(alpha: 0.1)),
+                    ),
+                    _buildDrawerItem(
+                      icon: Icons.settings_suggest_outlined,
+                      label: I18nKeys.settings.tr,
+                      accentColor: accentColor,
+                      onTap: () {
+                        Navigator.of(
+                          context,
+                        ).push(MaterialPageRoute(builder: (context) => const SettingsPage()));
+                      },
+                    ),
+                  ],
                 ),
-                _buildDrawerItem(
-                  icon: Icons.person_search_outlined,
-                  label: I18nKeys.aboutMe.tr,
-                  blurSigma: 2.0,
-                  isSelected: _currentTab == HomeTab.aboutMe,
-                  accentColor: accentColor,
-                  onTap: () {
-                    setState(() => _currentTab = HomeTab.aboutMe);
-                    Navigator.pop(context);
-                  },
-                ),
-                _buildDrawerItem(
-                  icon: Icons.rocket_launch_outlined,
-                  label: I18nKeys.featuredProjects.tr,
-                  isSelected: _currentTab == HomeTab.projects,
-                  accentColor: accentColor,
-                  onTap: () {
-                    setState(() => _currentTab = HomeTab.projects);
-                    Navigator.pop(context);
-                  },
-                ),
-                _buildDrawerItem(
-                  icon: Icons.account_tree_outlined,
-                  label: I18nKeys.architecture.tr,
-                  isSelected: _currentTab == HomeTab.architecture,
-                  accentColor: accentColor,
-                  onTap: () {
-                    setState(() => _currentTab = HomeTab.architecture);
-                    Navigator.pop(context);
-                  },
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                  child: Divider(color: theme.dividerColor.withValues(alpha: 0.1)),
-                ),
-                _buildDrawerItem(
-                  icon: Icons.settings_suggest_outlined,
-                  label: I18nKeys.settings.tr,
-                  accentColor: accentColor,
-                  onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SettingsPage()));
-                  },
-                ),
-              ],
-            ),
-          ),
-          _buildLogoutButton(context, theme, accentColor, authManager.state.isGuest),
-          const SizedBox(height: 20),
-        ],
+              ),
+              _buildLogoutButton(context, theme, accentColor, authManager.state.isGuest),
+              const SizedBox(height: 20),
+            ],
+          );
+        },
       ),
     );
   }
@@ -203,10 +222,12 @@ class _HomePageState extends State<HomePage> {
               CommonAuthText(
                 authManager.state.user?.name ?? AppConstants.author,
                 style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
+                blurLevel: AuthBlurLevel.medium,
               ),
               CommonAuthText(
                 authManager.state.user?.email ?? AppConstants.mail,
                 style: const TextStyle(color: Colors.white70, fontSize: 14),
+                blurLevel: AuthBlurLevel.medium,
               ),
             ],
           ),
@@ -215,7 +236,8 @@ class _HomePageState extends State<HomePage> {
             top: 0,
             child: IconButton(
               icon: Icon(getModeIcon(), color: Colors.white),
-              onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AppearancePage())),
+              onPressed: () =>
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AppearancePage())),
             ),
           ),
         ],
@@ -230,7 +252,7 @@ class _HomePageState extends State<HomePage> {
     required Color accentColor,
     bool isSelected = false,
     required VoidCallback onTap,
-    double blurSigma = 0,
+    AuthBlurLevel blurLevel = AuthBlurLevel.none,
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2),
@@ -240,9 +262,11 @@ class _HomePageState extends State<HomePage> {
         clipBehavior: Clip.antiAlias,
         child: ListTile(
           leading: Icon(icon, color: isSelected ? accentColor : null),
+          // Use CommonAuthText only when specific protection (blur) is requested
           title: CommonAuthText(
             label,
-            blurSigma: blurSigma,
+            blurLevel: blurLevel,
+            onTap: onTap, // Pass onTap to trigger navigation after auth check
             style: TextStyle(
               color: isSelected ? accentColor : null,
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
@@ -265,7 +289,10 @@ class _HomePageState extends State<HomePage> {
         borderRadius: BorderRadius.circular(15),
         clipBehavior: Clip.antiAlias,
         child: ListTile(
-          leading: Icon(isGuest ? Icons.login_rounded : Icons.logout_rounded, color: isGuest ? accentColor : errorColor),
+          leading: Icon(
+            isGuest ? Icons.login_rounded : Icons.logout_rounded,
+            color: isGuest ? accentColor : errorColor,
+          ),
           title: CommonText(
             isGuest ? I18nKeys.login.tr : I18nKeys.logout.tr,
             style: TextStyle(color: isGuest ? accentColor : errorColor, fontWeight: FontWeight.bold),
@@ -274,11 +301,12 @@ class _HomePageState extends State<HomePage> {
           onTap: () {
             if (!isGuest) {
               authManager.logout();
+              if (_currentTab == HomeTab.aboutMe) {
+                setState(() => _currentTab = HomeTab.overview);
+              }
             }
 
-            Navigator.of(
-              context,
-            ).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const LoginPage()), (route) => false);
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const LoginPage()));
           },
         ),
       ),

@@ -45,7 +45,7 @@ class LoginViewModel extends _$LoginViewModel with ConsumeNavigableViewModel<Log
       submitLogin: _onSubmitLogin,
       navigateToSignup: _onNavigateToSignup,
       navigateToForgotPassword: _onNavigateToForgotPassword,
-      skipLogin: _onNavigateToHome,
+      skipLogin: _onNavigateToSkip,
     );
   }
 
@@ -94,7 +94,7 @@ class LoginViewModel extends _$LoginViewModel with ConsumeNavigableViewModel<Log
     result.fold((failure) => state = state.copyWith(isLoading: false, errorMessage: failure.message), (user) {
       // Global Auth state update
       authManager.login(user);
-      state = state.copyWith(isLoading: false, pendingNavigation: LoginNavigationTarget.home);
+      state = state.copyWith(isLoading: false, pendingNavigation: LoginNavigationTarget.success);
     });
   }
 
@@ -114,7 +114,8 @@ class LoginViewModel extends _$LoginViewModel with ConsumeNavigableViewModel<Log
 
   void _onNavigateToSignup() => state = state.copyWith(pendingNavigation: LoginNavigationTarget.signup);
 
-  void _onNavigateToForgotPassword() => state = state.copyWith(pendingNavigation: LoginNavigationTarget.forgotPassword);
+  void _onNavigateToForgotPassword() =>
+      state = state.copyWith(pendingNavigation: LoginNavigationTarget.forgotPassword);
 
-  void _onNavigateToHome() => state = state.copyWith(pendingNavigation: LoginNavigationTarget.home);
+  void _onNavigateToSkip() => state = state.copyWith(pendingNavigation: LoginNavigationTarget.back);
 }

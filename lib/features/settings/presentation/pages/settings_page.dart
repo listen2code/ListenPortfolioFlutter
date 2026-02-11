@@ -8,9 +8,11 @@ import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/core/utils/cache_manager.dart';
 import 'package:listen_portfolio_flutter/core/utils/log_overlay_manager.dart';
+import 'package:listen_portfolio_flutter/core/utils/route_interceptor.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/password/change_password_page.dart';
 import 'package:listen_portfolio_flutter/generated/r.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
+import 'package:listen_portfolio_flutter/shared/widgets/common_auth_text.dart';
 
 import 'appearance_page.dart';
 import 'delete_account_page.dart';
@@ -65,13 +67,18 @@ class _SettingsPageState extends State<SettingsPage> {
                       title: I18nKeys.appearance.tr,
                       subtitle: I18nKeys.appearanceSubtitle.tr,
                       accentColor: accentColor,
-                      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const AppearancePage())),
+                      onTap: () => Navigator.of(
+                        context,
+                      ).push(MaterialPageRoute(builder: (_) => const AppearancePage())),
                     ),
                     _buildListTile(
                       icon: Icons.language_outlined,
                       title: I18nKeys.language.tr,
                       accentColor: accentColor,
-                      trailing: Text(settingManager.language.label, style: const TextStyle(color: Colors.grey, fontSize: 13)),
+                      trailing: Text(
+                        settingManager.language.label,
+                        style: const TextStyle(color: Colors.grey, fontSize: 13),
+                      ),
                       onTap: () => _showLanguageDialog(),
                     ),
                   ]),
@@ -85,7 +92,16 @@ class _SettingsPageState extends State<SettingsPage> {
                       icon: Icons.lock_outline_rounded,
                       title: I18nKeys.changePassword.tr,
                       accentColor: accentColor,
-                      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ChangePasswordPage())),
+                      blurLevel: AuthBlurLevel.low,
+                      onTap: () {
+                        runOnRedirect(needLogin: true)?.then((isLoginSuccess) {
+                          if (isLoginSuccess && context.mounted) {
+                            Navigator.of(
+                              context,
+                            ).push(MaterialPageRoute(builder: (_) => const ChangePasswordPage()));
+                          }
+                        });
+                      },
                     ),
                     _buildSwitchTile(
                       icon: Icons.notifications_none_rounded,
@@ -98,7 +114,16 @@ class _SettingsPageState extends State<SettingsPage> {
                       icon: Icons.no_accounts_outlined,
                       title: I18nKeys.deleteAccount.tr,
                       accentColor: accentColor,
-                      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const DeleteAccountPage())),
+                      blurLevel: AuthBlurLevel.low,
+                      onTap: () {
+                        runOnRedirect(needLogin: true)?.then((isLoginSuccess) {
+                          if (isLoginSuccess && context.mounted) {
+                            Navigator.of(
+                              context,
+                            ).push(MaterialPageRoute(builder: (_) => const DeleteAccountPage()));
+                          }
+                        });
+                      },
                     ),
                   ]),
 
@@ -160,13 +185,17 @@ class _SettingsPageState extends State<SettingsPage> {
                       icon: Icons.privacy_tip_outlined,
                       title: I18nKeys.privacyPolicy.tr,
                       accentColor: accentColor,
-                      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const PrivacyPolicyPage())),
+                      onTap: () => Navigator.of(
+                        context,
+                      ).push(MaterialPageRoute(builder: (_) => const PrivacyPolicyPage())),
                     ),
                     _buildListTile(
                       icon: Icons.gavel_outlined,
                       title: I18nKeys.termsOfService.tr,
                       accentColor: accentColor,
-                      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const TermsOfServicePage())),
+                      onTap: () => Navigator.of(
+                        context,
+                      ).push(MaterialPageRoute(builder: (_) => const TermsOfServicePage())),
                     ),
                     _buildListTile(
                       icon: Icons.info_outline_rounded,
@@ -215,7 +244,11 @@ class _SettingsPageState extends State<SettingsPage> {
     await _updateCacheSize();
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(I18nKeys.cacheCleared.tr), behavior: SnackBarBehavior.floating, backgroundColor: accentColor),
+        SnackBar(
+          content: Text(I18nKeys.cacheCleared.tr),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: accentColor,
+        ),
       );
     }
   }
@@ -319,7 +352,12 @@ class _SettingsPageState extends State<SettingsPage> {
       padding: const EdgeInsets.only(left: 10, bottom: 8, top: 5),
       child: Text(
         title.toUpperCase(),
-        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 1.1),
+        style: const TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.bold,
+          color: Colors.grey,
+          letterSpacing: 1.1,
+        ),
       ),
     );
   }
@@ -328,7 +366,9 @@ class _SettingsPageState extends State<SettingsPage> {
     final theme = Theme.of(context);
     return Container(
       decoration: BoxDecoration(
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 8, offset: const Offset(0, 4))],
+        boxShadow: [
+          BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 8, offset: const Offset(0, 4)),
+        ],
       ),
       child: Material(
         color: theme.cardColor,
@@ -339,7 +379,13 @@ class _SettingsPageState extends State<SettingsPage> {
             for (var i = 0; i < children.length; i++) ...[
               children[i],
               if (i < children.length - 1)
-                Divider(height: 1, thickness: 0.5, indent: 60, endIndent: 20, color: theme.dividerColor.withValues(alpha: 0.05)),
+                Divider(
+                  height: 1,
+                  thickness: 0.5,
+                  indent: 60,
+                  endIndent: 20,
+                  color: theme.dividerColor.withValues(alpha: 0.05),
+                ),
             ],
           ],
         ),
@@ -354,17 +400,28 @@ class _SettingsPageState extends State<SettingsPage> {
     String? subtitle,
     Widget? trailing,
     required VoidCallback onTap,
+    AuthBlurLevel blurLevel = AuthBlurLevel.none,
   }) {
     return ListTile(
       dense: true,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16),
       leading: Container(
         padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(color: accentColor.withValues(alpha: 0.08), borderRadius: BorderRadius.circular(10)),
+        decoration: BoxDecoration(
+          color: accentColor.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(10),
+        ),
         child: Icon(icon, color: accentColor, size: 20),
       ),
-      title: CommonText(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500), maxLines: 1),
-      subtitle: subtitle != null ? Text(subtitle, style: const TextStyle(fontSize: 11, color: Colors.grey)) : null,
+      title: CommonAuthText(
+        title,
+        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+        maxLines: 1,
+        blurLevel: blurLevel,
+      ),
+      subtitle: subtitle != null
+          ? Text(subtitle, style: const TextStyle(fontSize: 11, color: Colors.grey))
+          : null,
       trailing: trailing ?? const Icon(Icons.chevron_right_rounded, size: 20, color: Colors.grey),
       onTap: onTap,
     );
@@ -381,10 +438,17 @@ class _SettingsPageState extends State<SettingsPage> {
       dense: true,
       secondary: Container(
         padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(color: accentColor.withValues(alpha: 0.08), borderRadius: BorderRadius.circular(10)),
+        decoration: BoxDecoration(
+          color: accentColor.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(10),
+        ),
         child: Icon(icon, color: accentColor, size: 20),
       ),
-      title: CommonText(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500), maxLines: 1),
+      title: CommonText(
+        title,
+        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+        maxLines: 1,
+      ),
       value: value,
       activeColor: accentColor,
       onChanged: onChanged,

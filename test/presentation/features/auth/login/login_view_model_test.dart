@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/usecases/login_use_case.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_intent.dart';
@@ -26,9 +25,9 @@ void main() {
   setUp(() {
     SharedPreferences.setMockInitialValues({});
     mockUseCase = MockLoginUseCase();
-    container = ProviderContainer(overrides: [
-      loginUseCaseProvider.overrideWith((ref) => Future.value(mockUseCase)),
-    ]);
+    container = ProviderContainer(
+      overrides: [loginUseCaseProvider.overrideWith((ref) => Future.value(mockUseCase))],
+    );
     registerFallbackValue(LoginParams(username: '', password: ''));
   });
 
@@ -57,7 +56,7 @@ void main() {
     test('Intent: togglePasswordVisibility should toggle state', () {
       final notifier = container.read(loginViewModelProvider.notifier);
       final initialVisibility = container.read(loginViewModelProvider).isPasswordVisible;
-      
+
       notifier.handleIntent(const LoginIntent.togglePasswordVisibility());
       expect(container.read(loginViewModelProvider).isPasswordVisible, !initialVisibility);
     });
@@ -85,23 +84,23 @@ void main() {
 
     test('Persistence: changing fields while rememberMe is true should update SP', () async {
       final notifier = container.read(loginViewModelProvider.notifier);
-      
+
       // Turn on rememberMe
       await notifier.handleIntent(const LoginIntent.toggleRememberMe());
-      
+
       // Change username
       notifier.handleIntent(const LoginIntent.usernameChanged('live_user'));
-      
+
       final prefs = await SharedPreferences.getInstance();
       expect(prefs.getString(keyUsername), 'live_user');
     });
 
     test('Intent: submitLogin with invalid inputs should show errors', () async {
       final notifier = container.read(loginViewModelProvider.notifier);
-      
+
       // Empty inputs
       await notifier.handleIntent(const LoginIntent.submitLogin());
-      
+
       final state = container.read(loginViewModelProvider);
       expect(state.usernameError, isNotNull);
       expect(state.passwordError, isNotNull);
@@ -125,7 +124,7 @@ void main() {
       await notifier.handleIntent(const LoginIntent.submitLogin());
 
       final state = container.read(loginViewModelProvider);
-      expect(state.pendingNavigation, LoginNavigationTarget.home);
+      expect(state.pendingNavigation, LoginNavigationTarget.success);
       expect(state.isLoading, false);
     });
 
@@ -135,13 +134,15 @@ void main() {
     });
 
     test('Intent: navigateToForgotPassword should update state', () {
-      container.read(loginViewModelProvider.notifier).handleIntent(const LoginIntent.navigateToForgotPassword());
+      container
+          .read(loginViewModelProvider.notifier)
+          .handleIntent(const LoginIntent.navigateToForgotPassword());
       expect(container.read(loginViewModelProvider).pendingNavigation, LoginNavigationTarget.forgotPassword);
     });
 
     test('Intent: skipLogin should navigate home', () {
       container.read(loginViewModelProvider.notifier).handleIntent(const LoginIntent.skipLogin());
-      expect(container.read(loginViewModelProvider).pendingNavigation, LoginNavigationTarget.home);
+      expect(container.read(loginViewModelProvider).pendingNavigation, LoginNavigationTarget.back);
     });
   });
 }

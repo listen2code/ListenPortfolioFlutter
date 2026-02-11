@@ -47,7 +47,11 @@ class OverviewWidget extends StatelessWidget {
                     const SizedBox(height: 12),
                     _buildQuickActions(context, accentColor),
                     const SizedBox(height: 28),
-                    _buildSectionHeader(I18nKeys.featuredProjects.tr, showSeeAll: true, onPressed: onProjectsRequested),
+                    _buildSectionHeader(
+                      I18nKeys.featuredProjects.tr,
+                      showSeeAll: true,
+                      onPressed: onProjectsRequested,
+                    ),
                     const SizedBox(height: 12),
                   ],
                 ),
@@ -76,16 +80,20 @@ class OverviewWidget extends StatelessWidget {
               'Full Stack Mobile Architect (${I18nKeys.graduated.tr}',
               style: TextStyle(color: accentColor, fontSize: 11, fontWeight: FontWeight.w600),
               maxLines: 1,
+              strutStyle: StrutStyle(height: 1.2, forceStrutHeight: true),
             ),
             CommonAuthText(
               ' 2013 ',
               style: TextStyle(color: accentColor, fontSize: 11, fontWeight: FontWeight.w600),
               maxLines: 1,
+              strutStyle: StrutStyle(height: 1.2, forceStrutHeight: true),
+              blurLevel: AuthBlurLevel.low,
             ),
             CommonText(
               '| ${I18nKeys.softwareEngineering.tr})',
               style: TextStyle(color: accentColor, fontSize: 11, fontWeight: FontWeight.w600),
               maxLines: 1,
+              strutStyle: StrutStyle(height: 1.2, forceStrutHeight: true),
             ),
           ],
         ),
@@ -148,7 +156,13 @@ class OverviewWidget extends StatelessWidget {
   Widget _buildExperienceGrid(ThemeData theme) {
     return Column(
       children: [
-        _buildAndroidStatCard(theme, '10${I18nKeys.yearsShort.tr}+', I18nKeys.androidExp.tr, Icons.android_rounded, Colors.green),
+        _buildAndroidStatCard(
+          theme,
+          '10${I18nKeys.yearsShort.tr}+',
+          I18nKeys.androidExp.tr,
+          Icons.android_rounded,
+          Colors.green,
+        ),
         const SizedBox(height: 12),
         Row(
           children: [
@@ -161,7 +175,14 @@ class OverviewWidget extends StatelessWidget {
               flex: 1,
             ),
             const SizedBox(width: 12),
-            _buildStatCard(theme, '1${I18nKeys.yearsShort.tr}+', I18nKeys.javaWeb.tr, Icons.code_rounded, Colors.orange, flex: 1),
+            _buildStatCard(
+              theme,
+              '1${I18nKeys.yearsShort.tr}+',
+              I18nKeys.javaWeb.tr,
+              Icons.code_rounded,
+              Colors.orange,
+              flex: 1,
+            ),
           ],
         ),
       ],
@@ -174,7 +195,9 @@ class OverviewWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10, offset: const Offset(0, 5))],
+        boxShadow: [
+          BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10, offset: const Offset(0, 5)),
+        ],
       ),
       child: Row(
         children: [
@@ -184,9 +207,17 @@ class OverviewWidget extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CommonText(value, style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold), maxLines: 1),
+                CommonText(
+                  value,
+                  style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+                  maxLines: 1,
+                ),
                 const SizedBox(height: 4),
-                CommonText(label, style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey), maxLines: 1),
+                CommonText(
+                  label,
+                  style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey),
+                  maxLines: 1,
+                ),
               ],
             ),
           ),
@@ -216,7 +247,14 @@ class OverviewWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildStatCard(ThemeData theme, String value, String label, IconData icon, Color iconColor, {int flex = 1}) {
+  Widget _buildStatCard(
+    ThemeData theme,
+    String value,
+    String label,
+    IconData icon,
+    Color iconColor, {
+    int flex = 1,
+  }) {
     return Expanded(
       flex: flex,
       child: Container(
@@ -224,7 +262,13 @@ class OverviewWidget extends StatelessWidget {
         decoration: BoxDecoration(
           color: theme.cardColor,
           borderRadius: BorderRadius.circular(20),
-          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10, offset: const Offset(0, 5))],
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.03),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
+            ),
+          ],
         ),
         child: Row(
           children: [
@@ -235,8 +279,16 @@ class OverviewWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  CommonText(value, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold), maxLines: 1),
-                  CommonText(label, style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey, fontSize: 11), maxLines: 1),
+                  CommonText(
+                    value,
+                    style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                    maxLines: 1,
+                  ),
+                  CommonText(
+                    label,
+                    style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey, fontSize: 11),
+                    maxLines: 1,
+                  ),
                 ],
               ),
             ),
@@ -258,6 +310,7 @@ class OverviewWidget extends StatelessWidget {
               accentColor,
               onResumeRequested,
               subtitle: 'Detailed CV',
+              blurLevel: AuthBlurLevel.low,
             ),
             const SizedBox(width: 12),
             _buildActionCard(
@@ -277,25 +330,37 @@ class OverviewWidget extends StatelessWidget {
               final Uri url = Uri.parse(AppConstants.fullMail);
               if (!await launchUrl(url)) {
                 if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(I18nKeys.couldNotLaunchGithub.tr)));
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(I18nKeys.couldNotLaunchGithub.tr)));
                 }
               }
             }),
             const SizedBox(width: 12),
-            _buildActionButton(context, I18nKeys.contactMe.tr, Icons.alternate_email_rounded, Colors.grey, () async {
-              final Uri url = Uri.parse('mailto:${AppConstants.mail}?subject=Portfolio%20Feedback');
-              try {
-                if (await canLaunchUrl(url)) {
-                  await launchUrl(url, mode: LaunchMode.externalApplication);
-                } else if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(I18nKeys.noEmailApp.tr)));
+            _buildActionButton(
+              context,
+              I18nKeys.contactMe.tr,
+              Icons.alternate_email_rounded,
+              Colors.grey,
+              () async {
+                final Uri url = Uri.parse('mailto:${AppConstants.mail}?subject=Portfolio%20Feedback');
+                try {
+                  if (await canLaunchUrl(url)) {
+                    await launchUrl(url, mode: LaunchMode.externalApplication);
+                  } else if (context.mounted) {
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text(I18nKeys.noEmailApp.tr)));
+                  }
+                } catch (e) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(const SnackBar(content: Text('Could not launch mail client')));
+                  }
                 }
-              } catch (e) {
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Could not launch mail client')));
-                }
-              }
-            }),
+              },
+            ),
           ],
         ),
       ],
@@ -309,6 +374,7 @@ class OverviewWidget extends StatelessWidget {
     Color color,
     VoidCallback onTap, {
     required String subtitle,
+    AuthBlurLevel blurLevel = AuthBlurLevel.none,
   }) {
     final theme = Theme.of(context);
     return Expanded(
@@ -329,8 +395,18 @@ class OverviewWidget extends StatelessWidget {
               children: [
                 Icon(icon, color: color, size: 24),
                 const SizedBox(height: 8),
-                CommonText(label, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15), maxLines: 1),
-                CommonText(subtitle, style: const TextStyle(color: Colors.grey, fontSize: 11), maxLines: 1),
+                CommonAuthText(
+                  label,
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                  maxLines: 1,
+                  blurLevel: blurLevel,
+                ),
+                CommonAuthText(
+                  subtitle,
+                  style: const TextStyle(color: Colors.grey, fontSize: 11),
+                  maxLines: 1,
+                  blurLevel: blurLevel,
+                ),
               ],
             ),
           ),
@@ -339,7 +415,13 @@ class OverviewWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildActionButton(BuildContext context, String label, IconData icon, Color color, VoidCallback onTap) {
+  Widget _buildActionButton(
+    BuildContext context,
+    String label,
+    IconData icon,
+    Color color,
+    VoidCallback onTap,
+  ) {
     return Expanded(
       child: Material(
         color: color.withValues(alpha: 0.1),
@@ -374,7 +456,11 @@ class OverviewWidget extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Expanded(
-          child: CommonText(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold), maxLines: 1),
+          child: CommonText(
+            title,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            maxLines: 1,
+          ),
         ),
         if (showSeeAll) TextButton(onPressed: onPressed, child: Text(I18nKeys.viewAll.tr)),
       ],

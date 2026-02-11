@@ -21,8 +21,9 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
 
     // Perform logout and cleanup
     await settingManager.resetSettings();
+
     if (mounted) {
-      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (_) => const LoginPage()), (route) => false);
+      Navigator.of(context).push(MaterialPageRoute(builder: (_) => const LoginPage()));
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(I18nKeys.deleteAccountSuccess.tr),
