@@ -149,9 +149,4 @@ class I18nKeys {
 
   // General terms
   static const String account = 'Account';
-
-  // Common Language Names
-  static const String english = 'English';
-  static const String chinese = 'Chinese';
-  static const String japanese = 'Japanese';
 }
