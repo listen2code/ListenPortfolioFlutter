@@ -50,7 +50,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           AppNav.to(const ForgotPasswordPage());
           break;
         case LoginNavigationTarget.success:
-          // Close login page and return true to inform the caller (interceptor) about success
           AppNav.back(true);
           break;
         case LoginNavigationTarget.back:

@@ -4,7 +4,8 @@ import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
-import 'package:listen_portfolio_flutter/shared/shared.dart';
+import 'package:listen_portfolio_flutter/shared/utils/snack_bar_util.dart';
+import 'package:listen_portfolio_flutter/shared/widgets/common_text.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -32,13 +33,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   void _handleSignUp(Color accentColor) {
     if (_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(I18nKeys.registrationSuccess.tr),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: accentColor,
-        ),
-      );
+      SnackBarUtil.show(I18nKeys.registrationSuccess.tr);
       // Return to login screen
       AppNav.back();
     }

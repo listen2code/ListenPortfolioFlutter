@@ -5,6 +5,7 @@ import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
+import 'package:listen_portfolio_flutter/shared/utils/snack_bar_util.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
@@ -25,13 +26,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
   void _handleResetPassword(Color accentColor) {
     if (_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('${I18nKeys.resetLinkSent.tr} ${_emailController.text}'),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: accentColor,
-        ),
-      );
+      SnackBarUtil.show('${I18nKeys.resetLinkSent.tr} ${_emailController.text}');
       // Close page after reset request
       AppNav.back();
     }

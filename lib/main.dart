@@ -10,6 +10,7 @@ import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_page.dart';
 import 'package:listen_portfolio_flutter/features/splash/presentation/pages/splash_page.dart';
 import 'package:listen_portfolio_flutter/shared/base_auth_listenable_page.dart';
+import 'package:listen_portfolio_flutter/shared/utils/snack_bar_util.dart';
 
 import 'core/theme/app_theme.dart';
 
@@ -25,7 +26,7 @@ void main() {
     onLoginSuccess: () {
       final context = RouteInterceptorConfig.context;
       if (context != null) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Login success!")));
+        SnackBarUtil.show("Login success!");
       }
     },
   );
@@ -42,6 +43,7 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         return MaterialApp(
           navigatorKey: RouteInterceptorConfig.navigatorKey,
+          scaffoldMessengerKey: SnackBarUtil.messengerKey,
           title: AppConstants.appName,
           debugShowCheckedModeBanner: false,
           theme: AppTheme.getLightTheme(settingManager),

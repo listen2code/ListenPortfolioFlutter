@@ -4,6 +4,7 @@ import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
+import 'package:listen_portfolio_flutter/shared/utils/snack_bar_util.dart';
 
 class ChangePasswordPage extends StatefulWidget {
   const ChangePasswordPage({super.key});
@@ -31,13 +32,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
 
   void _handleChangePassword(Color accentColor) {
     if (_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(I18nKeys.passwordChangedSuccess.tr),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: accentColor,
-        ),
-      );
+      SnackBarUtil.show(I18nKeys.passwordChangedSuccess.tr);
       AppNav.back();
     }
   }

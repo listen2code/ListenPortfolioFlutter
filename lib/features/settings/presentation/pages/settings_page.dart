@@ -12,6 +12,7 @@ import 'package:listen_portfolio_flutter/core/utils/log_overlay_manager.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/password/change_password_page.dart';
 import 'package:listen_portfolio_flutter/generated/r.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
+import 'package:listen_portfolio_flutter/shared/utils/snack_bar_util.dart';
 import 'package:listen_portfolio_flutter/shared/widgets/common_auth_text.dart';
 
 import 'appearance_page.dart';
@@ -220,13 +221,7 @@ class _SettingsPageState extends State<SettingsPage> {
     await CacheManager.clearAllCache();
     await _updateCacheSize();
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(I18nKeys.cacheCleared.tr),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: accentColor,
-        ),
-      );
+      SnackBarUtil.show(I18nKeys.cacheCleared.tr);
     }
   }
 
@@ -243,13 +238,7 @@ class _SettingsPageState extends State<SettingsPage> {
               await settingManager.resetSettings();
               if (mounted) {
                 AppNav.back();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(I18nKeys.settingsResetSuccess.tr),
-                    behavior: SnackBarBehavior.floating,
-                    backgroundColor: accentColor,
-                  ),
-                );
+                SnackBarUtil.show(I18nKeys.settingsResetSuccess.tr);
               }
             },
             child: Text(I18nKeys.reset.tr, style: const TextStyle(color: Colors.red)),

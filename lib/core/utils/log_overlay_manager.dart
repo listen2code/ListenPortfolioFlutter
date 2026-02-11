@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
+import 'package:listen_portfolio_flutter/shared/utils/snack_bar_util.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'log_manager.dart';
 
 class LogOverlayManager {
@@ -13,7 +15,7 @@ class LogOverlayManager {
     _onStateChanged = onStateChanged;
     final prefs = await SharedPreferences.getInstance();
     final isEnabled = prefs.getBool(AppConstants.logOverlayKey) ?? false;
-    
+
     if (isEnabled && context.mounted) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (context.mounted) show(context);
@@ -26,7 +28,7 @@ class LogOverlayManager {
     if (_overlayEntry != null) {
       // If already showing but we want to expand it
       if (startExpanded) {
-        // We can't easily reach the state of the existing entry from here, 
+        // We can't easily reach the state of the existing entry from here,
         // so we hide and re-show.
         hide();
       } else {
@@ -47,7 +49,7 @@ class LogOverlayManager {
     );
 
     Overlay.of(context).insert(_overlayEntry!);
-    
+
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(AppConstants.logOverlayKey, true);
   }
@@ -70,7 +72,7 @@ class _LogOverlayWidget extends StatefulWidget {
   final VoidCallback onClose;
 
   const _LogOverlayWidget({
-    required this.initialOffset, 
+    required this.initialOffset,
     this.startExpanded = false,
     required this.onPositionChanged,
     required this.onClose,
@@ -100,9 +102,7 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
       top: isExpanded ? 0 : offset.dy,
       child: Material(
         color: Colors.transparent,
-        child: isExpanded
-            ? _buildExpandedView(size)
-            : _buildFloatingButton(),
+        child: isExpanded ? _buildExpandedView(size) : _buildFloatingButton(),
       ),
     );
   }
@@ -147,15 +147,16 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
                 children: [
                   const Icon(Icons.terminal_rounded, color: Colors.greenAccent, size: 20),
                   const SizedBox(width: 10),
-                  const Text('App Logs', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                  const Text(
+                    'App Logs',
+                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  ),
                   const Spacer(),
                   IconButton(
                     icon: const Icon(Icons.copy_rounded, color: Colors.white70, size: 20),
                     onPressed: () {
                       Clipboard.setData(ClipboardData(text: LogManager.getAllLogsAsText()));
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Logs copied to clipboard'), behavior: SnackBarBehavior.floating),
-                      );
+                      SnackBarUtil.show('Logs copied to clipboard');
                     },
                   ),
                   IconButton(
@@ -190,8 +191,14 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
                         text: TextSpan(
                           style: const TextStyle(fontSize: 10, fontFamily: 'monospace'),
                           children: [
-                            TextSpan(text: '[${log.formattedTime}] ', style: const TextStyle(color: Colors.white38)),
-                            TextSpan(text: log.message, style: TextStyle(color: _getLogColor(log.level))),
+                            TextSpan(
+                              text: '[${log.formattedTime}] ',
+                              style: const TextStyle(color: Colors.white38),
+                            ),
+                            TextSpan(
+                              text: log.message,
+                              style: TextStyle(color: _getLogColor(log.level)),
+                            ),
                           ],
                         ),
                       ),
@@ -208,10 +215,14 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
 
   Color _getLogColor(LogLevel level) {
     switch (level) {
-      case LogLevel.error: return Colors.redAccent;
-      case LogLevel.warning: return Colors.orangeAccent;
-      case LogLevel.debug: return Colors.blueAccent;
-      default: return Colors.white70;
+      case LogLevel.error:
+        return Colors.redAccent;
+      case LogLevel.warning:
+        return Colors.orangeAccent;
+      case LogLevel.debug:
+        return Colors.blueAccent;
+      default:
+        return Colors.white70;
     }
   }
 }

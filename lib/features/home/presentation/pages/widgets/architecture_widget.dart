@@ -5,6 +5,7 @@ import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
+import 'package:listen_portfolio_flutter/shared/utils/snack_bar_util.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ArchitectureWidget extends StatelessWidget {
@@ -40,7 +41,10 @@ class ArchitectureWidget extends StatelessWidget {
   }
 
   Widget _buildHeader(ThemeData theme) {
-    return Text(I18nKeys.architectureHeader.tr, style: theme.textTheme.bodyLarge?.copyWith(color: Colors.grey, height: 1.5));
+    return Text(
+      I18nKeys.architectureHeader.tr,
+      style: theme.textTheme.bodyLarge?.copyWith(color: Colors.grey, height: 1.5),
+    );
   }
 
   Widget _buildCleanMVISection(ThemeData theme, Color accentColor) {
@@ -70,7 +74,9 @@ class ArchitectureWidget extends StatelessWidget {
       accentColor: accentColor,
       title: I18nKeys.coreLibrariesTitle.tr,
       icon: Icons.library_books_outlined,
-      child: Column(children: libs.map((lib) => _buildLibItem(theme, accentColor, lib['name']!, lib['desc']!)).toList()),
+      child: Column(
+        children: libs.map((lib) => _buildLibItem(theme, accentColor, lib['name']!, lib['desc']!)).toList(),
+      ),
     );
   }
 
@@ -97,7 +103,11 @@ class ArchitectureWidget extends StatelessWidget {
                   const SizedBox(width: 8),
                   Text(
                     'github.com/listen2code',
-                    style: TextStyle(color: accentColor, fontWeight: FontWeight.bold, decoration: TextDecoration.underline),
+                    style: TextStyle(
+                      color: accentColor,
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.underline,
+                    ),
                   ),
                 ],
               ),
@@ -134,7 +144,9 @@ class ArchitectureWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10, offset: const Offset(0, 5))],
+        boxShadow: [
+          BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10, offset: const Offset(0, 5)),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -189,7 +201,7 @@ class ArchitectureWidget extends StatelessWidget {
     final Uri url = Uri.parse(urlString);
     if (!await launchUrl(url)) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${I18nKeys.noEmailApp.tr}: $urlString')));
+        SnackBarUtil.show('${I18nKeys.noEmailApp.tr}: $urlString');
       }
     }
   }
