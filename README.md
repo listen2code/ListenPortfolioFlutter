@@ -24,7 +24,7 @@ samples, guidance on mobile development, and a full API reference.
 * web data
 * core to package
 * widget to package
-    * commonText, commonImage, commonDialog, commonToast, input,
+    * commonImage, commonDialog
 * build web
 * core -> shared
 * ide plugin

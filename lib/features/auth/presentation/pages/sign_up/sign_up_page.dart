@@ -4,8 +4,9 @@ import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
+import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_portfolio_flutter/shared/utils/snack_bar_util.dart';
-import 'package:listen_portfolio_flutter/shared/widgets/common_text.dart';
+import 'package:listen_portfolio_flutter/shared/widgets/common_text_field.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -20,7 +21,6 @@ class _SignUpPageState extends State<SignUpPage> {
   final _emailController = TextEditingController();
   final _pwdController = TextEditingController();
   final _confirmPwdController = TextEditingController();
-  bool _isPasswordVisible = false;
 
   @override
   void dispose() {
@@ -31,6 +31,7 @@ class _SignUpPageState extends State<SignUpPage> {
     super.dispose();
   }
 
+  // Handle registration logic
   void _handleSignUp(Color accentColor) {
     if (_formKey.currentState!.validate()) {
       SnackBarUtil.show(I18nKeys.registrationSuccess.tr);
@@ -70,42 +71,43 @@ class _SignUpPageState extends State<SignUpPage> {
                 style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey),
               ),
               const SizedBox(height: 40),
-              _buildTextField(
+              // Name Field
+              CommonTextField(
                 controller: _nameController,
-                hintText: I18nKeys.fullName.tr,
-                icon: Icons.person_outline,
-                accentColor: accentColor,
+                labelText: I18nKeys.fullName.tr,
+                prefixIcon: Icons.person_outline,
+                validator: (value) => value!.isEmpty ? I18nKeys.fieldRequired.tr : null,
               ),
               const SizedBox(height: 20),
-              _buildTextField(
+              // Email Field
+              CommonTextField(
                 controller: _emailController,
-                hintText: I18nKeys.email.tr,
-                icon: Icons.email_outlined,
-                keyboardType: TextInputType.emailAddress,
-                accentColor: accentColor,
+                type: TextFieldType.email,
+                labelText: I18nKeys.email.tr,
+                prefixIcon: Icons.email_outlined,
+                validator: (value) => value!.isEmpty ? I18nKeys.fieldRequired.tr : null,
               ),
               const SizedBox(height: 20),
-              _buildTextField(
+              // Password Field
+              CommonTextField(
                 controller: _pwdController,
-                hintText: I18nKeys.password.tr,
-                icon: Icons.lock_outline,
-                obscureText: !_isPasswordVisible,
-                accentColor: accentColor,
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                    color: accentColor,
-                  ),
-                  onPressed: () => setState(() => _isPasswordVisible = !_isPasswordVisible),
-                ),
+                type: TextFieldType.password,
+                labelText: I18nKeys.password.tr,
+                prefixIcon: Icons.lock_outline,
+                validator: (value) => value!.isEmpty ? I18nKeys.fieldRequired.tr : null,
               ),
               const SizedBox(height: 20),
-              _buildTextField(
+              // Confirm Password Field
+              CommonTextField(
                 controller: _confirmPwdController,
-                hintText: I18nKeys.confirmPassword.tr,
-                icon: Icons.lock_outline,
-                accentColor: accentColor,
-                obscureText: !_isPasswordVisible,
+                type: TextFieldType.password,
+                labelText: I18nKeys.confirmPassword.tr,
+                prefixIcon: Icons.lock_outline,
+                validator: (value) {
+                  if (value == null || value.isEmpty) return I18nKeys.fieldRequired.tr;
+                  if (value != _pwdController.text) return I18nKeys.passwordsDoNotMatch.tr;
+                  return null;
+                },
               ),
               const SizedBox(height: 40),
               Container(
@@ -139,11 +141,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Flexible(
-                    child: CommonText(
-                      I18nKeys.alreadyHaveAccount.tr,
-                      style: const TextStyle(color: Colors.grey),
-                      maxLines: 1,
-                    ),
+                    child: CommonText(I18nKeys.alreadyHaveAccount.tr, style: const TextStyle(color: Colors.grey), maxLines: 1),
                   ),
                   TextButton(
                     onPressed: () => AppNav.back(),
@@ -160,28 +158,6 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String hintText,
-    required IconData icon,
-    required Color accentColor,
-    bool obscureText = false,
-    TextInputType? keyboardType,
-    Widget? suffixIcon,
-  }) {
-    return TextFormField(
-      controller: controller,
-      obscureText: obscureText,
-      keyboardType: keyboardType,
-      decoration: InputDecoration(
-        hintText: hintText,
-        prefixIcon: Icon(icon, color: accentColor),
-        suffixIcon: suffixIcon,
-      ),
-      validator: (value) => value!.isEmpty ? I18nKeys.fieldRequired.tr : null,
     );
   }
 }

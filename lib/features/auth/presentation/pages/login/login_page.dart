@@ -13,6 +13,7 @@ import 'package:listen_portfolio_flutter/features/auth/presentation/pages/passwo
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/sign_up/sign_up_page.dart';
 import 'package:listen_portfolio_flutter/generated/r.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
+import 'package:listen_portfolio_flutter/shared/widgets/common_text_field.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
@@ -50,6 +51,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           AppNav.to(const ForgotPasswordPage());
           break;
         case LoginNavigationTarget.success:
+          // Close login page and return true to inform the caller (interceptor) about success
           AppNav.back(true);
           break;
         case LoginNavigationTarget.back:
@@ -90,9 +92,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               const SizedBox(height: 30),
               _buildTitle(Theme.of(context)),
               const SizedBox(height: 50),
-              _buildUsernameField(state, viewModel, accentColor),
+              _buildUsernameField(state, viewModel),
               const SizedBox(height: 20),
-              _buildPasswordField(state, viewModel, accentColor),
+              _buildPasswordField(state, viewModel),
               _buildRememberAndForgot(state, viewModel, accentColor),
               const SizedBox(height: 30),
               _buildLoginButton(state, viewModel, accentColor),
@@ -159,32 +161,27 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     );
   }
 
-  Widget _buildUsernameField(LoginState state, LoginViewModel viewModel, Color accentColor) {
-    return TextFormField(
+  Widget _buildUsernameField(LoginState state, LoginViewModel viewModel) {
+    return CommonTextField(
       controller: _usernameController,
+      type: TextFieldType.text,
+      labelText: I18nKeys.username.tr,
+      // Changed from hintText to labelText
+      prefixIcon: Icons.person_outline,
+      errorText: state.usernameError,
       onChanged: (value) => viewModel.handleIntent(LoginIntent.usernameChanged(value)),
-      decoration: InputDecoration(
-        hintText: I18nKeys.username.tr,
-        prefixIcon: Icon(Icons.person_outline, color: accentColor),
-        errorText: state.usernameError,
-      ),
     );
   }
 
-  Widget _buildPasswordField(LoginState state, LoginViewModel viewModel, Color accentColor) {
-    return TextFormField(
+  Widget _buildPasswordField(LoginState state, LoginViewModel viewModel) {
+    return CommonTextField(
       controller: _passwordController,
+      type: TextFieldType.password,
+      labelText: I18nKeys.password.tr,
+      // Changed from hintText to labelText
+      prefixIcon: Icons.lock_outline,
+      errorText: state.passwordError,
       onChanged: (value) => viewModel.handleIntent(LoginIntent.passwordChanged(value)),
-      obscureText: !state.isPasswordVisible,
-      decoration: InputDecoration(
-        hintText: I18nKeys.password.tr,
-        prefixIcon: Icon(Icons.lock_outline, color: accentColor),
-        errorText: state.passwordError,
-        suffixIcon: IconButton(
-          icon: Icon(state.isPasswordVisible ? Icons.visibility : Icons.visibility_off, color: accentColor),
-          onPressed: () => viewModel.handleIntent(const LoginIntent.togglePasswordVisibility()),
-        ),
-      ),
     );
   }
 

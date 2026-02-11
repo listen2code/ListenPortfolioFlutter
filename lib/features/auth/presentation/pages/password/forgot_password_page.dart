@@ -6,6 +6,7 @@ import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_portfolio_flutter/shared/utils/snack_bar_util.dart';
+import 'package:listen_portfolio_flutter/shared/widgets/common_text_field.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
@@ -24,10 +25,11 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     super.dispose();
   }
 
+  // Handle password reset request
   void _handleResetPassword(Color accentColor) {
     if (_formKey.currentState!.validate()) {
       SnackBarUtil.show('${I18nKeys.resetLinkSent.tr} ${_emailController.text}');
-      // Close page after reset request
+      // Return to previous screen
       AppNav.back();
     }
   }
@@ -60,13 +62,12 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey, height: 1.5),
             ),
             const SizedBox(height: 48),
-            TextFormField(
+            // Email Input Field
+            CommonTextField(
               controller: _emailController,
-              keyboardType: TextInputType.emailAddress,
-              decoration: InputDecoration(
-                hintText: I18nKeys.emailAddress.tr,
-                prefixIcon: Icon(Icons.email_outlined, color: accentColor),
-              ),
+              type: TextFieldType.email,
+              labelText: I18nKeys.emailAddress.tr,
+              prefixIcon: Icons.email_outlined,
               validator: (value) {
                 if (value == null || value.isEmpty || !value.contains('@')) {
                   return I18nKeys.invalidEmail.tr;

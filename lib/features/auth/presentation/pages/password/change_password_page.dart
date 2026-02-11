@@ -5,6 +5,7 @@ import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/shared/utils/snack_bar_util.dart';
+import 'package:listen_portfolio_flutter/shared/widgets/common_text_field.dart';
 
 class ChangePasswordPage extends StatefulWidget {
   const ChangePasswordPage({super.key});
@@ -18,9 +19,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   final _oldPasswordController = TextEditingController();
   final _newPasswordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  bool _obscureOld = true;
-  bool _obscureNew = true;
-  bool _obscureConfirm = true;
 
   @override
   void dispose() {
@@ -30,6 +28,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
     super.dispose();
   }
 
+  // Handle password update logic
   void _handleChangePassword(Color accentColor) {
     if (_formKey.currentState!.validate()) {
       SnackBarUtil.show(I18nKeys.passwordChangedSuccess.tr);
@@ -65,28 +64,30 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey, height: 1.5),
                 ),
                 const SizedBox(height: 40),
-                _buildPasswordField(
+                // Current Password Field
+                CommonTextField(
                   controller: _oldPasswordController,
-                  label: I18nKeys.oldPassword.tr,
-                  obscureText: _obscureOld,
-                  accentColor: accentColor,
-                  onToggle: () => setState(() => _obscureOld = !_obscureOld),
+                  type: TextFieldType.password,
+                  labelText: I18nKeys.oldPassword.tr,
+                  prefixIcon: Icons.lock_outline,
+                  validator: (value) => value!.isEmpty ? I18nKeys.requiredField.tr : null,
                 ),
                 const SizedBox(height: 20),
-                _buildPasswordField(
+                // New Password Field
+                CommonTextField(
                   controller: _newPasswordController,
-                  label: I18nKeys.newPassword.tr,
-                  obscureText: _obscureNew,
-                  accentColor: accentColor,
-                  onToggle: () => setState(() => _obscureNew = !_obscureNew),
+                  type: TextFieldType.password,
+                  labelText: I18nKeys.newPassword.tr,
+                  prefixIcon: Icons.lock_outline,
+                  validator: (value) => value!.isEmpty ? I18nKeys.requiredField.tr : null,
                 ),
                 const SizedBox(height: 20),
-                _buildPasswordField(
+                // Confirm New Password Field
+                CommonTextField(
                   controller: _confirmPasswordController,
-                  label: I18nKeys.confirmNewPassword.tr,
-                  obscureText: _obscureConfirm,
-                  accentColor: accentColor,
-                  onToggle: () => setState(() => _obscureConfirm = !_obscureConfirm),
+                  type: TextFieldType.password,
+                  labelText: I18nKeys.confirmNewPassword.tr,
+                  prefixIcon: Icons.lock_outline,
                   validator: (value) {
                     if (value != _newPasswordController.text) {
                       return I18nKeys.passwordsDoNotMatch.tr;
@@ -126,29 +127,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
           ),
         );
       },
-    );
-  }
-
-  Widget _buildPasswordField({
-    required TextEditingController controller,
-    required String label,
-    required bool obscureText,
-    required Color accentColor,
-    required VoidCallback onToggle,
-    String? Function(String?)? validator,
-  }) {
-    return TextFormField(
-      controller: controller,
-      obscureText: obscureText,
-      decoration: InputDecoration(
-        labelText: label,
-        prefixIcon: Icon(Icons.lock_outline, color: accentColor),
-        suffixIcon: IconButton(
-          icon: Icon(obscureText ? Icons.visibility_off : Icons.visibility, color: accentColor),
-          onPressed: onToggle,
-        ),
-      ),
-      validator: validator ?? (value) => value!.isEmpty ? I18nKeys.requiredField.tr : null,
     );
   }
 }
