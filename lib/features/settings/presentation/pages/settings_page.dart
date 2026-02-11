@@ -140,10 +140,11 @@ class _SettingsPageState extends State<SettingsPage> {
                       accentColor: accentColor,
                       onChanged: (val) {
                         setState(() {
-                          if (val)
+                          if (val) {
                             LogOverlayManager.show(context);
-                          else
+                          } else {
                             LogOverlayManager.hide();
+                          }
                         });
                       },
                     ),
@@ -394,6 +395,7 @@ class _SettingsPageState extends State<SettingsPage> {
         style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
         maxLines: 1,
         blurLevel: blurLevel,
+        onTap: onTap,
       ),
       subtitle: subtitle != null
           ? Text(subtitle, style: const TextStyle(fontSize: 11, color: Colors.grey))
