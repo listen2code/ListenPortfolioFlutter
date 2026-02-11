@@ -8,7 +8,7 @@ import 'log_manager.dart';
 
 class LogOverlayManager {
   static OverlayEntry? _overlayEntry;
-  static Offset _offset = const Offset(20, 100);
+  static Offset? _offset; // Position will be initialized on first show
   static VoidCallback? _onStateChanged;
 
   static Future<void> init(BuildContext context, {VoidCallback? onStateChanged}) async {
@@ -36,9 +36,13 @@ class LogOverlayManager {
       }
     }
 
+    final size = MediaQuery.of(context).size;
+    // Default to top-right if no previous position exists
+    _offset ??= Offset(size.width - 70, 100);
+
     _overlayEntry = OverlayEntry(
       builder: (context) => _LogOverlayWidget(
-        initialOffset: _offset,
+        initialOffset: _offset!,
         startExpanded: startExpanded,
         onPositionChanged: (newOffset) => _offset = newOffset,
         onClose: () {
