@@ -18,15 +18,15 @@ samples, guidance on mobile development, and a full API reference.
 ## todo
 
 * base
-    * base use case; widget; view model
+    * base use case; view model
 * other MVI
 * db data design
 * web data
+* core -> shared
 * core to package
 * widget to package
     * commonImage
 * build web
-* core -> shared
 * ide plugin
   --assets
 * framework

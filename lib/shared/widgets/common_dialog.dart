@@ -26,7 +26,7 @@ class CommonDialog {
         actions: [
           TextButton(
             onPressed: () => AppNav.back(),
-            child: Text(buttonText ?? "OK", style: TextStyle(color: settingManager.accentColor)),
+            child: Text(buttonText ?? I18nKeys.ok.tr, style: TextStyle(color: settingManager.accentColor)),
           ),
         ],
       ),
@@ -52,7 +52,7 @@ class CommonDialog {
         TextButton(
           onPressed: () => AppNav.back(true),
           child: Text(
-            okText ?? "OK",
+            okText ?? I18nKeys.ok.tr,
             style: TextStyle(color: okColor ?? settingManager.accentColor, fontWeight: FontWeight.bold),
           ),
         ),

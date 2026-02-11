@@ -300,10 +300,9 @@ class _HomePageState extends State<HomePage> {
               AppNav.to(const LoginPage());
             } else {
               // Confirm logout before action
-              CommonDialog.showConfirm(
-                title: I18nKeys.logout.tr,
-                message: 'Are you sure you want to log out?',
-              ).then((confirmed) {
+              CommonDialog.showConfirm(title: I18nKeys.logout.tr, message: I18nKeys.logoutTips.tr).then((
+                confirmed,
+              ) {
                 if (confirmed == true) {
                   authManager.logout();
                   // Reset tab to overview if user was on a protected page

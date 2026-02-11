@@ -84,6 +84,7 @@ class I18nKeys {
   static const String aboutMe = 'About Me';
   static const String architecture = 'Architecture';
   static const String logout = 'Logout';
+  static const String logoutTips = 'Are you sure you want to log out?';
 
   // Overview Page
   static const String hello = "Hello, I'm %s";
@@ -132,8 +133,10 @@ class I18nKeys {
   static const String viewLogs = 'View App Logs';
   static const String resetSettings = 'Reset All Settings';
   static const String resetConfirmTitle = 'Reset Settings?';
-  static const String resetConfirmContent = 'This will restore all settings to their default values. Are you sure?';
+  static const String resetConfirmContent =
+      'This will restore all settings to their default values. Are you sure?';
   static const String cancel = 'Cancel';
+  static const String ok = 'OK';
   static const String reset = 'Reset';
   static const String settingsResetSuccess = 'All settings have been reset.';
 
