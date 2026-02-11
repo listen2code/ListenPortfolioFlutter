@@ -2,15 +2,15 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
-import 'package:listen_portfolio_flutter/shared/base_auth_listenable_page.dart';
+import 'package:listen_portfolio_flutter/shared/base/base_auth_listenable_page.dart';
 import 'package:listen_portfolio_flutter/shared/widgets/common_text.dart';
 
 /// Predefined blur intensities for unauthorized content
 enum AuthBlurLevel {
   none(0.0),
   low(2.0),
-  medium(8.0),
-  high(16.0);
+  medium(5.0),
+  high(10.0);
 
   final double sigma;
 
