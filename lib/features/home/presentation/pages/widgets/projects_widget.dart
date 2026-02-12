@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/base/base_listenable_page.dart';
-import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
+import 'package:listen_portfolio_flutter/core/extension/context_extension.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 
 class ProjectsWidget extends StatelessWidget {
@@ -10,7 +10,7 @@ class ProjectsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BaseListenablePage(
       builder: (context, child) {
-        final accentColor = settingManager.accentColor;
+        final accentColor = context.accentColor;
         final projects = [
           {
             'title': 'lPortfolio',
@@ -22,7 +22,8 @@ class ProjectsWidget extends StatelessWidget {
           {
             'title': 'AI Chatbot',
             'subtitle': 'Dart & OpenAI',
-            'desc': 'An intelligent conversational agent powered by GPT-4, supporting voice input and multi-language support.',
+            'desc':
+                'An intelligent conversational agent powered by GPT-4, supporting voice input and multi-language support.',
             'color': Colors.purple,
           },
           {
@@ -82,6 +83,7 @@ class ProjectsWidget extends StatelessWidget {
           itemBuilder: (context, index) {
             final project = projects[index];
             return _buildProjectCard(
+              context,
               project['title'] as String,
               project['subtitle'] as String,
               project['desc'] as String,
@@ -93,22 +95,29 @@ class ProjectsWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildProjectCard(String title, String subtitle, String desc, Color baseColor) {
+  Widget _buildProjectCard(
+    BuildContext context,
+    String title,
+    String subtitle,
+    String desc,
+    Color baseColor,
+  ) {
     final bool isTodo = subtitle == 'TODO';
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 20),
+      margin: EdgeInsets.only(bottom: 20.f),
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(24.f),
         border: Border.all(color: baseColor.withValues(alpha: 0.2)),
       ),
       clipBehavior: Clip.antiAlias,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Header Image Placeholder
           Container(
-            height: 120,
+            height: 120.f,
             width: double.infinity,
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -120,13 +129,14 @@ class ProjectsWidget extends StatelessWidget {
             child: Center(
               child: Icon(
                 isTodo ? Icons.hourglass_empty_rounded : Icons.rocket_launch_rounded,
-                size: 48,
+                size: 48.f,
                 color: Colors.white.withValues(alpha: 0.9),
               ),
             ),
           ),
+          // Content Section
           Padding(
-            padding: const EdgeInsets.all(20),
+            padding: EdgeInsets.all(20.f),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -134,30 +144,36 @@ class ProjectsWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Expanded(
-                      child: CommonText(title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                      child: CommonText(
+                        title,
+                        style: context.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                      ),
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: EdgeInsets.symmetric(horizontal: 10.f, vertical: 4.f),
                       decoration: BoxDecoration(
                         color: isTodo ? Colors.grey.withValues(alpha: 0.1) : baseColor.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(8.f),
                       ),
                       child: Text(
                         subtitle,
-                        style: TextStyle(color: isTodo ? Colors.grey : baseColor, fontSize: 12, fontWeight: FontWeight.w600),
+                        style: context.textTheme.labelSmall?.copyWith(
+                          color: isTodo ? Colors.grey : baseColor,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
-                Text(desc, style: const TextStyle(color: Colors.grey, height: 1.5, fontSize: 14)),
-                const SizedBox(height: 20),
+                SizedBox(height: 12.f),
+                Text(desc, style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey, height: 1.5)),
+                SizedBox(height: 20.f),
                 if (!isTodo)
                   Row(
                     children: [
-                      _buildActionChip(Icons.link, 'Live Demo', baseColor),
-                      const SizedBox(width: 12),
-                      _buildActionChip(Icons.code, 'Source Code', Colors.grey),
+                      Expanded(child: _buildActionChip(context, Icons.link, 'Live Demo', baseColor)),
+                      SizedBox(width: 12.f),
+                      Expanded(child: _buildActionChip(context, Icons.code, 'Source Code', Colors.grey)),
                     ],
                   ),
               ],
@@ -168,23 +184,26 @@ class ProjectsWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildActionChip(IconData icon, String label, Color color) {
+  Widget _buildActionChip(BuildContext context, IconData icon, String label, Color color) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: EdgeInsets.symmetric(horizontal: 12.f, vertical: 6.f),
       decoration: BoxDecoration(
         border: Border.all(color: color.withValues(alpha: 0.3)),
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(10.f),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 14, color: color),
-          const SizedBox(width: 6),
-          Text(
-            label,
-            style: TextStyle(color: color, fontSize: 12, fontWeight: FontWeight.bold),
-          ),
-        ],
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 14.f, color: color),
+            SizedBox(width: 6.f),
+            CommonText(
+              label,
+              style: context.textTheme.labelSmall?.copyWith(color: color, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
       ),
     );
   }

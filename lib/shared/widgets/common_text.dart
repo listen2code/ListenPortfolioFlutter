@@ -36,7 +36,7 @@ class CommonText extends Text {
     Widget child = super.build(context);
 
     if (useFittedBox) {
-      child = FittedBox(fit: fit ?? BoxFit.contain, alignment: alignment ?? Alignment.center, child: child);
+      child = FittedBox(fit: fit, alignment: alignment, child: child);
     }
 
     if (containerOptions != null) {
@@ -47,7 +47,9 @@ class CommonText extends Text {
         alignment: containerOptions!.alignment,
         decoration:
             containerOptions!.decoration ??
-            (containerOptions!.backgroundColor != null ? BoxDecoration(color: containerOptions!.backgroundColor) : null),
+            (containerOptions!.backgroundColor != null
+                ? BoxDecoration(color: containerOptions!.backgroundColor)
+                : null),
         child: child,
       );
     }
@@ -57,7 +59,14 @@ class CommonText extends Text {
 }
 
 class ContainerOptions {
-  const ContainerOptions({this.height, this.padding, this.margin, this.backgroundColor, this.decoration, this.alignment});
+  const ContainerOptions({
+    this.height,
+    this.padding,
+    this.margin,
+    this.backgroundColor,
+    this.decoration,
+    this.alignment,
+  });
 
   final double? height;
   final EdgeInsetsGeometry? padding;

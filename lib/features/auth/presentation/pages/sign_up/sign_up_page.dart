@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/base/base_stateless_page.dart';
+import 'package:listen_portfolio_flutter/core/extension/context_extension.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
-import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_portfolio_flutter/shared/utils/snack_bar_util.dart';
 import 'package:listen_portfolio_flutter/shared/widgets/common_text_field.dart';
@@ -35,51 +35,47 @@ class _SignUpPageState extends State<SignUpPage> {
   void _handleSignUp(Color accentColor) {
     if (_formKey.currentState!.validate()) {
       SnackBarUtil.show(I18nKeys.registrationSuccess.tr);
-      // Return to login screen
       AppNav.back();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final accentColor = settingManager.accentColor;
+    final accentColor = context.accentColor;
 
     return BaseStatelessPage(
       isEmptyTitle: true,
-      padding: const EdgeInsets.symmetric(horizontal: 30.0),
       body: (context, child) => SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
         child: Form(
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 20),
+              SizedBox(height: 20.f),
               CommonText(
                 I18nKeys.createAccount.tr,
                 textAlign: TextAlign.center,
-                style: theme.textTheme.headlineMedium?.copyWith(
+                style: context.textTheme.headlineMedium?.copyWith(
                   fontWeight: FontWeight.w300,
-                  color: theme.brightness == Brightness.light ? Colors.black87 : Colors.white,
+                  color: context.isDark ? Colors.white : Colors.black87,
                 ),
                 maxLines: 1,
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: 10.f),
               Text(
                 I18nKeys.signUpSubtitle.tr,
                 textAlign: TextAlign.center,
-                style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey),
+                style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey),
               ),
-              const SizedBox(height: 40),
-              // Name Field
+              SizedBox(height: 40.f),
               CommonTextField(
                 controller: _nameController,
                 labelText: I18nKeys.fullName.tr,
                 prefixIcon: Icons.person_outline,
                 validator: (value) => value!.isEmpty ? I18nKeys.fieldRequired.tr : null,
               ),
-              const SizedBox(height: 20),
-              // Email Field
+              SizedBox(height: 20.f),
               CommonTextField(
                 controller: _emailController,
                 type: TextFieldType.email,
@@ -87,8 +83,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 prefixIcon: Icons.email_outlined,
                 validator: (value) => value!.isEmpty ? I18nKeys.fieldRequired.tr : null,
               ),
-              const SizedBox(height: 20),
-              // Password Field
+              SizedBox(height: 20.f),
               CommonTextField(
                 controller: _pwdController,
                 type: TextFieldType.password,
@@ -96,8 +91,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 prefixIcon: Icons.lock_outline,
                 validator: (value) => value!.isEmpty ? I18nKeys.fieldRequired.tr : null,
               ),
-              const SizedBox(height: 20),
-              // Confirm Password Field
+              SizedBox(height: 20.f),
               CommonTextField(
                 controller: _confirmPwdController,
                 type: TextFieldType.password,
@@ -109,55 +103,63 @@ class _SignUpPageState extends State<SignUpPage> {
                   return null;
                 },
               ),
-              const SizedBox(height: 40),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  gradient: LinearGradient(colors: [accentColor, accentColor.withValues(alpha: 0.8)]),
-                  boxShadow: [
-                    BoxShadow(
-                      color: accentColor.withValues(alpha: 0.3),
-                      blurRadius: 10,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
-                ),
-                child: ElevatedButton(
-                  onPressed: () => _handleSignUp(accentColor),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent,
-                    shadowColor: Colors.transparent,
-                    padding: const EdgeInsets.symmetric(vertical: 18),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                  ),
-                  child: Text(
-                    I18nKeys.signUp.tr,
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 30),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Flexible(
-                    child: CommonText(I18nKeys.alreadyHaveAccount.tr, style: const TextStyle(color: Colors.grey), maxLines: 1),
-                  ),
-                  TextButton(
-                    onPressed: () => AppNav.back(),
-                    child: CommonText(
-                      I18nKeys.loginLink.tr,
-                      style: TextStyle(color: accentColor, fontWeight: FontWeight.bold),
-                      maxLines: 1,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 40),
+              SizedBox(height: 40.f),
+              _buildSignUpButton(accentColor),
+              SizedBox(height: 30.f),
+              _buildLoginLink(accentColor),
+              SizedBox(height: 40.f),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildSignUpButton(Color accentColor) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15.f),
+        gradient: LinearGradient(colors: [accentColor, accentColor.withValues(alpha: 0.8)]),
+        boxShadow: [
+          BoxShadow(color: accentColor.withValues(alpha: 0.3), blurRadius: 10.f, offset: Offset(0, 5.f)),
+        ],
+      ),
+      child: ElevatedButton(
+        onPressed: () => _handleSignUp(accentColor),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.transparent,
+          shadowColor: Colors.transparent,
+          padding: EdgeInsets.symmetric(vertical: 18.f),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.f)),
+        ),
+        child: CommonText(
+          I18nKeys.signUp.tr,
+          style: context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoginLink(Color accentColor) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Flexible(
+          child: CommonText(
+            I18nKeys.alreadyHaveAccount.tr,
+            style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey),
+            maxLines: 1,
+          ),
+        ),
+        TextButton(
+          onPressed: () => AppNav.back(),
+          child: CommonText(
+            I18nKeys.loginLink.tr,
+            style: context.textTheme.bodyMedium?.copyWith(color: accentColor, fontWeight: FontWeight.bold),
+            maxLines: 1,
+          ),
+        ),
+      ],
     );
   }
 }

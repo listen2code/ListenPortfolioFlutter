@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/base/base_stateless_page.dart';
+import 'package:listen_portfolio_flutter/core/extension/context_extension.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
-import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_portfolio_flutter/shared/utils/snack_bar_util.dart';
 import 'package:listen_portfolio_flutter/shared/widgets/common_text_field.dart';
@@ -36,94 +36,101 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final accentColor = settingManager.accentColor;
+    final accentColor = context.accentColor;
 
     return BaseStatelessPage(
       isEmptyTitle: true,
-      padding: const EdgeInsets.symmetric(horizontal: 24.0),
       body: (context, child) => Form(
         key: _formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const SizedBox(height: 20),
-            CommonText(
-              I18nKeys.forgotPassword.tr,
-              style: theme.textTheme.headlineMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: theme.brightness == Brightness.light ? Colors.black87 : Colors.white,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SizedBox(height: 20.f),
+              CommonText(
+                I18nKeys.forgotPassword.tr,
+                style: context.textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: context.isDark ? Colors.white : Colors.black87,
+                ),
+                maxLines: 1,
               ),
-              maxLines: 1,
-            ),
-            const SizedBox(height: 12),
-            Text(
-              I18nKeys.forgotPasswordSubtitle.tr,
-              style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey, height: 1.5),
-            ),
-            const SizedBox(height: 48),
-            // Email Input Field
-            CommonTextField(
-              controller: _emailController,
-              type: TextFieldType.email,
-              labelText: I18nKeys.emailAddress.tr,
-              prefixIcon: Icons.email_outlined,
-              validator: (value) {
-                if (value == null || value.isEmpty || !value.contains('@')) {
-                  return I18nKeys.invalidEmail.tr;
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 32),
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                gradient: LinearGradient(colors: [accentColor, accentColor.withValues(alpha: 0.8)]),
-                boxShadow: [
-                  BoxShadow(
-                    color: accentColor.withValues(alpha: 0.3),
-                    blurRadius: 10,
-                    offset: const Offset(0, 5),
+              SizedBox(height: 12.f),
+              Text(
+                I18nKeys.forgotPasswordSubtitle.tr,
+                style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey, height: 1.5),
+              ),
+              SizedBox(height: 48.f),
+              // Email Input Field
+              CommonTextField(
+                controller: _emailController,
+                type: TextFieldType.email,
+                labelText: I18nKeys.emailAddress.tr,
+                prefixIcon: Icons.email_outlined,
+                validator: (value) {
+                  if (value == null || value.isEmpty || !value.contains('@')) {
+                    return I18nKeys.invalidEmail.tr;
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 32.f),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15.f),
+                  gradient: LinearGradient(colors: [accentColor, accentColor.withValues(alpha: 0.8)]),
+                  boxShadow: [
+                    BoxShadow(
+                      color: accentColor.withValues(alpha: 0.3),
+                      blurRadius: 10.f,
+                      offset: Offset(0, 5.f),
+                    ),
+                  ],
+                ),
+                child: ElevatedButton(
+                  onPressed: () => _handleResetPassword(accentColor),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    padding: EdgeInsets.symmetric(vertical: 18.f),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.f)),
+                  ),
+                  child: CommonText(
+                    I18nKeys.sendResetLink.tr,
+                    style: context.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 40.f),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Flexible(
+                    child: CommonText(
+                      I18nKeys.rememberPassword.tr,
+                      style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey),
+                      maxLines: 1,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () => AppNav.back(),
+                    child: CommonText(
+                      I18nKeys.loginLink.tr,
+                      style: context.textTheme.bodyMedium?.copyWith(
+                        color: accentColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      maxLines: 1,
+                    ),
                   ),
                 ],
               ),
-              child: ElevatedButton(
-                onPressed: () => _handleResetPassword(accentColor),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.transparent,
-                  shadowColor: Colors.transparent,
-                  padding: const EdgeInsets.symmetric(vertical: 18),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                ),
-                child: Text(
-                  I18nKeys.sendResetLink.tr,
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-                ),
-              ),
-            ),
-            const SizedBox(height: 40),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Flexible(
-                  child: CommonText(
-                    I18nKeys.rememberPassword.tr,
-                    style: const TextStyle(color: Colors.grey),
-                    maxLines: 1,
-                  ),
-                ),
-                TextButton(
-                  onPressed: () => AppNav.back(),
-                  child: CommonText(
-                    I18nKeys.loginLink.tr,
-                    style: TextStyle(color: accentColor, fontWeight: FontWeight.bold),
-                    maxLines: 1,
-                  ),
-                ),
-              ],
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

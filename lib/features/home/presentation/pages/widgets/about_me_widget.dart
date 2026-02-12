@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:listen_portfolio_flutter/core/base/base_listenable_page.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
+import 'package:listen_portfolio_flutter/core/extension/context_extension.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
-import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
+import 'package:listen_portfolio_flutter/shared/shared.dart';
 
 class AboutMeWidget extends StatefulWidget {
   const AboutMeWidget({super.key});
@@ -39,25 +40,25 @@ class _AboutMeWidgetState extends State<AboutMeWidget> {
     });
   }
 
-  void _showPickerMenu(BuildContext context) {
+  void _showPickerMenu() {
     showModalBottomSheet(
       context: context,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20.f))),
       builder: (context) {
         return SafeArea(
           child: Wrap(
             children: [
               ListTile(
-                leading: const Icon(Icons.photo_library_outlined),
-                title: Text(I18nKeys.chooseFromGallery.tr),
+                leading: Icon(Icons.photo_library_outlined, size: 24.f),
+                title: CommonText(I18nKeys.chooseFromGallery.tr),
                 onTap: () {
                   _pickImage(ImageSource.gallery);
                   AppNav.back();
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.camera_alt_outlined),
-                title: Text(I18nKeys.takePhoto.tr),
+                leading: Icon(Icons.camera_alt_outlined, size: 24.f),
+                title: CommonText(I18nKeys.takePhoto.tr),
                 onTap: () {
                   _pickImage(ImageSource.camera);
                   AppNav.back();
@@ -65,8 +66,8 @@ class _AboutMeWidgetState extends State<AboutMeWidget> {
               ),
               if (_imageFile != null)
                 ListTile(
-                  leading: const Icon(Icons.delete_outline, color: Colors.red),
-                  title: Text(I18nKeys.removePhoto.tr, style: const TextStyle(color: Colors.red)),
+                  leading: Icon(Icons.delete_outline, color: Colors.red, size: 24.f),
+                  title: CommonText(I18nKeys.removePhoto.tr, style: const TextStyle(color: Colors.red)),
                   onTap: () {
                     _removeImage();
                     AppNav.back();
@@ -83,24 +84,22 @@ class _AboutMeWidgetState extends State<AboutMeWidget> {
   Widget build(BuildContext context) {
     return BaseListenablePage(
       builder: (context, child) {
-        final theme = Theme.of(context);
-        final accentColor = settingManager.accentColor;
         return SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 40),
-              _buildHeader(context, theme, accentColor),
-              const SizedBox(height: 35),
-              _buildBioSection(theme, accentColor),
-              const SizedBox(height: 25),
-              _buildDetailedExperience(theme, accentColor),
-              const SizedBox(height: 25),
-              _buildEducationSection(theme, accentColor),
-              const SizedBox(height: 25),
-              _buildComprehensiveSkills(theme, accentColor),
-              const SizedBox(height: 40),
+              SizedBox(height: 40.f),
+              _buildHeader(),
+              SizedBox(height: 35.f),
+              _buildBioSection(),
+              SizedBox(height: 25.f),
+              _buildDetailedExperience(),
+              SizedBox(height: 25.f),
+              _buildEducationSection(),
+              SizedBox(height: 25.f),
+              _buildComprehensiveSkills(),
+              SizedBox(height: 40.f),
             ],
           ),
         );
@@ -108,7 +107,7 @@ class _AboutMeWidgetState extends State<AboutMeWidget> {
     );
   }
 
-  Widget _buildHeader(BuildContext context, ThemeData theme, Color accentColor) {
+  Widget _buildHeader() {
     ImageProvider avatarImage;
     if (_imageFile != null) {
       avatarImage = FileImage(_imageFile!);
@@ -116,18 +115,20 @@ class _AboutMeWidgetState extends State<AboutMeWidget> {
       avatarImage = const NetworkImage('https://api.dicebear.com/7.x/avataaars/svg?seed=Listen');
     }
 
+    final accentColor = context.accentColor;
+
     return Center(
       child: Column(
         children: [
           Stack(
             children: [
               Container(
-                padding: const EdgeInsets.all(3),
+                padding: EdgeInsets.all(3.f),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(color: accentColor, width: 2),
+                  border: Border.all(color: accentColor, width: 2.f),
                 ),
-                child: CircleAvatar(radius: 60, backgroundImage: avatarImage),
+                child: CircleAvatar(radius: 60.f, backgroundImage: avatarImage),
               ),
               Positioned(
                 bottom: 0,
@@ -137,30 +138,33 @@ class _AboutMeWidgetState extends State<AboutMeWidget> {
                   shape: const CircleBorder(),
                   elevation: 4,
                   child: InkWell(
-                    onTap: () => _showPickerMenu(context),
+                    onTap: _showPickerMenu,
                     customBorder: const CircleBorder(),
-                    child: const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Icon(Icons.camera_alt, color: Colors.white, size: 20),
+                    child: Padding(
+                      padding: EdgeInsets.all(8.f),
+                      child: Icon(Icons.camera_alt, color: Colors.white, size: 20.f),
                     ),
                   ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          Text(
+          SizedBox(height: 16.f),
+          CommonText(
             AppConstants.author,
-            style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+            style: context.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
           ),
-          Text('Full Stack Mobile Architect', style: TextStyle(color: accentColor, fontSize: 16)),
-          const SizedBox(height: 8),
-          const Row(
+          CommonText(
+            'Full Stack Mobile Architect',
+            style: TextStyle(color: accentColor, fontSize: 16.f),
+          ),
+          SizedBox(height: 8.f),
+          Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.location_on_outlined, size: 14, color: Colors.grey),
-              SizedBox(width: 4),
-              Text('Global / Remote', style: TextStyle(color: Colors.grey, fontSize: 13)),
+              Icon(Icons.location_on_outlined, size: 14.f, color: Colors.grey),
+              SizedBox(width: 4.f),
+              CommonText('Global / Remote', style: context.textTheme.bodySmall?.copyWith(color: Colors.grey)),
             ],
           ),
         ],
@@ -168,45 +172,39 @@ class _AboutMeWidgetState extends State<AboutMeWidget> {
     );
   }
 
-  Widget _buildBioSection(ThemeData theme, Color accentColor) {
+  Widget _buildBioSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionTitle(I18nKeys.aboutMe.tr, accentColor),
-        const SizedBox(height: 12),
+        _buildSectionTitle(I18nKeys.aboutMe.tr),
+        SizedBox(height: 12.f),
         Text(
           'A seasoned mobile developer with over 10 years of experience in Android and 2+ years in Flutter. Specialized in high-performance application development, clean architecture, and reactive programming. Proven track record of leading cross-functional teams and delivering complex enterprise solutions.',
-          style: theme.textTheme.bodyMedium?.copyWith(height: 1.6),
+          style: context.textTheme.bodyMedium?.copyWith(height: 1.6),
         ),
       ],
     );
   }
 
-  Widget _buildDetailedExperience(ThemeData theme, Color accentColor) {
+  Widget _buildDetailedExperience() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionTitle(I18nKeys.experience.tr, accentColor),
-        const SizedBox(height: 15),
+        _buildSectionTitle(I18nKeys.experience.tr),
+        SizedBox(height: 15.f),
         _buildTimelineItem(
-          theme,
-          accentColor,
           'Senior Mobile Architect',
           'Global Tech Solutions',
           '2021 - ${I18nKeys.present.tr}',
           'Leading the migration of core native apps to Flutter, optimizing CI/CD pipelines, and establishing mobile engineering best practices.',
         ),
         _buildTimelineItem(
-          theme,
-          accentColor,
           'Lead Android Developer',
           'Innovation Hub',
           '2015 - 2021',
           'Designed and developed large-scale financial applications with millions of active users. Implemented robust security protocols.',
         ),
         _buildTimelineItem(
-          theme,
-          accentColor,
           'Junior Developer',
           'Start-up Inc.',
           '2013 - 2015',
@@ -216,15 +214,13 @@ class _AboutMeWidgetState extends State<AboutMeWidget> {
     );
   }
 
-  Widget _buildEducationSection(ThemeData theme, Color accentColor) {
+  Widget _buildEducationSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionTitle(I18nKeys.education.tr, accentColor),
-        const SizedBox(height: 15),
+        _buildSectionTitle(I18nKeys.education.tr),
+        SizedBox(height: 15.f),
         _buildTimelineItem(
-          theme,
-          accentColor,
           'Bachelor of Computer Science',
           'Tech University',
           '2009 - 2013',
@@ -235,37 +231,30 @@ class _AboutMeWidgetState extends State<AboutMeWidget> {
     );
   }
 
-  Widget _buildComprehensiveSkills(ThemeData theme, Color accentColor) {
+  Widget _buildComprehensiveSkills() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionTitle(I18nKeys.coreSkills.tr, accentColor),
-        const SizedBox(height: 15),
-        _buildSkillCategory(theme, 'Mobile', ['Flutter', 'Android Native', 'Dart', 'Kotlin', 'Java']),
-        const SizedBox(height: 10),
-        _buildSkillCategory(theme, 'Architecture', ['Clean Architecture', 'MVI', 'MVVM', 'SOLID']),
-        const SizedBox(height: 10),
-        _buildSkillCategory(theme, 'Backend & DevOps', ['Spring Boot', 'SQL', 'Docker', 'CI/CD']),
+        _buildSectionTitle(I18nKeys.coreSkills.tr),
+        SizedBox(height: 15.f),
+        _buildSkillCategory('Mobile', ['Flutter', 'Android Native', 'Dart', 'Kotlin', 'Java']),
+        SizedBox(height: 10.f),
+        _buildSkillCategory('Architecture', ['Clean Architecture', 'MVI', 'MVVM', 'SOLID']),
+        SizedBox(height: 10.f),
+        _buildSkillCategory('Backend & DevOps', ['Spring Boot', 'SQL', 'Docker', 'CI/CD']),
       ],
     );
   }
 
-  Widget _buildSectionTitle(String title, Color accentColor) {
-    return Text(
+  Widget _buildSectionTitle(String title) {
+    return CommonText(
       title,
-      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: accentColor),
+      style: context.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: context.accentColor),
     );
   }
 
-  Widget _buildTimelineItem(
-    ThemeData theme,
-    Color accentColor,
-    String title,
-    String company,
-    String date,
-    String desc, {
-    bool isLast = false,
-  }) {
+  Widget _buildTimelineItem(String title, String company, String date, String desc, {bool isLast = false}) {
+    final accentColor = context.accentColor;
     return IntrinsicHeight(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -273,26 +262,35 @@ class _AboutMeWidgetState extends State<AboutMeWidget> {
           Column(
             children: [
               Container(
-                width: 12,
-                height: 12,
+                width: 12.f,
+                height: 12.f,
                 decoration: BoxDecoration(color: accentColor, shape: BoxShape.circle),
               ),
-              if (!isLast) Expanded(child: Container(width: 2, color: accentColor.withValues(alpha: 0.2))),
+              if (!isLast)
+                Expanded(
+                  child: Container(width: 2.f, color: accentColor.withValues(alpha: 0.2)),
+                ),
             ],
           ),
-          const SizedBox(width: 15),
+          SizedBox(width: 15.f),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                Text(
-                  '$company | $date',
-                  style: TextStyle(color: accentColor, fontSize: 13, fontWeight: FontWeight.w500),
+                CommonText(
+                  title,
+                  style: context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                 ),
-                const SizedBox(height: 6),
-                Text(desc, style: const TextStyle(color: Colors.grey, height: 1.4, fontSize: 14)),
-                const SizedBox(height: 20),
+                CommonText(
+                  '$company | $date',
+                  style: context.textTheme.bodySmall?.copyWith(
+                    color: accentColor,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                SizedBox(height: 6.f),
+                Text(desc, style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey, height: 1.4)),
+                SizedBox(height: 20.f),
               ],
             ),
           ),
@@ -301,25 +299,25 @@ class _AboutMeWidgetState extends State<AboutMeWidget> {
     );
   }
 
-  Widget _buildSkillCategory(ThemeData theme, String title, List<String> skills) {
+  Widget _buildSkillCategory(String title, List<String> skills) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
-        const SizedBox(height: 8),
+        CommonText(title, style: context.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
+        SizedBox(height: 8.f),
         Wrap(
-          spacing: 8,
-          runSpacing: 8,
+          spacing: 8.f,
+          runSpacing: 8.f,
           children: skills
               .map(
                 (s) => Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  padding: EdgeInsets.symmetric(horizontal: 10.f, vertical: 5.f),
                   decoration: BoxDecoration(
-                    color: theme.dividerColor.withValues(alpha: 0.05),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: theme.dividerColor.withValues(alpha: 0.1)),
+                    color: context.theme.dividerColor.withValues(alpha: 0.05),
+                    borderRadius: BorderRadius.circular(8.f),
+                    border: Border.all(color: context.theme.dividerColor.withValues(alpha: 0.1)),
                   ),
-                  child: Text(s, style: const TextStyle(fontSize: 12)),
+                  child: CommonText(s, style: context.textTheme.labelSmall),
                 ),
               )
               .toList(),

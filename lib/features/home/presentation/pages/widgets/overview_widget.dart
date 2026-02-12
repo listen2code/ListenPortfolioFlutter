@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/base/base_listenable_page.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
+import 'package:listen_portfolio_flutter/core/extension/context_extension.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
-import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
+import 'package:listen_portfolio_flutter/shared/utils/snack_bar_util.dart';
 import 'package:listen_portfolio_flutter/shared/widgets/common_auth_text.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -24,39 +25,41 @@ class OverviewWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BaseListenablePage(
       builder: (context, child) {
-        final theme = Theme.of(context);
-        final accentColor = settingManager.accentColor;
-
         return SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(vertical: 20), // Only vertical padding
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.all(20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildWelcomeHeader(theme, accentColor),
-                    const SizedBox(height: 16),
-                    _buildStatusTag(),
-                    const SizedBox(height: 24),
-                    _buildExperienceGrid(theme),
-                    const SizedBox(height: 28),
-                    _buildSectionHeader(I18nKeys.quickActions.tr, showSeeAll: false, onPressed: () {}),
-                    const SizedBox(height: 12),
-                    _buildQuickActions(context, accentColor),
-                    const SizedBox(height: 28),
+                    _buildWelcomeHeader(context),
+                    SizedBox(height: 16.f),
+                    _buildStatusTag(context),
+                    SizedBox(height: 24.f),
+                    _buildExperienceGrid(context),
+                    SizedBox(height: 28.f),
                     _buildSectionHeader(
+                      context,
+                      I18nKeys.quickActions.tr,
+                      showSeeAll: false,
+                      onPressed: () {},
+                    ),
+                    SizedBox(height: 12.f),
+                    _buildQuickActions(context),
+                    SizedBox(height: 28.f),
+                    _buildSectionHeader(
+                      context,
                       I18nKeys.featuredProjects.tr,
                       showSeeAll: true,
                       onPressed: onProjectsRequested,
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12.f),
                   ],
                 ),
               ),
-              _buildFeaturedProjects(accentColor), // No horizontal padding here
+              _buildFeaturedProjects(context),
             ],
           ),
         );
@@ -64,44 +67,42 @@ class OverviewWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildWelcomeHeader(ThemeData theme, Color accentColor) {
+  Widget _buildWelcomeHeader(BuildContext context) {
+    final accentColor = context.accentColor;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonText(
           I18nKeys.hello.trArgs([AppConstants.author]),
-          style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
+          style: context.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
           maxLines: 1,
         ),
-        const SizedBox(height: 4),
+        SizedBox(height: 4.f),
         Wrap(
           children: [
             CommonText(
               'Full Stack Mobile Architect (${I18nKeys.graduated.tr}',
-              style: TextStyle(color: accentColor, fontSize: 11, fontWeight: FontWeight.w600),
+              style: context.textTheme.labelSmall?.copyWith(color: accentColor, fontWeight: FontWeight.w600),
               maxLines: 1,
-              strutStyle: StrutStyle(height: 1.2, forceStrutHeight: true),
             ),
             CommonAuthText(
               ' 2013 ',
-              style: TextStyle(color: accentColor, fontSize: 11, fontWeight: FontWeight.w600),
+              style: context.textTheme.labelSmall?.copyWith(color: accentColor, fontWeight: FontWeight.w600),
               maxLines: 1,
-              strutStyle: StrutStyle(height: 1.2, forceStrutHeight: true),
               blurLevel: AuthBlurLevel.low,
             ),
             CommonText(
               '| ${I18nKeys.softwareEngineering.tr})',
-              style: TextStyle(color: accentColor, fontSize: 11, fontWeight: FontWeight.w600),
+              style: context.textTheme.labelSmall?.copyWith(color: accentColor, fontWeight: FontWeight.w600),
               maxLines: 1,
-              strutStyle: StrutStyle(height: 1.2, forceStrutHeight: true),
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.f),
         Row(
           children: [
             _buildCertBadge(accentColor, I18nKeys.jlptN1.tr),
-            const SizedBox(width: 8),
+            SizedBox(width: 8.f),
             _buildCertBadge(accentColor, I18nKeys.bjtJ2.tr),
           ],
         ),
@@ -111,72 +112,74 @@ class OverviewWidget extends StatelessWidget {
 
   Widget _buildCertBadge(Color color, String label) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      padding: EdgeInsets.symmetric(horizontal: 8.f, vertical: 3.f),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: BorderRadius.circular(6.f),
         border: Border.all(color: color.withValues(alpha: 0.3), width: 0.5),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.workspace_premium_outlined, size: 12, color: color),
-          const SizedBox(width: 4),
+          Icon(Icons.workspace_premium_outlined, size: 12.f, color: color),
+          SizedBox(width: 4.f),
           Text(
             label,
-            style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+            style: TextStyle(color: color, fontSize: 10.f, fontWeight: FontWeight.bold, letterSpacing: 0.5),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildStatusTag() {
+  Widget _buildStatusTag(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: EdgeInsets.symmetric(horizontal: 10.f, vertical: 4.f),
       decoration: BoxDecoration(
         color: Colors.green.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(20.f),
         border: Border.all(color: Colors.green.withValues(alpha: 0.2)),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(Icons.circle, color: Colors.green, size: 6),
-          const SizedBox(width: 6),
-          Text(
-            I18nKeys.availableStatus.tr,
-            style: const TextStyle(color: Colors.green, fontSize: 11, fontWeight: FontWeight.bold),
-          ),
-        ],
+      child: FittedBox(
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.circle, color: Colors.green, size: 6.f),
+            SizedBox(width: 6.f),
+            CommonText(
+              I18nKeys.availableStatus.tr,
+              style: context.textTheme.labelSmall?.copyWith(color: Colors.green, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildExperienceGrid(ThemeData theme) {
+  Widget _buildExperienceGrid(BuildContext context) {
     return Column(
       children: [
         _buildAndroidStatCard(
-          theme,
+          context,
           '10${I18nKeys.yearsShort.tr}+',
           I18nKeys.androidExp.tr,
           Icons.android_rounded,
           Colors.green,
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12.f),
         Row(
           children: [
             _buildStatCard(
-              theme,
+              context,
               '2${I18nKeys.yearsShort.tr}+',
               I18nKeys.flutterExp.tr,
               Icons.flutter_dash_rounded,
               Colors.blue,
               flex: 1,
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.f),
             _buildStatCard(
-              theme,
+              context,
               '1${I18nKeys.yearsShort.tr}+',
               I18nKeys.javaWeb.tr,
               Icons.code_rounded,
@@ -189,46 +192,49 @@ class OverviewWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildAndroidStatCard(ThemeData theme, String value, String label, IconData icon, Color iconColor) {
+  Widget _buildAndroidStatCard(
+    BuildContext context,
+    String value,
+    String label,
+    IconData icon,
+    Color iconColor,
+  ) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.f),
       decoration: BoxDecoration(
-        color: theme.cardColor,
-        borderRadius: BorderRadius.circular(20),
+        color: context.theme.cardColor,
+        borderRadius: BorderRadius.circular(20.f),
         boxShadow: [
-          BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10, offset: const Offset(0, 5)),
+          BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10.f, offset: Offset(0, 5.f)),
         ],
       ),
       child: Row(
         children: [
-          Icon(icon, color: iconColor, size: 32),
-          const SizedBox(width: 16),
+          Icon(icon, color: iconColor, size: 32.f),
+          SizedBox(width: 16.f),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CommonText(
                   value,
-                  style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
-                  maxLines: 1,
+                  style: context.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
                 ),
-                const SizedBox(height: 4),
-                CommonText(
-                  label,
-                  style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey),
-                  maxLines: 1,
-                ),
+                SizedBox(height: 4.f),
+                CommonText(label, style: context.textTheme.bodySmall?.copyWith(color: Colors.grey)),
               ],
             ),
           ),
-          const SizedBox(width: 10),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              _buildTag(I18nKeys.archDesign.tr, iconColor),
-              const SizedBox(height: 4),
-              _buildTag(I18nKeys.perfOptimization.tr, iconColor),
-            ],
+          SizedBox(width: 10.f),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                _buildTag(I18nKeys.archDesign.tr, iconColor),
+                SizedBox(height: 4.f),
+                _buildTag(I18nKeys.perfOptimization.tr, iconColor),
+              ],
+            ),
           ),
         ],
       ),
@@ -237,18 +243,20 @@ class OverviewWidget extends StatelessWidget {
 
   Widget _buildTag(String label, Color color) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-      decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(6)),
+      padding: EdgeInsets.symmetric(horizontal: 8.f, vertical: 2.f),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(6.f),
+      ),
       child: CommonText(
         label,
-        style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.bold),
-        maxLines: 1,
+        style: TextStyle(color: color, fontSize: 10.f, fontWeight: FontWeight.bold),
       ),
     );
   }
 
   Widget _buildStatCard(
-    ThemeData theme,
+    BuildContext context,
     String value,
     String label,
     IconData icon,
@@ -258,22 +266,18 @@ class OverviewWidget extends StatelessWidget {
     return Expanded(
       flex: flex,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        padding: EdgeInsets.symmetric(horizontal: 12.f, vertical: 10.f),
         decoration: BoxDecoration(
-          color: theme.cardColor,
-          borderRadius: BorderRadius.circular(20),
+          color: context.theme.cardColor,
+          borderRadius: BorderRadius.circular(20.f),
           boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.03),
-              blurRadius: 10,
-              offset: const Offset(0, 5),
-            ),
+            BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10.f, offset: Offset(0, 5.f)),
           ],
         ),
         child: Row(
           children: [
-            Icon(icon, color: iconColor, size: 24),
-            const SizedBox(width: 10),
+            Icon(icon, color: iconColor, size: 24.f),
+            SizedBox(width: 10.f),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -281,13 +285,11 @@ class OverviewWidget extends StatelessWidget {
                 children: [
                   CommonText(
                     value,
-                    style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-                    maxLines: 1,
+                    style: context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   CommonText(
                     label,
-                    style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey, fontSize: 11),
-                    maxLines: 1,
+                    style: context.textTheme.bodySmall?.copyWith(color: Colors.grey, fontSize: 11.f),
                   ),
                 ],
               ),
@@ -298,7 +300,32 @@ class OverviewWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildQuickActions(BuildContext context, Color accentColor) {
+  Widget _buildSectionHeader(
+    BuildContext context,
+    String title, {
+    bool showSeeAll = false,
+    required VoidCallback onPressed,
+  }) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          child: CommonText(
+            title,
+            style: context.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+          ),
+        ),
+        if (showSeeAll)
+          TextButton(
+            onPressed: onPressed,
+            child: CommonText(I18nKeys.viewAll.tr, style: context.textTheme.bodySmall),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildQuickActions(BuildContext context) {
+    final accentColor = context.accentColor;
     return Column(
       children: [
         Row(
@@ -312,7 +339,7 @@ class OverviewWidget extends StatelessWidget {
               subtitle: 'Detailed CV',
               blurLevel: AuthBlurLevel.low,
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.f),
             _buildActionCard(
               context,
               I18nKeys.architecture.tr,
@@ -323,43 +350,23 @@ class OverviewWidget extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12.f),
         Row(
           children: [
-            _buildActionButton(context, I18nKeys.github.tr, Icons.code_rounded, Colors.grey, () async {
-              final Uri url = Uri.parse(AppConstants.fullMail);
-              if (!await launchUrl(url)) {
-                if (context.mounted) {
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text(I18nKeys.couldNotLaunchGithub.tr)));
-                }
-              }
-            }),
-            const SizedBox(width: 12),
+            _buildActionButton(
+              context,
+              I18nKeys.github.tr,
+              Icons.code_rounded,
+              Colors.grey,
+              () => _launchURL(AppConstants.fullMail),
+            ),
+            SizedBox(width: 12.f),
             _buildActionButton(
               context,
               I18nKeys.contactMe.tr,
               Icons.alternate_email_rounded,
               Colors.grey,
-              () async {
-                final Uri url = Uri.parse('mailto:${AppConstants.mail}?subject=Portfolio%20Feedback');
-                try {
-                  if (await canLaunchUrl(url)) {
-                    await launchUrl(url, mode: LaunchMode.externalApplication);
-                  } else if (context.mounted) {
-                    ScaffoldMessenger.of(
-                      context,
-                    ).showSnackBar(SnackBar(content: Text(I18nKeys.noEmailApp.tr)));
-                  }
-                } catch (e) {
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(
-                      context,
-                    ).showSnackBar(const SnackBar(content: Text('Could not launch mail client')));
-                  }
-                }
-              },
+              () => _launchURL('mailto:${AppConstants.mail}?subject=Portfolio%20Feedback'),
             ),
           ],
         ),
@@ -369,48 +376,44 @@ class OverviewWidget extends StatelessWidget {
 
   Widget _buildActionCard(
     BuildContext context,
-    String label,
+    String title,
     IconData icon,
     Color color,
     VoidCallback onTap, {
-    required String subtitle,
+    String? subtitle,
     AuthBlurLevel blurLevel = AuthBlurLevel.none,
   }) {
-    final theme = Theme.of(context);
     return Expanded(
-      child: Material(
-        color: theme.cardColor,
-        borderRadius: BorderRadius.circular(20),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(20),
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              border: Border.all(color: color.withValues(alpha: 0.1)),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(icon, color: color, size: 24),
-                const SizedBox(height: 8),
-                CommonAuthText(
-                  label,
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-                  maxLines: 1,
-                  blurLevel: blurLevel,
-                  onTap: onTap,
-                ),
-                CommonAuthText(
-                  subtitle,
-                  style: const TextStyle(color: Colors.grey, fontSize: 11),
-                  maxLines: 1,
-                  blurLevel: blurLevel,
-                  onTap: onTap,
-                ),
-              ],
-            ),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(20.f),
+        child: Container(
+          padding: EdgeInsets.all(16.f),
+          decoration: BoxDecoration(
+            color: context.theme.cardColor,
+            borderRadius: BorderRadius.circular(20.f),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.03),
+                blurRadius: 10.f,
+                offset: Offset(0, 5.f),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(icon, color: color, size: 28.f),
+              SizedBox(height: 8.f),
+              CommonAuthText(
+                title,
+                style: context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                blurLevel: blurLevel,
+                onTap: onTap,
+              ),
+              if (subtitle != null)
+                CommonText(subtitle, style: context.textTheme.bodySmall?.copyWith(color: Colors.grey)),
+            ],
           ),
         ),
       ),
@@ -425,25 +428,32 @@ class OverviewWidget extends StatelessWidget {
     VoidCallback onTap,
   ) {
     return Expanded(
-      child: Material(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(15),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(15),
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 12),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16.f),
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 12.f, vertical: 10.f),
+          decoration: BoxDecoration(
+            color: context.theme.cardColor,
+            borderRadius: BorderRadius.circular(16.f),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.03),
+                blurRadius: 10.f,
+                offset: Offset(0, 5.f),
+              ),
+            ],
+          ),
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(icon, color: color, size: 18),
-                const SizedBox(width: 8),
-                Flexible(
-                  child: CommonText(
-                    label,
-                    style: TextStyle(color: color, fontWeight: FontWeight.bold),
-                    maxLines: 1,
-                  ),
+                Icon(icon, color: color, size: 18.f),
+                SizedBox(width: 8.f),
+                CommonText(
+                  label,
+                  style: context.textTheme.bodySmall?.copyWith(color: color, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -453,62 +463,96 @@ class OverviewWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildSectionHeader(String title, {required bool showSeeAll, required VoidCallback onPressed}) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-          child: CommonText(
-            title,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            maxLines: 1,
-          ),
-        ),
-        if (showSeeAll) TextButton(onPressed: onPressed, child: Text(I18nKeys.viewAll.tr)),
-      ],
-    );
-  }
+  Widget _buildFeaturedProjects(BuildContext context) {
+    final projects = [
+      {
+        'title': 'lPortfolio',
+        'tag': 'MVI Architecture',
+        'image': 'assets/images/project_portfolio.png',
+        'color': context.accentColor,
+      },
+      {
+        'title': 'AI Chatbot',
+        'tag': 'OpenAI SDK',
+        'image': 'assets/images/project_chatbot.png',
+        'color': Colors.purple,
+      },
+    ];
 
-  Widget _buildFeaturedProjects(Color accentColor) {
     return SizedBox(
-      height: 150,
-      child: ListView(
+      height: 180.f,
+      child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 20), // Edge-to-edge initial offset
-        children: [
-          _buildProjectCard('lPortfolio', 'Current App', accentColor),
-          _buildProjectCard('AI Chatbot', 'Dart & OpenAI', Colors.purple),
-        ],
+        padding: EdgeInsets.symmetric(horizontal: 20.f),
+        itemCount: projects.length,
+        itemBuilder: (context, index) {
+          final project = projects[index];
+          return _buildProjectCard(
+            context,
+            title: project['title'] as String,
+            tag: project['tag'] as String,
+            image: project['image'] as String,
+            color: project['color'] as Color,
+          );
+        },
       ),
     );
   }
 
-  Widget _buildProjectCard(String title, String subtitle, Color baseColor) {
+  Widget _buildProjectCard(
+    BuildContext context, {
+    required String title,
+    required String tag,
+    required String image,
+    required Color color,
+  }) {
     return Container(
-      width: 220,
-      margin: const EdgeInsets.only(right: 15),
-      padding: const EdgeInsets.all(20),
+      width: 300.f,
+      margin: EdgeInsets.only(right: 16.f),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [baseColor, baseColor.withValues(alpha: 0.7)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(24.f),
+        image: DecorationImage(image: AssetImage(image), fit: BoxFit.cover),
+        boxShadow: [BoxShadow(color: color.withValues(alpha: 0.2), blurRadius: 12.f, offset: Offset(0, 6.f))],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          CommonText(
-            title,
-            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
-            maxLines: 1,
+      child: Container(
+        padding: EdgeInsets.all(20.f),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(24.f),
+          gradient: LinearGradient(
+            begin: Alignment.bottomCenter,
+            end: Alignment.topCenter,
+            colors: [Colors.black.withValues(alpha: 0.8), Colors.transparent],
           ),
-          const SizedBox(height: 4),
-          CommonText(subtitle, style: const TextStyle(color: Colors.white70, fontSize: 12), maxLines: 1),
-        ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 8.f, vertical: 4.f),
+              decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(8.f)),
+              child: CommonText(
+                tag,
+                style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+              ),
+            ),
+            SizedBox(height: 8.f),
+            CommonText(
+              title,
+              style: context.textTheme.titleMedium?.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
       ),
     );
+  }
+
+  Future<void> _launchURL(String urlString) async {
+    if (!await launchUrl(Uri.parse(urlString))) {
+      SnackBarUtil.show('${I18nKeys.couldNotLaunchGithub.tr}: $urlString');
+    }
   }
 }

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_portfolio_flutter/core/base/base_stateless_page.dart';
-import 'package:listen_portfolio_flutter/core/extension/base_ref_extension.dart';
+import 'package:listen_portfolio_flutter/core/extension/context_extension.dart';
+import 'package:listen_portfolio_flutter/core/extension/widget_ref_extension.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
-import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_intent.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_state.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_view_model.dart';
@@ -51,11 +51,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           AppNav.to(const ForgotPasswordPage());
           break;
         case LoginNavigationTarget.success:
-          // Close login page and return true to inform the caller (interceptor) about success
           AppNav.back(true);
           break;
         case LoginNavigationTarget.back:
-          // Close login page and return false to indicate it was dismissed/skipped
           AppNav.back(false);
           break;
       }
@@ -84,28 +82,30 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     final viewModel = ref.read(loginViewModelProvider.notifier);
 
     return BaseStatelessPage(
-      padding: const EdgeInsets.symmetric(horizontal: 30.0),
       body: (context, child) {
-        final accentColor = settingManager.accentColor;
+        final accentColor = context.accentColor;
+
         return SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 40),
+              SizedBox(height: 40.f),
               _buildLogo(accentColor),
-              const SizedBox(height: 30),
-              _buildTitle(Theme.of(context)),
-              const SizedBox(height: 50),
+              SizedBox(height: 30.f),
+              _buildTitle(context),
+              SizedBox(height: 50.f),
               _buildUsernameField(state, viewModel),
-              const SizedBox(height: 20),
+              SizedBox(height: 20.f),
               _buildPasswordField(state, viewModel),
-              _buildRememberAndForgot(state, viewModel, accentColor),
-              const SizedBox(height: 30),
-              _buildLoginButton(state, viewModel, accentColor),
-              const SizedBox(height: 15),
-              _buildSkipButton(viewModel),
-              const SizedBox(height: 10),
-              _buildSignupLink(viewModel, accentColor),
+              _buildRememberAndForgot(context, state, viewModel, accentColor),
+              SizedBox(height: 30.f),
+              _buildLoginButton(context, state, viewModel, accentColor),
+              SizedBox(height: 15.f),
+              _buildSkipButton(context, viewModel),
+              SizedBox(height: 10.f),
+              _buildSignupLink(context, viewModel, accentColor),
+              SizedBox(height: 40.f),
             ],
           ),
         );
@@ -120,22 +120,18 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       tag: 'logo',
       child: Center(
         child: Container(
-          padding: const EdgeInsets.all(15),
+          padding: EdgeInsets.all(15.f),
           decoration: BoxDecoration(
             color: Colors.white,
             shape: BoxShape.circle,
             boxShadow: [
-              BoxShadow(
-                color: accentColor.withValues(alpha: 0.3),
-                blurRadius: 20,
-                offset: const Offset(0, 10),
-              ),
+              BoxShadow(color: accentColor.withValues(alpha: 0.3), blurRadius: 20.f, offset: Offset(0, 10.f)),
             ],
           ),
           child: Image.asset(
             R.imagesIcLauncherAdaptiveFore,
-            width: 60,
-            height: 60,
+            width: 60.f,
+            height: 60.f,
             color: accentColor,
             colorBlendMode: BlendMode.srcIn,
           ),
@@ -144,18 +140,18 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     );
   }
 
-  Widget _buildTitle(ThemeData theme) {
+  Widget _buildTitle(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         CommonText(
           I18nKeys.welcomeBack.tr,
-          style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
+          style: context.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.f),
         CommonText(
           I18nKeys.signInToContinue.tr,
-          style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey),
+          style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey),
         ),
       ],
     );
@@ -183,7 +179,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     );
   }
 
-  Widget _buildRememberAndForgot(LoginState state, LoginViewModel viewModel, Color accentColor) {
+  Widget _buildRememberAndForgot(
+    BuildContext context,
+    LoginState state,
+    LoginViewModel viewModel,
+    Color accentColor,
+  ) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -193,21 +194,21 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               SizedBox(
-                width: 24,
-                height: 24,
+                width: 24.f,
+                height: 24.f,
                 child: Checkbox(
                   value: state.rememberMe,
                   activeColor: accentColor,
                   onChanged: (value) => viewModel.handleIntent(const LoginIntent.toggleRememberMe()),
                 ),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8.f),
               Flexible(
                 child: GestureDetector(
                   onTap: () => viewModel.handleIntent(const LoginIntent.toggleRememberMe()),
                   child: CommonText(
                     I18nKeys.rememberMe.tr,
-                    style: const TextStyle(fontSize: 14, color: Colors.grey),
+                    style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey),
                     maxLines: 1,
                   ),
                 ),
@@ -215,7 +216,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             ],
           ),
         ),
-        const SizedBox(width: 10),
+        SizedBox(width: 10.f),
         Flexible(
           flex: 2,
           child: TextButton(
@@ -223,7 +224,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             style: TextButton.styleFrom(padding: EdgeInsets.zero, alignment: Alignment.centerRight),
             child: CommonText(
               I18nKeys.forgotPassword.tr,
-              style: TextStyle(color: accentColor, fontSize: 13),
+              style: context.textTheme.bodySmall?.copyWith(color: accentColor, fontWeight: FontWeight.bold),
               textAlign: TextAlign.right,
               maxLines: 1,
             ),
@@ -233,14 +234,19 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     );
   }
 
-  Widget _buildLoginButton(LoginState state, LoginViewModel viewModel, Color accentColor) {
+  Widget _buildLoginButton(
+    BuildContext context,
+    LoginState state,
+    LoginViewModel viewModel,
+    Color accentColor,
+  ) {
     return Container(
-      height: 56,
+      height: 56.f,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(15.f),
         gradient: LinearGradient(colors: [accentColor, accentColor.withValues(alpha: 0.8)]),
         boxShadow: [
-          BoxShadow(color: accentColor.withValues(alpha: 0.3), blurRadius: 10, offset: const Offset(0, 5)),
+          BoxShadow(color: accentColor.withValues(alpha: 0.3), blurRadius: 10.f, offset: Offset(0, 5.f)),
         ],
       ),
       child: ElevatedButton(
@@ -249,47 +255,55 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
           padding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.f)),
         ),
         child: state.isLoading
-            ? const Center(
+            ? Center(
                 child: SizedBox(
-                  height: 20,
-                  width: 20,
-                  child: CircularProgressIndicator(
+                  height: 20.f,
+                  width: 20.f,
+                  child: const CircularProgressIndicator(
                     strokeWidth: 2,
                     valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                   ),
                 ),
               )
-            : Text(
+            : CommonText(
                 I18nKeys.login.tr,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                style: context.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
       ),
     );
   }
 
-  Widget _buildSkipButton(LoginViewModel viewModel) {
+  Widget _buildSkipButton(BuildContext context, LoginViewModel viewModel) {
     return TextButton(
       onPressed: () => viewModel.handleIntent(const LoginIntent.skipLogin()),
-      child: Text(I18nKeys.skipForNow.tr, style: const TextStyle(color: Colors.grey)),
+      child: CommonText(
+        I18nKeys.skipForNow.tr,
+        style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey),
+      ),
     );
   }
 
-  Widget _buildSignupLink(LoginViewModel viewModel, Color accentColor) {
+  Widget _buildSignupLink(BuildContext context, LoginViewModel viewModel, Color accentColor) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Flexible(
-          child: CommonText(I18nKeys.noAccount.tr, style: const TextStyle(color: Colors.grey), maxLines: 1),
+          child: CommonText(
+            I18nKeys.noAccount.tr,
+            style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey),
+          ),
         ),
         TextButton(
           onPressed: () => viewModel.handleIntent(const LoginIntent.navigateToSignup()),
           child: CommonText(
             I18nKeys.signUp.tr,
-            style: TextStyle(color: accentColor, fontWeight: FontWeight.bold),
-            maxLines: 1,
+            style: context.textTheme.bodyMedium?.copyWith(color: accentColor, fontWeight: FontWeight.bold),
           ),
         ),
       ],

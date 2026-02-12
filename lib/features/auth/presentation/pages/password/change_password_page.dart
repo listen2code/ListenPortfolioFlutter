@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/base/base_stateless_page.dart';
+import 'package:listen_portfolio_flutter/core/extension/context_extension.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
-import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
+import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_portfolio_flutter/shared/utils/snack_bar_util.dart';
 import 'package:listen_portfolio_flutter/shared/widgets/common_text_field.dart';
 
@@ -29,7 +30,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   }
 
   // Handle password update logic
-  void _handleChangePassword(Color accentColor) {
+  void _handleChangePassword() {
     if (_formKey.currentState!.validate()) {
       SnackBarUtil.show(I18nKeys.passwordChangedSuccess.tr);
       AppNav.back();
@@ -38,32 +39,32 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
 
   @override
   Widget build(BuildContext context) {
+    final accentColor = context.accentColor;
+
     return BaseStatelessPage(
       isEmptyTitle: true,
-      padding: const EdgeInsets.all(24.0),
       body: (context, child) {
-        final theme = Theme.of(context);
-        final accentColor = settingManager.accentColor;
         return SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
           child: Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const SizedBox(height: 20),
+                SizedBox(height: 20.f),
                 Text(
                   I18nKeys.changePassword.tr,
-                  style: theme.textTheme.headlineMedium?.copyWith(
+                  style: context.textTheme.headlineMedium?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: theme.brightness == Brightness.light ? Colors.black87 : Colors.white,
+                    color: context.isDark ? Colors.white : Colors.black87,
                   ),
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12.f),
                 Text(
                   I18nKeys.changePasswordSubtitle.tr,
-                  style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey, height: 1.5),
+                  style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey, height: 1.5),
                 ),
-                const SizedBox(height: 40),
+                SizedBox(height: 40.f),
                 // Current Password Field
                 CommonTextField(
                   controller: _oldPasswordController,
@@ -72,7 +73,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   prefixIcon: Icons.lock_outline,
                   validator: (value) => value!.isEmpty ? I18nKeys.requiredField.tr : null,
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20.f),
                 // New Password Field
                 CommonTextField(
                   controller: _newPasswordController,
@@ -81,7 +82,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   prefixIcon: Icons.lock_outline,
                   validator: (value) => value!.isEmpty ? I18nKeys.requiredField.tr : null,
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20.f),
                 // Confirm New Password Field
                 CommonTextField(
                   controller: _confirmPasswordController,
@@ -95,38 +96,38 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                     return value!.isEmpty ? I18nKeys.pleaseConfirmPassword.tr : null;
                   },
                 ),
-                const SizedBox(height: 40),
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    gradient: LinearGradient(colors: [accentColor, accentColor.withValues(alpha: 0.8)]),
-                    boxShadow: [
-                      BoxShadow(
-                        color: accentColor.withValues(alpha: 0.3),
-                        blurRadius: 10,
-                        offset: const Offset(0, 5),
-                      ),
-                    ],
-                  ),
-                  child: ElevatedButton(
-                    onPressed: () => _handleChangePassword(accentColor),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.transparent,
-                      shadowColor: Colors.transparent,
-                      padding: const EdgeInsets.symmetric(vertical: 18),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                    ),
-                    child: Text(
-                      I18nKeys.updatePassword.tr,
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-                    ),
-                  ),
-                ),
+                SizedBox(height: 40.f),
+                _buildUpdateButton(accentColor),
               ],
             ),
           ),
         );
       },
+    );
+  }
+
+  Widget _buildUpdateButton(Color accentColor) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15.f),
+        gradient: LinearGradient(colors: [accentColor, accentColor.withValues(alpha: 0.8)]),
+        boxShadow: [
+          BoxShadow(color: accentColor.withValues(alpha: 0.3), blurRadius: 10.f, offset: Offset(0, 5.f)),
+        ],
+      ),
+      child: ElevatedButton(
+        onPressed: _handleChangePassword,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.transparent,
+          shadowColor: Colors.transparent,
+          padding: EdgeInsets.symmetric(vertical: 18.f),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.f)),
+        ),
+        child: CommonText(
+          I18nKeys.updatePassword.tr,
+          style: context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+      ),
     );
   }
 }

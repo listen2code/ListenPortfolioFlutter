@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/base/base_listenable_page.dart';
 import 'package:listen_portfolio_flutter/core/base/base_stateless_page.dart';
+import 'package:listen_portfolio_flutter/core/extension/context_extension.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
@@ -34,8 +35,18 @@ class _AppearancePageState extends State<AppearancePage> {
                     ThemeMode.system,
                     settingManager.themeMode,
                   ),
-                  _buildThemeOption(I18nKeys.light.tr, Icons.light_mode_outlined, ThemeMode.light, settingManager.themeMode),
-                  _buildThemeOption(I18nKeys.dark.tr, Icons.dark_mode_outlined, ThemeMode.dark, settingManager.themeMode),
+                  _buildThemeOption(
+                    I18nKeys.light.tr,
+                    Icons.light_mode_outlined,
+                    ThemeMode.light,
+                    settingManager.themeMode,
+                  ),
+                  _buildThemeOption(
+                    I18nKeys.dark.tr,
+                    Icons.dark_mode_outlined,
+                    ThemeMode.dark,
+                    settingManager.themeMode,
+                  ),
                 ]),
                 const SizedBox(height: 25),
                 _buildSectionTitle(I18nKeys.accentColor.tr),
@@ -79,19 +90,25 @@ class _AppearancePageState extends State<AppearancePage> {
       padding: const EdgeInsets.only(left: 10, bottom: 8),
       child: Text(
         title.toUpperCase(),
-        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 1.2),
+        style: const TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.bold,
+          color: Colors.grey,
+          letterSpacing: 1.2,
+        ),
       ),
     );
   }
 
   Widget _buildSettingsCard(BuildContext context, List<Widget> children) {
-    final theme = Theme.of(context);
     return Container(
       decoration: BoxDecoration(
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10, offset: const Offset(0, 5))],
+        boxShadow: [
+          BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10, offset: const Offset(0, 5)),
+        ],
       ),
       child: Material(
-        color: theme.cardColor,
+        color: context.theme.cardColor,
         borderRadius: BorderRadius.circular(20),
         clipBehavior: Clip.antiAlias,
         child: Column(
@@ -99,7 +116,13 @@ class _AppearancePageState extends State<AppearancePage> {
             for (var i = 0; i < children.length; i++) ...[
               children[i],
               if (i < children.length - 1)
-                Divider(height: 1, thickness: 0.5, indent: 65, endIndent: 20, color: theme.dividerColor.withValues(alpha: 0.1)),
+                Divider(
+                  height: 1,
+                  thickness: 0.5,
+                  indent: 65,
+                  endIndent: 20,
+                  color: context.theme.dividerColor.withValues(alpha: 0.1),
+                ),
             ],
           ],
         ),

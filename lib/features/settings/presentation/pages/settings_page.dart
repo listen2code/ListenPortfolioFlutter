@@ -3,6 +3,7 @@ import 'package:listen_portfolio_flutter/core/base/base_listenable_page.dart';
 import 'package:listen_portfolio_flutter/core/base/base_stateless_page.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_env.dart';
+import 'package:listen_portfolio_flutter/core/extension/context_extension.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
@@ -50,47 +51,42 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return BaseListenablePage(
       builder: (context, child) {
-        final accentColor = settingManager.accentColor;
-
         return BaseStatelessPage(
           title: I18nKeys.settings.tr,
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          body: (BuildContext context, Widget? child) {
+          body: (context, child) {
             return SingleChildScrollView(
+              padding: EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // 1. PREFERENCES: UI and localization
                   _buildSectionTitle(I18nKeys.general.tr),
-                  _buildSettingsCard(context, [
+                  _buildSettingsCard([
                     _buildListTile(
                       icon: Icons.palette_outlined,
                       title: I18nKeys.appearance.tr,
                       subtitle: I18nKeys.appearanceSubtitle.tr,
-                      accentColor: accentColor,
                       onTap: () => AppNav.to(const AppearancePage()),
                     ),
                     _buildListTile(
                       icon: Icons.language_outlined,
                       title: I18nKeys.language.tr,
-                      accentColor: accentColor,
                       trailing: Text(
                         settingManager.language.label,
-                        style: const TextStyle(color: Colors.grey, fontSize: 13),
+                        style: context.textTheme.bodySmall?.copyWith(color: Colors.grey),
                       ),
                       onTap: () => _showLanguageDialog(),
                     ),
                   ]),
 
-                  const SizedBox(height: 25),
+                  SizedBox(height: 25.f),
 
                   // 2. ACCOUNT & SECURITY
                   _buildSectionTitle(I18nKeys.account.tr),
-                  _buildSettingsCard(context, [
+                  _buildSettingsCard([
                     _buildListTile(
                       icon: Icons.lock_outline_rounded,
                       title: I18nKeys.changePassword.tr,
-                      accentColor: accentColor,
                       blurLevel: AuthBlurLevel.low,
                       onTap: () => AppNav.to(const ChangePasswordPage(), needLogin: true),
                     ),
@@ -98,55 +94,52 @@ class _SettingsPageState extends State<SettingsPage> {
                       icon: Icons.notifications_none_rounded,
                       title: I18nKeys.notifications.tr,
                       value: _notificationsEnabled,
-                      accentColor: accentColor,
                       onChanged: (val) => setState(() => _notificationsEnabled = val),
                     ),
                     _buildListTile(
                       icon: Icons.no_accounts_outlined,
                       title: I18nKeys.deleteAccount.tr,
-                      accentColor: accentColor,
                       blurLevel: AuthBlurLevel.low,
                       onTap: () => AppNav.to(const DeleteAccountPage(), needLogin: true),
                     ),
                   ]),
 
-                  const SizedBox(height: 25),
+                  SizedBox(height: 25.f),
 
                   // 3. STORAGE & MAINTENANCE
                   _buildSectionTitle(I18nKeys.systemStorage.tr),
-                  _buildSettingsCard(context, [
+                  _buildSettingsCard([
                     _buildListTile(
                       icon: Icons.cleaning_services_outlined,
                       title: I18nKeys.clearCache.tr,
-                      accentColor: accentColor,
-                      trailing: Text(_cacheSize, style: const TextStyle(color: Colors.grey, fontSize: 13)),
-                      onTap: () => _handleClearCache(accentColor),
+                      trailing: Text(
+                        _cacheSize,
+                        style: context.textTheme.bodySmall?.copyWith(color: Colors.grey),
+                      ),
+                      onTap: () => _handleClearCache(),
                     ),
                     _buildListTile(
                       icon: Icons.restart_alt_rounded,
                       title: I18nKeys.resetSettings.tr,
-                      accentColor: accentColor,
-                      onTap: () => _showResetConfirmation(accentColor),
+                      onTap: () => _showResetConfirmation(),
                     ),
                   ]),
 
-                  const SizedBox(height: 25),
+                  SizedBox(height: 25.f),
 
                   // 4. DEVELOPER TOOLS: Always visible
                   _buildSectionTitle(I18nKeys.developer.tr),
-                  _buildSettingsCard(context, [
+                  _buildSettingsCard([
                     _buildSwitchTile(
                       icon: Icons.terminal_rounded,
                       title: I18nKeys.viewLogs.tr,
                       value: LogOverlayManager.isShowing,
-                      accentColor: accentColor,
                       onChanged: (val) {
                         setState(() {
-                          if (val) {
+                          if (val)
                             LogOverlayManager.show(context);
-                          } else {
+                          else
                             LogOverlayManager.hide();
-                          }
                         });
                       },
                     ),
@@ -154,43 +147,39 @@ class _SettingsPageState extends State<SettingsPage> {
                       icon: Icons.settings_input_antenna_rounded,
                       title: I18nKeys.switchEnv.tr,
                       subtitle: '${I18nKeys.currentlyActive.tr}: ${AppEnv.env}',
-                      accentColor: accentColor,
                       onTap: () => _showEnvSwitchDialog(),
                     ),
                   ]),
 
-                  const SizedBox(height: 25),
+                  SizedBox(height: 25.f),
 
                   // 5. LEGAL & ABOUT
                   _buildSectionTitle(I18nKeys.about.tr),
-                  _buildSettingsCard(context, [
+                  _buildSettingsCard([
                     _buildListTile(
                       icon: Icons.privacy_tip_outlined,
                       title: I18nKeys.privacyPolicy.tr,
-                      accentColor: accentColor,
                       onTap: () => AppNav.to(const PrivacyPolicyPage()),
                     ),
                     _buildListTile(
                       icon: Icons.gavel_outlined,
                       title: I18nKeys.termsOfService.tr,
-                      accentColor: accentColor,
                       onTap: () => AppNav.to(const TermsOfServicePage()),
                     ),
                     _buildListTile(
                       icon: Icons.info_outline_rounded,
                       title: I18nKeys.licenses.tr,
-                      accentColor: accentColor,
                       onTap: () => showLicensePage(
                         context: context,
                         applicationName: AppConstants.appName,
                         applicationVersion: AppConstants.appVersion,
                         applicationIcon: Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: EdgeInsets.all(8.f),
                           child: Image.asset(
                             R.imagesIcLauncherAdaptiveFore,
-                            width: 48,
-                            height: 48,
-                            color: accentColor,
+                            width: 48.f,
+                            height: 48.f,
+                            color: context.accentColor,
                             colorBlendMode: BlendMode.srcIn,
                           ),
                         ),
@@ -198,15 +187,16 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ),
                     ListTile(
+                      dense: true,
                       title: Center(
                         child: Text(
                           '${I18nKeys.appVersion.tr} ${AppConstants.appVersion}',
-                          style: const TextStyle(color: Colors.grey, fontSize: 12),
+                          style: context.textTheme.labelSmall?.copyWith(color: Colors.grey),
                         ),
                       ),
                     ),
                   ]),
-                  const SizedBox(height: 40),
+                  SizedBox(height: 40.f),
                 ],
               ),
             );
@@ -218,7 +208,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   // --- Logic Handlers ---
 
-  void _handleClearCache(Color accentColor) async {
+  void _handleClearCache() async {
     await CacheManager.clearAllCache();
     await _updateCacheSize();
     if (mounted) {
@@ -226,7 +216,7 @@ class _SettingsPageState extends State<SettingsPage> {
     }
   }
 
-  void _showResetConfirmation(Color accentColor) {
+  void _showResetConfirmation() {
     CommonDialog.showConfirm(
       title: I18nKeys.resetConfirmTitle.tr,
       message: I18nKeys.resetConfirmContent.tr,
@@ -241,7 +231,6 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   void _showEnvSwitchDialog() {
-    // Dynamically generate switch items from AppEnvironment values
     CommonDialog.showSwitchDialog(
       title: I18nKeys.switchEnv.tr,
       items: AppEnvironment.values.map((envCode) {
@@ -258,18 +247,20 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  // Map environment codes to localized labels
   String _getEnvLabel(AppEnvironment env) {
     switch (env) {
-      case AppEnvironment.dev: return I18nKeys.envDev.tr;
-      case AppEnvironment.test: return I18nKeys.envTest.tr;
-      case AppEnvironment.prod: return I18nKeys.envProd.tr;
-      case AppEnvironment.mock: return I18nKeys.envMock.tr;
+      case AppEnvironment.mock:
+        return I18nKeys.envMock.tr;
+      case AppEnvironment.dev:
+        return I18nKeys.envDev.tr;
+      case AppEnvironment.test:
+        return I18nKeys.envTest.tr;
+      case AppEnvironment.prod:
+        return I18nKeys.envProd.tr;
     }
   }
 
   void _showLanguageDialog() {
-    // Selection dialog for languages
     CommonDialog.showSwitchDialog(
       title: I18nKeys.selectLanguage.tr,
       items: AppLanguage.values.map((lang) {
@@ -289,11 +280,10 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Widget _buildSectionTitle(String title) {
     return Padding(
-      padding: const EdgeInsets.only(left: 10, bottom: 8, top: 5),
+      padding: EdgeInsets.only(left: 10.f, bottom: 8.f, top: 5.f),
       child: Text(
         title.toUpperCase(),
-        style: const TextStyle(
-          fontSize: 11,
+        style: context.textTheme.labelSmall?.copyWith(
           fontWeight: FontWeight.bold,
           color: Colors.grey,
           letterSpacing: 1.1,
@@ -302,17 +292,16 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Widget _buildSettingsCard(BuildContext context, List<Widget> children) {
-    final theme = Theme.of(context);
+  Widget _buildSettingsCard(List<Widget> children) {
     return Container(
       decoration: BoxDecoration(
         boxShadow: [
-          BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 8, offset: const Offset(0, 4)),
+          BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 8.f, offset: Offset(0, 4.f)),
         ],
       ),
       child: Material(
-        color: theme.cardColor,
-        borderRadius: BorderRadius.circular(20),
+        color: context.theme.cardColor,
+        borderRadius: BorderRadius.circular(20.f),
         clipBehavior: Clip.antiAlias,
         child: Column(
           children: [
@@ -322,9 +311,9 @@ class _SettingsPageState extends State<SettingsPage> {
                 Divider(
                   height: 1,
                   thickness: 0.5,
-                  indent: 60,
-                  endIndent: 20,
-                  color: theme.dividerColor.withValues(alpha: 0.05),
+                  indent: 60.f,
+                  endIndent: 20.f,
+                  color: context.theme.dividerColor.withValues(alpha: 0.05),
                 ),
             ],
           ],
@@ -336,34 +325,41 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget _buildListTile({
     required IconData icon,
     required String title,
-    required Color accentColor,
     String? subtitle,
     Widget? trailing,
     required VoidCallback onTap,
     AuthBlurLevel blurLevel = AuthBlurLevel.none,
   }) {
+    final accentColor = context.accentColor;
+    final iconSize = 20.f * 0.8;
+
     return ListTile(
       dense: true,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+      contentPadding: EdgeInsets.symmetric(horizontal: 16.f, vertical: 4.f),
       leading: Container(
-        padding: const EdgeInsets.all(8),
+        padding: EdgeInsets.all(8.f),
         decoration: BoxDecoration(
           color: accentColor.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(10.f),
         ),
-        child: Icon(icon, color: accentColor, size: 20),
+        child: Icon(icon, color: accentColor, size: iconSize),
       ),
       title: CommonAuthText(
         title,
-        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+        style: context.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
         maxLines: 1,
         blurLevel: blurLevel,
         onTap: onTap,
       ),
       subtitle: subtitle != null
-          ? Text(subtitle, style: const TextStyle(fontSize: 11, color: Colors.grey))
+          ? Text(
+              subtitle,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: context.textTheme.labelSmall?.copyWith(color: Colors.grey),
+            )
           : null,
-      trailing: trailing ?? const Icon(Icons.chevron_right_rounded, size: 20, color: Colors.grey),
+      trailing: trailing ?? Icon(Icons.chevron_right_rounded, size: 20.f, color: Colors.grey),
       onTap: onTap,
     );
   }
@@ -372,22 +368,25 @@ class _SettingsPageState extends State<SettingsPage> {
     required IconData icon,
     required String title,
     required bool value,
-    required Color accentColor,
     required ValueChanged<bool> onChanged,
   }) {
+    final accentColor = context.accentColor;
+    final iconSize = 20.f * 0.8;
+
     return SwitchListTile.adaptive(
       dense: true,
+      contentPadding: EdgeInsets.symmetric(horizontal: 16.f, vertical: 4.f),
       secondary: Container(
-        padding: const EdgeInsets.all(8),
+        padding: EdgeInsets.all(8.f),
         decoration: BoxDecoration(
           color: accentColor.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(10.f),
         ),
-        child: Icon(icon, color: accentColor, size: 20),
+        child: Icon(icon, color: accentColor, size: iconSize),
       ),
       title: CommonText(
         title,
-        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+        style: context.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
         maxLines: 1,
       ),
       value: value,

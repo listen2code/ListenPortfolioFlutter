@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/base/base_listenable_page.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
+import 'package:listen_portfolio_flutter/core/extension/context_extension.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
-import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_portfolio_flutter/shared/utils/snack_bar_util.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -15,24 +15,21 @@ class ArchitectureWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BaseListenablePage(
       builder: (context, child) {
-        final theme = Theme.of(context);
-        final accentColor = settingManager.accentColor;
-
         return SingleChildScrollView(
           padding: const EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildHeader(theme),
-              const SizedBox(height: 30),
-              _buildCleanMVISection(theme, accentColor),
-              const SizedBox(height: 25),
-              _buildLibSection(theme, accentColor),
-              const SizedBox(height: 25),
-              _buildSourceCodeSection(context, theme, accentColor),
-              const SizedBox(height: 25),
-              _buildBackendSection(theme, accentColor),
-              const SizedBox(height: 30),
+              _buildHeader(context),
+              SizedBox(height: 30.f),
+              _buildCleanMVISection(context),
+              SizedBox(height: 25.f),
+              _buildLibSection(context),
+              SizedBox(height: 25.f),
+              _buildSourceCodeSection(context),
+              SizedBox(height: 25.f),
+              _buildBackendSection(context),
+              SizedBox(height: 30.f),
             ],
           ),
         );
@@ -40,28 +37,27 @@ class ArchitectureWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(ThemeData theme) {
+  Widget _buildHeader(BuildContext context) {
     return Text(
       I18nKeys.architectureHeader.tr,
-      style: theme.textTheme.bodyLarge?.copyWith(color: Colors.grey, height: 1.5),
+      style: context.textTheme.bodyLarge?.copyWith(color: Colors.grey, height: 1.5),
     );
   }
 
-  Widget _buildCleanMVISection(ThemeData theme, Color accentColor) {
+  Widget _buildCleanMVISection(BuildContext context) {
     return _buildCard(
-      theme: theme,
-      accentColor: accentColor,
+      context,
       title: I18nKeys.cleanMVITitle.tr,
       icon: Icons.layers_outlined,
       child: Text(
         'The app follows Clean Architecture principles to separate concerns into Data, Domain, and Presentation layers. '
         'On the Presentation layer, the MVI (Model-View-Intent) pattern ensures unidirectional data flow.',
-        style: theme.textTheme.bodyMedium?.copyWith(height: 1.6),
+        style: context.textTheme.bodyMedium?.copyWith(height: 1.6),
       ),
     );
   }
 
-  Widget _buildLibSection(ThemeData theme, Color accentColor) {
+  Widget _buildLibSection(BuildContext context) {
     final libs = [
       {'name': 'Riverpod', 'desc': 'State management & DI'},
       {'name': 'Freezed', 'desc': 'Code generation for immutable states'},
@@ -70,43 +66,42 @@ class ArchitectureWidget extends StatelessWidget {
     ];
 
     return _buildCard(
-      theme: theme,
-      accentColor: accentColor,
+      context,
       title: I18nKeys.coreLibrariesTitle.tr,
       icon: Icons.library_books_outlined,
-      child: Column(
-        children: libs.map((lib) => _buildLibItem(theme, accentColor, lib['name']!, lib['desc']!)).toList(),
-      ),
+      child: Column(children: libs.map((lib) => _buildLibItem(context, lib['name']!, lib['desc']!)).toList()),
     );
   }
 
-  Widget _buildSourceCodeSection(BuildContext context, ThemeData theme, Color accentColor) {
+  Widget _buildSourceCodeSection(BuildContext context) {
+    final accentColor = context.accentColor;
     return _buildCard(
-      theme: theme,
-      accentColor: accentColor,
+      context,
       title: I18nKeys.openSourceTitle.tr,
       icon: Icons.code_rounded,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(I18nKeys.openSourceDesc.tr, style: theme.textTheme.bodyMedium?.copyWith(height: 1.6)),
-          const SizedBox(height: 15),
+          Text(I18nKeys.openSourceDesc.tr, style: context.textTheme.bodyMedium?.copyWith(height: 1.6)),
+          SizedBox(height: 15.f),
           InkWell(
             onTap: () => _launchURL(context, AppConstants.fullMail),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(8.f),
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4),
+              padding: EdgeInsets.symmetric(vertical: 4.f),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.link, size: 18, color: accentColor),
-                  const SizedBox(width: 8),
-                  Text(
-                    'github.com/listen2code',
-                    style: TextStyle(
-                      color: accentColor,
-                      fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.underline,
+                  Icon(Icons.link, size: 18.f, color: accentColor),
+                  SizedBox(width: 8.f),
+                  Expanded(
+                    child: CommonText(
+                      'github.com/listen2code',
+                      style: TextStyle(
+                        color: accentColor,
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.underline,
+                      ),
                     ),
                   ),
                 ],
@@ -118,34 +113,35 @@ class ArchitectureWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildBackendSection(ThemeData theme, Color accentColor) {
+  Widget _buildBackendSection(BuildContext context) {
     return _buildCard(
-      theme: theme,
-      accentColor: accentColor,
+      context,
       title: I18nKeys.backendDevOpsTitle.tr,
       icon: Icons.cloud_done_outlined,
       child: Text(
         'The backend services are deployed on AWS using a serverless approach. Key services include Lambda, API Gateway, and DynamoDB.',
-        style: theme.textTheme.bodyMedium?.copyWith(height: 1.6),
+        style: context.textTheme.bodyMedium?.copyWith(height: 1.6),
       ),
     );
   }
 
-  Widget _buildCard({
-    required ThemeData theme,
-    required Color accentColor,
+  Widget _buildCard(
+    BuildContext context, {
     required String title,
     required IconData icon,
     required Widget child,
   }) {
+    final theme = context.theme;
+    final accentColor = context.accentColor;
+
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20.f),
       decoration: BoxDecoration(
         color: theme.cardColor,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(20.f),
         boxShadow: [
-          BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10, offset: const Offset(0, 5)),
+          BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10.f, offset: Offset(0, 5.f)),
         ],
       ),
       child: Column(
@@ -153,35 +149,39 @@ class ArchitectureWidget extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(icon, color: accentColor, size: 24),
-              const SizedBox(width: 12),
+              Icon(icon, color: accentColor, size: 24.f),
+              SizedBox(width: 12.f),
               Expanded(
                 child: CommonText(
                   title,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: accentColor),
+                  style: context.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: accentColor,
+                  ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 15),
+          SizedBox(height: 15.f),
           child,
         ],
       ),
     );
   }
 
-  Widget _buildLibItem(ThemeData theme, Color accentColor, String name, String desc) {
+  Widget _buildLibItem(BuildContext context, String name, String desc) {
+    final accentColor = context.accentColor;
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: EdgeInsets.only(bottom: 12.f),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.check_circle_outline, color: accentColor.withValues(alpha: 0.8), size: 18),
-          const SizedBox(width: 12),
+          Icon(Icons.check_circle_outline, color: accentColor.withValues(alpha: 0.8), size: 18.f),
+          SizedBox(width: 12.f),
           Expanded(
             child: RichText(
               text: TextSpan(
-                style: theme.textTheme.bodyMedium,
+                style: context.textTheme.bodyMedium,
                 children: [
                   TextSpan(
                     text: '$name: ',

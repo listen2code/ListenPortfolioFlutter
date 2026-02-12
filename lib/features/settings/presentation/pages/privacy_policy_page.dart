@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/base/base_stateless_page.dart';
+import 'package:listen_portfolio_flutter/core/extension/context_extension.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/shared/widgets/common_text.dart';
@@ -12,12 +13,15 @@ class PrivacyPolicyPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BaseStatelessPage(
       title: I18nKeys.privacyPolicy.tr,
-      padding: const EdgeInsets.all(20),
       body: (context, child) => SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Last Updated: May 2024', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey)),
+            Text(
+              'Last Updated: May 2024',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey),
+            ),
             const SizedBox(height: 20),
             _buildSection(
               context,
@@ -62,9 +66,13 @@ class PrivacyPolicyPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CommonText(title, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold), maxLines: 1),
+          CommonText(
+            title,
+            style: context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            maxLines: 1,
+          ),
           const SizedBox(height: 8),
-          Text(content, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey, height: 1.5)),
+          Text(content, style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey, height: 1.5)),
         ],
       ),
     );

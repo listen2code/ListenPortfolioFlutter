@@ -43,3 +43,7 @@ samples, guidance on mobile development, and a full API reference.
 * server i18
 * switch env: input url; mock api; config each api;
 * dev tools: layout check; lag check; launch; app launch; apk size;
+* long press icon menu
+* pixel icon cache
+* aspect log
+* api cancel

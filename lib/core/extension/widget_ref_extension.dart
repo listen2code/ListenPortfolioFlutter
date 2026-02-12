@@ -3,7 +3,7 @@ import 'package:listen_portfolio_flutter/core/base/base_view_model.dart';
 import 'package:listen_portfolio_flutter/shared/utils/snack_bar_util.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-extension BaseRefExtension on WidgetRef {
+extension WidgetRefX on WidgetRef {
   /// Listens to navigation targets and automatically resets the state after navigation.
   void listenNavigation<S extends BaseState<T>, T>(
     ProviderListenable<S> provider,
