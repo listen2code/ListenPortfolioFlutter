@@ -28,6 +28,7 @@ final Map<String, String> ja = {
   I18nKeys.large: '大',
   I18nKeys.selectLanguage: '言語選択',
   I18nKeys.switchEnv: '環境切替',
+  I18nKeys.envMock: 'デモ(Mock)',
   I18nKeys.envDev: '開発用',
   I18nKeys.envTest: 'テスト用',
   I18nKeys.envProd: '本番用',
@@ -122,6 +123,7 @@ final Map<String, String> ja = {
   I18nKeys.account: 'アカウント',
   I18nKeys.deleteAccount: 'アカウント削除',
   I18nKeys.deleteAccountConfirmTitle: 'アカウントを削除しますか？',
-  I18nKeys.deleteAccountConfirmContent: 'この操作は取り消しできません。すべての個人データが削除されます。',
+  I18nKeys.deleteAccountConfirmContent:
+      'この操作は取り消しできません。すべての個人データが削除されます。',
   I18nKeys.deleteAccountSuccess: 'アカウントが正常に削除されました。',
 };

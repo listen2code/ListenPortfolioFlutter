@@ -26,6 +26,7 @@ class I18nKeys {
   static const String large = 'Large';
   static const String selectLanguage = 'Select Language';
   static const String switchEnv = 'Switch Environment';
+  static const String envMock = 'Mock';
   static const String envDev = 'Development';
   static const String envTest = 'Testing';
   static const String envProd = 'Production';

@@ -1,8 +1,10 @@
 import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
 import 'package:listen_portfolio_flutter/core/network/api_client.dart';
+import 'package:listen_portfolio_flutter/core/network/local_mock_server.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 enum AppEnvironment {
+  mock(AppEnv.defaultEnv),
   dev('dev'),
   test('test'),
   prod('prod');
@@ -12,29 +14,49 @@ enum AppEnvironment {
   const AppEnvironment(this.name);
 
   static AppEnvironment fromString(String env) {
-    return AppEnvironment.values.firstWhere((e) => e.name == env, orElse: () => AppEnvironment.dev);
+    return AppEnvironment.values.firstWhere(
+      (e) => e.name == env,
+      orElse: () => AppEnvironment.fromString(AppEnv.defaultEnv),
+    );
   }
 }
 
 class AppEnv {
   AppEnv._();
 
+  static const String envDefine = "APP_ENV";
+  static const String defaultEnv = "mock";
+
   // Internal state, defaults to compile-time define
   static AppEnvironment _env = AppEnvironment.fromString(
-    const String.fromEnvironment('APP_ENV', defaultValue: 'dev'),
+    const String.fromEnvironment(envDefine, defaultValue: defaultEnv),
   );
 
-  /// Initializes the environment by checking local storage
+  /// Initializes the environment by checking local storage and starting mock server if needed
   static Future<void> init() async {
     final prefs = await SharedPreferences.getInstance();
     final savedEnv = prefs.getString(AppConstants.envKey);
     if (savedEnv != null) {
       _env = AppEnvironment.fromString(savedEnv);
     }
+
+    // Start local server if in mock mode
+    if (_env == AppEnvironment.mock) {
+      await LocalMockServer.start();
+    }
+
     _applyDioConfig();
   }
 
   static bool isProd() => _env == AppEnvironment.prod;
+
+  // Configuration for local in-app mock server
+  static const _mockConfig = (
+    baseUrl: 'http://localhost:9999', // Points to internal LocalMockServer
+    apiTimeout: 30000,
+    connectTimeout: 5000,
+    receiveTimeout: 5000,
+  );
 
   static const _devConfig = (
     baseUrl: 'http://192.168.0.224:9898',
@@ -63,21 +85,31 @@ class AppEnv {
 
   static dynamic get _current {
     switch (_env) {
-      case AppEnvironment.prod:
-        return _prodConfig;
-      case AppEnvironment.test:
-        return _testConfig;
+      case AppEnvironment.mock:
+        return _mockConfig;
       case AppEnvironment.dev:
         return _devConfig;
+      case AppEnvironment.test:
+        return _testConfig;
+      case AppEnvironment.prod:
+        return _prodConfig;
     }
   }
 
-  /// Updates current environment and persists the result to local storage
+  /// Updates current environment, persists state, and toggles mock server
   static Future<void> setEnvironment(AppEnvironment newEnv) async {
+    // Stop server if moving away from mock
+    if (_env == AppEnvironment.mock && newEnv != AppEnvironment.mock) {
+      await LocalMockServer.stop();
+    }
+    // Start server if moving to mock
+    if (newEnv == AppEnvironment.mock) {
+      await LocalMockServer.start();
+    }
+
     _env = newEnv;
     _applyDioConfig();
 
-    // Save to SharedPreferences for persistence across restarts
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(AppConstants.envKey, newEnv.name);
   }

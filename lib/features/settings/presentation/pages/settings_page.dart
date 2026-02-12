@@ -241,39 +241,31 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   void _showEnvSwitchDialog() {
-    // Selection dialog for environments
+    // Dynamically generate switch items from AppEnvironment values
     CommonDialog.showSwitchDialog(
       title: I18nKeys.switchEnv.tr,
-      items: [
-        DialogSwitchItem(
-          label: I18nKeys.envDev.tr,
-          value: AppEnv.currentEnv == AppEnvironment.dev,
+      items: AppEnvironment.values.map((envCode) {
+        return DialogSwitchItem(
+          label: _getEnvLabel(envCode),
+          value: AppEnv.currentEnv == envCode,
           onChanged: (_) async {
-            await AppEnv.setEnvironment(AppEnvironment.dev);
+            await AppEnv.setEnvironment(envCode);
             if (mounted) setState(() {});
             AppNav.back();
           },
-        ),
-        DialogSwitchItem(
-          label: I18nKeys.envTest.tr,
-          value: AppEnv.currentEnv == AppEnvironment.test,
-          onChanged: (_) async {
-            await AppEnv.setEnvironment(AppEnvironment.test);
-            if (mounted) setState(() {});
-            AppNav.back();
-          },
-        ),
-        DialogSwitchItem(
-          label: I18nKeys.envProd.tr,
-          value: AppEnv.currentEnv == AppEnvironment.prod,
-          onChanged: (_) async {
-            await AppEnv.setEnvironment(AppEnvironment.prod);
-            if (mounted) setState(() {});
-            AppNav.back();
-          },
-        ),
-      ],
+        );
+      }).toList(),
     );
+  }
+
+  // Map environment codes to localized labels
+  String _getEnvLabel(AppEnvironment env) {
+    switch (env) {
+      case AppEnvironment.dev: return I18nKeys.envDev.tr;
+      case AppEnvironment.test: return I18nKeys.envTest.tr;
+      case AppEnvironment.prod: return I18nKeys.envProd.tr;
+      case AppEnvironment.mock: return I18nKeys.envMock.tr;
+    }
   }
 
   void _showLanguageDialog() {
@@ -286,7 +278,6 @@ class _SettingsPageState extends State<SettingsPage> {
           value: settingManager.language == lang,
           onChanged: (_) {
             settingManager.setLanguage(lang);
-            // No need for setState here as BaseListenablePage listens to settingManager
             AppNav.back();
           },
         );

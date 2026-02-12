@@ -28,6 +28,7 @@ final Map<String, String> en = {
   I18nKeys.large: 'Large',
   I18nKeys.selectLanguage: 'Select Language',
   I18nKeys.switchEnv: 'Switch Environment',
+  I18nKeys.envMock: 'Mock',
   I18nKeys.envDev: 'Development',
   I18nKeys.envTest: 'Testing',
   I18nKeys.envProd: 'Production',

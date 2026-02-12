@@ -28,6 +28,7 @@ final Map<String, String> zh = {
   I18nKeys.large: '大号',
   I18nKeys.selectLanguage: '选择语言',
   I18nKeys.switchEnv: '切换环境',
+  I18nKeys.envMock: '模拟环境(Mock)',
   I18nKeys.envDev: '开发环境',
   I18nKeys.envTest: '测试环境',
   I18nKeys.envProd: '正式环境',

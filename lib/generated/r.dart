@@ -2,5 +2,16 @@
 class R {
   R._();
 
+  static const String authChangePassword = 'assets/mock/v1/post/auth/change-password.json';
+  static const String authForgetPassword = 'assets/mock/v1/post/auth/forget-password.json';
+  static const String authLogin = 'assets/mock/v1/post/auth/login.json';
+  static const String authLogout = 'assets/mock/v1/post/auth/logout.json';
+  static const String authSignUp = 'assets/mock/v1/post/auth/signUp.json';
+  static const String deleteUsers = 'assets/mock/v1/delete/users.json';
+  static const String getUsers = 'assets/mock/v1/get/users.json';
   static const String imagesIcLauncherAdaptiveFore = 'assets/images/ic_launcher_adaptive_fore.png';
+  static const String listUsers = 'assets/mock/v1/get/list/users.json';
+  static const String postUsers = 'assets/mock/v1/post/users.json';
+  static const String putUsers = 'assets/mock/v1/put/users.json';
+
 }
