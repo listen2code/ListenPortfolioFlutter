@@ -1,0 +1,12 @@
+{
+  "result": "0",
+  "messageId": "messageId",
+  "message": "message",
+  "body": {
+    "id": "1",
+    "name": "listen",
+    "email": "18",
+    "avatarUrl": "18",
+    "createdAt": "2026-02-01 12:22:35.123456"
+  }
+}

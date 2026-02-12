@@ -1,0 +1,21 @@
+{
+  "result": "0",
+  "messageId": "messageId",
+  "message": "message",
+  "body": [
+    {
+      "id": "1",
+      "name": "listen",
+      "email": "18",
+      "avatarUrl": "",
+      "createdAt": "2026-02-01 12:22:35.123456"
+    },
+    {
+      "id": "1",
+      "name": "hongYu",
+      "email": "18",
+      "avatarUrl": "",
+      "createdAt": "2026-02-02 12:22:35.123456"
+    }
+  ]
+}
