@@ -5,10 +5,10 @@
 
 # Default values
 TARGET_TYPE=${1:-"apk"} # First argument: apk or bundle
-ENV=${2:-"dev"}         # Second argument: dev, test, prod
+ENV=${2:-"dev"}         # Second argument: mock, dev, test, prod
 
 # Validate environment
-if [[ ! "$ENV" =~ ^(dev|test|prod)$ ]]; then
+if [[ ! "$ENV" =~ ^(mock|dev|test|prod)$ ]]; then
     echo ">>> Error: Invalid environment '$ENV'. Must be one of: dev, test, prod"
     exit 1
 fi
