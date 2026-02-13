@@ -47,4 +47,3 @@ samples, guidance on mobile development, and a full API reference.
 * pixel icon cache
 * aspect log
 * api cancel
-* dev icon close; and update setting

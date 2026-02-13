@@ -12,7 +12,11 @@ extension WidgetRefX on WidgetRef {
     listen<T?>(provider.select((state) => state.pendingNavigation), (previous, next) {
       if (next != null) {
         onNavigate(next);
-        _getViewModel(provider)?.navigationConsumed();
+
+        // Delay state reset to the next microtask.
+        // This ensures that the current state can be fully captured by other listeners
+        // or logging mechanisms (like the dispatch logger) before being cleared.
+        Future.microtask(() => _getViewModel(provider)?.navigationConsumed());
       }
     });
   }
@@ -22,17 +26,21 @@ extension WidgetRefX on WidgetRef {
     listen<String?>(provider.select((state) => state.errorMessage), (previous, next) {
       if (next != null && next.isNotEmpty) {
         SnackBarUtil.show(next, isError: true);
-        _getViewModel(provider)?.errorConsumed();
+
+        // Delay consumption to allow the logging aspect to record the error state.
+        Future.microtask(() => _getViewModel(provider)?.errorConsumed());
       }
     });
   }
 
-  /// Listens to error messages and automatically shows a SnackBar and resets the state.
+  /// Listens to info messages and automatically shows a SnackBar and resets the state.
   void listenMessage<S extends BaseState<dynamic>>(ProviderListenable<S> provider) {
     listen<String?>(provider.select((state) => state.message), (previous, next) {
       if (next != null && next.isNotEmpty) {
         SnackBarUtil.show(next, isError: false);
-        _getViewModel(provider)?.messageConsumed();
+
+        // Push state reset to next microtask to avoid interference with synchronous logs.
+        Future.microtask(() => _getViewModel(provider)?.messageConsumed());
       }
     });
   }

@@ -1,3 +1,7 @@
+import 'dart:async';
+
+import 'package:listen_portfolio_flutter/core/utils/logger.dart';
+
 /// Interface for states that support navigation, error, and general messaging.
 /// Pure Dart - No dependencies.
 abstract class BaseState<T> {
@@ -24,7 +28,7 @@ abstract class BaseViewModel {
   void messageConsumed();
 }
 
-/// Mixin to handle navigation and error state consumption.
+/// Mixin to handle navigation, error state consumption, and intent logging.
 mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel {
   @override
   void navigationConsumed() {
@@ -42,5 +46,25 @@ mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel {
   void messageConsumed() {
     final dynamic self = this;
     self.state = self.state.copyWith(message: null);
+  }
+
+  /// Wraps any action with intent and state logging.
+  /// Usage: dispatch(intent, () => intent.when(...))
+  FutureOr<void> dispatch(dynamic intent, FutureOr<void> Function() handler) {
+    final tag = runtimeType.toString();
+    appLogger.d('$tag: [INTENT] -> $intent');
+
+    final result = handler();
+
+    if (result is Future) {
+      return result.then((_) {
+        final dynamic self = this;
+        appLogger.d('$tag: [STATE] (Async) <- ${self.state}');
+      });
+    }
+
+    final dynamic self = this;
+    appLogger.d('$tag: [STATE] <- ${self.state}');
+    return result;
   }
 }

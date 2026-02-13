@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:listen_portfolio_flutter/core/base/base_view_model.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
@@ -36,34 +38,39 @@ class LoginViewModel extends _$LoginViewModel with ConsumeViewModel<LoginState> 
     }
   }
 
-  FutureOr handleIntent(LoginIntent intent) {
-    return intent.when(
-      usernameChanged: _onUsernameChanged,
-      passwordChanged: _onPasswordChanged,
-      togglePasswordVisibility: _onTogglePasswordVisibility,
-      toggleRememberMe: _onToggleRememberMe,
-      submitLogin: _onSubmitLogin,
-      navigateToSignup: _onNavigateToSignup,
-      navigateToForgotPassword: _onNavigateToForgotPassword,
-      skipLogin: _onNavigateToBack,
+  /// Entry point for all UI interactions.
+  /// Wraps intent processing with aspect logging for input and final state.
+  FutureOr<void> handleIntent(LoginIntent intent) {
+    return dispatch(
+      intent,
+      () => intent.when(
+        usernameChanged: _onUsernameChanged,
+        passwordChanged: _onPasswordChanged,
+        togglePasswordVisibility: _onTogglePasswordVisibility,
+        toggleRememberMe: _onToggleRememberMe,
+        submitLogin: _onSubmitLogin,
+        navigateToSignup: _onNavigateToSignup,
+        navigateToForgotPassword: _onNavigateToForgotPassword,
+        skipLogin: _onNavigateToBack,
+      ),
     );
   }
 
-  void _onUsernameChanged(String username) {
+  FutureOr<void> _onUsernameChanged(String username) {
     state = state.copyWith(username: username, usernameError: null, errorMessage: null);
     if (state.rememberMe) _saveOrClearCredentials();
   }
 
-  void _onPasswordChanged(String password) {
+  FutureOr<void> _onPasswordChanged(String password) {
     state = state.copyWith(password: password, passwordError: null, errorMessage: null);
     if (state.rememberMe) _saveOrClearCredentials();
   }
 
-  void _onTogglePasswordVisibility() {
+  FutureOr<void> _onTogglePasswordVisibility() {
     state = state.copyWith(isPasswordVisible: !state.isPasswordVisible);
   }
 
-  void _onToggleRememberMe() async {
+  Future<void> _onToggleRememberMe() async {
     state = state.copyWith(rememberMe: !state.rememberMe);
     await _saveOrClearCredentials();
   }
@@ -109,10 +116,11 @@ class LoginViewModel extends _$LoginViewModel with ConsumeViewModel<LoginState> 
     }
   }
 
-  void _onNavigateToSignup() => state = state.copyWith(pendingNavigation: LoginNavigationTarget.signup);
+  FutureOr<void> _onNavigateToSignup() =>
+      state = state.copyWith(pendingNavigation: LoginNavigationTarget.signup);
 
-  void _onNavigateToForgotPassword() =>
+  FutureOr<void> _onNavigateToForgotPassword() =>
       state = state.copyWith(pendingNavigation: LoginNavigationTarget.forgotPassword);
 
-  void _onNavigateToBack() => state = state.copyWith(pendingNavigation: LoginNavigationTarget.back);
+  FutureOr<void> _onNavigateToBack() => state = state.copyWith(pendingNavigation: LoginNavigationTarget.back);
 }
