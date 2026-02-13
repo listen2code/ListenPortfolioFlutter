@@ -31,17 +31,17 @@ class ApiClient {
 class _LoggingInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    appLogger.d('REQUEST[${options.method}] => PATH: ${options.path}');
-    appLogger.d('Full URL: ${options.baseUrl}${options.path}');
-    appLogger.d('Headers: ${options.headers}');
-    appLogger.d('Data: ${options.data}');
+    appLogger.i('REQUEST[${options.method}] => PATH: ${options.path}');
+    appLogger.i('Full URL: ${options.baseUrl}${options.path}');
+    appLogger.i('Headers: ${options.headers}');
+    appLogger.i('Data: ${options.data}');
     super.onRequest(options, handler);
   }
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     appLogger.i('RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions.path}');
-    appLogger.d('Data: ${response.data}');
+    appLogger.i('Data: ${response.data}');
     super.onResponse(response, handler);
   }
 
