@@ -127,4 +127,8 @@ final Map<String, String> en = {
   I18nKeys.deleteAccountConfirmContent:
       'This action is permanent and will delete all your data. This cannot be undone.',
   I18nKeys.deleteAccountSuccess: 'Account deleted successfully.',
+  I18nKeys.deleteAccountWarningDataWiped: 'All your personal data will be wiped.',
+  I18nKeys.deleteAccountWarningIrreversible: 'Account cannot be recovered.',
+  I18nKeys.deleteAccountWarningSubscriptions: 'Active subscriptions will be canceled.',
+  I18nKeys.deleteAccountIUnderstand: 'I understand the consequences.',
 };

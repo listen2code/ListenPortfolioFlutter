@@ -147,6 +147,10 @@ class I18nKeys {
   static const String deleteAccountConfirmContent =
       'This action is permanent and will delete all your data. This cannot be undone.';
   static const String deleteAccountSuccess = 'Account deleted successfully.';
+  static const String deleteAccountWarningDataWiped = 'All your personal data will be wiped.';
+  static const String deleteAccountWarningIrreversible = 'Account cannot be recovered.';
+  static const String deleteAccountWarningSubscriptions = 'Active subscriptions will be canceled.';
+  static const String deleteAccountIUnderstand = 'I understand the consequences.';
 
   // General terms
   static const String account = 'Account';

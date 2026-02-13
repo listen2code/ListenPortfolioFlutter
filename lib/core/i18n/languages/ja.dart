@@ -126,4 +126,8 @@ final Map<String, String> ja = {
   I18nKeys.deleteAccountConfirmContent:
       'この操作は取り消しできません。すべての個人データが削除されます。',
   I18nKeys.deleteAccountSuccess: 'アカウントが正常に削除されました。',
+  I18nKeys.deleteAccountWarningDataWiped: 'すべての個人データが削除されます。',
+  I18nKeys.deleteAccountWarningIrreversible: 'アカウントを復元することはできません。',
+  I18nKeys.deleteAccountWarningSubscriptions: '有効なサブスクリプションはすべてキャンセルされます。',
+  I18nKeys.deleteAccountIUnderstand: '注意事項を理解した上で続行します。',
 };

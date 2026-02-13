@@ -125,4 +125,8 @@ final Map<String, String> zh = {
   I18nKeys.deleteAccountConfirmTitle: '注销您的账号？',
   I18nKeys.deleteAccountConfirmContent: '此操作将永久删除您的所有数据，且无法撤销。您确定要继续吗？',
   I18nKeys.deleteAccountSuccess: '账号已成功注销。',
+  I18nKeys.deleteAccountWarningDataWiped: '您的所有个人数据都将被清除。',
+  I18nKeys.deleteAccountWarningIrreversible: '账号注销后将无法找回。',
+  I18nKeys.deleteAccountWarningSubscriptions: '所有正在生效的订阅都将被取消。',
+  I18nKeys.deleteAccountIUnderstand: '我已了解相关后果。',
 };
