@@ -86,7 +86,8 @@ class BaseStatelessPage extends StatelessWidget {
         return AnnotatedRegion<SystemUiOverlayStyle>(
           value: systemUiOverlayStyle,
           child: GestureDetector(
-            onTap: () => FocusScope.of(context).unfocus(), // Dismiss keyboard on tap
+            // Clear global focus to dismiss keyboard and reset focus state
+            onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
             behavior: HitTestBehavior.translucent,
             child: Scaffold(
               appBar: effectiveAppBar,

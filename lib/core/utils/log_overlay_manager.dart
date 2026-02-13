@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
 import 'package:listen_portfolio_flutter/shared/utils/snack_bar_util.dart';
+import 'package:listen_portfolio_flutter/shared/widgets/common_text.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'log_manager.dart';
@@ -9,10 +10,11 @@ import 'log_manager.dart';
 class LogOverlayManager {
   static OverlayEntry? _overlayEntry;
   static Offset? _offset; // Position will be initialized on first show
-  static VoidCallback? _onStateChanged;
 
-  static Future<void> init(BuildContext context, {VoidCallback? onStateChanged}) async {
-    _onStateChanged = onStateChanged;
+  /// Notifier to let external widgets listen to the visibility state
+  static final ValueNotifier<bool> isShowingNotifier = ValueNotifier(false);
+
+  static Future<void> init(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     final isEnabled = prefs.getBool(AppConstants.logOverlayKey) ?? false;
 
@@ -22,6 +24,8 @@ class LogOverlayManager {
       });
     }
   }
+
+  static bool get isShowing => _overlayEntry != null;
 
   /// [startExpanded] if true, the overlay will open in full-dialog mode directly.
   static Future<void> show(BuildContext context, {bool startExpanded = false}) async {
@@ -45,28 +49,27 @@ class LogOverlayManager {
         initialOffset: _offset!,
         startExpanded: startExpanded,
         onPositionChanged: (newOffset) => _offset = newOffset,
-        onClose: () {
-          hide();
-          if (_onStateChanged != null) _onStateChanged!();
-        },
+        onClose: () => hide(), // Calls hide which notifies listeners
       ),
     );
 
     Overlay.of(context).insert(_overlayEntry!);
+    isShowingNotifier.value = true;
 
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(AppConstants.logOverlayKey, true);
   }
 
   static Future<void> hide() async {
+    if (_overlayEntry == null) return;
+
     _overlayEntry?.remove();
     _overlayEntry = null;
+    isShowingNotifier.value = false;
 
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(AppConstants.logOverlayKey, false);
   }
-
-  static bool get isShowing => _overlayEntry != null;
 }
 
 class _LogOverlayWidget extends StatefulWidget {
@@ -151,9 +154,11 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
                 children: [
                   const Icon(Icons.terminal_rounded, color: Colors.greenAccent, size: 20),
                   const SizedBox(width: 10),
-                  const Text(
-                    'App Logs',
-                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  Expanded(
+                    child: CommonText(
+                      'App Logs',
+                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
                   ),
                   const Spacer(),
                   IconButton(

@@ -130,17 +130,22 @@ class _SettingsPageState extends State<SettingsPage> {
                   // 4. DEVELOPER TOOLS: Always visible
                   _buildSectionTitle(I18nKeys.developer.tr),
                   _buildSettingsCard([
-                    _buildSwitchTile(
-                      icon: Icons.terminal_rounded,
-                      title: I18nKeys.viewLogs.tr,
-                      value: LogOverlayManager.isShowing,
-                      onChanged: (val) {
-                        setState(() {
-                          if (val)
-                            LogOverlayManager.show(context);
-                          else
-                            LogOverlayManager.hide();
-                        });
+                    // Listen to log overlay visibility changes via ValueListenableBuilder
+                    ValueListenableBuilder<bool>(
+                      valueListenable: LogOverlayManager.isShowingNotifier,
+                      builder: (context, isShowing, child) {
+                        return _buildSwitchTile(
+                          icon: Icons.terminal_rounded,
+                          title: I18nKeys.viewLogs.tr,
+                          value: isShowing,
+                          onChanged: (val) {
+                            if (val) {
+                              LogOverlayManager.show(context);
+                            } else {
+                              LogOverlayManager.hide();
+                            }
+                          },
+                        );
                       },
                     ),
                     _buildListTile(

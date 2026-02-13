@@ -65,7 +65,6 @@ class _SignUpPageState extends State<SignUpPage> {
               SizedBox(height: 10.f),
               Text(
                 I18nKeys.signUpSubtitle.tr,
-                textAlign: TextAlign.center,
                 style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey),
               ),
               SizedBox(height: 40.f),
