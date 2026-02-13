@@ -39,7 +39,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
           authManager.logout();
 
           // Redirect to login page
-          AppNav.to(const LoginPage());
+          AppNav.off(const LoginPage());
           SnackBarUtil.show(I18nKeys.deleteAccountSuccess.tr, backgroundColor: Colors.redAccent);
         }
       }
