@@ -16,7 +16,7 @@ class LocalMockServer {
 
     try {
       _server = await HttpServer.bind(InternetAddress.loopbackIPv4, port);
-      appLogger.i('Local Mock Server started at http://localhost:$port');
+      appLogger.e('Local Mock Server started at http://localhost:$port');
 
       _server!.listen((HttpRequest request) async {
         _handleRequest(request);
@@ -30,7 +30,7 @@ class LocalMockServer {
   static Future<void> stop() async {
     await _server?.close(force: true);
     _server = null;
-    appLogger.i('Local Mock Server stopped');
+    appLogger.e('Local Mock Server stopped');
   }
 
   static Future<void> _handleRequest(HttpRequest request) async {
@@ -46,13 +46,13 @@ class LocalMockServer {
       appLogger.e('MockServer: Error reading request body: $e');
     }
 
-    appLogger.d('\nMockServer: >>> [${request.method.toUpperCase()}] $uriPath');
+    appLogger.w('\nMockServer: >>> [${request.method.toUpperCase()}] $uriPath');
     if (requestBody.isNotEmpty) {
       try {
         final dynamic jsonBody = json.decode(requestBody);
-        appLogger.d('MockServer: [Request Body]:\n${const JsonEncoder.withIndent('  ').convert(jsonBody)}');
+        appLogger.w('MockServer: [Request Body]:\n${const JsonEncoder.withIndent('  ').convert(jsonBody)}');
       } catch (_) {
-        appLogger.d('MockServer: [Request Body (Raw)]: $requestBody');
+        appLogger.e('MockServer: [Request Body (Raw)]: $requestBody');
       }
     }
 
@@ -64,7 +64,7 @@ class LocalMockServer {
     }
 
     final String resourcePath = pathParts.join('/');
-    
+
     // 3. Build candidate asset paths matching api.js rules
     List<String> candidatePaths = [];
     if (method == 'get') {
@@ -90,14 +90,16 @@ class LocalMockServer {
 
     try {
       if (jsonData != null) {
-        appLogger.d('MockServer: [200 OK] Found asset: $matchedPath');
-        
+        appLogger.w('MockServer: [200 OK] Found asset: $matchedPath');
+
         // Log Response JSON for debugging
         try {
           final dynamic responseObj = json.decode(jsonData);
-          appLogger.d('MockServer: [Response JSON]:\n${const JsonEncoder.withIndent('  ').convert(responseObj)}');
+          appLogger.w(
+            'MockServer: [Response JSON]:\n${const JsonEncoder.withIndent('  ').convert(responseObj)}',
+          );
         } catch (_) {
-          appLogger.d('MockServer: [Response Data]: $jsonData');
+          appLogger.e('MockServer: [Response Data]: $jsonData');
         }
 
         request.response
@@ -108,7 +110,9 @@ class LocalMockServer {
         throw Exception('Resource not found in assets');
       }
     } catch (e) {
-      appLogger.w('MockServer: [404 Not Found] No JSON for ${request.method} $uriPath. Tried: $candidatePaths');
+      appLogger.e(
+        'MockServer: [404 Not Found] No JSON for ${request.method} $uriPath. Tried: $candidatePaths',
+      );
       request.response
         ..statusCode = HttpStatus.notFound
         ..write(jsonEncode({'result': '1', 'message': 'Mock file not found', 'uri': uriPath}));
@@ -119,12 +123,7 @@ class LocalMockServer {
 
   /// Helper to join path segments safely
   static String _buildPath(String version, String method, List<String> parts) {
-    final segments = [
-      'assets/mock',
-      if (version.isNotEmpty) version,
-      method,
-      ...parts,
-    ];
+    final segments = ['assets/mock', if (version.isNotEmpty) version, method, ...parts];
     return '${segments.join('/')}.json'.replaceAll('//', '/');
   }
 }
