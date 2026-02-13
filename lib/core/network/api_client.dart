@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
-import 'package:listen_portfolio_flutter/core/utils/logger.dart';
 
 /// Creates and configures a single Dio instance for the entire application
 class ApiClient {
@@ -94,7 +93,12 @@ class _ErrorInterceptor extends Interceptor {
     }
 
     return handler.next(
-      DioException(requestOptions: err.requestOptions, error: exception, type: err.type, response: err.response),
+      DioException(
+        requestOptions: err.requestOptions,
+        error: exception,
+        type: err.type,
+        response: err.response,
+      ),
     );
   }
 }

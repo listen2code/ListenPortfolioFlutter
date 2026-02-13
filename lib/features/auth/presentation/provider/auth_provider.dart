@@ -11,7 +11,6 @@ import 'package:listen_portfolio_flutter/features/auth/domain/usecases/get_curre
 import 'package:listen_portfolio_flutter/features/auth/domain/usecases/login_use_case.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/usecases/logout_use_case.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/usecases/signup_use_case.dart';
-import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

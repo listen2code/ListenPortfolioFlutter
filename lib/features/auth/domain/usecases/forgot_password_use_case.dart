@@ -1,7 +1,6 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/repositories/auth_repository.dart';
-import 'package:listen_portfolio_flutter/shared/shared.dart';
 
 /// Use case for password reset
 class ForgotPasswordUseCase implements UseCase<void, ForgotPasswordParams> {
