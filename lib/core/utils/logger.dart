@@ -5,6 +5,9 @@ import 'package:logger/logger.dart';
 /// Global logger instance providing consistent logging and in-app log management.
 /// Configured to capture logs even in Release builds for the internal UI viewer.
 final appLogger = Logger(
+  // Use ProductionFilter to ensure logs are processed in Release builds.
+  // The default DevelopmentFilter discards logs in Release mode due to assert failures.
+  filter: ProductionFilter(),
   printer: PrettyPrinter(
     methodCount: 2,
     errorMethodCount: 8,
@@ -27,7 +30,7 @@ class _LogManagerOutput extends LogOutput {
   void output(OutputEvent event) {
     // Extract raw message to avoid ANSI escape sequences in the UI
     final message = event.origin.message.toString();
-    
+
     if (message.isNotEmpty) {
       LogManager.addLog(message, level: _mapLevel(event.level));
     }
