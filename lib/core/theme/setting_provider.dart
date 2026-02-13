@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// Font size options for the app
 enum AppFontSize {
   standard(I18nKeys.standard, 1.0, 20.0),
-  large(I18nKeys.large, 1.3, 28.0);
+  large(I18nKeys.large, 1.7, 28.0);
 
   final String label;
   final double factor;

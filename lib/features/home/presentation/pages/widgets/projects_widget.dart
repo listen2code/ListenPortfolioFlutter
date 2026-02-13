@@ -117,7 +117,7 @@ class ProjectsWidget extends StatelessWidget {
         children: [
           // Header Image Placeholder
           Container(
-            height: 120.f,
+            height: 120,
             width: double.infinity,
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -155,7 +155,7 @@ class ProjectsWidget extends StatelessWidget {
                         color: isTodo ? Colors.grey.withValues(alpha: 0.1) : baseColor.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(8.f),
                       ),
-                      child: Text(
+                      child: CommonText(
                         subtitle,
                         style: context.textTheme.labelSmall?.copyWith(
                           color: isTodo ? Colors.grey : baseColor,

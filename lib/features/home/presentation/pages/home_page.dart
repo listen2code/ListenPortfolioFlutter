@@ -291,7 +291,10 @@ class _HomePageState extends State<HomePage> {
           ),
           title: CommonText(
             isGuest ? I18nKeys.login.tr : I18nKeys.logout.tr,
-            style: TextStyle(color: isGuest ? accentColor : errorColor, fontWeight: FontWeight.bold),
+            style: context.textTheme.titleSmall?.copyWith(
+              color: isGuest ? accentColor : errorColor,
+              fontWeight: FontWeight.bold,
+            ),
             maxLines: 1,
           ),
           onTap: () {

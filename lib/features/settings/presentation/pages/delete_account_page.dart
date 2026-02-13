@@ -54,23 +54,31 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
       body: (context, child) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.warning_amber_rounded, size: 64.f, color: Colors.red),
-          SizedBox(height: 24.f),
-          CommonText(
-            I18nKeys.deleteAccountConfirmTitle.tr,
-            style: context.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
-            maxLines: 1,
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(Icons.warning_amber_rounded, size: 64.f, color: Colors.red),
+                  SizedBox(height: 24.f),
+                  CommonText(
+                    I18nKeys.deleteAccountConfirmTitle.tr,
+                    style: context.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+                    maxLines: 1,
+                  ),
+                  SizedBox(height: 16.f),
+                  Text(
+                    I18nKeys.deleteAccountConfirmContent.tr,
+                    style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey, height: 1.6),
+                  ),
+                  SizedBox(height: 32.f),
+                  _buildWarningItem(I18nKeys.deleteAccountWarningDataWiped.tr),
+                  _buildWarningItem(I18nKeys.deleteAccountWarningIrreversible.tr),
+                  _buildWarningItem(I18nKeys.deleteAccountWarningSubscriptions.tr),
+                ],
+              ),
+            ),
           ),
-          SizedBox(height: 16.f),
-          Text(
-            I18nKeys.deleteAccountConfirmContent.tr,
-            style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey, height: 1.6),
-          ),
-          SizedBox(height: 32.f),
-          _buildWarningItem(I18nKeys.deleteAccountWarningDataWiped.tr),
-          _buildWarningItem(I18nKeys.deleteAccountWarningIrreversible.tr),
-          _buildWarningItem(I18nKeys.deleteAccountWarningSubscriptions.tr),
-          const Spacer(),
           Row(
             children: [
               SizedBox(

@@ -412,7 +412,11 @@ class OverviewWidget extends StatelessWidget {
                 onTap: onTap,
               ),
               if (subtitle != null)
-                CommonText(subtitle, style: context.textTheme.bodySmall?.copyWith(color: Colors.grey)),
+                CommonAuthText(
+                  subtitle,
+                  style: context.textTheme.bodySmall?.copyWith(color: Colors.grey),
+                  blurLevel: blurLevel,
+                ),
             ],
           ),
         ),
@@ -480,10 +484,10 @@ class OverviewWidget extends StatelessWidget {
     ];
 
     return SizedBox(
-      height: 180.f,
+      height: 180,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.symmetric(horizontal: 20.f),
+        padding: EdgeInsets.symmetric(horizontal: 20),
         itemCount: projects.length,
         itemBuilder: (context, index) {
           final project = projects[index];
@@ -507,7 +511,7 @@ class OverviewWidget extends StatelessWidget {
     required Color color,
   }) {
     return Container(
-      width: 300.f,
+      width: 300,
       margin: EdgeInsets.only(right: 16.f),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24.f),
