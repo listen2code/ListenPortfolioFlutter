@@ -25,7 +25,7 @@ samples, guidance on mobile development, and a full API reference.
 * core -> shared
 * core to package
 * widget to package
-    * commonImage
+    * commonImage, commonLoading, commonToast
 * build web
 * ide plugin
   --assets
@@ -42,7 +42,7 @@ samples, guidance on mobile development, and a full API reference.
   ------plugin_native: plugin for native basic info
 * server i18
 * switch env: input url; mock api; config each api;
-* dev tools: layout check; lag check; launch; app launch; apk size;session timeout；分出mock功能；log overlay drag resize；
+* dev tools: layout check; lag check; launch; app launch; apk size; session timeout; 分出mock功能; log overlay drag resize
 * long press icon menu
 * pixel icon cache
 * aspect log

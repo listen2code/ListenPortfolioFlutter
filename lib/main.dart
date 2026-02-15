@@ -16,6 +16,9 @@ import 'package:listen_portfolio_flutter/shared/widgets/common_dialog.dart';
 
 import 'core/theme/app_theme.dart';
 
+/// Global RouteObserver to track page visibility changes.
+final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -39,7 +42,7 @@ void main() async {
         title: I18nKeys.loginLink.tr,
         message: I18nKeys.signInToContinue.tr,
       );
-      return result == true; // Only proceed to login flow if user clicked OK
+      return result == true;
     },
   );
 
@@ -56,6 +59,7 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           navigatorKey: AppNavConfig.navigatorKey,
           scaffoldMessengerKey: SnackBarUtil.messengerKey,
+          navigatorObservers: [routeObserver],
           title: AppConstants.appName,
           debugShowCheckedModeBanner: false,
           theme: AppTheme.getLightTheme(settingManager),

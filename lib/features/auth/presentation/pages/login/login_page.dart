@@ -82,6 +82,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     final viewModel = ref.read(loginViewModelProvider.notifier);
 
     return BaseStatelessPage(
+      viewModel: viewModel,
       body: (context, child) {
         final accentColor = context.accentColor;
 

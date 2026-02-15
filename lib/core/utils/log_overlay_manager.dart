@@ -41,7 +41,6 @@ class LogOverlayManager {
     }
 
     final size = MediaQuery.of(context).size;
-    // Default to top-right if no previous position exists
     _offset ??= Offset(size.width - 70, 100);
 
     _overlayEntry = OverlayEntry(
@@ -49,7 +48,7 @@ class LogOverlayManager {
         initialOffset: _offset!,
         startExpanded: startExpanded,
         onPositionChanged: (newOffset) => _offset = newOffset,
-        onClose: () => hide(), // Calls hide which notifies listeners
+        onClose: () => hide(),
       ),
     );
 
@@ -160,7 +159,14 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
                       style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                     ),
                   ),
-                  const Spacer(),
+                  IconButton(
+                    icon: const Icon(Icons.refresh_rounded, color: Colors.white70, size: 20),
+                    tooltip: 'Force Refresh',
+                    onPressed: () {
+                      // Manual trigger to sync UI with memory
+                      LogManager.logNotifier.value = List.from(LogManager.logs);
+                    },
+                  ),
                   IconButton(
                     icon: const Icon(Icons.copy_rounded, color: Colors.white70, size: 20),
                     onPressed: () {

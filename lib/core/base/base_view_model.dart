@@ -26,9 +26,20 @@ abstract class BaseViewModel {
 
   /// Resets the [BaseState.message] state to null.
   void messageConsumed();
+
+  // Lifecycle hooks
+  void onInit() {}
+
+  void onReady() {}
+
+  void onVisible() {}
+
+  void onInVisible() {}
+
+  void onDispose() {}
 }
 
-/// Mixin to handle navigation, error state consumption, and intent logging.
+/// Mixin to handle common UI states and provide unified intent dispatching.
 mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel {
   @override
   void navigationConsumed() {
@@ -48,8 +59,32 @@ mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel {
     self.state = self.state.copyWith(message: null);
   }
 
-  /// Wraps any action with intent and state logging.
-  /// Usage: dispatch(intent, () => intent.when(...))
+  @override
+  void onInit() {
+    appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onInit');
+  }
+
+  @override
+  void onReady() {
+    appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onReady');
+  }
+
+  @override
+  void onVisible() {
+    appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onVisible');
+  }
+
+  @override
+  void onInVisible() {
+    appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onInVisible');
+  }
+
+  @override
+  void onDispose() {
+    appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onDispose');
+  }
+
+  /// Dispatcher for UI intents with built-in logging.
   FutureOr<void> dispatch(dynamic intent, FutureOr<void> Function() handler) {
     final tag = runtimeType.toString();
     appLogger.d('$tag: [INTENT] -> $intent');
