@@ -202,7 +202,7 @@ class _HomePageState extends State<HomePage> {
                 child: CircleAvatar(
                   radius: 32.f,
                   backgroundImage: isLoggedIn
-                      ? const NetworkImage('https://api.dicebear.com/7.x/avataaars/svg?seed=Listen')
+                      ? const NetworkImage('https://api.dicebear.com/7.x/avataaars/png?seed=Listen')
                       : null,
                   child: isLoggedIn ? null : Icon(Icons.person, size: 35.f, color: Colors.grey),
                 ),
