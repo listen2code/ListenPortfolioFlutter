@@ -187,10 +187,7 @@ class _BaseStatelessPageState extends State<BaseStatelessPage> with RouteAware, 
         return AnnotatedRegion<SystemUiOverlayStyle>(
           value: systemUiOverlayStyle,
           child: GestureDetector(
-            onTap: () {
-              // Clear global focus to dismiss keyboard and reset focus state
-              FocusManager.instance.primaryFocus?.unfocus();
-            },
+            onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
             behavior: HitTestBehavior.translucent,
             child: Scaffold(
               appBar: effectiveAppBar,

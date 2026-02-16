@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
+import 'package:listen_portfolio_flutter/core/base/base_view_model.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
 
 /// Creates and configures a single Dio instance for the entire application
@@ -19,9 +22,12 @@ class ApiClient {
       ),
     );
 
-    dio.interceptors.add(_LoggingInterceptor());
-    dio.interceptors.add(_AuthInterceptor());
-    dio.interceptors.add(_ErrorInterceptor());
+    dio.interceptors.addAll([
+      _LoggingInterceptor(),
+      _LifecycleCancelInterceptor(),
+      _AuthInterceptor(),
+      _ErrorInterceptor(),
+    ]);
 
     return dio;
   }
@@ -51,6 +57,22 @@ class _LoggingInterceptor extends Interceptor {
     appLogger.e('Message: ${err.message}');
     appLogger.e('Data: ${err.response?.data}');
     super.onError(err, handler);
+  }
+}
+
+/// Interceptor that automatically attaches a CancelToken from the current Dart Zone.
+class _LifecycleCancelInterceptor extends Interceptor {
+  @override
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+    // Try to retrieve the CancelToken injected by ConsumeViewModel.dispatch
+    final CancelToken? zoneToken = Zone.current[kCancelTokenKey];
+
+    // If a token is found and the request hasn't manually set one, associate them
+    if (zoneToken != null && options.cancelToken == null) {
+      options.cancelToken = zoneToken;
+    }
+
+    handler.next(options);
   }
 }
 

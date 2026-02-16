@@ -1,6 +1,10 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:listen_portfolio_flutter/core/utils/logger.dart';
+
+/// Key used to store the CancelToken in the current Zone.
+const Symbol kCancelTokenKey = Symbol('dio_cancel_token');
 
 /// Interface for states that support navigation, error, and general messaging.
 /// Pure Dart - No dependencies.
@@ -39,8 +43,11 @@ abstract class BaseViewModel {
   void onDispose() {}
 }
 
-/// Mixin to handle common UI states and provide unified intent dispatching.
+/// Mixin to handle common UI states, lifecycle logging, and automatic request cancellation.
 mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel {
+  /// Token to cancel network requests when this ViewModel is disposed.
+  final CancelToken _cancelToken = CancelToken();
+
   @override
   void navigationConsumed() {
     final dynamic self = this;
@@ -81,25 +88,34 @@ mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel {
 
   @override
   void onDispose() {
-    appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onDispose');
+    appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onDispose (Cancelling requests)');
+
+    // Cancel all pending requests associated with this ViewModel
+    if (!_cancelToken.isCancelled) {
+      _cancelToken.cancel('ViewModel disposed');
+    }
   }
 
-  /// Dispatcher for UI intents with built-in logging.
+  /// Dispatcher for UI intents.
+  /// Uses runZoned to propagate the CancelToken down to the network layer automatically.
   FutureOr<void> dispatch(dynamic intent, FutureOr<void> Function() handler) {
     final tag = runtimeType.toString();
     appLogger.d('$tag: [INTENT] -> $intent');
 
-    final result = handler();
+    // Run the handler in a zone that carries our cancel token
+    return runZoned(() {
+      final result = handler();
 
-    if (result is Future) {
-      return result.then((_) {
-        final dynamic self = this;
-        appLogger.d('$tag: [STATE] (Async) <- ${self.state}');
-      });
-    }
+      if (result is Future) {
+        return result.then((_) {
+          final dynamic self = this;
+          appLogger.d('$tag: [STATE] (Async) <- ${self.state}');
+        });
+      }
 
-    final dynamic self = this;
-    appLogger.d('$tag: [STATE] <- ${self.state}');
-    return result;
+      final dynamic self = this;
+      appLogger.d('$tag: [STATE] <- ${self.state}');
+      return result;
+    }, zoneValues: {kCancelTokenKey: _cancelToken});
   }
 }
