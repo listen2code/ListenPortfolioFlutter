@@ -48,6 +48,5 @@ samples, guidance on mobile development, and a full API reference.
 * aspect log, trace log
 * app review
 * finger auth
-* permission manager
 * auto login
 * readme: 截图，架构图，技术栈，timeout

@@ -39,7 +39,7 @@ class LoginViewModel extends _$LoginViewModel with ConsumeViewModel<LoginState> 
   }
 
   /// Entry point for all UI interactions.
-  /// Wraps intent processing with aspect logging for input and final state.
+  /// Wraps intent processing with aspect logging and automatic loading management.
   FutureOr<void> handleIntent(LoginIntent intent) {
     return dispatch(
       intent,
@@ -53,6 +53,7 @@ class LoginViewModel extends _$LoginViewModel with ConsumeViewModel<LoginState> 
         navigateToForgotPassword: _onNavigateToForgotPassword,
         skipLogin: _onNavigateToBack,
       ),
+      showLoading: intent is SubmitLogin,
     );
   }
 

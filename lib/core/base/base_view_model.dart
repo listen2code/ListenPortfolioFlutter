@@ -2,33 +2,26 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:listen_portfolio_flutter/core/utils/logger.dart';
+import 'package:listen_portfolio_flutter/shared/widgets/common_loading.dart';
 
 /// Key used to store the CancelToken in the current Zone.
 const Symbol kCancelTokenKey = Symbol('dio_cancel_token');
 
 /// Interface for states that support navigation, error, and general messaging.
-/// Pure Dart - No dependencies.
 abstract class BaseState<T> {
-  /// Target for pending navigation actions.
   T? get pendingNavigation;
 
-  /// Global error message to be displayed.
   String? get errorMessage;
 
-  /// Global general message (success/info) to be displayed.
   String? get message;
 }
 
-/// Interface for ViewModels that support consumption of UI states.
-/// Pure Dart - No dependencies.
+/// Base interface for all ViewModels.
 abstract class BaseViewModel {
-  /// Resets the [BaseState.pendingNavigation] state to null.
   void navigationConsumed();
 
-  /// Resets the [BaseState.errorMessage] state to null.
   void errorConsumed();
 
-  /// Resets the [BaseState.message] state to null.
   void messageConsumed();
 
   // Lifecycle hooks
@@ -41,12 +34,32 @@ abstract class BaseViewModel {
   void onInVisible() {}
 
   void onDispose() {}
+
+  // Cancellation support
+  CancelToken get cancelToken;
+
+  void cancelRequests(String reason);
 }
 
-/// Mixin to handle common UI states, lifecycle logging, and automatic request cancellation.
+/// Mixin to handle common UI states, lifecycle logging, automatic request cancellation, and global loading.
 mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel {
-  /// Token to cancel network requests when this ViewModel is disposed.
-  final CancelToken _cancelToken = CancelToken();
+  /// Token to cancel network requests. Will be re-created if the previous one was cancelled.
+  CancelToken _cancelToken = CancelToken();
+
+  @override
+  CancelToken get cancelToken {
+    if (_cancelToken.isCancelled) {
+      _cancelToken = CancelToken();
+    }
+    return _cancelToken;
+  }
+
+  @override
+  void cancelRequests(String reason) {
+    if (!_cancelToken.isCancelled) {
+      _cancelToken.cancel(reason);
+    }
+  }
 
   @override
   void navigationConsumed() {
@@ -88,34 +101,38 @@ mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel {
 
   @override
   void onDispose() {
-    appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onDispose (Cancelling requests)');
-
-    // Cancel all pending requests associated with this ViewModel
-    if (!_cancelToken.isCancelled) {
-      _cancelToken.cancel('${runtimeType.toString()} disposed');
-    }
+    appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onDispose (Cleaning up)');
+    cancelRequests('${runtimeType.toString()} disposed');
   }
 
   /// Dispatcher for UI intents.
-  /// Uses runZoned to propagate the CancelToken down to the network layer automatically.
-  FutureOr<void> dispatch(dynamic intent, FutureOr<void> Function() handler) {
+  /// [showLoading] Automatically shows/hides CommonLoading during the action.
+  FutureOr<void> dispatch(dynamic intent, FutureOr<void> Function() handler, {bool showLoading = false}) {
     final tag = runtimeType.toString();
     appLogger.d('$tag: [INTENT] -> $intent');
 
-    // Run the handler in a zone that carries our cancel token
+    if (showLoading) CommonLoading.show();
+
     return runZoned(() {
-      final result = handler();
+      try {
+        final result = handler();
 
-      if (result is Future) {
-        return result.then((_) {
-          final dynamic self = this;
-          appLogger.d('$tag: [STATE] (Async) <- ${self.state}');
-        });
+        if (result is Future) {
+          return result.whenComplete(() {
+            if (showLoading) CommonLoading.hide();
+            final dynamic self = this;
+            appLogger.d('$tag: [STATE] (Async) <- ${self.state}');
+          });
+        }
+
+        if (showLoading) CommonLoading.hide();
+        final dynamic self = this;
+        appLogger.d('$tag: [STATE] <- ${self.state}');
+        return result;
+      } catch (e) {
+        if (showLoading) CommonLoading.hide();
+        rethrow;
       }
-
-      final dynamic self = this;
-      appLogger.d('$tag: [STATE] <- ${self.state}');
-      return result;
-    }, zoneValues: {kCancelTokenKey: _cancelToken});
+    }, zoneValues: {kCancelTokenKey: cancelToken});
   }
 }

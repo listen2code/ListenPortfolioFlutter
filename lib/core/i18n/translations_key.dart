@@ -33,6 +33,7 @@ class I18nKeys {
   static const String currentlyActive = 'Currently Active';
   static const String envSwitched = 'Environment switched to:';
   static const String noEmailApp = 'No email apps installed';
+  static const String loading = 'loading';
 
   // Privacy & Terms
   static const String privacyPolicy = 'Privacy Policy';

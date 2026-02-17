@@ -38,6 +38,9 @@ class LocalMockServer {
     final uriPath = request.uri.path;
     final pathParts = uriPath.split('/').where((p) => p.isNotEmpty).toList();
 
+    // Simulate network latency (approx. 1 second)
+    await Future.delayed(const Duration(seconds: 2));
+
     // 1. Read and log Request Body
     String requestBody = '';
     try {
