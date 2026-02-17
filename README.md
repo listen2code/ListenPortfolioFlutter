@@ -45,10 +45,9 @@ samples, guidance on mobile development, and a full API reference.
 * dev tools: layout check; lag check; launch; app launch; apk size; session timeout; 分出mock功能; log overlay drag resize
 * long press icon menu
 * pixel icon cache
-* aspect log
-* api cancel
+* aspect log, trace log
 * app review
 * finger auth
 * permission manager
 * auto login
-* readme: 截图，架构图，技术栈，timeout 
+* readme: 截图，架构图，技术栈，timeout

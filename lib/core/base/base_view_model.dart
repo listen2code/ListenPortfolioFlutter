@@ -92,7 +92,7 @@ mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel {
 
     // Cancel all pending requests associated with this ViewModel
     if (!_cancelToken.isCancelled) {
-      _cancelToken.cancel('ViewModel disposed');
+      _cancelToken.cancel('${runtimeType.toString()} disposed');
     }
   }
 
