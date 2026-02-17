@@ -112,7 +112,7 @@ class _AboutMeWidgetState extends State<AboutMeWidget> {
     if (_imageFile != null) {
       avatarImage = FileImage(_imageFile!);
     } else {
-      avatarImage = const NetworkImage('https://api.dicebear.com/7.x/avataaars/png?seed=Listen');
+      avatarImage = NetworkImage(authManager.state.user?.avatarUrl ?? "");
     }
 
     final accentColor = context.accentColor;

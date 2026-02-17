@@ -201,9 +201,7 @@ class _HomePageState extends State<HomePage> {
                 backgroundColor: Colors.white,
                 child: CircleAvatar(
                   radius: 32.f,
-                  backgroundImage: isLoggedIn
-                      ? const NetworkImage('https://api.dicebear.com/7.x/avataaars/png?seed=Listen')
-                      : null,
+                  backgroundImage: isLoggedIn ? NetworkImage(authManager.state.user?.avatarUrl ?? "") : null,
                   child: isLoggedIn ? null : Icon(Icons.person, size: 35.f, color: Colors.grey),
                 ),
               ),
