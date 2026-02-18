@@ -101,7 +101,7 @@ mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel {
 
   @override
   void onDispose() {
-    appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onDispose (Cleaning up)');
+    appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onDispose');
     cancelRequests('${runtimeType.toString()} disposed');
   }
 

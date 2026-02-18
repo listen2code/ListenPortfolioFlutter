@@ -64,10 +64,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   Widget build(BuildContext context) {
     _setupNavigation(context);
 
-    // Common UI state listeners for errors and general messages
-    ref.listenError(loginViewModelProvider);
-    ref.listenMessage(loginViewModelProvider);
-
     // Sync controllers with state
     ref.listen<LoginState>(loginViewModelProvider, (previous, next) {
       if (_usernameController.text.isEmpty && next.username.isNotEmpty) {
@@ -82,7 +78,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     final viewModel = ref.read(loginViewModelProvider.notifier);
 
     return BaseStatelessPage(
-      viewModel: viewModel,
+      provider: loginViewModelProvider,
       body: (context, child) {
         final accentColor = context.accentColor;
 

@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_portfolio_flutter/core/base/base_listenable_page.dart';
 import 'package:listen_portfolio_flutter/core/base/base_view_model.dart';
+import 'package:listen_portfolio_flutter/core/extension/widget_ref_extension.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/main.dart';
 import 'package:listen_portfolio_flutter/shared/widgets/common_text.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-/// A common wrapper for pages providing professional lifecycle management.
-/// Lifecycle events are automatically dispatched to the provided [viewModel].
-class BaseStatelessPage extends StatefulWidget {
+/// A professional, unified page wrapper that handles UI structure,
+/// theme listening, complete lifecycle management, and automatic state listening.
+class BaseStatelessPage extends ConsumerStatefulWidget {
   final TransitionBuilder body;
   final String? title;
   final PreferredSizeWidget? appBar;
@@ -24,11 +27,11 @@ class BaseStatelessPage extends StatefulWidget {
   final Color statusBarColor;
   final Color bottomBarColor;
 
-  /// Manual control for visibility (e.g. for TabBarView or IndexedStack)
+  /// Visibility flag for Tab/Page switching inside the same route.
   final bool active;
 
-  /// The ViewModel associated with this page to handle lifecycle events.
-  final BaseViewModel? viewModel;
+  /// The Provider to listen for states (errors/messages) and manage lifecycles via its Notifier.
+  final ProviderListenable<BaseState<dynamic>>? provider;
 
   const BaseStatelessPage({
     super.key,
@@ -47,28 +50,35 @@ class BaseStatelessPage extends StatefulWidget {
     this.statusBarColor = Colors.transparent,
     this.bottomBarColor = Colors.transparent,
     this.active = true,
-    this.viewModel,
+    this.provider,
   });
 
   @override
-  State<BaseStatelessPage> createState() => _BaseStatelessPageState();
+  ConsumerState<BaseStatelessPage> createState() => _BaseStatelessPageState();
 }
 
-class _BaseStatelessPageState extends State<BaseStatelessPage> with RouteAware, WidgetsBindingObserver {
+class _BaseStatelessPageState extends ConsumerState<BaseStatelessPage>
+    with RouteAware, WidgetsBindingObserver {
   bool _isRouteVisible = false;
+  BaseViewModel? _cachedViewModel;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
 
-    // Dispatch onInit to ViewModel
-    widget.viewModel?.onInit();
+    // Store ViewModel reference and trigger onInit
+    if (widget.provider != null) {
+      try {
+        _cachedViewModel = ref.read((widget.provider as dynamic).notifier);
+      } catch (_) {}
+    }
 
-    // Fire onReady and initial onVisible after the first frame
+    _cachedViewModel?.onInit();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        widget.viewModel?.onReady();
+        _cachedViewModel?.onReady();
         if (widget.active) _checkVisibilityChange(true);
       }
     });
@@ -96,57 +106,61 @@ class _BaseStatelessPageState extends State<BaseStatelessPage> with RouteAware, 
     routeObserver.unsubscribe(this);
     WidgetsBinding.instance.removeObserver(this);
 
-    // Dispatch onDispose to ViewModel
-    widget.viewModel?.onDispose();
+    // Trigger onDispose on the cached reference to guarantee execution on page exit
+    _cachedViewModel?.onDispose();
+
     super.dispose();
   }
 
   void _checkVisibilityChange(bool isVisible) {
     if (isVisible) {
-      widget.viewModel?.onVisible();
+      _cachedViewModel?.onVisible();
     } else {
-      widget.viewModel?.onInVisible();
+      _cachedViewModel?.onInVisible();
     }
   }
 
-  // --- App Lifecycle (Handle background/foreground) ---
+  // --- App Lifecycle ---
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (!_isRouteVisible || !widget.active) return;
 
     if (state == AppLifecycleState.resumed) {
-      widget.viewModel?.onVisible();
+      _cachedViewModel?.onVisible();
     } else if (state == AppLifecycleState.paused) {
-      widget.viewModel?.onInVisible();
+      _cachedViewModel?.onInVisible();
     }
   }
 
-  // --- Route Lifecycle (Handle navigation) ---
+  // --- Route Lifecycle ---
   @override
-  void didPush() {
-    _isRouteVisible = true;
-  }
+  void didPush() => _isRouteVisible = true;
 
   @override
   void didPopNext() {
     _isRouteVisible = true;
-    if (widget.active) widget.viewModel?.onVisible();
+    if (widget.active) _cachedViewModel?.onVisible();
   }
 
   @override
   void didPushNext() {
     _isRouteVisible = false;
-    if (widget.active) widget.viewModel?.onInVisible();
+    if (widget.active) _cachedViewModel?.onInVisible();
   }
 
   @override
   void didPop() {
     _isRouteVisible = false;
-    if (widget.active) widget.viewModel?.onInVisible();
+    if (widget.active) _cachedViewModel?.onInVisible();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (widget.provider != null) {
+      ref.listenError(widget.provider!);
+      ref.listenMessage(widget.provider!);
+    }
+
     return BaseListenablePage(
       builder: (context, child) {
         final theme = Theme.of(context);
@@ -161,9 +175,9 @@ class _BaseStatelessPageState extends State<BaseStatelessPage> with RouteAware, 
 
         content = Column(
           children: [
-            Offstage(offstage: !widget.useStatusBar, child: _createStatusBar()),
+            if (widget.useStatusBar) _createStatusBar(),
             Expanded(child: content),
-            Offstage(offstage: !widget.useBottomBar, child: _createBottomBar()),
+            if (widget.useBottomBar) _createBottomBar(),
           ],
         );
 
