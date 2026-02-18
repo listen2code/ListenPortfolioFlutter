@@ -5,7 +5,7 @@ import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
-import 'package:listen_portfolio_flutter/shared/utils/snack_bar_util.dart';
+import 'package:listen_portfolio_flutter/shared/widgets/common_toast.dart';
 import 'package:listen_portfolio_flutter/shared/widgets/common_text_field.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -34,7 +34,7 @@ class _SignUpPageState extends State<SignUpPage> {
   // Handle registration logic
   void _handleSignUp(Color accentColor) {
     if (_formKey.currentState!.validate()) {
-      SnackBarUtil.show(I18nKeys.registrationSuccess.tr);
+      CommonToast.show(I18nKeys.registrationSuccess.tr);
       AppNav.back();
     }
   }

@@ -11,8 +11,8 @@ import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_page.dart';
 import 'package:listen_portfolio_flutter/features/splash/presentation/pages/splash_page.dart';
 import 'package:listen_portfolio_flutter/shared/base/base_auth_listenable_page.dart';
-import 'package:listen_portfolio_flutter/shared/utils/snack_bar_util.dart';
 import 'package:listen_portfolio_flutter/shared/widgets/common_dialog.dart';
+import 'package:listen_portfolio_flutter/shared/widgets/common_toast.dart';
 
 import 'core/theme/app_theme.dart';
 
@@ -34,7 +34,7 @@ void main() async {
     },
     // Global feedback after successful authentication
     onLoginSuccess: () {
-      SnackBarUtil.show("Login success!");
+      CommonToast.show("Login success!");
     },
     // Registration of the "Login Required" confirmation dialog
     onShowLoginDialog: (context) async {
@@ -58,7 +58,6 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         return MaterialApp(
           navigatorKey: AppNavConfig.navigatorKey,
-          scaffoldMessengerKey: SnackBarUtil.messengerKey,
           navigatorObservers: [routeObserver],
           title: AppConstants.appName,
           debugShowCheckedModeBanner: false,

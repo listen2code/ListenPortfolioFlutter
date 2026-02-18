@@ -5,7 +5,7 @@ import 'package:listen_portfolio_flutter/core/extension/context_extension.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
-import 'package:listen_portfolio_flutter/shared/utils/snack_bar_util.dart';
+import 'package:listen_portfolio_flutter/shared/widgets/common_toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ArchitectureWidget extends StatelessWidget {
@@ -201,7 +201,7 @@ class ArchitectureWidget extends StatelessWidget {
     final Uri url = Uri.parse(urlString);
     if (!await launchUrl(url)) {
       if (context.mounted) {
-        SnackBarUtil.show('${I18nKeys.noEmailApp.tr}: $urlString');
+        CommonToast.show('${I18nKeys.noEmailApp.tr}: $urlString');
       }
     }
   }

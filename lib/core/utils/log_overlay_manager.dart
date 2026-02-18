@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
-import 'package:listen_portfolio_flutter/shared/utils/snack_bar_util.dart';
+import 'package:listen_portfolio_flutter/shared/widgets/common_toast.dart';
 import 'package:listen_portfolio_flutter/shared/widgets/common_text.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -171,7 +171,7 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
                     icon: const Icon(Icons.copy_rounded, color: Colors.white70, size: 20),
                     onPressed: () {
                       Clipboard.setData(ClipboardData(text: LogManager.getAllLogsAsText()));
-                      SnackBarUtil.show('Logs copied to clipboard');
+                      CommonToast.show('Logs copied to clipboard');
                     },
                   ),
                   IconButton(

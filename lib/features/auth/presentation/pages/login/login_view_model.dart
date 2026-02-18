@@ -100,7 +100,11 @@ class LoginViewModel extends _$LoginViewModel with ConsumeViewModel<LoginState> 
 
     result.fold((failure) => state = state.copyWith(isLoading: false, errorMessage: failure.message), (user) {
       authManager.login(user);
-      state = state.copyWith(isLoading: false, pendingNavigation: LoginNavigationTarget.success);
+      state = state.copyWith(
+        isLoading: false,
+        pendingNavigation: LoginNavigationTarget.success,
+        message: "Login Success",
+      );
     });
   }
 

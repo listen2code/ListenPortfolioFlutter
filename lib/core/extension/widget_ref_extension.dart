@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_portfolio_flutter/core/base/base_view_model.dart';
-import 'package:listen_portfolio_flutter/shared/utils/snack_bar_util.dart';
+import 'package:listen_portfolio_flutter/shared/widgets/common_toast.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 extension WidgetRefX on WidgetRef {
@@ -25,7 +25,7 @@ extension WidgetRefX on WidgetRef {
   void listenError<S extends BaseState<dynamic>>(ProviderListenable<S> provider) {
     listen<String?>(provider.select((state) => state.errorMessage), (previous, next) {
       if (next != null && next.isNotEmpty) {
-        SnackBarUtil.show(next, isError: true);
+        CommonToast.show(next, type: ToastType.error);
 
         // Delay consumption to allow the logging aspect to record the error state.
         Future.microtask(() => _getViewModel(provider)?.errorConsumed());
@@ -37,7 +37,7 @@ extension WidgetRefX on WidgetRef {
   void listenMessage<S extends BaseState<dynamic>>(ProviderListenable<S> provider) {
     listen<String?>(provider.select((state) => state.message), (previous, next) {
       if (next != null && next.isNotEmpty) {
-        SnackBarUtil.show(next, isError: false);
+        CommonToast.show(next);
 
         // Push state reset to next microtask to avoid interference with synchronous logs.
         Future.microtask(() => _getViewModel(provider)?.messageConsumed());

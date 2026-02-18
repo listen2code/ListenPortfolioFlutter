@@ -62,6 +62,7 @@ class AppNav {
       void performLoginFlow() {
         loginRedirect(context).then((isLoginSuccess) {
           if (isLoginSuccess) {
+            AppNavConfig.onLoginSuccessCallback?.call();
             onSuccess();
           } else {
             onFail?.call();

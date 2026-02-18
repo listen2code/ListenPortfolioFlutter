@@ -13,9 +13,9 @@ import 'package:listen_portfolio_flutter/core/utils/log_overlay_manager.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/password/change_password_page.dart';
 import 'package:listen_portfolio_flutter/generated/r.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
-import 'package:listen_portfolio_flutter/shared/utils/snack_bar_util.dart';
 import 'package:listen_portfolio_flutter/shared/widgets/common_auth_text.dart';
 import 'package:listen_portfolio_flutter/shared/widgets/common_dialog.dart';
+import 'package:listen_portfolio_flutter/shared/widgets/common_toast.dart';
 
 import 'appearance_page.dart';
 import 'delete_account_page.dart';
@@ -217,7 +217,7 @@ class _SettingsPageState extends State<SettingsPage> {
     await CacheManager.clearAllCache();
     await _updateCacheSize();
     if (mounted) {
-      SnackBarUtil.show(I18nKeys.cacheCleared.tr);
+      CommonToast.show(I18nKeys.cacheCleared.tr);
     }
   }
 
@@ -230,7 +230,7 @@ class _SettingsPageState extends State<SettingsPage> {
     ).then((confirmed) async {
       if (confirmed == true) {
         await settingManager.resetSettings();
-        SnackBarUtil.show(I18nKeys.settingsResetSuccess.tr);
+        CommonToast.show(I18nKeys.settingsResetSuccess.tr);
       }
     });
   }

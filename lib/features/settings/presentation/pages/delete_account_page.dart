@@ -7,8 +7,8 @@ import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_page.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
-import 'package:listen_portfolio_flutter/shared/utils/snack_bar_util.dart';
 import 'package:listen_portfolio_flutter/shared/widgets/common_dialog.dart';
+import 'package:listen_portfolio_flutter/shared/widgets/common_toast.dart';
 
 class DeleteAccountPage extends StatefulWidget {
   const DeleteAccountPage({super.key});
@@ -40,7 +40,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
 
           // Redirect to login page
           AppNav.off(const LoginPage());
-          SnackBarUtil.show(I18nKeys.deleteAccountSuccess.tr, backgroundColor: Colors.redAccent);
+          CommonToast.show(I18nKeys.deleteAccountSuccess.tr, type: ToastType.error);
         }
       }
     });
