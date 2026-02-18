@@ -79,11 +79,11 @@ class _ToastWidgetState extends State<_ToastWidget> with SingleTickerProviderSta
   Color _getBackgroundColor() {
     switch (widget.type) {
       case ToastType.success:
-        return Colors.green.withOpacity(0.9);
+        return Colors.green.withAlpha((255.0 * 0.9).round());
       case ToastType.error:
-        return Colors.redAccent.withOpacity(0.9);
+        return Colors.redAccent.withAlpha((255.0 * 0.9).round());
       case ToastType.info:
-        return Colors.black.withOpacity(0.8);
+        return Colors.black.withAlpha((255.0 * 0.8).round());
     }
   }
 
@@ -115,7 +115,11 @@ class _ToastWidgetState extends State<_ToastWidget> with SingleTickerProviderSta
                   color: _getBackgroundColor(),
                   borderRadius: BorderRadius.circular(25.f),
                   boxShadow: [
-                    BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 10.f, offset: Offset(0, 5.f)),
+                    BoxShadow(
+                      color: Colors.black.withAlpha((255.0 * 0.2).round()),
+                      blurRadius: 10.f,
+                      offset: Offset(0, 5.f),
+                    ),
                   ],
                 ),
                 child: Row(
