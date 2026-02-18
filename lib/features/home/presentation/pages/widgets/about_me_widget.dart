@@ -9,6 +9,7 @@ import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
+import 'package:listen_portfolio_flutter/shared/widgets/common_image.dart';
 
 class AboutMeWidget extends StatefulWidget {
   const AboutMeWidget({super.key});
@@ -108,13 +109,6 @@ class _AboutMeWidgetState extends State<AboutMeWidget> {
   }
 
   Widget _buildHeader() {
-    ImageProvider avatarImage;
-    if (_imageFile != null) {
-      avatarImage = FileImage(_imageFile!);
-    } else {
-      avatarImage = NetworkImage(authManager.state.user?.avatarUrl ?? "");
-    }
-
     final accentColor = context.accentColor;
 
     return Center(
@@ -128,7 +122,14 @@ class _AboutMeWidgetState extends State<AboutMeWidget> {
                   shape: BoxShape.circle,
                   border: Border.all(color: accentColor, width: 2.f),
                 ),
-                child: CircleAvatar(radius: 60.f, backgroundImage: avatarImage),
+                child: _imageFile != null
+                    ? CommonImage.file(_imageFile!, width: 120.f, height: 120.f, borderRadius: 60.f)
+                    : CommonImage.url(
+                        authManager.state.user?.avatarUrl ?? "",
+                        width: 120.f,
+                        height: 120.f,
+                        borderRadius: 60.f,
+                      ),
               ),
               Positioned(
                 bottom: 0,

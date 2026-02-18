@@ -16,6 +16,7 @@ import 'package:listen_portfolio_flutter/features/settings/presentation/pages/se
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_portfolio_flutter/shared/widgets/common_auth_text.dart';
 import 'package:listen_portfolio_flutter/shared/widgets/common_dialog.dart';
+import 'package:listen_portfolio_flutter/shared/widgets/common_image.dart';
 
 /// Enum to manage home page tabs instead of hardcoded indices
 enum HomeTab { overview, aboutMe, projects, architecture }
@@ -148,7 +149,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: 10.f, horizontal: 10.f),
-                      child: Divider(color: context.theme.dividerColor.withValues(alpha: 0.1)),
+                      child: Divider(color: context.theme.dividerColor.withOpacity(0.1)),
                     ),
                     _buildDrawerItem(
                       icon: Icons.settings_suggest_outlined,
@@ -188,7 +189,7 @@ class _HomePageState extends State<HomePage> {
       width: double.infinity,
       padding: EdgeInsets.only(top: 60.f, bottom: 30.f, left: 20.f, right: 20.f),
       decoration: BoxDecoration(
-        gradient: LinearGradient(colors: [accentColor, accentColor.withValues(alpha: 0.8)]),
+        gradient: LinearGradient(colors: [accentColor, accentColor.withOpacity(0.8)]),
         borderRadius: BorderRadius.only(topRight: Radius.circular(30.f)),
       ),
       child: Stack(
@@ -196,14 +197,24 @@ class _HomePageState extends State<HomePage> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CircleAvatar(
-                radius: 35.f,
-                backgroundColor: Colors.white,
-                child: CircleAvatar(
-                  radius: 32.f,
-                  backgroundImage: isLoggedIn ? NetworkImage(authManager.state.user?.avatarUrl ?? "") : null,
-                  child: isLoggedIn ? null : Icon(Icons.person, size: 35.f, color: Colors.grey),
+              Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Colors.white, width: 2.f),
                 ),
+                child: isLoggedIn
+                    ? CommonImage.url(
+                        authManager.state.user?.avatarUrl ?? "",
+                        width: 70.f,
+                        height: 70.f,
+                        borderRadius: 35.f,
+                      )
+                    : Container(
+                        width: 70.f,
+                        height: 70.f,
+                        decoration: const BoxDecoration(color: Colors.white24, shape: BoxShape.circle),
+                        child: Icon(Icons.person, size: 35.f, color: Colors.white70),
+                      ),
               ),
               SizedBox(height: 15.f),
               CommonAuthText(
@@ -247,7 +258,7 @@ class _HomePageState extends State<HomePage> {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 2.f),
       child: Material(
-        color: isSelected ? accentColor.withValues(alpha: 0.1) : Colors.transparent,
+        color: isSelected ? accentColor.withOpacity(0.1) : Colors.transparent,
         borderRadius: BorderRadius.circular(15.f),
         clipBehavior: Clip.antiAlias,
         child: ListTile(
@@ -277,7 +288,7 @@ class _HomePageState extends State<HomePage> {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 12.f),
       child: Material(
-        color: (isGuest ? accentColor : errorColor).withValues(alpha: 0.15),
+        color: (isGuest ? accentColor : errorColor).withOpacity(0.15),
         borderRadius: BorderRadius.circular(15.f),
         clipBehavior: Clip.antiAlias,
         child: ListTile(
