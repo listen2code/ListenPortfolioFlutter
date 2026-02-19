@@ -5,11 +5,11 @@ import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
-import 'package:listen_portfolio_flutter/shared/widgets/common_toast.dart';
-import 'package:listen_portfolio_flutter/shared/widgets/common_text_field.dart';
 
 class SignUpPage extends StatefulWidget {
-  const SignUpPage({super.key});
+  final Map<String, dynamic>? args;
+
+  const SignUpPage({super.key, this.args});
 
   @override
   State<SignUpPage> createState() => _SignUpPageState();
@@ -17,10 +17,17 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
+  late final TextEditingController _nameController;
   final _emailController = TextEditingController();
   final _pwdController = TextEditingController();
   final _confirmPwdController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    final String initialName = widget.args?['name']?.toString() ?? '';
+    _nameController = TextEditingController(text: initialName);
+  }
 
   @override
   void dispose() {

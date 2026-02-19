@@ -42,7 +42,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     ref.listenNavigation<LoginState, LoginNavigationTarget>(loginViewModelProvider, (target) {
       switch (target) {
         case LoginNavigationTarget.signup:
-          AppNav.to(Routes.signup);
+          AppNav.to("${Routes.signup}?name=${_usernameController.text}");
           break;
         case LoginNavigationTarget.forgotPassword:
           AppNav.to(Routes.forgotPassword);
