@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
-import 'package:listen_portfolio_flutter/shared/widgets/common_toast.dart';
 import 'package:listen_portfolio_flutter/shared/widgets/common_text.dart';
+import 'package:listen_portfolio_flutter/shared/widgets/common_toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'log_manager.dart';
 
 class LogOverlayManager {
   static OverlayEntry? _overlayEntry;
-  static Offset? _offset; // Position will be initialized on first show
+  static Offset? _offset;
 
   /// Notifier to let external widgets listen to the visibility state
   static final ValueNotifier<bool> isShowingNotifier = ValueNotifier(false);
@@ -27,13 +27,10 @@ class LogOverlayManager {
 
   static bool get isShowing => _overlayEntry != null;
 
-  /// [startExpanded] if true, the overlay will open in full-dialog mode directly.
+  /// [startExpanded] if true, the overlay will open in window mode directly.
   static Future<void> show(BuildContext context, {bool startExpanded = false}) async {
     if (_overlayEntry != null) {
-      // If already showing but we want to expand it
       if (startExpanded) {
-        // We can't easily reach the state of the existing entry from here,
-        // so we hide and re-show.
         hide();
       } else {
         return;
@@ -41,6 +38,7 @@ class LogOverlayManager {
     }
 
     final size = MediaQuery.of(context).size;
+    // Default position for floating button: top right area
     _offset ??= Offset(size.width - 70, 100);
 
     _overlayEntry = OverlayEntry(
@@ -89,44 +87,70 @@ class _LogOverlayWidget extends StatefulWidget {
 }
 
 class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
-  late Offset offset;
+  late Offset buttonOffset; // Memory for floating button
+  late Offset windowOffset; // Temporary position for expanded window
   late bool isExpanded;
 
   @override
   void initState() {
     super.initState();
-    offset = widget.initialOffset;
+    buttonOffset = widget.initialOffset;
+    windowOffset = Offset(0, 20); // Always starts at top-left when expanded
     isExpanded = widget.startExpanded;
+  }
+
+  // Clamps and updates the relevant offset based on expansion state
+  void _updateOffset(Offset delta, Size screenSize, Size widgetSize) {
+    setState(() {
+      if (isExpanded) {
+        windowOffset += delta;
+        // Clamp window within screen (allowing header to stay visible)
+        double newX = windowOffset.dx.clamp(-widgetSize.width + 50, screenSize.width - 50);
+        double newY = windowOffset.dy.clamp(0, screenSize.height - 50);
+        windowOffset = Offset(newX, newY);
+      } else {
+        buttonOffset += delta;
+        // Clamp button
+        double newX = buttonOffset.dx.clamp(0, screenSize.width - widgetSize.width);
+        double newY = buttonOffset.dy.clamp(0, screenSize.height - widgetSize.height);
+        buttonOffset = Offset(newX, newY);
+        widget.onPositionChanged(buttonOffset);
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    final screenSize = MediaQuery.of(context).size;
+    final expandedWidth = screenSize.width;
+    final expandedHeight = screenSize.height * 0.5;
 
     return Positioned(
-      left: isExpanded ? 0 : offset.dx,
-      top: isExpanded ? 0 : offset.dy,
+      left: isExpanded ? windowOffset.dx : buttonOffset.dx,
+      top: isExpanded ? windowOffset.dy : buttonOffset.dy,
       child: Material(
         color: Colors.transparent,
-        child: isExpanded ? _buildExpandedView(size) : _buildFloatingButton(),
+        child: isExpanded
+            ? _buildExpandedView(screenSize, Size(expandedWidth, expandedHeight))
+            : _buildFloatingButton(screenSize),
       ),
     );
   }
 
-  Widget _buildFloatingButton() {
+  Widget _buildFloatingButton(Size screenSize) {
     return GestureDetector(
-      onPanUpdate: (details) {
+      onPanUpdate: (details) => _updateOffset(details.delta, screenSize, const Size(50, 50)),
+      onTap: () {
         setState(() {
-          offset += details.delta;
-          widget.onPositionChanged(offset);
+          isExpanded = true;
+          windowOffset = Offset(0, 20); // Reset to top-left on expansion
         });
       },
-      onTap: () => setState(() => isExpanded = true),
       child: Container(
         width: 50,
         height: 50,
         decoration: BoxDecoration(
-          color: Colors.black.withValues(alpha: 0.7),
+          color: Colors.black.withOpacity(0.7),
           shape: BoxShape.circle,
           boxShadow: const [BoxShadow(blurRadius: 10, color: Colors.black26)],
         ),
@@ -135,56 +159,52 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
     );
   }
 
-  Widget _buildExpandedView(Size size) {
+  Widget _buildExpandedView(Size screenSize, Size windowSize) {
     return Container(
-      width: size.width,
-      height: size.height * 0.6,
+      width: windowSize.width,
+      height: windowSize.height,
       decoration: BoxDecoration(
-        color: Colors.black.withValues(alpha: 0.9),
-        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(20)),
+        color: Colors.black.withOpacity(0.9),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.white10, width: 0.5),
+        boxShadow: const [BoxShadow(blurRadius: 20, color: Colors.black54)],
       ),
       child: Column(
         children: [
-          SafeArea(
-            bottom: false,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          // Draggable Header Bar
+          GestureDetector(
+            onPanUpdate: (details) => _updateOffset(details.delta, screenSize, windowSize),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: const BoxDecoration(
+                color: Colors.white10,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              ),
               child: Row(
                 children: [
-                  const Icon(Icons.terminal_rounded, color: Colors.greenAccent, size: 20),
+                  const Icon(Icons.terminal_rounded, color: Colors.greenAccent, size: 18),
                   const SizedBox(width: 10),
                   Expanded(
                     child: CommonText(
                       'App Logs',
-                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
                     ),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.refresh_rounded, color: Colors.white70, size: 20),
-                    tooltip: 'Force Refresh',
-                    onPressed: () {
-                      // Manual trigger to sync UI with memory
-                      LogManager.logNotifier.value = List.from(LogManager.logs);
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.copy_rounded, color: Colors.white70, size: 20),
-                    onPressed: () {
-                      Clipboard.setData(ClipboardData(text: LogManager.getAllLogsAsText()));
-                      CommonToast.show('Logs copied to clipboard');
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.delete_sweep_outlined, color: Colors.white70, size: 20),
-                    onPressed: () => LogManager.clear(),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.close_fullscreen_rounded, color: Colors.white, size: 20),
-                    onPressed: () => setState(() => isExpanded = false),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.power_settings_new_rounded, color: Colors.redAccent, size: 20),
-                    onPressed: widget.onClose,
+                  _buildHeaderAction(Icons.refresh_rounded, () {
+                    LogManager.logNotifier.value = List.from(LogManager.logs);
+                  }),
+                  _buildHeaderAction(Icons.copy_rounded, () {
+                    Clipboard.setData(ClipboardData(text: LogManager.getAllLogsAsText()));
+                    CommonToast.show('Logs copied');
+                  }),
+                  _buildHeaderAction(Icons.delete_sweep_outlined, () => LogManager.clear()),
+                  _buildHeaderAction(Icons.close_fullscreen_rounded, () {
+                    setState(() => isExpanded = false);
+                  }),
+                  _buildHeaderAction(
+                    Icons.power_settings_new_rounded,
+                    widget.onClose,
+                    color: Colors.redAccent,
                   ),
                 ],
               ),
@@ -224,6 +244,16 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildHeaderAction(IconData icon, VoidCallback onTap, {Color color = Colors.white70}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 12),
+        child: Icon(icon, color: color, size: 18),
       ),
     );
   }
