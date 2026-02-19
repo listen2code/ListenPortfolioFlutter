@@ -9,11 +9,8 @@ import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_intent.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_state.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_view_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/presentation/pages/password/forgot_password_page.dart';
-import 'package:listen_portfolio_flutter/features/auth/presentation/pages/sign_up/sign_up_page.dart';
 import 'package:listen_portfolio_flutter/generated/r.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
-import 'package:listen_portfolio_flutter/shared/widgets/common_text_field.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
@@ -45,10 +42,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     ref.listenNavigation<LoginState, LoginNavigationTarget>(loginViewModelProvider, (target) {
       switch (target) {
         case LoginNavigationTarget.signup:
-          AppNav.to(const SignUpPage());
+          AppNav.to(Routes.signup);
           break;
         case LoginNavigationTarget.forgotPassword:
-          AppNav.to(const ForgotPasswordPage());
+          AppNav.to(Routes.forgotPassword);
           break;
         case LoginNavigationTarget.success:
           AppNav.back(true);

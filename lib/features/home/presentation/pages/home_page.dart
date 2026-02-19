@@ -6,17 +6,11 @@ import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
-import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_page.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/widgets/about_me_widget.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/widgets/architecture_widget.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/widgets/overview_widget.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/widgets/projects_widget.dart';
-import 'package:listen_portfolio_flutter/features/settings/presentation/pages/appearance_page.dart';
-import 'package:listen_portfolio_flutter/features/settings/presentation/pages/settings_page.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
-import 'package:listen_portfolio_flutter/shared/widgets/common_auth_text.dart';
-import 'package:listen_portfolio_flutter/shared/widgets/common_dialog.dart';
-import 'package:listen_portfolio_flutter/shared/widgets/common_image.dart';
 
 /// Enum to manage home page tabs instead of hardcoded indices
 enum HomeTab { overview, aboutMe, projects, architecture }
@@ -154,7 +148,7 @@ class _HomePageState extends State<HomePage> {
                     _buildDrawerItem(
                       icon: Icons.settings_suggest_outlined,
                       label: I18nKeys.settings.tr,
-                      onTap: () => AppNav.to(const SettingsPage()),
+                      onTap: () => AppNav.to(Routes.settings),
                     ),
                   ],
                 ),
@@ -237,7 +231,7 @@ class _HomePageState extends State<HomePage> {
             top: 0,
             child: IconButton(
               icon: Icon(getModeIcon(), color: Colors.white),
-              onPressed: () => AppNav.to(const AppearancePage()),
+              onPressed: () => AppNav.to(Routes.appearance),
             ),
           ),
         ],
@@ -308,7 +302,7 @@ class _HomePageState extends State<HomePage> {
           ),
           onTap: () {
             if (isGuest) {
-              AppNav.to(const LoginPage());
+              AppNav.to(Routes.login);
             } else {
               CommonDialog.showConfirm(title: I18nKeys.logout.tr, message: I18nKeys.logoutTips.tr).then((
                 confirmed,
@@ -318,7 +312,7 @@ class _HomePageState extends State<HomePage> {
                   if (_currentTab == HomeTab.aboutMe) {
                     setState(() => _currentTab = HomeTab.overview);
                   }
-                  AppNav.to(const LoginPage());
+                  AppNav.to(Routes.login);
                 }
               });
             }

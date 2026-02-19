@@ -42,7 +42,7 @@ samples, guidance on mobile development, and a full API reference.
   ------plugin_native: plugin for native basic info
 * server i18
 * switch env: input url; mock api; config each api;
-* dev tools: layout check; lag check; launch; app launch; apk size; session timeout; 分出mock功能; log overlay drag resize
+* dev tools: layout check; lag check; launch; app launch; apk size; session timeout; 分出mock功能;
 * long press icon menu
 * pixel icon cache
 * aspect log, trace log
@@ -50,4 +50,3 @@ samples, guidance on mobile development, and a full API reference.
 * finger auth
 * auto login
 * readme: 截图，架构图，技术栈，timeout
-* route string list

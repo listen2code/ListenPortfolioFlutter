@@ -1,0 +1,43 @@
+import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
+import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_page.dart';
+import 'package:listen_portfolio_flutter/features/auth/presentation/pages/password/change_password_page.dart';
+import 'package:listen_portfolio_flutter/features/auth/presentation/pages/password/forgot_password_page.dart';
+import 'package:listen_portfolio_flutter/features/auth/presentation/pages/sign_up/sign_up_page.dart';
+import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_page.dart';
+import 'package:listen_portfolio_flutter/features/settings/presentation/pages/appearance_page.dart';
+import 'package:listen_portfolio_flutter/features/settings/presentation/pages/delete_account_page.dart';
+import 'package:listen_portfolio_flutter/features/settings/presentation/pages/settings_page.dart';
+import 'package:listen_portfolio_flutter/features/splash/presentation/pages/splash_page.dart';
+
+/// Centralized route definitions and registry for the application.
+class Routes {
+  Routes._();
+
+  // Route Path Constants
+  static const String root = "/";
+  static const String home = "/home";
+  static const String login = "/login";
+  static const String signup = "/signup";
+  static const String forgotPassword = "/forgot_password";
+  static const String changePassword = "/change_password";
+  static const String deleteAccount = "/delete_account";
+  static const String settings = "/settings";
+  static const String appearance = "/appearance";
+
+  /// The complete route map linking paths to their respective widget builders.
+  static Map<String, RoutePageBuilder> get routes => {
+    root: (args) => const SplashPage(),
+    home: (args) => const HomePage(),
+
+    /// login
+    login: (args) => const LoginPage(),
+    signup: (args) => const SignUpPage(),
+    forgotPassword: (args) => const ForgotPasswordPage(),
+    changePassword: (args) => const ChangePasswordPage(),
+
+    /// setting
+    settings: (args) => const SettingsPage(),
+    appearance: (args) => const AppearancePage(),
+    deleteAccount: (args) => const DeleteAccountPage(),
+  };
+}

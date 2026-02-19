@@ -8,9 +8,9 @@ import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
-import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_page.dart';
 import 'package:listen_portfolio_flutter/features/splash/presentation/pages/splash_page.dart';
 import 'package:listen_portfolio_flutter/shared/base/base_auth_listenable_page.dart';
+import 'package:listen_portfolio_flutter/shared/utils/routes.dart';
 import 'package:listen_portfolio_flutter/shared/widgets/common_dialog.dart';
 import 'package:listen_portfolio_flutter/shared/widgets/common_toast.dart';
 
@@ -24,12 +24,13 @@ void main() async {
 
   await AppEnv.init();
 
-  // Register auth and navigation logic to the core interceptor
+  // Register auth, navigation, and named routes
   AppNavConfig.register(
+    routes: Routes.routes,
     isGuest: () => authManager.state.isGuest,
     // The actual login navigation logic
     onLogin: (context) async {
-      final result = await AppNav.to(const LoginPage());
+      final result = await AppNav.to(Routes.login);
       return result == true;
     },
     // Global feedback after successful authentication

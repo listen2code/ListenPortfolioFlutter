@@ -10,15 +10,9 @@ import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/core/utils/cache_manager.dart';
 import 'package:listen_portfolio_flutter/core/utils/log_overlay_manager.dart';
-import 'package:listen_portfolio_flutter/features/auth/presentation/pages/password/change_password_page.dart';
 import 'package:listen_portfolio_flutter/generated/r.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
-import 'package:listen_portfolio_flutter/shared/widgets/common_auth_text.dart';
-import 'package:listen_portfolio_flutter/shared/widgets/common_dialog.dart';
-import 'package:listen_portfolio_flutter/shared/widgets/common_toast.dart';
 
-import 'appearance_page.dart';
-import 'delete_account_page.dart';
 import 'privacy_policy_page.dart';
 import 'terms_of_service_page.dart';
 
@@ -66,7 +60,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       icon: Icons.palette_outlined,
                       title: I18nKeys.appearance.tr,
                       subtitle: I18nKeys.appearanceSubtitle.tr,
-                      onTap: () => AppNav.to(const AppearancePage()),
+                      onTap: () => AppNav.to(Routes.appearance),
                     ),
                     _buildListTile(
                       icon: Icons.language_outlined,
@@ -88,7 +82,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       icon: Icons.lock_outline_rounded,
                       title: I18nKeys.changePassword.tr,
                       blurLevel: AuthBlurLevel.low,
-                      onTap: () => AppNav.to(const ChangePasswordPage(), needLogin: true),
+                      onTap: () => AppNav.to(Routes.changePassword, needLogin: true),
                     ),
                     _buildSwitchTile(
                       icon: Icons.notifications_none_rounded,
@@ -100,7 +94,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       icon: Icons.no_accounts_outlined,
                       title: I18nKeys.deleteAccount.tr,
                       blurLevel: AuthBlurLevel.low,
-                      onTap: () => AppNav.to(const DeleteAccountPage(), needLogin: true),
+                      onTap: () => AppNav.to(Routes.deleteAccount, needLogin: true),
                     ),
                   ]),
 
