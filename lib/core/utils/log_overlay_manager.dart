@@ -89,13 +89,19 @@ class _LogOverlayWidget extends StatefulWidget {
 class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
   late Offset buttonOffset; // Memory for floating button
   late Offset windowOffset; // Temporary position for expanded window
+  late Size windowSize; // Dimensions of the expanded window
   late bool isExpanded;
+
+  static const double minWidth = 250.0;
+  static const double minHeight = 200.0;
+  static const double handleSize = 20.0;
 
   @override
   void initState() {
     super.initState();
     buttonOffset = widget.initialOffset;
-    windowOffset = Offset(0, 20); // Always starts at top-left when expanded
+    windowOffset = const Offset(0, 20); // Reset to top-left on expansion
+    windowSize = Size.zero; // Will be initialized in build based on screen size
     isExpanded = widget.startExpanded;
   }
 
@@ -104,9 +110,9 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
     setState(() {
       if (isExpanded) {
         windowOffset += delta;
-        // Clamp window within screen (allowing header to stay visible)
-        double newX = windowOffset.dx.clamp(-widgetSize.width + 50, screenSize.width - 50);
-        double newY = windowOffset.dy.clamp(0, screenSize.height - 50);
+        // Clamp window within screen
+        double newX = windowOffset.dx.clamp(0, screenSize.width - windowSize.width);
+        double newY = windowOffset.dy.clamp(0, screenSize.height - windowSize.height);
         windowOffset = Offset(newX, newY);
       } else {
         buttonOffset += delta;
@@ -119,11 +125,54 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
     });
   }
 
+  // Logic to handle resizing from corners and edges
+  void _handleResize(Offset delta, Alignment alignment, Size screenSize) {
+    setState(() {
+      double newX = windowOffset.dx;
+      double newY = windowOffset.dy;
+      double newW = windowSize.width;
+      double newH = windowSize.height;
+
+      if (alignment == Alignment.topLeft) {
+        newX += delta.dx;
+        newY += delta.dy;
+        newW -= delta.dx;
+        newH -= delta.dy;
+      } else if (alignment == Alignment.topRight) {
+        newY += delta.dy;
+        newW += delta.dx;
+        newH -= delta.dy;
+      } else if (alignment == Alignment.bottomLeft) {
+        newX += delta.dx;
+        newW -= delta.dx;
+        newH += delta.dy;
+      } else if (alignment == Alignment.bottomRight) {
+        newW += delta.dx;
+        newH += delta.dy;
+      } else if (alignment == Alignment.bottomCenter) {
+        newH += delta.dy;
+      }
+
+      // Enforce minimum size and screen boundaries
+      if (newW >= minWidth && (newX >= 0 && newX + newW <= screenSize.width)) {
+        windowOffset = Offset(newX, windowOffset.dy);
+        windowSize = Size(newW, windowSize.height);
+      }
+      if (newH >= minHeight && (newY >= 0 && newY + newH <= screenSize.height)) {
+        windowOffset = Offset(windowOffset.dx, newY);
+        windowSize = Size(windowSize.width, newH);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
-    final expandedWidth = screenSize.width;
-    final expandedHeight = screenSize.height * 0.5;
+    
+    // Initialize default window size if not set
+    if (windowSize == Size.zero) {
+      windowSize = Size(screenSize.width, screenSize.height * 0.5);
+    }
 
     return Positioned(
       left: isExpanded ? windowOffset.dx : buttonOffset.dx,
@@ -131,7 +180,7 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
       child: Material(
         color: Colors.transparent,
         child: isExpanded
-            ? _buildExpandedView(screenSize, Size(expandedWidth, expandedHeight))
+            ? _buildExpandedViewWithHandles(screenSize)
             : _buildFloatingButton(screenSize),
       ),
     );
@@ -143,7 +192,7 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
       onTap: () {
         setState(() {
           isExpanded = true;
-          windowOffset = Offset(0, 20); // Reset to top-left on expansion
+          windowOffset = const Offset(0, 20); // Reset to top-left on expansion
         });
       },
       child: Container(
@@ -159,7 +208,52 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
     );
   }
 
-  Widget _buildExpandedView(Size screenSize, Size windowSize) {
+  Widget _buildExpandedViewWithHandles(Size screenSize) {
+    return Stack(
+      children: [
+        _buildWindowContent(screenSize),
+        // Corner Resize Handles
+        _buildResizeHandle(Alignment.topLeft, screenSize),
+        _buildResizeHandle(Alignment.topRight, screenSize),
+        _buildResizeHandle(Alignment.bottomLeft, screenSize),
+        _buildResizeHandle(Alignment.bottomRight, screenSize),
+        // Bottom Edge Resize Handle
+        _buildResizeHandle(Alignment.bottomCenter, screenSize),
+      ],
+    );
+  }
+
+  Widget _buildResizeHandle(Alignment alignment, Size screenSize) {
+    double? left, top, width, height;
+
+    if (alignment == Alignment.bottomCenter) {
+      left = handleSize;
+      top = windowSize.height - handleSize;
+      width = windowSize.width - (handleSize * 2);
+      height = handleSize;
+    } else {
+      left = (alignment == Alignment.topLeft || alignment == Alignment.bottomLeft) ? 0 : windowSize.width - handleSize;
+      top = (alignment == Alignment.topLeft || alignment == Alignment.topRight) ? 0 : windowSize.height - handleSize;
+      width = handleSize;
+      height = handleSize;
+    }
+
+    return Positioned(
+      left: left,
+      top: top,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onPanUpdate: (details) => _handleResize(details.delta, alignment, screenSize),
+        child: Container(
+          width: width,
+          height: height,
+          color: Colors.transparent, // Invisible handle
+        ),
+      ),
+    );
+  }
+
+  Widget _buildWindowContent(Size screenSize) {
     return Container(
       width: windowSize.width,
       height: windowSize.height,
