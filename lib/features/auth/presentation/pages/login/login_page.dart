@@ -42,6 +42,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     ref.listenNavigation<LoginState, LoginNavigationTarget>(loginViewModelProvider, (target) {
       switch (target) {
         case LoginNavigationTarget.signup:
+          // Use raw string template for internal navigation
           AppNav.to("${Routes.signup}?name=${_usernameController.text}");
           break;
         case LoginNavigationTarget.forgotPassword:
@@ -61,7 +62,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   Widget build(BuildContext context) {
     _setupNavigation(context);
 
-    // Sync controllers with state
+    // Sync controllers with state (e.g. after loading saved credentials)
     ref.listen<LoginState>(loginViewModelProvider, (previous, next) {
       if (_usernameController.text.isEmpty && next.username.isNotEmpty) {
         _usernameController.text = next.username;
@@ -84,22 +85,22 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              SizedBox(height: 40.f),
+              const SizedBox(height: 40),
               _buildLogo(accentColor),
-              SizedBox(height: 30.f),
+              const SizedBox(height: 30),
               _buildTitle(context),
-              SizedBox(height: 50.f),
+              const SizedBox(height: 50),
               _buildUsernameField(state, viewModel),
-              SizedBox(height: 20.f),
+              const SizedBox(height: 20),
               _buildPasswordField(state, viewModel),
               _buildRememberAndForgot(context, state, viewModel, accentColor),
-              SizedBox(height: 30.f),
+              const SizedBox(height: 30),
               _buildLoginButton(context, state, viewModel, accentColor),
-              SizedBox(height: 15.f),
+              const SizedBox(height: 15),
               _buildSkipButton(context, viewModel),
-              SizedBox(height: 10.f),
+              const SizedBox(height: 10),
               _buildSignupLink(context, viewModel, accentColor),
-              SizedBox(height: 40.f),
+              const SizedBox(height: 40),
             ],
           ),
         );
@@ -114,18 +115,22 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       tag: 'logo',
       child: Center(
         child: Container(
-          padding: EdgeInsets.all(15.f),
+          padding: const EdgeInsets.all(15),
           decoration: BoxDecoration(
             color: Colors.white,
             shape: BoxShape.circle,
             boxShadow: [
-              BoxShadow(color: accentColor.withValues(alpha: 0.3), blurRadius: 20.f, offset: Offset(0, 10.f)),
+              BoxShadow(
+                color: accentColor.withValues(alpha: 0.3),
+                blurRadius: 20,
+                offset: const Offset(0, 10),
+              ),
             ],
           ),
           child: Image.asset(
             R.imagesIcLauncherAdaptiveFore,
-            width: 60.f,
-            height: 60.f,
+            width: 60,
+            height: 60,
             color: accentColor,
             colorBlendMode: BlendMode.srcIn,
           ),
@@ -142,7 +147,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           I18nKeys.welcomeBack.tr,
           style: context.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
         ),
-        SizedBox(height: 8.f),
+        const SizedBox(height: 8),
         CommonText(
           I18nKeys.signInToContinue.tr,
           style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey),
@@ -188,15 +193,15 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               SizedBox(
-                width: 24.f,
-                height: 24.f,
+                width: 24,
+                height: 24,
                 child: Checkbox(
                   value: state.rememberMe,
                   activeColor: accentColor,
                   onChanged: (value) => viewModel.handleIntent(const LoginIntent.toggleRememberMe()),
                 ),
               ),
-              SizedBox(width: 8.f),
+              const SizedBox(width: 8),
               Flexible(
                 child: GestureDetector(
                   onTap: () => viewModel.handleIntent(const LoginIntent.toggleRememberMe()),
@@ -210,7 +215,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             ],
           ),
         ),
-        SizedBox(width: 10.f),
+        const SizedBox(width: 10),
         Flexible(
           flex: 2,
           child: TextButton(
@@ -235,12 +240,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     Color accentColor,
   ) {
     return Container(
-      height: 56.f,
+      height: 56,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15.f),
+        borderRadius: BorderRadius.circular(15),
         gradient: LinearGradient(colors: [accentColor, accentColor.withValues(alpha: 0.8)]),
         boxShadow: [
-          BoxShadow(color: accentColor.withValues(alpha: 0.3), blurRadius: 10.f, offset: Offset(0, 5.f)),
+          BoxShadow(color: accentColor.withValues(alpha: 0.3), blurRadius: 10, offset: const Offset(0, 5)),
         ],
       ),
       child: ElevatedButton(
@@ -249,14 +254,14 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
           padding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.f)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         ),
         child: state.isLoading
-            ? Center(
+            ? const Center(
                 child: SizedBox(
-                  height: 20.f,
-                  width: 20.f,
-                  child: const CircularProgressIndicator(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(
                     strokeWidth: 2,
                     valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                   ),

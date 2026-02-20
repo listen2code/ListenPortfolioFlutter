@@ -31,7 +31,7 @@ class Routes {
 
     /// login
     login: (args) => const LoginPage(),
-    signup: (args) => SignUpPage(args: args as Map<String, dynamic>?),
+    signup: (args) => const SignUpPage(),
     forgotPassword: (args) => const ForgotPasswordPage(),
     changePassword: (args) => const ChangePasswordPage(),
 

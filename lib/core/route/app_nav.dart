@@ -19,10 +19,8 @@ class AppNavConfig {
   static void Function()? onLoginSuccessCallback;
   static Future<bool> Function(BuildContext context)? onShowLoginDialogCallback;
 
-  /// Registry for named routes mapping paths to widget builders.
   static final Map<String, RoutePageBuilder> _routeRegistry = {};
 
-  /// Setup navigation and register named routes.
   static void register({
     required bool Function() isGuest,
     required Future<bool> Function(BuildContext context) onLogin,
@@ -37,16 +35,27 @@ class AppNavConfig {
     if (routes != null) _routeRegistry.addAll(routes);
   }
 
-  /// Finds a widget builder for the given [path].
   static RoutePageBuilder? getBuilder(String path) => _routeRegistry[path];
 }
 
-/// Centralized navigation utility with support for both Widget and String-based routes.
 class AppNav {
   AppNav._();
 
-  /// Navigates to a new page using either a [Widget] instance or a [String] path.
-  /// Example: AppNav.to("/login"); or AppNav.to(LoginPage());
+  /// Retrieves a parameter from the current route by [key].
+  /// Supports both Map-based arguments and URI query parameters.
+  static T? getParam<T>(String key) {
+    final context = AppNavConfig.context;
+    if (context == null) return null;
+
+    final settings = ModalRoute.of(context)?.settings;
+    final args = settings?.arguments;
+
+    if (args is Map<String, dynamic>) {
+      return args[key] as T?;
+    }
+    return null;
+  }
+
   static Future<T?>? to<T>(dynamic target, {bool needLogin = false, Object? arguments}) {
     final completer = Completer<T?>();
     tryLogin(
@@ -66,7 +75,6 @@ class AppNav {
     return completer.future;
   }
 
-  /// Replaces current route with a new page.
   static Future<T?>? off<T>(dynamic target, {bool needLogin = false, Object? arguments}) {
     final completer = Completer<T?>();
     tryLogin(
@@ -95,29 +103,42 @@ class AppNav {
         settings: RouteSettings(name: target.runtimeType.toString(), arguments: arguments),
       );
     } else if (target is String) {
-      // 1. Parse the string as a URI to handle queries like "/path?key=value"
-      final uri = Uri.parse(target);
-      final path = uri.path;
+      String path;
+      final Map<String, dynamic> combinedArgs = {};
 
-      // 2. Merge path parameters with explicitly passed arguments
-      Object? finalArgs = arguments;
-      if (uri.queryParameters.isNotEmpty) {
-        if (arguments is Map<String, dynamic>) {
-          finalArgs = {...uri.queryParameters, ...arguments};
-        } else {
-          finalArgs = uri.queryParameters;
+      if (target.contains('?')) {
+        final index = target.indexOf('?');
+        path = target.substring(0, index);
+        final queryStr = target.substring(index + 1);
+        final queryParts = queryStr.split('&');
+        for (var part in queryParts) {
+          final kv = part.split('=');
+          if (kv.length == 2) {
+            combinedArgs[kv[0]] = kv[1];
+          }
         }
+      } else {
+        path = target;
       }
 
-      final builder = AppNavConfig.getBuilder(path);
-      if (builder != null) {
-        return MaterialPageRoute<T>(
-          builder: (_) => builder(finalArgs),
-          settings: RouteSettings(name: path, arguments: finalArgs),
-        );
+      if (arguments is Map) {
+        combinedArgs.addAll(Map<String, dynamic>.from(arguments));
+      } else if (arguments != null && combinedArgs.isEmpty) {
+        return _buildPageRoute(path, arguments);
       }
+
+      return _buildPageRoute<T>(path, combinedArgs);
     }
     return null;
+  }
+
+  static Route<T>? _buildPageRoute<T>(String name, Object? args) {
+    final builder = AppNavConfig.getBuilder(name);
+    if (builder == null) return null;
+    return MaterialPageRoute<T>(
+      builder: (_) => builder(args),
+      settings: RouteSettings(name: name, arguments: args),
+    );
   }
 
   static void tryLogin({required VoidCallback onSuccess, VoidCallback? onFail, bool needLogin = true}) {
@@ -125,10 +146,7 @@ class AppNav {
     if (needLogin && isGuest) {
       final context = AppNavConfig.context;
       final loginRedirect = AppNavConfig.onLoginRedirect;
-      if (context == null || loginRedirect == null) {
-        onFail?.call();
-        return;
-      }
+      if (context == null || loginRedirect == null) return;
 
       void performLoginFlow() {
         loginRedirect(context).then((success) {

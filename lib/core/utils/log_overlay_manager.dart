@@ -94,13 +94,13 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
 
   static const double minWidth = 250.0;
   static const double minHeight = 200.0;
-  static const double handleSize = 20.0;
+  static const double handleSize = 30.0;
 
   @override
   void initState() {
     super.initState();
     buttonOffset = widget.initialOffset;
-    windowOffset = const Offset(0, 20); // Reset to top-left on expansion
+    windowOffset = const Offset(0, 50); // Reset to top-left on expansion
     windowSize = Size.zero; // Will be initialized in build based on screen size
     isExpanded = widget.startExpanded;
   }
@@ -168,7 +168,7 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
-    
+
     // Initialize default window size if not set
     if (windowSize == Size.zero) {
       windowSize = Size(screenSize.width, screenSize.height * 0.5);
@@ -179,9 +179,7 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
       top: isExpanded ? windowOffset.dy : buttonOffset.dy,
       child: Material(
         color: Colors.transparent,
-        child: isExpanded
-            ? _buildExpandedViewWithHandles(screenSize)
-            : _buildFloatingButton(screenSize),
+        child: isExpanded ? _buildExpandedViewWithHandles(screenSize) : _buildFloatingButton(screenSize),
       ),
     );
   }
@@ -192,7 +190,7 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
       onTap: () {
         setState(() {
           isExpanded = true;
-          windowOffset = const Offset(0, 20); // Reset to top-left on expansion
+          windowOffset = const Offset(0, 50); // Reset to top-left on expansion
         });
       },
       child: Container(
@@ -232,8 +230,12 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
       width = windowSize.width - (handleSize * 2);
       height = handleSize;
     } else {
-      left = (alignment == Alignment.topLeft || alignment == Alignment.bottomLeft) ? 0 : windowSize.width - handleSize;
-      top = (alignment == Alignment.topLeft || alignment == Alignment.topRight) ? 0 : windowSize.height - handleSize;
+      left = (alignment == Alignment.topLeft || alignment == Alignment.bottomLeft)
+          ? 0
+          : windowSize.width - handleSize;
+      top = (alignment == Alignment.topLeft || alignment == Alignment.topRight)
+          ? 0
+          : windowSize.height - handleSize;
       width = handleSize;
       height = handleSize;
     }

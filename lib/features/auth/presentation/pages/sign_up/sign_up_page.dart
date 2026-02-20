@@ -25,7 +25,8 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   void initState() {
     super.initState();
-    final String initialName = widget.args?['name']?.toString() ?? '';
+    // Elegant parameter retrieval using AppNav static helper
+    final String initialName = AppNav.getParam<String>('name') ?? '';
     _nameController = TextEditingController(text: initialName);
   }
 
@@ -38,7 +39,6 @@ class _SignUpPageState extends State<SignUpPage> {
     super.dispose();
   }
 
-  // Handle registration logic
   void _handleSignUp(Color accentColor) {
     if (_formKey.currentState!.validate()) {
       CommonToast.show(I18nKeys.registrationSuccess.tr);
@@ -53,13 +53,13 @@ class _SignUpPageState extends State<SignUpPage> {
     return BaseStatelessPage(
       isEmptyTitle: true,
       body: (context, child) => SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20), // Stable layout padding
         child: Form(
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              SizedBox(height: 20.f),
+              const SizedBox(height: 20),
               CommonText(
                 I18nKeys.createAccount.tr,
                 textAlign: TextAlign.center,
@@ -67,21 +67,20 @@ class _SignUpPageState extends State<SignUpPage> {
                   fontWeight: FontWeight.w300,
                   color: context.isDark ? Colors.white : Colors.black87,
                 ),
-                maxLines: 1,
               ),
-              SizedBox(height: 10.f),
+              const SizedBox(height: 10),
               Text(
                 I18nKeys.signUpSubtitle.tr,
                 style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey),
               ),
-              SizedBox(height: 40.f),
+              const SizedBox(height: 40),
               CommonTextField(
                 controller: _nameController,
                 labelText: I18nKeys.fullName.tr,
                 prefixIcon: Icons.person_outline,
                 validator: (value) => value!.isEmpty ? I18nKeys.fieldRequired.tr : null,
               ),
-              SizedBox(height: 20.f),
+              const SizedBox(height: 20),
               CommonTextField(
                 controller: _emailController,
                 type: TextFieldType.email,
@@ -89,7 +88,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 prefixIcon: Icons.email_outlined,
                 validator: (value) => value!.isEmpty ? I18nKeys.fieldRequired.tr : null,
               ),
-              SizedBox(height: 20.f),
+              const SizedBox(height: 20),
               CommonTextField(
                 controller: _pwdController,
                 type: TextFieldType.password,
@@ -97,7 +96,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 prefixIcon: Icons.lock_outline,
                 validator: (value) => value!.isEmpty ? I18nKeys.fieldRequired.tr : null,
               ),
-              SizedBox(height: 20.f),
+              const SizedBox(height: 20),
               CommonTextField(
                 controller: _confirmPwdController,
                 type: TextFieldType.password,
@@ -109,11 +108,11 @@ class _SignUpPageState extends State<SignUpPage> {
                   return null;
                 },
               ),
-              SizedBox(height: 40.f),
+              const SizedBox(height: 40),
               _buildSignUpButton(accentColor),
-              SizedBox(height: 30.f),
+              const SizedBox(height: 30),
               _buildLoginLink(accentColor),
-              SizedBox(height: 40.f),
+              const SizedBox(height: 40),
             ],
           ),
         ),
@@ -124,10 +123,10 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget _buildSignUpButton(Color accentColor) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15.f),
+        borderRadius: BorderRadius.circular(15),
         gradient: LinearGradient(colors: [accentColor, accentColor.withValues(alpha: 0.8)]),
         boxShadow: [
-          BoxShadow(color: accentColor.withValues(alpha: 0.3), blurRadius: 10.f, offset: Offset(0, 5.f)),
+          BoxShadow(color: accentColor.withValues(alpha: 0.3), blurRadius: 10, offset: const Offset(0, 5)),
         ],
       ),
       child: ElevatedButton(
@@ -135,8 +134,8 @@ class _SignUpPageState extends State<SignUpPage> {
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
-          padding: EdgeInsets.symmetric(vertical: 18.f),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.f)),
+          padding: const EdgeInsets.symmetric(vertical: 18),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         ),
         child: CommonText(
           I18nKeys.signUp.tr,
@@ -154,7 +153,6 @@ class _SignUpPageState extends State<SignUpPage> {
           child: CommonText(
             I18nKeys.alreadyHaveAccount.tr,
             style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey),
-            maxLines: 1,
           ),
         ),
         TextButton(
@@ -162,7 +160,6 @@ class _SignUpPageState extends State<SignUpPage> {
           child: CommonText(
             I18nKeys.loginLink.tr,
             style: context.textTheme.bodyMedium?.copyWith(color: accentColor, fontWeight: FontWeight.bold),
-            maxLines: 1,
           ),
         ),
       ],
