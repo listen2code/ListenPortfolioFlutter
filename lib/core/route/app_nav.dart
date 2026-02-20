@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'route_interceptor.dart';
 
 /// Builder function to create a page for a specific route path.
-typedef RoutePageBuilder = Widget Function(Object? arguments);
+typedef RoutePageBuilder = Widget Function();
 
 /// Global configuration for route interception and app-wide navigation settings.
 class AppNavConfig {
@@ -136,7 +136,7 @@ class AppNav {
     final builder = AppNavConfig.getBuilder(name);
     if (builder == null) return null;
     return MaterialPageRoute<T>(
-      builder: (_) => builder(args),
+      builder: (_) => builder(),
       settings: RouteSettings(name: name, arguments: args),
     );
   }

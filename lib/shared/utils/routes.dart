@@ -26,18 +26,18 @@ class Routes {
 
   /// The complete route map linking paths to their respective widget builders.
   static Map<String, RoutePageBuilder> get routes => {
-    root: (args) => const SplashPage(),
-    home: (args) => const HomePage(),
+    root: () => const SplashPage(),
+    home: () => const HomePage(),
 
     /// login
-    login: (args) => const LoginPage(),
-    signup: (args) => const SignUpPage(),
-    forgotPassword: (args) => const ForgotPasswordPage(),
-    changePassword: (args) => const ChangePasswordPage(),
+    login: () => const LoginPage(),
+    signup: () => const SignUpPage(),
+    forgotPassword: () => const ForgotPasswordPage(),
+    changePassword: () => const ChangePasswordPage(),
 
     /// setting
-    settings: (args) => const SettingsPage(),
-    appearance: (args) => const AppearancePage(),
-    deleteAccount: (args) => const DeleteAccountPage(),
+    settings: () => const SettingsPage(),
+    appearance: () => const AppearancePage(),
+    deleteAccount: () => const DeleteAccountPage(),
   };
 }
