@@ -2,6 +2,7 @@ import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
+import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:quick_actions/quick_actions.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -23,16 +24,25 @@ class QuickActionsManager {
       }
     });
 
+    // Listen to setting changes (like language) and refresh shortcuts
+    settingManager.addListener(updateShortcuts);
+
+    // Initial load
+    updateShortcuts();
+  }
+
+  /// Updates the shortcut items with the current localized titles.
+  static void updateShortcuts() {
     _quickActions.setShortcutItems(<ShortcutItem>[
       ShortcutItem(
         type: _actionSettings,
         localizedTitle: I18nKeys.settings.tr,
-        icon: 'ic_setting', // Note: Android needs this icon in res/drawable
+        icon: 'ic_setting',
       ),
       ShortcutItem(
         type: _actionContact,
         localizedTitle: I18nKeys.contactMe.tr,
-        icon: 'ic_contact', // Note: Android needs this icon in res/drawable
+        icon: 'ic_contact',
       ),
     ]);
   }
