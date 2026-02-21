@@ -7,9 +7,7 @@ import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 
 class SignUpPage extends StatefulWidget {
-  final Map<String, dynamic>? args;
-
-  const SignUpPage({super.key, this.args});
+  const SignUpPage({super.key});
 
   @override
   State<SignUpPage> createState() => _SignUpPageState();
@@ -25,7 +23,7 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   void initState() {
     super.initState();
-    // Elegant parameter retrieval using AppNav static helper
+    // Safe and clean parameter retrieval via global route snapshot
     final String initialName = AppNav.getParam<String>(Routes.argName) ?? '';
     _nameController = TextEditingController(text: initialName);
   }
@@ -53,7 +51,7 @@ class _SignUpPageState extends State<SignUpPage> {
     return BaseStatelessPage(
       isEmptyTitle: true,
       body: (context, child) => SingleChildScrollView(
-        padding: const EdgeInsets.all(20), // Stable layout padding
+        padding: const EdgeInsets.all(20), // Stable padding
         child: Form(
           key: _formKey,
           child: Column(

@@ -5,8 +5,6 @@ import 'package:listen_portfolio_flutter/core/extension/context_extension.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
-import 'package:listen_portfolio_flutter/shared/widgets/common_toast.dart';
-import 'package:listen_portfolio_flutter/shared/widgets/common_auth_text.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class OverviewWidget extends StatelessWidget {
@@ -30,36 +28,37 @@ class OverviewWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildWelcomeHeader(context),
-                    SizedBox(height: 16.f),
+                    const SizedBox(height: 16),
                     _buildStatusTag(context),
-                    SizedBox(height: 24.f),
+                    const SizedBox(height: 24),
                     _buildExperienceGrid(context),
-                    SizedBox(height: 28.f),
+                    const SizedBox(height: 28),
                     _buildSectionHeader(
                       context,
                       I18nKeys.quickActions.tr,
                       showSeeAll: false,
                       onPressed: () {},
                     ),
-                    SizedBox(height: 12.f),
+                    const SizedBox(height: 12),
                     _buildQuickActions(context),
-                    SizedBox(height: 28.f),
+                    const SizedBox(height: 28),
                     _buildSectionHeader(
                       context,
                       I18nKeys.featuredProjects.tr,
                       showSeeAll: true,
                       onPressed: onProjectsRequested,
                     ),
-                    SizedBox(height: 12.f),
+                    const SizedBox(height: 12),
                   ],
                 ),
               ),
               _buildFeaturedProjects(context),
+              const SizedBox(height: 30),
             ],
           ),
         );
@@ -77,7 +76,7 @@ class OverviewWidget extends StatelessWidget {
           style: context.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
           maxLines: 1,
         ),
-        SizedBox(height: 4.f),
+        const SizedBox(height: 4),
         Wrap(
           children: [
             CommonText(
@@ -98,11 +97,11 @@ class OverviewWidget extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(height: 8.f),
+        const SizedBox(height: 8),
         Row(
           children: [
             _buildCertBadge(accentColor, I18nKeys.jlptN1.tr),
-            SizedBox(width: 8.f),
+            const SizedBox(width: 8),
             _buildCertBadge(accentColor, I18nKeys.bjtJ2.tr),
           ],
         ),
@@ -112,20 +111,20 @@ class OverviewWidget extends StatelessWidget {
 
   Widget _buildCertBadge(Color color, String label) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8.f, vertical: 3.f),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(6.f),
+        borderRadius: BorderRadius.circular(6),
         border: Border.all(color: color.withValues(alpha: 0.3), width: 0.5),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.workspace_premium_outlined, size: 12.f, color: color),
-          SizedBox(width: 4.f),
+          Icon(Icons.workspace_premium_outlined, size: 12, color: color),
+          const SizedBox(width: 4),
           Text(
             label,
-            style: TextStyle(color: color, fontSize: 10.f, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+            style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 0.5),
           ),
         ],
       ),
@@ -134,18 +133,18 @@ class OverviewWidget extends StatelessWidget {
 
   Widget _buildStatusTag(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10.f, vertical: 4.f),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         color: Colors.green.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(20.f),
+        borderRadius: BorderRadius.circular(20),
         border: Border.all(color: Colors.green.withValues(alpha: 0.2)),
       ),
       child: FittedBox(
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.circle, color: Colors.green, size: 6.f),
-            SizedBox(width: 6.f),
+            const Icon(Icons.circle, color: Colors.green, size: 6),
+            const SizedBox(width: 6),
             CommonText(
               I18nKeys.availableStatus.tr,
               style: context.textTheme.labelSmall?.copyWith(color: Colors.green, fontWeight: FontWeight.bold),
@@ -166,7 +165,7 @@ class OverviewWidget extends StatelessWidget {
           Icons.android_rounded,
           Colors.green,
         ),
-        SizedBox(height: 12.f),
+        const SizedBox(height: 12),
         Row(
           children: [
             _buildStatCard(
@@ -177,7 +176,7 @@ class OverviewWidget extends StatelessWidget {
               Colors.blue,
               flex: 1,
             ),
-            SizedBox(width: 12.f),
+            const SizedBox(width: 12),
             _buildStatCard(
               context,
               '1${I18nKeys.yearsShort.tr}+',
@@ -200,18 +199,18 @@ class OverviewWidget extends StatelessWidget {
     Color iconColor,
   ) {
     return Container(
-      padding: EdgeInsets.all(16.f),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: context.theme.cardColor,
-        borderRadius: BorderRadius.circular(20.f),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
-          BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10.f, offset: Offset(0, 5.f)),
+          BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10, offset: const Offset(0, 5)),
         ],
       ),
       child: Row(
         children: [
-          Icon(icon, color: iconColor, size: 32.f),
-          SizedBox(width: 16.f),
+          Icon(icon, color: iconColor, size: 32),
+          const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -220,18 +219,18 @@ class OverviewWidget extends StatelessWidget {
                   value,
                   style: context.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 4.f),
+                const SizedBox(height: 4),
                 CommonText(label, style: context.textTheme.bodySmall?.copyWith(color: Colors.grey)),
               ],
             ),
           ),
-          SizedBox(width: 10.f),
+          const SizedBox(width: 10),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 _buildTag(I18nKeys.archDesign.tr, iconColor),
-                SizedBox(height: 4.f),
+                const SizedBox(height: 4),
                 _buildTag(I18nKeys.perfOptimization.tr, iconColor),
               ],
             ),
@@ -243,14 +242,11 @@ class OverviewWidget extends StatelessWidget {
 
   Widget _buildTag(String label, Color color) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8.f, vertical: 2.f),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(6.f),
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(6)),
       child: CommonText(
         label,
-        style: TextStyle(color: color, fontSize: 10.f, fontWeight: FontWeight.bold),
+        style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -266,18 +262,22 @@ class OverviewWidget extends StatelessWidget {
     return Expanded(
       flex: flex,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 12.f, vertical: 10.f),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
           color: context.theme.cardColor,
-          borderRadius: BorderRadius.circular(20.f),
+          borderRadius: BorderRadius.circular(20),
           boxShadow: [
-            BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10.f, offset: Offset(0, 5.f)),
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.03),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
+            ),
           ],
         ),
         child: Row(
           children: [
-            Icon(icon, color: iconColor, size: 24.f),
-            SizedBox(width: 10.f),
+            Icon(icon, color: iconColor, size: 24),
+            const SizedBox(width: 10),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -289,7 +289,7 @@ class OverviewWidget extends StatelessWidget {
                   ),
                   CommonText(
                     label,
-                    style: context.textTheme.bodySmall?.copyWith(color: Colors.grey, fontSize: 11.f),
+                    style: context.textTheme.bodySmall?.copyWith(color: Colors.grey, fontSize: 11),
                   ),
                 ],
               ),
@@ -339,7 +339,7 @@ class OverviewWidget extends StatelessWidget {
               subtitle: 'Detailed CV',
               blurLevel: AuthBlurLevel.low,
             ),
-            SizedBox(width: 12.f),
+            const SizedBox(width: 12),
             _buildActionCard(
               context,
               I18nKeys.architecture.tr,
@@ -350,7 +350,7 @@ class OverviewWidget extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(height: 12.f),
+        const SizedBox(height: 12),
         Row(
           children: [
             _buildActionButton(
@@ -360,7 +360,7 @@ class OverviewWidget extends StatelessWidget {
               Colors.grey,
               () => _launchURL(AppConstants.fullMail),
             ),
-            SizedBox(width: 12.f),
+            const SizedBox(width: 12),
             _buildActionButton(
               context,
               I18nKeys.contactMe.tr,
@@ -386,25 +386,25 @@ class OverviewWidget extends StatelessWidget {
     return Expanded(
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(20.f),
+        borderRadius: BorderRadius.circular(20),
         child: Container(
-          padding: EdgeInsets.all(16.f),
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: context.theme.cardColor,
-            borderRadius: BorderRadius.circular(20.f),
+            borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.03),
-                blurRadius: 10.f,
-                offset: Offset(0, 5.f),
+                blurRadius: 10,
+                offset: const Offset(0, 5),
               ),
             ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(icon, color: color, size: 28.f),
-              SizedBox(height: 8.f),
+              Icon(icon, color: color, size: 28),
+              const SizedBox(height: 8),
               CommonAuthText(
                 title,
                 style: context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
@@ -434,17 +434,17 @@ class OverviewWidget extends StatelessWidget {
     return Expanded(
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16.f),
+        borderRadius: BorderRadius.circular(16),
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 12.f, vertical: 10.f),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           decoration: BoxDecoration(
             color: context.theme.cardColor,
-            borderRadius: BorderRadius.circular(16.f),
+            borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.03),
-                blurRadius: 10.f,
-                offset: Offset(0, 5.f),
+                blurRadius: 10,
+                offset: const Offset(0, 5),
               ),
             ],
           ),
@@ -453,8 +453,8 @@ class OverviewWidget extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(icon, color: color, size: 18.f),
-                SizedBox(width: 8.f),
+                Icon(icon, color: color, size: 18),
+                const SizedBox(width: 8),
                 CommonText(
                   label,
                   style: context.textTheme.bodySmall?.copyWith(color: color, fontWeight: FontWeight.bold),
@@ -472,22 +472,17 @@ class OverviewWidget extends StatelessWidget {
       {
         'title': 'lPortfolio',
         'tag': 'MVI Architecture',
-        'image': 'assets/images/project_portfolio.png',
+        'icon': Icons.auto_awesome_mosaic_rounded,
         'color': context.accentColor,
       },
-      {
-        'title': 'AI Chatbot',
-        'tag': 'OpenAI SDK',
-        'image': 'assets/images/project_chatbot.png',
-        'color': Colors.purple,
-      },
+      {'title': 'AI Chatbot', 'tag': 'OpenAI SDK', 'icon': Icons.smart_toy_rounded, 'color': Colors.purple},
     ];
 
     return SizedBox(
-      height: 180,
+      height: 160,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         itemCount: projects.length,
         itemBuilder: (context, index) {
           final project = projects[index];
@@ -495,7 +490,7 @@ class OverviewWidget extends StatelessWidget {
             context,
             title: project['title'] as String,
             tag: project['tag'] as String,
-            image: project['image'] as String,
+            icon: project['icon'] as IconData,
             color: project['color'] as Color,
           );
         },
@@ -507,49 +502,50 @@ class OverviewWidget extends StatelessWidget {
     BuildContext context, {
     required String title,
     required String tag,
-    required String image,
+    required IconData icon,
     required Color color,
   }) {
     return Container(
-      width: 300,
-      margin: EdgeInsets.only(right: 16.f),
+      width: 260,
+      margin: const EdgeInsets.only(right: 16),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24.f),
-        image: DecorationImage(image: AssetImage(image), fit: BoxFit.cover),
-        boxShadow: [BoxShadow(color: color.withValues(alpha: 0.2), blurRadius: 12.f, offset: Offset(0, 6.f))],
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: color.withValues(alpha: 0.2), width: 1),
       ),
-      child: Container(
-        padding: EdgeInsets.all(20.f),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24.f),
-          gradient: LinearGradient(
-            begin: Alignment.bottomCenter,
-            end: Alignment.topCenter,
-            colors: [Colors.black.withValues(alpha: 0.8), Colors.transparent],
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(16)),
+            child: Icon(icon, color: Colors.white, size: 28),
           ),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 8.f, vertical: 4.f),
-              decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(8.f)),
-              child: CommonText(
-                tag,
-                style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
-              ),
+          const Spacer(),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(6),
             ),
-            SizedBox(height: 8.f),
-            CommonText(
+            child: CommonText(
+              tag,
+              style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.bold),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Expanded(
+            child: CommonText(
               title,
-              style: context.textTheme.titleMedium?.copyWith(
-                color: Colors.white,
+              style: context.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
+                color: context.isDark ? Colors.white : Colors.black87,
               ),
+              maxLines: 1,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

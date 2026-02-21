@@ -88,6 +88,7 @@ class _BaseStatelessPageState extends ConsumerState<BaseStatelessPage>
   void didChangeDependencies() {
     super.didChangeDependencies();
     final route = ModalRoute.of(context);
+    // Corrected to PageRoute only to filter out PopupRoutes (dialogs, toasts, etc.)
     if (route is PageRoute) {
       AppNav.observer.subscribe(this, route);
     }
@@ -156,13 +157,14 @@ class _BaseStatelessPageState extends ConsumerState<BaseStatelessPage>
 
   @override
   Widget build(BuildContext context) {
-    if (widget.provider != null) {
-      ref.listenError(widget.provider!);
-      ref.listenMessage(widget.provider!);
-    }
-
+    // 3. Wrapping with BaseListenablePage to react to global setting changes
     return BaseListenablePage(
       builder: (context, child) {
+        if (widget.provider != null) {
+          ref.listenError(widget.provider!);
+          ref.listenMessage(widget.provider!);
+        }
+
         final theme = Theme.of(context);
         final accentColor = settingManager.accentColor;
         final isDark = theme.brightness == Brightness.dark;
