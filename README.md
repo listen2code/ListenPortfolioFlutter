@@ -27,7 +27,7 @@ samples, guidance on mobile development, and a full API reference.
 * widget to package
     * common_switch
 * ide plugin
-  --assets
+    * assets
 * framework
     * library
     * package_base: only dart
@@ -53,3 +53,4 @@ samples, guidance on mobile development, and a full API reference.
 * readme: screen capture, architect, tech stack
 * issue
     * ndk bundle;
+* ai intro assistant

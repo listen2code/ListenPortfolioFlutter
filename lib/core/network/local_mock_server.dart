@@ -16,13 +16,13 @@ class LocalMockServer {
 
     try {
       _server = await HttpServer.bind(InternetAddress.loopbackIPv4, port);
-      appLogger.e('Local Mock Server started at http://localhost:$port');
+      appLogger.e('MockServer: Local Mock Server started at http://localhost:$port');
 
       _server!.listen((HttpRequest request) async {
         _handleRequest(request);
       });
     } catch (e) {
-      appLogger.e('Failed to start Local Mock Server: $e');
+      appLogger.e('MockServer: Failed to start Local Mock Server: $e');
     }
   }
 
@@ -30,7 +30,7 @@ class LocalMockServer {
   static Future<void> stop() async {
     await _server?.close(force: true);
     _server = null;
-    appLogger.e('Local Mock Server stopped');
+    appLogger.e('MockServer: Local Mock Server stopped');
   }
 
   static Future<void> _handleRequest(HttpRequest request) async {

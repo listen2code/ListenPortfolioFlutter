@@ -7,6 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'log_manager.dart';
 
+enum LogFilter { all, server, app }
+
 class LogOverlayManager {
   static OverlayEntry? _overlayEntry;
   static Offset? _offset;
@@ -105,6 +107,8 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
   late Offset windowOffset; // Temporary position for expanded window
   late Size windowSize; // Dimensions of the expanded window
   late bool isExpanded;
+  LogFilter currentFilter = LogFilter.all;
+  bool isFilterVisible = false;
 
   static const double minWidth = 250.0;
   static const double minHeight = 200.0;
@@ -295,12 +299,15 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
                 children: [
                   const Icon(Icons.terminal_rounded, color: Colors.greenAccent, size: 18),
                   const SizedBox(width: 10),
-                  Expanded(
-                    child: CommonText(
+                  const Expanded(
+                    child: Text(
                       'App Logs',
-                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
                     ),
                   ),
+                  _buildHeaderAction(isFilterVisible ? Icons.filter_list_off_rounded : Icons.filter_list_rounded, () {
+                    setState(() => isFilterVisible = !isFilterVisible);
+                  }, color: isFilterVisible ? Colors.greenAccent : Colors.white70),
                   _buildHeaderAction(Icons.refresh_rounded, () {
                     LogManager.logNotifier.value = List.from(LogManager.logs);
                   }),
@@ -321,16 +328,36 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
               ),
             ),
           ),
+          // Collapsible Filter Bar
+          AnimatedCrossFade(
+            firstChild: const SizedBox.shrink(),
+            secondChild: _buildFilterBar(),
+            crossFadeState: isFilterVisible ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+            duration: const Duration(milliseconds: 200),
+          ),
           const Divider(color: Colors.white10, height: 1),
           Expanded(
             child: ValueListenableBuilder<List<LogEntry>>(
               valueListenable: LogManager.logNotifier,
               builder: (context, logs, _) {
+                // Apply source filtering
+                final filteredLogs = logs.where((log) {
+                  final bool isMock = log.message.contains('MockServer:');
+                  switch (currentFilter) {
+                    case LogFilter.all:
+                      return true;
+                    case LogFilter.server:
+                      return isMock;
+                    case LogFilter.app:
+                      return !isMock;
+                  }
+                }).toList();
+
                 return ListView.builder(
                   padding: const EdgeInsets.all(12),
-                  itemCount: logs.length,
+                  itemCount: filteredLogs.length,
                   itemBuilder: (context, index) {
-                    final log = logs[logs.length - 1 - index];
+                    final log = filteredLogs[filteredLogs.length - 1 - index];
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 4.0),
                       child: RichText(
@@ -355,6 +382,51 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildFilterBar() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      color: Colors.white.withValues(alpha: 0.02),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            _filterChip('All', LogFilter.all),
+            const SizedBox(width: 8),
+            _filterChip('Server', LogFilter.server, color: Colors.orangeAccent),
+            const SizedBox(width: 8),
+            _filterChip('App', LogFilter.app, color: Colors.blueAccent),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _filterChip(String label, LogFilter filter, {Color? color}) {
+    final bool isSelected = currentFilter == filter;
+    return GestureDetector(
+      onTap: () => setState(() => currentFilter = filter),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        decoration: BoxDecoration(
+          color: isSelected ? (color ?? Colors.greenAccent).withOpacity(0.2) : Colors.white10,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isSelected ? (color ?? Colors.greenAccent).withOpacity(0.5) : Colors.white10,
+            width: 0.5,
+          ),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: isSelected ? (color ?? Colors.greenAccent) : Colors.white38,
+            fontSize: 10,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+          ),
+        ),
       ),
     );
   }
