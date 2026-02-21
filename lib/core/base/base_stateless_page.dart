@@ -158,7 +158,7 @@ class _BaseStatelessPageState extends ConsumerState<BaseStatelessPage>
     }
 
     return BaseListenablePage(
-      listenable: [CommonLoading.isShowNotifier],
+      extraListenable: [CommonLoading.isShowNotifier],
       builder: (context, child) {
         final theme = Theme.of(context);
         final accentColor = settingManager.accentColor;

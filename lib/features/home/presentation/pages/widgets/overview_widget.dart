@@ -358,7 +358,7 @@ class OverviewWidget extends StatelessWidget {
               I18nKeys.github.tr,
               Icons.code_rounded,
               Colors.grey,
-              () => _launchURL(AppConstants.fullMail),
+              () => _launchURL(AppConstants.github),
             ),
             const SizedBox(width: 12),
             _buildActionButton(
