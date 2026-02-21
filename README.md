@@ -52,3 +52,4 @@ samples, guidance on mobile development, and a full API reference.
 * finger auth
 * auto login
 * readme: screen capture, architect, tech stack
+* issue: ndk bundle;
