@@ -60,6 +60,6 @@ class QuickActionsManager {
   }
 
   static void _handleSettings() {
-    AppNav.to(Routes.settings);
+    AppNav.off(Routes.settings);
   }
 }
