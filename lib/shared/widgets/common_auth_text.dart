@@ -18,31 +18,31 @@ enum AuthBlurLevel {
 }
 
 /// A text widget that blurs content for guest users and shows it for authenticated users.
-/// Automatically handles login redirection on click if in guest mode.
-class CommonAuthText extends StatelessWidget {
-  final String text;
-  final TextStyle? style;
-  final TextAlign? textAlign;
-  final int? maxLines;
-  final BoxFit fit;
-  final AlignmentGeometry alignment;
-  final ContainerOptions? containerOptions;
-  final bool useFittedBox;
+/// Extends [CommonText] to leverage its layout and container capabilities.
+class CommonAuthText extends CommonText {
   final AuthBlurLevel blurLevel;
   final VoidCallback? onTap;
-  final StrutStyle? strutStyle;
 
   const CommonAuthText(
-    this.text, {
+    super.text, {
     super.key,
-    this.strutStyle,
-    this.style,
-    this.textAlign,
-    this.maxLines,
-    this.fit = BoxFit.scaleDown,
-    this.alignment = Alignment.centerLeft,
-    this.containerOptions,
-    this.useFittedBox = true,
+    super.style,
+    super.strutStyle,
+    super.textAlign,
+    super.textDirection,
+    super.locale,
+    super.softWrap,
+    super.overflow,
+    super.textScaler,
+    super.maxLines,
+    super.semanticsLabel,
+    super.textWidthBasis,
+    super.textHeightBehavior,
+    super.selectionColor,
+    super.fit,
+    super.alignment,
+    super.containerOptions,
+    super.useFittedBox,
     this.blurLevel = AuthBlurLevel.none,
     this.onTap,
   });
@@ -54,17 +54,8 @@ class CommonAuthText extends StatelessWidget {
         final bool isGuest = authManager.state.isGuest;
         final bool shouldBlur = blurLevel != AuthBlurLevel.none && isGuest;
 
-        Widget content = CommonText(
-          text,
-          style: style,
-          textAlign: textAlign,
-          maxLines: maxLines,
-          fit: fit,
-          alignment: alignment,
-          containerOptions: containerOptions,
-          useFittedBox: useFittedBox,
-          strutStyle: strutStyle,
-        );
+        // Use the base build method from CommonText to get the rendered text widget
+        Widget content = super.build(context);
 
         if (shouldBlur) {
           content = ImageFiltered(
