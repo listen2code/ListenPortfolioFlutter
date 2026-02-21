@@ -47,16 +47,17 @@ class AppNav {
   /// Combined observer for both Lifecycle tracking and Argument syncing.
   static final RouteObserver<ModalRoute<void>> observer = _AppNavObserver();
 
-  /// Retrieves the entire arguments object from the current global route state.
-  static T? getArgs<T>() => _currentArgs as T?;
-
   /// Retrieves a parameter from the current global route state.
+  /// Safely usable within initState as it doesn't require BuildContext.
   static T? getParam<T>(String key) {
     if (_currentArgs is Map<String, dynamic>) {
       return (_currentArgs as Map<String, dynamic>)[key] as T?;
     }
     return null;
   }
+
+  /// Retrieves the entire arguments object from the current global route state.
+  static T? getArgs<T>() => _currentArgs as T?;
 
   static Future<T?>? to<T>(dynamic target, {bool needLogin = false, Object? arguments}) {
     final completer = Completer<T?>();

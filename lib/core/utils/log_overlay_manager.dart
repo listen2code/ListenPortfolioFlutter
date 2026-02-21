@@ -10,6 +10,8 @@ import 'log_manager.dart';
 class LogOverlayManager {
   static OverlayEntry? _overlayEntry;
   static Offset? _offset;
+  static Offset? _windowOffset;
+  static Size? _windowSize;
 
   /// Notifier to let external widgets listen to the visibility state
   static final ValueNotifier<bool> isShowingNotifier = ValueNotifier(false);
@@ -44,8 +46,14 @@ class LogOverlayManager {
     _overlayEntry = OverlayEntry(
       builder: (context) => _LogOverlayWidget(
         initialOffset: _offset!,
+        initialWindowOffset: _windowOffset,
+        initialWindowSize: _windowSize,
         startExpanded: startExpanded,
         onPositionChanged: (newOffset) => _offset = newOffset,
+        onWindowChanged: (newOffset, newSize) {
+          _windowOffset = newOffset;
+          _windowSize = newSize;
+        },
         onClose: () => hide(),
       ),
     );
@@ -71,14 +79,20 @@ class LogOverlayManager {
 
 class _LogOverlayWidget extends StatefulWidget {
   final Offset initialOffset;
+  final Offset? initialWindowOffset;
+  final Size? initialWindowSize;
   final bool startExpanded;
   final Function(Offset) onPositionChanged;
+  final Function(Offset, Size) onWindowChanged;
   final VoidCallback onClose;
 
   const _LogOverlayWidget({
     required this.initialOffset,
+    this.initialWindowOffset,
+    this.initialWindowSize,
     this.startExpanded = false,
     required this.onPositionChanged,
+    required this.onWindowChanged,
     required this.onClose,
   });
 
@@ -100,8 +114,8 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
   void initState() {
     super.initState();
     buttonOffset = widget.initialOffset;
-    windowOffset = const Offset(0, 50); // Reset to top-left on expansion
-    windowSize = Size.zero; // Will be initialized in build based on screen size
+    windowOffset = widget.initialWindowOffset ?? const Offset(0, 50);
+    windowSize = widget.initialWindowSize ?? Size.zero;
     isExpanded = widget.startExpanded;
   }
 
@@ -110,10 +124,11 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
     setState(() {
       if (isExpanded) {
         windowOffset += delta;
-        // Clamp window within screen
+        // Clamp window within screen boundaries
         double newX = windowOffset.dx.clamp(0, screenSize.width - windowSize.width);
         double newY = windowOffset.dy.clamp(0, screenSize.height - windowSize.height);
         windowOffset = Offset(newX, newY);
+        widget.onWindowChanged(windowOffset, windowSize);
       } else {
         buttonOffset += delta;
         // Clamp button
@@ -162,6 +177,7 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
         windowOffset = Offset(windowOffset.dx, newY);
         windowSize = Size(windowSize.width, newH);
       }
+      widget.onWindowChanged(windowOffset, windowSize);
     });
   }
 
@@ -169,7 +185,7 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
 
-    // Initialize default window size if not set
+    // Initialize default window size if not set (first expansion)
     if (windowSize == Size.zero) {
       windowSize = Size(screenSize.width, screenSize.height * 0.5);
     }
@@ -190,14 +206,13 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
       onTap: () {
         setState(() {
           isExpanded = true;
-          windowOffset = const Offset(0, 50); // Reset to top-left on expansion
         });
       },
       child: Container(
         width: 50,
         height: 50,
         decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.7),
+          color: Colors.black.withValues(alpha: 0.7),
           shape: BoxShape.circle,
           boxShadow: const [BoxShadow(blurRadius: 10, color: Colors.black26)],
         ),
@@ -249,7 +264,7 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
         child: Container(
           width: width,
           height: height,
-          color: Colors.transparent, // Invisible handle
+          color: Colors.transparent, // Invisible interactive handle
         ),
       ),
     );
@@ -260,7 +275,7 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
       width: windowSize.width,
       height: windowSize.height,
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.9),
+        color: Colors.black.withValues(alpha: 0.9),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: Colors.white10, width: 0.5),
         boxShadow: const [BoxShadow(blurRadius: 20, color: Colors.black54)],
