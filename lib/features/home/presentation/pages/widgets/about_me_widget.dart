@@ -85,21 +85,21 @@ class _AboutMeWidgetState extends State<AboutMeWidget> {
     return BaseListenablePage(
       builder: (context, child) {
         return SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
+          padding: EdgeInsets.all(20.f),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 40),
+              SizedBox(height: 40.f),
               _buildHeader(),
-              SizedBox(height: 35),
+              SizedBox(height: 35.f),
               _buildBioSection(),
-              SizedBox(height: 25),
+              SizedBox(height: 25.f),
               _buildDetailedExperience(),
-              SizedBox(height: 25),
+              SizedBox(height: 25.f),
               _buildEducationSection(),
-              SizedBox(height: 25),
+              SizedBox(height: 25.f),
               _buildComprehensiveSkills(),
-              SizedBox(height: 40),
+              SizedBox(height: 40.f),
             ],
           ),
         );
@@ -135,11 +135,11 @@ class _AboutMeWidgetState extends State<AboutMeWidget> {
                 right: 0,
                 child: Material(
                   color: accentColor,
-                  shape: const CircleBorder(),
-                  elevation: 4,
+                  shape: CircleBorder(),
+                  elevation: 4.f,
                   child: InkWell(
                     onTap: _showPickerMenu,
-                    customBorder: const CircleBorder(),
+                    customBorder: CircleBorder(),
                     child: Padding(
                       padding: EdgeInsets.all(8.f),
                       child: Icon(Icons.camera_alt, color: Colors.white, size: 20.f),
@@ -178,9 +178,10 @@ class _AboutMeWidgetState extends State<AboutMeWidget> {
       children: [
         _buildSectionTitle(I18nKeys.aboutMe.tr),
         SizedBox(height: 12.f),
-        Text(
+        CommonText(
           'A seasoned mobile developer with over 10 years of experience in Android and 2+ years in Flutter. Specialized in high-performance application development, clean architecture, and reactive programming. Proven track record of leading cross-functional teams and delivering complex enterprise solutions.',
           style: context.textTheme.bodyMedium?.copyWith(height: 1.6),
+          useFittedBox: false,
         ),
       ],
     );
@@ -288,9 +289,13 @@ class _AboutMeWidgetState extends State<AboutMeWidget> {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                SizedBox(height: 6),
-                Text(desc, style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey, height: 1.4)),
-                SizedBox(height: 20),
+                SizedBox(height: 6.f),
+                CommonText(
+                  desc,
+                  style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey, height: 1.4),
+                  useFittedBox: false,
+                ),
+                SizedBox(height: 20.f),
               ],
             ),
           ),

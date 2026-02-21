@@ -15,7 +15,7 @@ class ArchitectureWidget extends StatelessWidget {
     return BaseListenablePage(
       builder: (context, child) {
         return SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
+          padding: EdgeInsets.all(20.f),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -37,9 +37,10 @@ class ArchitectureWidget extends StatelessWidget {
   }
 
   Widget _buildHeader(BuildContext context) {
-    return Text(
+    return CommonText(
       I18nKeys.architectureHeader.tr,
       style: context.textTheme.bodyLarge?.copyWith(color: Colors.grey, height: 1.5),
+      useFittedBox: false,
     );
   }
 
@@ -48,10 +49,11 @@ class ArchitectureWidget extends StatelessWidget {
       context,
       title: I18nKeys.cleanMVITitle.tr,
       icon: Icons.layers_outlined,
-      child: Text(
+      child: CommonText(
         'The app follows Clean Architecture principles to separate concerns into Data, Domain, and Presentation layers. '
         'On the Presentation layer, the MVI (Model-View-Intent) pattern ensures unidirectional data flow.',
         style: context.textTheme.bodyMedium?.copyWith(height: 1.6),
+        useFittedBox: false,
       ),
     );
   }
@@ -81,31 +83,19 @@ class ArchitectureWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(I18nKeys.openSourceDesc.tr, style: context.textTheme.bodyMedium?.copyWith(height: 1.6)),
+          CommonText(
+            I18nKeys.openSourceDesc.tr,
+            style: context.textTheme.bodyMedium?.copyWith(height: 1.6),
+            useFittedBox: false,
+          ),
           SizedBox(height: 15.f),
-          InkWell(
-            onTap: () => _launchURL(context, AppConstants.github),
-            borderRadius: BorderRadius.circular(8.f),
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 4.f),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.link, size: 18.f, color: accentColor),
-                  SizedBox(width: 8.f),
-                  Expanded(
-                    child: CommonText(
-                      'github.com/listen2code',
-                      style: TextStyle(
-                        color: accentColor,
-                        fontWeight: FontWeight.bold,
-                        decoration: TextDecoration.underline,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+          CommonButton(
+            text: 'github.com/listen2code',
+            type: ButtonType.text,
+            isFullWidth: false,
+            padding: EdgeInsets.zero,
+            icon: Icons.link,
+            onPressed: () => _launchURL(context, AppConstants.github),
           ),
         ],
       ),
@@ -117,9 +107,10 @@ class ArchitectureWidget extends StatelessWidget {
       context,
       title: I18nKeys.backendDevOpsTitle.tr,
       icon: Icons.cloud_done_outlined,
-      child: Text(
+      child: CommonText(
         'The backend services are deployed on AWS using a serverless approach. Key services include Lambda, API Gateway, and DynamoDB.',
         style: context.textTheme.bodyMedium?.copyWith(height: 1.6),
+        useFittedBox: false,
       ),
     );
   }
@@ -140,7 +131,11 @@ class ArchitectureWidget extends StatelessWidget {
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(20.f),
         boxShadow: [
-          BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10.f, offset: Offset(0, 5.f)),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 10.f,
+            offset: Offset(0, 5.f),
+          ),
         ],
       ),
       child: Column(

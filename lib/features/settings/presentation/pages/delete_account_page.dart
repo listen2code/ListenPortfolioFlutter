@@ -64,9 +64,10 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
                     maxLines: 1,
                   ),
                   SizedBox(height: 16.f),
-                  Text(
+                  CommonText(
                     I18nKeys.deleteAccountConfirmContent.tr,
                     style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey, height: 1.6),
+                    useFittedBox: false,
                   ),
                   SizedBox(height: 32.f),
                   _buildWarningItem(I18nKeys.deleteAccountWarningDataWiped.tr),
@@ -76,40 +77,44 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
               ),
             ),
           ),
+          SizedBox(height: 16.f),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(
-                width: 24.f,
-                height: 24.f,
-                child: Checkbox(
-                  value: _isConfirmed,
-                  onChanged: (val) => setState(() => _isConfirmed = val ?? false),
-                  activeColor: Colors.red,
+              Transform.translate(
+                offset: Offset(0, 1.f),
+                child: SizedBox(
+                  width: 24.f,
+                  height: 24.f,
+                  child: Checkbox(
+                    value: _isConfirmed,
+                    onChanged: (val) => setState(() => _isConfirmed = val ?? false),
+                    activeColor: Colors.red,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
                 ),
               ),
               SizedBox(width: 12.f),
               Expanded(
-                child: GestureDetector(
-                  onTap: () => setState(() => _isConfirmed = !_isConfirmed),
-                  child: Text(I18nKeys.deleteAccountIUnderstand.tr, style: context.textTheme.bodySmall),
+                child: CommonButton(
+                  text: I18nKeys.deleteAccountIUnderstand.tr,
+                  type: ButtonType.text,
+                  isFullWidth: false,
+                  padding: EdgeInsets.zero,
+                  foregroundColor: context.isDark ? Colors.white70 : Colors.black87,
+                  fontSize: 13.f,
+                  onPressed: () => setState(() => _isConfirmed = !_isConfirmed),
                 ),
               ),
             ],
           ),
-          SizedBox(height: 16.f),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: _isConfirmed ? _handleDeleteAccount : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                foregroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(vertical: 16.f),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.f)),
-                elevation: 0,
-              ),
-              child: Text(I18nKeys.deleteAccount.tr, style: const TextStyle(fontWeight: FontWeight.bold)),
-            ),
+          SizedBox(height: 24.f),
+          CommonButton(
+            text: I18nKeys.deleteAccount.tr,
+            onPressed: _isConfirmed ? _handleDeleteAccount : null,
+            backgroundColor: Colors.red,
+            borderRadius: 12.f,
+            height: 56.f,
           ),
           SizedBox(height: 20.f),
         ],
@@ -123,10 +128,17 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.circle, size: 6.f, color: Colors.grey),
+          Padding(
+            padding: EdgeInsets.only(top: 6.f),
+            child: Icon(Icons.circle, size: 6.f, color: Colors.grey),
+          ),
           SizedBox(width: 12.f),
           Expanded(
-            child: Text(text, style: const TextStyle(fontSize: 13, color: Colors.grey)),
+            child: CommonText(
+              text,
+              style: context.textTheme.bodySmall?.copyWith(color: Colors.grey, height: 1.4),
+              useFittedBox: false,
+            ),
           ),
         ],
       ),

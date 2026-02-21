@@ -42,10 +42,13 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      // Only allow app exit when on the Overview tab
-      canPop: _currentTab == HomeTab.overview,
+      // Only allow app exit when on the Overview tab and no loading is showing
+      canPop: _currentTab == HomeTab.overview && !CommonLoading.isShow,
       onPopInvokedWithResult: (didPop, result) {
         if (didPop) return;
+        // If loading is shown, let BaseStatelessPage handle it
+        if (CommonLoading.isShow) return;
+        
         // If not on overview, back button takes user back to overview
         if (_currentTab != HomeTab.overview) {
           setState(() => _currentTab = HomeTab.overview);
@@ -88,7 +91,10 @@ class _HomePageState extends State<HomePage> {
     return Drawer(
       backgroundColor: context.theme.canvasColor,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(topRight: Radius.circular(30.f), bottomRight: Radius.circular(30.f)),
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(30.f),
+          bottomRight: Radius.circular(30.f),
+        ),
       ),
       child: BaseAuthListenablePage(
         builder: (BuildContext context, Widget? child) {
@@ -230,7 +236,7 @@ class _HomePageState extends State<HomePage> {
             right: 0,
             top: 0,
             child: IconButton(
-              icon: Icon(getModeIcon(), color: Colors.white),
+              icon: Icon(getModeIcon(), color: Colors.white, size: 24.f),
               onPressed: () => AppNav.to(Routes.appearance),
             ),
           ),

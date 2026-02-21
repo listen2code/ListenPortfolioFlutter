@@ -78,7 +78,7 @@ class ProjectsWidget extends StatelessWidget {
         ];
 
         return ListView.builder(
-          padding: const EdgeInsets.all(20),
+          padding: EdgeInsets.all(20.f),
           itemCount: projects.length,
           itemBuilder: (context, index) {
             final project = projects[index];
@@ -107,17 +107,24 @@ class ProjectsWidget extends StatelessWidget {
     return Container(
       margin: EdgeInsets.only(bottom: 20.f),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.05),
+        color: context.theme.cardColor.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(24.f),
-        border: Border.all(color: baseColor.withValues(alpha: 0.2)),
+        border: Border.all(color: baseColor.withValues(alpha: 0.2), width: 1.f),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 10.f,
+            offset: Offset(0, 5.f),
+          ),
+        ],
       ),
       clipBehavior: Clip.antiAlias,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header Image Placeholder
+          // Header Gradient with Icon
           Container(
-            height: 120,
+            height: 120.f,
             width: double.infinity,
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -166,14 +173,22 @@ class ProjectsWidget extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: 12.f),
-                Text(desc, style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey, height: 1.5)),
+                CommonText(
+                  desc,
+                  style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey, height: 1.5),
+                  useFittedBox: false,
+                ),
                 SizedBox(height: 20.f),
                 if (!isTodo)
                   Row(
                     children: [
-                      Expanded(child: _buildActionChip(context, Icons.link, 'Live Demo', baseColor)),
+                      Expanded(
+                        child: _buildActionChip(context, Icons.link, 'Live Demo', baseColor),
+                      ),
                       SizedBox(width: 12.f),
-                      Expanded(child: _buildActionChip(context, Icons.code, 'Source Code', Colors.grey)),
+                      Expanded(
+                        child: _buildActionChip(context, Icons.code, 'Source Code', Colors.grey),
+                      ),
                     ],
                   ),
               ],
@@ -186,24 +201,23 @@ class ProjectsWidget extends StatelessWidget {
 
   Widget _buildActionChip(BuildContext context, IconData icon, String label, Color color) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12.f, vertical: 6.f),
+      padding: EdgeInsets.symmetric(horizontal: 12.f, vertical: 8.f),
       decoration: BoxDecoration(
-        border: Border.all(color: color.withValues(alpha: 0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 1.f),
         borderRadius: BorderRadius.circular(10.f),
       ),
-      child: FittedBox(
-        fit: BoxFit.scaleDown,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 14.f, color: color),
-            SizedBox(width: 6.f),
-            CommonText(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, size: 14.f, color: color),
+          SizedBox(width: 6.f),
+          Flexible(
+            child: CommonText(
               label,
               style: context.textTheme.labelSmall?.copyWith(color: color, fontWeight: FontWeight.bold),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -37,93 +37,72 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
 
   @override
   Widget build(BuildContext context) {
-    final accentColor = context.accentColor;
-
     return BaseStatelessPage(
       isEmptyTitle: true,
-      body: (context, child) {
-        return SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                SizedBox(height: 20.f),
-                Text(
-                  I18nKeys.changePassword.tr,
-                  style: context.textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: context.isDark ? Colors.white : Colors.black87,
-                  ),
+      body: (context, child) => SingleChildScrollView(
+        padding: EdgeInsets.all(20.f),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SizedBox(height: 20.f),
+              CommonText(
+                I18nKeys.changePassword.tr,
+                style: context.textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: context.isDark ? Colors.white : Colors.black87,
                 ),
-                SizedBox(height: 12.f),
-                Text(
-                  I18nKeys.changePasswordSubtitle.tr,
-                  style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey, height: 1.5),
-                ),
-                SizedBox(height: 40.f),
-                // Current Password Field
-                CommonTextField(
-                  controller: _oldPasswordController,
-                  type: TextFieldType.password,
-                  labelText: I18nKeys.oldPassword.tr,
-                  prefixIcon: Icons.lock_outline,
-                  validator: (value) => value!.isEmpty ? I18nKeys.requiredField.tr : null,
-                ),
-                SizedBox(height: 20.f),
-                // New Password Field
-                CommonTextField(
-                  controller: _newPasswordController,
-                  type: TextFieldType.password,
-                  labelText: I18nKeys.newPassword.tr,
-                  prefixIcon: Icons.lock_outline,
-                  validator: (value) => value!.isEmpty ? I18nKeys.requiredField.tr : null,
-                ),
-                SizedBox(height: 20.f),
-                // Confirm New Password Field
-                CommonTextField(
-                  controller: _confirmPasswordController,
-                  type: TextFieldType.password,
-                  labelText: I18nKeys.confirmNewPassword.tr,
-                  prefixIcon: Icons.lock_outline,
-                  validator: (value) {
-                    if (value != _newPasswordController.text) {
-                      return I18nKeys.passwordsDoNotMatch.tr;
-                    }
-                    return value!.isEmpty ? I18nKeys.pleaseConfirmPassword.tr : null;
-                  },
-                ),
-                SizedBox(height: 40.f),
-                _buildUpdateButton(accentColor),
-              ],
-            ),
+                maxLines: 1,
+              ),
+              SizedBox(height: 12.f),
+              CommonText(
+                I18nKeys.changePasswordSubtitle.tr,
+                style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey, height: 1.5),
+                maxLines: 2,
+              ),
+              SizedBox(height: 40.f),
+              // Current Password Field
+              CommonTextField(
+                controller: _oldPasswordController,
+                type: TextFieldType.password,
+                labelText: I18nKeys.oldPassword.tr,
+                prefixIcon: Icons.lock_outline,
+                validator: (value) => value!.isEmpty ? I18nKeys.requiredField.tr : null,
+              ),
+              SizedBox(height: 20.f),
+              // New Password Field
+              CommonTextField(
+                controller: _newPasswordController,
+                type: TextFieldType.password,
+                labelText: I18nKeys.newPassword.tr,
+                prefixIcon: Icons.lock_outline,
+                validator: (value) => value!.isEmpty ? I18nKeys.requiredField.tr : null,
+              ),
+              SizedBox(height: 20.f),
+              // Confirm New Password Field
+              CommonTextField(
+                controller: _confirmPasswordController,
+                type: TextFieldType.password,
+                labelText: I18nKeys.confirmNewPassword.tr,
+                prefixIcon: Icons.lock_outline,
+                validator: (value) {
+                  if (value != _newPasswordController.text) {
+                    return I18nKeys.passwordsDoNotMatch.tr;
+                  }
+                  return value!.isEmpty ? I18nKeys.pleaseConfirmPassword.tr : null;
+                },
+              ),
+              SizedBox(height: 40.f),
+              // Update Button
+              CommonButton(
+                text: I18nKeys.updatePassword.tr,
+                onPressed: _handleChangePassword,
+                borderRadius: 15,
+                height: 56.f,
+              ),
+            ],
           ),
-        );
-      },
-    );
-  }
-
-  Widget _buildUpdateButton(Color accentColor) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15.f),
-        gradient: LinearGradient(colors: [accentColor, accentColor.withValues(alpha: 0.8)]),
-        boxShadow: [
-          BoxShadow(color: accentColor.withValues(alpha: 0.3), blurRadius: 10.f, offset: Offset(0, 5.f)),
-        ],
-      ),
-      child: ElevatedButton(
-        onPressed: _handleChangePassword,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.transparent,
-          shadowColor: Colors.transparent,
-          padding: EdgeInsets.symmetric(vertical: 18.f),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.f)),
-        ),
-        child: CommonText(
-          I18nKeys.updatePassword.tr,
-          style: context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
         ),
       ),
     );

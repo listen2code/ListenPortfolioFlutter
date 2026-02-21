@@ -37,7 +37,7 @@ class _SignUpPageState extends State<SignUpPage> {
     super.dispose();
   }
 
-  void _handleSignUp(Color accentColor) {
+  void _handleSignUp() {
     if (_formKey.currentState!.validate()) {
       CommonToast.show(I18nKeys.registrationSuccess.tr);
       AppNav.back();
@@ -51,13 +51,13 @@ class _SignUpPageState extends State<SignUpPage> {
     return BaseStatelessPage(
       isEmptyTitle: true,
       body: (context, child) => SingleChildScrollView(
-        padding: const EdgeInsets.all(20), // Stable padding
+        padding: EdgeInsets.all(20.f),
         child: Form(
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 20),
+              SizedBox(height: 20.f),
               CommonText(
                 I18nKeys.createAccount.tr,
                 textAlign: TextAlign.center,
@@ -66,19 +66,20 @@ class _SignUpPageState extends State<SignUpPage> {
                   color: context.isDark ? Colors.white : Colors.black87,
                 ),
               ),
-              const SizedBox(height: 10),
-              Text(
+              SizedBox(height: 10.f),
+              CommonText(
                 I18nKeys.signUpSubtitle.tr,
                 style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey),
+                maxLines: 2,
               ),
-              const SizedBox(height: 40),
+              SizedBox(height: 40.f),
               CommonTextField(
                 controller: _nameController,
                 labelText: I18nKeys.fullName.tr,
                 prefixIcon: Icons.person_outline,
                 validator: (value) => value!.isEmpty ? I18nKeys.fieldRequired.tr : null,
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20.f),
               CommonTextField(
                 controller: _emailController,
                 type: TextFieldType.email,
@@ -86,7 +87,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 prefixIcon: Icons.email_outlined,
                 validator: (value) => value!.isEmpty ? I18nKeys.fieldRequired.tr : null,
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20.f),
               CommonTextField(
                 controller: _pwdController,
                 type: TextFieldType.password,
@@ -94,7 +95,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 prefixIcon: Icons.lock_outline,
                 validator: (value) => value!.isEmpty ? I18nKeys.fieldRequired.tr : null,
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20.f),
               CommonTextField(
                 controller: _confirmPwdController,
                 type: TextFieldType.password,
@@ -106,61 +107,42 @@ class _SignUpPageState extends State<SignUpPage> {
                   return null;
                 },
               ),
-              const SizedBox(height: 40),
-              _buildSignUpButton(accentColor),
-              const SizedBox(height: 30),
-              _buildLoginLink(accentColor),
-              const SizedBox(height: 40),
+              SizedBox(height: 40.f),
+              // Main Sign Up Button
+              CommonButton(
+                text: I18nKeys.signUp.tr,
+                onPressed: _handleSignUp,
+                borderRadius: 15,
+                height: 56.f,
+              ),
+              SizedBox(height: 30.f),
+              // Login Link
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Flexible(
+                    child: CommonText(
+                      I18nKeys.alreadyHaveAccount.tr,
+                      style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey),
+                      maxLines: 1,
+                    ),
+                  ),
+                  SizedBox(width: 8.f),
+                  CommonButton(
+                    text: I18nKeys.loginLink.tr,
+                    type: ButtonType.text,
+                    isFullWidth: false,
+                    padding: EdgeInsets.zero,
+                    fontSize: 14.f,
+                    onPressed: () => AppNav.back(),
+                  ),
+                ],
+              ),
+              SizedBox(height: 40.f),
             ],
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildSignUpButton(Color accentColor) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-        gradient: LinearGradient(colors: [accentColor, accentColor.withValues(alpha: 0.8)]),
-        boxShadow: [
-          BoxShadow(color: accentColor.withValues(alpha: 0.3), blurRadius: 10, offset: const Offset(0, 5)),
-        ],
-      ),
-      child: ElevatedButton(
-        onPressed: () => _handleSignUp(accentColor),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.transparent,
-          shadowColor: Colors.transparent,
-          padding: const EdgeInsets.symmetric(vertical: 18),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        ),
-        child: CommonText(
-          I18nKeys.signUp.tr,
-          style: context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLoginLink(Color accentColor) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Flexible(
-          child: CommonText(
-            I18nKeys.alreadyHaveAccount.tr,
-            style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey),
-          ),
-        ),
-        TextButton(
-          onPressed: () => AppNav.back(),
-          child: CommonText(
-            I18nKeys.loginLink.tr,
-            style: context.textTheme.bodyMedium?.copyWith(color: accentColor, fontWeight: FontWeight.bold),
-          ),
-        ),
-      ],
     );
   }
 }

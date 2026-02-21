@@ -35,7 +35,10 @@ class CommonText extends Text {
   Widget build(BuildContext context) {
     Widget child = super.build(context);
 
-    if (useFittedBox) {
+    // When maxLines > 1, FittedBox behavior is often undesirable as it can force
+    // text into a single line. This logic disables it for multi-line text
+    // to allow wrapping, which is more intuitive.
+    if (useFittedBox && (maxLines ?? 1) == 1) {
       child = FittedBox(fit: fit, alignment: alignment, child: child);
     }
 

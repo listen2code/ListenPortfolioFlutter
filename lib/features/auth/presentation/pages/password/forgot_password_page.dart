@@ -24,7 +24,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   }
 
   // Handle password reset request
-  void _handleResetPassword(Color accentColor) {
+  void _handleResetPassword() {
     if (_formKey.currentState!.validate()) {
       CommonToast.show('${I18nKeys.resetLinkSent.tr} ${_emailController.text}');
       // Return to previous screen
@@ -34,14 +34,12 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
-    final accentColor = context.accentColor;
-
     return BaseStatelessPage(
       isEmptyTitle: true,
       body: (context, child) => Form(
         key: _formKey,
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
+          padding: EdgeInsets.all(20.f),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -55,9 +53,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 maxLines: 1,
               ),
               SizedBox(height: 12.f),
-              Text(
+              CommonText(
                 I18nKeys.forgotPasswordSubtitle.tr,
                 style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey, height: 1.5),
+                maxLines: 2,
               ),
               SizedBox(height: 48.f),
               // Email Input Field
@@ -74,36 +73,15 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 },
               ),
               SizedBox(height: 32.f),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15.f),
-                  gradient: LinearGradient(colors: [accentColor, accentColor.withValues(alpha: 0.8)]),
-                  boxShadow: [
-                    BoxShadow(
-                      color: accentColor.withValues(alpha: 0.3),
-                      blurRadius: 10.f,
-                      offset: Offset(0, 5.f),
-                    ),
-                  ],
-                ),
-                child: ElevatedButton(
-                  onPressed: () => _handleResetPassword(accentColor),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent,
-                    shadowColor: Colors.transparent,
-                    padding: EdgeInsets.symmetric(vertical: 18.f),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.f)),
-                  ),
-                  child: CommonText(
-                    I18nKeys.sendResetLink.tr,
-                    style: context.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
+              // Main Action Button
+              CommonButton(
+                text: I18nKeys.sendResetLink.tr,
+                onPressed: _handleResetPassword,
+                borderRadius: 15,
+                height: 56,
               ),
               SizedBox(height: 40.f),
+              // Footer link
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -114,16 +92,14 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       maxLines: 1,
                     ),
                   ),
-                  TextButton(
+                  SizedBox(width: 8.f),
+                  CommonButton(
+                    text: I18nKeys.loginLink.tr,
+                    type: ButtonType.text,
+                    isFullWidth: false,
+                    padding: EdgeInsets.zero,
+                    fontSize: 14.f,
                     onPressed: () => AppNav.back(),
-                    child: CommonText(
-                      I18nKeys.loginLink.tr,
-                      style: context.textTheme.bodyMedium?.copyWith(
-                        color: accentColor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      maxLines: 1,
-                    ),
                   ),
                 ],
               ),
