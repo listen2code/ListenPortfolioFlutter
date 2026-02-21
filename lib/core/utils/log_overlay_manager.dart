@@ -264,7 +264,7 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
         child: Container(
           width: width,
           height: height,
-          color: Colors.transparent, // Invisible interactive handle
+          color: Colors.transparent, // Invisible interactive area
         ),
       ),
     );
