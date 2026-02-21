@@ -24,6 +24,9 @@ class Routes {
   static const String settings = "/settings";
   static const String appearance = "/appearance";
 
+  // Argument Keys - Enforce consistency between caller and receiver
+  static const String argName = "name";
+
   /// The complete route map linking paths to their respective widget builders.
   static Map<String, RoutePageBuilder> get routes => {
     root: () => const SplashPage(),

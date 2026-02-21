@@ -42,8 +42,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     ref.listenNavigation<LoginState, LoginNavigationTarget>(loginViewModelProvider, (target) {
       switch (target) {
         case LoginNavigationTarget.signup:
-          // Use raw string template for internal navigation
-          AppNav.to("${Routes.signup}?name=${_usernameController.text}");
+          // Use Route constant Key to enforce parameter naming consistency
+          AppNav.to("${Routes.signup}?${Routes.argName}=${_usernameController.text}");
           break;
         case LoginNavigationTarget.forgotPassword:
           AppNav.to(Routes.forgotPassword);

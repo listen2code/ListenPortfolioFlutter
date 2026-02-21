@@ -26,7 +26,7 @@ class _SignUpPageState extends State<SignUpPage> {
   void initState() {
     super.initState();
     // Elegant parameter retrieval using AppNav static helper
-    final String initialName = AppNav.getParam<String>('name') ?? '';
+    final String initialName = AppNav.getParam<String>(Routes.argName) ?? '';
     _nameController = TextEditingController(text: initialName);
   }
 
