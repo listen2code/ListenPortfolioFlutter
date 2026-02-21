@@ -54,3 +54,4 @@ samples, guidance on mobile development, and a full API reference.
 * issue
     * ndk bundle;
 * ai intro assistant
+* runZoneGuarded

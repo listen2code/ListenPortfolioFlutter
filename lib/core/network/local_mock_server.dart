@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:listen_portfolio_flutter/core/utils/logger.dart';
+import 'package:listen_portfolio_flutter/core/utils/zone_manager.dart';
 
 /// A lightweight HTTP server running inside the app to provide real network responses.
 /// Path resolution logic is synchronized with tools/api/api.js structure.
@@ -16,10 +17,17 @@ class LocalMockServer {
 
     try {
       _server = await HttpServer.bind(InternetAddress.loopbackIPv4, port);
-      appLogger.e('MockServer: Local Mock Server started at http://localhost:$port');
+      appLogger.i('MockServer: Local Mock Server started at http://localhost:$port');
 
       _server!.listen((HttpRequest request) async {
-        _handleRequest(request);
+        // Read traceId from headers to correlate with client logs
+        final String? traceId = request.headers.value('X-Trace-Id');
+
+        // Run the request handler in a specific zone with the traceId
+        ZoneManager.run(
+          () => _handleRequest(request),
+          traceId: traceId,
+        );
       });
     } catch (e) {
       appLogger.e('MockServer: Failed to start Local Mock Server: $e');
@@ -30,7 +38,7 @@ class LocalMockServer {
   static Future<void> stop() async {
     await _server?.close(force: true);
     _server = null;
-    appLogger.e('MockServer: Local Mock Server stopped');
+    appLogger.i('MockServer: Local Mock Server stopped');
   }
 
   static Future<void> _handleRequest(HttpRequest request) async {
@@ -38,7 +46,7 @@ class LocalMockServer {
     final uriPath = request.uri.path;
     final pathParts = uriPath.split('/').where((p) => p.isNotEmpty).toList();
 
-    // Simulate network latency (approx. 1 second)
+    // Simulate network latency (approx. 2 seconds)
     await Future.delayed(const Duration(seconds: 2));
 
     // 1. Read and log Request Body

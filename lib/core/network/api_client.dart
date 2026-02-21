@@ -1,8 +1,6 @@
-import 'dart:async';
-
 import 'package:dio/dio.dart';
-import 'package:listen_portfolio_flutter/core/base/base_view_model.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_portfolio_flutter/core/utils/zone_manager.dart';
 
 /// Creates and configures a single Dio instance for the entire application
 class ApiClient {
@@ -24,7 +22,7 @@ class ApiClient {
 
     dio.interceptors.addAll([
       _LoggingInterceptor(),
-      _LifecycleCancelInterceptor(),
+      _ZoneContextInterceptor(), // Handles Trace ID and CancelToken
       _AuthInterceptor(),
       _ErrorInterceptor(),
     ]);
@@ -33,12 +31,12 @@ class ApiClient {
   }
 }
 
-/// Interceptor for logging API requests and responses
+/// Interceptor for logging API requests and responses.
+/// Note: Log prefix [traceId] is automatically added by _TracePrinter in appLogger.
 class _LoggingInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     appLogger.i('REQUEST[${options.method}] => PATH: ${options.path}');
-    appLogger.i('Full URL: ${options.baseUrl}${options.path}');
     appLogger.i('Headers: ${options.headers}');
     appLogger.i('Data: ${options.data}');
     super.onRequest(options, handler);
@@ -55,17 +53,19 @@ class _LoggingInterceptor extends Interceptor {
   void onError(DioException err, ErrorInterceptorHandler handler) {
     appLogger.e('ERROR[${err.response?.statusCode}] => PATH: ${err.requestOptions.path}');
     appLogger.e('Message: ${err.message}');
-    appLogger.e('Data: ${err.response?.data}');
     super.onError(err, handler);
   }
 }
 
-/// Interceptor that automatically attaches a CancelToken from the current Dart Zone.
-class _LifecycleCancelInterceptor extends Interceptor {
+/// Interceptor that syncs context from the current Dart Zone (Trace ID and CancelToken).
+class _ZoneContextInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    // Try to retrieve the CancelToken injected by ConsumeViewModel.dispatch
-    final CancelToken? zoneToken = Zone.current[kCancelTokenKey];
+    // 1. Inject Trace ID into headers for server-side correlation
+    options.headers['X-Trace-Id'] = ZoneManager.currentTraceId;
+
+    // 2. Try to retrieve the CancelToken injected by ConsumeViewModel.dispatch
+    final CancelToken? zoneToken = ZoneManager.currentCancelToken;
 
     // If a token is found and the request hasn't manually set one, associate them
     if (zoneToken != null && options.cancelToken == null) {
@@ -76,8 +76,7 @@ class _LifecycleCancelInterceptor extends Interceptor {
   }
 }
 
-class _AuthInterceptor extends Interceptor {
-}
+class _AuthInterceptor extends Interceptor {}
 
 class _ErrorInterceptor extends Interceptor {
   @override

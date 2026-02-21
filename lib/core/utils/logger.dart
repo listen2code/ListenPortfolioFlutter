@@ -1,20 +1,22 @@
 import 'package:flutter/foundation.dart';
 import 'package:listen_portfolio_flutter/core/utils/log_manager.dart';
+import 'package:listen_portfolio_flutter/core/utils/zone_manager.dart';
 import 'package:logger/logger.dart';
 
 /// Global logger instance providing consistent logging and in-app log management.
 /// Configured to capture logs even in Release builds for the internal UI viewer.
 final appLogger = Logger(
   // Use ProductionFilter to ensure logs are processed in Release builds.
-  // The default DevelopmentFilter discards logs in Release mode due to assert failures.
   filter: ProductionFilter(),
-  printer: PrettyPrinter(
-    methodCount: 2,
-    errorMethodCount: 8,
-    lineLength: 120,
-    colors: true,
-    printEmojis: true,
-    dateTimeFormat: DateTimeFormat.onlyTimeAndSinceStart,
+  printer: _TracePrinter(
+    PrettyPrinter(
+      methodCount: 2,
+      errorMethodCount: 8,
+      lineLength: 120,
+      colors: true,
+      printEmojis: true,
+      dateTimeFormat: DateTimeFormat.onlyTimeAndSinceStart,
+    ),
   ),
   output: MultiOutput([
     // Only output to system console in Debug mode to protect privacy and performance
@@ -24,20 +26,40 @@ final appLogger = Logger(
   ]),
 );
 
+/// A decorator printer that prepends the current Trace ID to every log message.
+class _TracePrinter extends LogPrinter {
+  final LogPrinter _inner;
+
+  _TracePrinter(this._inner);
+
+  @override
+  List<String> log(LogEvent event) {
+    final traceId = ZoneManager.currentTraceId;
+    // Prepend traceId to the message. If it's a multi-line object, it will be stringified.
+    final newMessage = '[$traceId] ${event.message}';
+
+    return _inner.log(
+      LogEvent(event.level, newMessage, error: event.error, stackTrace: event.stackTrace, time: event.time),
+    );
+  }
+}
+
 /// Custom output handler to populate the App's LogManager with formatted data.
 class _LogManagerOutput extends LogOutput {
   @override
   void output(OutputEvent event) {
-    // Extract raw message to avoid ANSI escape sequences in the UI
-    final message = event.origin.message.toString();
+    final traceId = ZoneManager.currentTraceId;
+    // Extract message and prepend Trace ID for the internal UI viewer
+    final rawMessage = event.origin.message.toString();
+    final message = '[$traceId]\n $rawMessage\n';
 
-    if (message.isNotEmpty) {
+    if (rawMessage.isNotEmpty) {
       LogManager.addLog(message, level: _mapLevel(event.level));
     }
 
     // Capture explicit error object details if available
     if (event.origin.error != null) {
-      LogManager.addLog('Error Detail: ${event.origin.error}', level: LogLevel.error);
+      LogManager.addLog('[$traceId] Error Detail: ${event.origin.error}', level: LogLevel.error);
     }
   }
 

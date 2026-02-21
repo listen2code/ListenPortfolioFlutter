@@ -2,10 +2,8 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:listen_portfolio_flutter/core/utils/logger.dart';
+import 'package:listen_portfolio_flutter/core/utils/zone_manager.dart';
 import 'package:listen_portfolio_flutter/shared/widgets/common_loading.dart';
-
-/// Key used to store the CancelToken in the current Zone.
-const Symbol kCancelTokenKey = Symbol('dio_cancel_token');
 
 /// Interface for states that support navigation, error, and general messaging.
 abstract class BaseState<T> {
@@ -108,12 +106,13 @@ mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel {
   /// Dispatcher for UI intents.
   /// [showLoading] Automatically shows/hides CommonLoading during the action.
   FutureOr<void> dispatch(dynamic intent, FutureOr<void> Function() handler, {bool showLoading = false}) {
-    final tag = runtimeType.toString();
-    appLogger.d('$tag: [INTENT] -> $intent');
+    // We use ZoneManager to inject both Trace ID and CancelToken into the execution context.
+    return ZoneManager.run(() {
+      final tag = runtimeType.toString();
+      appLogger.d('$tag: [INTENT] -> $intent');
 
-    if (showLoading) CommonLoading.show();
+      if (showLoading) CommonLoading.show();
 
-    return runZoned(() {
       try {
         final result = handler();
 
@@ -133,6 +132,6 @@ mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel {
         if (showLoading) CommonLoading.hide();
         rethrow;
       }
-    }, zoneValues: {kCancelTokenKey: cancelToken});
+    }, cancelToken: cancelToken);
   }
 }

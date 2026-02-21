@@ -1,8 +1,8 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
-import 'package:listen_portfolio_flutter/shared/widgets/common_text.dart';
-import 'package:listen_portfolio_flutter/shared/widgets/common_toast.dart';
+import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'log_manager.dart';
@@ -109,6 +109,7 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
   late bool isExpanded;
   LogFilter currentFilter = LogFilter.all;
   bool isFilterVisible = false;
+  final TextEditingController _traceController = TextEditingController();
 
   static const double minWidth = 250.0;
   static const double minHeight = 200.0;
@@ -121,6 +122,15 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
     windowOffset = widget.initialWindowOffset ?? const Offset(0, 50);
     windowSize = widget.initialWindowSize ?? Size.zero;
     isExpanded = widget.startExpanded;
+    _traceController.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _traceController.dispose();
+    super.dispose();
   }
 
   // Clamps and updates the relevant offset based on expansion state
@@ -300,14 +310,18 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
                   const Icon(Icons.terminal_rounded, color: Colors.greenAccent, size: 18),
                   const SizedBox(width: 10),
                   const Expanded(
-                    child: Text(
+                    child: CommonText(
                       'App Logs',
                       style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
                     ),
                   ),
-                  _buildHeaderAction(isFilterVisible ? Icons.filter_list_off_rounded : Icons.filter_list_rounded, () {
-                    setState(() => isFilterVisible = !isFilterVisible);
-                  }, color: isFilterVisible ? Colors.greenAccent : Colors.white70),
+                  _buildHeaderAction(
+                    isFilterVisible ? Icons.filter_list_off_rounded : Icons.filter_list_rounded,
+                    () {
+                      setState(() => isFilterVisible = !isFilterVisible);
+                    },
+                    color: isFilterVisible ? Colors.greenAccent : Colors.white70,
+                  ),
                   _buildHeaderAction(Icons.refresh_rounded, () {
                     LogManager.logNotifier.value = List.from(LogManager.logs);
                   }),
@@ -340,8 +354,15 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
             child: ValueListenableBuilder<List<LogEntry>>(
               valueListenable: LogManager.logNotifier,
               builder: (context, logs, _) {
-                // Apply source filtering
+                final traceFilter = _traceController.text.trim();
+                // Apply source and Trace ID filtering
                 final filteredLogs = logs.where((log) {
+                  // Trace ID filter
+                  if (traceFilter.isNotEmpty && !log.message.contains(traceFilter)) {
+                    return false;
+                  }
+
+                  // Source filter
                   final bool isMock = log.message.contains('MockServer:');
                   switch (currentFilter) {
                     case LogFilter.all:
@@ -358,24 +379,7 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
                   itemCount: filteredLogs.length,
                   itemBuilder: (context, index) {
                     final log = filteredLogs[filteredLogs.length - 1 - index];
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 4.0),
-                      child: RichText(
-                        text: TextSpan(
-                          style: const TextStyle(fontSize: 10),
-                          children: [
-                            TextSpan(
-                              text: '[${log.formattedTime}] ',
-                              style: const TextStyle(color: Colors.white38),
-                            ),
-                            TextSpan(
-                              text: log.message,
-                              style: TextStyle(color: _getLogColor(log.level)),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
+                    return _buildLogRow(log);
                   },
                 );
               },
@@ -386,21 +390,108 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
     );
   }
 
+  Widget _buildLogRow(LogEntry log) {
+    // Attempt to extract traceId from format [uuid-v4]
+    final traceRegex = RegExp(r'\[([a-f0-9-]{36})\]');
+    final match = traceRegex.firstMatch(log.message);
+    final String? traceId = match?.group(1);
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4.0),
+      child: RichText(
+        text: TextSpan(
+          style: const TextStyle(fontSize: 10),
+          children: [
+            TextSpan(
+              text: '[${log.formattedTime}] ',
+              style: const TextStyle(color: Colors.white38),
+            ),
+            if (traceId != null) ...[
+              const TextSpan(
+                text: '[',
+                style: TextStyle(color: Colors.white24),
+              ),
+              TextSpan(
+                text: traceId,
+                style: const TextStyle(
+                  color: Colors.greenAccent,
+                  decoration: TextDecoration.underline,
+                  decorationStyle: TextDecorationStyle.dashed,
+                ),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    _traceController.text = traceId;
+                    if (!isFilterVisible) setState(() => isFilterVisible = true);
+                  },
+              ),
+              const TextSpan(
+                text: '] ',
+                style: TextStyle(color: Colors.white24),
+              ),
+              TextSpan(
+                text: log.message.replaceFirst('[$traceId]', '').trim(),
+                style: TextStyle(color: _getLogColor(log.level)),
+              ),
+            ] else
+              TextSpan(
+                text: log.message,
+                style: TextStyle(color: _getLogColor(log.level)),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildFilterBar() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       color: Colors.white.withValues(alpha: 0.02),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: [
-            _filterChip('All', LogFilter.all),
-            const SizedBox(width: 8),
-            _filterChip('Server', LogFilter.server, color: Colors.orangeAccent),
-            const SizedBox(width: 8),
-            _filterChip('App', LogFilter.app, color: Colors.blueAccent),
-          ],
-        ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              _filterChip('All', LogFilter.all),
+              const SizedBox(width: 8),
+              _filterChip('Server', LogFilter.server, color: Colors.orangeAccent),
+              const SizedBox(width: 8),
+              _filterChip('App', LogFilter.app, color: Colors.blueAccent),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Container(
+            height: 32,
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.05),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.search_rounded, size: 14, color: Colors.white24),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: TextField(
+                    controller: _traceController,
+                    style: const TextStyle(color: Colors.white70, fontSize: 11),
+                    decoration: const InputDecoration(
+                      hintText: 'Filter by Trace ID...',
+                      hintStyle: TextStyle(color: Colors.white24, fontSize: 11),
+                      border: InputBorder.none,
+                      isDense: true,
+                      contentPadding: EdgeInsets.zero,
+                    ),
+                  ),
+                ),
+                if (_traceController.text.isNotEmpty)
+                  GestureDetector(
+                    onTap: () => _traceController.clear(),
+                    child: const Icon(Icons.close_rounded, size: 14, color: Colors.white24),
+                  ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
