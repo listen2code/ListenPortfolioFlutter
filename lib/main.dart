@@ -10,6 +10,7 @@ import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/features/splash/presentation/pages/splash_page.dart';
 import 'package:listen_portfolio_flutter/shared/base/base_auth_listenable_page.dart';
+import 'package:listen_portfolio_flutter/shared/utils/quick_actions_manager.dart';
 import 'package:listen_portfolio_flutter/shared/utils/routes.dart';
 import 'package:listen_portfolio_flutter/shared/widgets/common_dialog.dart';
 import 'package:listen_portfolio_flutter/shared/widgets/common_toast.dart';
@@ -20,6 +21,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await AppEnv.init();
+  QuickActionsManager.init();
 
   // Register auth, navigation, and named routes
   AppNavConfig.register(

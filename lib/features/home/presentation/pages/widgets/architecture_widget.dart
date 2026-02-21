@@ -84,7 +84,7 @@ class ArchitectureWidget extends StatelessWidget {
           Text(I18nKeys.openSourceDesc.tr, style: context.textTheme.bodyMedium?.copyWith(height: 1.6)),
           SizedBox(height: 15.f),
           InkWell(
-            onTap: () => _launchURL(context, AppConstants.fullMail),
+            onTap: () => _launchURL(context, AppConstants.github),
             borderRadius: BorderRadius.circular(8.f),
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: 4.f),
