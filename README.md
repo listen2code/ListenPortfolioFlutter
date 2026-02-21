@@ -26,7 +26,6 @@ samples, guidance on mobile development, and a full API reference.
 * core to package
 * widget to package
     * commonLoading(back)
-* build web
 * ide plugin
   --assets
 * framework
@@ -40,13 +39,16 @@ samples, guidance on mobile development, and a full API reference.
   ----------package_login: login module
   ----------package_share: share module
   ------plugin_native: plugin for native basic info
-* server i18
-* switch env: input url; mock api; config each api;
-* dev tools: layout check; lag check; launch; app launch; apk size; session timeout; separate mock;
+* server
+    * api
+    * i18
+    * build web
+* switch env: input url; mock api; config each api; separate mock
+* dev tools: layout check; lag check; launch; app launch; apk size; session timeout;
 * long press icon menu
 * pixel icon cache
 * aspect log, trace log
 * app review
 * finger auth
 * auto login
-* readme: screen capture, architect, tech stack, timeout
+* readme: screen capture, architect, tech stack
