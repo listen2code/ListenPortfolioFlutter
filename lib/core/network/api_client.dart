@@ -77,11 +77,6 @@ class _LifecycleCancelInterceptor extends Interceptor {
 }
 
 class _AuthInterceptor extends Interceptor {
-  @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
-    super.onRequest(options, handler);
-    // todo add auth token refresh
-  }
 }
 
 class _ErrorInterceptor extends Interceptor {
