@@ -25,7 +25,7 @@ samples, guidance on mobile development, and a full API reference.
 * core -> shared
 * core to package
 * widget to package
-    * commonLoading(back)
+    * common_switch
 * ide plugin
   --assets
 * framework

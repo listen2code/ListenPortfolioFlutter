@@ -6,6 +6,7 @@ import 'package:listen_portfolio_flutter/core/base/base_view_model.dart';
 import 'package:listen_portfolio_flutter/core/extension/widget_ref_extension.dart';
 import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
+import 'package:listen_portfolio_flutter/shared/widgets/common_loading.dart';
 import 'package:listen_portfolio_flutter/shared/widgets/common_text.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -60,7 +61,7 @@ class BaseStatelessPage extends ConsumerStatefulWidget {
 class _BaseStatelessPageState extends ConsumerState<BaseStatelessPage>
     with RouteAware, WidgetsBindingObserver {
   bool _isRouteVisible = false;
-  BaseViewModel? _cachedViewModel;
+  BaseViewModel? _viewModel;
 
   @override
   void initState() {
@@ -70,15 +71,15 @@ class _BaseStatelessPageState extends ConsumerState<BaseStatelessPage>
     // Store ViewModel reference and trigger onInit
     if (widget.provider != null) {
       try {
-        _cachedViewModel = ref.read((widget.provider as dynamic).notifier);
+        _viewModel = ref.read((widget.provider as dynamic).notifier);
       } catch (_) {}
     }
 
-    _cachedViewModel?.onInit();
+    _viewModel?.onInit();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        _cachedViewModel?.onReady();
+        _viewModel?.onReady();
         if (widget.active) _checkVisibilityChange(true);
       }
     });
@@ -88,7 +89,6 @@ class _BaseStatelessPageState extends ConsumerState<BaseStatelessPage>
   void didChangeDependencies() {
     super.didChangeDependencies();
     final route = ModalRoute.of(context);
-    // Corrected to PageRoute only to filter out PopupRoutes (dialogs, toasts, etc.)
     if (route is PageRoute) {
       AppNav.observer.subscribe(this, route);
     }
@@ -106,53 +106,48 @@ class _BaseStatelessPageState extends ConsumerState<BaseStatelessPage>
   void dispose() {
     AppNav.observer.unsubscribe(this);
     WidgetsBinding.instance.removeObserver(this);
-
-    // Trigger onDispose on the cached reference to guarantee execution on page exit
-    _cachedViewModel?.onDispose();
-
+    _viewModel?.onDispose();
     super.dispose();
   }
 
   void _checkVisibilityChange(bool isVisible) {
     if (isVisible) {
-      _cachedViewModel?.onVisible();
+      _viewModel?.onVisible();
     } else {
-      _cachedViewModel?.onInVisible();
+      _viewModel?.onInVisible();
     }
   }
 
-  // --- App Lifecycle ---
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (!_isRouteVisible || !widget.active) return;
 
     if (state == AppLifecycleState.resumed) {
-      _cachedViewModel?.onVisible();
+      _viewModel?.onVisible();
     } else if (state == AppLifecycleState.paused) {
-      _cachedViewModel?.onInVisible();
+      _viewModel?.onInVisible();
     }
   }
 
-  // --- Route Lifecycle ---
   @override
   void didPush() => _isRouteVisible = true;
 
   @override
   void didPopNext() {
     _isRouteVisible = true;
-    if (widget.active) _cachedViewModel?.onVisible();
+    if (widget.active) _viewModel?.onVisible();
   }
 
   @override
   void didPushNext() {
     _isRouteVisible = false;
-    if (widget.active) _cachedViewModel?.onInVisible();
+    if (widget.active) _viewModel?.onInVisible();
   }
 
   @override
   void didPop() {
     _isRouteVisible = false;
-    if (widget.active) _cachedViewModel?.onInVisible();
+    if (widget.active) _viewModel?.onInVisible();
   }
 
   @override
@@ -161,15 +156,15 @@ class _BaseStatelessPageState extends ConsumerState<BaseStatelessPage>
       ref.listenError(widget.provider!);
       ref.listenMessage(widget.provider!);
     }
-    // 3. Wrapping with BaseListenablePage to react to global setting changes
+
     return BaseListenablePage(
+      listenable: [CommonLoading.isShowNotifier],
       builder: (context, child) {
         final theme = Theme.of(context);
         final accentColor = settingManager.accentColor;
         final isDark = theme.brightness == Brightness.dark;
 
         Widget content = widget.body(context, child);
-
         if (widget.padding != null) {
           content = Padding(padding: widget.padding!, child: content);
         }
@@ -191,6 +186,26 @@ class _BaseStatelessPageState extends ConsumerState<BaseStatelessPage>
           effectiveAppBar = _createAppBar(theme);
         }
 
+        final scaffoldWidget = Scaffold(
+          appBar: effectiveAppBar,
+          drawer: widget.drawer,
+          floatingActionButton: widget.floatingActionButton,
+          resizeToAvoidBottomInset: widget.resizeToAvoidBottomInset,
+          extendBodyBehindAppBar: widget.extendBodyBehindAppBar,
+          body: Container(
+            width: double.infinity,
+            height: double.infinity,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [accentColor.withValues(alpha: 0.05), theme.scaffoldBackgroundColor],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+            child: content,
+          ),
+        );
+
         final systemUiOverlayStyle = SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
           statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
@@ -199,29 +214,19 @@ class _BaseStatelessPageState extends ConsumerState<BaseStatelessPage>
           systemNavigationBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
         );
 
-        return AnnotatedRegion<SystemUiOverlayStyle>(
-          value: systemUiOverlayStyle,
-          child: GestureDetector(
-            onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-            behavior: HitTestBehavior.translucent,
-            child: Scaffold(
-              appBar: effectiveAppBar,
-              drawer: widget.drawer,
-              floatingActionButton: widget.floatingActionButton,
-              resizeToAvoidBottomInset: widget.resizeToAvoidBottomInset,
-              extendBodyBehindAppBar: widget.extendBodyBehindAppBar,
-              body: Container(
-                width: double.infinity,
-                height: double.infinity,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [accentColor.withValues(alpha: 0.05), theme.scaffoldBackgroundColor],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
-                ),
-                child: content,
-              ),
+        return PopScope(
+          canPop: !CommonLoading.isShow,
+          onPopInvokedWithResult: (didPop, result) {
+            if (didPop) return;
+            _viewModel?.cancelRequests("on Pop");
+            CommonLoading.hide();
+          },
+          child: AnnotatedRegion<SystemUiOverlayStyle>(
+            value: systemUiOverlayStyle,
+            child: GestureDetector(
+              onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+              behavior: HitTestBehavior.translucent,
+              child: scaffoldWidget,
             ),
           ),
         );

@@ -103,7 +103,7 @@ class LoginViewModel extends _$LoginViewModel with ConsumeViewModel<LoginState> 
       state = state.copyWith(
         isLoading: false,
         pendingNavigation: LoginNavigationTarget.success,
-        message: "Login Success",
+        message: "Login success!",
       );
     });
   }

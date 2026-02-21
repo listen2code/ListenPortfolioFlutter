@@ -11,8 +11,13 @@ class CommonLoading {
 
   static OverlayEntry? _overlayEntry;
 
+  /// Notifier to track loading visibility.
+  static final ValueNotifier<bool> isShowNotifier = ValueNotifier<bool>(false);
+
+  /// Returns true if the loading overlay is currently visible.
+  static bool get isShow => isShowNotifier.value;
+
   /// Displays a modal loading overlay.
-  /// [onBack] callback triggered when the system back button is pressed while loading.
   static void show({String? message}) {
     if (_overlayEntry != null) return;
 
@@ -24,6 +29,7 @@ class CommonLoading {
     );
 
     overlayState.insert(_overlayEntry!);
+    isShowNotifier.value = true;
   }
 
   /// Removes the current loading overlay.
@@ -31,6 +37,7 @@ class CommonLoading {
     if (_overlayEntry == null) return;
     _overlayEntry?.remove();
     _overlayEntry = null;
+    isShowNotifier.value = false;
   }
 }
 
@@ -41,7 +48,6 @@ class _LoadingWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // BackButtonListener intercepts system back events directly even in Overlays.
     return Material(
       color: Colors.black.withOpacity(0.5),
       child: Center(
