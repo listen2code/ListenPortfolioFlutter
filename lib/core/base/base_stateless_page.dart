@@ -61,7 +61,7 @@ class BaseStatelessPage extends ConsumerStatefulWidget {
 class _BaseStatelessPageState extends ConsumerState<BaseStatelessPage>
     with RouteAware, WidgetsBindingObserver {
   bool _isRouteVisible = false;
-  BaseViewModel? _viewModel;
+  BaseViewModel? _cachedViewModel;
 
   @override
   void initState() {
@@ -71,15 +71,15 @@ class _BaseStatelessPageState extends ConsumerState<BaseStatelessPage>
     // Store ViewModel reference and trigger onInit
     if (widget.provider != null) {
       try {
-        _viewModel = ref.read((widget.provider as dynamic).notifier);
+        _cachedViewModel = ref.read((widget.provider as dynamic).notifier);
       } catch (_) {}
     }
 
-    _viewModel?.onInit();
+    _cachedViewModel?.onInit();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        _viewModel?.onReady();
+        _cachedViewModel?.onReady();
         if (widget.active) _checkVisibilityChange(true);
       }
     });
@@ -106,15 +106,15 @@ class _BaseStatelessPageState extends ConsumerState<BaseStatelessPage>
   void dispose() {
     AppNav.observer.unsubscribe(this);
     WidgetsBinding.instance.removeObserver(this);
-    _viewModel?.onDispose();
+    _cachedViewModel?.onDispose();
     super.dispose();
   }
 
   void _checkVisibilityChange(bool isVisible) {
     if (isVisible) {
-      _viewModel?.onVisible();
+      _cachedViewModel?.onVisible();
     } else {
-      _viewModel?.onInVisible();
+      _cachedViewModel?.onInVisible();
     }
   }
 
@@ -123,9 +123,9 @@ class _BaseStatelessPageState extends ConsumerState<BaseStatelessPage>
     if (!_isRouteVisible || !widget.active) return;
 
     if (state == AppLifecycleState.resumed) {
-      _viewModel?.onVisible();
+      _cachedViewModel?.onVisible();
     } else if (state == AppLifecycleState.paused) {
-      _viewModel?.onInVisible();
+      _cachedViewModel?.onInVisible();
     }
   }
 
@@ -135,19 +135,19 @@ class _BaseStatelessPageState extends ConsumerState<BaseStatelessPage>
   @override
   void didPopNext() {
     _isRouteVisible = true;
-    if (widget.active) _viewModel?.onVisible();
+    if (widget.active) _cachedViewModel?.onVisible();
   }
 
   @override
   void didPushNext() {
     _isRouteVisible = false;
-    if (widget.active) _viewModel?.onInVisible();
+    if (widget.active) _cachedViewModel?.onInVisible();
   }
 
   @override
   void didPop() {
     _isRouteVisible = false;
-    if (widget.active) _viewModel?.onInVisible();
+    if (widget.active) _cachedViewModel?.onInVisible();
   }
 
   @override
