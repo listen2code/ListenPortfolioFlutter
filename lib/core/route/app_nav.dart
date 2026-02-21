@@ -41,17 +41,19 @@ class AppNavConfig {
 class AppNav {
   AppNav._();
 
-  /// Retrieves a parameter from the current route by [key].
-  /// Supports both Map-based arguments and URI query parameters.
+  /// Global snapshot of the currently active route's arguments.
+  static Object? _currentArgs;
+
+  /// Combined observer for both Lifecycle tracking and Argument syncing.
+  static final RouteObserver<ModalRoute<void>> observer = _AppNavObserver();
+
+  /// Retrieves the entire arguments object from the current global route state.
+  static T? getArgs<T>() => _currentArgs as T?;
+
+  /// Retrieves a parameter from the current global route state.
   static T? getParam<T>(String key) {
-    final context = AppNavConfig.context;
-    if (context == null) return null;
-
-    final settings = ModalRoute.of(context)?.settings;
-    final args = settings?.arguments;
-
-    if (args is Map<String, dynamic>) {
-      return args[key] as T?;
+    if (_currentArgs is Map<String, dynamic>) {
+      return (_currentArgs as Map<String, dynamic>)[key] as T?;
     }
     return null;
   }
@@ -95,7 +97,7 @@ class AppNav {
 
   static void back<T>([T? result]) => AppNavConfig.navigatorKey.currentState?.pop(result);
 
-  /// Internal helper to resolve target and extract URI parameters.
+  /// Internal helper to resolve target and extract URI parameters into RouteSettings.
   static Route<T>? _resolveRoute<T>(dynamic target, Object? arguments) {
     if (target is Widget) {
       return MaterialPageRoute<T>(
@@ -174,5 +176,26 @@ class AppNav {
     } else {
       onSuccess();
     }
+  }
+}
+
+/// Internal observer inheriting from RouteObserver to support both arguments syncing and RouteAware lifecycle.
+class _AppNavObserver extends RouteObserver<ModalRoute<void>> {
+  @override
+  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    super.didPush(route, previousRoute);
+    AppNav._currentArgs = route.settings.arguments;
+  }
+
+  @override
+  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    super.didPop(route, previousRoute);
+    AppNav._currentArgs = previousRoute?.settings.arguments;
+  }
+
+  @override
+  void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
+    super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
+    AppNav._currentArgs = newRoute?.settings.arguments;
   }
 }

@@ -4,8 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_portfolio_flutter/core/base/base_listenable_page.dart';
 import 'package:listen_portfolio_flutter/core/base/base_view_model.dart';
 import 'package:listen_portfolio_flutter/core/extension/widget_ref_extension.dart';
+import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
-import 'package:listen_portfolio_flutter/main.dart';
 import 'package:listen_portfolio_flutter/shared/widgets/common_text.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -89,7 +89,7 @@ class _BaseStatelessPageState extends ConsumerState<BaseStatelessPage>
     super.didChangeDependencies();
     final route = ModalRoute.of(context);
     if (route is PageRoute) {
-      routeObserver.subscribe(this, route);
+      AppNav.observer.subscribe(this, route);
     }
   }
 
@@ -103,7 +103,7 @@ class _BaseStatelessPageState extends ConsumerState<BaseStatelessPage>
 
   @override
   void dispose() {
-    routeObserver.unsubscribe(this);
+    AppNav.observer.unsubscribe(this);
     WidgetsBinding.instance.removeObserver(this);
 
     // Trigger onDispose on the cached reference to guarantee execution on page exit

@@ -16,9 +16,6 @@ import 'package:listen_portfolio_flutter/shared/widgets/common_toast.dart';
 
 import 'core/theme/app_theme.dart';
 
-/// Global RouteObserver to track page visibility changes.
-final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -59,7 +56,7 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         return MaterialApp(
           navigatorKey: AppNavConfig.navigatorKey,
-          navigatorObservers: [routeObserver],
+          navigatorObservers: [AppNav.observer],
           title: AppConstants.appName,
           debugShowCheckedModeBanner: false,
           theme: AppTheme.getLightTheme(settingManager),
