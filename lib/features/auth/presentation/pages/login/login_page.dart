@@ -37,12 +37,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     super.dispose();
   }
 
-  // Set up navigation listeners
   void _setupNavigation(BuildContext context) {
     ref.listenNavigation<LoginState, LoginNavigationTarget>(loginViewModelProvider, (target) {
       switch (target) {
         case LoginNavigationTarget.signup:
-          // Use Route constant Key to enforce parameter naming consistency
           AppNav.to("${Routes.signup}?${Routes.argName}=${_usernameController.text}");
           break;
         case LoginNavigationTarget.forgotPassword:
@@ -62,7 +60,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   Widget build(BuildContext context) {
     _setupNavigation(context);
 
-    // Sync controllers with state (e.g. after loading saved credentials)
     ref.listen<LoginState>(loginViewModelProvider, (previous, next) {
       if (_usernameController.text.isEmpty && next.username.isNotEmpty) {
         _usernameController.text = next.username;
@@ -74,238 +71,173 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
     final state = ref.watch(loginViewModelProvider);
     final viewModel = ref.read(loginViewModelProvider.notifier);
+    final accentColor = context.accentColor;
 
     return BaseStatelessPage(
       provider: loginViewModelProvider,
       body: (context, child) {
-        final accentColor = context.accentColor;
-
         return SingleChildScrollView(
           padding: const EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 40),
-              _buildLogo(accentColor),
+              // Logo
+              Hero(
+                tag: 'logo',
+                child: Center(
+                  child: Container(
+                    padding: const EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: accentColor.withValues(alpha: 0.3),
+                          blurRadius: 20,
+                          offset: const Offset(0, 10),
+                        ),
+                      ],
+                    ),
+                    child: CommonImage.asset(
+                      R.imagesIcLauncherAdaptiveFore,
+                      width: 60,
+                      height: 60,
+                      color: accentColor,
+                    ),
+                  ),
+                ),
+              ),
               const SizedBox(height: 30),
-              _buildTitle(context),
+              // Header
+              Column(
+                children: [
+                  CommonText(
+                    I18nKeys.welcomeBack.tr,
+                    style: context.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 8),
+                  CommonText(
+                    I18nKeys.signInToContinue.tr,
+                    style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey),
+                  ),
+                ],
+              ),
               const SizedBox(height: 50),
-              _buildUsernameField(state, viewModel),
+              // Username
+              CommonTextField(
+                controller: _usernameController,
+                type: TextFieldType.text,
+                labelText: I18nKeys.username.tr,
+                prefixIcon: Icons.person_outline,
+                errorText: state.usernameError,
+                onChanged: (value) => viewModel.handleIntent(LoginIntent.usernameChanged(value)),
+              ),
               const SizedBox(height: 20),
-              _buildPasswordField(state, viewModel),
-              _buildRememberAndForgot(context, state, viewModel, accentColor),
+              // Password
+              CommonTextField(
+                controller: _passwordController,
+                type: TextFieldType.password,
+                labelText: I18nKeys.password.tr,
+                prefixIcon: Icons.lock_outline,
+                errorText: state.passwordError,
+                onChanged: (value) => viewModel.handleIntent(LoginIntent.passwordChanged(value)),
+              ),
+              // Remember Me & Forgot Password
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        // Wrap Checkbox with Transform.translate to nudge it down for better alignment
+                        Transform.translate(
+                          offset: const Offset(0, 1),
+                          child: SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: Checkbox(
+                              value: state.rememberMe,
+                              activeColor: accentColor,
+                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              onChanged: (value) =>
+                                  viewModel.handleIntent(const LoginIntent.toggleRememberMe()),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Flexible(
+                          child: CommonButton(
+                            text: I18nKeys.rememberMe.tr,
+                            type: ButtonType.text,
+                            isFullWidth: false,
+                            height: 40,
+                            padding: EdgeInsets.zero,
+                            foregroundColor: Colors.grey,
+                            fontSize: 14.f,
+                            onPressed: () => viewModel.handleIntent(const LoginIntent.toggleRememberMe()),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Flexible(
+                    flex: 2,
+                    child: CommonButton(
+                      text: I18nKeys.forgotPassword.tr,
+                      type: ButtonType.text,
+                      isFullWidth: false,
+                      height: 40,
+                      padding: EdgeInsets.zero,
+                      fontSize: 14.f,
+                      onPressed: () => viewModel.handleIntent(const LoginIntent.navigateToForgotPassword()),
+                    ),
+                  ),
+                ],
+              ),
               const SizedBox(height: 30),
-              _buildLoginButton(context, state, viewModel, accentColor),
+              // Buttons
+              CommonButton(
+                text: I18nKeys.login.tr,
+                isLoading: state.isLoading,
+                onPressed: () => viewModel.handleIntent(const LoginIntent.submitLogin()),
+                borderRadius: 15,
+                height: 56,
+              ),
               const SizedBox(height: 15),
-              _buildSkipButton(context, viewModel),
+              CommonButton(
+                text: I18nKeys.skipForNow.tr,
+                type: ButtonType.text,
+                foregroundColor: Colors.grey,
+                onPressed: () => viewModel.handleIntent(const LoginIntent.skipLogin()),
+              ),
               const SizedBox(height: 10),
-              _buildSignupLink(context, viewModel, accentColor),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Flexible(
+                    child: CommonText(
+                      I18nKeys.noAccount.tr,
+                      style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  CommonButton(
+                    text: I18nKeys.signUp.tr,
+                    type: ButtonType.text,
+                    isFullWidth: false,
+                    onPressed: () => viewModel.handleIntent(const LoginIntent.navigateToSignup()),
+                  ),
+                ],
+              ),
               const SizedBox(height: 40),
             ],
           ),
         );
       },
-    );
-  }
-
-  // --- Sub-widgets builders ---
-
-  Widget _buildLogo(Color accentColor) {
-    return Hero(
-      tag: 'logo',
-      child: Center(
-        child: Container(
-          padding: const EdgeInsets.all(15),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: accentColor.withValues(alpha: 0.3),
-                blurRadius: 20,
-                offset: const Offset(0, 10),
-              ),
-            ],
-          ),
-          child: Image.asset(
-            R.imagesIcLauncherAdaptiveFore,
-            width: 60,
-            height: 60,
-            color: accentColor,
-            colorBlendMode: BlendMode.srcIn,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTitle(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        CommonText(
-          I18nKeys.welcomeBack.tr,
-          style: context.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 8),
-        CommonText(
-          I18nKeys.signInToContinue.tr,
-          style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildUsernameField(LoginState state, LoginViewModel viewModel) {
-    return CommonTextField(
-      controller: _usernameController,
-      type: TextFieldType.text,
-      labelText: I18nKeys.username.tr,
-      prefixIcon: Icons.person_outline,
-      errorText: state.usernameError,
-      onChanged: (value) => viewModel.handleIntent(LoginIntent.usernameChanged(value)),
-    );
-  }
-
-  Widget _buildPasswordField(LoginState state, LoginViewModel viewModel) {
-    return CommonTextField(
-      controller: _passwordController,
-      type: TextFieldType.password,
-      labelText: I18nKeys.password.tr,
-      prefixIcon: Icons.lock_outline,
-      errorText: state.passwordError,
-      onChanged: (value) => viewModel.handleIntent(LoginIntent.passwordChanged(value)),
-    );
-  }
-
-  Widget _buildRememberAndForgot(
-    BuildContext context,
-    LoginState state,
-    LoginViewModel viewModel,
-    Color accentColor,
-  ) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-          flex: 3,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(
-                width: 24,
-                height: 24,
-                child: Checkbox(
-                  value: state.rememberMe,
-                  activeColor: accentColor,
-                  onChanged: (value) => viewModel.handleIntent(const LoginIntent.toggleRememberMe()),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Flexible(
-                child: GestureDetector(
-                  onTap: () => viewModel.handleIntent(const LoginIntent.toggleRememberMe()),
-                  child: CommonText(
-                    I18nKeys.rememberMe.tr,
-                    style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey),
-                    maxLines: 1,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(width: 10),
-        Flexible(
-          flex: 2,
-          child: TextButton(
-            onPressed: () => viewModel.handleIntent(const LoginIntent.navigateToForgotPassword()),
-            style: TextButton.styleFrom(padding: EdgeInsets.zero, alignment: Alignment.centerRight),
-            child: CommonText(
-              I18nKeys.forgotPassword.tr,
-              style: context.textTheme.bodySmall?.copyWith(color: accentColor, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.right,
-              maxLines: 1,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildLoginButton(
-    BuildContext context,
-    LoginState state,
-    LoginViewModel viewModel,
-    Color accentColor,
-  ) {
-    return Container(
-      height: 56,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-        gradient: LinearGradient(colors: [accentColor, accentColor.withValues(alpha: 0.8)]),
-        boxShadow: [
-          BoxShadow(color: accentColor.withValues(alpha: 0.3), blurRadius: 10, offset: const Offset(0, 5)),
-        ],
-      ),
-      child: ElevatedButton(
-        onPressed: state.isLoading ? null : () => viewModel.handleIntent(const LoginIntent.submitLogin()),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.transparent,
-          shadowColor: Colors.transparent,
-          padding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        ),
-        child: state.isLoading
-            ? const Center(
-                child: SizedBox(
-                  height: 20,
-                  width: 20,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                  ),
-                ),
-              )
-            : CommonText(
-                I18nKeys.login.tr,
-                style: context.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-      ),
-    );
-  }
-
-  Widget _buildSkipButton(BuildContext context, LoginViewModel viewModel) {
-    return TextButton(
-      onPressed: () => viewModel.handleIntent(const LoginIntent.skipLogin()),
-      child: CommonText(
-        I18nKeys.skipForNow.tr,
-        style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey),
-      ),
-    );
-  }
-
-  Widget _buildSignupLink(BuildContext context, LoginViewModel viewModel, Color accentColor) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Flexible(
-          child: CommonText(
-            I18nKeys.noAccount.tr,
-            style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey),
-          ),
-        ),
-        TextButton(
-          onPressed: () => viewModel.handleIntent(const LoginIntent.navigateToSignup()),
-          child: CommonText(
-            I18nKeys.signUp.tr,
-            style: context.textTheme.bodyMedium?.copyWith(color: accentColor, fontWeight: FontWeight.bold),
-          ),
-        ),
-      ],
     );
   }
 }
