@@ -27,67 +27,75 @@ void main() {
   // This ensures that all initialization and the app itself run in the same Zone.
   ZoneManager.runGuarded(
     () async {
-      WidgetsFlutterBinding.ensureInitialized();
-
-      await AppEnv.init();
-      QuickActionsManager.init();
-
-      // Register auth, navigation, and named routes
-      AppNavConfig.register(
-        routes: Routes.routes,
-        isGuest: () => authManager.state.isGuest,
-        onLogin: (context) async {
-          final result = await AppNav.to(Routes.login);
-          return result == true;
-        },
-        onLoginSuccess: () {
-          CommonToast.show("Login success!");
-        },
-        onShowLoginDialog: (context) async {
-          final result = await CommonDialog.showConfirm(
-            title: I18nKeys.loginLink.tr,
-            message: I18nKeys.signInToContinue.tr,
-          );
-          return result == true;
-        },
-      );
-
-      // Forward Flutter framework errors to the current Zone
-      FlutterError.onError = (details) {
-        FlutterError.presentError(details);
-        Zone.current.handleUncaughtError(details.exception, details.stack!);
-      };
-
-      // Forward platform-level errors (like from binary messengers) to the current Zone
-      PlatformDispatcher.instance.onError = (error, stack) {
-        Zone.current.handleUncaughtError(error, stack);
-        return true;
-      };
+      await _initServices();
+      _setupNavConfig();
+      _setupErrorHandlers();
 
       runApp(const ProviderScope(child: MyApp()));
     },
     traceId: ZoneManager.mainTraceId,
-    onError: (error, stack) async {
-      // 1. PERSIST CRASH DATA LOCALLY
-      final filePath = await CrashManager.saveCrashLog(error, stack);
+    onError: _handleGlobalError,
+  );
+}
 
-      // 2. Show a global crash alert dialog using the navigatorKey context
-      final context = AppNavConfig.context;
-      if (context != null && filePath != null) {
-        CommonDialog.showConfirm(
-          title: 'App Crashed',
-          message: 'A crash has been detected and logged. Would you like to view the detailed report?',
-          okText: 'View Report',
-          cancelText: 'Dismiss',
-        ).then((confirmed) {
-          if (confirmed == true) {
-            // 3. Navigate to the crash log list page and pass the file path to open it automatically
-            AppNav.to(Routes.crashLogs, arguments: {Routes.argFilePath: filePath});
-          }
-        });
-      }
+Future<void> _initServices() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await AppEnv.init();
+  QuickActionsManager.init();
+}
+
+// Register auth, navigation, and named routes
+void _setupNavConfig() {
+  AppNavConfig.register(
+    routes: Routes.routes,
+    isGuest: () => authManager.state.isGuest,
+    onLogin: (context) async {
+      final result = await AppNav.to(Routes.login);
+      return result == true;
+    },
+    onLoginSuccess: () => CommonToast.show("Login success!"),
+    onShowLoginDialog: (context) async {
+      final result = await CommonDialog.showConfirm(
+        title: I18nKeys.loginLink.tr,
+        message: I18nKeys.signInToContinue.tr,
+      );
+      return result == true;
     },
   );
+}
+
+void _setupErrorHandlers() {
+  // Forward Flutter framework errors to the current Zone
+  FlutterError.onError = (details) {
+    FlutterError.presentError(details);
+    Zone.current.handleUncaughtError(details.exception, details.stack!);
+  };
+
+  // Forward platform-level errors (like from binary messengers) to the current Zone
+  PlatformDispatcher.instance.onError = (error, stack) {
+    Zone.current.handleUncaughtError(error, stack);
+    return true;
+  };
+}
+
+Future<void> _handleGlobalError(Object error, StackTrace stack) async {
+  // 1. PERSIST CRASH DATA LOCALLY
+  final filePath = await CrashManager.saveCrashLog(error, stack);
+
+  // 2. Show a global crash alert dialog using the navigatorKey context
+  final context = AppNavConfig.context;
+  if (context != null && filePath != null) {
+    final confirmed = await CommonDialog.showConfirm(
+      title: 'App Crashed',
+      message: 'A crash has been detected and logged. Would you like to view the detailed report?',
+      okText: 'View Report',
+      cancelText: 'Dismiss',
+    );
+
+    if (confirmed == true) {
+      AppNav.to(Routes.crashLogs, arguments: {Routes.argFilePath: filePath});
+    }
+  }
 }
 
 class MyApp extends StatelessWidget {
