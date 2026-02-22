@@ -364,10 +364,11 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
                   }
 
                   // Source & Perf filter
-                  final bool isMock = log.message.contains('MockServer:');
-                  final bool isPerf = log.message.contains('Performance Summary') || 
-                                     log.message.contains('Execution Terminated');
-                  
+                  final bool isMock = log.message.contains('${LogManager.mockServerTag}:');
+                  final bool isPerf =
+                      log.message.contains('${LogManager.summaryTag}:') ||
+                      log.message.contains(LogManager.termTag);
+
                   switch (currentFilter) {
                     case LogFilter.all:
                       return true;

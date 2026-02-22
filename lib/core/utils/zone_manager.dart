@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/widgets.dart';
+import 'package:listen_portfolio_flutter/core/utils/log_manager.dart';
 import 'package:listen_portfolio_flutter/core/utils/logger.dart';
 import 'package:uuid/uuid.dart';
 
@@ -27,6 +29,14 @@ class ZoneManager {
   /// It records the duration since the last mark.
   static void mark(String stage) => _perf?._mark(stage);
 
+  /// Specialized runner for Page Rendering performance tracking.
+  static Widget runPage(String pageName, Widget Function() builder) {
+    final String id = "page-$pageName-${const Uuid().v4().substring(0, 8)}";
+    final perf = _PerfTrace();
+
+    return _ZonePageWrapper(id: id, perf: perf, builder: builder);
+  }
+
   /// Runs the [body] in a new Zone with a Trace ID and performance tracking.
   static T run<T>(
     T Function() body, {
@@ -45,7 +55,7 @@ class ZoneManager {
           if (result is Future) {
             return result.then(
                   (value) {
-                    if (!silent) _logSummary(id, perf);
+                    if (!silent) _logSummary(id, perf, label: 'Intent');
                     return value;
                   },
                   onError: (e, s) {
@@ -55,11 +65,9 @@ class ZoneManager {
                 )
                 as T;
           }
-          // Synchronous success
-          if (!silent) _logSummary(id, perf);
+          if (!silent) _logSummary(id, perf, label: 'Intent');
           return result;
         } catch (e) {
-          // Synchronous error or error during Future creation
           if (!silent) _logError(id, perf);
           rethrow;
         }
@@ -89,15 +97,13 @@ class ZoneManager {
       () async {
         try {
           await body();
-          if (!silent) _logSummary(id, perf);
+          if (!silent) _logSummary(id, perf, label: 'Task');
         } catch (e) {
-          // Handled errors within the async body
           if (!silent) _logError(id, perf);
           rethrow;
         }
       },
       (error, stack) {
-        // Automatically associate unhandled async errors with the current Trace ID
         appLogger.e('Unhandled error in Zone [$id]: $error', error: error, stackTrace: stack);
         onError?.call(error, stack);
       },
@@ -110,32 +116,54 @@ class ZoneManager {
     );
   }
 
-  // --- Private Helpers ---
-
   static String _resolveId(String? providedId) {
     if (providedId != null) return providedId;
     final String? parentId = Zone.current[_traceKey];
-    // If there is an existing trace ID (and it's not the default init one), reuse it.
     if (parentId != null && parentId.isNotEmpty && parentId != mainTraceId) {
       return parentId;
     }
     return const Uuid().v4();
   }
 
-  static void _logSummary(String id, _PerfTrace perf) {
+  static void _logSummary(String id, _PerfTrace perf, {String label = 'Performance'}) {
     final summary = perf._summary();
     if (summary.isNotEmpty) {
-      appLogger.d('Performance Summary:$summary');
+      // Use LogManager.summaryTag instead of hardcoded ':'
+      appLogger.d('$label ${LogManager.summaryTag}$summary');
     }
   }
 
   static void _logError(String id, _PerfTrace perf) {
     final summary = perf._summary();
-    appLogger.d('Execution Terminated by error.${summary.isNotEmpty ? summary : ""}');
+    // Use LogManager.termTag for identifying termination due to error
+    appLogger.d('${LogManager.termTag}.${summary.isNotEmpty ? summary : ""}');
   }
 }
 
-/// Internal class to track performance stages within a Zone.
+class _ZonePageWrapper extends StatelessWidget {
+  final String id;
+  final _PerfTrace perf;
+  final Widget Function() builder;
+
+  const _ZonePageWrapper({required this.id, required this.perf, required this.builder});
+
+  @override
+  Widget build(BuildContext context) {
+    return runZoned(() {
+      final pageZone = Zone.current;
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        pageZone.run(() {
+          perf._mark('First Frame Rendered');
+          ZoneManager._logSummary(id, perf, label: 'Page Render');
+        });
+      });
+
+      return builder();
+    }, zoneValues: {ZoneManager._traceKey: id, ZoneManager._perfKey: perf});
+  }
+}
+
 class _PerfTrace {
   final Stopwatch _stopwatch = Stopwatch()..start();
   final List<({String name, int duration})> _stages = [];

@@ -17,6 +17,11 @@ class LogManager {
   static final List<LogEntry> _logs = [];
   static const int _maxLogs = 100;
 
+  // --- Constants for Log Filtering and Identification ---
+  static const String summaryTag = "Summary:";
+  static const String mockServerTag = "MockServer:";
+  static const String termTag = "Execution Terminated";
+
   // Private ValueNotifier to manage state internally
   static final ValueNotifier<List<LogEntry>> _logNotifier = ValueNotifier([]);
 
@@ -38,9 +43,6 @@ class LogManager {
   static void clear() {
     _logs.clear();
     // Wrap in microtask to defer UI notifications.
-    // This prevents "setState() called when widget tree was locked" errors, 
-    // which occur if clear() is triggered during framework-locked phases 
-    // like build, layout, or global error handling (e.g., inside FlutterError.onError).
     Future.microtask(() {
       _logNotifier.value = [];
     });
@@ -49,10 +51,6 @@ class LogManager {
   /// Refreshes the log notifier value to sync with current logs.
   static void refresh() {
     // We use Future.microtask to ensure the ValueNotifier update is asynchronous.
-    // When logs are generated during critical phases (Build, Layout, or inside 
-    // FlutterError.onError), the framework locks the widget tree and prohibits 
-    // immediate UI refreshes. Deferring the update to the next microtask 
-    // allows the framework to complete its current task before processing the UI change.
     Future.microtask(() {
       _logNotifier.value = List.from(_logs);
     });

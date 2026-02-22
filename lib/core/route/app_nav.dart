@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:listen_portfolio_flutter/core/utils/zone_manager.dart';
 
 import 'route_interceptor.dart';
 
@@ -102,7 +103,7 @@ class AppNav {
   static Route<T>? _resolveRoute<T>(dynamic target, Object? arguments) {
     if (target is Widget) {
       return MaterialPageRoute<T>(
-        builder: (_) => target,
+        builder: (_) => ZoneManager.runPage(target.runtimeType.toString(), () => target),
         settings: RouteSettings(name: target.runtimeType.toString(), arguments: arguments),
       );
     } else if (target is String) {
@@ -139,7 +140,8 @@ class AppNav {
     final builder = AppNavConfig.getBuilder(name);
     if (builder == null) return null;
     return MaterialPageRoute<T>(
-      builder: (_) => builder(),
+      // Automatically wrap page construction with performance tracking Zone
+      builder: (_) => ZoneManager.runPage(name, () => builder()),
       settings: RouteSettings(name: name, arguments: args),
     );
   }
