@@ -1,6 +1,6 @@
 export 'base/base_auth_listenable_page.dart';
 export 'utils/routes.dart';
-export 'widgets/common_auth_text.dart';
+export 'widgets/biz/common_auth_text.dart';
 export 'widgets/common_button.dart';
 export 'widgets/common_dialog.dart';
 export 'widgets/common_image.dart';
