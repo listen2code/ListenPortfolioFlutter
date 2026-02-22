@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:listen_portfolio_flutter/core/base/base_stateless_page.dart';
+import 'package:listen_portfolio_flutter/core/base/base_page.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
 import 'package:listen_portfolio_flutter/core/extension/context_extension.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
@@ -48,17 +48,13 @@ class _HomePageState extends State<HomePage> {
         if (didPop) return;
         // If loading is shown, let BaseStatelessPage handle it
         if (CommonLoading.isShow) return;
-        
+
         // If not on overview, back button takes user back to overview
         if (_currentTab != HomeTab.overview) {
           setState(() => _currentTab = HomeTab.overview);
         }
       },
-      child: BaseStatelessPage(
-        title: _getPageTitle(),
-        drawer: _buildDrawer(),
-        body: (context, child) => _buildBody(),
-      ),
+      child: BasePage(title: _getPageTitle(), drawer: _buildDrawer(), body: (context, child) => _buildBody()),
     );
   }
 
@@ -91,10 +87,7 @@ class _HomePageState extends State<HomePage> {
     return Drawer(
       backgroundColor: context.theme.canvasColor,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topRight: Radius.circular(30.f),
-          bottomRight: Radius.circular(30.f),
-        ),
+        borderRadius: BorderRadius.only(topRight: Radius.circular(30.f), bottomRight: Radius.circular(30.f)),
       ),
       child: BaseAuthListenablePage(
         builder: (BuildContext context, Widget? child) {

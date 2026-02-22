@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/base/base_listenable_page.dart';
-import 'package:listen_portfolio_flutter/core/base/base_stateless_page.dart';
+import 'package:listen_portfolio_flutter/core/base/base_page.dart';
 import 'package:listen_portfolio_flutter/core/extension/context_extension.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
@@ -20,7 +20,7 @@ class _AppearancePageState extends State<AppearancePage> {
       builder: (context, child) {
         final accentColor = settingManager.accentColor;
 
-        return BaseStatelessPage(
+        return BasePage(
           title: I18nKeys.appearance.tr,
           padding: const EdgeInsets.all(20),
           body: (context, child) {

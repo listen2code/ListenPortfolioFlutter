@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/base/base_listenable_page.dart';
-import 'package:listen_portfolio_flutter/core/base/base_stateless_page.dart';
+import 'package:listen_portfolio_flutter/core/base/base_page.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_env.dart';
 import 'package:listen_portfolio_flutter/core/extension/context_extension.dart';
@@ -45,7 +45,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return BaseListenablePage(
       builder: (context, child) {
-        return BaseStatelessPage(
+        return BasePage(
           title: I18nKeys.settings.tr,
           body: (context, child) {
             return SingleChildScrollView(

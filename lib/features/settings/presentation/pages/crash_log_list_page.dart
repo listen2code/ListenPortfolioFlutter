@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:listen_portfolio_flutter/core/base/base_stateless_page.dart';
+import 'package:listen_portfolio_flutter/core/base/base_page.dart';
 import 'package:listen_portfolio_flutter/core/extension/context_extension.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
@@ -56,7 +56,7 @@ class _CrashLogListPageState extends State<CrashLogListPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BaseStatelessPage(
+    return BasePage(
       title: I18nKeys.crashReports.tr,
       actions: [IconButton(icon: const Icon(Icons.flash_on_rounded), onPressed: _handleTriggerCrash)],
       body: (context, child) {

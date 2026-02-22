@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:listen_portfolio_flutter/core/base/base_stateless_page.dart';
+import 'package:listen_portfolio_flutter/core/base/base_page.dart';
 import 'package:listen_portfolio_flutter/core/extension/context_extension.dart';
 import 'package:listen_portfolio_flutter/core/extension/widget_ref_extension.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
@@ -73,7 +73,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     final viewModel = ref.read(loginViewModelProvider.notifier);
     final accentColor = context.accentColor;
 
-    return BaseStatelessPage(
+    return BasePage(
       provider: loginViewModelProvider,
       body: (context, child) {
         return SingleChildScrollView(

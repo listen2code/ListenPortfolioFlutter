@@ -12,7 +12,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 /// A professional, unified page wrapper that handles UI structure,
 /// theme listening, complete lifecycle management, and automatic state listening.
-class BaseStatelessPage extends ConsumerStatefulWidget {
+class BasePage extends ConsumerStatefulWidget {
   final TransitionBuilder body;
   final String? title;
   final List<Widget>? actions; // Added actions parameter
@@ -35,7 +35,7 @@ class BaseStatelessPage extends ConsumerStatefulWidget {
   /// The Provider to listen for states (errors/messages) and manage lifecycles via its Notifier.
   final ProviderListenable<BaseState<dynamic>>? provider;
 
-  const BaseStatelessPage({
+  const BasePage({
     super.key,
     required this.body,
     this.title,
@@ -57,11 +57,10 @@ class BaseStatelessPage extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<BaseStatelessPage> createState() => _BaseStatelessPageState();
+  ConsumerState<BasePage> createState() => _BaseStatelessPageState();
 }
 
-class _BaseStatelessPageState extends ConsumerState<BaseStatelessPage>
-    with RouteAware, WidgetsBindingObserver {
+class _BaseStatelessPageState extends ConsumerState<BasePage> with RouteAware, WidgetsBindingObserver {
   bool _isRouteVisible = false;
   BaseViewModel? _viewModel;
 
@@ -97,7 +96,7 @@ class _BaseStatelessPageState extends ConsumerState<BaseStatelessPage>
   }
 
   @override
-  void didUpdateWidget(BaseStatelessPage oldWidget) {
+  void didUpdateWidget(BasePage oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.active != widget.active) {
       _checkVisibilityChange(widget.active);
@@ -240,7 +239,8 @@ class _BaseStatelessPageState extends ConsumerState<BaseStatelessPage>
     return AppBar(
       title: CommonText(widget.title ?? "", style: const TextStyle(fontWeight: FontWeight.w300)),
       centerTitle: true,
-      actions: widget.actions, // Use the actions here
+      actions: widget.actions,
+      // Use the actions here
       backgroundColor: Colors.transparent,
       elevation: 0,
       foregroundColor: theme.brightness == Brightness.light ? Colors.black87 : Colors.white,
