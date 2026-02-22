@@ -324,7 +324,7 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
                     color: isFilterVisible ? Colors.greenAccent : Colors.white70,
                   ),
                   _buildHeaderAction(Icons.refresh_rounded, () {
-                    LogManager.logNotifier.value = List.from(LogManager.logs);
+                    LogManager.refresh();
                   }),
                   _buildHeaderAction(Icons.copy_rounded, () {
                     Clipboard.setData(ClipboardData(text: LogManager.getAllLogsAsText()));
@@ -408,7 +408,10 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
               style: const TextStyle(color: Colors.white38),
             ),
             if (traceId != null) ...[
-              const TextSpan(text: '[', style: TextStyle(color: Colors.white24)),
+              const TextSpan(
+                text: '[',
+                style: TextStyle(color: Colors.white24),
+              ),
               TextSpan(
                 text: traceId,
                 style: const TextStyle(
@@ -422,7 +425,10 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
                     if (!isFilterVisible) setState(() => isFilterVisible = true);
                   },
               ),
-              const TextSpan(text: '] ', style: TextStyle(color: Colors.white24)),
+              const TextSpan(
+                text: '] ',
+                style: TextStyle(color: Colors.white24),
+              ),
               TextSpan(
                 // REMOVED .trim() to preserve the structure and structure-based newlines
                 text: log.message.replaceFirst('[$traceId]', ''),

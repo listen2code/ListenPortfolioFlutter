@@ -27,6 +27,7 @@ final appLogger = Logger(
 );
 
 /// A decorator printer that prepends the current Trace ID to every log message.
+/// Note: This only affects the Console/Terminal output because of how Logger.printer works.
 class _TracePrinter extends LogPrinter {
   final LogPrinter _inner;
 
@@ -35,7 +36,7 @@ class _TracePrinter extends LogPrinter {
   @override
   List<String> log(LogEvent event) {
     final traceId = ZoneManager.currentTraceId;
-    // Prepend traceId followed by a newline to ensure clarity in the IDE console.
+    // Prepend traceId followed by a newline for console visibility.
     final newMessage = '[$traceId]\n${event.message}';
 
     return _inner.log(
@@ -48,20 +49,19 @@ class _TracePrinter extends LogPrinter {
 class _LogManagerOutput extends LogOutput {
   @override
   void output(OutputEvent event) {
-    final traceId = ZoneManager.currentTraceId;
-    // Prepend traceId followed by a newline for structured display in the App's log viewer.
-    // Ensure rawMessage follows immediately after newline for proper alignment.
+    // IMPORTANT: event.origin.message is the ORIGINAL message passed to appLogger.i/e.
+    // It does NOT include modifications made by _TracePrinter.
     final rawMessage = event.origin.message.toString();
-    final message = '[$traceId]\n$rawMessage';
+    if (rawMessage.isEmpty) return;
 
-    if (rawMessage.isNotEmpty) {
-      LogManager.addLog(message, level: _mapLevel(event.level));
-    }
+    // We must re-fetch the traceId here for the LogManager.
+    final traceId = ZoneManager.currentTraceId;
 
-    // Capture explicit error object details if available
-    if (event.origin.error != null) {
-      LogManager.addLog('[$traceId]\nError Detail: ${event.origin.error}', level: LogLevel.error);
-    }
+    // Format: [traceId] Message
+    // This will now show up correctly in the LogOverlayManager UI.
+    final formattedMessage = '[$traceId]\n $rawMessage';
+
+    LogManager.addLog(formattedMessage, level: _mapLevel(event.level));
   }
 
   // Convert external Logger levels to internal LogManager levels

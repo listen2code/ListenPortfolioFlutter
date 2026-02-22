@@ -28,7 +28,6 @@ class ZoneManager {
   static void mark(String stage) => _perf?._mark(stage);
 
   /// Runs the [body] in a new Zone with a Trace ID and performance tracking.
-  /// [silent] If true, no performance summary will be logged upon completion.
   static T run<T>(
     T Function() body, {
     String? traceId,
@@ -39,22 +38,39 @@ class ZoneManager {
     final id = _resolveId(traceId);
     final perf = _PerfTrace();
 
-    return runZoned(() {
-      try {
-        final result = body();
-        if (result is Future) {
-          return result.whenComplete(() {
-                if (!silent) _logSummary(id, perf);
-              })
-              as T;
+    return runZoned(
+      () {
+        try {
+          final result = body();
+          if (result is Future) {
+            return result.then(
+                  (value) {
+                    if (!silent) _logSummary(id, perf);
+                    return value;
+                  },
+                  onError: (e, s) {
+                    if (!silent) _logError(id, perf);
+                    throw e;
+                  },
+                )
+                as T;
+          }
+          // Synchronous success
+          if (!silent) _logSummary(id, perf);
+          return result;
+        } catch (e) {
+          // Synchronous error or error during Future creation
+          if (!silent) _logError(id, perf);
+          rethrow;
         }
-        if (!silent) _logSummary(id, perf);
-        return result;
-      } catch (e) {
-        if (!silent) _logError(id, perf);
-        rethrow;
-      }
-    }, zoneValues: {_traceKey: id, _cancelTokenKey: ?cancelToken, _perfKey: perf, ...?zoneValues});
+      },
+      zoneValues: {
+        _traceKey: id,
+        if (cancelToken != null) _cancelTokenKey: cancelToken,
+        _perfKey: perf,
+        ...?zoneValues,
+      },
+    );
   }
 
   /// Runs the [body] in a protected Zone that catches unhandled asynchronous errors.
@@ -73,15 +89,24 @@ class ZoneManager {
       () async {
         try {
           await body();
-        } finally {
           if (!silent) _logSummary(id, perf);
+        } catch (e) {
+          // Handled errors within the async body
+          if (!silent) _logError(id, perf);
+          rethrow;
         }
       },
       (error, stack) {
-        appLogger.e('Unhandled async error in Trace [$id]: $error', error: error, stackTrace: stack);
+        // Automatically associate unhandled async errors with the current Trace ID
+        appLogger.e('Unhandled error in Zone [$id]: $error', error: error, stackTrace: stack);
         onError?.call(error, stack);
       },
-      zoneValues: {_traceKey: id, _cancelTokenKey: ?cancelToken, _perfKey: perf, ...?zoneValues},
+      zoneValues: {
+        _traceKey: id,
+        if (cancelToken != null) _cancelTokenKey: cancelToken,
+        _perfKey: perf,
+        ...?zoneValues,
+      },
     );
   }
 
@@ -89,9 +114,11 @@ class ZoneManager {
 
   static String _resolveId(String? providedId) {
     if (providedId != null) return providedId;
-    final String parentId = Zone.current[_traceKey] ?? '';
-    // Avoid inheriting 'app-init' for specific sub-tasks
-    if (parentId.isNotEmpty && parentId != mainTraceId) return parentId;
+    final String? parentId = Zone.current[_traceKey];
+    // If there is an existing trace ID (and it's not the default init one), reuse it.
+    if (parentId != null && parentId.isNotEmpty && parentId != mainTraceId) {
+      return parentId;
+    }
     return const Uuid().v4();
   }
 
@@ -125,7 +152,6 @@ class _PerfTrace {
       _stopwatch.stop();
     }
 
-    // Skip summary for very short executions with no marks
     if (_stages.isEmpty && _stopwatch.elapsedMilliseconds < 5) return "";
 
     final int now = _stopwatch.elapsedMilliseconds;

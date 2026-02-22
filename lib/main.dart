@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,6 +11,7 @@ import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
+import 'package:listen_portfolio_flutter/core/utils/crash_manager.dart';
 import 'package:listen_portfolio_flutter/core/utils/zone_manager.dart';
 import 'package:listen_portfolio_flutter/features/splash/presentation/pages/splash_page.dart';
 import 'package:listen_portfolio_flutter/shared/base/base_auth_listenable_page.dart';
@@ -18,40 +22,56 @@ import 'package:listen_portfolio_flutter/shared/widgets/common_toast.dart';
 
 import 'core/theme/app_theme.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+void main() {
+  // Use runGuarded to wrap the entire app execution.
+  // This ensures that all initialization and the app itself run in the same Zone.
+  ZoneManager.runGuarded(
+    () async {
+      WidgetsFlutterBinding.ensureInitialized();
 
-  await AppEnv.init();
-  QuickActionsManager.init();
+      await AppEnv.init();
+      QuickActionsManager.init();
 
-  // Register auth, navigation, and named routes
-  AppNavConfig.register(
-    routes: Routes.routes,
-    isGuest: () => authManager.state.isGuest,
-    // The actual login navigation logic
-    onLogin: (context) async {
-      final result = await AppNav.to(Routes.login);
-      return result == true;
-    },
-    // Global feedback after successful authentication
-    onLoginSuccess: () {
-      CommonToast.show("Login success!");
-    },
-    // Registration of the "Login Required" confirmation dialog
-    onShowLoginDialog: (context) async {
-      final result = await CommonDialog.showConfirm(
-        title: I18nKeys.loginLink.tr,
-        message: I18nKeys.signInToContinue.tr,
+      // Register auth, navigation, and named routes
+      AppNavConfig.register(
+        routes: Routes.routes,
+        isGuest: () => authManager.state.isGuest,
+        onLogin: (context) async {
+          final result = await AppNav.to(Routes.login);
+          return result == true;
+        },
+        onLoginSuccess: () {
+          CommonToast.show("Login success!");
+        },
+        onShowLoginDialog: (context) async {
+          final result = await CommonDialog.showConfirm(
+            title: I18nKeys.loginLink.tr,
+            message: I18nKeys.signInToContinue.tr,
+          );
+          return result == true;
+        },
       );
-      return result == true;
+
+      // Forward Flutter framework errors to the current Zone
+      FlutterError.onError = (details) {
+        FlutterError.presentError(details);
+        Zone.current.handleUncaughtError(details.exception, details.stack!);
+      };
+
+      // Forward platform-level errors (like from binary messengers) to the current Zone
+      PlatformDispatcher.instance.onError = (error, stack) {
+        Zone.current.handleUncaughtError(error, stack);
+        return true;
+      };
+
+      runApp(const ProviderScope(child: MyApp()));
+    },
+    traceId: ZoneManager.mainTraceId,
+    onError: (error, stack) {
+      // PERSIST CRASH DATA LOCALLY
+      CrashManager.saveCrashLog(error, stack);
     },
   );
-
-  // Use runGuarded to wrap the entire app execution.
-  // This will catch all unhandled async errors and provide a root trace context.
-  ZoneManager.runGuarded(() {
-    runApp(const ProviderScope(child: MyApp()));
-  }, traceId: ZoneManager.mainTraceId);
 }
 
 class MyApp extends StatelessWidget {

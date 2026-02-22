@@ -105,9 +105,9 @@ mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel {
 
   /// Dispatcher for UI intents.
   /// [showLoading] Automatically shows/hides CommonLoading during the action.
-  FutureOr<void> dispatch(dynamic intent, FutureOr<void> Function() handler, {bool showLoading = false}) {
+  Future<void> dispatch(dynamic intent, FutureOr<void> Function() handler, {bool showLoading = false}) async {
     // We use ZoneManager to inject both Trace ID and CancelToken into the execution context.
-    return ZoneManager.run(() {
+    return ZoneManager.run(() async {
       final tag = runtimeType.toString();
       appLogger.d('$tag: [INTENT] -> $intent');
       ZoneManager.mark('Intent [$intent] Started');
@@ -115,24 +115,16 @@ mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel {
       if (showLoading) CommonLoading.show();
 
       try {
-        final result = handler();
-
-        if (result is Future) {
-          return result.whenComplete(() {
-            if (showLoading) CommonLoading.hide();
-            final dynamic self = this;
-            appLogger.d('$tag: [STATE] (Async) <- ${self.state}');
-            ZoneManager.mark('Intent Async Finished');
-          });
-        }
+        // Explicitly await the handler to ensure async errors are caught in this try-block
+        await handler();
 
         if (showLoading) CommonLoading.hide();
         final dynamic self = this;
         appLogger.d('$tag: [STATE] <- ${self.state}');
-        ZoneManager.mark('Intent Sync Finished');
-        return result;
+        ZoneManager.mark('Intent Finished');
       } catch (e) {
         if (showLoading) CommonLoading.hide();
+        // Re-throw to allow ZoneManager.run or runZonedGuarded to catch it
         rethrow;
       }
     }, cancelToken: cancelToken);
