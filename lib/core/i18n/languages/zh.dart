@@ -131,6 +131,7 @@ final Map<String, String> zh = {
   I18nKeys.deleteAccountWarningSubscriptions: '所有正在生效的订阅都将被取消。',
   I18nKeys.deleteAccountIUnderstand: '我已了解相关后果。',
   I18nKeys.crashReports: '崩溃报告',
+  I18nKeys.crashReportsSubtitle: '查看和管理本地崩溃日志',
   I18nKeys.noCrashReports: '未发现崩溃报告',
   I18nKeys.triggerCrash: '触发模拟崩溃',
   I18nKeys.triggerCrashDesc: '系统将在 10-20 秒内的下一次交互中注入异常。是否继续？',

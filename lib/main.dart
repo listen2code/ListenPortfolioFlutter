@@ -54,7 +54,7 @@ void _setupNavConfig() {
       final result = await AppNav.to(Routes.login);
       return result == true;
     },
-    onLoginSuccess: () => CommonToast.show("Login success!"),
+    onLoginSuccess: () => CommonToast.show(I18nKeys.loginSuccess.tr),
     onShowLoginDialog: (context) async {
       final result = await CommonDialog.showConfirm(
         title: I18nKeys.loginLink.tr,
@@ -87,10 +87,10 @@ Future<void> _handleGlobalError(Object error, StackTrace stack) async {
   final context = AppNavConfig.context;
   if (context != null && filePath != null) {
     final confirmed = await CommonDialog.showConfirm(
-      title: 'App Crashed',
-      message: 'A crash has been detected and logged. Would you like to view the detailed report?',
-      okText: 'View Report',
-      cancelText: 'Dismiss',
+      title: I18nKeys.appCrashed.tr,
+      message: I18nKeys.crashDetectedMsg.tr,
+      okText: I18nKeys.viewReport.tr,
+      cancelText: I18nKeys.dismiss.tr,
     );
 
     if (confirmed == true) {

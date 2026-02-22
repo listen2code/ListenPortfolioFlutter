@@ -145,8 +145,8 @@ class _SettingsPageState extends State<SettingsPage> {
                     // Crash Reports Entry
                     _buildListTile(
                       icon: Icons.bug_report_outlined,
-                      title: 'Crash Reports',
-                      subtitle: 'View and manage local crash logs',
+                      title: I18nKeys.crashReports.tr,
+                      subtitle: I18nKeys.crashReportsSubtitle.tr,
                       onTap: () => AppNav.to(Routes.crashLogs),
                     ),
                     _buildListTile(

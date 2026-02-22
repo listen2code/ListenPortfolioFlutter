@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:listen_portfolio_flutter/core/base/base_stateless_page.dart';
 import 'package:listen_portfolio_flutter/core/extension/context_extension.dart';
+import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
+import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
 import 'package:listen_portfolio_flutter/core/utils/crash_manager.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
@@ -55,7 +57,7 @@ class _CrashLogListPageState extends State<CrashLogListPage> {
   @override
   Widget build(BuildContext context) {
     return BaseStatelessPage(
-      title: 'Crash Reports',
+      title: I18nKeys.crashReports.tr,
       actions: [IconButton(icon: const Icon(Icons.flash_on_rounded), onPressed: _handleTriggerCrash)],
       body: (context, child) {
         if (_isLoading) {
@@ -69,7 +71,7 @@ class _CrashLogListPageState extends State<CrashLogListPage> {
               children: [
                 Icon(Icons.bug_report_outlined, size: 64, color: Colors.grey.withValues(alpha: 0.5)),
                 const SizedBox(height: 16),
-                const Text('No crash reports found', style: TextStyle(color: Colors.grey)),
+                Text(I18nKeys.noCrashReports.tr, style: const TextStyle(color: Colors.grey)),
               ],
             ),
           );
@@ -131,14 +133,13 @@ class _CrashLogListPageState extends State<CrashLogListPage> {
 
   void _handleTriggerCrash() async {
     final confirmed = await CommonDialog.showConfirm(
-      title: 'Trigger Injected Crash',
-      message:
-          'A random exception will be injected into any "dispatch" (UI interaction) that occurs after 10-20 seconds. Continue?',
-      okText: 'Start Timer',
+      title: I18nKeys.triggerCrash.tr,
+      message: I18nKeys.triggerCrashDesc.tr,
+      okText: I18nKeys.startTimer.tr,
     );
     if (confirmed == true) {
       CrashManager.scheduleRandomCrash();
-      CommonToast.show('Crash injection scheduled!');
+      CommonToast.show(I18nKeys.crashScheduled.tr);
     }
   }
 
@@ -155,22 +156,22 @@ class _CrashLogListPageState extends State<CrashLogListPage> {
   }
 
   void _uploadLog(File file) async {
-    CommonLoading.show(message: 'Uploading...');
+    CommonLoading.show(message: I18nKeys.uploading.tr);
     final success = await CrashManager.uploadCrashLog(file);
     CommonLoading.hide();
 
     if (success) {
-      CommonToast.show('Crash report uploaded successfully');
+      CommonToast.show(I18nKeys.uploadSuccess.tr);
     } else {
-      CommonToast.show('Upload failed');
+      CommonToast.show(I18nKeys.uploadFailed.tr);
     }
   }
 
   void _deleteLog(File file) async {
     final confirmed = await CommonDialog.showConfirm(
-      title: 'Delete Report',
-      message: 'Are you sure you want to delete this crash report?',
-      okText: 'Delete',
+      title: I18nKeys.deleteReport.tr,
+      message: I18nKeys.deleteReportConfirm.tr,
+      okText: I18nKeys.delete.tr,
       okColor: Colors.red,
     );
 
@@ -221,7 +222,7 @@ class _LogDetailsSheet extends StatelessWidget {
                   icon: const Icon(Icons.copy_all_rounded),
                   onPressed: () {
                     Clipboard.setData(ClipboardData(text: content));
-                    CommonToast.show('Copied to clipboard');
+                    CommonToast.show(I18nKeys.copiedToClipboard.tr);
                   },
                 ),
               ],
@@ -288,7 +289,7 @@ class _LogDetailsSheet extends StatelessWidget {
       }
 
       if (hasNewTag) {
-        // 如果是带标签的行，使用正则拆分渲染
+        // If the line has a tag, use regex to split and render it
         _addFormattedLogLine(spans, line, stickyLevelColor!, stickyMessageColor!);
       } else if (line.startsWith('Error:') || line.startsWith('Time:')) {
         spans.add(
@@ -298,7 +299,7 @@ class _LogDetailsSheet extends StatelessWidget {
           ),
         );
       } else {
-        // 如果是不带标签的行（如堆栈或多行内容），延续上一个标签的颜色
+        // If the line doesn't have a tag (e.g., stack trace or multi-line content), continue with the previous tag's color
         spans.add(
           TextSpan(
             text: '$line\n',

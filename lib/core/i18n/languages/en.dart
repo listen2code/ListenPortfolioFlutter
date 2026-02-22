@@ -46,6 +46,7 @@ final Map<String, String> en = {
   I18nKeys.signUp: 'Sign Up',
   I18nKeys.rememberMe: 'Remember Me',
   I18nKeys.minLengthMsg: 'Must be at least %s characters',
+  I18nKeys.loginSuccess: 'Login success!',
   I18nKeys.createAccount: 'Create Account',
   I18nKeys.signUpSubtitle: 'Sign up to get started!',
   I18nKeys.fullName: 'Full Name',
@@ -133,6 +134,7 @@ final Map<String, String> en = {
   I18nKeys.deleteAccountWarningSubscriptions: 'Active subscriptions will be canceled.',
   I18nKeys.deleteAccountIUnderstand: 'I understand the consequences.',
   I18nKeys.crashReports: 'Crash Reports',
+  I18nKeys.crashReportsSubtitle: 'View and manage local crash logs',
   I18nKeys.noCrashReports: 'No crash reports found',
   I18nKeys.triggerCrash: 'Trigger Injected Crash',
   I18nKeys.triggerCrashDesc:
@@ -145,5 +147,9 @@ final Map<String, String> en = {
   I18nKeys.deleteReport: 'Delete Report',
   I18nKeys.deleteReportConfirm: 'Are you sure you want to delete this crash report?',
   I18nKeys.copiedToClipboard: 'Copied to clipboard',
-  I18nKeys.loginSuccess: 'Login success!',
+  I18nKeys.appCrashed: 'App Crashed',
+  I18nKeys.crashDetectedMsg:
+      'A crash has been detected and logged. Would you like to view the detailed report?',
+  I18nKeys.viewReport: 'View Report',
+  I18nKeys.dismiss: 'Dismiss',
 };
