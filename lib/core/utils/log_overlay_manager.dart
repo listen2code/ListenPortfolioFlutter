@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'log_manager.dart';
 import 'zone_manager.dart';
 
-enum LogFilter { all, server, app }
+enum LogFilter { all, server, app, perf }
 
 class LogOverlayManager {
   static OverlayEntry? _overlayEntry;
@@ -356,22 +356,27 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
               valueListenable: LogManager.logNotifier,
               builder: (context, logs, _) {
                 final traceFilter = _traceController.text.trim();
-                // Apply source and Trace ID filtering
+                // Apply source, Trace ID and Performance filtering
                 final filteredLogs = logs.where((log) {
                   // Trace ID filter
                   if (traceFilter.isNotEmpty && !log.message.contains(traceFilter)) {
                     return false;
                   }
 
-                  // Source filter
+                  // Source & Perf filter
                   final bool isMock = log.message.contains('MockServer:');
+                  final bool isPerf = log.message.contains('Performance Summary') || 
+                                     log.message.contains('Execution Terminated');
+                  
                   switch (currentFilter) {
                     case LogFilter.all:
                       return true;
                     case LogFilter.server:
                       return isMock;
                     case LogFilter.app:
-                      return !isMock;
+                      return !isMock && !isPerf;
+                    case LogFilter.perf:
+                      return isPerf;
                   }
                 }).toList();
 
@@ -430,7 +435,6 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
                 style: TextStyle(color: Colors.white24),
               ),
               TextSpan(
-                // REMOVED .trim() to preserve the structure and structure-based newlines
                 text: log.message.replaceFirst('[$traceId]', ''),
                 style: TextStyle(color: _getLogColor(log.level)),
               ),
@@ -458,6 +462,8 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
               _filterChip('Server', LogFilter.server, color: Colors.orangeAccent),
               const SizedBox(width: 8),
               _filterChip('App', LogFilter.app, color: Colors.blueAccent),
+              const SizedBox(width: 8),
+              _filterChip('Perf', LogFilter.perf, color: Colors.purpleAccent),
             ],
           ),
           const SizedBox(height: 8),
