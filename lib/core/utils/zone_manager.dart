@@ -11,13 +11,32 @@ import 'package:uuid/uuid.dart';
 class ZoneManager {
   ZoneManager._();
 
+  // --- Public Identifiers ---
   static const String mainTraceId = "main-zone";
+  static const String mainStart = "Main Start";
+
+  // --- Internal Zone Keys ---
   static const Symbol _traceKey = Symbol('trace_id_key');
   static const Symbol _cancelTokenKey = Symbol('dio_cancel_token_key');
   static const Symbol _perfKey = Symbol('perf_trace_key');
 
+  // --- Default Values & Labels ---
+  static const String _noTraceId = 'no-trace-id';
+  static const String _labelIntent = 'Intent';
+  static const String _labelTask = 'Task';
+  static const String _labelPerformance = 'Performance';
+  static const String _labelPageRender = 'Page Render';
+  static const String _prefixPage = 'page-';
+  static const int _shortIdLength = 8;
+  static const int _minLogThresholdMs = 5;
+
+  // --- Mark Names ---
+  static const String markFirstFrame = 'First Frame Rendered';
+  static const String _markFinalize = '[Finalize]';
+  static const String _detailsPrefix = " Details: ";
+
   /// Gets the current Trace ID from the Zone.
-  static String get currentTraceId => Zone.current[_traceKey] ?? 'no-trace-id';
+  static String get currentTraceId => Zone.current[_traceKey] ?? _noTraceId;
 
   /// Gets the current [CancelToken] from the Zone.
   static CancelToken? get currentCancelToken => Zone.current[_cancelTokenKey];
@@ -31,7 +50,7 @@ class ZoneManager {
 
   /// Specialized runner for Page Rendering performance tracking.
   static Widget runPage(String pageName, Widget Function() builder) {
-    final String id = "page-$pageName-${const Uuid().v4().substring(0, 8)}";
+    final String id = "$_prefixPage$pageName-${const Uuid().v4().substring(0, _shortIdLength)}";
     final perf = _PerfTrace();
 
     return _ZonePageWrapper(id: id, perf: perf, builder: builder);
@@ -48,43 +67,36 @@ class ZoneManager {
     final id = _resolveId(traceId);
     final perf = _PerfTrace();
 
-    return runZoned(
-      () {
-        try {
-          final result = body();
-          if (result is Future) {
-            return result.then(
-                  (value) {
-                    if (!silent) _logSummary(id, perf, label: 'Intent');
-                    return value;
-                  },
-                  onError: (e, s) {
-                    if (!silent) _logError(id, perf);
-                    throw e;
-                  },
-                )
-                as T;
-          }
-          if (!silent) _logSummary(id, perf, label: 'Intent');
-          return result;
-        } catch (e) {
-          if (!silent) _logError(id, perf);
-          rethrow;
+    return runZoned(() {
+      try {
+        final result = body();
+        if (result is Future) {
+          return result.then(
+                (value) {
+                  if (!silent) _logSummary(id, perf, label: _labelIntent);
+                  return value;
+                },
+                onError: (e, s) {
+                  if (!silent) _logError(id, perf);
+                  throw e;
+                },
+              )
+              as T;
         }
-      },
-      zoneValues: {
-        _traceKey: id,
-        if (cancelToken != null) _cancelTokenKey: cancelToken,
-        _perfKey: perf,
-        ...?zoneValues,
-      },
-    );
+        if (!silent) _logSummary(id, perf, label: _labelIntent);
+        return result;
+      } catch (e) {
+        if (!silent) _logError(id, perf);
+        rethrow;
+      }
+    }, zoneValues: {_traceKey: id, _cancelTokenKey: ?cancelToken, _perfKey: perf, ...?zoneValues});
   }
 
   /// Runs the [body] in a protected Zone that catches unhandled asynchronous errors.
   static Future<void> runGuarded(
     FutureOr<void> Function() body, {
     String? traceId,
+    String? label,
     CancelToken? cancelToken,
     Map<Object?, Object?>? zoneValues,
     void Function(Object error, StackTrace stack)? onError,
@@ -97,7 +109,7 @@ class ZoneManager {
       () async {
         try {
           await body();
-          if (!silent) _logSummary(id, perf, label: 'Task');
+          if (!silent) _logSummary(id, perf, label: label ?? _labelTask);
         } catch (e) {
           if (!silent) _logError(id, perf);
           rethrow;
@@ -107,12 +119,7 @@ class ZoneManager {
         appLogger.e('Unhandled error in Zone [$id]: $error', error: error, stackTrace: stack);
         onError?.call(error, stack);
       },
-      zoneValues: {
-        _traceKey: id,
-        if (cancelToken != null) _cancelTokenKey: cancelToken,
-        _perfKey: perf,
-        ...?zoneValues,
-      },
+      zoneValues: {_traceKey: id, _cancelTokenKey: ?cancelToken, _perfKey: perf, ...?zoneValues},
     );
   }
 
@@ -125,18 +132,19 @@ class ZoneManager {
     return const Uuid().v4();
   }
 
-  static void _logSummary(String id, _PerfTrace perf, {String label = 'Performance'}) {
+  static void _logSummary(String id, _PerfTrace perf, {String label = _labelPerformance}) {
     final summary = perf._summary();
     if (summary.isNotEmpty) {
       // Use LogManager.summaryTag instead of hardcoded ':'
-      appLogger.d('$label ${LogManager.summaryTag}:$summary');
+      appLogger.d('$label ${LogManager.summaryTag}: $summary');
     }
   }
 
   static void _logError(String id, _PerfTrace perf) {
     final summary = perf._summary();
     // Use LogManager.termTag for identifying termination due to error
-    appLogger.d('${LogManager.termTag}.${summary.isNotEmpty ? summary : ""}');
+    final details = summary.isNotEmpty ? "$_detailsPrefix$summary" : "";
+    appLogger.d('${LogManager.termTag}.$details');
   }
 }
 
@@ -154,8 +162,8 @@ class _ZonePageWrapper extends StatelessWidget {
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
         pageZone.run(() {
-          perf._mark('First Frame Rendered');
-          ZoneManager._logSummary(id, perf, label: 'Page Render');
+          perf._mark(ZoneManager.markFirstFrame);
+          ZoneManager._logSummary(id, perf, label: ZoneManager._labelPageRender);
         });
       });
 
@@ -169,6 +177,10 @@ class _PerfTrace {
   final List<({String name, int duration})> _stages = [];
   int _lastMarkTime = 0;
 
+  // --- Formatting Constants ---
+  static const String _unit = 'ms';
+  static const String _totalLabel = 'Total (Sum)';
+
   void _mark(String stage) {
     final int now = _stopwatch.elapsedMilliseconds;
     _stages.add((name: stage, duration: now - _lastMarkTime));
@@ -180,7 +192,8 @@ class _PerfTrace {
       _stopwatch.stop();
     }
 
-    if (_stages.isEmpty && _stopwatch.elapsedMilliseconds < 5) return "";
+    // Ignore very short executions to reduce log noise
+    if (_stages.isEmpty && _stopwatch.elapsedMilliseconds < ZoneManager._minLogThresholdMs) return "";
 
     final int now = _stopwatch.elapsedMilliseconds;
     final int finalStageDuration = now - _lastMarkTime;
@@ -189,16 +202,16 @@ class _PerfTrace {
     int totalSum = 0;
 
     for (final s in _stages) {
-      buffer.write('\n  - ${s.name}: ${s.duration}ms');
+      buffer.write('\n  - ${s.name}: ${s.duration}$_unit');
       totalSum += s.duration;
     }
 
     if (finalStageDuration > 0) {
-      buffer.write('\n  - [Finalize]: ${finalStageDuration}ms');
+      buffer.write('\n  - ${ZoneManager._markFinalize}: $finalStageDuration$_unit');
       totalSum += finalStageDuration;
     }
 
-    buffer.write('\n  => Total (Sum): ${totalSum}ms');
+    buffer.write('\n  => $_totalLabel: $totalSum$_unit');
     return buffer.toString();
   }
 }

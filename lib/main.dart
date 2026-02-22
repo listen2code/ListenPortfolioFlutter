@@ -34,6 +34,7 @@ void main() {
       runApp(const ProviderScope(child: MyApp()));
     },
     traceId: ZoneManager.mainTraceId,
+    label: ZoneManager.mainStart,
     onError: _handleGlobalError,
   );
 }
