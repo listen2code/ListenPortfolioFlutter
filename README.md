@@ -15,6 +15,19 @@ For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
+## rules
+
+* Use English comments
+* Only modify the relevant code; formatting changes are not needed.
+* When drawing the screen, you can use the common components from the lib/shared/widgets directory. ...
+* The core architecture code is in the lib/core directory.
+* Business-related screens are under the lib/features directory
+* If there are new string resources, please add them to both file below
+    * [translations_key.dart](lib/core/i18n/translations_key.dart)
+    * [en.dart](lib/core/i18n/languages/en.dart)
+    * [ja.dart](lib/core/i18n/languages/ja.dart)
+    * [zh.dart](lib/core/i18n/languages/zh.dart).
+
 ## todo
 
 * base
@@ -39,7 +52,7 @@ samples, guidance on mobile development, and a full API reference.
                     * package_login: login module
                     * package_share: share module
                 * plugin_native: plugin for native basic info
-* server
+* server/
     * api
     * i18
     * build web
