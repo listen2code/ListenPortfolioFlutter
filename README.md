@@ -30,22 +30,21 @@ samples, guidance on mobile development, and a full API reference.
     * assets
 * framework
     * library
-    * package_base: only dart
-        * package_libs: basic third util, network, sp, event_bus, theme, globalization
-            * package_widget: base widgets, button, text, image, dialog, toast, loading, refreshList, tabView,
-                * package_biz: base biz
-                * package_webView: webView
-                * package_splash: splash module
-                * package_login: login module
-                * package_share: share module
-            * plugin_native: plugin for native basic info
+        * package_base: only dart
+            * package_libs: basic third util, network, sp, event_bus, theme, globalization
+                * package_widget: base widgets, button, text, image, dialog, toast, loading, refreshList, tabView,
+                    * package_biz: base biz
+                    * package_webView: webView
+                    * package_splash: splash module
+                    * package_login: login module
+                    * package_share: share module
+                * plugin_native: plugin for native basic info
 * server
     * api
     * i18
     * build web
 * switch env: input url; mock api; config each api; separate mock
 * dev tools: layout check; lag check; launch; app launch; apk size; session timeout;
-* pixel icon cache
 * aspect log, trace log
 * app review
 * finger auth
@@ -53,5 +52,6 @@ samples, guidance on mobile development, and a full API reference.
 * readme: screen capture, architect, tech stack
 * issue
     * ndk bundle;
+    * pixel icon cache
 * ai intro assistant
 * runZoneGuarded

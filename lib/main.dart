@@ -8,6 +8,7 @@ import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
+import 'package:listen_portfolio_flutter/core/utils/zone_manager.dart';
 import 'package:listen_portfolio_flutter/features/splash/presentation/pages/splash_page.dart';
 import 'package:listen_portfolio_flutter/shared/base/base_auth_listenable_page.dart';
 import 'package:listen_portfolio_flutter/shared/utils/quick_actions_manager.dart';
@@ -46,7 +47,10 @@ void main() async {
     },
   );
 
-  runApp(const ProviderScope(child: MyApp()));
+  // Wrap app startup in a protected Zone to catch all unhandled async errors
+  ZoneManager.runGuarded(() {
+    runApp(const ProviderScope(child: MyApp()));
+  }, traceId: "trace-app");
 }
 
 class MyApp extends StatelessWidget {
