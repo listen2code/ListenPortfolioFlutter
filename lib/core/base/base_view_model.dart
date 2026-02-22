@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
+import 'package:listen_portfolio_flutter/core/utils/crash_manager.dart';
 import 'package:listen_portfolio_flutter/core/utils/logger.dart';
 import 'package:listen_portfolio_flutter/core/utils/zone_manager.dart';
 import 'package:listen_portfolio_flutter/shared/widgets/common_loading.dart';
@@ -46,6 +47,8 @@ mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel {
 
   @override
   CancelToken get cancelToken {
+    // If the current token is already cancelled, we must create a new one.
+    // Otherwise, all subsequent network requests using this token will fail immediately.
     if (_cancelToken.isCancelled) {
       _cancelToken = CancelToken();
     }
@@ -121,6 +124,10 @@ mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel {
         if (showLoading) CommonLoading.hide();
         final dynamic self = this;
         appLogger.d('$tag: [STATE] <- ${self.state}');
+        
+        // INJECTED CRASH CHECK: Moved inside the Zone to ensure the Trace ID is correctly associated.
+        CrashManager.checkAndTriggerInjectedCrash();
+
         ZoneManager.mark('Intent Finished');
       } catch (e) {
         if (showLoading) CommonLoading.hide();

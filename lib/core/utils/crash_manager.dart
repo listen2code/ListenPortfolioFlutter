@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:intl/intl.dart';
 import 'package:listen_portfolio_flutter/core/utils/log_manager.dart';
@@ -7,6 +8,8 @@ import 'package:path_provider/path_provider.dart';
 
 class CrashManager {
   CrashManager._();
+
+  static DateTime? _scheduledCrashTime;
 
   /// Saves current logs and error details to a local file.
   static Future<String?> saveCrashLog(Object error, StackTrace stack) async {
@@ -38,12 +41,57 @@ class CrashManager {
     try {
       final directory = await getApplicationDocumentsDirectory();
       final List<FileSystemEntity> files = directory.listSync();
-      return files
+      final logs = files
           .whereType<File>()
           .where((f) => f.path.contains('crash_') && f.path.endsWith('.log'))
           .toList();
+      logs.sort((a, b) => b.path.compareTo(a.path));
+      return logs;
     } catch (_) {
       return [];
+    }
+  }
+
+  /// Deletes a crash log file.
+  static Future<void> deleteCrashLog(File file) async {
+    if (await file.exists()) {
+      await file.delete();
+    }
+  }
+
+  /// Simulates an upload to the server.
+  static Future<bool> uploadCrashLog(File file) async {
+    await Future.delayed(const Duration(seconds: 2));
+    appLogger.i('Uploaded crash log: ${file.path}');
+    return true;
+  }
+
+  /// Schedules a crash to occur after 10-20 seconds.
+  /// The crash will be injected into the next ViewModel dispatch.
+  static void scheduleRandomCrash() {
+    final random = Random();
+    final delaySeconds = 10 + random.nextInt(11); // 10 to 20 seconds
+    _scheduledCrashTime = DateTime.now().add(Duration(seconds: delaySeconds));
+
+    appLogger.w(
+      'CRASH TEST: Exception scheduled to trigger during any dispatch after $delaySeconds seconds.',
+    );
+  }
+
+  /// Internal: Checks if a scheduled crash is due and throws if it is.
+  static void checkAndTriggerInjectedCrash() {
+    if (_scheduledCrashTime != null && DateTime.now().isAfter(_scheduledCrashTime!)) {
+      _scheduledCrashTime = null; // Reset
+
+      final random = Random();
+      final crashTypes = [
+        () => throw Exception('Injected: UI interaction interrupted by simulated core failure'),
+        () => throw StateError('Injected: viewModel state corrupted during intent processing'),
+        () => throw ArgumentError('Injected: Unexpected null value in critical business logic'),
+        () => throw const FormatException('Injected: Corrupted response data from simulated network'),
+      ];
+
+      crashTypes[random.nextInt(crashTypes.length)]();
     }
   }
 }

@@ -15,6 +15,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 class BaseStatelessPage extends ConsumerStatefulWidget {
   final TransitionBuilder body;
   final String? title;
+  final List<Widget>? actions; // Added actions parameter
   final PreferredSizeWidget? appBar;
   final Widget? drawer;
   final Widget? floatingActionButton;
@@ -38,6 +39,7 @@ class BaseStatelessPage extends ConsumerStatefulWidget {
     super.key,
     required this.body,
     this.title,
+    this.actions, // Initialize actions
     this.appBar,
     this.drawer,
     this.floatingActionButton,
@@ -238,6 +240,7 @@ class _BaseStatelessPageState extends ConsumerState<BaseStatelessPage>
     return AppBar(
       title: CommonText(widget.title ?? "", style: const TextStyle(fontWeight: FontWeight.w300)),
       centerTitle: true,
+      actions: widget.actions, // Use the actions here
       backgroundColor: Colors.transparent,
       elevation: 0,
       foregroundColor: theme.brightness == Brightness.light ? Colors.black87 : Colors.white,

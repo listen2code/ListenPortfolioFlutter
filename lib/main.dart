@@ -67,9 +67,25 @@ void main() {
       runApp(const ProviderScope(child: MyApp()));
     },
     traceId: ZoneManager.mainTraceId,
-    onError: (error, stack) {
-      // PERSIST CRASH DATA LOCALLY
-      CrashManager.saveCrashLog(error, stack);
+    onError: (error, stack) async {
+      // 1. PERSIST CRASH DATA LOCALLY
+      final filePath = await CrashManager.saveCrashLog(error, stack);
+
+      // 2. Show a global crash alert dialog using the navigatorKey context
+      final context = AppNavConfig.context;
+      if (context != null && filePath != null) {
+        CommonDialog.showConfirm(
+          title: 'App Crashed',
+          message: 'A crash has been detected and logged. Would you like to view the detailed report?',
+          okText: 'View Report',
+          cancelText: 'Dismiss',
+        ).then((confirmed) {
+          if (confirmed == true) {
+            // 3. Navigate to the crash log list page and pass the file path to open it automatically
+            AppNav.to(Routes.crashLogs, arguments: {Routes.argFilePath: filePath});
+          }
+        });
+      }
     },
   );
 }

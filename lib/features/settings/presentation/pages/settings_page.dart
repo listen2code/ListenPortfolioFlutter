@@ -49,7 +49,7 @@ class _SettingsPageState extends State<SettingsPage> {
           title: I18nKeys.settings.tr,
           body: (context, child) {
             return SingleChildScrollView(
-              padding: EdgeInsets.all(20),
+              padding: const EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -121,10 +121,10 @@ class _SettingsPageState extends State<SettingsPage> {
 
                   SizedBox(height: 25.f),
 
-                  // 4. DEVELOPER TOOLS: Always visible
+                  // 4. DEVELOPER TOOLS
                   _buildSectionTitle(I18nKeys.developer.tr),
                   _buildSettingsCard([
-                    // Listen to log overlay visibility changes via ValueListenableBuilder
+                    // Log Overlay Switch
                     ValueListenableBuilder<bool>(
                       valueListenable: LogOverlayManager.isShowingNotifier,
                       builder: (context, isShowing, child) {
@@ -141,6 +141,13 @@ class _SettingsPageState extends State<SettingsPage> {
                           },
                         );
                       },
+                    ),
+                    // Crash Reports Entry
+                    _buildListTile(
+                      icon: Icons.bug_report_outlined,
+                      title: 'Crash Reports',
+                      subtitle: 'View and manage local crash logs',
+                      onTap: () => AppNav.to(Routes.crashLogs),
                     ),
                     _buildListTile(
                       icon: Icons.settings_input_antenna_rounded,
@@ -295,7 +302,7 @@ class _SettingsPageState extends State<SettingsPage> {
     return Container(
       decoration: BoxDecoration(
         boxShadow: [
-          BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 8.f, offset: Offset(0, 4.f)),
+          BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 8.f, offset: const Offset(0, 4)),
         ],
       ),
       child: Material(
