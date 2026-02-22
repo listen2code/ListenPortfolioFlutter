@@ -18,8 +18,8 @@ class LogManager {
   static const int _maxLogs = 100;
 
   // --- Constants for Log Filtering and Identification ---
-  static const String summaryTag = "Summary:";
-  static const String mockServerTag = "MockServer:";
+  static const String summaryTag = "Summary";
+  static const String mockServerTag = "MockServer";
   static const String termTag = "Execution Terminated";
 
   // Private ValueNotifier to manage state internally
@@ -33,7 +33,7 @@ class LogManager {
       _logs.removeAt(0);
     }
     _logs.add(LogEntry(timestamp: DateTime.now(), level: level, message: message));
-    
+
     // Trigger update asynchronously
     refresh();
   }

@@ -129,7 +129,7 @@ class ZoneManager {
     final summary = perf._summary();
     if (summary.isNotEmpty) {
       // Use LogManager.summaryTag instead of hardcoded ':'
-      appLogger.d('$label ${LogManager.summaryTag}$summary');
+      appLogger.d('$label ${LogManager.summaryTag}:$summary');
     }
   }
 

@@ -108,9 +108,9 @@ mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel {
 
   /// Dispatcher for UI intents.
   /// [showLoading] Automatically shows/hides CommonLoading during the action.
-  Future<void> dispatch(dynamic intent, FutureOr<void> Function() handler, {bool showLoading = false}) async {
+  Future<void> dispatch(dynamic intent, FutureOr<void> Function() handler, {bool showLoading = false}) {
     // We use ZoneManager to inject both Trace ID and CancelToken into the execution context.
-    return ZoneManager.run(() async {
+    return ZoneManager.run(() {
       final tag = runtimeType.toString();
       appLogger.d('$tag: [INTENT] -> $intent');
       ZoneManager.mark('Intent [$intent] Started');
@@ -118,20 +118,31 @@ mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel {
       if (showLoading) CommonLoading.show();
 
       try {
-        // Explicitly await the handler to ensure async errors are caught in this try-block
-        await handler();
+        final result = handler();
 
-        if (showLoading) CommonLoading.hide();
-        final dynamic self = this;
-        appLogger.d('$tag: [STATE] <- ${self.state}');
-        
-        // INJECTED CRASH CHECK: Moved inside the Zone to ensure the Trace ID is correctly associated.
-        CrashManager.checkAndTriggerInjectedCrash();
+        void onComplete() {
+          if (showLoading) CommonLoading.hide();
+          final dynamic self = this;
+          // Log state immediately. For sync handlers, this runs before microtask cleanup.
+          appLogger.d('$tag: [STATE] <- ${self.state}');
 
-        ZoneManager.mark('Intent Finished');
+          // INJECTED CRASH CHECK: Moved inside the Zone to ensure the Trace ID is correctly associated.
+          CrashManager.checkAndTriggerInjectedCrash();
+
+          ZoneManager.mark('Intent Finished');
+        }
+
+        if (result is Future) {
+          return result.then((_) => onComplete(), onError: (e, s) {
+            if (showLoading) CommonLoading.hide();
+            throw e;
+          });
+        } else {
+          onComplete();
+          return Future.value();
+        }
       } catch (e) {
         if (showLoading) CommonLoading.hide();
-        // Re-throw to allow ZoneManager.run or runZonedGuarded to catch it
         rethrow;
       }
     }, cancelToken: cancelToken);
