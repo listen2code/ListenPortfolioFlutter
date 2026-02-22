@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:listen_portfolio_flutter/core/utils/zone_manager.dart';
@@ -21,8 +23,8 @@ class ApiClient {
     );
 
     dio.interceptors.addAll([
+      _ZoneContextInterceptor(),
       _LoggingInterceptor(),
-      _ZoneContextInterceptor(), // Handles Trace ID and CancelToken
       _AuthInterceptor(),
       _ErrorInterceptor(),
     ]);
@@ -36,24 +38,57 @@ class ApiClient {
 class _LoggingInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    appLogger.i('REQUEST[${options.method}] => PATH: ${options.path}');
-    appLogger.i('Headers: ${options.headers}');
-    appLogger.i('Data: ${options.data}');
+    final buffer = StringBuffer();
+    buffer.write('🌐 REQUEST [${options.method.toUpperCase()}] => ${options.uri}');
+
+    if (options.headers.isNotEmpty) {
+      buffer.write('\nHeaders: {');
+      options.headers.forEach((key, value) => buffer.write('\n  $key: $value'));
+      buffer.write('\n}');
+    }
+
+    if (options.data != null) {
+      buffer.write('\nBody: ${_prettyJson(options.data)}');
+    }
+
+    appLogger.i(buffer.toString());
     super.onRequest(options, handler);
   }
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    appLogger.i('RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions.path}');
-    appLogger.i('Data: ${response.data}');
+    final buffer = StringBuffer();
+    buffer.write('✅ RESPONSE [${response.statusCode}] <= ${response.requestOptions.path}');
+    buffer.write('\nData: ${_prettyJson(response.data)}');
+
+    appLogger.i(buffer.toString());
     super.onResponse(response, handler);
   }
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
-    appLogger.e('ERROR[${err.response?.statusCode}] => PATH: ${err.requestOptions.path}');
-    appLogger.e('Message: ${err.message}');
+    final buffer = StringBuffer();
+    buffer.write('❌ ERROR [${err.response?.statusCode ?? 'N/A'}] !! ${err.requestOptions.path}');
+    buffer.write('\nMessage: ${err.message}');
+    if (err.response?.data != null) {
+      buffer.write('\nError Body: ${_prettyJson(err.response?.data)}');
+    }
+
+    appLogger.e(buffer.toString());
     super.onError(err, handler);
+  }
+
+  String _prettyJson(dynamic json) {
+    if (json == null) return 'null';
+    try {
+      const encoder = JsonEncoder.withIndent('  ');
+      if (json is String) {
+        return encoder.convert(jsonDecode(json));
+      }
+      return encoder.convert(json);
+    } catch (_) {
+      return json.toString();
+    }
   }
 }
 
@@ -61,6 +96,9 @@ class _LoggingInterceptor extends Interceptor {
 class _ZoneContextInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+    // Performance Mark: API Request sent
+    ZoneManager.mark('API Request: ${options.path} Sent');
+
     // 1. Inject Trace ID into headers for server-side correlation
     options.headers['X-Trace-Id'] = ZoneManager.currentTraceId;
 
@@ -73,6 +111,20 @@ class _ZoneContextInterceptor extends Interceptor {
     }
 
     handler.next(options);
+  }
+
+  @override
+  void onResponse(Response response, ResponseInterceptorHandler handler) {
+    // Performance Mark: API Response received
+    ZoneManager.mark('API Response: ${response.requestOptions.path} Received');
+    super.onResponse(response, handler);
+  }
+
+  @override
+  void onError(DioException err, ErrorInterceptorHandler handler) {
+    // Performance Mark: API Error occurred
+    ZoneManager.mark('API Error: ${err.requestOptions.path}');
+    super.onError(err, handler);
   }
 }
 

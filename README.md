@@ -45,7 +45,6 @@ samples, guidance on mobile development, and a full API reference.
     * build web
 * switch env: input url; mock api; config each api; separate mock
 * dev tools: layout check; lag check; launch; app launch; apk size; session timeout;
-* aspect log, trace log
 * app review
 * finger auth
 * auto login

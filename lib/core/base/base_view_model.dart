@@ -110,6 +110,7 @@ mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel {
     return ZoneManager.run(() {
       final tag = runtimeType.toString();
       appLogger.d('$tag: [INTENT] -> $intent');
+      ZoneManager.mark('Intent [$intent] Started');
 
       if (showLoading) CommonLoading.show();
 
@@ -121,12 +122,14 @@ mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel {
             if (showLoading) CommonLoading.hide();
             final dynamic self = this;
             appLogger.d('$tag: [STATE] (Async) <- ${self.state}');
+            ZoneManager.mark('Intent Async Finished');
           });
         }
 
         if (showLoading) CommonLoading.hide();
         final dynamic self = this;
         appLogger.d('$tag: [STATE] <- ${self.state}');
+        ZoneManager.mark('Intent Sync Finished');
         return result;
       } catch (e) {
         if (showLoading) CommonLoading.hide();

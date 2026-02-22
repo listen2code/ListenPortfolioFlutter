@@ -6,6 +6,7 @@ import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'log_manager.dart';
+import 'zone_manager.dart';
 
 enum LogFilter { all, server, app }
 
@@ -391,8 +392,8 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
   }
 
   Widget _buildLogRow(LogEntry log) {
-    // Attempt to extract traceId from format [uuid-v4]
-    final traceRegex = RegExp(r'\[([a-f0-9-]{36})\]');
+    // Attempt to extract traceId from format [uuid-v4] or mainTraceId
+    final traceRegex = RegExp('\\[([a-f0-9-]{36}|${ZoneManager.mainTraceId})\\]');
     final match = traceRegex.firstMatch(log.message);
     final String? traceId = match?.group(1);
 
@@ -407,10 +408,7 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
               style: const TextStyle(color: Colors.white38),
             ),
             if (traceId != null) ...[
-              const TextSpan(
-                text: '[',
-                style: TextStyle(color: Colors.white24),
-              ),
+              const TextSpan(text: '[', style: TextStyle(color: Colors.white24)),
               TextSpan(
                 text: traceId,
                 style: const TextStyle(
@@ -424,12 +422,10 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
                     if (!isFilterVisible) setState(() => isFilterVisible = true);
                   },
               ),
-              const TextSpan(
-                text: '] ',
-                style: TextStyle(color: Colors.white24),
-              ),
+              const TextSpan(text: '] ', style: TextStyle(color: Colors.white24)),
               TextSpan(
-                text: log.message.replaceFirst('[$traceId]', '').trim(),
+                // REMOVED .trim() to preserve the structure and structure-based newlines
+                text: log.message.replaceFirst('[$traceId]', ''),
                 style: TextStyle(color: _getLogColor(log.level)),
               ),
             ] else

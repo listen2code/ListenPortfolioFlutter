@@ -35,8 +35,8 @@ class _TracePrinter extends LogPrinter {
   @override
   List<String> log(LogEvent event) {
     final traceId = ZoneManager.currentTraceId;
-    // Prepend traceId to the message. If it's a multi-line object, it will be stringified.
-    final newMessage = '[$traceId] ${event.message}';
+    // Prepend traceId followed by a newline to ensure clarity in the IDE console.
+    final newMessage = '[$traceId]\n${event.message}';
 
     return _inner.log(
       LogEvent(event.level, newMessage, error: event.error, stackTrace: event.stackTrace, time: event.time),
@@ -49,9 +49,10 @@ class _LogManagerOutput extends LogOutput {
   @override
   void output(OutputEvent event) {
     final traceId = ZoneManager.currentTraceId;
-    // Extract message and prepend Trace ID for the internal UI viewer
+    // Prepend traceId followed by a newline for structured display in the App's log viewer.
+    // Ensure rawMessage follows immediately after newline for proper alignment.
     final rawMessage = event.origin.message.toString();
-    final message = '[$traceId]\n $rawMessage\n';
+    final message = '[$traceId]\n$rawMessage';
 
     if (rawMessage.isNotEmpty) {
       LogManager.addLog(message, level: _mapLevel(event.level));
@@ -59,7 +60,7 @@ class _LogManagerOutput extends LogOutput {
 
     // Capture explicit error object details if available
     if (event.origin.error != null) {
-      LogManager.addLog('[$traceId] Error Detail: ${event.origin.error}', level: LogLevel.error);
+      LogManager.addLog('[$traceId]\nError Detail: ${event.origin.error}', level: LogLevel.error);
     }
   }
 

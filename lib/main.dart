@@ -47,10 +47,11 @@ void main() async {
     },
   );
 
-  // Wrap app startup in a protected Zone to catch all unhandled async errors
+  // Use runGuarded to wrap the entire app execution.
+  // This will catch all unhandled async errors and provide a root trace context.
   ZoneManager.runGuarded(() {
     runApp(const ProviderScope(child: MyApp()));
-  }, traceId: "trace-app");
+  }, traceId: ZoneManager.mainTraceId);
 }
 
 class MyApp extends StatelessWidget {

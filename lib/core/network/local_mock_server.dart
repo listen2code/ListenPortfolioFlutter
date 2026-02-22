@@ -23,10 +23,12 @@ class LocalMockServer {
         // Read traceId from headers to correlate with client logs
         final String? traceId = request.headers.value('X-Trace-Id');
 
-        // Run the request handler in a specific zone with the traceId
+        // Run the request handler in a specific zone with the traceId.
+        // We set silent: true because this is a local helper and we don't need a separate summary.
         ZoneManager.run(
           () => _handleRequest(request),
           traceId: traceId,
+          silent: true,
         );
       });
     } catch (e) {
@@ -57,7 +59,7 @@ class LocalMockServer {
       appLogger.e('MockServer: Error reading request body: $e');
     }
 
-    appLogger.w('\nMockServer: >>> [${request.method.toUpperCase()}] $uriPath');
+    appLogger.w('MockServer: >>> [${request.method.toUpperCase()}] $uriPath');
     if (requestBody.isNotEmpty) {
       try {
         final dynamic jsonBody = json.decode(requestBody);
