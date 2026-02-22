@@ -51,6 +51,7 @@ class I18nKeys {
   static const String signUp = 'Sign Up';
   static const String rememberMe = 'Remember Me';
   static const String minLengthMsg = 'Must be at least %s characters';
+  static const String loginSuccess = 'Login success!';
 
   // Sign Up Page
   static const String createAccount = 'Create Account';
@@ -140,7 +141,26 @@ class I18nKeys {
   static const String cancel = 'Cancel';
   static const String ok = 'OK';
   static const String reset = 'Reset';
+  static const String delete = 'Delete';
   static const String settingsResetSuccess = 'All settings have been reset.';
+
+  // Crash Reports
+  static const String crashReports = 'Crash Reports';
+  static const String noCrashReports = 'No crash reports found';
+  static const String triggerCrash = 'Trigger Injected Crash';
+  static const String triggerCrashDesc = 'triggerCrashDesc';
+  static const String startTimer = 'Start Timer';
+  static const String crashScheduled = 'Crash injection scheduled!';
+  static const String uploading = 'Uploading...';
+  static const String uploadSuccess = 'Crash report uploaded successfully';
+  static const String uploadFailed = 'Upload failed';
+  static const String deleteReport = 'Delete Report';
+  static const String deleteReportConfirm = 'Are you sure you want to delete this crash report?';
+  static const String copiedToClipboard = 'Copied to clipboard';
+  static const String appCrashed = 'App Crashed';
+  static const String crashDetectedMsg = 'crashDetectedMsg';
+  static const String viewReport = 'View Report';
+  static const String dismiss = 'Dismiss';
 
   // Account Deletion (Google Play Compliance)
   static const String deleteAccount = 'Delete Account';
