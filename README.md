@@ -31,14 +31,22 @@ samples, guidance on mobile development, and a full API reference.
 ## todo
 
 * base
-    * base use case; view model
-* other MVI
-* db data design
-* web data
-* core -> shared
-* core to package
-* widget to package
+    * base use case; view modelMVI
+    * core -> shared
+    * publish core
+    * publish widget
+* function
+    * other pages, use
     * common_switch
+    * switch env: input url; mock api; config each api; separate mock
+    * dev tools: layout check; lag check; app launch; apk size; session timeout;
+    * app review
+    * finger auth
+    * auto login
+    * CustomPainter show skills graph
+    * ai intro assistant
+    * pdf show, download resume
+    * unit test
 * ide plugin
     * assets
 * framework
@@ -47,22 +55,17 @@ samples, guidance on mobile development, and a full API reference.
             * package_libs: basic third util, network, sp, event_bus, theme, globalization
                 * package_widget: base widgets, button, text, image, dialog, toast, loading, refreshList, tabView,
                     * package_biz: base biz
-                    * package_webView: webView
-                    * package_splash: splash module
-                    * package_login: login module
-                    * package_share: share module
-                * plugin_native: plugin for native basic info
+                        * package_webView: webView
+                        * package_splash: splash module
+                        * package_login: login module
+                        * package_share: share module
+                        * plugin_native: plugin for native basic info
 * server/
+    * db data design
     * api
     * i18
     * build web
-* switch env: input url; mock api; config each api; separate mock
-* dev tools: layout check; lag check; app launch; apk size; session timeout;
-* app review
-* finger auth
-* auto login
 * readme: screen capture, architect, tech stack
 * issue
     * ndk bundle;
     * pixel icon cache
-* ai intro assistant
