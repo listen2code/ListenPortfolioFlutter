@@ -11,7 +11,7 @@ import 'package:uuid/uuid.dart';
 class ZoneManager {
   ZoneManager._();
 
-  static const String mainTraceId = "app-init";
+  static const String mainTraceId = "main-zone";
   static const Symbol _traceKey = Symbol('trace_id_key');
   static const Symbol _cancelTokenKey = Symbol('dio_cancel_token_key');
   static const Symbol _perfKey = Symbol('perf_trace_key');

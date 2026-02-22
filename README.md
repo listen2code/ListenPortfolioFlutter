@@ -44,7 +44,7 @@ samples, guidance on mobile development, and a full API reference.
     * i18
     * build web
 * switch env: input url; mock api; config each api; separate mock
-* dev tools: layout check; lag check; launch; app launch; apk size; session timeout;
+* dev tools: layout check; lag check; app launch; apk size; session timeout;
 * app review
 * finger auth
 * auto login
