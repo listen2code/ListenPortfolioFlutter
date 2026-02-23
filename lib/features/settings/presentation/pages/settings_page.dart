@@ -10,8 +10,8 @@ import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/core/utils/cache_manager.dart';
 import 'package:listen_portfolio_flutter/core/utils/log_overlay_manager.dart';
 import 'package:listen_portfolio_flutter/generated/r.dart';
+import 'package:listen_portfolio_flutter/shared/constants/app_constants.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
-import 'package:listen_portfolio_flutter/shared/utils/app_constants.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});

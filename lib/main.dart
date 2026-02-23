@@ -14,7 +14,8 @@ import 'package:listen_portfolio_flutter/core/utils/crash_manager.dart';
 import 'package:listen_portfolio_flutter/core/utils/sp_util.dart';
 import 'package:listen_portfolio_flutter/core/utils/zone_manager.dart';
 import 'package:listen_portfolio_flutter/shared/base/base_auth_listenable_page.dart';
-import 'package:listen_portfolio_flutter/shared/utils/app_constants.dart';
+import 'package:listen_portfolio_flutter/shared/constants/app_constants.dart';
+import 'package:listen_portfolio_flutter/shared/constants/env_biz_config.dart';
 import 'package:listen_portfolio_flutter/shared/utils/quick_actions_manager.dart';
 import 'package:listen_portfolio_flutter/shared/utils/routes.dart';
 import 'package:listen_portfolio_flutter/shared/widgets/common_dialog.dart';
@@ -42,7 +43,16 @@ void main() {
 Future<void> _initServices() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SpUtil.init(prefix: "${AppConstants.appName}_");
+
+  // Inject business-specific environment configurations
+  AppEnv.setup({
+    AppEnvironment.mock: BizEnvConfigs.mock,
+    AppEnvironment.dev: BizEnvConfigs.dev,
+    AppEnvironment.test: BizEnvConfigs.test,
+    AppEnvironment.prod: BizEnvConfigs.prod,
+  });
   await AppEnv.init();
+
   QuickActionsManager.init();
   settingManager.loadSettings();
 }

@@ -7,8 +7,8 @@ import 'package:listen_portfolio_flutter/core/extension/context_extension.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
+import 'package:listen_portfolio_flutter/shared/constants/app_constants.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
-import 'package:listen_portfolio_flutter/shared/utils/app_constants.dart';
 
 class AboutMeWidget extends StatefulWidget {
   const AboutMeWidget({super.key});

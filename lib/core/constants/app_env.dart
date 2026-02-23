@@ -21,25 +21,46 @@ enum AppEnvironment {
   }
 }
 
+abstract class EnvConfig {
+  String get baseUrl;
+
+  int get connectTimeout;
+
+  int get receiveTimeout;
+
+  int get apiTimeout;
+}
+
 class AppEnv {
   AppEnv._();
 
   static const String envDefine = "APP_ENV";
   static const String defaultEnv = "mock";
 
-  // Internal state, defaults to compile-time define
+  static late final Map<AppEnvironment, EnvConfig> _configs;
+  static bool _isSetup = false;
+
   static AppEnvironment _env = AppEnvironment.fromString(
     const String.fromEnvironment(envDefine, defaultValue: defaultEnv),
   );
 
-  /// Initializes the environment by checking local storage and starting mock server if needed
+  static void setup(Map<AppEnvironment, EnvConfig> configs) {
+    if (_isSetup) {
+      throw Exception("AppEnv has already been set up.");
+    }
+    _configs = configs;
+    _isSetup = true;
+  }
+
   static Future<void> init() async {
+    if (!_isSetup) {
+      throw Exception("AppEnv must be set up before initialization.");
+    }
     final savedEnv = SpUtil.getString(Constants.envKey);
     if (savedEnv != null) {
       _env = AppEnvironment.fromString(savedEnv);
     }
 
-    // Start local server if in mock mode
     if (_env == AppEnvironment.mock) {
       await LocalMockServer.start();
     }
@@ -49,59 +70,24 @@ class AppEnv {
 
   static bool isProd() => _env == AppEnvironment.prod;
 
-  // Configuration for local in-app mock server
-  static const _mockConfig = (
-    baseUrl: 'http://localhost:9999', // Points to internal LocalMockServer
-    apiTimeout: 30000,
-    connectTimeout: 5000,
-    receiveTimeout: 5000,
-  );
-
-  static const _devConfig = (
-    baseUrl: 'http://192.168.0.224:9898',
-    apiTimeout: 30000,
-    connectTimeout: 15000,
-    receiveTimeout: 15000,
-  );
-
-  static const _testConfig = (
-    baseUrl: 'http://192.168.0.100:9898',
-    apiTimeout: 30000,
-    connectTimeout: 15000,
-    receiveTimeout: 15000,
-  );
-
-  static const _prodConfig = (
-    baseUrl: 'https://api.lPortfolio.com',
-    apiTimeout: 60000,
-    connectTimeout: 30000,
-    receiveTimeout: 30000,
-  );
-
   static AppEnvironment get currentEnv => _env;
 
   static String get env => _env.name;
 
-  static dynamic get _current {
-    switch (_env) {
-      case AppEnvironment.mock:
-        return _mockConfig;
-      case AppEnvironment.dev:
-        return _devConfig;
-      case AppEnvironment.test:
-        return _testConfig;
-      case AppEnvironment.prod:
-        return _prodConfig;
+  static EnvConfig get _current {
+    final config = _configs[_env];
+    if (config == null) {
+      throw Exception(
+        "No configuration found for environment: ${_env.name}. Ensure it was provided during setup.",
+      );
     }
+    return config;
   }
 
-  /// Updates current environment, persists state, and toggles mock server
   static Future<void> setEnvironment(AppEnvironment newEnv) async {
-    // Stop server if moving away from mock
     if (_env == AppEnvironment.mock && newEnv != AppEnvironment.mock) {
       await LocalMockServer.stop();
     }
-    // Start server if moving to mock
     if (newEnv == AppEnvironment.mock) {
       await LocalMockServer.start();
     }
@@ -113,10 +99,11 @@ class AppEnv {
   }
 
   static void _applyDioConfig() {
-    ApiClient.dio.options.baseUrl = apiBaseUrl;
-    ApiClient.dio.options.connectTimeout = Duration(milliseconds: connectTimeout);
-    ApiClient.dio.options.receiveTimeout = Duration(milliseconds: receiveTimeout);
-    ApiClient.dio.options.sendTimeout = Duration(milliseconds: apiTimeout);
+    final config = _current;
+    ApiClient.dio.options.baseUrl = config.baseUrl;
+    ApiClient.dio.options.connectTimeout = Duration(milliseconds: config.connectTimeout);
+    ApiClient.dio.options.receiveTimeout = Duration(milliseconds: config.receiveTimeout);
+    ApiClient.dio.options.sendTimeout = Duration(milliseconds: config.apiTimeout);
   }
 
   static String get apiBaseUrl => _current.baseUrl;

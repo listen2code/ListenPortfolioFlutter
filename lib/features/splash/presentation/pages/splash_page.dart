@@ -4,7 +4,7 @@ import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/core/utils/log_overlay_manager.dart';
 import 'package:listen_portfolio_flutter/generated/r.dart';
-import 'package:listen_portfolio_flutter/shared/utils/app_constants.dart';
+import 'package:listen_portfolio_flutter/shared/constants/app_constants.dart';
 import 'package:listen_portfolio_flutter/shared/utils/routes.dart';
 
 class SplashPage extends StatefulWidget {

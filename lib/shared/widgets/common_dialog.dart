@@ -83,9 +83,17 @@ class CommonDialog {
                       trailing: item.value
                           ? Icon(Icons.check_circle, color: settingManager.accentColor)
                           : null,
-                      onTap: () {
-                        // Trigger callback (which usually includes AppNav.back())
-                        setDialogState(() => item.onChanged(!item.value));
+                      onTap: () async {
+                        // 1. Execute the callback (could be async)
+                        final newValue = !item.value;
+                        await item.onChanged(newValue);
+                        
+                        // 2. Update local state for immediate visual feedback if the dialog is still open
+                        if (context.mounted) {
+                          setDialogState(() {
+                            item.value = newValue;
+                          });
+                        }
                       },
                     ),
                   )
@@ -119,7 +127,7 @@ class CommonDialog {
 class DialogSwitchItem {
   final String label;
   bool value;
-  final ValueChanged<bool> onChanged;
+  final dynamic Function(bool) onChanged; // Allow both sync and async callbacks
 
   DialogSwitchItem({required this.label, required this.value, required this.onChanged});
 }

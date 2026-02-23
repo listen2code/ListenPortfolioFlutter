@@ -9,8 +9,8 @@ import 'package:listen_portfolio_flutter/features/home/presentation/pages/widget
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/widgets/architecture_widget.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/widgets/overview_widget.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/widgets/projects_widget.dart';
+import 'package:listen_portfolio_flutter/shared/constants/app_constants.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
-import 'package:listen_portfolio_flutter/shared/utils/app_constants.dart';
 
 /// Enum to manage home page tabs instead of hardcoded indices
 enum HomeTab { overview, aboutMe, projects, architecture }
