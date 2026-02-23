@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:listen_portfolio_flutter/core/base/base_listenable_page.dart';
 import 'package:listen_portfolio_flutter/core/extension/context_extension.dart';
+import 'package:listen_portfolio_flutter/shared/base/base_listenable_page.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 
 class ProjectsWidget extends StatelessWidget {
@@ -111,11 +111,7 @@ class ProjectsWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(24.f),
         border: Border.all(color: baseColor.withValues(alpha: 0.2), width: 1.f),
         boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 10.f,
-            offset: Offset(0, 5.f),
-          ),
+          BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10.f, offset: Offset(0, 5.f)),
         ],
       ),
       clipBehavior: Clip.antiAlias,
@@ -182,13 +178,9 @@ class ProjectsWidget extends StatelessWidget {
                 if (!isTodo)
                   Row(
                     children: [
-                      Expanded(
-                        child: _buildActionChip(context, Icons.link, 'Live Demo', baseColor),
-                      ),
+                      Expanded(child: _buildActionChip(context, Icons.link, 'Live Demo', baseColor)),
                       SizedBox(width: 12.f),
-                      Expanded(
-                        child: _buildActionChip(context, Icons.code, 'Source Code', Colors.grey),
-                      ),
+                      Expanded(child: _buildActionChip(context, Icons.code, 'Source Code', Colors.grey)),
                     ],
                   ),
               ],
