@@ -13,9 +13,6 @@ import 'package:listen_portfolio_flutter/core/utils/log_overlay_manager.dart';
 import 'package:listen_portfolio_flutter/generated/r.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 
-import 'privacy_policy_page.dart';
-import 'terms_of_service_page.dart';
-
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
 
@@ -165,12 +162,12 @@ class _SettingsPageState extends State<SettingsPage> {
                     _buildListTile(
                       icon: Icons.privacy_tip_outlined,
                       title: I18nKeys.privacyPolicy.tr,
-                      onTap: () => AppNav.to(const PrivacyPolicyPage()),
+                      onTap: () => AppNav.to(Routes.privacyPolicy),
                     ),
                     _buildListTile(
                       icon: Icons.gavel_outlined,
                       title: I18nKeys.termsOfService.tr,
-                      onTap: () => AppNav.to(const TermsOfServicePage()),
+                      onTap: () => AppNav.to(Routes.termsOfService),
                     ),
                     _buildListTile(
                       icon: Icons.info_outline_rounded,
@@ -379,10 +376,10 @@ class _SettingsPageState extends State<SettingsPage> {
     final accentColor = context.accentColor;
     final iconSize = 20.f * 0.8;
 
-    return SwitchListTile.adaptive(
+    return ListTile(
       dense: true,
       contentPadding: EdgeInsets.symmetric(horizontal: 16.f, vertical: 4.f),
-      secondary: Container(
+      leading: Container(
         padding: EdgeInsets.all(8.f),
         decoration: BoxDecoration(
           color: accentColor.withValues(alpha: 0.08),
@@ -395,9 +392,11 @@ class _SettingsPageState extends State<SettingsPage> {
         style: context.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
         maxLines: 1,
       ),
-      value: value,
-      activeColor: accentColor,
-      onChanged: onChanged,
+      trailing: CommonSwitch(
+        value: value,
+        onChanged: onChanged,
+      ),
+      onTap: () => onChanged(!value),
     );
   }
 }

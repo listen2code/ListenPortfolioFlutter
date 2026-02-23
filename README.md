@@ -17,6 +17,7 @@ samples, guidance on mobile development, and a full API reference.
 
 ## rules
 
+* The current flutter version is 3.38.3, please use the latest API.
 * Use English comments
 * Only modify the relevant code; formatting changes are not needed.
 * When drawing the screen, you can use the common components from the lib/shared/widgets directory. ...

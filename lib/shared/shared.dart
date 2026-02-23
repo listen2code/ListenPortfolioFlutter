@@ -5,6 +5,7 @@ export 'widgets/common_button.dart';
 export 'widgets/common_dialog.dart';
 export 'widgets/common_image.dart';
 export 'widgets/common_loading.dart';
+export 'widgets/common_switch.dart';
 export 'widgets/common_text.dart';
 export 'widgets/common_text_field.dart';
 export 'widgets/common_toast.dart';
