@@ -12,6 +12,7 @@ import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
 import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/core/utils/crash_manager.dart';
+import 'package:listen_portfolio_flutter/core/utils/sp_util.dart';
 import 'package:listen_portfolio_flutter/core/utils/zone_manager.dart';
 import 'package:listen_portfolio_flutter/features/splash/presentation/pages/splash_page.dart';
 import 'package:listen_portfolio_flutter/shared/base/base_auth_listenable_page.dart';
@@ -41,8 +42,10 @@ void main() {
 
 Future<void> _initServices() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await SpUtil.init(prefix: "${AppConstants.appName}_");
   await AppEnv.init();
   QuickActionsManager.init();
+  settingManager.loadSettings();
 }
 
 // Register auth, navigation, and named routes

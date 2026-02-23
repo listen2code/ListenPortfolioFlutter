@@ -1,7 +1,7 @@
 import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
 import 'package:listen_portfolio_flutter/core/network/api_client.dart';
 import 'package:listen_portfolio_flutter/core/network/local_mock_server.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:listen_portfolio_flutter/core/utils/sp_util.dart';
 
 enum AppEnvironment {
   mock(AppEnv.defaultEnv),
@@ -34,8 +34,7 @@ class AppEnv {
 
   /// Initializes the environment by checking local storage and starting mock server if needed
   static Future<void> init() async {
-    final prefs = await SharedPreferences.getInstance();
-    final savedEnv = prefs.getString(AppConstants.envKey);
+    final savedEnv = SpUtil.getString(AppConstants.envKey);
     if (savedEnv != null) {
       _env = AppEnvironment.fromString(savedEnv);
     }
@@ -110,8 +109,7 @@ class AppEnv {
     _env = newEnv;
     _applyDioConfig();
 
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(AppConstants.envKey, newEnv.name);
+    await SpUtil.put(AppConstants.envKey, newEnv.name);
   }
 
   static void _applyDioConfig() {

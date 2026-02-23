@@ -37,10 +37,11 @@ samples, guidance on mobile development, and a full API reference.
     * publish core
     * publish widget
 * function
+    * notification
     * other pages, use
     * common_switch
     * switch env: input url; mock api; config each api; separate mock
-    * dev tools: layout check; lag check; app launch; apk size; session timeout;
+    * dev tools: layout check; lag check; app launch; apk size; net inspector
     * app review
     * finger auth
     * auto login
@@ -48,6 +49,13 @@ samples, guidance on mobile development, and a full API reference.
     * ai intro assistant
     * pdf show, download resume
     * unit test
+    * pwd Encryption
+    * session timeout; auto login;
+    * profile image upload
+    * markdown resume, download pdf
+    * channel plugin
+    * jni
+    * safe mode
 * ide plugin
     * assets
 * framework

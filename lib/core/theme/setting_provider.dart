@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:listen_portfolio_flutter/core/utils/sp_util.dart';
 
 /// Font size options for the app
 enum AppFontSize {
@@ -34,9 +34,7 @@ class SettingManager extends ChangeNotifier {
 
   factory SettingManager() => _instance;
 
-  SettingManager._internal() {
-    _loadSettings();
-  }
+  SettingManager._internal();
 
   ThemeMode _themeMode = ThemeMode.system;
   Color _accentColor = Colors.blueAccent;
@@ -53,23 +51,23 @@ class SettingManager extends ChangeNotifier {
 
   Locale get locale => _language.locale;
 
-  Future<void> _loadSettings() async {
-    final prefs = await SharedPreferences.getInstance();
-
+  /// Load settings from SharedPreferences.
+  /// Should be called once at app startup.
+  void loadSettings() {
     // Load Theme Mode (Index 0 is System)
-    final themeIndex = prefs.getInt(AppConstants.themeKey);
+    final themeIndex = SpUtil.getInt(AppConstants.themeKey);
     _themeMode = themeIndex != null ? ThemeMode.values[themeIndex] : ThemeMode.system;
 
     // Load Accent Color
-    final colorValue = prefs.getInt(AppConstants.accentColorKey);
+    final colorValue = SpUtil.getInt(AppConstants.accentColorKey);
     if (colorValue != null) _accentColor = Color(colorValue);
 
     // Load Font Size
-    final factor = prefs.getDouble(AppConstants.fontSizeKey);
+    final factor = SpUtil.getDouble(AppConstants.fontSizeKey);
     _fontSize = AppFontSize.fromFactor(factor);
 
     // Load Language
-    final langLabel = prefs.getString(AppConstants.languageKey);
+    final langLabel = SpUtil.getString(AppConstants.languageKey);
     _language = AppLanguage.fromLabel(langLabel);
 
     notifyListeners();
@@ -79,33 +77,28 @@ class SettingManager extends ChangeNotifier {
     if (_themeMode == mode) return;
     _themeMode = mode;
     notifyListeners();
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(AppConstants.themeKey, mode.index);
+    await SpUtil.put(AppConstants.themeKey, mode.index);
   }
 
   Future<void> setAccentColor(Color color) async {
     if (_accentColor == color) return;
     _accentColor = color;
     notifyListeners();
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(AppConstants.accentColorKey, color.toARGB32());
+    await SpUtil.put(AppConstants.accentColorKey, color.toARGB32());
   }
 
   Future<void> setFontSize(AppFontSize size) async {
     if (_fontSize == size) return;
     _fontSize = size;
     notifyListeners();
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setDouble(AppConstants.fontSizeKey, size.factor);
+    await SpUtil.put(AppConstants.fontSizeKey, size.factor);
   }
 
   Future<void> setLanguage(AppLanguage lang) async {
     if (_language == lang) return;
     _language = lang;
     notifyListeners();
-
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(AppConstants.languageKey, lang.label);
+    await SpUtil.put(AppConstants.languageKey, lang.label);
   }
 
   Future<void> resetSettings() async {
@@ -115,8 +108,15 @@ class SettingManager extends ChangeNotifier {
     _language = AppLanguage.system;
     notifyListeners();
 
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
+    // This clears everything, so be cautious.
+    // If you only want to reset settings managed by SettingManager,
+    // you should remove keys one by one.
+    await SpUtil.clear();
+    // Restore defaults after clearing
+    await setThemeMode(_themeMode);
+    await setAccentColor(_accentColor);
+    await setFontSize(_fontSize);
+    await setLanguage(_language);
   }
 }
 

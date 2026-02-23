@@ -2,8 +2,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
+import 'package:listen_portfolio_flutter/core/utils/sp_util.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'log_manager.dart';
 import 'zone_manager.dart';
@@ -17,11 +17,10 @@ class LogOverlayManager {
   static Size? _windowSize;
 
   /// Notifier to let external widgets listen to the visibility state
-  static final ValueNotifier<bool> isShowingNotifier = ValueNotifier(false);
+  static final ValueNotifier<bool> isShowingNotifier = ValueNotifier(true);
 
   static Future<void> init(BuildContext context) async {
-    final prefs = await SharedPreferences.getInstance();
-    final isEnabled = prefs.getBool(AppConstants.logOverlayKey) ?? false;
+    final isEnabled = SpUtil.getBool(AppConstants.logOverlayKey, defaultValue: true);
 
     if (isEnabled && context.mounted) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -64,8 +63,7 @@ class LogOverlayManager {
     Overlay.of(context).insert(_overlayEntry!);
     isShowingNotifier.value = true;
 
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(AppConstants.logOverlayKey, true);
+    await SpUtil.put(AppConstants.logOverlayKey, true);
   }
 
   static Future<void> hide() async {
@@ -75,8 +73,7 @@ class LogOverlayManager {
     _overlayEntry = null;
     isShowingNotifier.value = false;
 
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(AppConstants.logOverlayKey, false);
+    await SpUtil.put(AppConstants.logOverlayKey, false);
   }
 }
 
