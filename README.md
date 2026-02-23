@@ -20,9 +20,11 @@ samples, guidance on mobile development, and a full API reference.
 * The current flutter version is 3.38.3, please use the latest API.
 * Use English comments
 * Only modify the relevant code; formatting changes are not needed.
-* When drawing the screen, you can use the common components from the lib/shared/widgets directory. ...
-* The core architecture code is in the lib/core directory.
+* When drawing the screen, you can use the common components from the lib/shared/widgets directory.
+* The core architecture code is in the lib/core directory. no business relevant code, that can be publish to pub, can be used for
+  another app
 * Business-related screens are under the lib/features directory
+* Business-related common code are under the lib/shared directory
 * If there are new string resources, please add them to both file below
     * [translations_key.dart](lib/core/i18n/translations_key.dart)
     * [en.dart](lib/core/i18n/languages/en.dart)
