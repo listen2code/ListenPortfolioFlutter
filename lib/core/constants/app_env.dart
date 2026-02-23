@@ -1,4 +1,4 @@
-import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
+import 'package:listen_portfolio_flutter/core/constants/constants.dart';
 import 'package:listen_portfolio_flutter/core/network/api_client.dart';
 import 'package:listen_portfolio_flutter/core/network/local_mock_server.dart';
 import 'package:listen_portfolio_flutter/core/utils/sp_util.dart';
@@ -34,7 +34,7 @@ class AppEnv {
 
   /// Initializes the environment by checking local storage and starting mock server if needed
   static Future<void> init() async {
-    final savedEnv = SpUtil.getString(AppConstants.envKey);
+    final savedEnv = SpUtil.getString(Constants.envKey);
     if (savedEnv != null) {
       _env = AppEnvironment.fromString(savedEnv);
     }
@@ -109,7 +109,7 @@ class AppEnv {
     _env = newEnv;
     _applyDioConfig();
 
-    await SpUtil.put(AppConstants.envKey, newEnv.name);
+    await SpUtil.put(Constants.envKey, newEnv.name);
   }
 
   static void _applyDioConfig() {

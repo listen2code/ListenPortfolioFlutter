@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/base/base_listenable_page.dart';
 import 'package:listen_portfolio_flutter/core/base/base_page.dart';
-import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_env.dart';
 import 'package:listen_portfolio_flutter/core/extension/context_extension.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
@@ -12,6 +11,7 @@ import 'package:listen_portfolio_flutter/core/utils/cache_manager.dart';
 import 'package:listen_portfolio_flutter/core/utils/log_overlay_manager.dart';
 import 'package:listen_portfolio_flutter/generated/r.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
+import 'package:listen_portfolio_flutter/shared/utils/app_constants.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -392,10 +392,7 @@ class _SettingsPageState extends State<SettingsPage> {
         style: context.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
         maxLines: 1,
       ),
-      trailing: CommonSwitch(
-        value: value,
-        onChanged: onChanged,
-      ),
+      trailing: CommonSwitch(value: value, onChanged: onChanged),
       onTap: () => onChanged(!value),
     );
   }

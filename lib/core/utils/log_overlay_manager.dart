@@ -1,7 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
+import 'package:listen_portfolio_flutter/core/constants/constants.dart';
 import 'package:listen_portfolio_flutter/core/utils/sp_util.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 
@@ -20,7 +20,7 @@ class LogOverlayManager {
   static final ValueNotifier<bool> isShowingNotifier = ValueNotifier(true);
 
   static Future<void> init(BuildContext context) async {
-    final isEnabled = SpUtil.getBool(AppConstants.logOverlayKey, defaultValue: true);
+    final isEnabled = SpUtil.getBool(Constants.logOverlayKey, defaultValue: true);
 
     if (isEnabled && context.mounted) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -63,7 +63,7 @@ class LogOverlayManager {
     Overlay.of(context).insert(_overlayEntry!);
     isShowingNotifier.value = true;
 
-    await SpUtil.put(AppConstants.logOverlayKey, true);
+    await SpUtil.put(Constants.logOverlayKey, true);
   }
 
   static Future<void> hide() async {
@@ -73,7 +73,7 @@ class LogOverlayManager {
     _overlayEntry = null;
     isShowingNotifier.value = false;
 
-    await SpUtil.put(AppConstants.logOverlayKey, false);
+    await SpUtil.put(Constants.logOverlayKey, false);
   }
 }
 

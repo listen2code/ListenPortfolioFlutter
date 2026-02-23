@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/base/base_listenable_page.dart';
-import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
 import 'package:listen_portfolio_flutter/core/extension/context_extension.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
+import 'package:listen_portfolio_flutter/shared/utils/app_constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class OverviewWidget extends StatelessWidget {
@@ -205,11 +205,7 @@ class OverviewWidget extends StatelessWidget {
         color: context.theme.cardColor,
         borderRadius: BorderRadius.circular(20.f),
         boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 10.f,
-            offset: Offset(0, 5.f),
-          ),
+          BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10.f, offset: Offset(0, 5.f)),
         ],
       ),
       child: Row(
@@ -226,7 +222,11 @@ class OverviewWidget extends StatelessWidget {
                   maxLines: 1,
                 ),
                 SizedBox(height: 4.f),
-                CommonText(label, style: context.textTheme.bodySmall?.copyWith(color: Colors.grey), maxLines: 1),
+                CommonText(
+                  label,
+                  style: context.textTheme.bodySmall?.copyWith(color: Colors.grey),
+                  maxLines: 1,
+                ),
               ],
             ),
           ),
@@ -247,7 +247,10 @@ class OverviewWidget extends StatelessWidget {
   Widget _buildTag(String label, Color color) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8.f, vertical: 2.f),
-      decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(6.f)),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(6.f),
+      ),
       child: CommonText(
         label,
         style: TextStyle(color: color, fontSize: 10.f, fontWeight: FontWeight.bold),
@@ -272,11 +275,7 @@ class OverviewWidget extends StatelessWidget {
           color: context.theme.cardColor,
           borderRadius: BorderRadius.circular(20.f),
           boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.03),
-              blurRadius: 10.f,
-              offset: Offset(0, 5.f),
-            ),
+            BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10.f, offset: Offset(0, 5.f)),
           ],
         ),
         child: Row(

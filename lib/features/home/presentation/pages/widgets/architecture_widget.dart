@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/base/base_listenable_page.dart';
-import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
 import 'package:listen_portfolio_flutter/core/extension/context_extension.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
+import 'package:listen_portfolio_flutter/shared/utils/app_constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ArchitectureWidget extends StatelessWidget {
@@ -131,11 +131,7 @@ class ArchitectureWidget extends StatelessWidget {
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(20.f),
         boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 10.f,
-            offset: Offset(0, 5.f),
-          ),
+          BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10.f, offset: Offset(0, 5.f)),
         ],
       ),
       child: Column(

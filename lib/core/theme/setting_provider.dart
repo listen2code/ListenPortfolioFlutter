@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:listen_portfolio_flutter/core/constants/app_constants.dart';
+import 'package:listen_portfolio_flutter/core/constants/constants.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/utils/sp_util.dart';
@@ -55,19 +55,19 @@ class SettingManager extends ChangeNotifier {
   /// Should be called once at app startup.
   void loadSettings() {
     // Load Theme Mode (Index 0 is System)
-    final themeIndex = SpUtil.getInt(AppConstants.themeKey);
+    final themeIndex = SpUtil.getInt(Constants.themeKey);
     _themeMode = themeIndex != null ? ThemeMode.values[themeIndex] : ThemeMode.system;
 
     // Load Accent Color
-    final colorValue = SpUtil.getInt(AppConstants.accentColorKey);
+    final colorValue = SpUtil.getInt(Constants.accentColorKey);
     if (colorValue != null) _accentColor = Color(colorValue);
 
     // Load Font Size
-    final factor = SpUtil.getDouble(AppConstants.fontSizeKey);
+    final factor = SpUtil.getDouble(Constants.fontSizeKey);
     _fontSize = AppFontSize.fromFactor(factor);
 
     // Load Language
-    final langLabel = SpUtil.getString(AppConstants.languageKey);
+    final langLabel = SpUtil.getString(Constants.languageKey);
     _language = AppLanguage.fromLabel(langLabel);
 
     notifyListeners();
@@ -77,28 +77,28 @@ class SettingManager extends ChangeNotifier {
     if (_themeMode == mode) return;
     _themeMode = mode;
     notifyListeners();
-    await SpUtil.put(AppConstants.themeKey, mode.index);
+    await SpUtil.put(Constants.themeKey, mode.index);
   }
 
   Future<void> setAccentColor(Color color) async {
     if (_accentColor == color) return;
     _accentColor = color;
     notifyListeners();
-    await SpUtil.put(AppConstants.accentColorKey, color.toARGB32());
+    await SpUtil.put(Constants.accentColorKey, color.toARGB32());
   }
 
   Future<void> setFontSize(AppFontSize size) async {
     if (_fontSize == size) return;
     _fontSize = size;
     notifyListeners();
-    await SpUtil.put(AppConstants.fontSizeKey, size.factor);
+    await SpUtil.put(Constants.fontSizeKey, size.factor);
   }
 
   Future<void> setLanguage(AppLanguage lang) async {
     if (_language == lang) return;
     _language = lang;
     notifyListeners();
-    await SpUtil.put(AppConstants.languageKey, lang.label);
+    await SpUtil.put(Constants.languageKey, lang.label);
   }
 
   Future<void> resetSettings() async {
