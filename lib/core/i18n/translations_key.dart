@@ -43,6 +43,13 @@ class I18nKeys {
   static const String privacyPolicy = 'Privacy Policy';
   static const String termsOfService = 'Terms of Service';
 
+  // Actions
+  static const String share = 'Share';
+  static const String delete = 'Delete';
+  static const String cancel = 'Cancel';
+  static const String ok = 'OK';
+  static const String reset = 'Reset';
+
   // Login Page
   static const String welcomeBack = 'Welcome Back!';
   static const String signInToContinue = 'Sign in to continue';
@@ -142,10 +149,6 @@ class I18nKeys {
   static const String resetConfirmTitle = 'Reset Settings?';
   static const String resetConfirmContent =
       'This will restore all settings to their default values. Are you sure?';
-  static const String cancel = 'Cancel';
-  static const String ok = 'OK';
-  static const String reset = 'Reset';
-  static const String delete = 'Delete';
   static const String settingsResetSuccess = 'All settings have been reset.';
 
   // Crash Reports

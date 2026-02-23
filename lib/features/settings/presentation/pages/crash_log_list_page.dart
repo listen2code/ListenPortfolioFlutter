@@ -10,6 +10,7 @@ import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
 import 'package:listen_portfolio_flutter/core/utils/crash_manager.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
+import 'package:share_plus/share_plus.dart';
 
 class CrashLogListPage extends StatefulWidget {
   const CrashLogListPage({super.key});
@@ -97,12 +98,13 @@ class _CrashLogListPageState extends State<CrashLogListPage> {
   Widget _buildLogCard(File file, String name, String date) {
     return Card(
       elevation: 0,
+      clipBehavior: Clip.antiAlias, // Ensure ink splashes are clipped to the card's rounded corners
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
         side: BorderSide(color: context.theme.dividerColor.withValues(alpha: 0.1)),
       ),
       child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         leading: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
@@ -111,23 +113,77 @@ class _CrashLogListPageState extends State<CrashLogListPage> {
           ),
           child: const Icon(Icons.description_outlined, color: Colors.redAccent),
         ),
-        title: Text(name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-        subtitle: Text(date, style: const TextStyle(fontSize: 12, color: Colors.grey)),
-        onTap: () => _viewLog(file),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
+        title: Text(
+          name,
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            IconButton(
-              icon: const Icon(Icons.cloud_upload_outlined, color: Colors.blueAccent),
-              onPressed: () => _uploadLog(file),
+            const SizedBox(height: 4),
+            Text(date, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+            const SizedBox(height: 4),
+            GestureDetector(
+              onTap: () {
+                Clipboard.setData(ClipboardData(text: file.path));
+                CommonToast.show(I18nKeys.copiedToClipboard.tr);
+              },
+              child: Text(
+                file.path,
+                style: TextStyle(
+                  fontSize: 10,
+                  color: context.accentColor.withValues(alpha: 0.7),
+                  decoration: TextDecoration.underline,
+                  decorationColor: context.accentColor.withValues(alpha: 0.5),
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
-            IconButton(
-              icon: const Icon(Icons.delete_outline_rounded, color: Colors.redAccent),
-              onPressed: () => _deleteLog(file),
+          ],
+        ),
+        onTap: () => _viewLog(file),
+        trailing: PopupMenuButton<String>(
+          icon: const Icon(Icons.more_vert_rounded, color: Colors.grey),
+          onSelected: (value) {
+            if (value == 'share') {
+              _shareLogFile(file);
+            } else if (value == 'delete') {
+              _deleteLog(file);
+            }
+          },
+          itemBuilder: (context) => [
+            PopupMenuItem(
+              value: 'share',
+              child: Row(
+                children: [
+                  const Icon(Icons.share_outlined, size: 20, color: Colors.blueAccent),
+                  const SizedBox(width: 12),
+                  Text(I18nKeys.share.tr),
+                ],
+              ),
+            ),
+            PopupMenuItem(
+              value: 'delete',
+              child: Row(
+                children: [
+                  const Icon(Icons.delete_outline_rounded, size: 20, color: Colors.redAccent),
+                  const SizedBox(width: 12),
+                  Text(I18nKeys.delete.tr),
+                ],
+              ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  void _shareLogFile(File file) {
+    SharePlus.instance.share(
+      ShareParams(files: [XFile(file.path)], text: 'Crash Log: ${file.path.split('/').last}'),
     );
   }
 
@@ -247,7 +303,8 @@ class _LogDetailsSheet extends StatelessWidget {
     final List<TextSpan> spans = [];
     final lines = content.split('\n');
     final isDark = context.theme.brightness == Brightness.dark;
-    final defaultTextColor = context.theme.textTheme.bodyMedium?.color ?? (isDark ? Colors.white70 : Colors.black87);
+    final defaultTextColor =
+        context.theme.textTheme.bodyMedium?.color ?? (isDark ? Colors.white70 : Colors.black87);
 
     Color? stickyLevelColor;
     Color? stickyMessageColor;
@@ -312,7 +369,13 @@ class _LogDetailsSheet extends StatelessWidget {
     return TextSpan(children: spans);
   }
 
-  void _addFormattedLogLine(List<TextSpan> spans, String line, Color levelColor, Color messageColor, Color defaultColor) {
+  void _addFormattedLogLine(
+    List<TextSpan> spans,
+    String line,
+    Color levelColor,
+    Color messageColor,
+    Color defaultColor,
+  ) {
     final regex = RegExp(r'^(\[.*?\])\s+(\[.*?\])\s+(.*)$');
     final match = regex.firstMatch(line);
 
