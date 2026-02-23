@@ -246,6 +246,8 @@ class _LogDetailsSheet extends StatelessWidget {
   TextSpan _buildRichContent(BuildContext context) {
     final List<TextSpan> spans = [];
     final lines = content.split('\n');
+    final isDark = context.theme.brightness == Brightness.dark;
+    final defaultTextColor = context.theme.textTheme.bodyMedium?.color ?? (isDark ? Colors.white70 : Colors.black87);
 
     Color? stickyLevelColor;
     Color? stickyMessageColor;
@@ -271,39 +273,37 @@ class _LogDetailsSheet extends StatelessWidget {
 
       bool hasNewTag = false;
       if (line.contains('[ERROR]')) {
-        stickyLevelColor = Colors.redAccent;
-        stickyMessageColor = Colors.red.shade100;
+        stickyLevelColor = isDark ? Colors.redAccent : Colors.red.shade700;
+        stickyMessageColor = isDark ? Colors.red.shade100 : Colors.red.shade900;
         hasNewTag = true;
       } else if (line.contains('[WARNING]')) {
-        stickyLevelColor = Colors.orangeAccent;
-        stickyMessageColor = Colors.orange.shade100;
+        stickyLevelColor = isDark ? Colors.orangeAccent : Colors.orange.shade800;
+        stickyMessageColor = isDark ? Colors.orange.shade100 : Colors.orange.shade900;
         hasNewTag = true;
       } else if (line.contains('[INFO]')) {
-        stickyLevelColor = Colors.blueAccent;
-        stickyMessageColor = Colors.blue.shade100;
+        stickyLevelColor = isDark ? Colors.blueAccent : Colors.blue.shade700;
+        stickyMessageColor = isDark ? Colors.blue.shade100 : Colors.blue.shade900;
         hasNewTag = true;
       } else if (line.contains('[DEBUG]')) {
-        stickyLevelColor = Colors.greenAccent;
-        stickyMessageColor = Colors.green.shade100;
+        stickyLevelColor = isDark ? Colors.greenAccent : Colors.green.shade700;
+        stickyMessageColor = isDark ? Colors.green.shade100 : Colors.green.shade900;
         hasNewTag = true;
       }
 
       if (hasNewTag) {
-        // If the line has a tag, use regex to split and render it
-        _addFormattedLogLine(spans, line, stickyLevelColor!, stickyMessageColor!);
+        _addFormattedLogLine(spans, line, stickyLevelColor!, stickyMessageColor!, defaultTextColor);
       } else if (line.startsWith('Error:') || line.startsWith('Time:')) {
         spans.add(
           TextSpan(
             text: '$line\n',
-            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+            style: TextStyle(color: defaultTextColor, fontWeight: FontWeight.w600),
           ),
         );
       } else {
-        // If the line doesn't have a tag (e.g., stack trace or multi-line content), continue with the previous tag's color
         spans.add(
           TextSpan(
             text: '$line\n',
-            style: TextStyle(color: stickyMessageColor ?? Colors.white70),
+            style: TextStyle(color: stickyMessageColor ?? defaultTextColor.withValues(alpha: 0.8)),
           ),
         );
       }
@@ -312,7 +312,7 @@ class _LogDetailsSheet extends StatelessWidget {
     return TextSpan(children: spans);
   }
 
-  void _addFormattedLogLine(List<TextSpan> spans, String line, Color levelColor, Color messageColor) {
+  void _addFormattedLogLine(List<TextSpan> spans, String line, Color levelColor, Color messageColor, Color defaultColor) {
     final regex = RegExp(r'^(\[.*?\])\s+(\[.*?\])\s+(.*)$');
     final match = regex.firstMatch(line);
 
@@ -320,7 +320,7 @@ class _LogDetailsSheet extends StatelessWidget {
       spans.add(
         TextSpan(
           text: '${match.group(1)} ',
-          style: const TextStyle(color: Colors.white30),
+          style: TextStyle(color: defaultColor.withValues(alpha: 0.3)),
         ),
       );
       spans.add(
