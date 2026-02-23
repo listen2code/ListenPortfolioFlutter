@@ -35,6 +35,10 @@ class I18nKeys {
   static const String noEmailApp = 'No email apps installed';
   static const String loading = 'loading';
 
+  // Custom Color
+  static const String customColor = 'Custom Color';
+  static const String selectColor = 'Select Color';
+
   // Privacy & Terms
   static const String privacyPolicy = 'Privacy Policy';
   static const String termsOfService = 'Terms of Service';

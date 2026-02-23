@@ -29,7 +29,6 @@ class SettingManager extends ChangeNotifier {
     Colors.redAccent,
     Colors.orange,
     Colors.green,
-    Colors.teal,
   ];
   static final SettingManager _instance = SettingManager._internal();
 
