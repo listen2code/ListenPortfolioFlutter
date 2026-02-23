@@ -5,9 +5,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:listen_portfolio_flutter/core/base/base_listenable_page.dart';
 import 'package:listen_portfolio_flutter/core/extension/context_extension.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
-import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
 import 'package:listen_portfolio_flutter/shared/constants/app_constants.dart';
+import 'package:listen_portfolio_flutter/shared/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 
 class AboutMeWidget extends StatefulWidget {

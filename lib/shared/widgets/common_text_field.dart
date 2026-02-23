@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
+import 'package:listen_portfolio_flutter/shared/theme/setting_provider.dart';
 
 /// Predefined styles for common input scenarios
 enum TextFieldType { text, password, email, number }
@@ -81,9 +81,7 @@ class _CommonTextFieldState extends State<CommonTextField> {
       keyboardType: widget.keyboardType ?? _getKeyboardType(),
       maxLength: widget.maxLength,
       // Apply numeric filters if isDigitsOnly is enabled
-      inputFormatters: [
-        if (widget.isDigitsOnly) FilteringTextInputFormatter.digitsOnly,
-      ],
+      inputFormatters: [if (widget.isDigitsOnly) FilteringTextInputFormatter.digitsOnly],
       decoration: InputDecoration(
         hintText: widget.hintText,
         labelText: widget.labelText,

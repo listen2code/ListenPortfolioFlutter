@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
-import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
-import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
+import 'package:listen_portfolio_flutter/shared/i18n/translations_key.dart';
+import 'package:listen_portfolio_flutter/shared/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/shared/widgets/common_text.dart';
 
 /// Centralized utility for showing various types of dialogs.
@@ -87,7 +87,7 @@ class CommonDialog {
                         // 1. Execute the callback (could be async)
                         final newValue = !item.value;
                         await item.onChanged(newValue);
-                        
+
                         // 2. Update local state for immediate visual feedback if the dialog is still open
                         if (context.mounted) {
                           setDialogState(() {

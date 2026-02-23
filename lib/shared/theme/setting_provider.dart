@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/constants/constants.dart';
-import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
-import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/utils/sp_util.dart';
+import 'package:listen_portfolio_flutter/shared/i18n/app_language.dart';
+import 'package:listen_portfolio_flutter/shared/i18n/translations_key.dart';
 
 /// Font size options for the app
 enum AppFontSize {

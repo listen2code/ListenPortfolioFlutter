@@ -7,21 +7,25 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_portfolio_flutter/core/base/base_listenable_page.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_env.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
-import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
-import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/core/utils/crash_manager.dart';
 import 'package:listen_portfolio_flutter/core/utils/sp_util.dart';
 import 'package:listen_portfolio_flutter/core/utils/zone_manager.dart';
 import 'package:listen_portfolio_flutter/shared/base/base_auth_listenable_page.dart';
 import 'package:listen_portfolio_flutter/shared/constants/app_constants.dart';
 import 'package:listen_portfolio_flutter/shared/constants/env_biz_config.dart';
+import 'package:listen_portfolio_flutter/shared/i18n/app_language.dart';
+import 'package:listen_portfolio_flutter/shared/i18n/languages/en.dart';
+import 'package:listen_portfolio_flutter/shared/i18n/languages/ja.dart';
+import 'package:listen_portfolio_flutter/shared/i18n/languages/zh.dart';
+import 'package:listen_portfolio_flutter/shared/i18n/translations_key.dart';
+import 'package:listen_portfolio_flutter/shared/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/shared/utils/quick_actions_manager.dart';
 import 'package:listen_portfolio_flutter/shared/utils/routes.dart';
 import 'package:listen_portfolio_flutter/shared/widgets/common_dialog.dart';
 import 'package:listen_portfolio_flutter/shared/widgets/common_toast.dart';
 
-import 'core/theme/app_theme.dart';
+import 'shared/theme/app_theme.dart';
 
 void main() {
   // Use runGuarded to wrap the entire app execution.
@@ -52,6 +56,12 @@ Future<void> _initServices() async {
     AppEnvironment.prod: BizEnvConfigs.prod,
   });
   await AppEnv.init();
+
+  // Inject business-specific translations
+  Translations.register(
+    data: {'en': en, 'zh': zh, 'ja': ja},
+    languageCodeProvider: () => settingManager.locale.languageCode,
+  );
 
   QuickActionsManager.init();
   settingManager.loadSettings();

@@ -3,8 +3,8 @@ import 'package:listen_portfolio_flutter/core/base/base_listenable_page.dart';
 import 'package:listen_portfolio_flutter/core/base/base_page.dart';
 import 'package:listen_portfolio_flutter/core/extension/context_extension.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
-import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
-import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
+import 'package:listen_portfolio_flutter/shared/i18n/translations_key.dart';
+import 'package:listen_portfolio_flutter/shared/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/shared/widgets/common_dialog.dart';
 
 class AppearancePage extends StatefulWidget {
@@ -196,7 +196,13 @@ class _AppearancePageState extends State<AppearancePage> {
             shape: BoxShape.circle,
             border: isSelected ? Border.all(color: Colors.white, width: 3) : null,
             boxShadow: isSelected
-                ? [BoxShadow(color: currentAccentColor.withValues(alpha: 0.4), blurRadius: 10, spreadRadius: 2)]
+                ? [
+                    BoxShadow(
+                      color: currentAccentColor.withValues(alpha: 0.4),
+                      blurRadius: 10,
+                      spreadRadius: 2,
+                    ),
+                  ]
                 : null,
           ),
           child: isSelected
@@ -259,7 +265,10 @@ class _AppearancePageState extends State<AppearancePage> {
   Widget _buildRGBBSlider(String label, int value, ValueChanged<double> onChanged) {
     return Row(
       children: [
-        SizedBox(width: 20, child: Text(label, style: const TextStyle(fontWeight: FontWeight.bold))),
+        SizedBox(
+          width: 20,
+          child: Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+        ),
         Expanded(
           child: Slider(
             value: value.toDouble(),

@@ -7,6 +7,5 @@ export 'network/base_repository.dart';
 export 'network/base_response_model.dart';
 export 'network/base_use_case.dart';
 export 'network/network_info.dart';
-export 'theme/app_theme.dart';
 export 'utils/logger.dart';
 export 'utils/validators.dart';

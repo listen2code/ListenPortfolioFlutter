@@ -4,14 +4,15 @@ import 'package:listen_portfolio_flutter/core/base/base_page.dart';
 import 'package:listen_portfolio_flutter/core/constants/app_env.dart';
 import 'package:listen_portfolio_flutter/core/extension/context_extension.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
-import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
-import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/core/utils/cache_manager.dart';
 import 'package:listen_portfolio_flutter/core/utils/log_overlay_manager.dart';
 import 'package:listen_portfolio_flutter/generated/r.dart';
 import 'package:listen_portfolio_flutter/shared/constants/app_constants.dart';
+import 'package:listen_portfolio_flutter/shared/i18n/app_language.dart';
+import 'package:listen_portfolio_flutter/shared/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
+import 'package:listen_portfolio_flutter/shared/theme/setting_provider.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});

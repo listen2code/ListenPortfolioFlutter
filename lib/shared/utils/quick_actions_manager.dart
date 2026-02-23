@@ -1,9 +1,9 @@
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
-import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
-import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/shared/constants/app_constants.dart';
+import 'package:listen_portfolio_flutter/shared/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
+import 'package:listen_portfolio_flutter/shared/theme/setting_provider.dart';
 import 'package:quick_actions/quick_actions.dart';
 import 'package:url_launcher/url_launcher.dart';
 

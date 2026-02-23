@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/base/base_listenable_page.dart';
 import 'package:listen_portfolio_flutter/core/extension/context_extension.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
-import 'package:listen_portfolio_flutter/core/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/shared/constants/app_constants.dart';
+import 'package:listen_portfolio_flutter/shared/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:url_launcher/url_launcher.dart';
 
