@@ -41,7 +41,7 @@ samples, guidance on mobile development, and a full API reference.
     * other pages, use
     * common_switch
     * switch env: input url; mock api; config each api; separate mock
-    * dev tools: layout check; lag check; app launch; apk size; net inspector
+    * apm: layout check; lag check; app launch; apk size; net inspector
     * app review
     * finger auth
     * auto login

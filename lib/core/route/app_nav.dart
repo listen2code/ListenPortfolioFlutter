@@ -60,6 +60,14 @@ class AppNav {
   /// Retrieves the entire arguments object from the current global route state.
   static T? getArgs<T>() => _currentArgs as T?;
 
+  /// Hook for MaterialApp.onGenerateRoute to handle deep links and initial route
+  /// while ensuring ZoneManager coverage for every page.
+  static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
+    final name = settings.name;
+    if (name == null) return null;
+    return _buildPageRoute(name, settings.arguments);
+  }
+
   static Future<T?>? to<T>(dynamic target, {bool needLogin = false, Object? arguments}) {
     final completer = Completer<T?>();
     tryLogin(

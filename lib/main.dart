@@ -14,7 +14,6 @@ import 'package:listen_portfolio_flutter/core/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/core/utils/crash_manager.dart';
 import 'package:listen_portfolio_flutter/core/utils/sp_util.dart';
 import 'package:listen_portfolio_flutter/core/utils/zone_manager.dart';
-import 'package:listen_portfolio_flutter/features/splash/presentation/pages/splash_page.dart';
 import 'package:listen_portfolio_flutter/shared/base/base_auth_listenable_page.dart';
 import 'package:listen_portfolio_flutter/shared/utils/quick_actions_manager.dart';
 import 'package:listen_portfolio_flutter/shared/utils/routes.dart';
@@ -128,7 +127,10 @@ class MyApp extends StatelessWidget {
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
-          home: const SplashPage(),
+          // Use initialRoute instead of home to ensure the first page (SplashPage)
+          // also passes through AppNav.onGenerateRoute and ZoneManager.runPage.
+          initialRoute: Routes.root,
+          onGenerateRoute: AppNav.onGenerateRoute,
         );
       },
     );

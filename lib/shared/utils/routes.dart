@@ -17,7 +17,7 @@ class Routes {
   Routes._();
 
   // Route Path Constants
-  static const String root = "/";
+  static const String root = "/splash";
   static const String home = "/home";
   static const String login = "/login";
   static const String signup = "/signup";
