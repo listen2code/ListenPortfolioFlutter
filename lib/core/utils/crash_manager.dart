@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:listen_portfolio_flutter/core/utils/log_manager.dart';
 import 'package:listen_portfolio_flutter/core/utils/logger.dart';
@@ -21,7 +22,17 @@ class CrashManager {
       final StringBuffer buffer = StringBuffer();
       buffer.writeln('=== CRASH REPORT ===');
       buffer.writeln('Time: ${DateTime.now()}');
-      buffer.writeln('Error: $error');
+
+      if (error is FlutterErrorDetails) {
+        // Extract rich context from Flutter framework errors
+        buffer.writeln('Summary: ${error.exceptionAsString()}');
+        buffer.writeln('Context: ${error.context}');
+        buffer.writeln('Library: ${error.library}');
+        buffer.writeln('\n=== FLUTTER DETAILS ===\n$error');
+      } else {
+        buffer.writeln('Error: $error');
+      }
+
       buffer.writeln('\n=== STACK TRACE ===\n$stack');
       buffer.writeln('\n=== RECENT LOGS ===');
       buffer.writeln(LogManager.getAllLogsAsText(reversed: true));

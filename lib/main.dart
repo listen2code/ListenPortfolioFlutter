@@ -69,7 +69,7 @@ void _setupErrorHandlers() {
   // Forward Flutter framework errors to the current Zone
   FlutterError.onError = (details) {
     FlutterError.presentError(details);
-    Zone.current.handleUncaughtError(details.exception, details.stack!);
+    Zone.current.handleUncaughtError(details, details.stack!);
   };
 
   // Forward platform-level errors (like from binary messengers) to the current Zone
