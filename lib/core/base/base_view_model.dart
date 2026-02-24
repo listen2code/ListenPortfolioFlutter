@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:listen_portfolio_flutter/core/utils/crash_manager.dart';
 import 'package:listen_portfolio_flutter/core/utils/logger.dart';
 import 'package:listen_portfolio_flutter/core/utils/zone_manager.dart';
-import 'package:listen_portfolio_flutter/shared/widgets/common_loading.dart';
+import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 
 /// Interface for states that support navigation, error, and general messaging.
 abstract class BaseState<T> {
@@ -133,10 +133,13 @@ mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel {
         }
 
         if (result is Future) {
-          return result.then((_) => onComplete(), onError: (e, s) {
-            if (showLoading) CommonLoading.hide();
-            throw e;
-          });
+          return result.then(
+            (_) => onComplete(),
+            onError: (e, s) {
+              if (showLoading) CommonLoading.hide();
+              throw e;
+            },
+          );
         } else {
           onComplete();
           return Future.value();

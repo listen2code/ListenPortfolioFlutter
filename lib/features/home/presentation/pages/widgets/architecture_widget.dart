@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/extension/context_extension.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
-import 'package:listen_portfolio_flutter/shared/base/base_listenable_page.dart';
-import 'package:listen_portfolio_flutter/shared/constants/app_constants.dart';
-import 'package:listen_portfolio_flutter/shared/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
+import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ArchitectureWidget extends StatelessWidget {

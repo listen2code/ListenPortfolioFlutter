@@ -6,8 +6,7 @@ import 'package:listen_portfolio_flutter/core/extension/widget_ref_extension.dar
 import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
 import 'package:listen_portfolio_flutter/shared/base/base_listenable_page.dart';
 import 'package:listen_portfolio_flutter/shared/theme/setting_provider.dart';
-import 'package:listen_portfolio_flutter/shared/widgets/common_loading.dart';
-import 'package:listen_portfolio_flutter/shared/widgets/common_text.dart';
+import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 /// A professional, unified page wrapper that handles UI structure,

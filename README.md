@@ -57,7 +57,7 @@ samples, guidance on mobile development, and a full API reference.
     * markdown resume, download pdf
     * channel plugin
     * jni
-    * safe mode
+    * crash report safe mode
 * ide plugin
     * assets
 * framework

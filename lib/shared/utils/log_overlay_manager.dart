@@ -5,7 +5,7 @@ import 'package:listen_portfolio_flutter/core/constants/constants.dart';
 import 'package:listen_portfolio_flutter/core/utils/log_manager.dart';
 import 'package:listen_portfolio_flutter/core/utils/sp_util.dart';
 import 'package:listen_portfolio_flutter/core/utils/zone_manager.dart';
-import 'package:listen_portfolio_flutter/shared/shared.dart';
+import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 
 enum LogFilter { all, server, app, perf }
 

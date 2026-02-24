@@ -8,9 +8,8 @@ import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_state.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_view_model.dart';
 import 'package:listen_portfolio_flutter/generated/r.dart';
-import 'package:listen_portfolio_flutter/shared/base/base_page.dart';
-import 'package:listen_portfolio_flutter/shared/i18n/translations_key.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
+import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});

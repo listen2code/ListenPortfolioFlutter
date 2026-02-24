@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/extension/context_extension.dart';
-import 'package:listen_portfolio_flutter/shared/widgets/common_text.dart';
+import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 
 enum ButtonType { filled, outlined, text }
 
@@ -98,7 +98,8 @@ class CommonButton extends StatelessWidget {
           foregroundColor: accentColor,
           shape: shape,
           padding: padding ?? EdgeInsets.symmetric(vertical: 12.f),
-          splashFactory: NoSplash.splashFactory, // Remove splash
+          splashFactory: NoSplash.splashFactory,
+          // Remove splash
           overlayColor: Colors.transparent, // Remove overlay highlight
         );
         break;
@@ -113,10 +114,6 @@ class CommonButton extends StatelessWidget {
       button = TextButton(onPressed: isLoading ? null : onPressed, style: style, child: buttonChild);
     }
 
-    return SizedBox(
-      width: isFullWidth ? double.infinity : width,
-      height: height ?? 52.f,
-      child: button,
-    );
+    return SizedBox(width: isFullWidth ? double.infinity : width, height: height ?? 52.f, child: button);
   }
 }
