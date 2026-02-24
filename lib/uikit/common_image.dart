@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:listen_portfolio_flutter/core/extension/context_extension.dart';
+import 'package:listen_portfolio_flutter/shared/shared.dart';
 
 enum _ImageType { asset, network, file }
 

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:listen_portfolio_flutter/core/extension/context_extension.dart';
-import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
-import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
+import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/widgets/about_me_widget.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/widgets/architecture_widget.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/widgets/overview_widget.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
-import 'package:listen_portfolio_flutter/shared/i18n/translations_key.dart';
+import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_portfolio_flutter/shared/shared.dart';
 
 enum AppLanguage {
   system("System", null),
@@ -33,9 +33,6 @@ enum AppLanguage {
   }
 
   static AppLanguage fromLabel(String? label) {
-    return AppLanguage.values.firstWhere(
-      (e) => e.label == label,
-      orElse: () => AppLanguage.system,
-    );
+    return AppLanguage.values.firstWhere((e) => e.label == label, orElse: () => AppLanguage.system);
   }
 }

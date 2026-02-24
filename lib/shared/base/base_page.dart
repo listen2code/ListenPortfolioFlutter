@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:listen_portfolio_flutter/core/base/base_view_model.dart';
-import 'package:listen_portfolio_flutter/core/extension/widget_ref_extension.dart';
-import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
-import 'package:listen_portfolio_flutter/shared/base/base_listenable_page.dart';
-import 'package:listen_portfolio_flutter/shared/base/loading_provider_impl.dart';
-import 'package:listen_portfolio_flutter/shared/theme/setting_provider.dart';
+import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

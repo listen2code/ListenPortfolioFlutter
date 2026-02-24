@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
+import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:listen_portfolio_flutter/generated/r.dart';
-import 'package:listen_portfolio_flutter/shared/base/base_page.dart';
-import 'package:listen_portfolio_flutter/shared/constants/app_constants.dart';
-import 'package:listen_portfolio_flutter/shared/theme/setting_provider.dart';
-import 'package:listen_portfolio_flutter/shared/utils/log_overlay_manager.dart';
-import 'package:listen_portfolio_flutter/shared/utils/routes.dart';
+import 'package:listen_portfolio_flutter/shared/shared.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});

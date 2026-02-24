@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:listen_portfolio_flutter/core/extension/context_extension.dart';
+import 'package:listen_portfolio_flutter/shared/shared.dart';
 
 /// A common switch component that provides a consistent look and feel across the app.
 /// It wraps the [CupertinoSwitch] for a clean, modern aesthetic while respecting the app's theme.

@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:listen_portfolio_flutter/core/extension/context_extension.dart';
-import 'package:listen_portfolio_flutter/core/extension/widget_ref_extension.dart';
-import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
-import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
+import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_intent.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_state.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_view_model.dart';

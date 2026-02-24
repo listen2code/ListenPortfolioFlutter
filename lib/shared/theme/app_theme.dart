@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:listen_portfolio_flutter/shared/theme/setting_provider.dart';
+import 'package:listen_portfolio_flutter/shared/shared.dart';
 
 /// Application theme configuration
 class AppTheme {

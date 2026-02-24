@@ -1,4 +1,4 @@
-import 'package:listen_portfolio_flutter/shared/i18n/translations_key.dart';
+import 'package:listen_portfolio_flutter/shared/shared.dart';
 
 final Map<String, String> ja = {
   I18nKeys.settings: '設定',

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:listen_portfolio_flutter/shared/theme/setting_provider.dart';
+import 'package:listen_portfolio_flutter/shared/shared.dart';
 
 /// Predefined styles for common input scenarios
 enum TextFieldType { text, password, email, number }

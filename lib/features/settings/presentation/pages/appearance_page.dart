@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:listen_portfolio_flutter/core/extension/context_extension.dart';
 import 'package:listen_portfolio_flutter/core/i18n/translations.dart';
-import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
+import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 
 class AppearancePage extends StatefulWidget {
   const AppearancePage({super.key});
