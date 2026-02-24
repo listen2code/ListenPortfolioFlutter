@@ -5,6 +5,7 @@ import 'package:listen_portfolio_flutter/core/base/base_view_model.dart';
 import 'package:listen_portfolio_flutter/core/extension/widget_ref_extension.dart';
 import 'package:listen_portfolio_flutter/core/route/app_nav.dart';
 import 'package:listen_portfolio_flutter/shared/base/base_listenable_page.dart';
+import 'package:listen_portfolio_flutter/shared/base/loading_provider_impl.dart';
 import 'package:listen_portfolio_flutter/shared/theme/setting_provider.dart';
 import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -72,6 +73,8 @@ class _BaseStatelessPageState extends ConsumerState<BasePage> with RouteAware, W
     if (widget.provider != null) {
       try {
         _viewModel = ref.read((widget.provider as dynamic).notifier);
+        // Inject the loading provider implementation to decouple core from uikit
+        _viewModel?.loadingProvider = const LoadingProviderImpl();
       } catch (_) {}
     }
 
@@ -219,7 +222,7 @@ class _BaseStatelessPageState extends ConsumerState<BasePage> with RouteAware, W
           onPopInvokedWithResult: (didPop, result) {
             if (didPop) return;
             _viewModel?.cancelRequests("on Pop");
-            CommonLoading.hide();
+            _viewModel?.loadingProvider?.hide();
           },
           child: AnnotatedRegion<SystemUiOverlayStyle>(
             value: systemUiOverlayStyle,

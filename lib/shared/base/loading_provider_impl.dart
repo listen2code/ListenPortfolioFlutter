@@ -1,0 +1,17 @@
+import 'package:listen_portfolio_flutter/core/base/base_view_model.dart';
+import 'package:listen_portfolio_flutter/uikit/common_loading.dart';
+
+/// Concrete implementation of [ILoadingProvider] using the project's [CommonLoading] UIKit component.
+class LoadingProviderImpl implements ILoadingProvider {
+  const LoadingProviderImpl();
+
+  @override
+  void show({String? message}) {
+    CommonLoading.show(message: message);
+  }
+
+  @override
+  void hide() {
+    CommonLoading.hide();
+  }
+}

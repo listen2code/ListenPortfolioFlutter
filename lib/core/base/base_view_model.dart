@@ -4,7 +4,14 @@ import 'package:dio/dio.dart';
 import 'package:listen_portfolio_flutter/core/utils/crash_manager.dart';
 import 'package:listen_portfolio_flutter/core/utils/logger.dart';
 import 'package:listen_portfolio_flutter/core/utils/zone_manager.dart';
-import 'package:listen_portfolio_flutter/uikit/uikit.dart';
+
+/// Interface for showing/hiding loading UI.
+/// This allows core to stay independent of specific UI implementations.
+abstract class ILoadingProvider {
+  void show({String? message});
+
+  void hide();
+}
 
 /// Interface for states that support navigation, error, and general messaging.
 abstract class BaseState<T> {
@@ -38,6 +45,10 @@ abstract class BaseViewModel {
   CancelToken get cancelToken;
 
   void cancelRequests(String reason);
+
+  /// Optional loading provider for dispatch actions.
+  ILoadingProvider? get loadingProvider;
+  set loadingProvider(ILoadingProvider? value);
 }
 
 /// Mixin to handle common UI states, lifecycle logging, automatic request cancellation, and global loading.
@@ -106,6 +117,14 @@ mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel {
     cancelRequests('${runtimeType.toString()} disposed');
   }
 
+  ILoadingProvider? _loadingProvider;
+
+  @override
+  ILoadingProvider? get loadingProvider => _loadingProvider;
+
+  @override
+  set loadingProvider(ILoadingProvider? value) => _loadingProvider = value;
+
   /// Dispatcher for UI intents.
   /// [showLoading] Automatically shows/hides CommonLoading during the action.
   Future<void> dispatch(dynamic intent, FutureOr<void> Function() handler, {bool showLoading = false}) {
@@ -115,13 +134,13 @@ mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel {
       appLogger.d('$tag: [INTENT] -> $intent');
       ZoneManager.mark('Intent [$intent] Started');
 
-      if (showLoading) CommonLoading.show();
+      if (showLoading) loadingProvider?.show();
 
       try {
         final result = handler();
 
         void onComplete() {
-          if (showLoading) CommonLoading.hide();
+          if (showLoading) loadingProvider?.hide();
           final dynamic self = this;
           // Log state immediately. For sync handlers, this runs before microtask cleanup.
           appLogger.d('$tag: [STATE] <- ${self.state}');
@@ -136,7 +155,7 @@ mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel {
           return result.then(
             (_) => onComplete(),
             onError: (e, s) {
-              if (showLoading) CommonLoading.hide();
+              if (showLoading) loadingProvider?.hide();
               throw e;
             },
           );
@@ -145,7 +164,7 @@ mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel {
           return Future.value();
         }
       } catch (e) {
-        if (showLoading) CommonLoading.hide();
+        if (showLoading) loadingProvider?.hide();
         rethrow;
       }
     }, cancelToken: cancelToken);

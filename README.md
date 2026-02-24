@@ -20,6 +20,7 @@ samples, guidance on mobile development, and a full API reference.
 * The current flutter version is 3.38.3, please use the latest API.
 * Use English comments
 * Only modify the relevant code; formatting changes are not needed.
+* Dependency, lib/core <- lib/shared, lib/uikit <- lib/shared, lib/core <- lib/uikit
 * When drawing the screen, you can use the common components from the lib/shared/widgets directory.
 * The core architecture code is in the lib/core directory. no business relevant code, that can be publish to pub, can be used for
   another app
