@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:listen_portfolio_flutter/core/base/base_lifecycle_page.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_portfolio_flutter/shared/base/loading_provider_impl.dart';
 import 'package:listen_portfolio_flutter/shared/base/message_provider_impl.dart';
-import 'package:listen_portfolio_flutter/shared/shared.dart';
-import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-/// A professional, unified page wrapper that handles UI structure,
-/// theme listening, complete lifecycle management, and automatic state listening.
+/// A shared-layer wrapper for the core [core.BaseLifeCyclePage].
+/// This widget is responsible for injecting shared- and uikit-layer dependencies
+/// like [LoadingProviderImpl] and [MessageProviderImpl] into the ViewModel.
+///
+/// This keeps the core BasePage clean and independent, while allowing feature-level
+/// pages to use a single `BasePage` widget that handles all setup.
 class BasePage extends ConsumerStatefulWidget {
   final TransitionBuilder body;
   final String? title;
-  final List<Widget>? actions; // Added actions parameter
+  final List<Widget>? actions;
   final PreferredSizeWidget? appBar;
   final Widget? drawer;
   final Widget? floatingActionButton;
@@ -36,7 +39,7 @@ class BasePage extends ConsumerStatefulWidget {
     super.key,
     required this.body,
     this.title,
-    this.actions, // Initialize actions
+    this.actions,
     this.appBar,
     this.drawer,
     this.floatingActionButton,
@@ -54,203 +57,53 @@ class BasePage extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<BasePage> createState() => _BaseStatelessPageState();
+  ConsumerState<BasePage> createState() => _BasePageState();
 }
 
-class _BaseStatelessPageState extends ConsumerState<BasePage> with RouteAware, WidgetsBindingObserver {
-  bool _isRouteVisible = false;
-  BaseViewModel? _viewModel;
-
+class _BasePageState extends ConsumerState<BasePage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
-
-    // Store ViewModel reference and trigger onInit
+    // Inject shared/uikit implementations into the ViewModel if a provider is present.
+    // This is done once when the widget is initialized.
     if (widget.provider != null) {
       try {
-        _viewModel = ref.read((widget.provider as dynamic).notifier);
-        // Inject the loading provider implementation to decouple core from uikit
-        _viewModel?.loadingProvider = const LoadingProviderImpl();
-        // Inject the message provider implementation to decouple core from uikit
-        _viewModel?.messageProvider = const MessageProviderImpl();
-      } catch (_) {}
-    }
+        final viewModel = ref.read((widget.provider! as dynamic).notifier) as BaseViewModel;
 
-    _viewModel?.onInit();
+        // Inject the concrete implementation for showing/hiding a loading overlay.
+        viewModel.loadingProvider = const LoadingProviderImpl();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        _viewModel?.onReady();
-        if (widget.active) _checkVisibilityChange(true);
+        // Inject the concrete implementation for showing info/error toasts.
+        viewModel.messageProvider = const MessageProviderImpl();
+      } catch (_) {
+        // Errors are ignored if the provider or notifier isn't a valid ViewModel.
       }
-    });
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final route = ModalRoute.of(context);
-    if (route is PageRoute) {
-      AppNav.observer.subscribe(this, route);
     }
-  }
-
-  @override
-  void didUpdateWidget(BasePage oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.active != widget.active) {
-      _checkVisibilityChange(widget.active);
-    }
-  }
-
-  @override
-  void dispose() {
-    AppNav.observer.unsubscribe(this);
-    WidgetsBinding.instance.removeObserver(this);
-    _viewModel?.onDispose();
-    super.dispose();
-  }
-
-  void _checkVisibilityChange(bool isVisible) {
-    if (isVisible) {
-      _viewModel?.onVisible();
-    } else {
-      _viewModel?.onInVisible();
-    }
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (!_isRouteVisible || !widget.active) return;
-
-    if (state == AppLifecycleState.resumed) {
-      _viewModel?.onVisible();
-    } else if (state == AppLifecycleState.paused) {
-      _viewModel?.onInVisible();
-    }
-  }
-
-  @override
-  void didPush() => _isRouteVisible = true;
-
-  @override
-  void didPopNext() {
-    _isRouteVisible = true;
-    if (widget.active) _viewModel?.onVisible();
-  }
-
-  @override
-  void didPushNext() {
-    _isRouteVisible = false;
-    if (widget.active) _viewModel?.onInVisible();
-  }
-
-  @override
-  void didPop() {
-    _isRouteVisible = false;
-    if (widget.active) _viewModel?.onInVisible();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.provider != null) {
-      ref.listenError(widget.provider!);
-      ref.listenMessage(widget.provider!);
-    }
-
-    return BaseListenablePage(
-      extraListenable: [CommonLoading.isShowNotifier],
-      builder: (context, child) {
-        final theme = Theme.of(context);
-        final accentColor = settingManager.accentColor;
-        final isDark = theme.brightness == Brightness.dark;
-
-        Widget content = widget.body(context, child);
-        if (widget.padding != null) {
-          content = Padding(padding: widget.padding!, child: content);
-        }
-
-        content = Column(
-          children: [
-            if (widget.useStatusBar) _createStatusBar(),
-            Expanded(child: content),
-            if (widget.useBottomBar) _createBottomBar(),
-          ],
-        );
-
-        if (widget.useSafeArea) {
-          content = SafeArea(top: !widget.useStatusBar, bottom: !widget.useBottomBar, child: content);
-        }
-
-        PreferredSizeWidget? effectiveAppBar = widget.appBar;
-        if (effectiveAppBar == null && (widget.title != null || widget.isEmptyTitle)) {
-          effectiveAppBar = _createAppBar(theme);
-        }
-
-        final scaffoldWidget = Scaffold(
-          appBar: effectiveAppBar,
-          drawer: widget.drawer,
-          floatingActionButton: widget.floatingActionButton,
-          resizeToAvoidBottomInset: widget.resizeToAvoidBottomInset,
-          extendBodyBehindAppBar: widget.extendBodyBehindAppBar,
-          body: Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [accentColor.withValues(alpha: 0.05), theme.scaffoldBackgroundColor],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-            ),
-            child: content,
-          ),
-        );
-
-        final systemUiOverlayStyle = SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent,
-          statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
-          statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
-          systemNavigationBarColor: theme.scaffoldBackgroundColor,
-          systemNavigationBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
-        );
-
-        return PopScope(
-          canPop: !CommonLoading.isShow,
-          onPopInvokedWithResult: (didPop, result) {
-            if (didPop) return;
-            _viewModel?.cancelRequests("on Pop");
-            _viewModel?.loadingProvider?.hide();
-          },
-          child: AnnotatedRegion<SystemUiOverlayStyle>(
-            value: systemUiOverlayStyle,
-            child: GestureDetector(
-              onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-              behavior: HitTestBehavior.translucent,
-              child: scaffoldWidget,
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  AppBar _createAppBar(ThemeData theme) {
-    return AppBar(
-      title: CommonText(widget.title ?? "", style: const TextStyle(fontWeight: FontWeight.w300)),
-      centerTitle: true,
+    // Render the core BasePage, passing all properties through.
+    // The core BasePage is completely decoupled from shared/uikit layers.
+    return BaseLifeCyclePage(
+      key: widget.key,
+      body: widget.body,
+      title: widget.title,
       actions: widget.actions,
-      // Use the actions here
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      foregroundColor: theme.brightness == Brightness.light ? Colors.black87 : Colors.white,
+      appBar: widget.appBar,
+      drawer: widget.drawer,
+      floatingActionButton: widget.floatingActionButton,
+      useSafeArea: widget.useSafeArea,
+      padding: widget.padding,
+      resizeToAvoidBottomInset: widget.resizeToAvoidBottomInset,
+      extendBodyBehindAppBar: widget.extendBodyBehindAppBar,
+      useStatusBar: widget.useStatusBar,
+      useBottomBar: widget.useBottomBar,
+      isEmptyTitle: widget.isEmptyTitle,
+      statusBarColor: widget.statusBarColor,
+      bottomBarColor: widget.bottomBarColor,
+      active: widget.active,
+      provider: widget.provider,
     );
   }
-
-  Widget _createStatusBar() =>
-      Container(color: widget.statusBarColor, height: MediaQuery.of(context).padding.top);
-
-  Widget _createBottomBar() =>
-      Container(color: widget.bottomBarColor, height: MediaQuery.of(context).padding.bottom);
 }

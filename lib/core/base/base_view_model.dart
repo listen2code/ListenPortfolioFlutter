@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:listen_portfolio_flutter/core/utils/crash_manager.dart';
 import 'package:listen_portfolio_flutter/core/utils/logger.dart';
 import 'package:listen_portfolio_flutter/core/utils/zone_manager.dart';
@@ -11,12 +12,16 @@ abstract class ILoadingProvider {
   void show({String? message});
 
   void hide();
+
+  /// Reactive state to indicate if loading is currently active.
+  ValueListenable<bool> get isLoading;
 }
 
 /// Interface for showing messages/toasts.
 /// This allows core to stay independent of specific UI implementations.
 abstract class IMessageProvider {
   void showInfo(String message);
+
   void showError(String message);
 }
 
@@ -55,10 +60,12 @@ abstract class BaseViewModel {
 
   /// Optional loading provider for dispatch actions.
   ILoadingProvider? get loadingProvider;
+
   set loadingProvider(ILoadingProvider? value);
 
   /// Optional message provider for showing alerts/toasts.
   IMessageProvider? get messageProvider;
+
   set messageProvider(IMessageProvider? value);
 }
 
