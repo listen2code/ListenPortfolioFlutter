@@ -155,12 +155,12 @@ class _BaseStatelessPageState extends ConsumerState<BaseLifeCyclePage>
     }
 
     // Resolve the loading state notifier from the ViewModel's provider
-    final isBusyNotifier = _viewModel?.loadingProvider?.isLoading ?? ValueNotifier<bool>(false);
+    final isLoadingNotifier = _viewModel?.loadingProvider?.isLoading ?? ValueNotifier<bool>(false);
 
     return ListenableBuilder(
-      listenable: isBusyNotifier,
+      listenable: isLoadingNotifier,
       builder: (context, child) {
-        final isBusy = isBusyNotifier.value;
+        final isLoading = isLoadingNotifier.value;
         final theme = Theme.of(context);
         final accentColor = theme.iconTheme.color ?? theme.colorScheme.primary;
         final isDark = theme.brightness == Brightness.dark;
@@ -216,7 +216,7 @@ class _BaseStatelessPageState extends ConsumerState<BaseLifeCyclePage>
         );
 
         return PopScope(
-          canPop: !isBusy,
+          canPop: !isLoading,
           onPopInvokedWithResult: (didPop, result) {
             if (didPop) return;
             _viewModel?.cancelRequests("on Pop");
