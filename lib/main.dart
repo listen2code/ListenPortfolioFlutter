@@ -48,6 +48,9 @@ Future<void> _initServices() async {
 
   QuickActionsManager.init();
   settingManager.loadSettings();
+
+  // Inject i18n support into UIKit
+  UIKitConfig.setup(stringProvider: (key) => key.tr);
 }
 
 // Register auth, navigation, and named routes

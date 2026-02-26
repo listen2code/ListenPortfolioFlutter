@@ -21,7 +21,9 @@ class CommonLoading {
     final overlayState = AppNavConfig.navigatorKey.currentState?.overlay;
     if (overlayState == null) return;
 
-    _overlayEntry = OverlayEntry(builder: (context) => _LoadingWidget(message: message ?? "loading"));
+    _overlayEntry = OverlayEntry(
+      builder: (context) => _LoadingWidget(message: message ?? UIKitConfig.getString(UIKitConfig.kLoading)),
+    );
 
     overlayState.insert(_overlayEntry!);
     isShowNotifier.value = true;
@@ -48,7 +50,7 @@ class _LoadingWidget extends StatelessWidget {
     final effectiveAccentColor = theme.iconTheme.color ?? theme.colorScheme.primary;
 
     return Material(
-      color: Colors.black.withOpacity(0.5),
+      color: Colors.black.withValues(alpha: 0.5),
       child: Center(
         child: Container(
           padding: const EdgeInsets.all(30),

@@ -32,7 +32,10 @@ class CommonDialog {
         actions: [
           TextButton(
             onPressed: () => AppNav.back(),
-            child: Text(buttonText ?? "ok", style: TextStyle(color: accentColor)),
+            child: Text(
+              buttonText ?? UIKitConfig.getString(UIKitConfig.kOk),
+              style: TextStyle(color: accentColor),
+            ),
           ),
         ],
       ),
@@ -58,12 +61,15 @@ class CommonDialog {
       actions: [
         TextButton(
           onPressed: () => AppNav.back(false),
-          child: Text(cancelText ?? "cancel", style: const TextStyle(color: Colors.grey)),
+          child: Text(
+            cancelText ?? UIKitConfig.getString(UIKitConfig.kCancel),
+            style: const TextStyle(color: Colors.grey),
+          ),
         ),
         TextButton(
           onPressed: () => AppNav.back(true),
           child: Text(
-            okText ?? "ok",
+            okText ?? UIKitConfig.getString(UIKitConfig.kOk),
             style: TextStyle(color: okColor ?? accentColor, fontWeight: FontWeight.bold),
           ),
         ),

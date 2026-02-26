@@ -6,3 +6,4 @@ export 'common_switch.dart';
 export 'common_text.dart';
 export 'common_text_field.dart';
 export 'common_toast.dart';
+export 'uikit_config.dart';

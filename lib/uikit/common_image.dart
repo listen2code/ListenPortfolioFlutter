@@ -165,9 +165,9 @@ class CommonImage extends StatelessWidget {
         // Smooth gradient placeholder replacing the spinner
         gradient: LinearGradient(
           colors: [
-            theme.dividerColor.withOpacity(0.05),
-            theme.dividerColor.withOpacity(0.1),
-            theme.dividerColor.withOpacity(0.05),
+            theme.dividerColor.withValues(alpha: 0.05),
+            theme.dividerColor.withValues(alpha: 0.1),
+            theme.dividerColor.withValues(alpha: 0.05),
           ],
           begin: const Alignment(-1.0, -0.5),
           end: const Alignment(1.0, 0.5),
@@ -181,7 +181,7 @@ class CommonImage extends StatelessWidget {
     return Container(
       width: width,
       height: height,
-      color: theme.dividerColor.withOpacity(0.1),
+      color: theme.dividerColor.withValues(alpha: 0.1),
       child: const Icon(Icons.broken_image_outlined, color: Colors.grey, size: 24),
     );
   }

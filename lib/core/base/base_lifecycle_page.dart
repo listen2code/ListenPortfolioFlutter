@@ -198,7 +198,7 @@ class _BaseStatelessPageState extends ConsumerState<BaseLifeCyclePage>
             height: double.infinity,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [accentColor.withOpacity(0.05), theme.scaffoldBackgroundColor],
+                colors: [accentColor.withValues(alpha: 0.05), theme.scaffoldBackgroundColor],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
