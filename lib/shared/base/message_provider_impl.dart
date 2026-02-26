@@ -1,0 +1,17 @@
+import 'package:listen_portfolio_flutter/core/base/base_view_model.dart';
+import 'package:listen_portfolio_flutter/uikit/common_toast.dart';
+
+/// Concrete implementation of [IMessageProvider] using the project's [CommonToast] UIKit component.
+class MessageProviderImpl implements IMessageProvider {
+  const MessageProviderImpl();
+
+  @override
+  void showInfo(String message) {
+    CommonToast.show(message);
+  }
+
+  @override
+  void showError(String message) {
+    CommonToast.show(message, type: ToastType.error);
+  }
+}

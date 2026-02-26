@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_portfolio_flutter/core/base/base_view_model.dart';
-import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 extension WidgetRefX on WidgetRef {
@@ -25,10 +24,11 @@ extension WidgetRefX on WidgetRef {
   void listenError<S extends BaseState<dynamic>>(ProviderListenable<S> provider) {
     listen<String?>(provider.select((state) => state.errorMessage), (previous, next) {
       if (next != null && next.isNotEmpty) {
-        CommonToast.show(next, type: ToastType.error);
+        final vm = _getViewModel(provider);
+        vm?.messageProvider?.showError(next);
 
         // Delay consumption to allow the logging aspect to record the error state.
-        Future.microtask(() => _getViewModel(provider)?.errorConsumed());
+        Future.microtask(() => vm?.errorConsumed());
       }
     });
   }
@@ -37,10 +37,11 @@ extension WidgetRefX on WidgetRef {
   void listenMessage<S extends BaseState<dynamic>>(ProviderListenable<S> provider) {
     listen<String?>(provider.select((state) => state.message), (previous, next) {
       if (next != null && next.isNotEmpty) {
-        CommonToast.show(next);
+        final vm = _getViewModel(provider);
+        vm?.messageProvider?.showInfo(next);
 
         // Push state reset to next microtask to avoid interference with synchronous logs.
-        Future.microtask(() => _getViewModel(provider)?.messageConsumed());
+        Future.microtask(() => vm?.messageConsumed());
       }
     });
   }

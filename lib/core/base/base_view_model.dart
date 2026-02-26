@@ -13,6 +13,13 @@ abstract class ILoadingProvider {
   void hide();
 }
 
+/// Interface for showing messages/toasts.
+/// This allows core to stay independent of specific UI implementations.
+abstract class IMessageProvider {
+  void showInfo(String message);
+  void showError(String message);
+}
+
 /// Interface for states that support navigation, error, and general messaging.
 abstract class BaseState<T> {
   T? get pendingNavigation;
@@ -49,6 +56,10 @@ abstract class BaseViewModel {
   /// Optional loading provider for dispatch actions.
   ILoadingProvider? get loadingProvider;
   set loadingProvider(ILoadingProvider? value);
+
+  /// Optional message provider for showing alerts/toasts.
+  IMessageProvider? get messageProvider;
+  set messageProvider(IMessageProvider? value);
 }
 
 /// Mixin to handle common UI states, lifecycle logging, automatic request cancellation, and global loading.
@@ -124,6 +135,14 @@ mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel {
 
   @override
   set loadingProvider(ILoadingProvider? value) => _loadingProvider = value;
+
+  IMessageProvider? _messageProvider;
+
+  @override
+  IMessageProvider? get messageProvider => _messageProvider;
+
+  @override
+  set messageProvider(IMessageProvider? value) => _messageProvider = value;
 
   /// Dispatcher for UI intents.
   /// [showLoading] Automatically shows/hides CommonLoading during the action.

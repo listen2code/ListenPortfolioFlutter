@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_portfolio_flutter/shared/base/message_provider_impl.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -71,6 +72,8 @@ class _BaseStatelessPageState extends ConsumerState<BasePage> with RouteAware, W
         _viewModel = ref.read((widget.provider as dynamic).notifier);
         // Inject the loading provider implementation to decouple core from uikit
         _viewModel?.loadingProvider = const LoadingProviderImpl();
+        // Inject the message provider implementation to decouple core from uikit
+        _viewModel?.messageProvider = const MessageProviderImpl();
       } catch (_) {}
     }
 
