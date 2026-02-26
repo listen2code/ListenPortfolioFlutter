@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
-import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 
 /// A global loading indicator widget managed via Overlay.
@@ -22,9 +21,7 @@ class CommonLoading {
     final overlayState = AppNavConfig.navigatorKey.currentState?.overlay;
     if (overlayState == null) return;
 
-    _overlayEntry = OverlayEntry(
-      builder: (context) => _LoadingWidget(message: message ?? I18nKeys.loading.tr),
-    );
+    _overlayEntry = OverlayEntry(builder: (context) => _LoadingWidget(message: message ?? "loading"));
 
     overlayState.insert(_overlayEntry!);
     isShowNotifier.value = true;
@@ -46,24 +43,25 @@ class _LoadingWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    // Resolve accent color: priority to theme's icon color (original accent), then primary.
+    final effectiveAccentColor = theme.iconTheme.color ?? theme.colorScheme.primary;
+
     return Material(
       color: Colors.black.withOpacity(0.5),
       child: Center(
         child: Container(
-          padding: EdgeInsets.all(30.f),
-          decoration: BoxDecoration(
-            color: context.theme.cardColor,
-            borderRadius: BorderRadius.circular(20.f),
-          ),
+          padding: const EdgeInsets.all(30),
+          decoration: BoxDecoration(color: theme.cardColor, borderRadius: BorderRadius.circular(20)),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(context.accentColor),
-                strokeWidth: 3.f,
+                valueColor: AlwaysStoppedAnimation<Color>(effectiveAccentColor),
+                strokeWidth: 3,
               ),
-              SizedBox(height: 20.f),
-              CommonText(message, style: context.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
+              const SizedBox(height: 20),
+              CommonText(message, style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
             ],
           ),
         ),

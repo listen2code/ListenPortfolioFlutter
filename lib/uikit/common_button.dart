@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 
 enum ButtonType { filled, outlined, text }
@@ -38,8 +37,17 @@ class CommonButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accentColor = backgroundColor ?? context.accentColor;
-    final contentColor = foregroundColor ?? (type == ButtonType.filled ? Colors.white : accentColor);
+    final theme = Theme.of(context);
+    
+    // Resolve accent color without depending on shared:
+    // 1. Manual backgroundColor
+    // 2. Original accent color from iconTheme
+    // 3. M3 primary color
+    final effectiveAccentColor = backgroundColor 
+        ?? theme.iconTheme.color 
+        ?? theme.colorScheme.primary;
+        
+    final contentColor = foregroundColor ?? (type == ButtonType.filled ? Colors.white : effectiveAccentColor);
 
     Widget buttonChild = Row(
       mainAxisSize: MainAxisSize.min,
@@ -47,25 +55,25 @@ class CommonButton extends StatelessWidget {
       children: [
         if (isLoading) ...[
           SizedBox(
-            width: 18.f,
-            height: 18.f,
+            width: 18,
+            height: 18,
             child: CircularProgressIndicator(
-              strokeWidth: 2.f,
+              strokeWidth: 2,
               valueColor: AlwaysStoppedAnimation<Color>(contentColor),
             ),
           ),
-          SizedBox(width: 10.f),
+          const SizedBox(width: 10),
         ] else if (icon != null) ...[
-          Icon(icon, size: 18.f, color: contentColor),
-          SizedBox(width: 8.f),
+          Icon(icon, size: 18, color: contentColor),
+          const SizedBox(width: 8),
         ],
         Flexible(
           child: CommonText(
             text,
-            style: context.textTheme.labelLarge?.copyWith(
+            style: theme.textTheme.labelLarge?.copyWith(
               color: contentColor,
               fontWeight: FontWeight.bold,
-              fontSize: fontSize ?? 16.f,
+              fontSize: fontSize ?? 16,
             ),
           ),
         ),
@@ -73,34 +81,33 @@ class CommonButton extends StatelessWidget {
     );
 
     ButtonStyle style;
-    final shape = RoundedRectangleBorder(borderRadius: BorderRadius.circular(borderRadius.f));
+    final shape = RoundedRectangleBorder(borderRadius: BorderRadius.circular(borderRadius));
 
     switch (type) {
       case ButtonType.filled:
         style = ElevatedButton.styleFrom(
-          backgroundColor: accentColor,
+          backgroundColor: effectiveAccentColor,
           foregroundColor: Colors.white,
           elevation: 0,
           shape: shape,
-          padding: padding ?? EdgeInsets.symmetric(vertical: 12.f),
+          padding: padding ?? const EdgeInsets.symmetric(vertical: 12),
         );
         break;
       case ButtonType.outlined:
         style = OutlinedButton.styleFrom(
-          foregroundColor: accentColor,
-          side: BorderSide(color: accentColor, width: 1.5.f),
+          foregroundColor: effectiveAccentColor,
+          side: BorderSide(color: effectiveAccentColor, width: 1.5),
           shape: shape,
-          padding: padding ?? EdgeInsets.symmetric(vertical: 12.f),
+          padding: padding ?? const EdgeInsets.symmetric(vertical: 12),
         );
         break;
       case ButtonType.text:
         style = TextButton.styleFrom(
-          foregroundColor: accentColor,
+          foregroundColor: effectiveAccentColor,
           shape: shape,
-          padding: padding ?? EdgeInsets.symmetric(vertical: 12.f),
+          padding: padding ?? const EdgeInsets.symmetric(vertical: 12),
           splashFactory: NoSplash.splashFactory,
-          // Remove splash
-          overlayColor: Colors.transparent, // Remove overlay highlight
+          overlayColor: Colors.transparent,
         );
         break;
     }
@@ -114,6 +121,10 @@ class CommonButton extends StatelessWidget {
       button = TextButton(onPressed: isLoading ? null : onPressed, style: style, child: buttonChild);
     }
 
-    return SizedBox(width: isFullWidth ? double.infinity : width, height: height ?? 52.f, child: button);
+    return SizedBox(
+      width: isFullWidth ? double.infinity : width, 
+      height: height ?? 52, 
+      child: button,
+    );
   }
 }

@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:listen_portfolio_flutter/shared/shared.dart';
 
 enum _ImageType { asset, network, file }
 
@@ -158,6 +157,7 @@ class CommonImage extends StatelessWidget {
   }
 
   Widget _buildPlaceholder(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       width: width,
       height: height,
@@ -165,9 +165,9 @@ class CommonImage extends StatelessWidget {
         // Smooth gradient placeholder replacing the spinner
         gradient: LinearGradient(
           colors: [
-            context.theme.dividerColor.withOpacity(0.05),
-            context.theme.dividerColor.withOpacity(0.1),
-            context.theme.dividerColor.withOpacity(0.05),
+            theme.dividerColor.withOpacity(0.05),
+            theme.dividerColor.withOpacity(0.1),
+            theme.dividerColor.withOpacity(0.05),
           ],
           begin: const Alignment(-1.0, -0.5),
           end: const Alignment(1.0, 0.5),
@@ -177,11 +177,12 @@ class CommonImage extends StatelessWidget {
   }
 
   Widget _buildErrorWidget(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       width: width,
       height: height,
-      color: context.theme.dividerColor.withOpacity(0.1),
-      child: Icon(Icons.broken_image_outlined, color: Colors.grey, size: 24.f),
+      color: theme.dividerColor.withOpacity(0.1),
+      child: const Icon(Icons.broken_image_outlined, color: Colors.grey, size: 24),
     );
   }
 }

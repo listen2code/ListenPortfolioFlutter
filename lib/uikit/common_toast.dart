@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
-import 'package:listen_portfolio_flutter/shared/shared.dart';
 
 enum ToastType { info, success, error }
 
@@ -100,37 +99,38 @@ class _ToastWidgetState extends State<_ToastWidget> with SingleTickerProviderSta
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return SafeArea(
       child: Align(
         alignment: Alignment.bottomCenter,
         child: Padding(
-          padding: EdgeInsets.only(bottom: 100.f, left: 40.f, right: 40.f),
+          padding: const EdgeInsets.only(bottom: 100, left: 40, right: 40),
           child: FadeTransition(
             opacity: _fadeAnimation,
             child: Material(
               color: Colors.transparent,
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 20.f, vertical: 12.f),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                 decoration: BoxDecoration(
                   color: _getBackgroundColor(),
-                  borderRadius: BorderRadius.circular(25.f),
+                  borderRadius: BorderRadius.circular(25),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withAlpha((255.0 * 0.2).round()),
-                      blurRadius: 10.f,
-                      offset: Offset(0, 5.f),
+                      blurRadius: 10,
+                      offset: const Offset(0, 5),
                     ),
                   ],
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(_getIcon(), color: Colors.white, size: 20.f),
-                    SizedBox(width: 12.f),
+                    Icon(_getIcon(), color: Colors.white, size: 20),
+                    const SizedBox(width: 12),
                     Flexible(
                       child: Text(
                         widget.message,
-                        style: context.textTheme.bodyMedium?.copyWith(
+                        style: theme.textTheme.bodyMedium?.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.w500,
                         ),

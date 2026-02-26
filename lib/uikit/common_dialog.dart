@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
-import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 
 /// Centralized utility for showing various types of dialogs.
+/// Note: This class uses the global navigator context.
 class CommonDialog {
   CommonDialog._();
+
+  /// Internal helper to resolve accent color from theme
+  static Color _getAccentColor(BuildContext context) {
+    final theme = Theme.of(context);
+    return theme.iconTheme.color ?? theme.colorScheme.primary;
+  }
 
   /// Shows an informational dialog with a single button.
   static Future<void> showMessage({
@@ -16,6 +22,8 @@ class CommonDialog {
     final context = AppNavConfig.context;
     if (context == null) return;
 
+    final accentColor = _getAccentColor(context);
+
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -24,7 +32,7 @@ class CommonDialog {
         actions: [
           TextButton(
             onPressed: () => AppNav.back(),
-            child: Text(buttonText ?? I18nKeys.ok.tr, style: TextStyle(color: settingManager.accentColor)),
+            child: Text(buttonText ?? "ok", style: TextStyle(color: accentColor)),
           ),
         ],
       ),
@@ -39,19 +47,24 @@ class CommonDialog {
     String? cancelText,
     Color? okColor,
   }) {
+    final context = AppNavConfig.context;
+    if (context == null) return Future.value(null);
+
+    final accentColor = _getAccentColor(context);
+
     return showCustom<bool>(
       title: title,
       body: Text(message),
       actions: [
         TextButton(
           onPressed: () => AppNav.back(false),
-          child: Text(cancelText ?? I18nKeys.cancel.tr, style: const TextStyle(color: Colors.grey)),
+          child: Text(cancelText ?? "cancel", style: const TextStyle(color: Colors.grey)),
         ),
         TextButton(
           onPressed: () => AppNav.back(true),
           child: Text(
-            okText ?? I18nKeys.ok.tr,
-            style: TextStyle(color: okColor ?? settingManager.accentColor, fontWeight: FontWeight.bold),
+            okText ?? "ok",
+            style: TextStyle(color: okColor ?? accentColor, fontWeight: FontWeight.bold),
           ),
         ),
       ],
@@ -63,6 +76,8 @@ class CommonDialog {
   static Future<void> showSwitchDialog({required String title, required List<DialogSwitchItem> items}) async {
     final context = AppNavConfig.context;
     if (context == null) return;
+
+    final accentColor = _getAccentColor(context);
 
     await showDialog(
       context: context,
@@ -78,9 +93,7 @@ class CommonDialog {
                       dense: true,
                       title: Text(item.label, style: const TextStyle(fontSize: 14)),
                       // Display checkmark for selected item
-                      trailing: item.value
-                          ? Icon(Icons.check_circle, color: settingManager.accentColor)
-                          : null,
+                      trailing: item.value ? Icon(Icons.check_circle, color: accentColor) : null,
                       onTap: () async {
                         // 1. Execute the callback (could be async)
                         final newValue = !item.value;

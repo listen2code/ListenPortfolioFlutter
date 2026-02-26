@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:listen_portfolio_flutter/shared/shared.dart';
 
 /// Predefined styles for common input scenarios
 enum TextFieldType { text, password, email, number }
@@ -44,6 +43,9 @@ class CommonTextField extends StatefulWidget {
   /// Manually override the keyboard layout (e.g., phone, url)
   final TextInputType? keyboardType;
 
+  /// The color to use for icons and focus. If null, uses the theme's primary color or icon color.
+  final Color? accentColor;
+
   const CommonTextField({
     super.key,
     this.controller,
@@ -58,6 +60,7 @@ class CommonTextField extends StatefulWidget {
     this.maxLength,
     this.isDigitsOnly = false,
     this.keyboardType,
+    this.accentColor,
   });
 
   @override
@@ -69,7 +72,14 @@ class _CommonTextFieldState extends State<CommonTextField> {
 
   @override
   Widget build(BuildContext context) {
-    final accentColor = settingManager.accentColor;
+    final theme = Theme.of(context);
+
+    // Resolve the most appropriate color:
+    // 1. Manually passed accentColor
+    // 2. Icon theme color (which usually holds our original accentColor)
+    // 3. Primary color from ColorScheme
+    final effectiveAccentColor = widget.accentColor ?? theme.iconTheme.color ?? theme.colorScheme.primary;
+
     final isPassword = widget.type == TextFieldType.password;
 
     return TextFormField(
@@ -80,14 +90,15 @@ class _CommonTextFieldState extends State<CommonTextField> {
       obscureText: isPassword ? _obscureText : false,
       keyboardType: widget.keyboardType ?? _getKeyboardType(),
       maxLength: widget.maxLength,
-      // Apply numeric filters if isDigitsOnly is enabled
       inputFormatters: [if (widget.isDigitsOnly) FilteringTextInputFormatter.digitsOnly],
       decoration: InputDecoration(
         hintText: widget.hintText,
         labelText: widget.labelText,
         errorText: widget.errorText,
-        prefixIcon: widget.prefixIcon != null ? Icon(widget.prefixIcon, color: accentColor) : null,
-        suffixIcon: isPassword ? _buildPasswordToggle(accentColor) : null,
+        // The color is now automatically picked up from inputDecorationTheme
+        // if not explicitly styled here. Using effectiveAccentColor for manual Icons.
+        prefixIcon: widget.prefixIcon != null ? Icon(widget.prefixIcon, color: effectiveAccentColor) : null,
+        suffixIcon: isPassword ? _buildPasswordToggle(effectiveAccentColor) : null,
       ),
     );
   }
