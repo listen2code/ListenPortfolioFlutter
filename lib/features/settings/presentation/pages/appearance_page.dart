@@ -13,7 +13,7 @@ class AppearancePage extends StatefulWidget {
 class _AppearancePageState extends State<AppearancePage> {
   @override
   Widget build(BuildContext context) {
-    return BaseListenablePage(
+    return BaseSettingPage(
       builder: (context, child) {
         final accentColor = settingManager.accentColor;
 

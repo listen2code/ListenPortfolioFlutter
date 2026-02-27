@@ -7,7 +7,7 @@ class ProjectsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BaseListenablePage(
+    return BaseSettingPage(
       builder: (context, child) {
         final accentColor = context.accentColor;
         final projects = [

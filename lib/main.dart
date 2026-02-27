@@ -112,7 +112,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BaseListenablePage(
+    return BaseSettingPage(
       builder: (context, child) {
         return MaterialApp(
           navigatorKey: AppNavConfig.navigatorKey,

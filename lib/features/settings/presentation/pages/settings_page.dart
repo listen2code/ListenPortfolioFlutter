@@ -32,7 +32,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BaseListenablePage(
+    return BaseSettingPage(
       builder: (context, child) {
         return BasePage(
           title: I18nKeys.settings.tr,

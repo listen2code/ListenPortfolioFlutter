@@ -18,7 +18,7 @@ class OverviewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BaseListenablePage(
+    return BaseSettingPage(
       builder: (context, child) {
         return SingleChildScrollView(
           child: Column(

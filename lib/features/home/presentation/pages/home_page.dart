@@ -84,7 +84,7 @@ class _HomePageState extends State<HomePage> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(topRight: Radius.circular(30.f), bottomRight: Radius.circular(30.f)),
       ),
-      child: BaseAuthListenablePage(
+      child: BaseAuthPage(
         builder: (BuildContext context, Widget? child) {
           return Column(
             children: [

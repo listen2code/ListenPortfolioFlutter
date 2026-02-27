@@ -49,7 +49,7 @@ class CommonAuthText extends CommonText {
 
   @override
   Widget build(BuildContext context) {
-    return BaseAuthListenablePage(
+    return BaseAuthPage(
       builder: (context, child) {
         final bool isGuest = authManager.state.isGuest;
         final bool shouldBlur = blurLevel != AuthBlurLevel.none && isGuest;

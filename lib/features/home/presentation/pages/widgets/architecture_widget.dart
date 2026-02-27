@@ -9,7 +9,7 @@ class ArchitectureWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BaseListenablePage(
+    return BaseSettingPage(
       builder: (context, child) {
         return SingleChildScrollView(
           padding: EdgeInsets.all(20.f),
