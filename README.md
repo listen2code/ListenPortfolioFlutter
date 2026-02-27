@@ -59,7 +59,6 @@ samples, guidance on mobile development, and a full API reference.
     * channel plugin
     * jni
     * crash report safe mode
-    * effect: loading and toast
 * ide plugin
     * assets
 * framework

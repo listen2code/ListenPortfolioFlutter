@@ -3,6 +3,7 @@ export 'base/base_page.dart';
 export 'base/base_setting_page.dart';
 export 'base/loading_provider_impl.dart';
 export 'base/message_provider_impl.dart';
+export 'base/navigation_provider_impl.dart';
 export 'constants/app_constants.dart';
 export 'constants/env_biz_config.dart';
 export 'i18n/app_language.dart';
