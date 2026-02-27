@@ -33,29 +33,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     super.dispose();
   }
 
-  void _setupNavigation(BuildContext context) {
-    ref.listenNavigation<LoginState, LoginNavigationTarget>(loginViewModelProvider, (target) {
-      switch (target) {
-        case LoginNavigationTarget.signup:
-          AppNav.to("${Routes.signup}?${Routes.argName}=${_usernameController.text}");
-          break;
-        case LoginNavigationTarget.forgotPassword:
-          AppNav.to(Routes.forgotPassword);
-          break;
-        case LoginNavigationTarget.success:
-          AppNav.back(true);
-          break;
-        case LoginNavigationTarget.back:
-          AppNav.back(false);
-          break;
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    _setupNavigation(context);
-
     ref.listen<LoginState>(loginViewModelProvider, (previous, next) {
       if (_usernameController.text.isEmpty && next.username.isNotEmpty) {
         _usernameController.text = next.username;
@@ -66,12 +45,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     });
 
     final state = ref.watch(loginViewModelProvider);
-    final viewModel = ref.read(loginViewModelProvider.notifier);
     final accentColor = context.accentColor;
 
-    return BasePage(
+    return BasePage<LoginViewModel>(
       provider: loginViewModelProvider,
-      body: (context, child) {
+      body: (context, child, viewModel) {
         return SingleChildScrollView(
           padding: const EdgeInsets.all(20),
           child: Column(
@@ -127,7 +105,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 labelText: I18nKeys.username.tr,
                 prefixIcon: Icons.person_outline,
                 errorText: state.usernameError,
-                onChanged: (value) => viewModel.handleIntent(LoginIntent.usernameChanged(value)),
+                onChanged: (value) => viewModel?.handleIntent(LoginIntent.usernameChanged(value)),
               ),
               const SizedBox(height: 20),
               // Password
@@ -137,7 +115,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 labelText: I18nKeys.password.tr,
                 prefixIcon: Icons.lock_outline,
                 errorText: state.passwordError,
-                onChanged: (value) => viewModel.handleIntent(LoginIntent.passwordChanged(value)),
+                onChanged: (value) => viewModel?.handleIntent(LoginIntent.passwordChanged(value)),
               ),
               // Remember Me & Forgot Password
               Row(
@@ -159,7 +137,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               activeColor: accentColor,
                               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               onChanged: (value) =>
-                                  viewModel.handleIntent(const LoginIntent.toggleRememberMe()),
+                                  viewModel?.handleIntent(const LoginIntent.toggleRememberMe()),
                             ),
                           ),
                         ),
@@ -173,7 +151,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                             padding: EdgeInsets.zero,
                             foregroundColor: Colors.grey,
                             fontSize: 14.f,
-                            onPressed: () => viewModel.handleIntent(const LoginIntent.toggleRememberMe()),
+                            onPressed: () => viewModel?.handleIntent(const LoginIntent.toggleRememberMe()),
                           ),
                         ),
                       ],
@@ -189,7 +167,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       height: 40,
                       padding: EdgeInsets.zero,
                       fontSize: 14.f,
-                      onPressed: () => viewModel.handleIntent(const LoginIntent.navigateToForgotPassword()),
+                      onPressed: () => viewModel?.handleIntent(const LoginIntent.navigateToForgotPassword()),
                     ),
                   ),
                 ],
@@ -198,8 +176,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               // Buttons
               CommonButton(
                 text: I18nKeys.login.tr,
-                isLoading: state.isLoading,
-                onPressed: () => viewModel.handleIntent(const LoginIntent.submitLogin()),
+                onPressed: () => viewModel?.handleIntent(const LoginIntent.submitLogin()),
                 borderRadius: 15,
                 height: 56,
               ),
@@ -208,7 +185,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 text: I18nKeys.skipForNow.tr,
                 type: ButtonType.text,
                 foregroundColor: Colors.grey,
-                onPressed: () => viewModel.handleIntent(const LoginIntent.skipLogin()),
+                onPressed: () => viewModel?.handleIntent(const LoginIntent.skipLogin()),
               ),
               const SizedBox(height: 10),
               Row(
@@ -225,7 +202,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     text: I18nKeys.signUp.tr,
                     type: ButtonType.text,
                     isFullWidth: false,
-                    onPressed: () => viewModel.handleIntent(const LoginIntent.navigateToSignup()),
+                    onPressed: () => viewModel?.handleIntent(const LoginIntent.navigateToSignup()),
                   ),
                 ],
               ),

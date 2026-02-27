@@ -1,11 +1,12 @@
+export 'base/base_effect.dart';
 export 'base/base_lifecycle_page.dart';
+export 'base/base_provider.dart';
 export 'base/base_scaffold_page.dart';
 export 'base/base_view_model.dart';
 export 'constants/app_env.dart';
 export 'constants/constants.dart';
 export 'errors/exceptions.dart';
 export 'errors/failures.dart';
-export 'extension/widget_ref_extension.dart';
 export 'i18n/translations.dart';
 export 'network/api_client.dart';
 export 'network/base_repository.dart';

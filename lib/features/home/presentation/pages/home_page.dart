@@ -49,7 +49,11 @@ class _HomePageState extends State<HomePage> {
           setState(() => _currentTab = HomeTab.overview);
         }
       },
-      child: BasePage(title: _getPageTitle(), drawer: _buildDrawer(), body: (context, child) => _buildBody()),
+      child: BasePage(
+        title: _getPageTitle(),
+        drawer: _buildDrawer(),
+        body: (context, child, viewModel) => _buildBody(),
+      ),
     );
   }
 

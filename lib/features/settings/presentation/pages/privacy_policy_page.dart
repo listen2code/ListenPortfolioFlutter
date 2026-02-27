@@ -11,7 +11,7 @@ class PrivacyPolicyPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BasePage(
       title: I18nKeys.privacyPolicy.tr,
-      body: (context, child) => SingleChildScrollView(
+      body: (context, child, viewModel) => SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

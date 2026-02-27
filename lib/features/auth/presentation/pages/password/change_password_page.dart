@@ -36,7 +36,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   Widget build(BuildContext context) {
     return BasePage(
       isEmptyTitle: true,
-      body: (context, child) => SingleChildScrollView(
+      body: (context, child, viewModel) => SingleChildScrollView(
         padding: EdgeInsets.all(20.f),
         child: Form(
           key: _formKey,

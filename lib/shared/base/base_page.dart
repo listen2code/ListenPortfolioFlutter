@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
-import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-/// A shared-layer wrapper for the core [core.BaseLifeCyclePage].
-/// This widget is responsible for injecting shared- and uikit-layer dependencies
-/// like [LoadingProviderImpl] and [MessageProviderImpl] into the ViewModel.
-///
-/// This keeps the core BasePage clean and independent, while allowing feature-level
-/// pages to use a single `BasePage` widget that handles all setup.
-class BasePage extends ConsumerStatefulWidget {
-  final TransitionBuilder body;
+/// A custom builder for [BasePage] that provides the resolved [viewModel].
+typedef BasePageBodyBuilder<T extends BaseViewModel> =
+    Widget Function(BuildContext context, Widget? child, T? viewModel);
+
+/// A shared-layer wrapper for the core [BaseLifeCyclePage].
+/// This widget acts as a bridge between business-specific Riverpod providers
+/// and the pure core architecture, keeping [BaseLifeCyclePage] independent.
+class BasePage<T extends BaseViewModel> extends ConsumerWidget {
+  /// The builder for the page content, now receiving the [viewModel].
+  final BasePageBodyBuilder<T> body;
+
   final String? title;
   final List<Widget>? actions;
   final PreferredSizeWidget? appBar;
@@ -26,12 +28,19 @@ class BasePage extends ConsumerStatefulWidget {
   final bool isEmptyTitle;
   final Color statusBarColor;
   final Color bottomBarColor;
-
-  /// Visibility flag for Tab/Page switching inside the same route.
+  final bool useGradientBackground;
   final bool active;
+  final bool? canPop;
+  final VoidCallback? onInterceptBack;
 
-  /// The Provider to listen for states (errors/messages) and manage lifecycles via its Notifier.
+  /// The Riverpod Provider used to automatically resolve the [BaseViewModel].
   final ProviderListenable<BaseState<dynamic>>? provider;
+
+  /// An explicitly provided [BaseViewModel] instance.
+  final T? viewModel;
+
+  /// Callback for handling custom business side effects.
+  final void Function(BaseEffect effect)? onEffect;
 
   const BasePage({
     super.key,
@@ -50,58 +59,46 @@ class BasePage extends ConsumerStatefulWidget {
     this.isEmptyTitle = false,
     this.statusBarColor = Colors.transparent,
     this.bottomBarColor = Colors.transparent,
+    this.useGradientBackground = true,
     this.active = true,
+    this.canPop,
+    this.onInterceptBack,
     this.provider,
+    this.viewModel,
+    this.onEffect,
   });
 
   @override
-  ConsumerState<BasePage> createState() => _BasePageState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Logic to resolve the ViewModel:
+    // 1. Use the explicitly provided [viewModel] if available.
+    // 2. Otherwise, try to read the notifier from the [provider].
+    final effectiveViewModel =
+        viewModel ?? (provider != null ? ref.read((provider as dynamic).notifier) as T : null);
 
-class _BasePageState extends ConsumerState<BasePage> {
-  @override
-  void initState() {
-    super.initState();
-    // Inject shared/uikit implementations into the ViewModel if a provider is present.
-    // This is done once when the widget is initialized.
-    if (widget.provider != null) {
-      try {
-        final viewModel = ref.read((widget.provider! as dynamic).notifier) as BaseViewModel;
-
-        // Inject the concrete implementation for showing/hiding a loading overlay.
-        viewModel.loadingProvider = const LoadingProviderImpl();
-
-        // Inject the concrete implementation for showing info/error toasts.
-        viewModel.messageProvider = const MessageProviderImpl();
-      } catch (_) {
-        // Errors are ignored if the provider or notifier isn't a valid ViewModel.
-      }
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // Render the core BasePage, passing all properties through.
-    // The core BasePage is completely decoupled from shared/uikit layers.
     return BaseLifeCyclePage(
-      key: widget.key,
-      body: widget.body,
-      title: widget.title,
-      actions: widget.actions,
-      appBar: widget.appBar,
-      drawer: widget.drawer,
-      floatingActionButton: widget.floatingActionButton,
-      useSafeArea: widget.useSafeArea,
-      padding: widget.padding,
-      resizeToAvoidBottomInset: widget.resizeToAvoidBottomInset,
-      extendBodyBehindAppBar: widget.extendBodyBehindAppBar,
-      useStatusBar: widget.useStatusBar,
-      useBottomBar: widget.useBottomBar,
-      isEmptyTitle: widget.isEmptyTitle,
-      statusBarColor: widget.statusBarColor,
-      bottomBarColor: widget.bottomBarColor,
-      active: widget.active,
-      provider: widget.provider,
+      // Wrap the user's body to inject the effectiveViewModel
+      body: (context, child) => body(context, child, effectiveViewModel),
+      title: title,
+      actions: actions,
+      appBar: appBar,
+      drawer: drawer,
+      floatingActionButton: floatingActionButton,
+      useSafeArea: useSafeArea,
+      padding: padding,
+      resizeToAvoidBottomInset: resizeToAvoidBottomInset,
+      extendBodyBehindAppBar: extendBodyBehindAppBar,
+      useStatusBar: useStatusBar,
+      useBottomBar: useBottomBar,
+      isEmptyTitle: isEmptyTitle,
+      statusBarColor: statusBarColor,
+      bottomBarColor: bottomBarColor,
+      useGradientBackground: useGradientBackground,
+      active: active,
+      canPop: canPop,
+      onInterceptBack: onInterceptBack,
+      viewModel: effectiveViewModel,
+      onEffect: onEffect,
     );
   }
 }

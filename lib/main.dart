@@ -4,7 +4,9 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:listen_portfolio_flutter/core/base/base_config.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_portfolio_flutter/shared/base/navigation_provider_impl.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 
@@ -27,9 +29,19 @@ void main() {
 
 Future<void> _initServices() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // 1. Infrastructure
   await SpUtil.init(prefix: "${AppConstants.appName}_");
 
-  // Inject business-specific environment configurations
+  // 2. Core Architecture DI Injection
+  // Must be called before any ViewModel or Page is initialized.
+  BaseConfig.setup(
+    loadingProvider: const LoadingProviderImpl(),
+    messageProvider: const MessageProviderImpl(),
+    navigationProvider: const NavigationProviderImpl(),
+  );
+
+  // 3. Environment Configuration
   AppEnv.setup({
     AppEnvironment.mock: BizEnvConfigs.mock,
     AppEnvironment.dev: BizEnvConfigs.dev,
@@ -38,16 +50,17 @@ Future<void> _initServices() async {
   });
   await AppEnv.init();
 
-  // Inject business-specific translations
+  // 4. Localization
   Translations.register(
     data: {'en': en, 'zh': zh, 'ja': ja},
     languageCodeProvider: () => settingManager.locale.languageCode,
   );
 
+  // 5. Global Managers & Settings
   QuickActionsManager.init();
   settingManager.loadSettings();
 
-  // Inject i18n support into UIKit
+  // 6. UIKit Configuration (Depends on Localization system)
   UIKitConfig.setup(stringProvider: (key) => key.tr);
 }
 

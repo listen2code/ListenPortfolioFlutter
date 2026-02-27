@@ -1,11 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 /// A professional, unified page wrapper that handles lifecycle management
 /// and ViewModel state listening, delegating UI structure to [BaseScaffoldPage].
-class BaseLifeCyclePage extends ConsumerStatefulWidget {
+class BaseLifeCyclePage extends StatefulWidget {
   final TransitionBuilder body;
   final String? title;
   final List<Widget>? actions;
@@ -35,11 +35,11 @@ class BaseLifeCyclePage extends ConsumerStatefulWidget {
   /// If null, default behavior is to cancel requests and hide loading.
   final VoidCallback? onInterceptBack;
 
-  /// Explicitly provided ViewModel instance. If null, tries to resolve from [provider].
+  /// Explicitly provided ViewModel instance.
   final BaseViewModel? viewModel;
 
-  /// The Provider to listen for states (errors/messages).
-  final ProviderListenable<BaseState<dynamic>>? provider;
+  /// Optional callback to handle custom UI effects.
+  final void Function(BaseEffect effect)? onEffect;
 
   const BaseLifeCyclePage({
     super.key,
@@ -63,18 +63,18 @@ class BaseLifeCyclePage extends ConsumerStatefulWidget {
     this.canPop,
     this.onInterceptBack,
     this.viewModel,
-    this.provider,
+    this.onEffect,
   });
 
   @override
-  ConsumerState<BaseLifeCyclePage> createState() => _BaseLifeCyclePageState();
+  State<BaseLifeCyclePage> createState() => _BaseLifeCyclePageState();
 }
 
-class _BaseLifeCyclePageState extends ConsumerState<BaseLifeCyclePage> {
+class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
   bool _isRouteVisible = false;
   BaseViewModel? _viewModel;
+  StreamSubscription<BaseEffect>? _effectSubscription;
 
-  // Observers moved to dedicated proxy classes for clarity
   late final _RouteAwareProxy _routeObserver;
   late final _AppLifecycleProxy _lifecycleObserver;
 
@@ -82,14 +82,12 @@ class _BaseLifeCyclePageState extends ConsumerState<BaseLifeCyclePage> {
   void initState() {
     super.initState();
 
-    // 1. Resolve ViewModel: Priority given to explicit viewModel, then provider.notifier
+    // Directly use the provided viewModel instance
     _viewModel = widget.viewModel;
-    if (_viewModel == null && widget.provider != null) {
-      try {
-        _viewModel = ref.read((widget.provider as dynamic).notifier) as BaseViewModel;
-      } catch (_) {
-        // Error reading provider is ignored
-      }
+
+    // Subscribe to Effects (Toast, Loading, Navigation, etc.)
+    if (_viewModel != null) {
+      _effectSubscription = _viewModel!.effectStream.listen(_handleEffect);
     }
 
     // Initialize Observers
@@ -123,6 +121,16 @@ class _BaseLifeCyclePageState extends ConsumerState<BaseLifeCyclePage> {
     });
   }
 
+  void _handleEffect(BaseEffect effect) {
+    // Delegate standard effect handling to the ViewModel's mixin logic
+    final handled = _viewModel?.handleEffect(effect) ?? false;
+
+    // If not handled by the framework (standard effects), pass it to the specific page logic
+    if (!handled) {
+      widget.onEffect?.call(effect);
+    }
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -142,6 +150,7 @@ class _BaseLifeCyclePageState extends ConsumerState<BaseLifeCyclePage> {
 
   @override
   void dispose() {
+    _effectSubscription?.cancel();
     AppNav.observer.unsubscribe(_routeObserver);
     WidgetsBinding.instance.removeObserver(_lifecycleObserver);
     _viewModel?.onDispose();
@@ -158,12 +167,7 @@ class _BaseLifeCyclePageState extends ConsumerState<BaseLifeCyclePage> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.provider != null) {
-      ref.listenError(widget.provider!);
-      ref.listenMessage(widget.provider!);
-    }
-
-    // Resolve the loading state notifier from the ViewModel's provider
+    // Resolved the loading state notifier from the ViewModel's provider
     final isLoadingNotifier = _viewModel?.loadingProvider?.isLoading ?? ValueNotifier<bool>(false);
 
     return ListenableBuilder(

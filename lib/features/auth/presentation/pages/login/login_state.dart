@@ -3,11 +3,8 @@ import 'package:listen_portfolio_flutter/core/core.dart';
 
 part 'login_state.freezed.dart';
 
-/// Navigation targets for the login flow
-enum LoginNavigationTarget { signup, forgotPassword, success, back }
-
 @freezed
-abstract class LoginState with _$LoginState implements BaseState<LoginNavigationTarget> {
+abstract class LoginState with _$LoginState implements BaseState<void> {
   const LoginState._();
 
   const factory LoginState({
@@ -15,11 +12,7 @@ abstract class LoginState with _$LoginState implements BaseState<LoginNavigation
     @Default('') String password,
     @Default(false) bool isPasswordVisible,
     @Default(false) bool rememberMe,
-    @Default(false) bool isLoading,
     String? usernameError,
     String? passwordError,
-    String? errorMessage,
-    String? message,
-    LoginNavigationTarget? pendingNavigation,
   }) = _LoginState;
 }

@@ -56,7 +56,7 @@ class _CrashLogListPageState extends State<CrashLogListPage> {
     return BasePage(
       title: I18nKeys.crashReports.tr,
       actions: [IconButton(icon: const Icon(Icons.flash_on_rounded), onPressed: _handleTriggerCrash)],
-      body: (context, child) {
+      body: (context, child, viewModel) {
         if (_isLoading) {
           return const Center(child: CircularProgressIndicator());
         }

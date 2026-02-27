@@ -20,7 +20,7 @@ class Routes {
   static const String root = "/splash";
   static const String home = "/home";
   static const String login = "/login";
-  static const String signup = "/signup";
+  static const String signUp = "/signUp";
   static const String forgotPassword = "/forgot_password";
   static const String changePassword = "/change_password";
   static const String deleteAccount = "/delete_account";
@@ -41,7 +41,7 @@ class Routes {
 
     /// login
     login: () => const LoginPage(),
-    signup: () => const SignUpPage(),
+    signUp: () => const SignUpPage(),
     forgotPassword: () => const ForgotPasswordPage(),
     changePassword: () => const ChangePasswordPage(),
 

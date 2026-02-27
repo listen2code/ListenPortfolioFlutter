@@ -50,17 +50,18 @@ class LoginViewModel extends _$LoginViewModel with ConsumeViewModel<LoginState> 
         navigateToForgotPassword: _onNavigateToForgotPassword,
         skipLogin: _onNavigateToBack,
       ),
+      // Automatically show/hide global loading overlay via ILoadingProvider
       showLoading: intent is SubmitLogin,
     );
   }
 
   FutureOr<void> _onUsernameChanged(String username) {
-    state = state.copyWith(username: username, usernameError: null, errorMessage: null);
+    state = state.copyWith(username: username, usernameError: null);
     if (state.rememberMe) _saveOrClearCredentials();
   }
 
   FutureOr<void> _onPasswordChanged(String password) {
-    state = state.copyWith(password: password, passwordError: null, errorMessage: null);
+    state = state.copyWith(password: password, passwordError: null);
     if (state.rememberMe) _saveOrClearCredentials();
   }
 
@@ -90,19 +91,21 @@ class LoginViewModel extends _$LoginViewModel with ConsumeViewModel<LoginState> 
       return;
     }
 
-    state = state.copyWith(isLoading: true, errorMessage: null);
-
     final loginUseCase = await ref.read(loginUseCaseProvider.future);
     final result = await loginUseCase(LoginParams(username: state.username, password: state.password));
 
-    result.fold((failure) => state = state.copyWith(isLoading: false, errorMessage: failure.message), (user) {
-      authManager.login(user);
-      state = state.copyWith(
-        isLoading: false,
-        pendingNavigation: LoginNavigationTarget.success,
-        message: "Login success!",
-      );
-    });
+    result.fold(
+      (failure) {
+        // Emit error effect instead of updating sticky state
+        emitEffect(ErrorEffect(failure.message));
+      },
+      (user) {
+        authManager.login(user);
+        // Notify success and navigate via Effects
+        emitEffect(MessageEffect(I18nKeys.loginSuccess.tr));
+        emitEffect(NavigationEffect.back(result: true));
+      },
+    );
   }
 
   Future<void> _saveOrClearCredentials() async {
@@ -118,11 +121,9 @@ class LoginViewModel extends _$LoginViewModel with ConsumeViewModel<LoginState> 
     }
   }
 
-  FutureOr<void> _onNavigateToSignup() =>
-      state = state.copyWith(pendingNavigation: LoginNavigationTarget.signup);
+  void _onNavigateToSignup() => emitEffect(NavigationEffect(target: Routes.signUp));
 
-  FutureOr<void> _onNavigateToForgotPassword() =>
-      state = state.copyWith(pendingNavigation: LoginNavigationTarget.forgotPassword);
+  void _onNavigateToForgotPassword() => emitEffect(NavigationEffect(target: Routes.forgotPassword));
 
-  FutureOr<void> _onNavigateToBack() => state = state.copyWith(pendingNavigation: LoginNavigationTarget.back);
+  void _onNavigateToBack() => emitEffect(NavigationEffect.back(result: false));
 }

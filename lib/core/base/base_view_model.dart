@@ -1,47 +1,26 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
+import 'package:listen_portfolio_flutter/core/base/base_config.dart';
+import 'package:listen_portfolio_flutter/core/base/base_effect.dart';
+import 'package:listen_portfolio_flutter/core/base/base_provider.dart';
 import 'package:listen_portfolio_flutter/core/utils/crash_manager.dart';
 import 'package:listen_portfolio_flutter/core/utils/logger.dart';
 import 'package:listen_portfolio_flutter/core/utils/zone_manager.dart';
 
-/// Interface for showing/hiding loading UI.
-/// This allows core to stay independent of specific UI implementations.
-abstract class ILoadingProvider {
-  void show({String? message});
+export 'base_effect.dart';
+export 'base_provider.dart';
 
-  void hide();
+/// Interface for states. Should only contain persistent UI data.
+abstract class BaseState<T> {}
 
-  /// Reactive state to indicate if loading is currently active.
-  ValueListenable<bool> get isLoading;
-}
-
-/// Interface for showing messages/toasts.
-/// This allows core to stay independent of specific UI implementations.
-abstract class IMessageProvider {
-  void showInfo(String message);
-
-  void showError(String message);
-}
-
-/// Interface for states that support navigation, error, and general messaging.
-abstract class BaseState<T> {
-  T? get pendingNavigation;
-
-  String? get errorMessage;
-
-  String? get message;
+/// Interface for any object that maintains a reactive state.
+abstract class IStateOwner<S> {
+  S get state;
 }
 
 /// Base interface for all ViewModels.
 abstract class BaseViewModel {
-  void navigationConsumed();
-
-  void errorConsumed();
-
-  void messageConsumed();
-
   // Lifecycle hooks
   void onInit() {}
 
@@ -66,7 +45,7 @@ abstract class BaseViewModel {
 
   void cancelRequests(String reason);
 
-  /// Optional loading provider for dispatch actions.
+  /// Providers for direct side effects.
   ILoadingProvider? get loadingProvider;
 
   set loadingProvider(ILoadingProvider? value);
@@ -75,17 +54,65 @@ abstract class BaseViewModel {
   IMessageProvider? get messageProvider;
 
   set messageProvider(IMessageProvider? value);
+
+  INavigationProvider? get navigationProvider;
+
+  set navigationProvider(INavigationProvider? value);
+
+  /// Reactive stream for one-time UI effects.
+  Stream<BaseEffect> get effectStream;
+
+  void emitEffect(BaseEffect effect);
+
+  /// Handles standard UI effects (Loading, Message, Navigation).
+  /// Returns true if the effect was handled.
+  bool handleEffect(BaseEffect effect);
 }
 
-/// Mixin to handle common UI states, lifecycle logging, automatic request cancellation, and global loading.
-mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel {
-  /// Token to cancel network requests. Will be re-created if the previous one was cancelled.
+/// Mixin to handle common UI states, lifecycle logging, and side effects.
+mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel, IStateOwner<S> {
+  @override
+  S get state;
+
   CancelToken _cancelToken = CancelToken();
+  final _effectController = StreamController<BaseEffect>.broadcast();
+
+  @override
+  Stream<BaseEffect> get effectStream => _effectController.stream;
+
+  @override
+  void emitEffect(BaseEffect effect) => _effectController.add(effect);
+
+  @override
+  bool handleEffect(BaseEffect effect) {
+    if (effect is ErrorEffect) {
+      messageProvider?.showError(effect.message);
+      return true;
+    } else if (effect is MessageEffect) {
+      messageProvider?.showInfo(effect.message);
+      return true;
+    } else if (effect is LoadingEffect) {
+      if (effect.show) {
+        loadingProvider?.show(message: effect.message);
+      } else {
+        loadingProvider?.hide();
+      }
+      return true;
+    } else if (effect is NavigationEffect) {
+      if (effect.isBack) {
+        navigationProvider?.back(effect.arguments);
+      } else if (effect.isReplace) {
+        navigationProvider?.off(effect.target, needLogin: effect.needLogin, arguments: effect.arguments);
+      } else {
+        navigationProvider?.to(effect.target, needLogin: effect.needLogin, arguments: effect.arguments);
+      }
+      return true;
+    }
+    return false;
+  }
 
   @override
   CancelToken get cancelToken {
-    // If the current token is already cancelled, we must create a new one.
-    // Otherwise, all subsequent network requests using this token will fail immediately.
     if (_cancelToken.isCancelled) {
       _cancelToken = CancelToken();
     }
@@ -100,63 +127,34 @@ mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel {
   }
 
   @override
-  void navigationConsumed() {
-    final dynamic self = this;
-    self.state = self.state.copyWith(pendingNavigation: null);
-  }
+  void onInit() => appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onInit');
 
   @override
-  void errorConsumed() {
-    final dynamic self = this;
-    self.state = self.state.copyWith(errorMessage: null);
-  }
+  void onReady() => appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onReady');
 
   @override
-  void messageConsumed() {
-    final dynamic self = this;
-    self.state = self.state.copyWith(message: null);
-  }
+  void onVisible() => appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onVisible');
 
   @override
-  void onInit() {
-    appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onInit');
-  }
+  void onInVisible() => appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onInVisible');
 
   @override
-  void onReady() {
-    appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onReady');
-  }
+  void onResume() => appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onResume');
 
   @override
-  void onVisible() {
-    appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onVisible');
-  }
-
-  @override
-  void onInVisible() {
-    appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onInVisible');
-  }
-
-  @override
-  void onResume() {
-    appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onResume');
-  }
-
-  @override
-  void onPause() {
-    appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onPause');
-  }
+  void onPause() => appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onPause');
 
   @override
   void onDispose() {
     appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onDispose');
     cancelRequests('${runtimeType.toString()} disposed');
+    _effectController.close();
   }
 
   ILoadingProvider? _loadingProvider;
 
   @override
-  ILoadingProvider? get loadingProvider => _loadingProvider;
+  ILoadingProvider? get loadingProvider => _loadingProvider ?? BaseConfig.loadingProvider;
 
   @override
   set loadingProvider(ILoadingProvider? value) => _loadingProvider = value;
@@ -164,34 +162,37 @@ mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel {
   IMessageProvider? _messageProvider;
 
   @override
-  IMessageProvider? get messageProvider => _messageProvider;
+  IMessageProvider? get messageProvider => _messageProvider ?? BaseConfig.messageProvider;
 
   @override
   set messageProvider(IMessageProvider? value) => _messageProvider = value;
 
+  INavigationProvider? _navigationProvider;
+
+  @override
+  INavigationProvider? get navigationProvider => _navigationProvider ?? BaseConfig.navigationProvider;
+
+  @override
+  set navigationProvider(INavigationProvider? value) => _navigationProvider = value;
+
   /// Dispatcher for UI intents.
-  /// [showLoading] Automatically shows/hides CommonLoading during the action.
   Future<void> dispatch(dynamic intent, FutureOr<void> Function() handler, {bool showLoading = false}) {
-    // We use ZoneManager to inject both Trace ID and CancelToken into the execution context.
     return ZoneManager.run(() {
       final tag = runtimeType.toString();
       appLogger.d('$tag: [INTENT] -> $intent');
       ZoneManager.mark('Intent [$intent] Started');
 
-      if (showLoading) loadingProvider?.show();
+      if (showLoading) emitEffect(LoadingEffect(true));
 
       try {
         final result = handler();
 
         void onComplete() {
-          if (showLoading) loadingProvider?.hide();
-          final dynamic self = this;
-          // Log state immediately. For sync handlers, this runs before microtask cleanup.
-          appLogger.d('$tag: [STATE] <- ${self.state}');
+          if (showLoading) emitEffect(LoadingEffect(false));
+          appLogger.d('$tag: [STATE] <- $state');
 
           // INJECTED CRASH CHECK: Moved inside the Zone to ensure the Trace ID is correctly associated.
           CrashManager.checkAndTriggerInjectedCrash();
-
           ZoneManager.mark('Intent Finished');
         }
 
@@ -199,7 +200,7 @@ mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel {
           return result.then(
             (_) => onComplete(),
             onError: (e, s) {
-              if (showLoading) loadingProvider?.hide();
+              if (showLoading) emitEffect(LoadingEffect(false));
               throw e;
             },
           );
@@ -208,7 +209,7 @@ mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel {
           return Future.value();
         }
       } catch (e) {
-        if (showLoading) loadingProvider?.hide();
+        if (showLoading) emitEffect(LoadingEffect(false));
         rethrow;
       }
     }, cancelToken: cancelToken);

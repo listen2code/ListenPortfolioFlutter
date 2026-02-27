@@ -20,7 +20,7 @@ class _AppearancePageState extends State<AppearancePage> {
         return BasePage(
           title: I18nKeys.appearance.tr,
           padding: const EdgeInsets.all(20),
-          body: (context, child) {
+          body: (context, child, viewModel) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

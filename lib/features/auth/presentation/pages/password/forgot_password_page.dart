@@ -33,7 +33,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   Widget build(BuildContext context) {
     return BasePage(
       isEmptyTitle: true,
-      body: (context, child) => Form(
+      body: (context, child, viewModel) => Form(
         key: _formKey,
         child: SingleChildScrollView(
           padding: EdgeInsets.all(20.f),
