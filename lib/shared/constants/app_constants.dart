@@ -12,6 +12,4 @@ class AppConstants {
   static const String date = '2026';
   static const String mail = 'listen2code@gmail.com';
   static const String github = 'https://github.com/listen2code';
-  static const int defaultPageSize = 20;
-  static const int maxPageSize = 100;
 }
