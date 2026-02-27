@@ -1,5 +1,5 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:listen_portfolio_flutter/core/errors/failures.dart';
+import 'package:listen_portfolio_flutter/core/core.dart';
 
 /// Base interface for all use cases in the application
 /// Use cases encapsulate business logic and are the entry point to the domain layer

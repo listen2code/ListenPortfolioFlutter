@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
-import 'package:listen_portfolio_flutter/core/utils/crash_manager.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 import 'package:share_plus/share_plus.dart';

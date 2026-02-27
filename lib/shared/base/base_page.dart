@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:listen_portfolio_flutter/core/base/base_lifecycle_page.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
-import 'package:listen_portfolio_flutter/shared/base/loading_provider_impl.dart';
-import 'package:listen_portfolio_flutter/shared/base/message_provider_impl.dart';
+import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 /// A shared-layer wrapper for the core [core.BaseLifeCyclePage].

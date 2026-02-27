@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:listen_portfolio_flutter/core/base/base_view_model.dart';
+import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 extension WidgetRefX on WidgetRef {

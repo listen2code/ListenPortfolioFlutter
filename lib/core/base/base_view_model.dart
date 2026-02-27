@@ -47,9 +47,17 @@ abstract class BaseViewModel {
 
   void onReady() {}
 
+  /// Called when the page becomes visible in the navigation stack.
   void onVisible() {}
 
+  /// Called when the page becomes invisible in the navigation stack.
   void onInVisible() {}
+
+  /// Called when the App transitions from background to foreground.
+  void onResume() {}
+
+  /// Called when the App transitions from foreground to background.
+  void onPause() {}
 
   void onDispose() {}
 
@@ -127,6 +135,16 @@ mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel {
   @override
   void onInVisible() {
     appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onInVisible');
+  }
+
+  @override
+  void onResume() {
+    appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onResume');
+  }
+
+  @override
+  void onPause() {
+    appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onPause');
   }
 
   @override

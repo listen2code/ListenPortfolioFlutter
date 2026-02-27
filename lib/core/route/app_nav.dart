@@ -1,9 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:listen_portfolio_flutter/core/utils/zone_manager.dart';
-
-import 'route_interceptor.dart';
+import 'package:listen_portfolio_flutter/core/core.dart';
 
 /// Builder function to create a page for a specific route path.
 typedef RoutePageBuilder = Widget Function();

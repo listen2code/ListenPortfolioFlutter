@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
-import 'package:listen_portfolio_flutter/core/utils/crash_manager.dart';
-import 'package:listen_portfolio_flutter/core/utils/zone_manager.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 

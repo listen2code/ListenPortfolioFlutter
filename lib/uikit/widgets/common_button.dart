@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:listen_portfolio_flutter/uikit/widgets/common_text.dart';
+import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 
 enum ButtonType { filled, outlined, text }
 

@@ -1,4 +1,4 @@
-import 'package:listen_portfolio_flutter/core/constants/app_env.dart';
+import 'package:listen_portfolio_flutter/core/core.dart';
 
 class BizEnvConfigs {
   static const mock = BizEnvConfig(

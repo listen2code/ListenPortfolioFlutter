@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-/// A professional, unified page wrapper that handles UI structure,
-/// theme listening, complete lifecycle management, and automatic state listening.
+/// A professional, unified page wrapper that handles lifecycle management
+/// and ViewModel state listening, delegating UI structure to [BaseScaffoldPage].
 class BaseLifeCyclePage extends ConsumerStatefulWidget {
   final TransitionBuilder body;
   final String? title;
@@ -23,10 +22,23 @@ class BaseLifeCyclePage extends ConsumerStatefulWidget {
   final Color statusBarColor;
   final Color bottomBarColor;
 
+  /// Whether to use the gradient background decoration for the Scaffold body.
+  final bool useGradientBackground;
+
   /// Visibility flag for Tab/Page switching inside the same route.
   final bool active;
 
-  /// The Provider to listen for states (errors/messages) and manage lifecycles via its Notifier.
+  /// Whether the page can be popped. If null, it depends on the loading state.
+  final bool? canPop;
+
+  /// Custom logic to execute when back is intercepted (e.g., custom confirmation dialogs).
+  /// If null, default behavior is to cancel requests and hide loading.
+  final VoidCallback? onInterceptBack;
+
+  /// Explicitly provided ViewModel instance. If null, tries to resolve from [provider].
+  final BaseViewModel? viewModel;
+
+  /// The Provider to listen for states (errors/messages).
   final ProviderListenable<BaseState<dynamic>>? provider;
 
   const BaseLifeCyclePage({
@@ -46,31 +58,60 @@ class BaseLifeCyclePage extends ConsumerStatefulWidget {
     this.isEmptyTitle = false,
     this.statusBarColor = Colors.transparent,
     this.bottomBarColor = Colors.transparent,
+    this.useGradientBackground = true,
     this.active = true,
+    this.canPop,
+    this.onInterceptBack,
+    this.viewModel,
     this.provider,
   });
 
   @override
-  ConsumerState<BaseLifeCyclePage> createState() => _BaseStatelessPageState();
+  ConsumerState<BaseLifeCyclePage> createState() => _BaseLifeCyclePageState();
 }
 
-class _BaseStatelessPageState extends ConsumerState<BaseLifeCyclePage>
-    with RouteAware, WidgetsBindingObserver {
+class _BaseLifeCyclePageState extends ConsumerState<BaseLifeCyclePage> {
   bool _isRouteVisible = false;
   BaseViewModel? _viewModel;
+
+  // Observers moved to dedicated proxy classes for clarity
+  late final _RouteAwareProxy _routeObserver;
+  late final _AppLifecycleProxy _lifecycleObserver;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
 
-    if (widget.provider != null) {
+    // 1. Resolve ViewModel: Priority given to explicit viewModel, then provider.notifier
+    _viewModel = widget.viewModel;
+    if (_viewModel == null && widget.provider != null) {
       try {
-        _viewModel = ref.read((widget.provider as dynamic).notifier);
+        _viewModel = ref.read((widget.provider as dynamic).notifier) as BaseViewModel;
       } catch (_) {
         // Error reading provider is ignored
       }
     }
+
+    // Initialize Observers
+    _routeObserver = _RouteAwareProxy(
+      onVisible: () => _checkVisibilityChange(true),
+      onInVisible: () => _checkVisibilityChange(false),
+      onPush: () => _isRouteVisible = true,
+    );
+
+    _lifecycleObserver = _AppLifecycleProxy(
+      onStateChanged: (state) {
+        if (!_isRouteVisible || !widget.active) return;
+
+        if (state == AppLifecycleState.resumed) {
+          _viewModel?.onResume();
+        } else if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive) {
+          _viewModel?.onPause();
+        }
+      },
+    );
+
+    WidgetsBinding.instance.addObserver(_lifecycleObserver);
 
     _viewModel?.onInit();
 
@@ -87,7 +128,7 @@ class _BaseStatelessPageState extends ConsumerState<BaseLifeCyclePage>
     super.didChangeDependencies();
     final route = ModalRoute.of(context);
     if (route is PageRoute) {
-      AppNav.observer.subscribe(this, route);
+      AppNav.observer.subscribe(_routeObserver, route);
     }
   }
 
@@ -101,8 +142,8 @@ class _BaseStatelessPageState extends ConsumerState<BaseLifeCyclePage>
 
   @override
   void dispose() {
-    AppNav.observer.unsubscribe(this);
-    WidgetsBinding.instance.removeObserver(this);
+    AppNav.observer.unsubscribe(_routeObserver);
+    WidgetsBinding.instance.removeObserver(_lifecycleObserver);
     _viewModel?.onDispose();
     super.dispose();
   }
@@ -113,38 +154,6 @@ class _BaseStatelessPageState extends ConsumerState<BaseLifeCyclePage>
     } else {
       _viewModel?.onInVisible();
     }
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (!_isRouteVisible || !widget.active) return;
-
-    if (state == AppLifecycleState.resumed) {
-      _viewModel?.onVisible();
-    } else if (state == AppLifecycleState.paused) {
-      _viewModel?.onInVisible();
-    }
-  }
-
-  @override
-  void didPush() => _isRouteVisible = true;
-
-  @override
-  void didPopNext() {
-    _isRouteVisible = true;
-    if (widget.active) _viewModel?.onVisible();
-  }
-
-  @override
-  void didPushNext() {
-    _isRouteVisible = false;
-    if (widget.active) _viewModel?.onInVisible();
-  }
-
-  @override
-  void didPop() {
-    _isRouteVisible = false;
-    if (widget.active) _viewModel?.onInVisible();
   }
 
   @override
@@ -160,95 +169,75 @@ class _BaseStatelessPageState extends ConsumerState<BaseLifeCyclePage>
     return ListenableBuilder(
       listenable: isLoadingNotifier,
       builder: (context, child) {
-        final isLoading = isLoadingNotifier.value;
-        final theme = Theme.of(context);
-        final accentColor = theme.iconTheme.color ?? theme.colorScheme.primary;
-        final isDark = theme.brightness == Brightness.dark;
+        // Effective canPop: user's canPop (default true) and not loading
+        final effectiveCanPop = (widget.canPop ?? true) && !isLoadingNotifier.value;
 
-        Widget content = widget.body(context, child);
-        if (widget.padding != null) {
-          content = Padding(padding: widget.padding!, child: content);
-        }
-
-        content = Column(
-          children: [
-            if (widget.useStatusBar) _createStatusBar(),
-            Expanded(child: content),
-            if (widget.useBottomBar) _createBottomBar(),
-          ],
-        );
-
-        if (widget.useSafeArea) {
-          content = SafeArea(top: !widget.useStatusBar, bottom: !widget.useBottomBar, child: content);
-        }
-
-        PreferredSizeWidget? effectiveAppBar = widget.appBar;
-        if (effectiveAppBar == null && (widget.title != null || widget.isEmptyTitle)) {
-          effectiveAppBar = _createAppBar(theme);
-        }
-
-        final scaffoldWidget = Scaffold(
-          appBar: effectiveAppBar,
+        return BaseScaffoldPage(
+          title: widget.title,
+          actions: widget.actions,
+          appBar: widget.appBar,
           drawer: widget.drawer,
           floatingActionButton: widget.floatingActionButton,
+          useSafeArea: widget.useSafeArea,
+          padding: widget.padding,
           resizeToAvoidBottomInset: widget.resizeToAvoidBottomInset,
           extendBodyBehindAppBar: widget.extendBodyBehindAppBar,
-          body: Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [accentColor.withValues(alpha: 0.05), theme.scaffoldBackgroundColor],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-            ),
-            child: content,
-          ),
-        );
-
-        final systemUiOverlayStyle = SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent,
-          statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
-          statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
-          systemNavigationBarColor: theme.scaffoldBackgroundColor,
-          systemNavigationBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
-        );
-
-        return PopScope(
-          canPop: !isLoading,
-          onPopInvokedWithResult: (didPop, result) {
-            if (didPop) return;
-            _viewModel?.cancelRequests("on Pop");
-            _viewModel?.loadingProvider?.hide();
+          useStatusBar: widget.useStatusBar,
+          useBottomBar: widget.useBottomBar,
+          isEmptyTitle: widget.isEmptyTitle,
+          statusBarColor: widget.statusBarColor,
+          bottomBarColor: widget.bottomBarColor,
+          useGradientBackground: widget.useGradientBackground,
+          canPop: effectiveCanPop,
+          onBackInvoked: () {
+            // Priority given to custom interception logic
+            if (widget.onInterceptBack != null) {
+              widget.onInterceptBack!();
+            } else {
+              _viewModel?.cancelRequests("on BackInvoked");
+              _viewModel?.loadingProvider?.hide();
+            }
           },
-          child: AnnotatedRegion<SystemUiOverlayStyle>(
-            value: systemUiOverlayStyle,
-            child: GestureDetector(
-              onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-              behavior: HitTestBehavior.translucent,
-              child: scaffoldWidget,
-            ),
-          ),
+          child: widget.body(context, child),
         );
       },
     );
   }
+}
 
-  AppBar _createAppBar(ThemeData theme) {
-    return AppBar(
-      title: Text(widget.title ?? "", style: const TextStyle(fontWeight: FontWeight.w300)),
-      centerTitle: true,
-      actions: widget.actions,
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      foregroundColor: theme.brightness == Brightness.light ? Colors.black87 : Colors.white,
-    );
+/// Dedicated class to handle RouteAware callbacks without polluting the main State class.
+class _RouteAwareProxy extends RouteAware {
+  final VoidCallback onVisible;
+  final VoidCallback onInVisible;
+  final VoidCallback onPush;
+
+  _RouteAwareProxy({required this.onVisible, required this.onInVisible, required this.onPush});
+
+  @override
+  /// Called when the current route has been pushed.
+  void didPush() => onPush();
+
+  @override
+  /// Called when the top route has been popped off, and the current route shows up.
+  void didPopNext() => onVisible();
+
+  @override
+  /// Called when a new route has been pushed, and the current route is no longer visible.
+  void didPushNext() => onInVisible();
+
+  @override
+  /// Called when the current route has been popped off.
+  void didPop() => onInVisible();
+}
+
+/// Dedicated class to handle WidgetsBindingObserver callbacks.
+class _AppLifecycleProxy extends WidgetsBindingObserver {
+  final ValueChanged<AppLifecycleState> onStateChanged;
+
+  _AppLifecycleProxy({required this.onStateChanged});
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    onStateChanged(state);
   }
-
-  Widget _createStatusBar() =>
-      Container(color: widget.statusBarColor, height: MediaQuery.of(context).padding.top);
-
-  Widget _createBottomBar() =>
-      Container(color: widget.bottomBarColor, height: MediaQuery.of(context).padding.bottom);
 }

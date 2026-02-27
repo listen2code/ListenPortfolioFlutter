@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:listen_portfolio_flutter/core/base/base_view_model.dart';
+import 'package:listen_portfolio_flutter/core/core.dart';
 
 part 'login_state.freezed.dart';
 

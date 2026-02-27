@@ -3,8 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
-import 'package:listen_portfolio_flutter/core/utils/log_manager.dart';
-import 'package:listen_portfolio_flutter/core/utils/logger.dart';
+import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:path_provider/path_provider.dart';
 
 class CrashManager {

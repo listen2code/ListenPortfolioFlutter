@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:listen_portfolio_flutter/core/utils/log_manager.dart';
-import 'package:listen_portfolio_flutter/core/utils/zone_manager.dart';
+import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:logger/logger.dart';
 
 /// Global logger instance providing consistent logging and in-app log management.
