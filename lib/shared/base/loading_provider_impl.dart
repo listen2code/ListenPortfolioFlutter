@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:listen_portfolio_flutter/core/base/base_view_model.dart';
-import 'package:listen_portfolio_flutter/uikit/common_loading.dart';
+import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 
 /// Concrete implementation of [ILoadingProvider] using the project's [CommonLoading] UIKit component.
 class LoadingProviderImpl implements ILoadingProvider {

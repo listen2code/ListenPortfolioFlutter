@@ -1,9 +1,9 @@
-export 'common_button.dart';
-export 'common_dialog.dart';
-export 'common_image.dart';
-export 'common_loading.dart';
-export 'common_switch.dart';
-export 'common_text.dart';
-export 'common_text_field.dart';
-export 'common_toast.dart';
 export 'uikit_config.dart';
+export 'widgets/common_button.dart';
+export 'widgets/common_dialog.dart';
+export 'widgets/common_image.dart';
+export 'widgets/common_loading.dart';
+export 'widgets/common_switch.dart';
+export 'widgets/common_text.dart';
+export 'widgets/common_text_field.dart';
+export 'widgets/common_toast.dart';

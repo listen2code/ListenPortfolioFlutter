@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:listen_portfolio_flutter/uikit/uikit.dart';
+import 'package:listen_portfolio_flutter/uikit/widgets/common_text.dart';
 
 enum ButtonType { filled, outlined, text }
 
@@ -38,15 +38,13 @@ class CommonButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     // Resolve accent color without depending on shared:
     // 1. Manual backgroundColor
     // 2. Original accent color from iconTheme
     // 3. M3 primary color
-    final effectiveAccentColor = backgroundColor 
-        ?? theme.iconTheme.color 
-        ?? theme.colorScheme.primary;
-        
+    final effectiveAccentColor = backgroundColor ?? theme.iconTheme.color ?? theme.colorScheme.primary;
+
     final contentColor = foregroundColor ?? (type == ButtonType.filled ? Colors.white : effectiveAccentColor);
 
     Widget buttonChild = Row(
@@ -121,10 +119,6 @@ class CommonButton extends StatelessWidget {
       button = TextButton(onPressed: isLoading ? null : onPressed, style: style, child: buttonChild);
     }
 
-    return SizedBox(
-      width: isFullWidth ? double.infinity : width, 
-      height: height ?? 52, 
-      child: button,
-    );
+    return SizedBox(width: isFullWidth ? double.infinity : width, height: height ?? 52, child: button);
   }
 }

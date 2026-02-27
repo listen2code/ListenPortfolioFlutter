@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:listen_portfolio_flutter/uikit/uikit.dart';
+import 'package:listen_portfolio_flutter/uikit/widgets/common_text.dart';
 
 /// Centralized utility for showing various types of dialogs.
 /// Note: This class uses the global navigator context.
