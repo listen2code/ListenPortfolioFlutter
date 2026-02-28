@@ -40,20 +40,6 @@ abstract class BaseViewModel {
 
   void cancelRequests(String reason);
 
-  /// Providers for direct side effects.
-  ILoadingProvider? get loadingProvider;
-
-  set loadingProvider(ILoadingProvider? value);
-
-  /// Optional message provider for showing alerts/toasts.
-  IMessageProvider? get messageProvider;
-
-  set messageProvider(IMessageProvider? value);
-
-  INavigationProvider? get navigationProvider;
-
-  set navigationProvider(INavigationProvider? value);
-
   /// Reactive stream for one-time UI effects.
   Stream<BaseEffect> get effectStream;
 
@@ -69,8 +55,8 @@ mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel, I
   @override
   S get state;
 
-  CancelToken _cancelToken = CancelToken();
   final _effectController = StreamController<BaseEffect>.broadcast();
+  CancelToken _cancelToken = CancelToken();
 
   @override
   Stream<BaseEffect> get effectStream => _effectController.stream;
@@ -81,9 +67,11 @@ mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel, I
   @override
   bool handleEffect(BaseEffect effect) {
     if (effect is MessageEffect) {
+      final messageProvider = BaseConfig.getProvider<IMessageProvider>();
       messageProvider?.show(effect.message, type: effect.type);
       return true;
     } else if (effect is LoadingEffect) {
+      final loadingProvider = BaseConfig.getProvider<ILoadingProvider>();
       if (effect.show) {
         loadingProvider?.show(message: effect.message);
       } else {
@@ -91,10 +79,15 @@ mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel, I
       }
       return true;
     } else if (effect is NavigationEffect) {
+      final navigationProvider = BaseConfig.getProvider<INavigationProvider>();
       if (effect.isBack) {
         navigationProvider?.back(effect.arguments);
       } else if (effect.isReplace) {
-        navigationProvider?.off(effect.target, needLogin: effect.needLogin, arguments: effect.arguments);
+        navigationProvider?.off(
+          effect.target,
+          needLogin: effect.needLogin,
+          arguments: effect.arguments as Map<String, dynamic>?,
+        );
       } else {
         navigationProvider?.to(effect.target, needLogin: effect.needLogin, arguments: effect.arguments);
       }
@@ -142,30 +135,6 @@ mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel, I
     cancelRequests('${runtimeType.toString()} disposed');
     _effectController.close();
   }
-
-  ILoadingProvider? _loadingProvider;
-
-  @override
-  ILoadingProvider? get loadingProvider => _loadingProvider ?? BaseConfig.loadingProvider;
-
-  @override
-  set loadingProvider(ILoadingProvider? value) => _loadingProvider = value;
-
-  IMessageProvider? _messageProvider;
-
-  @override
-  IMessageProvider? get messageProvider => _messageProvider ?? BaseConfig.messageProvider;
-
-  @override
-  set messageProvider(IMessageProvider? value) => _messageProvider = value;
-
-  INavigationProvider? _navigationProvider;
-
-  @override
-  INavigationProvider? get navigationProvider => _navigationProvider ?? BaseConfig.navigationProvider;
-
-  @override
-  set navigationProvider(INavigationProvider? value) => _navigationProvider = value;
 
   /// Dispatcher for UI intents.
   Future<void> dispatch(dynamic intent, FutureOr<void> Function() handler, {bool showLoading = false}) {

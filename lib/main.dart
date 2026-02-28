@@ -32,12 +32,12 @@ Future<void> _initServices() async {
   await SpUtil.init(prefix: "${AppConstants.appName}_");
 
   // 2. Core Architecture DI Injection
-  // Must be called before any ViewModel or Page is initialized.
-  BaseConfig.setup(
-    loadingProvider: const LoadingProviderImpl(),
-    messageProvider: const MessageProviderImpl(),
-    navigationProvider: const NavigationProviderImpl(),
-  );
+  // Registers all global provider implementations at once.
+  BaseConfig.setup([
+    const LoadingProviderImpl(),
+    const MessageProviderImpl(),
+    const NavigationProviderImpl(),
+  ]);
 
   // 3. Environment Configuration
   AppEnv.setup({

@@ -1,24 +1,24 @@
-import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_portfolio_flutter/core/base/base_provider.dart';
 
 /// Global configuration for core architecture components.
-/// This allows registering project-wide implementations for providers
-/// like Loading, Messaging, and Navigation.
+/// Stores a list of global provider implementations and retrieves them by type.
 class BaseConfig {
   BaseConfig._();
 
-  static ILoadingProvider? loadingProvider;
-  static IMessageProvider? messageProvider;
-  static INavigationProvider? navigationProvider;
+  static final List<IBaseProvider> _globalProviders = [];
 
-  /// Initializes the core framework with specific implementations.
-  /// Typically called in main.dart.
-  static void setup({
-    ILoadingProvider? loadingProvider,
-    IMessageProvider? messageProvider,
-    INavigationProvider? navigationProvider,
-  }) {
-    if (loadingProvider != null) BaseConfig.loadingProvider = loadingProvider;
-    if (messageProvider != null) BaseConfig.messageProvider = messageProvider;
-    if (navigationProvider != null) BaseConfig.navigationProvider = navigationProvider;
+  /// Registers a list of global provider implementations.
+  /// Typically called in main.dart during app initialization.
+  static void setup(List<IBaseProvider> providers) {
+    _globalProviders.clear();
+    _globalProviders.addAll(providers);
+  }
+
+  /// Retrieves a global provider implementation that matches type [T].
+  static T? getProvider<T extends IBaseProvider>() {
+    for (var provider in _globalProviders) {
+      if (provider is T) return provider;
+    }
+    return null;
   }
 }

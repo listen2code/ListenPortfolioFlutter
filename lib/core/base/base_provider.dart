@@ -1,21 +1,22 @@
 import 'package:listen_portfolio_flutter/core/base/base_effect.dart';
 
+/// Base marker for all architecture providers.
+abstract class IBaseProvider {}
+
 /// Interface for showing/hiding loading UI.
-/// Providers should be stateless executors.
-abstract class ILoadingProvider {
+abstract class ILoadingProvider implements IBaseProvider {
   void show({String? message});
 
   void hide();
 }
 
 /// Interface for showing messages/toasts.
-abstract class IMessageProvider {
-  /// Shows a message with a specific type (info or error).
+abstract class IMessageProvider implements IBaseProvider {
   void show(String message, {MessageType type = MessageType.info});
 }
 
 /// Interface for navigation operations.
-abstract class INavigationProvider {
+abstract class INavigationProvider implements IBaseProvider {
   Future<T?>? to<T>(dynamic target, {bool needLogin = false, Object? arguments});
 
   Future<T?>? off<T>(dynamic target, {bool needLogin = false, Object? arguments});
