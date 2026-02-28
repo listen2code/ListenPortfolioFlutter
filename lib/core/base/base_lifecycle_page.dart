@@ -106,8 +106,10 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
 
         if (state == AppLifecycleState.resumed) {
           _viewModel?.onResume();
-        } else if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive) {
+        } else if (state == AppLifecycleState.paused) {
           _viewModel?.onPause();
+        } else if (state == AppLifecycleState.inactive) {
+          _viewModel?.onInactive();
         }
       },
     );

@@ -33,6 +33,8 @@ abstract class BaseViewModel {
   /// Called when the App transitions from foreground to background.
   void onPause() {}
 
+  void onInactive() {}
+
   void onDispose() {}
 
   // Cancellation support
@@ -101,6 +103,9 @@ mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel, I
 
   @override
   void onPause() => appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onPause');
+
+  @override
+  void onInactive() => appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onInactive');
 
   @override
   void onDispose() {
