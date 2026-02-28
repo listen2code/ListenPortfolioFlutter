@@ -75,6 +75,9 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
   BaseViewModel? _viewModel;
   StreamSubscription<BaseEffect>? _effectSubscription;
 
+  // Local state to track loading based on Effects, used for canPop logic.
+  final ValueNotifier<bool> _isInternalLoading = ValueNotifier<bool>(false);
+
   late final _RouteAwareProxy _routeObserver;
   late final _AppLifecycleProxy _lifecycleObserver;
 
@@ -122,6 +125,13 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
   }
 
   void _handleEffect(BaseEffect effect) {
+    if (!mounted) return;
+
+    // Synchronize local loading state if a LoadingEffect is received.
+    if (effect is LoadingEffect) {
+      _isInternalLoading.value = effect.show;
+    }
+
     // Delegate standard effect handling to the ViewModel's mixin logic
     final handled = _viewModel?.handleEffect(effect) ?? false;
 
@@ -151,6 +161,7 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
   @override
   void dispose() {
     _effectSubscription?.cancel();
+    _isInternalLoading.dispose();
     AppNav.observer.unsubscribe(_routeObserver);
     WidgetsBinding.instance.removeObserver(_lifecycleObserver);
     _viewModel?.onDispose();
@@ -167,14 +178,11 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
 
   @override
   Widget build(BuildContext context) {
-    // Resolved the loading state notifier from the ViewModel's provider
-    final isLoadingNotifier = _viewModel?.loadingProvider?.isLoading ?? ValueNotifier<bool>(false);
-
     return ListenableBuilder(
-      listenable: isLoadingNotifier,
+      listenable: _isInternalLoading,
       builder: (context, child) {
         // Effective canPop: user's canPop (default true) and not loading
-        final effectiveCanPop = (widget.canPop ?? true) && !isLoadingNotifier.value;
+        final effectiveCanPop = (widget.canPop ?? true) && !_isInternalLoading.value;
 
         return BaseScaffoldPage(
           title: widget.title,
@@ -199,7 +207,8 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
               widget.onInterceptBack!();
             } else {
               _viewModel?.cancelRequests("on BackInvoked");
-              _viewModel?.loadingProvider?.hide();
+              // Loading is managed via effects to keep local _isInternalLoading in sync.
+              _viewModel?.emitEffect(LoadingEffect(false));
             }
           },
           child: widget.body(context, child),

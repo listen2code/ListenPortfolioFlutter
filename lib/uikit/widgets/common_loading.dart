@@ -8,11 +8,8 @@ class CommonLoading {
 
   static OverlayEntry? _overlayEntry;
 
-  /// Notifier to track loading visibility.
-  static final ValueNotifier<bool> isShowNotifier = ValueNotifier<bool>(false);
-
   /// Returns true if the loading overlay is currently visible.
-  static bool get isShow => isShowNotifier.value;
+  static bool get isShow => _overlayEntry != null;
 
   /// Displays a modal loading overlay.
   static void show({String? message}) {
@@ -26,7 +23,6 @@ class CommonLoading {
     );
 
     overlayState.insert(_overlayEntry!);
-    isShowNotifier.value = true;
   }
 
   /// Removes the current loading overlay.
@@ -34,7 +30,6 @@ class CommonLoading {
     if (_overlayEntry == null) return;
     _overlayEntry?.remove();
     _overlayEntry = null;
-    isShowNotifier.value = false;
   }
 }
 

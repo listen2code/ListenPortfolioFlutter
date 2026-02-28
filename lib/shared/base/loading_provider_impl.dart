@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 
@@ -15,7 +14,4 @@ class LoadingProviderImpl implements ILoadingProvider {
   void hide() {
     CommonLoading.hide();
   }
-
-  @override
-  ValueListenable<bool> get isLoading => CommonLoading.isShowNotifier;
 }

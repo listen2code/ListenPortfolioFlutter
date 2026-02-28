@@ -1,13 +1,11 @@
-import 'package:flutter/foundation.dart';
 import 'package:listen_portfolio_flutter/core/base/base_effect.dart';
 
 /// Interface for showing/hiding loading UI.
+/// Providers should be stateless executors.
 abstract class ILoadingProvider {
   void show({String? message});
 
   void hide();
-
-  ValueListenable<bool> get isLoading;
 }
 
 /// Interface for showing messages/toasts.
