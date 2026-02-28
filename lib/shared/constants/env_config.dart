@@ -1,28 +1,28 @@
 import 'package:listen_portfolio_flutter/core/core.dart';
 
-class BizEnvConfigs {
-  static const mock = BizEnvConfig(
+class EnvConfigs {
+  static const mock = EnvConfig(
     baseUrl: 'http://localhost:9999',
     apiTimeout: 30000,
     connectTimeout: 5000,
     receiveTimeout: 5000,
   );
 
-  static const dev = BizEnvConfig(
+  static const dev = EnvConfig(
     baseUrl: 'http://192.168.0.224:9898',
     apiTimeout: 30000,
     connectTimeout: 15000,
     receiveTimeout: 15000,
   );
 
-  static const test = BizEnvConfig(
+  static const test = EnvConfig(
     baseUrl: 'http://192.168.0.100:9898',
     apiTimeout: 30000,
     connectTimeout: 15000,
     receiveTimeout: 15000,
   );
 
-  static const prod = BizEnvConfig(
+  static const prod = EnvConfig(
     baseUrl: 'https://api.lPortfolio.com',
     apiTimeout: 60000,
     connectTimeout: 30000,
@@ -30,7 +30,7 @@ class BizEnvConfigs {
   );
 }
 
-class BizEnvConfig implements EnvConfig {
+class EnvConfig implements BaseEnvConfig {
   @override
   final String baseUrl;
   @override
@@ -40,7 +40,7 @@ class BizEnvConfig implements EnvConfig {
   @override
   final int receiveTimeout;
 
-  const BizEnvConfig({
+  const EnvConfig({
     required this.baseUrl,
     required this.apiTimeout,
     required this.connectTimeout,

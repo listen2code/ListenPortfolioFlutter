@@ -54,10 +54,10 @@ Future<void> _initServices() async {
 
   // 4. Environment Configuration
   AppEnv.setup({
-    AppEnvironment.mock: BizEnvConfigs.mock,
-    AppEnvironment.dev: BizEnvConfigs.dev,
-    AppEnvironment.test: BizEnvConfigs.test,
-    AppEnvironment.prod: BizEnvConfigs.prod,
+    AppEnvironment.mock: EnvConfigs.mock,
+    AppEnvironment.dev: EnvConfigs.dev,
+    AppEnvironment.test: EnvConfigs.test,
+    AppEnvironment.prod: EnvConfigs.prod,
   });
   await AppEnv.init();
 

@@ -7,7 +7,7 @@ import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 enum LogFilter { all, server, app, perf }
 
 class LogOverlayManager {
-  static const String logOverlayKey = 'log_overlay_enabled';
+  static const String logOverlayKey = 'log_overlay_key';
   static OverlayEntry? _overlayEntry;
   static Offset? _offset;
   static Offset? _windowOffset;

@@ -18,7 +18,7 @@ enum AppEnvironment {
   }
 }
 
-abstract class EnvConfig {
+abstract class BaseEnvConfig {
   String get baseUrl;
 
   int get connectTimeout;
@@ -35,14 +35,14 @@ class AppEnv {
   static const String envDefine = "APP_ENV";
   static const String defaultEnv = "mock";
 
-  static late final Map<AppEnvironment, EnvConfig> _configs;
+  static late final Map<AppEnvironment, BaseEnvConfig> _configs;
   static bool _isSetup = false;
 
   static AppEnvironment _env = AppEnvironment.fromString(
     const String.fromEnvironment(envDefine, defaultValue: defaultEnv),
   );
 
-  static void setup(Map<AppEnvironment, EnvConfig> configs) {
+  static void setup(Map<AppEnvironment, BaseEnvConfig> configs) {
     if (_isSetup) {
       throw Exception("AppEnv has already been set up.");
     }
@@ -72,7 +72,7 @@ class AppEnv {
 
   static String get env => _env.name;
 
-  static EnvConfig get _current {
+  static BaseEnvConfig get _current {
     final config = _configs[_env];
     if (config == null) {
       throw Exception(
