@@ -27,11 +27,12 @@ class CommonDialog {
 
     final navigator = Navigator.of(context);
 
-    // 1. If tag exists, precisely remove the existing route instance
+    // 1. Singleton Check: If a dialog with this tag is already active,
+    // we simply return null to avoid overlapping or flickering.
     if (tag != null) {
       final existingRoute = _activeRoutes[tag];
       if (existingRoute != null && existingRoute.isActive) {
-        navigator.removeRoute(existingRoute);
+        return null;
       }
     }
 
