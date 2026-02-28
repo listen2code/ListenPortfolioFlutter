@@ -53,8 +53,7 @@ Future<void> _initServices() async {
   );
 
   // 4. Environment Configuration
-  AppEnv.setup(EnvConfigs.values);
-  await AppEnv.init();
+  await AppEnv.init(EnvConfigs.values);
 
   // 5. Localization
   Translations.register(

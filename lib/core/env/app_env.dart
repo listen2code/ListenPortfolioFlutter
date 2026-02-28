@@ -2,8 +2,11 @@ import 'package:listen_portfolio_flutter/core/core.dart';
 
 enum AppEnvironment {
   mock(AppEnv.defaultEnv),
+
   dev('dev'),
+
   test('test'),
+
   prod('prod');
 
   final String name;
@@ -40,29 +43,20 @@ class AppEnv {
 
   static const String defaultEnv = "mock";
 
-  static late final Map<AppEnvironment, BaseEnvConfig> _configs;
-
-  static bool _isSetup = false;
+  static Map<AppEnvironment, BaseEnvConfig>? _configs;
 
   static AppEnvironment _env = AppEnvironment.fromString(
     const String.fromEnvironment(envDefine, defaultValue: defaultEnv),
   );
 
-  /// Configures the application environments.
-  /// Accepts a list of configurations, each describing its own [AppEnvironment].
-  static void setup(List<BaseEnvConfig> configs) {
-    if (_isSetup) {
-      throw Exception("AppEnv has already been set up.");
+  /// Initializes the application environments.
+  /// [configs] A list of configurations, each describing its own [AppEnvironment].
+  static Future<void> init(List<BaseEnvConfig> configs) async {
+    if (_configs != null) {
+      throw Exception("AppEnv has already been initialized.");
     }
 
     _configs = {for (var config in configs) config.env: config};
-    _isSetup = true;
-  }
-
-  static Future<void> init() async {
-    if (!_isSetup) {
-      throw Exception("AppEnv must be set up before initialization.");
-    }
 
     final savedEnv = SpUtil.getString(envKey);
     if (savedEnv != null) {
@@ -83,10 +77,10 @@ class AppEnv {
   static String get env => _env.name;
 
   static BaseEnvConfig get _current {
-    final config = _configs[_env];
+    final config = _configs?[_env];
     if (config == null) {
       throw Exception(
-        "No configuration found for environment: ${_env.name}. Ensure it was provided during setup.",
+        "No configuration found for environment: ${_env.name}. Ensure it was provided during initialization.",
       );
     }
     return config;
