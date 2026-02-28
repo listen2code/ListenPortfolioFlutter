@@ -13,12 +13,15 @@ enum AppEnvironment {
   static AppEnvironment fromString(String env) {
     return AppEnvironment.values.firstWhere(
       (e) => e.name == env,
-      orElse: () => AppEnvironment.fromString(AppEnv.defaultEnv),
+      orElse: () => AppEnvironment.values.firstWhere((e) => e.name == AppEnv.defaultEnv),
     );
   }
 }
 
 abstract class BaseEnvConfig {
+  /// The environment this configuration belongs to.
+  AppEnvironment get env;
+
   String get baseUrl;
 
   int get connectTimeout;
@@ -32,21 +35,27 @@ class AppEnv {
   AppEnv._();
 
   static const String envKey = 'env_key';
+
   static const String envDefine = "APP_ENV";
+
   static const String defaultEnv = "mock";
 
   static late final Map<AppEnvironment, BaseEnvConfig> _configs;
+
   static bool _isSetup = false;
 
   static AppEnvironment _env = AppEnvironment.fromString(
     const String.fromEnvironment(envDefine, defaultValue: defaultEnv),
   );
 
-  static void setup(Map<AppEnvironment, BaseEnvConfig> configs) {
+  /// Configures the application environments.
+  /// Accepts a list of configurations, each describing its own [AppEnvironment].
+  static void setup(List<BaseEnvConfig> configs) {
     if (_isSetup) {
       throw Exception("AppEnv has already been set up.");
     }
-    _configs = configs;
+
+    _configs = {for (var config in configs) config.env: config};
     _isSetup = true;
   }
 
@@ -54,6 +63,7 @@ class AppEnv {
     if (!_isSetup) {
       throw Exception("AppEnv must be set up before initialization.");
     }
+
     final savedEnv = SpUtil.getString(envKey);
     if (savedEnv != null) {
       _env = AppEnvironment.fromString(savedEnv);
@@ -86,6 +96,7 @@ class AppEnv {
     if (_env == AppEnvironment.mock && newEnv != AppEnvironment.mock) {
       await LocalMockServer.stop();
     }
+
     if (newEnv == AppEnvironment.mock) {
       await LocalMockServer.start();
     }

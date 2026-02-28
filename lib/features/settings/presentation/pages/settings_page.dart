@@ -227,12 +227,12 @@ class _SettingsPageState extends State<SettingsPage> {
   void _showEnvSwitchDialog() {
     CommonDialog.showSwitchDialog(
       title: I18nKeys.switchEnv.tr,
-      items: AppEnvironment.values.map((envCode) {
+      items: EnvConfigs.values.map((config) {
         return DialogSwitchItem(
-          label: _getEnvLabel(envCode),
-          value: AppEnv.currentEnv == envCode,
+          label: _getEnvLabel(config.env),
+          value: AppEnv.currentEnv == config.env,
           onChanged: (_) async {
-            await AppEnv.setEnvironment(envCode);
+            await AppEnv.setEnvironment(config.env);
             if (mounted) setState(() {});
             AppNav.back();
           },

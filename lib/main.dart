@@ -47,18 +47,13 @@ Future<void> _initServices() async {
         await CacheManager.clearAllCache();
         await settingManager.resetSettings();
         AppNav.offAll(Routes.home);
-        CommonToast.show("Triggering safety reset...", type: ToastType.error);
+        CommonToast.show(I18nKeys.safetyResetMsg.tr, type: ToastType.error);
       },
     ),
   );
 
   // 4. Environment Configuration
-  AppEnv.setup({
-    AppEnvironment.mock: EnvConfigs.mock,
-    AppEnvironment.dev: EnvConfigs.dev,
-    AppEnvironment.test: EnvConfigs.test,
-    AppEnvironment.prod: EnvConfigs.prod,
-  });
+  AppEnv.setup(EnvConfigs.values);
   await AppEnv.init();
 
   // 5. Localization

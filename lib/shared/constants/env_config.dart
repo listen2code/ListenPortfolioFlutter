@@ -1,46 +1,54 @@
 import 'package:listen_portfolio_flutter/core/core.dart';
 
-class EnvConfigs {
-  static const mock = EnvConfig(
+/// Project-specific environment configurations.
+/// Using an enum here allows us to leverage [.values] for automatic registration in [AppEnv].
+enum EnvConfigs implements BaseEnvConfig {
+  mock(
+    env: AppEnvironment.mock,
     baseUrl: 'http://localhost:9999',
     apiTimeout: 30000,
     connectTimeout: 5000,
     receiveTimeout: 5000,
-  );
-
-  static const dev = EnvConfig(
+  ),
+  dev(
+    env: AppEnvironment.dev,
     baseUrl: 'http://192.168.0.224:9898',
     apiTimeout: 30000,
     connectTimeout: 15000,
     receiveTimeout: 15000,
-  );
-
-  static const test = EnvConfig(
+  ),
+  test(
+    env: AppEnvironment.test,
     baseUrl: 'http://192.168.0.100:9898',
     apiTimeout: 30000,
     connectTimeout: 15000,
     receiveTimeout: 15000,
-  );
-
-  static const prod = EnvConfig(
+  ),
+  prod(
+    env: AppEnvironment.prod,
     baseUrl: 'https://api.lPortfolio.com',
     apiTimeout: 60000,
     connectTimeout: 30000,
     receiveTimeout: 30000,
   );
-}
 
-class EnvConfig implements BaseEnvConfig {
+  @override
+  final AppEnvironment env;
+
   @override
   final String baseUrl;
+
   @override
   final int apiTimeout;
+
   @override
   final int connectTimeout;
+
   @override
   final int receiveTimeout;
 
-  const EnvConfig({
+  const EnvConfigs({
+    required this.env,
     required this.baseUrl,
     required this.apiTimeout,
     required this.connectTimeout,
