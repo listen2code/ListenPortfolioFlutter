@@ -52,7 +52,7 @@ class _HomePageState extends State<HomePage> {
       child: BasePage(
         title: _getPageTitle(),
         drawer: _buildDrawer(),
-        body: (context, child, viewModel, state) => _buildBody(),
+        body: (context, viewModel, state, child) => _buildBody(),
       ),
     );
   }
@@ -141,7 +141,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: 10.f, horizontal: 10.f),
-                      child: Divider(color: context.theme.dividerColor.withOpacity(0.1)),
+                      child: Divider(color: context.theme.dividerColor.withValues(alpha: 0.1)),
                     ),
                     _buildDrawerItem(
                       icon: Icons.settings_suggest_outlined,
@@ -181,7 +181,7 @@ class _HomePageState extends State<HomePage> {
       width: double.infinity,
       padding: EdgeInsets.only(top: 60.f, bottom: 30.f, left: 20.f, right: 20.f),
       decoration: BoxDecoration(
-        gradient: LinearGradient(colors: [accentColor, accentColor.withOpacity(0.8)]),
+        gradient: LinearGradient(colors: [accentColor, accentColor.withValues(alpha: 0.8)]),
         borderRadius: BorderRadius.only(topRight: Radius.circular(30.f)),
       ),
       child: Stack(
@@ -250,7 +250,7 @@ class _HomePageState extends State<HomePage> {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 2.f),
       child: Material(
-        color: isSelected ? accentColor.withOpacity(0.1) : Colors.transparent,
+        color: isSelected ? accentColor.withValues(alpha: 0.1) : Colors.transparent,
         borderRadius: BorderRadius.circular(15.f),
         clipBehavior: Clip.antiAlias,
         child: ListTile(
@@ -280,7 +280,7 @@ class _HomePageState extends State<HomePage> {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 12.f),
       child: Material(
-        color: (isGuest ? accentColor : errorColor).withOpacity(0.15),
+        color: (isGuest ? accentColor : errorColor).withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(15.f),
         clipBehavior: Clip.antiAlias,
         child: ListTile(

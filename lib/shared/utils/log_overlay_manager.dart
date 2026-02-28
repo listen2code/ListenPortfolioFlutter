@@ -505,10 +505,10 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
         decoration: BoxDecoration(
-          color: isSelected ? (color ?? Colors.greenAccent).withOpacity(0.2) : Colors.white10,
+          color: isSelected ? (color ?? Colors.greenAccent).withValues(alpha: 0.2) : Colors.white10,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected ? (color ?? Colors.greenAccent).withOpacity(0.5) : Colors.white10,
+            color: isSelected ? (color ?? Colors.greenAccent).withValues(alpha: 0.5) : Colors.white10,
             width: 0.5,
           ),
         ),
