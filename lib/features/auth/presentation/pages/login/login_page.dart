@@ -44,12 +44,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       }
     });
 
-    final state = ref.watch(loginViewModelProvider);
     final accentColor = context.accentColor;
 
-    return BasePage<LoginViewModel>(
+    return BasePage<LoginViewModel, LoginState>(
       provider: loginViewModelProvider,
-      body: (context, child, viewModel) {
+      body: (context, child, viewModel, state) {
         return SingleChildScrollView(
           padding: const EdgeInsets.all(20),
           child: Column(
@@ -104,7 +103,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 type: TextFieldType.text,
                 labelText: I18nKeys.username.tr,
                 prefixIcon: Icons.person_outline,
-                errorText: state.usernameError,
+                errorText: state?.usernameError,
                 onChanged: (value) => viewModel?.handleIntent(LoginIntent.usernameChanged(value)),
               ),
               const SizedBox(height: 20),
@@ -114,7 +113,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 type: TextFieldType.password,
                 labelText: I18nKeys.password.tr,
                 prefixIcon: Icons.lock_outline,
-                errorText: state.passwordError,
+                errorText: state?.passwordError,
                 onChanged: (value) => viewModel?.handleIntent(LoginIntent.passwordChanged(value)),
               ),
               // Remember Me & Forgot Password
@@ -133,7 +132,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                             width: 24,
                             height: 24,
                             child: Checkbox(
-                              value: state.rememberMe,
+                              value: state?.rememberMe,
                               activeColor: accentColor,
                               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               onChanged: (value) =>

@@ -52,7 +52,7 @@ class _HomePageState extends State<HomePage> {
       child: BasePage(
         title: _getPageTitle(),
         drawer: _buildDrawer(),
-        body: (context, child, viewModel) => _buildBody(),
+        body: (context, child, viewModel, state) => _buildBody(),
       ),
     );
   }

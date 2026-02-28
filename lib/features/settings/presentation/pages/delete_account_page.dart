@@ -44,7 +44,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
     return BasePage(
       title: I18nKeys.deleteAccount.tr,
       padding: EdgeInsets.all(24.f),
-      body: (context, child, viewModel) => Column(
+      body: (context, child, viewModel, state) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(

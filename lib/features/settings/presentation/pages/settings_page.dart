@@ -35,7 +35,7 @@ class _SettingsPageState extends State<SettingsPage> {
       builder: (context, child) {
         return BasePage(
           title: I18nKeys.settings.tr,
-          body: (context, child, viewModel) {
+          body: (context, child, viewModel, state) {
             return SingleChildScrollView(
               padding: const EdgeInsets.all(20),
               child: Column(

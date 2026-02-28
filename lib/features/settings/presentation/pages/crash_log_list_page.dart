@@ -67,7 +67,7 @@ class _CrashLogListPageState extends State<CrashLogListPage> {
           tooltip: I18nKeys.deleteAll.tr,
         ),
       ],
-      body: (context, child, viewModel) {
+      body: (context, child, viewModel, state) {
         if (_isLoading) {
           return const Center(child: CircularProgressIndicator());
         }

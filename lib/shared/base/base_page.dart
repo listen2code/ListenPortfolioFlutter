@@ -3,16 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-/// A custom builder for [BasePage] that provides the resolved [viewModel].
-typedef BasePageBodyBuilder<T extends BaseViewModel> =
-    Widget Function(BuildContext context, Widget? child, T? viewModel);
+/// A custom builder for [BasePage] that provides both the resolved [viewModel] and current [state].
+typedef BasePageBodyBuilder<V extends BaseViewModel, S extends BaseState<dynamic>> =
+    Widget Function(BuildContext context, Widget? child, V? viewModel, S? state);
 
 /// A shared-layer wrapper for the core [BaseLifeCyclePage].
 /// This widget acts as a bridge between business-specific Riverpod providers
 /// and the pure core architecture, keeping [BaseLifeCyclePage] independent.
-class BasePage<T extends BaseViewModel> extends ConsumerWidget {
-  /// The builder for the page content, now receiving the [viewModel].
-  final BasePageBodyBuilder<T> body;
+class BasePage<V extends BaseViewModel, S extends BaseState<dynamic>> extends ConsumerWidget {
+  /// The builder for the page content, now receiving the [viewModel] and [state].
+  final BasePageBodyBuilder<V, S> body;
 
   final String? title;
   final List<Widget>? actions;
@@ -33,11 +33,11 @@ class BasePage<T extends BaseViewModel> extends ConsumerWidget {
   final bool? canPop;
   final VoidCallback? onInterceptBack;
 
-  /// The Riverpod Provider used to automatically resolve the [BaseViewModel].
-  final ProviderListenable<BaseState<dynamic>>? provider;
+  /// The Riverpod Provider used to automatically resolve the [BaseViewModel] and [BaseState].
+  final ProviderListenable<S>? provider;
 
   /// An explicitly provided [BaseViewModel] instance.
-  final T? viewModel;
+  final V? viewModel;
 
   /// Callback for handling custom business side effects.
   final void Function(BaseEffect effect)? onEffect;
@@ -70,15 +70,16 @@ class BasePage<T extends BaseViewModel> extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Logic to resolve the ViewModel:
-    // 1. Use the explicitly provided [viewModel] if available.
-    // 2. Otherwise, try to read the notifier from the [provider].
+    // 1. Resolve the ViewModel instance (logic remains ref.read to get the notifier)
     final effectiveViewModel =
-        viewModel ?? (provider != null ? ref.read((provider as dynamic).notifier) as T : null);
+        viewModel ?? (provider != null ? ref.read((provider as dynamic).notifier) as V : null);
+
+    // 2. Resolve the current State (use ref.watch to ensure the body rebuilds on state changes)
+    final state = provider != null ? ref.watch(provider!) : null;
 
     return BaseLifeCyclePage(
-      // Wrap the user's body to inject the effectiveViewModel
-      body: (context, child) => body(context, child, effectiveViewModel),
+      // Inject both viewModel and state into the user's body builder
+      body: (context, child) => body(context, child, effectiveViewModel, state),
       title: title,
       actions: actions,
       appBar: appBar,

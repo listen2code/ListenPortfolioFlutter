@@ -47,7 +47,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
     return BasePage(
       isEmptyTitle: true,
-      body: (context, child, viewModel) => SingleChildScrollView(
+      body: (context, child, viewModel, state) => SingleChildScrollView(
         padding: EdgeInsets.all(20.f),
         child: Form(
           key: _formKey,

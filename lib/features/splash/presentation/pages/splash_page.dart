@@ -50,7 +50,7 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return BasePage(
-      body: (context, child, viewModel) {
+      body: (context, child, viewModel, state) {
         final accentColor = settingManager.accentColor;
         return Center(
           child: FadeTransition(

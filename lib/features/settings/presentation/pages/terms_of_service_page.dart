@@ -11,7 +11,7 @@ class TermsOfServicePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BasePage(
       title: I18nKeys.termsOfService.tr,
-      body: (context, child, viewModel) => SingleChildScrollView(
+      body: (context, child, viewModel, state) => SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
