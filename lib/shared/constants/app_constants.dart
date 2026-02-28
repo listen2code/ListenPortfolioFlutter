@@ -5,6 +5,11 @@ class AppConstants {
 
   static const String userDataKey = 'user_data';
   static const String authTokenKey = 'auth_token';
+  static const String themeKey = 'theme_mode';
+  static const String accentColorKey = 'accent_color';
+  static const String fontSizeKey = 'font_size_factor';
+  static const String languageKey = 'language';
+  static const String notificationsKey = 'notifications_enabled';
 
   static const String appName = 'lPortfolio';
 

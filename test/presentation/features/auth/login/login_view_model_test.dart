@@ -104,7 +104,7 @@ void main() {
         notifier.effectStream,
         emitsInOrder([
           isA<LoadingEffect>().having((e) => e.show, 'show', true),
-          isA<ErrorEffect>(),
+          isA<MessageEffect>().having((e) => e.type, 'type', MessageType.error),
           isA<LoadingEffect>().having((e) => e.show, 'show', false),
         ]),
       );

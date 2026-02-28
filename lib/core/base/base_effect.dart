@@ -1,18 +1,18 @@
 /// Interface for UI Side Effects (Toast, Navigation, etc.) that occur once.
 abstract class BaseEffect {}
 
-/// Standard Effect for showing error messages.
-class ErrorEffect extends BaseEffect {
-  final String message;
+/// Message type for NotificationEffect
+enum MessageType { info, error }
 
-  ErrorEffect(this.message);
-}
-
-/// Standard Effect for showing general info messages.
+/// Standard Effect for showing messages/toasts.
 class MessageEffect extends BaseEffect {
   final String message;
+  final MessageType type;
 
-  MessageEffect(this.message);
+  MessageEffect(this.message, {this.type = MessageType.info});
+
+  /// Factory for error messages
+  factory MessageEffect.error(String message) => MessageEffect(message, type: MessageType.error);
 }
 
 /// Standard Effect for controlling global loading state.

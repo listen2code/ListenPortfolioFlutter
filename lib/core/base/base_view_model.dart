@@ -80,11 +80,8 @@ mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel, I
 
   @override
   bool handleEffect(BaseEffect effect) {
-    if (effect is ErrorEffect) {
-      messageProvider?.showError(effect.message);
-      return true;
-    } else if (effect is MessageEffect) {
-      messageProvider?.showInfo(effect.message);
+    if (effect is MessageEffect) {
+      messageProvider?.show(effect.message, type: effect.type);
       return true;
     } else if (effect is LoadingEffect) {
       if (effect.show) {

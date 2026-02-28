@@ -13,7 +13,9 @@ import 'login_state.dart';
 part 'login_view_model.g.dart';
 
 @riverpod
-class LoginViewModel extends _$LoginViewModel with ConsumeViewModel<LoginState> {
+class LoginViewModel extends _$LoginViewModel
+    with ConsumeViewModel<LoginState>
+    implements IStateOwner<LoginState> {
   static const String _keyUsername = 'saved_username';
   static const String _keyPassword = 'saved_password';
   static const String _keyRememberMe = 'remember_me';
@@ -96,8 +98,8 @@ class LoginViewModel extends _$LoginViewModel with ConsumeViewModel<LoginState> 
 
     result.fold(
       (failure) {
-        // Emit error effect instead of updating sticky state
-        emitEffect(ErrorEffect(failure.message));
+        // Emit error effect using the convenient factory
+        emitEffect(MessageEffect.error(failure.message));
       },
       (user) {
         authManager.login(user);

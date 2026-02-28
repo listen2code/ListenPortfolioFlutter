@@ -6,12 +6,10 @@ class MessageProviderImpl implements IMessageProvider {
   const MessageProviderImpl();
 
   @override
-  void showInfo(String message) {
-    CommonToast.show(message);
-  }
-
-  @override
-  void showError(String message) {
-    CommonToast.show(message, type: ToastType.error);
+  void show(String message, {MessageType type = MessageType.info}) {
+    CommonToast.show(
+      message,
+      type: type == MessageType.error ? ToastType.error : ToastType.info,
+    );
   }
 }
