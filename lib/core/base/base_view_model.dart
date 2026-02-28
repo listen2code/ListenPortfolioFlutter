@@ -64,7 +64,10 @@ mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel, I
   Stream<BaseEffect> get effectStream => _effectController.stream;
 
   @override
-  void emitEffect(BaseEffect effect) => _effectController.add(effect);
+  void emitEffect(BaseEffect effect) {
+    appLogger.d('${runtimeType.toString()}: [EFFECT] -> ${effect.toString()}');
+    _effectController.add(effect);
+  }
 
   @override
   bool handleEffect(BaseEffect effect) {

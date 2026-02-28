@@ -13,6 +13,11 @@ class MessageEffect extends BaseEffect {
 
   /// Factory for error messages
   factory MessageEffect.error(String message) => MessageEffect(message, type: MessageType.error);
+
+  @override
+  String toString() {
+    return "MessageEffect(message: $message, type: $type)";
+  }
 }
 
 /// Standard Effect for controlling global loading state.
@@ -21,6 +26,11 @@ class LoadingEffect extends BaseEffect {
   final String? message;
 
   LoadingEffect(this.show, {this.message});
+
+  @override
+  String toString() {
+    return "LoadingEffect(show: $show, message: $message)";
+  }
 }
 
 /// Standard Effect for navigating to a new target reactively.
@@ -42,4 +52,9 @@ class NavigationEffect extends BaseEffect {
 
   /// Helper constructor for back navigation.
   factory NavigationEffect.back({Object? result}) => NavigationEffect(isBack: true, arguments: result);
+
+  @override
+  String toString() {
+    return "NavigationEffect(target: $target, isReplace: $isReplace, isBack: $isBack, needLogin: $needLogin, arguments: $arguments";
+  }
 }
