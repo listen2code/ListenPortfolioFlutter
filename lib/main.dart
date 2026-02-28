@@ -1,127 +1,22 @@
-import 'dart:async';
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
-import 'package:listen_portfolio_flutter/uikit/uikit.dart';
+import 'package:listen_portfolio_flutter/shared/utils/app_initializer.dart';
 
 void main() {
   // Use runGuarded to wrap the entire app execution.
   // This ensures that all initialization and the app itself run in the same Zone.
   ZoneManager.runGuarded(
     () async {
-      await _initServices();
-      _setupNavConfig();
-      _setupErrorHandlers();
-
+      await AppInitializer.init();
       runApp(const ProviderScope(child: MyApp()));
     },
     traceId: ZoneManager.mainTraceId,
     label: ZoneManager.mainStart,
-    onError: _handleGlobalError,
+    onError: AppInitializer.handleGlobalError,
   );
-}
-
-Future<void> _initServices() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  // 1. Infrastructure
-  await SpUtil.init(prefix: "${AppConstants.appName}_");
-
-  // 2. Core Architecture DI Injection
-  // Registers all global provider implementations at once.
-  ProviderRegistry.setup([
-    const LoadingProviderImpl(),
-    const MessageProviderImpl(),
-    const NavigationProviderImpl(),
-  ]);
-
-  // 3. Crash Protection (Safe Mode)
-  // Triggers a safety reset if multiple crashes occur within a short time frame.
-  CrashManager.setup(
-    SafeModeConfig(
-      onReset: () async {
-        await CacheManager.clearAllCache();
-        await settingManager.resetSettings();
-        AppNav.offAll(Routes.home);
-        CommonToast.show(I18nKeys.safetyResetMsg.tr, type: ToastType.error);
-      },
-    ),
-  );
-
-  // 4. Environment Configuration
-  await AppEnv.init(EnvConfigs.values);
-
-  // 5. Localization
-  Translations.register(
-    data: {AppLanguage.chinese.locale.languageCode: zh, AppLanguage.japanese.locale.languageCode: ja},
-    languageCodeProvider: () => settingManager.locale.languageCode,
-  );
-
-  // 6. Global Managers & Settings
-  QuickActionsManager.init();
-  settingManager.loadSettings();
-
-  // 7. UIKit Configuration (Depends on Localization system)
-  UIKitConfig.setup(stringProvider: (key) => key.tr);
-}
-
-// Register auth, navigation, and named routes
-void _setupNavConfig() {
-  AppNavConfig.register(
-    routes: Routes.routes,
-    isGuest: () => authManager.state.isGuest,
-    onLogin: (context) async {
-      final result = await AppNav.to(Routes.login);
-      return result == true;
-    },
-    onLoginSuccess: () => CommonToast.show(I18nKeys.loginSuccess.tr),
-    onShowLoginDialog: (context) async {
-      final result = await CommonDialog.showConfirm(
-        title: I18nKeys.loginLink.tr,
-        message: I18nKeys.signInToContinue.tr,
-      );
-      return result == true;
-    },
-  );
-}
-
-void _setupErrorHandlers() {
-  // Forward Flutter framework errors to the current Zone
-  FlutterError.onError = (details) {
-    FlutterError.presentError(details);
-    Zone.current.handleUncaughtError(details, details.stack!);
-  };
-
-  // Forward platform-level errors (like from binary messengers) to the current Zone
-  PlatformDispatcher.instance.onError = (error, stack) {
-    Zone.current.handleUncaughtError(error, stack);
-    return true;
-  };
-}
-
-Future<void> _handleGlobalError(Object error, StackTrace stack) async {
-  // 1. PERSIST CRASH DATA LOCALLY
-  final filePath = await CrashManager.saveCrashLog(error, stack);
-
-  // 2. Show a global crash alert dialog using the navigatorKey context
-  final context = AppNavConfig.context;
-  if (context != null && filePath != null) {
-    final confirmed = await CommonDialog.showConfirm(
-      tag: "globalErrorDialog",
-      title: I18nKeys.appCrashed.tr,
-      message: I18nKeys.crashDetectedMsg.tr,
-      okText: I18nKeys.viewReport.tr,
-      cancelText: I18nKeys.dismiss.tr,
-    );
-
-    if (confirmed == true) {
-      AppNav.to(Routes.crashLogs, arguments: {Routes.argFilePath: filePath});
-    }
-  }
 }
 
 class MyApp extends StatelessWidget {
