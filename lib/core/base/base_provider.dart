@@ -1,4 +1,4 @@
-import 'package:listen_portfolio_flutter/core/base/base_effect.dart';
+import 'package:listen_portfolio_flutter/core/core.dart';
 
 /// A central registry for managing global provider implementations and effect routing.
 class ProviderRegistry {
