@@ -14,7 +14,7 @@ part 'login_view_model.g.dart';
 
 @riverpod
 class LoginViewModel extends _$LoginViewModel
-    with ConsumeViewModel<LoginState>
+    with ViewModelMixin<LoginState>
     implements IStateOwner<LoginState> {
   static const String _keyUsername = 'saved_username';
   static const String _keyPassword = 'saved_password';

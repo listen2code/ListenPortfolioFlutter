@@ -1,4 +1,25 @@
+/// Core translation engine.
+/// This class is business-agnostic and relies on data registered at runtime.
+class Translations {
+  Translations._();
 
+  static Map<String, Map<String, String>> _data = {};
+
+  static String Function()? _languageCodeProvider;
+
+  static void register({
+    required Map<String, Map<String, String>> data,
+    required String Function() languageCodeProvider,
+  }) {
+    _data = data;
+    _languageCodeProvider = languageCodeProvider;
+  }
+
+  static String translate(String key) {
+    final languageCode = _languageCodeProvider?.call() ?? 'en';
+    return _data[languageCode]?[key] ?? key;
+  }
+}
 
 /// Extension to provide easy translation access on strings.
 extension TranslationExtension on String {
@@ -12,28 +33,5 @@ extension TranslationExtension on String {
       translated = translated.replaceFirst('%s', arg.toString());
     }
     return translated;
-  }
-}
-
-/// Core translation engine.
-/// This class is business-agnostic and relies on data registered at runtime.
-class Translations {
-  Translations._();
-
-  static Map<String, Map<String, String>> _data = {};
-
-  static String Function()? _languageCodeProvider;
-
-  static void register({
-    required Map<String, Map<String, String>> data,
-    required String Function() languageCodeProvider, // 注入获取语言的方法
-  }) {
-    _data = data;
-    _languageCodeProvider = languageCodeProvider;
-  }
-
-  static String translate(String key) {
-    final languageCode = _languageCodeProvider?.call() ?? 'en';
-    return _data[languageCode]?[key] ?? key;
   }
 }

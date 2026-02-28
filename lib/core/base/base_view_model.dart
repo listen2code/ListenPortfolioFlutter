@@ -3,9 +3,6 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
 
-export 'base_effect.dart';
-export 'base_provider.dart';
-
 /// Interface for states. Should only contain persistent UI data.
 abstract class BaseState<T> {}
 
@@ -53,7 +50,7 @@ abstract class BaseViewModel {
 }
 
 /// Mixin to handle common UI states, lifecycle logging, and side effects.
-mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel, IStateOwner<S> {
+mixin ViewModelMixin<S extends BaseState<dynamic>> implements BaseViewModel, IStateOwner<S> {
   @override
   S get state;
 

@@ -31,7 +31,7 @@ abstract class EnvConfig {
 class AppEnv {
   AppEnv._();
 
-  static const String envKey = 'env_setting';
+  static const String envKey = 'env_key';
   static const String envDefine = "APP_ENV";
   static const String defaultEnv = "mock";
 
