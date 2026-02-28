@@ -66,34 +66,7 @@ mixin ConsumeViewModel<S extends BaseState<dynamic>> implements BaseViewModel, I
 
   @override
   bool handleEffect(BaseEffect effect) {
-    if (effect is MessageEffect) {
-      final messageProvider = BaseConfig.getProvider<IMessageProvider>();
-      messageProvider?.show(effect.message, type: effect.type);
-      return true;
-    } else if (effect is LoadingEffect) {
-      final loadingProvider = BaseConfig.getProvider<ILoadingProvider>();
-      if (effect.show) {
-        loadingProvider?.show(message: effect.message);
-      } else {
-        loadingProvider?.hide();
-      }
-      return true;
-    } else if (effect is NavigationEffect) {
-      final navigationProvider = BaseConfig.getProvider<INavigationProvider>();
-      if (effect.isBack) {
-        navigationProvider?.back(effect.arguments);
-      } else if (effect.isReplace) {
-        navigationProvider?.off(
-          effect.target,
-          needLogin: effect.needLogin,
-          arguments: effect.arguments as Map<String, dynamic>?,
-        );
-      } else {
-        navigationProvider?.to(effect.target, needLogin: effect.needLogin, arguments: effect.arguments);
-      }
-      return true;
-    }
-    return false;
+    return ProviderRegistry.handle(effect);
   }
 
   @override

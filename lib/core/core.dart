@@ -1,4 +1,3 @@
-export 'base/base_config.dart';
 export 'base/base_effect.dart';
 export 'base/base_lifecycle_page.dart';
 export 'base/base_provider.dart';

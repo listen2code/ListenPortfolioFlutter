@@ -1,15 +1,15 @@
 import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 
-/// Concrete implementation of [IMessageProvider] using the project's [CommonToast] UIKit component.
-class MessageProviderImpl implements IMessageProvider {
+/// Concrete implementation for handling [MessageEffect] using [CommonToast].
+class MessageProviderImpl extends BaseProvider<MessageEffect> {
   const MessageProviderImpl();
 
   @override
-  void show(String message, {MessageType type = MessageType.info}) {
+  void handleEffect(MessageEffect effect) {
     CommonToast.show(
-      message,
-      type: type == MessageType.error ? ToastType.error : ToastType.info,
+      effect.message,
+      type: effect.type == MessageType.error ? ToastType.error : ToastType.info,
     );
   }
 }

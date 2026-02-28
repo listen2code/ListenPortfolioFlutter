@@ -33,11 +33,7 @@ Future<void> _initServices() async {
 
   // 2. Core Architecture DI Injection
   // Registers all global provider implementations at once.
-  BaseConfig.setup([
-    const LoadingProviderImpl(),
-    const MessageProviderImpl(),
-    const NavigationProviderImpl(),
-  ]);
+  ProviderRegistry.setup([LoadingProviderImpl(), MessageProviderImpl(), NavigationProviderImpl()]);
 
   // 3. Environment Configuration
   AppEnv.setup({

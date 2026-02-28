@@ -1,25 +1,47 @@
 import 'package:listen_portfolio_flutter/core/base/base_effect.dart';
 
-/// Base marker for all architecture providers.
-abstract class IBaseProvider {}
+/// A central registry for managing global provider implementations and effect routing.
+class ProviderRegistry {
+  ProviderRegistry._();
 
-/// Interface for showing/hiding loading UI.
-abstract class ILoadingProvider implements IBaseProvider {
-  void show({String? message});
+  static final Map<Type, BaseProvider<dynamic>> _effectRouteMap = {};
 
-  void hide();
+  /// Registers a list of global provider implementations.
+  /// Automatically builds an effect-to-provider routing map based on [handledType].
+  static void setup(List<BaseProvider<dynamic>> providers) {
+    _effectRouteMap.clear();
+    for (var provider in providers) {
+      _effectRouteMap[provider.handledType] = provider;
+    }
+  }
+
+  /// Dispatches an effect to its registered provider.
+  /// Returns true if a handler was found and the effect was processed.
+  static bool handle(BaseEffect effect) {
+    final handler = _effectRouteMap[effect.runtimeType];
+
+    if (handler != null) {
+      handler.handle(effect);
+      return true;
+    }
+
+    return false;
+  }
 }
 
-/// Interface for showing messages/toasts.
-abstract class IMessageProvider implements IBaseProvider {
-  void show(String message, {MessageType type = MessageType.info});
-}
+/// Base interface for all architecture providers.
+/// Establishes a type-safe 1-to-1 relationship between an effect [E] and its executor.
+abstract class BaseProvider<E extends BaseEffect> {
+  const BaseProvider();
 
-/// Interface for navigation operations.
-abstract class INavigationProvider implements IBaseProvider {
-  Future<T?>? to<T>(dynamic target, {bool needLogin = false, Object? arguments});
+  /// The specific [BaseEffect] type this provider is responsible for.
+  Type get handledType => E;
 
-  Future<T?>? off<T>(dynamic target, {bool needLogin = false, Object? arguments});
+  /// Polymorphic entry point to process an effect.
+  /// Automatically casts the effect to its concrete type [E].
+  void handle(BaseEffect effect) => handleEffect(effect as E);
 
-  void back<T>([T? result]);
+  /// Concrete logic to process the specific effect [E].
+  /// To be implemented by the shared layer providers.
+  void handleEffect(E effect);
 }
