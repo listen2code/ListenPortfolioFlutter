@@ -28,7 +28,6 @@ samples, guidance on mobile development, and a full API reference.
 * Business-related common code are under the lib/shared directory
 * If there are new string resources, please add them to both file below
     * [translations_key.dart](lib/core/i18n/translations_key.dart)
-    * [en.dart](lib/core/i18n/languages/en.dart)
     * [ja.dart](lib/core/i18n/languages/ja.dart)
     * [zh.dart](lib/core/i18n/languages/zh.dart).
 
@@ -36,18 +35,15 @@ samples, guidance on mobile development, and a full API reference.
 
 * base
     * base use case; view modelMVI
-    * core -> shared
     * publish core
     * publish widget
 * function
     * notification
     * other pages, use
-    * common_switch
     * switch env: input url; mock api; config each api; separate mock
     * apm: layout check; lag check; app launch; apk size; net inspector
     * app review
     * finger auth
-    * auto login
     * CustomPainter show skills graph
     * ai intro assistant
     * pdf show, download resume
