@@ -31,6 +31,7 @@ abstract class EnvConfig {
 class AppEnv {
   AppEnv._();
 
+  static const String envKey = 'env_setting';
   static const String envDefine = "APP_ENV";
   static const String defaultEnv = "mock";
 
@@ -53,7 +54,7 @@ class AppEnv {
     if (!_isSetup) {
       throw Exception("AppEnv must be set up before initialization.");
     }
-    final savedEnv = SpUtil.getString(Constants.envKey);
+    final savedEnv = SpUtil.getString(envKey);
     if (savedEnv != null) {
       _env = AppEnvironment.fromString(savedEnv);
     }
@@ -92,7 +93,7 @@ class AppEnv {
     _env = newEnv;
     _applyDioConfig();
 
-    await SpUtil.put(Constants.envKey, newEnv.name);
+    await SpUtil.put(envKey, newEnv.name);
   }
 
   static void _applyDioConfig() {

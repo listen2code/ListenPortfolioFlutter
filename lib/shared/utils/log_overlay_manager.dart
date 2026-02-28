@@ -7,6 +7,7 @@ import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 enum LogFilter { all, server, app, perf }
 
 class LogOverlayManager {
+  static const String logOverlayKey = 'log_overlay_enabled';
   static OverlayEntry? _overlayEntry;
   static Offset? _offset;
   static Offset? _windowOffset;
@@ -16,7 +17,7 @@ class LogOverlayManager {
   static final ValueNotifier<bool> isShowingNotifier = ValueNotifier(true);
 
   static Future<void> init(BuildContext context) async {
-    final isEnabled = SpUtil.getBool(Constants.logOverlayKey, defaultValue: true);
+    final isEnabled = SpUtil.getBool(logOverlayKey, defaultValue: true);
 
     if (isEnabled && context.mounted) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -59,7 +60,7 @@ class LogOverlayManager {
     Overlay.of(context).insert(_overlayEntry!);
     isShowingNotifier.value = true;
 
-    await SpUtil.put(Constants.logOverlayKey, true);
+    await SpUtil.put(logOverlayKey, true);
   }
 
   static Future<void> hide() async {
@@ -69,7 +70,7 @@ class LogOverlayManager {
     _overlayEntry = null;
     isShowingNotifier.value = false;
 
-    await SpUtil.put(Constants.logOverlayKey, false);
+    await SpUtil.put(logOverlayKey, false);
   }
 }
 
