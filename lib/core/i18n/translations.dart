@@ -7,6 +7,9 @@ class Translations {
 
   static String Function()? _languageCodeProvider;
 
+  /// Default language code to fallback when no translation is found.
+  static const String _defaultLanguage = 'en';
+
   static void register({
     required Map<String, Map<String, String>> data,
     required String Function() languageCodeProvider,
@@ -16,8 +19,18 @@ class Translations {
   }
 
   static String translate(String key) {
-    final languageCode = _languageCodeProvider?.call() ?? 'en';
-    return _data[languageCode]?[key] ?? key;
+    final languageCode = _languageCodeProvider?.call() ?? _defaultLanguage;
+    
+    // 1. Try to find the translation in the registered data
+    final translated = _data[languageCode]?[key];
+    if (translated != null) return translated;
+
+    // 2. Optimization: If the current language is English, and we use the text itself as the Key,
+    // we can return the Key directly. This eliminates the need for en.dart.
+    if (languageCode == _defaultLanguage) return key;
+
+    // 3. Fallback to the key itself
+    return key;
   }
 }
 

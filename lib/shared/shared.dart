@@ -7,7 +7,6 @@ export 'base/navigation_provider_impl.dart';
 export 'constants/app_constants.dart';
 export 'constants/env_config.dart';
 export 'i18n/app_language.dart';
-export 'i18n/languages/en.dart';
 export 'i18n/languages/ja.dart';
 export 'i18n/languages/zh.dart';
 export 'i18n/translations_key.dart';

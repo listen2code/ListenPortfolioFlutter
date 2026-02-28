@@ -63,11 +63,7 @@ Future<void> _initServices() async {
 
   // 5. Localization
   Translations.register(
-    data: {
-      AppLanguage.english.locale.languageCode: en,
-      AppLanguage.chinese.locale.languageCode: zh,
-      AppLanguage.japanese.locale.languageCode: ja,
-    },
+    data: {AppLanguage.chinese.locale.languageCode: zh, AppLanguage.japanese.locale.languageCode: ja},
     languageCodeProvider: () => settingManager.locale.languageCode,
   );
 
