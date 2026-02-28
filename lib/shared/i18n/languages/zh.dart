@@ -40,6 +40,7 @@ final Map<String, String> zh = {
   I18nKeys.selectColor: '选择颜色',
   I18nKeys.share: '分享',
   I18nKeys.delete: '删除',
+  I18nKeys.deleteAll: '全部清除',
   I18nKeys.cancel: '取消',
   I18nKeys.ok: '确认',
   I18nKeys.reset: '重置',
@@ -54,6 +55,7 @@ final Map<String, String> zh = {
   I18nKeys.signUp: '立即注册',
   I18nKeys.rememberMe: '记住我',
   I18nKeys.minLengthMsg: '长度至少为 %s 位',
+  I18nKeys.loginSuccess: '登录成功！',
   I18nKeys.createAccount: '创建账号',
   I18nKeys.signUpSubtitle: '注册以开始体验！',
   I18nKeys.fullName: '姓名',
@@ -151,5 +153,5 @@ final Map<String, String> zh = {
   I18nKeys.crashDetectedMsg: '检测到应用崩溃并已记录日志。是否查看详细报告？',
   I18nKeys.viewReport: '查看报告',
   I18nKeys.dismiss: '忽略',
-  I18nKeys.loginSuccess: '登录成功！',
+  I18nKeys.safetyResetMsg: '正在触发安全重置...',
 };

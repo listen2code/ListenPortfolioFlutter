@@ -46,6 +46,7 @@ class I18nKeys {
   // Actions
   static const String share = 'Share';
   static const String delete = 'Delete';
+  static const String deleteAll = 'Delete All';
   static const String cancel = 'Cancel';
   static const String ok = 'OK';
   static const String reset = 'Reset';
@@ -169,6 +170,7 @@ class I18nKeys {
   static const String crashDetectedMsg = 'A crash has been detected and logged. Would you like to view the detailed report?';
   static const String viewReport = 'View Report';
   static const String dismiss = 'Dismiss';
+  static const String safetyResetMsg = 'Triggering safety reset...';
 
   // Account Deletion (Google Play Compliance)
   static const String deleteAccount = 'Delete Account';

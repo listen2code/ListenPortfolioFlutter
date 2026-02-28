@@ -55,7 +55,18 @@ class _CrashLogListPageState extends State<CrashLogListPage> {
   Widget build(BuildContext context) {
     return BasePage(
       title: I18nKeys.crashReports.tr,
-      actions: [IconButton(icon: const Icon(Icons.flash_on_rounded), onPressed: _handleTriggerCrash)],
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.flash_on_rounded),
+          onPressed: _handleTriggerCrash,
+          tooltip: I18nKeys.triggerCrash.tr,
+        ),
+        IconButton(
+          icon: const Icon(Icons.delete_sweep_rounded),
+          onPressed: _logs.isEmpty ? null : _handleDeleteAll,
+          tooltip: I18nKeys.deleteAll.tr,
+        ),
+      ],
       body: (context, child, viewModel) {
         if (_isLoading) {
           return const Center(child: CircularProgressIndicator());
@@ -94,7 +105,7 @@ class _CrashLogListPageState extends State<CrashLogListPage> {
   Widget _buildLogCard(File file, String name, String date) {
     return Card(
       elevation: 0,
-      clipBehavior: Clip.antiAlias, // Ensure ink splashes are clipped to the card's rounded corners
+      clipBehavior: Clip.antiAlias,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
         side: BorderSide(color: context.theme.dividerColor.withValues(alpha: 0.1)),
@@ -189,9 +200,25 @@ class _CrashLogListPageState extends State<CrashLogListPage> {
       message: I18nKeys.triggerCrashDesc.tr,
       okText: I18nKeys.startTimer.tr,
     );
+
     if (confirmed == true) {
       CrashManager.scheduleRandomCrash();
       CommonToast.show(I18nKeys.crashScheduled.tr);
+    }
+  }
+
+  void _handleDeleteAll() async {
+    final confirmed = await CommonDialog.showConfirm(
+      title: I18nKeys.deleteReport.tr,
+      message: '${I18nKeys.deleteReportConfirm.tr} (ALL)',
+      okText: I18nKeys.delete.tr,
+      okColor: Colors.red,
+    );
+
+    if (confirmed == true) {
+      await CrashManager.deleteAllCrashLogs();
+      _refreshLogs();
+      CommonToast.show(I18nKeys.cacheCleared.tr);
     }
   }
 
@@ -205,18 +232,6 @@ class _CrashLogListPageState extends State<CrashLogListPage> {
       backgroundColor: Colors.transparent,
       builder: (context) => _LogDetailsSheet(content: content, fileName: file.path.split('/').last),
     );
-  }
-
-  void _uploadLog(File file) async {
-    CommonLoading.show(message: I18nKeys.uploading.tr);
-    final success = await CrashManager.uploadCrashLog(file);
-    CommonLoading.hide();
-
-    if (success) {
-      CommonToast.show(I18nKeys.uploadSuccess.tr);
-    } else {
-      CommonToast.show(I18nKeys.uploadFailed.tr);
-    }
   }
 
   void _deleteLog(File file) async {

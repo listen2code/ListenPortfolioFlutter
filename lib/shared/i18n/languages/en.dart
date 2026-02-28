@@ -40,6 +40,7 @@ final Map<String, String> en = {
   I18nKeys.selectColor: 'Select Color',
   I18nKeys.share: 'Share',
   I18nKeys.delete: 'Delete',
+  I18nKeys.deleteAll: 'Delete All',
   I18nKeys.cancel: 'Cancel',
   I18nKeys.ok: 'OK',
   I18nKeys.reset: 'Reset',
@@ -156,4 +157,5 @@ final Map<String, String> en = {
       'A crash has been detected and logged. Would you like to view the detailed report?',
   I18nKeys.viewReport: 'View Report',
   I18nKeys.dismiss: 'Dismiss',
+  I18nKeys.safetyResetMsg: 'Triggering safety reset...',
 };

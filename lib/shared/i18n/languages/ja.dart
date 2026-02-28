@@ -40,6 +40,7 @@ final Map<String, String> ja = {
   I18nKeys.selectColor: 'カラー選択',
   I18nKeys.share: '共有',
   I18nKeys.delete: '削除',
+  I18nKeys.deleteAll: 'すべて削除',
   I18nKeys.cancel: 'キャンセル',
   I18nKeys.ok: '確認',
   I18nKeys.reset: 'リセット',
@@ -152,4 +153,5 @@ final Map<String, String> ja = {
   I18nKeys.crashDetectedMsg: 'クラッシュが検出・記録されました。詳細レポートを表示しますか？',
   I18nKeys.viewReport: 'レポート表示',
   I18nKeys.dismiss: '閉じる',
+  I18nKeys.safetyResetMsg: '安全リセットを実行しています...',
 };

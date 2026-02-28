@@ -33,9 +33,26 @@ Future<void> _initServices() async {
 
   // 2. Core Architecture DI Injection
   // Registers all global provider implementations at once.
-  ProviderRegistry.setup([LoadingProviderImpl(), MessageProviderImpl(), NavigationProviderImpl()]);
+  ProviderRegistry.setup([
+    const LoadingProviderImpl(),
+    const MessageProviderImpl(),
+    const NavigationProviderImpl(),
+  ]);
 
-  // 3. Environment Configuration
+  // 3. Crash Protection (Safe Mode)
+  // Triggers a safety reset if multiple crashes occur within a short time frame.
+  CrashManager.setup(
+    SafeModeConfig(
+      onReset: () async {
+        await CacheManager.clearAllCache();
+        await settingManager.resetSettings();
+        AppNav.offAll(Routes.home);
+        CommonToast.show("Triggering safety reset...", type: ToastType.error);
+      },
+    ),
+  );
+
+  // 4. Environment Configuration
   AppEnv.setup({
     AppEnvironment.mock: BizEnvConfigs.mock,
     AppEnvironment.dev: BizEnvConfigs.dev,
@@ -44,17 +61,17 @@ Future<void> _initServices() async {
   });
   await AppEnv.init();
 
-  // 4. Localization
+  // 5. Localization
   Translations.register(
     data: {'en': en, 'zh': zh, 'ja': ja},
     languageCodeProvider: () => settingManager.locale.languageCode,
   );
 
-  // 5. Global Managers & Settings
+  // 6. Global Managers & Settings
   QuickActionsManager.init();
   settingManager.loadSettings();
 
-  // 6. UIKit Configuration (Depends on Localization system)
+  // 7. UIKit Configuration (Depends on Localization system)
   UIKitConfig.setup(stringProvider: (key) => key.tr);
 }
 
@@ -100,6 +117,7 @@ Future<void> _handleGlobalError(Object error, StackTrace stack) async {
   final context = AppNavConfig.context;
   if (context != null && filePath != null) {
     final confirmed = await CommonDialog.showConfirm(
+      tag: "globalErrorDialog",
       title: I18nKeys.appCrashed.tr,
       message: I18nKeys.crashDetectedMsg.tr,
       okText: I18nKeys.viewReport.tr,

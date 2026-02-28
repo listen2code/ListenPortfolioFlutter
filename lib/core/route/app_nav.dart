@@ -13,9 +13,13 @@ class AppNavConfig {
   static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   static BuildContext? get context => navigatorKey.currentContext;
+
   static bool Function()? isGuestCheck;
+
   static Future<bool> Function(BuildContext context)? onLoginRedirect;
+
   static void Function()? onLoginSuccessCallback;
+
   static Future<bool> Function(BuildContext context)? onShowLoginDialogCallback;
 
   static final Map<String, RoutePageBuilder> _routeRegistry = {};
@@ -68,6 +72,7 @@ class AppNav {
 
   static Future<T?>? to<T>(dynamic target, {bool needLogin = false, Object? arguments}) {
     final completer = Completer<T?>();
+
     tryLogin(
       needLogin: needLogin,
       onSuccess: () {
@@ -76,17 +81,19 @@ class AppNav {
           completer.complete(null);
           return;
         }
-        runOnRedirect<T>(toRoute: route, needLogin: false)?.then((value) {
+        AppNavConfig.navigatorKey.currentState?.push(route).then((value) {
           completer.complete(value);
         });
       },
       onFail: () => completer.complete(null),
     );
+
     return completer.future;
   }
 
   static Future<T?>? off<T>(dynamic target, {bool needLogin = false, Object? arguments}) {
     final completer = Completer<T?>();
+
     tryLogin(
       needLogin: needLogin,
       onSuccess: () {
@@ -95,11 +102,35 @@ class AppNav {
           completer.complete(null);
           return;
         }
-        final result = AppNavConfig.navigatorKey.currentState?.pushReplacement(route);
-        completer.complete(result);
+        AppNavConfig.navigatorKey.currentState?.pushReplacement(route).then((value) {
+          completer.complete(value);
+        });
       },
       onFail: () => completer.complete(null),
     );
+
+    return completer.future;
+  }
+
+  /// Navigates to a target and removes all previous routes from the stack.
+  static Future<T?>? offAll<T>(dynamic target, {bool needLogin = false, Object? arguments}) {
+    final completer = Completer<T?>();
+
+    tryLogin(
+      needLogin: needLogin,
+      onSuccess: () {
+        final Route<T>? route = _resolveRoute<T>(target, arguments);
+        if (route == null) {
+          completer.complete(null);
+          return;
+        }
+        AppNavConfig.navigatorKey.currentState?.pushAndRemoveUntil(route, (route) => false).then((value) {
+          completer.complete(value);
+        });
+      },
+      onFail: () => completer.complete(null),
+    );
+
     return completer.future;
   }
 

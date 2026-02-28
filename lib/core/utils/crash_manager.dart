@@ -6,13 +6,39 @@ import 'package:intl/intl.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:path_provider/path_provider.dart';
 
+/// Configuration for the Safe Mode crash protection.
+class SafeModeConfig {
+  final int rapidCrashThreshold;
+  final Duration timeWindow;
+  final Future<void> Function() onReset;
+
+  const SafeModeConfig({
+    this.rapidCrashThreshold = 3,
+    this.timeWindow = const Duration(seconds: 30),
+    required this.onReset,
+  });
+}
+
 class CrashManager {
   CrashManager._();
 
   static DateTime? _scheduledCrashTime;
 
+  static const String _keyCrashTimestamps = 'rapid_crash_timestamps';
+
+  static SafeModeConfig? _config;
+
+  /// Initializes the CrashManager with Safe Mode settings.
+  static void setup(SafeModeConfig config) {
+    _config = config;
+  }
+
   /// Saves current logs and error details to a local file.
+  /// Also checks for rapid consecutive crashes to trigger a safety reset.
   static Future<String?> saveCrashLog(Object error, StackTrace stack) async {
+    // 1. Log the crash timestamp for rapid crash detection
+    await _recordCrashTimestamp();
+
     try {
       final directory = await getApplicationDocumentsDirectory();
       final String timestamp = DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
@@ -23,7 +49,6 @@ class CrashManager {
       buffer.writeln('Time: ${DateTime.now()}');
 
       if (error is FlutterErrorDetails) {
-        // Extract rich context from Flutter framework errors
         buffer.writeln('Summary: ${error.exceptionAsString()}');
         buffer.writeln('Context: ${error.context}');
         buffer.writeln('Library: ${error.library}');
@@ -44,6 +69,44 @@ class CrashManager {
       appLogger.e('Failed to save crash log: $e');
       return null;
     }
+  }
+
+  /// Records the current crash time and checks if we need to perform a safety reset.
+  static Future<void> _recordCrashTimestamp() async {
+    if (_config == null) return;
+
+    final now = DateTime.now().millisecondsSinceEpoch;
+    final List<String> history = SpUtil.getStringList(_keyCrashTimestamps) ?? [];
+
+    history.add(now.toString());
+
+    final int windowStart = DateTime.now().subtract(_config!.timeWindow).millisecondsSinceEpoch;
+
+    // Filter history to keep only crashes within the current window
+    final updatedHistory = history.where((ts) {
+      try {
+        return int.parse(ts) > windowStart;
+      } catch (_) {
+        return false;
+      }
+    }).toList();
+
+    await SpUtil.put(_keyCrashTimestamps, updatedHistory);
+
+    if (updatedHistory.length >= _config!.rapidCrashThreshold) {
+      await _performSafetyReset();
+    }
+  }
+
+  /// Clears crash history and triggers the externally provided reset logic.
+  static Future<void> _performSafetyReset() async {
+    appLogger.e('RAPID CRASH DETECTED! Triggering safety reset...');
+
+    // Clear history first to prevent recursive reset loops
+    await SpUtil.remove(_keyCrashTimestamps);
+
+    // Call the injected reset logic (e.g., clear caches, reset settings)
+    await _config?.onReset();
   }
 
   /// Lists all saved crash logs.
@@ -69,6 +132,14 @@ class CrashManager {
     }
   }
 
+  /// Deletes all crash log files.
+  static Future<void> deleteAllCrashLogs() async {
+    final logs = await getSavedCrashLogs();
+    for (var file in logs) {
+      await deleteCrashLog(file);
+    }
+  }
+
   /// Simulates an upload to the server.
   static Future<bool> uploadCrashLog(File file) async {
     await Future.delayed(const Duration(seconds: 2));
@@ -77,10 +148,9 @@ class CrashManager {
   }
 
   /// Schedules a crash to occur after 10-20 seconds.
-  /// The crash will be injected into the next ViewModel dispatch.
   static void scheduleRandomCrash() {
     final random = Random();
-    final delaySeconds = 10 + random.nextInt(11); // 10 to 20 seconds
+    final delaySeconds = 10 + random.nextInt(11);
     _scheduledCrashTime = DateTime.now().add(Duration(seconds: delaySeconds));
 
     appLogger.w(
@@ -91,7 +161,7 @@ class CrashManager {
   /// Internal: Checks if a scheduled crash is due and throws if it is.
   static void checkAndTriggerInjectedCrash() {
     if (_scheduledCrashTime != null && DateTime.now().isAfter(_scheduledCrashTime!)) {
-      _scheduledCrashTime = null; // Reset
+      _scheduledCrashTime = null;
 
       final random = Random();
       final crashTypes = [
