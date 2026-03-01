@@ -23,7 +23,9 @@ const server = http.createServer((req, res) => {
     req.on('end', () => {
         handleRequest(req, res, body).catch(error => {
             console.error(`${getDate()} Global Error: ${error}`);
-            res.writeHead(500, { 'Content-Type': 'application/json' });
+            const errorHeaders = { 'Content-Type': 'application/json' };
+            console.log(`${getDate()} [Response Headers]:\n${JSON.stringify(errorHeaders, null, 2)}`);
+            res.writeHead(500, errorHeaders);
             res.end(JSON.stringify({ result: "1", message: "Internal Server Error" }));
         });
     });
@@ -36,6 +38,9 @@ async function handleRequest(req, res, requestBody) {
     const queryParams = parsedUrl.query;
 
     console.log(`\n${getDate()} >>> [${req.method.toUpperCase()}] ${pathname}`);
+
+    // Log Request Headers
+    console.log(`${getDate()} [Request Headers]:\n${JSON.stringify(req.headers, null, 2)}`);
 
     // Log Request Parameters
     if (method === 'get') {
@@ -54,7 +59,9 @@ async function handleRequest(req, res, requestBody) {
     // 1. Load configuration
     const configPath = path.join(__dirname, 'config.json');
     if (!fs.existsSync(configPath)) {
-        res.writeHead(500, { 'Content-Type': 'application/json' });
+        const errorHeaders = { 'Content-Type': 'application/json' };
+        console.log(`${getDate()} [Response Headers]:\n${JSON.stringify(errorHeaders, null, 2)}`);
+        res.writeHead(500, errorHeaders);
         return res.end(JSON.stringify({ result: "1", message: "config.json not found" }));
     }
     const configData = await readFileAsync(configPath, 'utf-8');
@@ -90,7 +97,9 @@ async function handleRequest(req, res, requestBody) {
 
     if (!apiConfig) {
         console.log(`${getDate()} [404] No match in config for: ${pathname}`);
-        res.writeHead(404, { 'Content-Type': 'application/json' });
+        const errorHeaders = { 'Content-Type': 'application/json' };
+        console.log(`${getDate()} [Response Headers]:\n${JSON.stringify(errorHeaders, null, 2)}`);
+        res.writeHead(404, errorHeaders);
         return res.end(JSON.stringify({ result: "1", message: "API route not matched in config" }));
     }
 
@@ -120,13 +129,17 @@ async function handleRequest(req, res, requestBody) {
         targetFile = path.join(baseDir, method, `${resourceName}.json`);
     }
 
-    // 5. Read file and log JSON response
+    // 5. Read file and log Response
     try {
         if (!fs.existsSync(targetFile)) {
             throw new Error(`Data file not found at ${targetFile}`);
         }
 
         const responseData = await readFileAsync(targetFile, 'utf-8');
+
+        // Log Response Headers first
+        const successHeaders = { 'Content-Type': 'application/json' };
+        console.log(`${getDate()} [Response Headers]:\n${JSON.stringify(successHeaders, null, 2)}`);
 
         // Log formatted JSON response
         try {
@@ -136,12 +149,14 @@ async function handleRequest(req, res, requestBody) {
             console.log(`${getDate()} [Response Data]: ${responseData}`);
         }
 
-        res.writeHead(apiConfig.httpCode || 200, { 'Content-Type': 'application/json' });
+        res.writeHead(apiConfig.httpCode || 200, successHeaders);
         res.end(responseData);
         console.log(`${getDate()} [Success] Returned: ${targetFile} (HTTP ${apiConfig.httpCode || 200})`);
     } catch (err) {
         console.error(`${getDate()} [Error] ${err.message}`);
-        res.writeHead(404, { 'Content-Type': 'application/json' });
+        const errorHeaders = { 'Content-Type': 'application/json' };
+        console.log(`${getDate()} [Response Headers]:\n${JSON.stringify(errorHeaders, null, 2)}`);
+        res.writeHead(404, errorHeaders);
         res.end(JSON.stringify({ result: "1", message: "Data source file missing", detail: err.message }));
     }
 }
