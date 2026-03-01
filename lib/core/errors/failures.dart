@@ -19,6 +19,10 @@ class ServerFailure extends Failure {
   const ServerFailure(super.message);
 }
 
+class ServerApiFailure extends Failure {
+  const ServerApiFailure(super.message);
+}
+
 class NetworkFailure extends Failure {
   const NetworkFailure(super.message);
 }
