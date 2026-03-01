@@ -22,7 +22,6 @@ class LoginViewModel extends _$LoginViewModel
       final username = SpUtil.getString(AppConstants.loginUsernameKey) ?? '';
 
       // Asynchronously load the password from secure storage to avoid blocking build()
-      // and keep the state as LoginState instead of AsyncValue<LoginState>
       _loadSavedPassword();
 
       return LoginState(username: username, rememberMe: true);
@@ -38,7 +37,6 @@ class LoginViewModel extends _$LoginViewModel
   }
 
   /// Entry point for all UI interactions.
-  /// Wraps intent processing with aspect logging and automatic loading management.
   FutureOr<void> handleIntent(LoginIntent intent) {
     return dispatch(
       intent,
@@ -52,22 +50,25 @@ class LoginViewModel extends _$LoginViewModel
         navigateToForgotPassword: _onNavigateToForgotPassword,
         skipLogin: _onNavigateToBack,
       ),
-      // Automatically show/hide global loading overlay via ILoadingProvider
       showLoading: intent is SubmitLogin,
     );
   }
 
-  FutureOr<void> _onUsernameChanged(String username) {
+  Future<void> _onUsernameChanged(String username) async {
     state = state.copyWith(username: username, usernameError: null);
-    if (state.rememberMe) _saveOrClearCredentials();
+    if (state.rememberMe) {
+      await _saveOrClearCredentials();
+    }
   }
 
-  FutureOr<void> _onPasswordChanged(String password) {
+  Future<void> _onPasswordChanged(String password) async {
     state = state.copyWith(password: password, passwordError: null);
-    if (state.rememberMe) _saveOrClearCredentials();
+    if (state.rememberMe) {
+      await _saveOrClearCredentials();
+    }
   }
 
-  FutureOr<void> _onTogglePasswordVisibility() {
+  void _onTogglePasswordVisibility() {
     state = state.copyWith(isPasswordVisible: !state.isPasswordVisible);
   }
 
@@ -98,12 +99,10 @@ class LoginViewModel extends _$LoginViewModel
 
     result.fold(
       (failure) {
-        // Emit error effect using the convenient factory
         emitEffect(MessageEffect.error(failure.message));
       },
       (user) {
         authManager.login(user);
-        // Notify success and navigate via Effects
         emitEffect(MessageEffect(I18nKeys.loginSuccess.tr));
         emitEffect(NavigationEffect.back(result: true));
       },
@@ -113,7 +112,6 @@ class LoginViewModel extends _$LoginViewModel
   Future<void> _saveOrClearCredentials() async {
     if (state.rememberMe) {
       await SpUtil.put(AppConstants.loginUsernameKey, state.username);
-      // Use SecureStorageUtil for password to ensure security
       await SecureStorageUtil.put(AppConstants.loginPasswordKey, state.password);
       await SpUtil.put(AppConstants.loginRememberMeKey, true);
     } else {

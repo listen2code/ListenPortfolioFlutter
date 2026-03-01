@@ -14,6 +14,8 @@ class SpUtil {
   /// [prefix] will be prepended to all keys.
   static Future<void> init({String prefix = ''}) async {
     _prefix = prefix;
+    // We remove ??= to ensure that in test environments,
+    // calling init() multiple times correctly picks up the latest Mock instance.
     _prefs = await SharedPreferences.getInstance();
   }
 
@@ -91,8 +93,6 @@ class SpUtil {
   }
 
   /// Clear all preferences.
-  /// Note: This clears the entire SharedPreferences storage,
-  /// regardless of the prefix used in this utility.
   static Future<bool> clear() async {
     final prefs = await _instance;
     return prefs.clear();
