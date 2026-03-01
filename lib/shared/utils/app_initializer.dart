@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/provider/auth_provider.dart';
+import 'package:listen_portfolio_flutter/shared/base/logout_provider_impl.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 
@@ -45,6 +46,7 @@ class AppInitializer {
       const LoadingProviderImpl(),
       const MessageProviderImpl(),
       const NavigationProviderImpl(),
+      const LogoutProviderImpl(),
     ]);
 
     // 3. Crash Protection (Safe Mode) Configuration

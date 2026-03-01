@@ -63,3 +63,16 @@ class NavigationEffect extends BaseEffect {
     return "NavigationEffect(target: $target, isReplace: $isReplace, isBack: $isBack, needLogin: $needLogin, arguments: $arguments";
   }
 }
+
+/// Effect to trigger a global logout operation.
+/// Typically emitted when an [AuthFailure] (like session timeout) occurs.
+class LogoutEffect extends BaseEffect {
+  final String? message;
+
+  LogoutEffect({this.message});
+
+  @override
+  String toString() {
+    return "LogoutEffect(message: $message)";
+  }
+}

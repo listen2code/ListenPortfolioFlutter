@@ -73,29 +73,21 @@ mixin ViewModelMixin<S extends BaseState<dynamic>> implements BaseViewModel, ISt
   }
 
   /// Helper to handle Either results from UseCases/Repositories.
-  /// Automatically calls [handleFailure] on Left, and executes [onSuccess] on Right.
+  /// Automatically calls UI effects on Left, and executes [onSuccess] on Right.
   /// Returns the result of [onSuccess] or null if failure.
   FutureOr<void> handleResult<T>(Either<Failure, T> result, FutureOr<void> Function(T data) onSuccess) async {
-    result.fold(
-      (failure) => {
-        if (failure is AuthFailure)
-          {
-            // Logic for session timeout
-            emitEffect(MessageEffect.error(failure.message)),
-          }
-        else if (failure is ServerApiFailure)
-          {
-            // Global API Business Error: show as a dialog
-            emitEffect(MessageEffect.dialog(failure.message, title: "API Error")),
-          }
-        else
-          {
-            // Default fallback for other failure types (Network, Validation etc.)
-            emitEffect(MessageEffect.error(failure.message)),
-          },
-      },
-      (data) async => await onSuccess(data),
-    );
+    await result.fold((failure) async {
+      if (failure is AuthFailure) {
+        // Trigger global logout effect for auth expiration
+        emitEffect(LogoutEffect(message: failure.message));
+      } else if (failure is ServerApiFailure) {
+        // Global API Business Error: show as a dialog
+        emitEffect(MessageEffect.dialog(failure.message, title: "API Error"));
+      } else {
+        // Default fallback for other failure types (Network, Validation etc.)
+        emitEffect(MessageEffect.error(failure.message));
+      }
+    }, (data) async => await onSuccess(data));
   }
 
   @override
