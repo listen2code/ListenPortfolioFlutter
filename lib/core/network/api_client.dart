@@ -64,8 +64,8 @@ class ApiClient {
     // onError: runs in REVERSE order (Logging -> Auth -> Error -> Zone)
     // This ensures Auth handles 401 before Error maps it to domain exceptions.
     dio.interceptors.addAll([
-      _ZoneContextInterceptor(),
       _LoggingInterceptor(),
+      _ZoneContextInterceptor(), // Handles Trace ID and CancelToken
       _AuthInterceptor(),
       _ErrorInterceptor(),
     ]);
