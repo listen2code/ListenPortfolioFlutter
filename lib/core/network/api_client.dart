@@ -248,7 +248,7 @@ class _ErrorInterceptor extends Interceptor {
         break;
       case DioExceptionType.badResponse:
         final statusCode = err.response?.statusCode;
-        final message = err.response?.data?['message'] ?? err.message;
+        final message = err.response?.data?[BaseResponseModel.kMessage] ?? err.message;
         if (statusCode == HttpCode.unauthorized || statusCode == HttpCode.forbidden) {
           exception = AuthException(message ?? "", statusCode);
         } else if (statusCode != null && statusCode >= HttpCode.internalServerError) {
