@@ -70,6 +70,7 @@ dev_dependencies:
 
   # Testing
   mocktail: ^1.0.3
+  http_mock_adapter: ^0.6.1
 
 flutter_launcher_icons:
   android: "ic_launcher"

@@ -60,9 +60,12 @@ class ApiClient {
     );
 
     // Order matters for logic flow:
-    // onRequest: runs in order added (Zone -> Error -> Auth -> Logging)
-    // onError: runs in REVERSE order (Logging -> Auth -> Error -> Zone)
-    // This ensures Auth handles 401 before Error maps it to domain exceptions.
+    // onRequest: runs in order added (Zone -> Error -> Logging -> Auth)
+    // onError: runs in REVERSE order (Auth -> Logging -> Error -> Zone)
+    // This ensures:
+    // 1. AuthInterceptor is the FIRST to handle onError, allowing it to retry before mapping to AppException.
+    // 2. LoggingInterceptor records all attempts.
+    // 3. ErrorInterceptor maps the final failed result to domain AppException.
     dio.interceptors.addAll([
       _ZoneContextInterceptor(),
       _ErrorInterceptor(),
@@ -75,7 +78,6 @@ class ApiClient {
 }
 
 /// Interceptor for logging API requests and responses.
-/// Note: Log prefix [traceId] is automatically added by _TracePrinter in appLogger.
 class _LoggingInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
@@ -146,20 +148,20 @@ class _ZoneContextInterceptor extends Interceptor {
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    // Performance Mark: API Response received
     ZoneManager.mark('API Response: ${response.requestOptions.path} Received');
     super.onResponse(response, handler);
   }
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
-    // Performance Mark: API Error occurred
     ZoneManager.mark('API Error: ${err.requestOptions.path}');
     super.onError(err, handler);
   }
 }
 
 class _AuthInterceptor extends Interceptor {
+  static const String _kIsRefreshedKey = 'is_refreshed';
+
   bool _isRefreshing = false;
   final List<Completer<void>> _refreshQueue = [];
 
@@ -172,33 +174,40 @@ class _AuthInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
     final delegate = ApiClient.delegate;
-    if (err.response?.statusCode == HttpCode.unauthorized && delegate != null) {
-      // Log detection of 401 error
-      appLogger.w('AuthInterceptor: [401 Unauthorized] detected for ${err.requestOptions.path}');
+    final is401 = err.response?.statusCode == HttpCode.unauthorized;
+    final alreadyRefreshed = err.requestOptions.extra[_kIsRefreshedKey] == true;
+
+    if (is401 && !alreadyRefreshed && delegate != null) {
+      appLogger.w('AuthInterceptor: [401] detected for ${err.requestOptions.path}');
 
       if (!_isRefreshing) {
         _isRefreshing = true;
-        appLogger.i('AuthInterceptor: [REFRESH] -> Starting token refresh flow');
+        appLogger.i('AuthInterceptor: [REFRESH] -> Starting flow: ${err.requestOptions.path}');
 
         try {
           final bool success = await delegate.onRefreshToken();
           _isRefreshing = false;
 
           if (success) {
-            appLogger.i(
-              'AuthInterceptor: [REFRESH] -> Success. Retrying ${1 + _refreshQueue.length} requests',
-            );
-
             _clearQueueWithComplete();
 
+            final options = err.requestOptions.copyWith();
+            options.extra[_kIsRefreshedKey] = true;
+            appLogger.i(
+              'AuthInterceptor: [REFRESH] -> Success. Retrying original request: ${err.requestOptions.path}',
+            );
+
             try {
-              final response = await ApiClient.dio.fetch(err.requestOptions.copyWith());
+              final response = await ApiClient.dio.fetch(options);
               return handler.resolve(response);
             } catch (retryError) {
-              appLogger.e('AuthInterceptor: [RETRY] -> Original request failed after refresh');
+              appLogger.e(
+                'AuthInterceptor: [RETRY] -> Original request failed after refresh: ${err.requestOptions.path}',
+              );
               return handler.next(retryError is DioException ? retryError : err);
             }
           } else {
+            appLogger.e('AuthInterceptor: [REFRESH] -> Failed after refresh: ${err.requestOptions.path}');
             _clearQueueWithError(err);
           }
         } catch (e) {
@@ -212,8 +221,10 @@ class _AuthInterceptor extends Interceptor {
         _refreshQueue.add(completer);
         try {
           await completer.future;
+          final options = err.requestOptions.copyWith();
+          options.extra[_kIsRefreshedKey] = true;
           appLogger.i('AuthInterceptor: [RETRY] -> Retrying queued request: ${err.requestOptions.path}');
-          final response = await ApiClient.dio.fetch(err.requestOptions.copyWith());
+          final response = await ApiClient.dio.fetch(options);
           return handler.resolve(response);
         } catch (_) {
           return handler.next(err);
@@ -268,11 +279,7 @@ class _ErrorInterceptor extends Interceptor {
         exception = ServerException(err.toString());
     }
 
-    // Log the mapping from DioException to domain-specific AppException
-    appLogger.e(
-      'ErrorInterceptor: [${err.type}] ${err.requestOptions.path} '
-      'mapped to ${exception.runtimeType}: ${exception.message}',
-    );
+    appLogger.e('ErrorInterceptor: [${err.type}] mapped to ${exception.runtimeType}: ${exception.message}');
 
     return handler.next(
       DioException(
