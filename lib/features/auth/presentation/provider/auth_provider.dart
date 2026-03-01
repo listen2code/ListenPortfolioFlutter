@@ -12,7 +12,6 @@ import 'package:listen_portfolio_flutter/features/auth/domain/usecases/login_use
 import 'package:listen_portfolio_flutter/features/auth/domain/usecases/logout_use_case.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/usecases/signup_use_case.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 part 'auth_provider.g.dart';
 
@@ -24,12 +23,6 @@ part 'auth_provider.g.dart';
 @riverpod
 FlutterSecureStorage secureStorage(Ref ref) {
   return const FlutterSecureStorage();
-}
-
-/// Provides SharedPreferences instance
-@riverpod
-Future<SharedPreferences> sharedPreferences(Ref ref) async {
-  return await SharedPreferences.getInstance();
 }
 
 /// Provides Connectivity instance
@@ -57,11 +50,9 @@ AuthRemoteDataSource authRemoteDataSource(Ref ref) {
 
 /// Provides AuthLocalDataSource instance
 @riverpod
-Future<AuthLocalDataSource> authLocalDataSource(Ref ref) async {
+AuthLocalDataSource authLocalDataSource(Ref ref) {
   final secureStorage = ref.watch(secureStorageProvider);
-  final sharedPrefs = await ref.watch(sharedPreferencesProvider.future);
-
-  return AuthLocalDataSource(secureStorage: secureStorage, sharedPreferences: sharedPrefs);
+  return AuthLocalDataSource(secureStorage: secureStorage);
 }
 
 // ============================================================================
@@ -72,10 +63,14 @@ Future<AuthLocalDataSource> authLocalDataSource(Ref ref) async {
 @riverpod
 Future<AuthRepository> authRepository(Ref ref) async {
   final remoteDataSource = ref.watch(authRemoteDataSourceProvider);
-  final localDataSource = await ref.watch(authLocalDataSourceProvider.future);
+  final localDataSource = ref.watch(authLocalDataSourceProvider);
   final networkInfo = ref.watch(networkInfoProvider);
 
-  return AuthRepositoryImpl(remoteDataSource: remoteDataSource, localDataSource: localDataSource, networkInfo: networkInfo);
+  return AuthRepositoryImpl(
+    remoteDataSource: remoteDataSource,
+    localDataSource: localDataSource,
+    networkInfo: networkInfo,
+  );
 }
 
 // ============================================================================

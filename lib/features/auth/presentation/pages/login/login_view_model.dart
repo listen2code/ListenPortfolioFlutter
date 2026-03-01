@@ -6,7 +6,6 @@ import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/
 import 'package:listen_portfolio_flutter/features/auth/presentation/provider/auth_provider.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'login_state.dart';
 
@@ -16,23 +15,18 @@ part 'login_view_model.g.dart';
 class LoginViewModel extends _$LoginViewModel
     with ViewModelMixin<LoginState>
     implements IStateOwner<LoginState> {
-  static const String _keyUsername = 'saved_username';
-  static const String _keyPassword = 'saved_password';
-  static const String _keyRememberMe = 'remember_me';
-
   @override
   LoginState build() {
     _loadSavedCredentials();
     return const LoginState();
   }
 
-  // Load saved credentials from local storage
-  Future<void> _loadSavedCredentials() async {
-    final prefs = await SharedPreferences.getInstance();
-    final rememberMe = prefs.getBool(_keyRememberMe) ?? false;
+  // Load saved credentials from local storage using SpUtil
+  void _loadSavedCredentials() {
+    final rememberMe = SpUtil.getBool(AppConstants.loginRememberMeKey);
     if (rememberMe) {
-      final username = prefs.getString(_keyUsername) ?? '';
-      final password = prefs.getString(_keyPassword) ?? '';
+      final username = SpUtil.getString(AppConstants.loginUsernameKey) ?? '';
+      final password = SpUtil.getString(AppConstants.loginPasswordKey) ?? '';
       state = state.copyWith(username: username, password: password, rememberMe: true);
     }
   }
@@ -111,15 +105,14 @@ class LoginViewModel extends _$LoginViewModel
   }
 
   Future<void> _saveOrClearCredentials() async {
-    final prefs = await SharedPreferences.getInstance();
     if (state.rememberMe) {
-      await prefs.setString(_keyUsername, state.username);
-      await prefs.setString(_keyPassword, state.password);
-      await prefs.setBool(_keyRememberMe, true);
+      await SpUtil.put(AppConstants.loginUsernameKey, state.username);
+      await SpUtil.put(AppConstants.loginPasswordKey, state.password);
+      await SpUtil.put(AppConstants.loginRememberMeKey, true);
     } else {
-      await prefs.remove(_keyUsername);
-      await prefs.remove(_keyPassword);
-      await prefs.setBool(_keyRememberMe, false);
+      await SpUtil.remove(AppConstants.loginUsernameKey);
+      await SpUtil.remove(AppConstants.loginPasswordKey);
+      await SpUtil.put(AppConstants.loginRememberMeKey, false);
     }
   }
 

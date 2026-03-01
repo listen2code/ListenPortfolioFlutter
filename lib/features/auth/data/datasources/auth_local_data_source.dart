@@ -4,15 +4,13 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 /// Local data source for authentication
 /// Handles caching of auth token and user data
 class AuthLocalDataSource {
   final FlutterSecureStorage secureStorage;
-  final SharedPreferences sharedPreferences;
 
-  AuthLocalDataSource({required this.secureStorage, required this.sharedPreferences});
+  AuthLocalDataSource({required this.secureStorage});
 
   /// Cache authentication token securely
   Future<void> cacheAuthToken(String? token) async {
@@ -41,7 +39,7 @@ class AuthLocalDataSource {
   Future<void> cacheUser(UserModel? user) async {
     try {
       final userJson = json.encode(user?.toJson());
-      await sharedPreferences.setString(AppConstants.userDataKey, userJson);
+      await SpUtil.put(AppConstants.userDataKey, userJson);
       appLogger.d('AuthLocalDataSource: UserModel cached successfully');
     } catch (e) {
       appLogger.e('AuthLocalDataSource: Failed to cache user: $e');
@@ -52,7 +50,7 @@ class AuthLocalDataSource {
   /// Get cached user data
   Future<UserModel?> getCachedUser() async {
     try {
-      final userJson = sharedPreferences.getString(AppConstants.userDataKey);
+      final userJson = SpUtil.getString(AppConstants.userDataKey);
       if (userJson != null) {
         final user = UserModel.fromJson(json.decode(userJson));
         appLogger.d('AuthLocalDataSource: UserModel retrieved from cache');
@@ -70,7 +68,7 @@ class AuthLocalDataSource {
   Future<void> clearAuthData() async {
     try {
       await secureStorage.delete(key: AppConstants.authTokenKey);
-      await sharedPreferences.remove(AppConstants.userDataKey);
+      await SpUtil.remove(AppConstants.userDataKey);
       appLogger.d('AuthLocalDataSource: Auth data cleared');
     } catch (e) {
       appLogger.e('AuthLocalDataSource: Failed to clear auth data: $e');

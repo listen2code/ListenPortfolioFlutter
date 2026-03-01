@@ -18,6 +18,7 @@ samples, guidance on mobile development, and a full API reference.
 ## rules
 
 * The current flutter version is 3.38.3, please use the latest API.
+* Base on Clean + MVI architecture
 * Use English comments
 * Only modify the relevant code; formatting changes are not needed.
 * Dependency, lib/core <- lib/shared, lib/uikit <- lib/shared, lib/core <- lib/uikit
@@ -30,6 +31,7 @@ samples, guidance on mobile development, and a full API reference.
     * [translations_key.dart](lib/core/i18n/translations_key.dart)
     * [ja.dart](lib/core/i18n/languages/ja.dart)
     * [zh.dart](lib/core/i18n/languages/zh.dart).
+* move key of SharedPreferences to [app_constants.dart](lib/shared/constants/app_constants.dart)
 
 ## todo
 

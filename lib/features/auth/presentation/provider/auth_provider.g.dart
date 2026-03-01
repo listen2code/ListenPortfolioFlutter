@@ -60,52 +60,6 @@ final class SecureStorageProvider
 
 String _$secureStorageHash() => r'273dc403a965c1f24962aaf4d40776611a26f8b8';
 
-/// Provides SharedPreferences instance
-
-@ProviderFor(sharedPreferences)
-final sharedPreferencesProvider = SharedPreferencesProvider._();
-
-/// Provides SharedPreferences instance
-
-final class SharedPreferencesProvider
-    extends
-        $FunctionalProvider<
-          AsyncValue<SharedPreferences>,
-          SharedPreferences,
-          FutureOr<SharedPreferences>
-        >
-    with
-        $FutureModifier<SharedPreferences>,
-        $FutureProvider<SharedPreferences> {
-  /// Provides SharedPreferences instance
-  SharedPreferencesProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'sharedPreferencesProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$sharedPreferencesHash();
-
-  @$internal
-  @override
-  $FutureProviderElement<SharedPreferences> $createElement(
-    $ProviderPointer pointer,
-  ) => $FutureProviderElement(pointer);
-
-  @override
-  FutureOr<SharedPreferences> create(Ref ref) {
-    return sharedPreferences(ref);
-  }
-}
-
-String _$sharedPreferencesHash() => r'dc403fbb1d968c7d5ab4ae1721a29ffe173701c7';
-
 /// Provides Connectivity instance
 
 @ProviderFor(connectivity)
@@ -261,13 +215,11 @@ final authLocalDataSourceProvider = AuthLocalDataSourceProvider._();
 final class AuthLocalDataSourceProvider
     extends
         $FunctionalProvider<
-          AsyncValue<AuthLocalDataSource>,
           AuthLocalDataSource,
-          FutureOr<AuthLocalDataSource>
+          AuthLocalDataSource,
+          AuthLocalDataSource
         >
-    with
-        $FutureModifier<AuthLocalDataSource>,
-        $FutureProvider<AuthLocalDataSource> {
+    with $Provider<AuthLocalDataSource> {
   /// Provides AuthLocalDataSource instance
   AuthLocalDataSourceProvider._()
     : super(
@@ -285,18 +237,26 @@ final class AuthLocalDataSourceProvider
 
   @$internal
   @override
-  $FutureProviderElement<AuthLocalDataSource> $createElement(
+  $ProviderElement<AuthLocalDataSource> $createElement(
     $ProviderPointer pointer,
-  ) => $FutureProviderElement(pointer);
+  ) => $ProviderElement(pointer);
 
   @override
-  FutureOr<AuthLocalDataSource> create(Ref ref) {
+  AuthLocalDataSource create(Ref ref) {
     return authLocalDataSource(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AuthLocalDataSource value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<AuthLocalDataSource>(value),
+    );
   }
 }
 
 String _$authLocalDataSourceHash() =>
-    r'22f51e070afc311adc8a65c4a9f25d29b033e86c';
+    r'4eeeb54cf8ea0d7caf77e478c67d7388b5bb309d';
 
 /// Provides AuthRepository instance
 
@@ -340,7 +300,7 @@ final class AuthRepositoryProvider
   }
 }
 
-String _$authRepositoryHash() => r'8f79e1e626bb4c356578071ff051f675f53c55a7';
+String _$authRepositoryHash() => r'7f372f81091dce0d3f461b0fa38dec4c421dbc29';
 
 /// Provides LoginUseCase instance
 
