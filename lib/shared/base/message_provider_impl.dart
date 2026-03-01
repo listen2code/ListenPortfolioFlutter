@@ -7,6 +7,10 @@ class MessageProviderImpl extends BaseProvider<MessageEffect> {
 
   @override
   void handleEffect(MessageEffect effect) {
+    if (effect.type == MessageType.dialog) {
+      CommonDialog.showMessage(title: effect.title ?? "", message: effect.message);
+      return;
+    }
     CommonToast.show(
       effect.message,
       type: effect.type == MessageType.error ? ToastType.error : ToastType.info,

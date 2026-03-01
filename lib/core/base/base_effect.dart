@@ -2,21 +2,26 @@
 abstract class BaseEffect {}
 
 /// Message type for NotificationEffect
-enum MessageType { info, error }
+enum MessageType { info, error, dialog }
 
-/// Standard Effect for showing messages/toasts.
+/// Standard Effect for showing messages/toasts or dialogs.
 class MessageEffect extends BaseEffect {
   final String message;
+  final String? title;
   final MessageType type;
 
-  MessageEffect(this.message, {this.type = MessageType.info});
+  MessageEffect(this.message, {this.title, this.type = MessageType.info});
 
-  /// Factory for error messages
+  /// Factory for error messages (usually shown as Toast)
   factory MessageEffect.error(String message) => MessageEffect(message, type: MessageType.error);
+
+  /// Factory for dialog messages
+  factory MessageEffect.dialog(String message, {String? title}) =>
+      MessageEffect(message, title: title, type: MessageType.dialog);
 
   @override
   String toString() {
-    return "MessageEffect(message: $message, type: $type)";
+    return "MessageEffect(message: $message, title: $title, type: $type)";
   }
 }
 

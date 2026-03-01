@@ -86,7 +86,7 @@ mixin ViewModelMixin<S extends BaseState<dynamic>> implements BaseViewModel, ISt
         else if (failure is ServerApiFailure)
           {
             // Global API Business Error: show as a dialog
-            emitEffect(MessageEffect.error(failure.message)),
+            emitEffect(MessageEffect.dialog(failure.message, title: "API Error")),
           }
         else
           {
