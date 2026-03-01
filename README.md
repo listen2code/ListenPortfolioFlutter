@@ -28,9 +28,9 @@ samples, guidance on mobile development, and a full API reference.
 * Business-related screens are under the lib/features directory
 * Business-related common code are under the lib/shared directory
 * If there are new string resources, please add them to both file below
-    * [translations_key.dart](lib/core/i18n/translations_key.dart)
-    * [ja.dart](lib/core/i18n/languages/ja.dart)
-    * [zh.dart](lib/core/i18n/languages/zh.dart).
+  * [ja.dart](lib/shared/i18n/languages/ja.dart)
+  * [zh.dart](lib/shared/i18n/languages/zh.dart)
+  * [translations_key.dart](lib/shared/i18n/translations_key.dart)
 * move key of SharedPreferences to [app_constants.dart](lib/shared/constants/app_constants.dart)
 
 ## todo
