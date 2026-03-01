@@ -218,8 +218,14 @@ class _SettingsPageState extends State<SettingsPage> {
       okColor: Colors.red,
     ).then((confirmed) async {
       if (confirmed == true) {
-        await settingManager.resetSettings();
-        CommonToast.show(I18nKeys.settingsResetSuccess.tr);
+        CommonLoading.show();
+        try {
+          await settingManager.resetSettings();
+          await _updateCacheSize();
+          CommonToast.show(I18nKeys.settingsResetSuccess.tr);
+        } finally {
+          CommonLoading.hide();
+        }
       }
     });
   }

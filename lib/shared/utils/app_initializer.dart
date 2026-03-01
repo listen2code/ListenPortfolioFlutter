@@ -51,10 +51,7 @@ class AppInitializer {
     CrashManager.setup(
       SafeModeConfig(
         onReset: () async {
-          await CacheManager.clearAllCache();
           await settingManager.resetSettings();
-          await SpUtil.clear();
-          await SecureStorageUtil.clear();
           AppNav.offAll(Routes.home);
           CommonToast.show(I18nKeys.safetyResetMsg.tr, type: ToastType.error);
         },

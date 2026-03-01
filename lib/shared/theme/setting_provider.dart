@@ -110,6 +110,8 @@ class SettingManager extends ChangeNotifier {
     // If you only want to reset settings managed by SettingManager,
     // you should remove keys one by one.
     await SpUtil.clear();
+    await SecureStorageUtil.clear();
+    await CacheManager.clearAllCache();
     // Restore defaults after clearing
     await setThemeMode(_themeMode);
     await setAccentColor(_accentColor);
