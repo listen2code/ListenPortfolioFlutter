@@ -46,9 +46,9 @@ class LoginViewModel extends _$LoginViewModel
         togglePasswordVisibility: _onTogglePasswordVisibility,
         toggleRememberMe: _onToggleRememberMe,
         submitLogin: _onSubmitLogin,
-        navigateToSignup: _onNavigateToSignup,
-        navigateToForgotPassword: _onNavigateToForgotPassword,
-        skipLogin: _onNavigateToBack,
+        navigateToSignup: () => emitEffect(NavigationEffect(target: Routes.signUp)),
+        navigateToForgotPassword: () => emitEffect(NavigationEffect(target: Routes.forgotPassword)),
+        skipLogin: () => emitEffect(NavigationEffect.back(result: false)),
       ),
       showLoading: intent is SubmitLogin,
     );
@@ -114,10 +114,4 @@ class LoginViewModel extends _$LoginViewModel
       await SpUtil.put(AppConstants.loginRememberMeKey, false);
     }
   }
-
-  void _onNavigateToSignup() => emitEffect(NavigationEffect(target: Routes.signUp));
-
-  void _onNavigateToForgotPassword() => emitEffect(NavigationEffect(target: Routes.forgotPassword));
-
-  void _onNavigateToBack() => emitEffect(NavigationEffect.back(result: false));
 }
