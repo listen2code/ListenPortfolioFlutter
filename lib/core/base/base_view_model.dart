@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
 
 /// Interface for states. Should only contain persistent UI data.
@@ -69,6 +70,32 @@ mixin ViewModelMixin<S extends BaseState<dynamic>> implements BaseViewModel, ISt
   @override
   bool handleEffect(BaseEffect effect) {
     return ProviderRegistry.handle(effect);
+  }
+
+  /// Helper to handle Either results from UseCases/Repositories.
+  /// Automatically calls [handleFailure] on Left, and executes [onSuccess] on Right.
+  /// Returns the result of [onSuccess] or null if failure.
+  FutureOr<void> handleResult<T>(Either<Failure, T> result, FutureOr<void> Function(T data) onSuccess) async {
+    result.fold(
+      (failure) => {
+        if (failure is AuthFailure)
+          {
+            // Logic for session timeout
+            emitEffect(MessageEffect.error(failure.message)),
+          }
+        else if (failure is ServerApiFailure)
+          {
+            // Global API Business Error: show as a dialog
+            emitEffect(MessageEffect.error(failure.message)),
+          }
+        else
+          {
+            // Default fallback for other failure types (Network, Validation etc.)
+            emitEffect(MessageEffect.error(failure.message)),
+          },
+      },
+      (data) async => await onSuccess(data),
+    );
   }
 
   @override

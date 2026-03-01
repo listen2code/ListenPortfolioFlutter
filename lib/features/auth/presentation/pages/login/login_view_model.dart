@@ -96,17 +96,11 @@ class LoginViewModel extends _$LoginViewModel
 
     final loginUseCase = await ref.read(loginUseCaseProvider.future);
     final result = await loginUseCase(LoginParams(username: state.username, password: state.password));
-
-    result.fold(
-      (failure) {
-        emitEffect(MessageEffect.error(failure.message));
-      },
-      (user) {
-        authManager.login(user);
-        emitEffect(MessageEffect(I18nKeys.loginSuccess.tr));
-        emitEffect(NavigationEffect.back(result: true));
-      },
-    );
+    await handleResult(result, (user) async {
+      authManager.login(user);
+      emitEffect(MessageEffect(I18nKeys.loginSuccess.tr));
+      emitEffect(NavigationEffect.back(result: true));
+    });
   }
 
   Future<void> _saveOrClearCredentials() async {
