@@ -33,6 +33,12 @@
     "httpCode": 200
   },
   {
+    "api": "auth/refresh",
+    "method": "post",
+    "timeout": 500,
+    "httpCode": 200
+  },
+  {
     "api": "auth/register",
     "method": "post",
     "timeout": 500,

@@ -152,8 +152,9 @@ class _ApiAuthHandlerImpl implements IApiInterceptorDelegate {
   }
 
   @override
-  void onInjectAuthHeader(RequestOptions options) {
-    final token = SpUtil.getString(AppConstants.authTokenKey);
+  Future<void> onInjectAuthHeader(RequestOptions options) async {
+    final secureStorage = AppInitializer.container.read(secureStorageProvider);
+    final token = await secureStorage.read(key: AppConstants.authTokenKey);
     if (token != null && token.isNotEmpty) {
       options.headers['Authorization'] = 'Bearer $token';
     }

@@ -23,7 +23,7 @@ class ApiResult {
 /// Interface for delegating API request lifecycle logic to the shared layer.
 abstract class IApiInterceptorDelegate {
   /// Injects authentication headers into the request.
-  void onInjectAuthHeader(RequestOptions options);
+  Future<void> onInjectAuthHeader(RequestOptions options);
 
   /// Injects tracing identifiers into the request headers.
   void onInjectTraceHeader(RequestOptions options, String traceId);
@@ -164,8 +164,8 @@ class _AuthInterceptor extends Interceptor {
   final List<Completer<void>> _refreshQueue = [];
 
   @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    ApiClient.delegate?.onInjectAuthHeader(options);
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
+    await ApiClient.delegate?.onInjectAuthHeader(options);
     handler.next(options);
   }
 

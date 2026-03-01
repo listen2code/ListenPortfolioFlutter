@@ -26,7 +26,7 @@ class AuthLocalDataSource {
   /// Cache refresh token securely.
   Future<void> cacheRefreshToken(String? token) async {
     try {
-      await secureStorage.write(key: 'refresh_token', value: token);
+      await secureStorage.write(key: AppConstants.refreshTokenKey, value: token);
     } catch (e) {
       appLogger.e('AuthLocalDataSource: Failed to cache refresh token: $e');
     }
@@ -44,7 +44,7 @@ class AuthLocalDataSource {
   /// Get cached refresh token.
   Future<String?> getRefreshToken() async {
     try {
-      return await secureStorage.read(key: 'refresh_token');
+      return await secureStorage.read(key: AppConstants.refreshTokenKey);
     } catch (e) {
       return null;
     }
@@ -83,7 +83,7 @@ class AuthLocalDataSource {
   Future<void> clearAuthData() async {
     try {
       await secureStorage.delete(key: AppConstants.authTokenKey);
-      await secureStorage.delete(key: 'refresh_token');
+      await secureStorage.delete(key: AppConstants.refreshTokenKey);
       await SpUtil.remove(AppConstants.userDataKey);
       appLogger.d('AuthLocalDataSource: Auth data cleared');
     } catch (e) {

@@ -56,6 +56,7 @@ samples, guidance on mobile development, and a full API reference.
     * markdown resume, download pdf
     * channel plugin
     * jni
+    * AuthInterceptor: token, refreshToken 
 * ide plugin
     * assets
 * framework
