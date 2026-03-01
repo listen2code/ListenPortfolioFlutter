@@ -31,9 +31,6 @@ abstract class BaseViewModel {
 
   void onDispose();
 
-  // Cancellation support
-  CancelToken get cancelToken;
-
   void cancelRequests(String reason);
 
   /// Reactive stream for one-time UI effects.
@@ -56,6 +53,13 @@ mixin ViewModelMixin<S extends BaseState<dynamic>> implements BaseViewModel, ISt
 
   @override
   Stream<BaseEffect> get effectStream => _effectController.stream;
+
+  CancelToken get cancelToken {
+    if (_cancelToken.isCancelled) {
+      _cancelToken = CancelToken();
+    }
+    return _cancelToken;
+  }
 
   @override
   void emitEffect(BaseEffect effect) {
@@ -84,14 +88,6 @@ mixin ViewModelMixin<S extends BaseState<dynamic>> implements BaseViewModel, ISt
         emitEffect(MessageEffect.error(failure.message));
       }
     }, (data) async => await onSuccess(data));
-  }
-
-  @override
-  CancelToken get cancelToken {
-    if (_cancelToken.isCancelled) {
-      _cancelToken = CancelToken();
-    }
-    return _cancelToken;
   }
 
   @override
