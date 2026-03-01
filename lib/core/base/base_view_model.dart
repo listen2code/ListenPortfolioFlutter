@@ -15,25 +15,21 @@ abstract class IStateOwner<S> {
 /// Base interface for all ViewModels.
 abstract class BaseViewModel {
   // Lifecycle hooks
-  void onInit() {}
+  void onInit();
 
-  void onReady() {}
+  void onReady();
 
-  /// Called when the page becomes visible in the navigation stack.
-  void onVisible() {}
+  void onVisible();
 
-  /// Called when the page becomes invisible in the navigation stack.
-  void onInVisible() {}
+  void onInVisible();
 
-  /// Called when the App transitions from background to foreground.
-  void onResume() {}
+  void onResume();
 
-  /// Called when the App transitions from foreground to background.
-  void onPause() {}
+  void onPause();
 
-  void onInactive() {}
+  void onInactive();
 
-  void onDispose() {}
+  void onDispose();
 
   // Cancellation support
   CancelToken get cancelToken;
