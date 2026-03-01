@@ -5,14 +5,14 @@ import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 
-/// Local data source for authentication
-/// Handles caching of auth token and user data
+/// Local data source for authentication.
+/// Handles caching of auth token, refresh token, and user data.
 class AuthLocalDataSource {
   final FlutterSecureStorage secureStorage;
 
   AuthLocalDataSource({required this.secureStorage});
 
-  /// Cache authentication token securely
+  /// Cache authentication token securely.
   Future<void> cacheAuthToken(String? token) async {
     try {
       await secureStorage.write(key: AppConstants.authTokenKey, value: token);
@@ -23,19 +23,34 @@ class AuthLocalDataSource {
     }
   }
 
-  /// Get cached authentication token
+  /// Cache refresh token securely.
+  Future<void> cacheRefreshToken(String? token) async {
+    try {
+      await secureStorage.write(key: 'refresh_token', value: token);
+    } catch (e) {
+      appLogger.e('AuthLocalDataSource: Failed to cache refresh token: $e');
+    }
+  }
+
+  /// Get cached authentication token.
   Future<String?> getAuthToken() async {
     try {
-      final token = await secureStorage.read(key: AppConstants.authTokenKey);
-      appLogger.d('AuthLocalDataSource: Token retrieved: ${token != null}');
-      return token;
+      return await secureStorage.read(key: AppConstants.authTokenKey);
     } catch (e) {
-      appLogger.e('AuthLocalDataSource: Failed to get token: $e');
       return null;
     }
   }
 
-  /// Cache user data
+  /// Get cached refresh token.
+  Future<String?> getRefreshToken() async {
+    try {
+      return await secureStorage.read(key: 'refresh_token');
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// Cache user data using SpUtil.
   Future<void> cacheUser(UserModel? user) async {
     try {
       final userJson = json.encode(user?.toJson());
@@ -64,10 +79,11 @@ class AuthLocalDataSource {
     }
   }
 
-  /// Clear all cached authentication data
+  /// Clear all cached authentication data.
   Future<void> clearAuthData() async {
     try {
       await secureStorage.delete(key: AppConstants.authTokenKey);
+      await secureStorage.delete(key: 'refresh_token');
       await SpUtil.remove(AppConstants.userDataKey);
       appLogger.d('AuthLocalDataSource: Auth data cleared');
     } catch (e) {

@@ -26,6 +26,9 @@ abstract class AuthRepository {
   Future<Either<Failure, void>> changePassword({required String oldPassword, required String newPassword});
 
   /// Fetches the authenticated user's profile by ID.
-  /// Typically uses local cache if remote fetch fails.
   Future<Either<Failure, UserModel?>> getCurrentUser({required String userId});
+
+  /// Refreshes the authentication token using the stored refresh token.
+  /// Returns the new access token if successful.
+  Future<Either<Failure, String>> refreshToken();
 }

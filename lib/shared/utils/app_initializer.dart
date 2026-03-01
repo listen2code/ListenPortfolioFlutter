@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_portfolio_flutter/features/auth/presentation/provider/auth_provider.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 
@@ -11,10 +14,22 @@ import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 class AppInitializer {
   AppInitializer._();
 
+  /// Global container to access providers during the initialization phase if needed.
+  static late final ProviderContainer container;
+
   /// Executes all initialization steps in order.
-  static Future<void> init() async {
+  static Future<void> init(ProviderContainer container) async {
+    AppInitializer.container = container;
+
+    // 1. Infrastructure & Core Services
     await _initServices();
+
+    // 2. Navigation & Error Interceptors
+    _setupNavConfig();
     _setupErrorHandlers();
+
+    // 3. Network Bridge (Link Core Network to Shared Auth Logic)
+    _setupNetworkBridge();
   }
 
   /// Initializes infrastructure, core providers, and global managers.
@@ -58,8 +73,16 @@ class AppInitializer {
 
     // 7. UIKit Styling & Internationalization
     UIKitConfig.setup(stringProvider: (key) => key.tr);
+  }
 
-    // 8. Registers global navigation interceptors and auth redirects.
+  /// Injects shared layer data fetching logic into the core network engine.
+  static void _setupNetworkBridge() {
+    // Assign the concrete implementation of the authentication and tracing handler.
+    ApiClient.init(_ApiAuthHandlerImpl());
+  }
+
+  /// Registers global navigation interceptors and auth redirects.
+  static void _setupNavConfig() {
     AppNavConfig.register(
       routes: Routes.routes,
       isGuest: () => authManager.state.isGuest,
@@ -111,5 +134,33 @@ class AppInitializer {
         AppNav.to(Routes.crashLogs, arguments: {Routes.argFilePath: filePath});
       }
     }
+  }
+}
+
+/// Private implementation of the API authentication and tracing handler.
+class _ApiAuthHandlerImpl implements IApiInterceptorDelegate {
+  @override
+  Future<bool> onRefreshToken() async {
+    try {
+      final repository = await AppInitializer.container.read(authRepositoryProvider.future);
+      final result = await repository.refreshToken();
+      return result.isRight();
+    } catch (e) {
+      appLogger.e('AppInitializer: Failed to bridge token refresh: $e');
+      return false;
+    }
+  }
+
+  @override
+  void onInjectAuthHeader(RequestOptions options) {
+    final token = SpUtil.getString(AppConstants.authTokenKey);
+    if (token != null && token.isNotEmpty) {
+      options.headers['Authorization'] = 'Bearer $token';
+    }
+  }
+
+  @override
+  void onInjectTraceHeader(RequestOptions options, String traceId) {
+    options.headers['X-Trace-Id'] = traceId;
   }
 }

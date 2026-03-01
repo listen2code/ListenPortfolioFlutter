@@ -6,12 +6,13 @@ import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_portfolio_flutter/shared/utils/app_initializer.dart';
 
 void main() {
+  final container = ProviderContainer();
   // Use runGuarded to wrap the entire app execution.
   // This ensures that all initialization and the app itself run in the same Zone.
   ZoneManager.runGuarded(
     () async {
-      await AppInitializer.init();
-      runApp(const ProviderScope(child: MyApp()));
+      await AppInitializer.init(container);
+      runApp(UncontrolledProviderScope(container: container, child: MyApp()));
     },
     traceId: ZoneManager.mainTraceId,
     label: ZoneManager.mainStart,

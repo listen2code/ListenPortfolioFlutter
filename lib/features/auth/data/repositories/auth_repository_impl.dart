@@ -96,4 +96,30 @@ class AuthRepositoryImpl with BaseRepository implements AuthRepository {
       },
     );
   }
+
+  @override
+  Future<Either<Failure, String>> refreshToken() async {
+    // 1. Retrieve the stored refresh token
+    final refreshToken = await localDataSource.getRefreshToken();
+    if (refreshToken == null) {
+      return const Left(AuthFailure('No refresh token available'));
+    }
+
+    // 2. Request new credentials from server
+    final result = await safeCall<LoginResponseModel>(
+      networkInfo: networkInfo,
+      call: () => remoteDataSource.refreshToken(refreshToken),
+    );
+
+    // 3. Update local cache and return the new access token
+    return result.fold((failure) => Left(failure), (response) async {
+      if (response.token != null) {
+        await localDataSource.cacheAuthToken(response.token!);
+      }
+      if (response.refreshToken != null) {
+        await localDataSource.cacheRefreshToken(response.refreshToken!);
+      }
+      return Right(response.token ?? '');
+    });
+  }
 }

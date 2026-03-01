@@ -32,4 +32,7 @@ abstract class AuthRemoteDataSource {
 
   @GET('/v1/users/{id}')
   Future<BaseResponseModel<UserModel>> getUserById(@Path('id') String id);
+
+  @POST('/v1/auth/refresh')
+  Future<BaseResponseModel<LoginResponseModel>> refreshToken(@Field('refreshToken') String refreshToken);
 }
