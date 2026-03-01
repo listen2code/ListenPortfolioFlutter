@@ -207,7 +207,7 @@ class _AuthInterceptor extends Interceptor {
               return handler.next(retryError is DioException ? retryError : err);
             }
           } else {
-            appLogger.e('AuthInterceptor: [REFRESH] -> Failed after refresh: ${err.requestOptions.path}');
+            appLogger.i('AuthInterceptor: [REFRESH] -> Failed after refresh: ${err.requestOptions.path}');
             _clearQueueWithError(err);
           }
         } catch (e) {
