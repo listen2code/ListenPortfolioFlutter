@@ -3,14 +3,8 @@
   "messageId": "messageId",
   "message": "message",
   "body": {
+    "userId": "1001",
     "token": "token1",
-    "refreshToken": "refreshToken1",
-    "user": {
-      "id": "1",
-      "name": "listen",
-      "email": "listen2code@gmail.com",
-      "avatarUrl": "https://api.dicebear.com/7.x/avataaars/png?seed=Listen",
-      "createdAt": "2026-02-01 12:22:35.123456"
-    }
+    "refreshToken": "refreshToken1"
   }
 }

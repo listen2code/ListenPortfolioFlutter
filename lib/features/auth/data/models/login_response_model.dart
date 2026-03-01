@@ -6,7 +6,8 @@ part 'login_response_model.g.dart';
 
 @freezed
 abstract class LoginResponseModel with _$LoginResponseModel {
-  const factory LoginResponseModel({String? token, String? refreshToken, UserModel? user}) = _LoginResponseModel;
+  const factory LoginResponseModel({String? userId, String? token, String? refreshToken}) =
+      _LoginResponseModel;
 
   factory LoginResponseModel.fromJson(Map<String, Object?> json) => _$LoginResponseModelFromJson(json);
 }

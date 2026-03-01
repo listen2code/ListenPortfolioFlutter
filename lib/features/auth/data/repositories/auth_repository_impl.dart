@@ -13,10 +13,17 @@ class AuthRepositoryImpl with BaseRepository implements AuthRepository {
   final AuthLocalDataSource localDataSource;
   final NetworkInfo networkInfo;
 
-  AuthRepositoryImpl({required this.remoteDataSource, required this.localDataSource, required this.networkInfo});
+  AuthRepositoryImpl({
+    required this.remoteDataSource,
+    required this.localDataSource,
+    required this.networkInfo,
+  });
 
   @override
-  Future<Either<Failure, UserModel?>> login({required String username, required String password}) async {
+  Future<Either<Failure, LoginResponseModel?>> login({
+    required String username,
+    required String password,
+  }) async {
     final result = await safeCall<LoginResponseModel>(
       networkInfo: networkInfo,
       call: () => remoteDataSource.login(LoginRequestModel(username: username, password: password)),
@@ -26,15 +33,16 @@ class AuthRepositoryImpl with BaseRepository implements AuthRepository {
       if (loginResponse.token != null) {
         await localDataSource.cacheAuthToken(loginResponse.token!);
       }
-      if (loginResponse.user != null) {
-        await localDataSource.cacheUser(loginResponse.user!);
-      }
-      return Right(loginResponse.user);
+      return Right(loginResponse);
     });
   }
 
   @override
-  Future<Either<Failure, UserModel?>> signUp({required String name, required String email, required String password}) async {
+  Future<Either<Failure, UserModel?>> signUp({
+    required String name,
+    required String email,
+    required String password,
+  }) async {
     final result = await safeCall<UserModel>(
       networkInfo: networkInfo,
       call: () => remoteDataSource.signUp(SignupRequestModel(name: name, email: email, password: password)),
@@ -59,20 +67,33 @@ class AuthRepositoryImpl with BaseRepository implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, void>> changePassword({required String oldPassword, required String newPassword}) async {
-    return await safeCall<void>(networkInfo: networkInfo, call: () => remoteDataSource.changePassword(oldPassword, newPassword));
+  Future<Either<Failure, void>> changePassword({
+    required String oldPassword,
+    required String newPassword,
+  }) async {
+    return await safeCall<void>(
+      networkInfo: networkInfo,
+      call: () => remoteDataSource.changePassword(oldPassword, newPassword),
+    );
   }
 
   @override
-  Future<Either<Failure, UserModel?>> getCurrentUser() async {
-    try {
-      final cachedUser = await localDataSource.getCachedUser();
-      if (cachedUser != null) {
-        return Right(cachedUser);
-      }
-      return const Right(null);
-    } catch (e) {
-      return Left(CacheFailure(e.toString()));
-    }
+  Future<Either<Failure, UserModel?>> getCurrentUser({required String userId}) async {
+    final result = await safeCall<UserModel>(
+      networkInfo: networkInfo,
+      call: () => remoteDataSource.getUserById(userId),
+    );
+
+    return result.fold(
+      (failure) async {
+        final cachedUser = await localDataSource.getCachedUser();
+        if (cachedUser != null) return Right(cachedUser);
+        return Left(failure);
+      },
+      (user) async {
+        await localDataSource.cacheUser(user);
+        return Right(user);
+      },
+    );
   }
 }

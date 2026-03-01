@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/login_response_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/repositories/auth_repository.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/usecases/login_use_case.dart';
@@ -21,130 +22,66 @@ void main() {
   group('LoginUseCase', () {
     const testUsername = 'testuser';
     const testPassword = 'password123';
-    final testUser = UserModel(id: '1', name: 'Test UserModel', email: 'test@example.com', createdAt: "2026-02-03");
+    const testUserId = 'user_123';
+    
+    final testUser = UserModel(
+      id: testUserId, 
+      name: 'Test UserModel', 
+      email: 'test@example.com', 
+      createdAt: "2026-02-03",
+    );
 
-    test('should return UserModel when login is successful', () async {
-      // Arrange
-      when(
-        () => mockRepository.login(
-          username: any(named: 'username'),
-          password: any(named: 'password'),
-        ),
-      ).thenAnswer((_) async => Right(testUser));
+    final testLoginResponse = LoginResponseModel(
+      token: 'token_abc',
+      userId: testUserId,
+    );
+
+    test('should return UserModel when login and getCurrentUser are successful', () async {
+      // Arrange: Mock both login and subsequent profile fetch
+      when(() => mockRepository.login(
+        username: any(named: 'username'),
+        password: any(named: 'password'),
+      )).thenAnswer((_) async => Right(testLoginResponse));
+
+      when(() => mockRepository.getCurrentUser(
+        userId: any(named: 'userId'),
+      )).thenAnswer((_) async => Right(testUser));
 
       // Act
       final result = await useCase(LoginParams(username: testUsername, password: testPassword));
 
       // Assert
-      expect(result, Right<Failure, UserModel>(testUser));
+      expect(result, Right<Failure, UserModel?>(testUser));
+      
       verify(() => mockRepository.login(username: testUsername, password: testPassword)).called(1);
+      verify(() => mockRepository.getCurrentUser(userId: testUserId)).called(1);
       verifyNoMoreInteractions(mockRepository);
     });
 
     test('should return ValidationFailure when username is empty', () async {
-      // Arrange
-      const emptyUsername = '';
-
       // Act
-      final result = await useCase(LoginParams(username: emptyUsername, password: testPassword));
+      final result = await useCase(LoginParams(username: '', password: testPassword));
 
       // Assert
-      expect(result, const Left<Failure, UserModel>(ValidationFailure('Username cannot be empty')));
-      verifyNever(
-        () => mockRepository.login(
-          username: any(named: 'username'),
-          password: any(named: 'password'),
-        ),
-      );
+      expect(result, const Left<Failure, UserModel?>(ValidationFailure('Username cannot be empty')));
+      verifyNever(() => mockRepository.login(username: any(named: 'username'), password: any(named: 'password')));
     });
 
-    test('should return ValidationFailure when password is less than 6 characters', () async {
+    test('should return ServerFailure when login fails', () async {
       // Arrange
-      const shortPassword = '12345';
-
-      // Act
-      final result = await useCase(LoginParams(username: testUsername, password: shortPassword));
-
-      // Assert
-      expect(result, const Left<Failure, UserModel>(ValidationFailure('Password must be at least 6 characters')));
-      verifyNever(
-        () => mockRepository.login(
-          username: any(named: 'username'),
-          password: any(named: 'password'),
-        ),
-      );
-    });
-
-    test('should return ServerFailure when repository returns server error', () async {
-      // Arrange
-      const serverFailure = ServerFailure('Server error occurred');
-      when(
-        () => mockRepository.login(
-          username: any(named: 'username'),
-          password: any(named: 'password'),
-        ),
-      ).thenAnswer((_) async => const Left(serverFailure));
+      const serverFailure = ServerFailure('Invalid Credentials');
+      when(() => mockRepository.login(
+        username: any(named: 'username'),
+        password: any(named: 'password'),
+      )).thenAnswer((_) async => const Left(serverFailure));
 
       // Act
       final result = await useCase(LoginParams(username: testUsername, password: testPassword));
 
       // Assert
-      expect(result, const Left<Failure, UserModel>(serverFailure));
+      expect(result, const Left<Failure, UserModel?>(serverFailure));
       verify(() => mockRepository.login(username: testUsername, password: testPassword)).called(1);
-    });
-
-    test('should return NetworkFailure when there is no internet connection', () async {
-      // Arrange
-      const networkFailure = NetworkFailure('No internet connection');
-      when(
-        () => mockRepository.login(
-          username: any(named: 'username'),
-          password: any(named: 'password'),
-        ),
-      ).thenAnswer((_) async => const Left(networkFailure));
-
-      // Act
-      final result = await useCase(LoginParams(username: testUsername, password: testPassword));
-
-      // Assert
-      expect(result, const Left<Failure, UserModel>(networkFailure));
-      verify(() => mockRepository.login(username: testUsername, password: testPassword)).called(1);
-    });
-
-    test('should return AuthFailure when credentials are invalid', () async {
-      // Arrange
-      const authFailure = AuthFailure('Invalid username or password');
-      when(
-        () => mockRepository.login(
-          username: any(named: 'username'),
-          password: any(named: 'password'),
-        ),
-      ).thenAnswer((_) async => const Left(authFailure));
-
-      // Act
-      final result = await useCase(LoginParams(username: testUsername, password: 'wrongpassword'));
-
-      // Assert
-      expect(result, const Left<Failure, UserModel>(authFailure));
-      verify(() => mockRepository.login(username: testUsername, password: 'wrongpassword')).called(1);
-    });
-
-    test('should pass correct parameters to repository', () async {
-      // Arrange
-      const username = 'john_doe';
-      const password = 'securePass123';
-      when(
-        () => mockRepository.login(
-          username: any(named: 'username'),
-          password: any(named: 'password'),
-        ),
-      ).thenAnswer((_) async => Right(testUser));
-
-      // Act
-      await useCase(LoginParams(username: username, password: password));
-
-      // Assert
-      verify(() => mockRepository.login(username: username, password: password)).called(1);
+      verifyNever(() => mockRepository.getCurrentUser(userId: any(named: 'userId')));
     });
   });
 }

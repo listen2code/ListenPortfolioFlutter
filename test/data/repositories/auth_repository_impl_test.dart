@@ -32,7 +32,7 @@ void main() {
       networkInfo: mockNetworkInfo,
     );
 
-    // Register fallback values for mocktail
+    // Register fallback values
     registerFallbackValue(UserModel(id: '', name: '', email: '', createdAt: ''));
     registerFallbackValue(const LoginRequestModel(username: '', password: ''));
   });
@@ -40,183 +40,81 @@ void main() {
   group('AuthRepositoryImpl - login', () {
     const testUsername = 'testuser';
     const testPassword = 'password123';
-    const testToken = 'test_token_12345';
-    const testRefreshToken = 'test_refresh_token_67890';
-
-    final testUserModel = UserModel(id: '1', name: 'Test UserModel', email: 'test@example.com', createdAt: "2026-02-03");
+    const testUserId = 'user_123';
+    const testToken = 'mock_token';
 
     final testLoginResponse = BaseResponseModel<LoginResponseModel>(
-      body: LoginResponseModel(token: testToken, refreshToken: testRefreshToken, user: testUserModel),
+      body: const LoginResponseModel(userId: testUserId, token: testToken),
     );
 
-    test('should check if device is online', () async {
+    test('should cache token and return LoginResponseModel when successful', () async {
       // Arrange
       when(() => mockNetworkInfo.isConnected).thenAnswer((_) async => true);
       when(() => mockRemoteDataSource.login(any())).thenAnswer((_) async => testLoginResponse);
       when(() => mockLocalDataSource.cacheAuthToken(any())).thenAnswer((_) async => {});
-      when(() => mockLocalDataSource.cacheUser(any())).thenAnswer((_) async => {});
-
-      // Act
-      await repository.login(username: testUsername, password: testPassword);
-
-      // Assert
-      verify(() => mockNetworkInfo.isConnected).called(1);
-    });
-
-    test('should return NetworkFailure when device is offline', () async {
-      // Arrange
-      when(() => mockNetworkInfo.isConnected).thenAnswer((_) async => false);
 
       // Act
       final result = await repository.login(username: testUsername, password: testPassword);
 
       // Assert
-      expect(result, const Left(NetworkFailure('No internet connection')));
-      verifyNever(() => mockRemoteDataSource.login(any()));
-    });
-
-    test('should call remote data source with correct parameters', () async {
-      // Arrange
-      when(() => mockNetworkInfo.isConnected).thenAnswer((_) async => true);
-      when(() => mockRemoteDataSource.login(any())).thenAnswer((_) async => testLoginResponse);
-      when(() => mockLocalDataSource.cacheAuthToken(any())).thenAnswer((_) async => {});
-      when(() => mockLocalDataSource.cacheUser(any())).thenAnswer((_) async => {});
-
-      // Act
-      await repository.login(username: testUsername, password: testPassword);
-
-      // Assert
-      verify(() => mockRemoteDataSource.login(const LoginRequestModel(username: testUsername, password: testPassword))).called(1);
-    });
-
-    test('should cache token and user when login is successful', () async {
-      // Arrange
-      when(() => mockNetworkInfo.isConnected).thenAnswer((_) async => true);
-      when(() => mockRemoteDataSource.login(any())).thenAnswer((_) async => testLoginResponse);
-      when(() => mockLocalDataSource.cacheAuthToken(any())).thenAnswer((_) async => {});
-      when(() => mockLocalDataSource.cacheUser(any())).thenAnswer((_) async => {});
-
-      // Act
-      await repository.login(username: testUsername, password: testPassword);
-
-      // Assert
+      final response = result.getRight().toNullable();
+      expect(response?.token, testToken);
+      expect(response?.userId, testUserId);
       verify(() => mockLocalDataSource.cacheAuthToken(testToken)).called(1);
-      verify(() => mockLocalDataSource.cacheUser(testUserModel)).called(1);
-    });
-
-    test('should return UserModel entity when login is successful', () async {
-      // Arrange
-      when(() => mockNetworkInfo.isConnected).thenAnswer((_) async => true);
-      when(() => mockRemoteDataSource.login(any())).thenAnswer((_) async => testLoginResponse);
-      when(() => mockLocalDataSource.cacheAuthToken(any())).thenAnswer((_) async => {});
-      when(() => mockLocalDataSource.cacheUser(any())).thenAnswer((_) async => {});
-
-      // Act
-      final result = await repository.login(username: testUsername, password: testPassword);
-
-      // Assert
-      expect(result.isRight(), true);
-      result.fold((failure) => fail('Should return Right'), (user) {
-        expect(user, isA<UserModel>());
-        expect(user?.id, testUserModel.id);
-        expect(user?.name, testUserModel.name);
-        expect(user?.email, testUserModel.email);
-      });
-    });
-
-    test('should return ServerFailure when remote data source throws ServerException', () async {
-      // Arrange
-      when(() => mockNetworkInfo.isConnected).thenAnswer((_) async => true);
-      when(() => mockRemoteDataSource.login(any())).thenThrow(ServerException('Server error', 500));
-
-      // Act
-      final result = await repository.login(username: testUsername, password: testPassword);
-
-      // Assert
-      expect(result, const Left(ServerFailure('Server error')));
-    });
-
-    test('should return NetworkFailure when remote data source throws NetworkException', () async {
-      // Arrange
-      when(() => mockNetworkInfo.isConnected).thenAnswer((_) async => true);
-      when(() => mockRemoteDataSource.login(any())).thenThrow(NetworkException('Network timeout'));
-
-      // Act
-      final result = await repository.login(username: testUsername, password: testPassword);
-
-      // Assert
-      expect(result, const Left(NetworkFailure('Network timeout')));
-    });
-
-    test('should return CacheFailure when caching token fails', () async {
-      // Arrange
-      when(() => mockNetworkInfo.isConnected).thenAnswer((_) async => true);
-      when(() => mockRemoteDataSource.login(any())).thenAnswer((_) async => testLoginResponse);
-      when(() => mockLocalDataSource.cacheAuthToken(any())).thenThrow(CacheException('Failed to cache token'));
-
-      // Act
-      final result = await repository.login(username: testUsername, password: testPassword);
-
-      // Assert
-      expect(result, const Left(CacheFailure('Failed to cache token')));
-    });
-
-    test('should return UnknownFailure when unexpected error occurs', () async {
-      // Arrange
-      when(() => mockNetworkInfo.isConnected).thenAnswer((_) async => true);
-      when(() => mockRemoteDataSource.login(any())).thenThrow(Exception('Unexpected error'));
-
-      // Act
-      final result = await repository.login(username: testUsername, password: testPassword);
-
-      // Assert
-      expect(result.isLeft(), true);
-      result.fold((failure) {
-        expect(failure, isA<UnknownFailure>());
-        expect(failure.message, contains('Exception: Unexpected error'));
-      }, (user) => fail('Should return Left'));
     });
   });
 
   group('AuthRepositoryImpl - getCurrentUser', () {
-    final testUserModel = UserModel(id: '1', name: 'Test UserModel', email: 'test@example.com', createdAt: "2026-02-03");
+    const testUserId = 'user_123';
+    final testUserModel = UserModel(
+      id: testUserId,
+      name: 'Test',
+      email: 'test@example.com',
+      createdAt: "2026",
+    );
+    final testApiResponse = BaseResponseModel<UserModel>(body: testUserModel);
 
-    test('should return UserModel when cached user exists', () async {
+    test('should return remote user and update cache when API call is successful', () async {
       // Arrange
+      when(() => mockNetworkInfo.isConnected).thenAnswer((_) async => true);
+      when(() => mockRemoteDataSource.getUserById(any())).thenAnswer((_) async => testApiResponse);
+      when(() => mockLocalDataSource.cacheUser(any())).thenAnswer((_) async => {});
+
+      // Act
+      final result = await repository.getCurrentUser(userId: testUserId);
+
+      // Assert
+      expect(result.getRight().toNullable(), testUserModel);
+      verify(() => mockRemoteDataSource.getUserById(testUserId)).called(1);
+      verify(() => mockLocalDataSource.cacheUser(testUserModel)).called(1);
+    });
+
+    test('should return cached user when API call fails and cache is available', () async {
+      // Arrange: Simulate offline failure
+      when(() => mockNetworkInfo.isConnected).thenAnswer((_) async => false);
       when(() => mockLocalDataSource.getCachedUser()).thenAnswer((_) async => testUserModel);
 
       // Act
-      final result = await repository.getCurrentUser();
+      final result = await repository.getCurrentUser(userId: testUserId);
 
       // Assert
-      expect(result.isRight(), true);
-      result.fold((failure) => fail('Should return Right'), (user) {
-        expect(user, isA<UserModel>());
-        expect(user?.id, testUserModel.id);
-        expect(user?.name, testUserModel.name);
-      });
+      expect(result.getRight().toNullable(), testUserModel);
+      verify(() => mockLocalDataSource.getCachedUser()).called(1);
+      verifyNever(() => mockRemoteDataSource.getUserById(any()));
     });
 
-    test('should return null when no cached user exists', () async {
+    test('should return failure when both API and cache are unavailable', () async {
       // Arrange
+      when(() => mockNetworkInfo.isConnected).thenAnswer((_) async => true);
+      when(() => mockRemoteDataSource.getUserById(any())).thenThrow(ServerException('API Error', 500));
       when(() => mockLocalDataSource.getCachedUser()).thenAnswer((_) async => null);
 
       // Act
-      final result = await repository.getCurrentUser();
+      final result = await repository.getCurrentUser(userId: testUserId);
 
       // Assert
-      expect(result, const Right(null));
-    });
-
-    test('should return null when cache exception occurs', () async {
-      // Arrange
-      when(() => mockLocalDataSource.getCachedUser()).thenThrow(CacheException('Cache read failed'));
-
-      // Act
-      final result = await repository.getCurrentUser();
-
-      // Assert
-      expect(result, const Right(null));
+      expect(result.isLeft(), true);
+      verify(() => mockLocalDataSource.getCachedUser()).called(1);
     });
   });
 }

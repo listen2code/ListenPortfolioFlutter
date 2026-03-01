@@ -1,25 +1,31 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/login_response_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
 
-/// Repository interface for authentication operations
-/// This defines the contract that the data layer must implement
+/// Repository interface for authentication operations.
+/// This defines the contract that the data layer must implement.
 abstract class AuthRepository {
-  /// Login with username and password
-  Future<Either<Failure, UserModel?>> login({required String username, required String password});
+  /// Login with username and password.
+  Future<Either<Failure, LoginResponseModel?>> login({required String username, required String password});
 
-  /// Sign Up a new user
-  Future<Either<Failure, UserModel?>> signUp({required String name, required String email, required String password});
+  /// Sign Up a new user.
+  Future<Either<Failure, UserModel?>> signUp({
+    required String name,
+    required String email,
+    required String password,
+  });
 
-  /// Logout current user
+  /// Logout current user.
   Future<Either<Failure, void>> logout();
 
-  /// Send password reset email
+  /// Send password reset email.
   Future<Either<Failure, void>> forgotPassword({required String email});
 
-  /// Change user password
+  /// Change user password.
   Future<Either<Failure, void>> changePassword({required String oldPassword, required String newPassword});
 
-  /// Get currently logged in user from cache
-  Future<Either<Failure, UserModel?>> getCurrentUser();
+  /// Fetches the authenticated user's profile by ID.
+  /// Typically uses local cache if remote fetch fails.
+  Future<Either<Failure, UserModel?>> getCurrentUser({required String userId});
 }

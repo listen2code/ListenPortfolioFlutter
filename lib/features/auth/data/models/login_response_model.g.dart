@@ -9,21 +9,16 @@ part of 'login_response_model.dart';
 _LoginResponseModel _$LoginResponseModelFromJson(Map json) =>
     $checkedCreate('_LoginResponseModel', json, ($checkedConvert) {
       final val = _LoginResponseModel(
+        userId: $checkedConvert('userId', (v) => v as String?),
         token: $checkedConvert('token', (v) => v as String?),
         refreshToken: $checkedConvert('refreshToken', (v) => v as String?),
-        user: $checkedConvert(
-          'user',
-          (v) => v == null
-              ? null
-              : UserModel.fromJson(Map<String, Object?>.from(v as Map)),
-        ),
       );
       return val;
     });
 
 Map<String, dynamic> _$LoginResponseModelToJson(_LoginResponseModel instance) =>
     <String, dynamic>{
+      'userId': instance.userId,
       'token': instance.token,
       'refreshToken': instance.refreshToken,
-      'user': instance.user?.toJson(),
     };
