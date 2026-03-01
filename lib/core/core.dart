@@ -19,6 +19,7 @@ export 'utils/cache_manager.dart';
 export 'utils/crash_manager.dart';
 export 'utils/log_manager.dart';
 export 'utils/logger.dart';
+export 'utils/secure_storage_util.dart';
 export 'utils/sp_util.dart';
 export 'utils/validators.dart';
 export 'utils/zone_manager.dart';

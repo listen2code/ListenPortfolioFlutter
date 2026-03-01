@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
@@ -8,14 +7,12 @@ import 'package:listen_portfolio_flutter/shared/shared.dart';
 /// Local data source for authentication.
 /// Handles caching of auth token, refresh token, and user data.
 class AuthLocalDataSource {
-  final FlutterSecureStorage secureStorage;
-
-  AuthLocalDataSource({required this.secureStorage});
+  AuthLocalDataSource();
 
   /// Cache authentication token securely.
   Future<void> cacheAuthToken(String? token) async {
     try {
-      await secureStorage.write(key: AppConstants.authTokenKey, value: token);
+      await SecureStorageUtil.put(AppConstants.authTokenKey, token);
       appLogger.d('AuthLocalDataSource: Token cached successfully');
     } catch (e) {
       appLogger.e('AuthLocalDataSource: Failed to cache token: $e');
@@ -26,7 +23,7 @@ class AuthLocalDataSource {
   /// Cache refresh token securely.
   Future<void> cacheRefreshToken(String? token) async {
     try {
-      await secureStorage.write(key: AppConstants.refreshTokenKey, value: token);
+      await SecureStorageUtil.put(AppConstants.refreshTokenKey, token);
     } catch (e) {
       appLogger.e('AuthLocalDataSource: Failed to cache refresh token: $e');
     }
@@ -35,7 +32,7 @@ class AuthLocalDataSource {
   /// Get cached authentication token.
   Future<String?> getAuthToken() async {
     try {
-      return await secureStorage.read(key: AppConstants.authTokenKey);
+      return await SecureStorageUtil.get(AppConstants.authTokenKey);
     } catch (e) {
       return null;
     }
@@ -44,7 +41,7 @@ class AuthLocalDataSource {
   /// Get cached refresh token.
   Future<String?> getRefreshToken() async {
     try {
-      return await secureStorage.read(key: AppConstants.refreshTokenKey);
+      return await SecureStorageUtil.get(AppConstants.refreshTokenKey);
     } catch (e) {
       return null;
     }
@@ -82,8 +79,8 @@ class AuthLocalDataSource {
   /// Clear all cached authentication data.
   Future<void> clearAuthData() async {
     try {
-      await secureStorage.delete(key: AppConstants.authTokenKey);
-      await secureStorage.delete(key: AppConstants.refreshTokenKey);
+      await SecureStorageUtil.remove(AppConstants.authTokenKey);
+      await SecureStorageUtil.remove(AppConstants.refreshTokenKey);
       await SpUtil.remove(AppConstants.userDataKey);
       appLogger.d('AuthLocalDataSource: Auth data cleared');
     } catch (e) {

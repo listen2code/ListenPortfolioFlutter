@@ -19,12 +19,6 @@ part 'auth_provider.g.dart';
 // Infrastructure Providers
 // ============================================================================
 
-/// Provides FlutterSecureStorage instance
-@riverpod
-FlutterSecureStorage secureStorage(Ref ref) {
-  return const FlutterSecureStorage();
-}
-
 /// Provides Connectivity instance
 @riverpod
 Connectivity connectivity(Ref ref) {
@@ -51,8 +45,7 @@ AuthRemoteDataSource authRemoteDataSource(Ref ref) {
 /// Provides AuthLocalDataSource instance
 @riverpod
 AuthLocalDataSource authLocalDataSource(Ref ref) {
-  final secureStorage = ref.watch(secureStorageProvider);
-  return AuthLocalDataSource(secureStorage: secureStorage);
+  return AuthLocalDataSource();
 }
 
 // ============================================================================

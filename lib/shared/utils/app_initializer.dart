@@ -38,6 +38,7 @@ class AppInitializer {
 
     // 1. Infrastructure (Shared Preferences)
     await SpUtil.init(prefix: "${AppConstants.appName}_");
+    await SecureStorageUtil.init(prefix: "${AppConstants.appName}_");
 
     // 2. Core Architecture Capability Registry
     ProviderRegistry.setup([
@@ -52,6 +53,8 @@ class AppInitializer {
         onReset: () async {
           await CacheManager.clearAllCache();
           await settingManager.resetSettings();
+          await SpUtil.clear();
+          await SecureStorageUtil.clear();
           AppNav.offAll(Routes.home);
           CommonToast.show(I18nKeys.safetyResetMsg.tr, type: ToastType.error);
         },
@@ -153,8 +156,7 @@ class _ApiAuthHandlerImpl implements IApiInterceptorDelegate {
 
   @override
   Future<void> onInjectAuthHeader(RequestOptions options) async {
-    final secureStorage = AppInitializer.container.read(secureStorageProvider);
-    final token = await secureStorage.read(key: AppConstants.authTokenKey);
+    final token = await SecureStorageUtil.get(AppConstants.authTokenKey);
     if (token != null && token.isNotEmpty) {
       options.headers['Authorization'] = 'Bearer $token';
     }

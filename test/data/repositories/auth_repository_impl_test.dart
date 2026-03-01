@@ -1,4 +1,3 @@
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/datasources/auth_local_data_source.dart';
@@ -16,23 +15,16 @@ class MockAuthLocalDataSource extends Mock implements AuthLocalDataSource {}
 
 class MockNetworkInfo extends Mock implements NetworkInfo {}
 
-class MockFlutterSecureStorage extends Mock implements FlutterSecureStorage {}
-
 void main() {
   late AuthRepositoryImpl repository;
   late MockAuthRemoteDataSource mockRemoteDataSource;
   late MockAuthLocalDataSource mockLocalDataSource;
   late MockNetworkInfo mockNetworkInfo;
-  late MockFlutterSecureStorage mockSecureStorage;
 
   setUp(() {
     mockRemoteDataSource = MockAuthRemoteDataSource();
     mockLocalDataSource = MockAuthLocalDataSource();
     mockNetworkInfo = MockNetworkInfo();
-    mockSecureStorage = MockFlutterSecureStorage();
-
-    // Link mock secure storage to the local data source
-    when(() => mockLocalDataSource.secureStorage).thenReturn(mockSecureStorage);
 
     repository = AuthRepositoryImpl(
       remoteDataSource: mockRemoteDataSource,
@@ -52,7 +44,7 @@ void main() {
     const testToken = 'mock_token';
 
     final testLoginResponse = BaseResponseModel<LoginResponseModel>(
-      result: ApiResult.success, // CRITICAL: safeCall needs "0" to indicate success
+      result: ApiResult.success, // Success status
       body: const LoginResponseModel(userId: testUserId, token: testToken),
     );
 
@@ -64,7 +56,6 @@ void main() {
       when(() => mockLocalDataSource.cacheRefreshToken(any())).thenAnswer((_) async => {});
 
       // Act
-      // We MUST use double await to unwrap the nested Future caused by the async closure in fold.
       final result = await repository.login(username: testUsername, password: testPassword);
 
       // Assert
@@ -83,10 +74,7 @@ void main() {
       email: 'test@example.com',
       createdAt: "2026",
     );
-    final testApiResponse = BaseResponseModel<UserModel>(
-      result: ApiResult.success, // CRITICAL: Success status code
-      body: testUserModel,
-    );
+    final testApiResponse = BaseResponseModel<UserModel>(result: ApiResult.success, body: testUserModel);
 
     test('should return remote user and update cache when API call is successful', () async {
       // Arrange
@@ -104,7 +92,7 @@ void main() {
     });
 
     test('should return cached user when API call fails and cache is available', () async {
-      // Arrange: Simulate offline failure
+      // Arrange
       when(() => mockNetworkInfo.isConnected).thenAnswer((_) async => false);
       when(() => mockLocalDataSource.getCachedUser()).thenAnswer((_) async => testUserModel);
 
@@ -142,7 +130,7 @@ void main() {
       when(() => mockNetworkInfo.isConnected).thenAnswer((_) async => true);
       when(() => mockRemoteDataSource.refreshToken(testOldRefreshToken)).thenAnswer(
         (_) async => BaseResponseModel(
-          result: ApiResult.success, // CRITICAL: Success status code
+          result: ApiResult.success,
           body: const LoginResponseModel(token: testNewAccessToken, refreshToken: testNewRefreshToken),
         ),
       );

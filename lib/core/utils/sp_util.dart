@@ -14,7 +14,7 @@ class SpUtil {
   /// [prefix] will be prepended to all keys.
   static Future<void> init({String prefix = ''}) async {
     _prefix = prefix;
-    _prefs ??= await SharedPreferences.getInstance();
+    _prefs = await SharedPreferences.getInstance();
   }
 
   /// Internal helper to ensure _prefs is available.

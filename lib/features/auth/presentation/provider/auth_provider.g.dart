@@ -8,58 +8,6 @@ part of 'auth_provider.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// Provides FlutterSecureStorage instance
-
-@ProviderFor(secureStorage)
-final secureStorageProvider = SecureStorageProvider._();
-
-/// Provides FlutterSecureStorage instance
-
-final class SecureStorageProvider
-    extends
-        $FunctionalProvider<
-          FlutterSecureStorage,
-          FlutterSecureStorage,
-          FlutterSecureStorage
-        >
-    with $Provider<FlutterSecureStorage> {
-  /// Provides FlutterSecureStorage instance
-  SecureStorageProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'secureStorageProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$secureStorageHash();
-
-  @$internal
-  @override
-  $ProviderElement<FlutterSecureStorage> $createElement(
-    $ProviderPointer pointer,
-  ) => $ProviderElement(pointer);
-
-  @override
-  FlutterSecureStorage create(Ref ref) {
-    return secureStorage(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(FlutterSecureStorage value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<FlutterSecureStorage>(value),
-    );
-  }
-}
-
-String _$secureStorageHash() => r'273dc403a965c1f24962aaf4d40776611a26f8b8';
-
 /// Provides Connectivity instance
 
 @ProviderFor(connectivity)
@@ -256,7 +204,7 @@ final class AuthLocalDataSourceProvider
 }
 
 String _$authLocalDataSourceHash() =>
-    r'4eeeb54cf8ea0d7caf77e478c67d7388b5bb309d';
+    r'051022609ef7f695fb79c429f69b9ed36fb15c57';
 
 /// Provides AuthRepository instance
 

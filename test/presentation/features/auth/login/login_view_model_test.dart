@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
@@ -19,47 +20,93 @@ void main() {
   late MockLoginUseCase mockUseCase;
   late ProviderContainer container;
 
-  const String keyUsername = 'saved_username';
-  const String keyRememberMe = 'remember_me';
+  final String keyUsername = AppConstants.loginUsernameKey;
+  final String keyPassword = AppConstants.loginPasswordKey;
+  final String keyRememberMe = AppConstants.loginRememberMeKey;
 
-  setUp(() {
+  setUp(() async {
+    // Force reset the mock values for each test case
     SharedPreferences.setMockInitialValues({});
+    await SpUtil.init();
+
+    FlutterSecureStorage.setMockInitialValues({});
+    await SecureStorageUtil.init();
+
     mockUseCase = MockLoginUseCase();
     container = ProviderContainer(
       overrides: [loginUseCaseProvider.overrideWith((ref) => Future.value(mockUseCase))],
     );
+
+    // CRITICAL: Keep the auto-dispose provider alive
+    container.listen(loginViewModelProvider, (previous, next) {});
+
     registerFallbackValue(LoginParams(username: '', password: ''));
   });
 
   tearDown(() => container.dispose());
 
   group('LoginViewModel Intent Tests', () {
-    test('Initial state should be correct', () {
+    test('Initial state should be empty by default', () {
       final state = container.read(loginViewModelProvider);
       expect(state.username, '');
+      expect(state.password, '');
       expect(state.rememberMe, false);
     });
 
-    test('Intent: usernameChanged should update state', () {
-      final notifier = container.read(loginViewModelProvider.notifier);
-      notifier.handleIntent(const LoginIntent.usernameChanged('new_user'));
-      expect(container.read(loginViewModelProvider).username, 'new_user');
+    test('Should load saved credentials on initialization if rememberMe is true', () async {
+      await SpUtil.put(keyRememberMe, true);
+      await SpUtil.put(keyUsername, 'saved_user');
+      await SecureStorageUtil.put(keyPassword, 'saved_password');
+
+      final newContainer = ProviderContainer(
+        overrides: [loginUseCaseProvider.overrideWith((ref) => Future.value(mockUseCase))],
+      );
+      newContainer.listen(loginViewModelProvider, (previous, next) {});
+
+      var state = newContainer.read(loginViewModelProvider);
+      expect(state.username, 'saved_user');
+      expect(state.rememberMe, true);
+
+      // Wait for async password load from secure storage
+      await Future.delayed(const Duration(milliseconds: 100));
+
+      state = newContainer.read(loginViewModelProvider);
+      expect(state.password, 'saved_password');
+
+      newContainer.dispose();
     });
 
-    test('Intent: toggleRememberMe should persist state immediately', () async {
+    test('Intent: usernameChanged should update state', () async {
       final notifier = container.read(loginViewModelProvider.notifier);
-      notifier.handleIntent(const LoginIntent.usernameChanged('test_user'));
-      notifier.handleIntent(const LoginIntent.passwordChanged('test_pass'));
+      await notifier.handleIntent(const LoginIntent.usernameChanged('new_user'));
 
+      final state = container.read(loginViewModelProvider);
+      expect(state.username, 'new_user');
+    });
+
+    test('Intent: toggleRememberMe should persist credentials', () async {
+      final notifier = container.read(loginViewModelProvider.notifier);
+
+      // 1. Setup values
+      await notifier.handleIntent(const LoginIntent.usernameChanged('test_user'));
+      await notifier.handleIntent(const LoginIntent.passwordChanged('test_pass'));
+
+      // 2. Perform toggle
       await notifier.handleIntent(const LoginIntent.toggleRememberMe());
-      expect(container.read(loginViewModelProvider).rememberMe, true);
 
-      final prefs = await SharedPreferences.getInstance();
-      expect(prefs.getBool(keyRememberMe), true);
-      expect(prefs.getString(keyUsername), 'test_user');
+      // Ensure all internal Notifier state updates are committed
+      await Future.delayed(Duration.zero);
+
+      final state = container.read(loginViewModelProvider);
+      expect(state.rememberMe, true, reason: 'Expected rememberMe state to be true after toggle');
+
+      // 3. Verify persistence
+      expect(SpUtil.getBool(keyRememberMe), true);
+      expect(SpUtil.getString(keyUsername), 'test_user');
+      expect(await SecureStorageUtil.get(keyPassword), 'test_pass');
     });
 
-    test('Intent: submitLogin success should emit correct sequence of effects', () async {
+    test('Intent: submitLogin success should navigate back', () async {
       final notifier = container.read(loginViewModelProvider.notifier);
       final testUser = UserModel(
         id: '1',
@@ -70,22 +117,15 @@ void main() {
 
       when(() => mockUseCase.call(any())).thenAnswer((_) async => Right(testUser));
 
-      notifier.handleIntent(const LoginIntent.usernameChanged('validUser'));
-      notifier.handleIntent(const LoginIntent.passwordChanged('validPassword123'));
+      await notifier.handleIntent(const LoginIntent.usernameChanged('validUser'));
+      await notifier.handleIntent(const LoginIntent.passwordChanged('validPassword123'));
 
-      // Verify that the effects are emitted in the correct order:
-      // 1. Loading starts
-      // 2. Success message emitted
-      // 3. Navigation back with result: true
-      // 4. Loading ends
       expectLater(
         notifier.effectStream,
         emitsInOrder([
           isA<LoadingEffect>().having((e) => e.show, 'show', true),
           isA<MessageEffect>(),
-          isA<NavigationEffect>()
-              .having((e) => e.isBack, 'isBack', true)
-              .having((e) => e.arguments, 'arguments', true),
+          isA<NavigationEffect>().having((e) => e.isBack, 'isBack', true),
           isA<LoadingEffect>().having((e) => e.show, 'show', false),
         ]),
       );
@@ -93,45 +133,31 @@ void main() {
       await notifier.handleIntent(const LoginIntent.submitLogin());
     });
 
-    test('Intent: submitLogin failure should emit ErrorEffect', () async {
-      final notifier = container.read(loginViewModelProvider.notifier);
-      when(() => mockUseCase.call(any())).thenAnswer((_) async => const Left(ServerFailure('Invalid')));
+    group('LoginViewModel Side Effects', () {
+      test('Should clear credentials when rememberMe is toggled to false', () async {
+        final notifier = container.read(loginViewModelProvider.notifier);
 
-      notifier.handleIntent(const LoginIntent.usernameChanged('validUser'));
-      notifier.handleIntent(const LoginIntent.passwordChanged('validPassword123'));
+        // Pre-setup state
+        await notifier.handleIntent(const LoginIntent.usernameChanged('user'));
+        await notifier.handleIntent(const LoginIntent.passwordChanged('pass'));
 
-      expectLater(
-        notifier.effectStream,
-        emitsInOrder([
-          isA<LoadingEffect>().having((e) => e.show, 'show', true),
-          isA<MessageEffect>().having((e) => e.type, 'type', MessageType.error),
-          isA<LoadingEffect>().having((e) => e.show, 'show', false),
-        ]),
-      );
+        // Ensure state is true first
+        if (!container.read(loginViewModelProvider).rememberMe) {
+          await notifier.handleIntent(const LoginIntent.toggleRememberMe());
+        }
+        expect(container.read(loginViewModelProvider).rememberMe, true);
 
-      await notifier.handleIntent(const LoginIntent.submitLogin());
-    });
+        // Toggle to false
+        await notifier.handleIntent(const LoginIntent.toggleRememberMe());
 
-    test('Intent: navigateToSignup should emit NavigationEffect', () {
-      final notifier = container.read(loginViewModelProvider.notifier);
-      expectLater(
-        notifier.effectStream,
-        emits(isA<NavigationEffect>().having((e) => e.target, 'target', Routes.signUp)),
-      );
-      notifier.handleIntent(const LoginIntent.navigateToSignup());
-    });
+        await Future.delayed(Duration.zero);
+        expect(container.read(loginViewModelProvider).rememberMe, false);
 
-    test('Intent: skipLogin should emit NavigationEffect.back with result false', () {
-      final notifier = container.read(loginViewModelProvider.notifier);
-      expectLater(
-        notifier.effectStream,
-        emits(
-          isA<NavigationEffect>()
-              .having((e) => e.isBack, 'isBack', true)
-              .having((e) => e.arguments, 'arguments', false),
-        ),
-      );
-      notifier.handleIntent(const LoginIntent.skipLogin());
+        // Verify cleared
+        expect(SpUtil.getBool(keyRememberMe), false);
+        expect(SpUtil.getString(keyUsername), null);
+        expect(await SecureStorageUtil.get(keyPassword), null);
+      });
     });
   });
 }

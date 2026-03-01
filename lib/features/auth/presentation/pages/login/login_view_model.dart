@@ -17,17 +17,24 @@ class LoginViewModel extends _$LoginViewModel
     implements IStateOwner<LoginState> {
   @override
   LoginState build() {
-    // Correct way: Resolve initial state from SpUtil during build
     final rememberMe = SpUtil.getBool(AppConstants.loginRememberMeKey);
     if (rememberMe) {
       final username = SpUtil.getString(AppConstants.loginUsernameKey) ?? '';
-      final password = SpUtil.getString(AppConstants.loginPasswordKey) ?? '';
 
-      // Directly return the state with values to avoid UI flickering
-      return LoginState(username: username, password: password, rememberMe: true);
+      // Asynchronously load the password from secure storage to avoid blocking build()
+      // and keep the state as LoginState instead of AsyncValue<LoginState>
+      _loadSavedPassword();
+
+      return LoginState(username: username, rememberMe: true);
     }
 
     return const LoginState();
+  }
+
+  /// Load the saved password from secure storage and update the state.
+  Future<void> _loadSavedPassword() async {
+    final password = await SecureStorageUtil.get(AppConstants.loginPasswordKey) ?? '';
+    state = state.copyWith(password: password);
   }
 
   /// Entry point for all UI interactions.
@@ -106,11 +113,12 @@ class LoginViewModel extends _$LoginViewModel
   Future<void> _saveOrClearCredentials() async {
     if (state.rememberMe) {
       await SpUtil.put(AppConstants.loginUsernameKey, state.username);
-      await SpUtil.put(AppConstants.loginPasswordKey, state.password);
+      // Use SecureStorageUtil for password to ensure security
+      await SecureStorageUtil.put(AppConstants.loginPasswordKey, state.password);
       await SpUtil.put(AppConstants.loginRememberMeKey, true);
     } else {
       await SpUtil.remove(AppConstants.loginUsernameKey);
-      await SpUtil.remove(AppConstants.loginPasswordKey);
+      await SecureStorageUtil.remove(AppConstants.loginPasswordKey);
       await SpUtil.put(AppConstants.loginRememberMeKey, false);
     }
   }
