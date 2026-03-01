@@ -50,7 +50,6 @@ samples, guidance on mobile development, and a full API reference.
     * ai intro assistant
     * pdf show, download resume
     * unit test
-    * pwd Encryption
     * session timeout; auto login;
     * profile image upload
     * markdown resume, download pdf
