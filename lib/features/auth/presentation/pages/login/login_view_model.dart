@@ -17,18 +17,17 @@ class LoginViewModel extends _$LoginViewModel
     implements IStateOwner<LoginState> {
   @override
   LoginState build() {
-    _loadSavedCredentials();
-    return const LoginState();
-  }
-
-  // Load saved credentials from local storage using SpUtil
-  void _loadSavedCredentials() {
+    // Correct way: Resolve initial state from SpUtil during build
     final rememberMe = SpUtil.getBool(AppConstants.loginRememberMeKey);
     if (rememberMe) {
       final username = SpUtil.getString(AppConstants.loginUsernameKey) ?? '';
       final password = SpUtil.getString(AppConstants.loginPasswordKey) ?? '';
-      state = state.copyWith(username: username, password: password, rememberMe: true);
+
+      // Directly return the state with values to avoid UI flickering
+      return LoginState(username: username, password: password, rememberMe: true);
     }
+
+    return const LoginState();
   }
 
   /// Entry point for all UI interactions.

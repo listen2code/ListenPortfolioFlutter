@@ -22,8 +22,13 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   @override
   void initState() {
     super.initState();
-    _usernameController = TextEditingController();
-    _passwordController = TextEditingController();
+    // 1. Read the initial state from the provider
+    // Since build() in LoginViewModel is now synchronous, this is safe and immediate.
+    final initialState = ref.read(loginViewModelProvider);
+
+    // 2. Initialize controllers with the saved credentials
+    _usernameController = TextEditingController(text: initialState.username);
+    _passwordController = TextEditingController(text: initialState.password);
   }
 
   @override
@@ -35,11 +40,13 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Keep ref.listen for any updates during the session (e.g. auto-fill or reset)
+    // but we don't need to handle the first frame here anymore.
     ref.listen<LoginState>(loginViewModelProvider, (previous, next) {
-      if (_usernameController.text.isEmpty && next.username.isNotEmpty) {
+      if (_usernameController.text != next.username) {
         _usernameController.text = next.username;
       }
-      if (_passwordController.text.isEmpty && next.password.isNotEmpty) {
+      if (_passwordController.text != next.password) {
         _passwordController.text = next.password;
       }
     });
@@ -125,14 +132,13 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        // Wrap Checkbox with Transform.translate to nudge it down for better alignment
                         Transform.translate(
                           offset: const Offset(0, 1),
                           child: SizedBox(
                             width: 24,
                             height: 24,
                             child: Checkbox(
-                              value: state?.rememberMe,
+                              value: state?.rememberMe ?? false,
                               activeColor: accentColor,
                               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               onChanged: (value) =>
