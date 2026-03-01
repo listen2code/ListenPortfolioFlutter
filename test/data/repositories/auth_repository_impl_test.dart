@@ -52,7 +52,7 @@ void main() {
     const testToken = 'mock_token';
 
     final testLoginResponse = BaseResponseModel<LoginResponseModel>(
-      result: "0", // CRITICAL: safeCall needs "0" to indicate success
+      result: ApiResult.success, // CRITICAL: safeCall needs "0" to indicate success
       body: const LoginResponseModel(userId: testUserId, token: testToken),
     );
 
@@ -84,7 +84,7 @@ void main() {
       createdAt: "2026",
     );
     final testApiResponse = BaseResponseModel<UserModel>(
-      result: "0", // CRITICAL: Success status code
+      result: ApiResult.success, // CRITICAL: Success status code
       body: testUserModel,
     );
 
@@ -142,7 +142,7 @@ void main() {
       when(() => mockNetworkInfo.isConnected).thenAnswer((_) async => true);
       when(() => mockRemoteDataSource.refreshToken(testOldRefreshToken)).thenAnswer(
         (_) async => BaseResponseModel(
-          result: "0", // CRITICAL: Success status code
+          result: ApiResult.success, // CRITICAL: Success status code
           body: const LoginResponseModel(token: testNewAccessToken, refreshToken: testNewRefreshToken),
         ),
       );
