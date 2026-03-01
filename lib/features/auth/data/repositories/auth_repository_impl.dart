@@ -87,7 +87,9 @@ class AuthRepositoryImpl with BaseRepository implements AuthRepository {
     return result.fold(
       (failure) async {
         final cachedUser = await localDataSource.getCachedUser();
-        if (cachedUser != null) return Right(cachedUser);
+        if (cachedUser != null && failure is! ServerFailure) {
+          return Right(cachedUser);
+        }
         return Left(failure);
       },
       (user) async {
