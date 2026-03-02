@@ -1,11 +1,14 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
 
 /// Interface for states. Should only contain persistent UI data.
-abstract class BaseState<T> {}
+abstract class BaseState {}
+
+abstract class BaseIntent {}
 
 /// Interface for any object that maintains a reactive state.
 abstract class IStateOwner<S> {
@@ -13,22 +16,16 @@ abstract class IStateOwner<S> {
 }
 
 /// Base interface for all ViewModels.
-abstract class BaseViewModel {
+/// [I] is the type of Intent this ViewModel can handle.
+abstract class BaseViewModel<I> {
   // Lifecycle hooks
   void onInit();
-
   void onReady();
-
   void onVisible();
-
   void onInVisible();
-
   void onResume();
-
   void onPause();
-
   void onInactive();
-
   void onDispose();
 
   void cancelRequests(String reason);
@@ -39,12 +36,16 @@ abstract class BaseViewModel {
   void emitEffect(BaseEffect effect);
 
   /// Handles standard UI effects (Loading, Message, Navigation).
-  /// Returns true if the effect was handled.
   bool handleEffect(BaseEffect effect);
+
+  /// Unified entry point for all UI Intents.
+  /// Subclasses should implementation logic in [onIntent] instead.
+  FutureOr<void> handleIntent(I intent);
 }
 
 /// Mixin to handle common UI states, lifecycle logging, and side effects.
-mixin ViewModelMixin<S extends BaseState<dynamic>> implements BaseViewModel, IStateOwner<S> {
+/// [S] is the State type, [I] is the Intent type.
+mixin ViewModelMixin<S extends BaseState, I extends BaseIntent> implements BaseViewModel<I>, IStateOwner<S> {
   @override
   S get state;
 
@@ -72,32 +73,40 @@ mixin ViewModelMixin<S extends BaseState<dynamic>> implements BaseViewModel, ISt
     return ProviderRegistry.handle(effect);
   }
 
+  /// Implementation of [handleIntent] that forces the use of [dispatch].
+  /// This ensures all intents benefit from architecture-level features like logging and zone management.
+  @override
+  FutureOr<void> handleIntent(I intent) {
+    return dispatch(intent, () => onIntent(intent));
+  }
+
+  /// Subclasses must implement this to handle specific intent logic.
+  /// This is the "protected" area where business logic mapping happens.
+  @protected
+  FutureOr<void> onIntent(I intent);
+
   /// Executes a single action and handles result/loading.
-  /// [onSuccess] is a positional parameter.
-  /// If [onFailure] is provided, it handles the error; otherwise, [_handleFailure] is used.
   Future<void> call<T>(
     Future<Either<Failure, T>> action, {
-    required FutureOr<void> Function(T data) onSuccess,
     FutureOr<void> Function(Failure failure)? onFailure,
+    required FutureOr<void> Function(T data) onSuccess,
     bool showLoading = false,
     String? loadingMessage,
   }) async {
     if (showLoading) emitEffect(LoadingEffect(true, message: loadingMessage));
     try {
       final result = await action;
-      await handleResult(result, onSuccess, onFailure: onFailure);
+      await handleResult(result, onSuccess: onSuccess, onFailure: onFailure);
     } finally {
       if (showLoading) emitEffect(LoadingEffect(false));
     }
   }
 
-  /// Executes multiple actions concurrently.
-  /// If any action fails, the first encountered failure is processed.
-  /// If [onFailure] is provided, it handles the error; otherwise, [_handleFailure] is used.
+  /// Executes multiple actions concurrently using Future.wait.
   Future<void> callAll(
     List<Future<Either<Failure, dynamic>>> actions, {
-    required FutureOr<void> Function(List<dynamic> results) onSuccess,
     FutureOr<void> Function(Failure failure)? onFailure,
+    required FutureOr<void> Function(List<dynamic> results) onSuccess,
     bool showLoading = false,
     String? loadingMessage,
   }) async {
@@ -125,23 +134,11 @@ mixin ViewModelMixin<S extends BaseState<dynamic>> implements BaseViewModel, ISt
     }
   }
 
-  /// Common failure handler to convert domain Failures into UI Effects.
-  void _handleFailure(Failure failure) {
-    if (failure is AuthFailure) {
-      emitEffect(LogoutEffect(message: failure.message));
-    } else if (failure is ServerApiFailure) {
-      emitEffect(MessageEffect.dialog(failure.message, title: "API Error"));
-    } else {
-      emitEffect(MessageEffect.error(failure.message));
-    }
-  }
-
   /// Helper to handle Either results.
-  /// If [onFailure] is provided, it handles the error; otherwise, [_handleFailure] is used.
   FutureOr<void> handleResult<T>(
-    Either<Failure, T> result,
-    FutureOr<void> Function(T data) onSuccess, {
+    Either<Failure, T> result, {
     FutureOr<void> Function(Failure failure)? onFailure,
+    required FutureOr<void> Function(T data) onSuccess,
   }) async {
     await result.fold((failure) async {
       if (onFailure != null) {
@@ -150,6 +147,17 @@ mixin ViewModelMixin<S extends BaseState<dynamic>> implements BaseViewModel, ISt
         _handleFailure(failure);
       }
     }, (data) async => await onSuccess(data));
+  }
+
+  /// Common failure handler.
+  void _handleFailure(Failure failure) {
+    if (failure is AuthFailure) {
+      emitEffect(LogoutEffect(message: failure.message));
+    } else if (failure is ServerApiFailure) {
+      emitEffect(MessageEffect.dialog(failure.message, title: "API Error"));
+    } else {
+      emitEffect(MessageEffect.error(failure.message));
+    }
   }
 
   @override
@@ -161,22 +169,16 @@ mixin ViewModelMixin<S extends BaseState<dynamic>> implements BaseViewModel, ISt
 
   @override
   void onInit() => appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onInit');
-
   @override
   void onReady() => appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onReady');
-
   @override
   void onVisible() => appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onVisible');
-
   @override
   void onInVisible() => appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onInVisible');
-
   @override
   void onResume() => appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onResume');
-
   @override
   void onPause() => appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onPause');
-
   @override
   void onInactive() => appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onInactive');
 
@@ -187,7 +189,8 @@ mixin ViewModelMixin<S extends BaseState<dynamic>> implements BaseViewModel, ISt
     _effectController.close();
   }
 
-  /// Dispatcher for UI intents.
+  /// Low-level dispatcher. standardizes intent handling with Zone and logging.
+  @protected
   Future<void> dispatch(dynamic intent, FutureOr<void> Function() handler) {
     return ZoneManager.run(() {
       final tag = runtimeType.toString();
@@ -204,12 +207,7 @@ mixin ViewModelMixin<S extends BaseState<dynamic>> implements BaseViewModel, ISt
         }
 
         if (result is Future) {
-          return result.then(
-            (_) => onComplete(),
-            onError: (e, s) {
-              throw e;
-            },
-          );
+          return result.then((_) => onComplete(), onError: (e, s) => throw e);
         } else {
           onComplete();
           return Future.value();

@@ -4,7 +4,7 @@ import 'package:listen_portfolio_flutter/core/core.dart';
 part 'login_state.freezed.dart';
 
 @freezed
-abstract class LoginState with _$LoginState implements BaseState<void> {
+abstract class LoginState with _$LoginState implements BaseState {
   const LoginState._();
 
   const factory LoginState({

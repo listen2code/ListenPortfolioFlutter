@@ -1,9 +1,10 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:listen_portfolio_flutter/core/core.dart';
 
 part 'login_intent.freezed.dart';
 
 @freezed
-class LoginIntent with _$LoginIntent {
+class LoginIntent with _$LoginIntent implements BaseIntent {
   const factory LoginIntent.usernameChanged(String username) = UsernameChanged;
   const factory LoginIntent.passwordChanged(String password) = PasswordChanged;
   const factory LoginIntent.togglePasswordVisibility() = TogglePasswordVisibility;

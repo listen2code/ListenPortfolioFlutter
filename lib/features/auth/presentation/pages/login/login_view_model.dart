@@ -13,9 +13,7 @@ import 'login_state.dart';
 part 'login_view_model.g.dart';
 
 @riverpod
-class LoginViewModel extends _$LoginViewModel
-    with ViewModelMixin<LoginState>
-    implements IStateOwner<LoginState> {
+class LoginViewModel extends _$LoginViewModel with ViewModelMixin<LoginState, LoginIntent> {
   @override
   LoginState build() {
     final rememberMe = SpUtil.getBool(AppConstants.loginRememberMeKey);
@@ -33,20 +31,17 @@ class LoginViewModel extends _$LoginViewModel
     state = state.copyWith(password: password);
   }
 
-  /// Entry point for all UI interactions.
-  FutureOr<void> handleIntent(LoginIntent intent) {
-    return dispatch(
-      intent,
-      () => intent.when(
-        usernameChanged: _onUsernameChanged,
-        passwordChanged: _onPasswordChanged,
-        togglePasswordVisibility: _onTogglePasswordVisibility,
-        toggleRememberMe: _onToggleRememberMe,
-        submitLogin: _onSubmitLogin,
-        navigateToSignup: () => emitEffect(NavigationEffect(target: Routes.signUp)),
-        navigateToForgotPassword: () => emitEffect(NavigationEffect(target: Routes.forgotPassword)),
-        skipLogin: () => emitEffect(NavigationEffect.back(result: false)),
-      ),
+  @override
+  FutureOr<void> onIntent(LoginIntent intent) {
+    intent.when(
+      usernameChanged: _onUsernameChanged,
+      passwordChanged: _onPasswordChanged,
+      togglePasswordVisibility: _onTogglePasswordVisibility,
+      toggleRememberMe: _onToggleRememberMe,
+      submitLogin: _onSubmitLogin,
+      navigateToSignup: () => emitEffect(NavigationEffect(target: Routes.signUp)),
+      navigateToForgotPassword: () => emitEffect(NavigationEffect(target: Routes.forgotPassword)),
+      skipLogin: () => emitEffect(NavigationEffect.back(result: false)),
     );
   }
 

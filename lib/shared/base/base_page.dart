@@ -4,13 +4,13 @@ import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 /// A custom builder for [BasePage] that provides both the resolved [viewModel] and current [state].
-typedef BasePageBodyBuilder<V extends BaseViewModel, S extends BaseState<dynamic>> =
+typedef BasePageBodyBuilder<V extends BaseViewModel, S extends BaseState> =
     Widget Function(BuildContext context, Widget? child, V? viewModel, S? state);
 
 /// A shared-layer wrapper for the core [BaseLifeCyclePage].
 /// This widget acts as a bridge between business-specific Riverpod providers
 /// and the pure core architecture, keeping [BaseLifeCyclePage] independent.
-class BasePage<V extends BaseViewModel, S extends BaseState<dynamic>> extends ConsumerWidget {
+class BasePage<V extends BaseViewModel, S extends BaseState> extends ConsumerWidget {
   /// The builder for the page content, now receiving the [viewModel] and [state].
   final BasePageBodyBuilder<V, S> body;
 
