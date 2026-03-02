@@ -188,19 +188,16 @@ mixin ViewModelMixin<S extends BaseState<dynamic>> implements BaseViewModel, ISt
   }
 
   /// Dispatcher for UI intents.
-  Future<void> dispatch(dynamic intent, FutureOr<void> Function() handler, {bool showLoading = false}) {
+  Future<void> dispatch(dynamic intent, FutureOr<void> Function() handler) {
     return ZoneManager.run(() {
       final tag = runtimeType.toString();
       appLogger.d('$tag: [INTENT] -> $intent');
       ZoneManager.mark('Intent [$intent] Started');
 
-      if (showLoading) emitEffect(LoadingEffect(true));
-
       try {
         final result = handler();
 
         void onComplete() {
-          if (showLoading) emitEffect(LoadingEffect(false));
           appLogger.d('$tag: [STATE] <- $state');
           CrashManager.checkAndTriggerInjectedCrash();
           ZoneManager.mark('Intent Finished');
@@ -210,7 +207,6 @@ mixin ViewModelMixin<S extends BaseState<dynamic>> implements BaseViewModel, ISt
           return result.then(
             (_) => onComplete(),
             onError: (e, s) {
-              if (showLoading) emitEffect(LoadingEffect(false));
               throw e;
             },
           );
@@ -219,7 +215,6 @@ mixin ViewModelMixin<S extends BaseState<dynamic>> implements BaseViewModel, ISt
           return Future.value();
         }
       } catch (e) {
-        if (showLoading) emitEffect(LoadingEffect(false));
         rethrow;
       }
     }, cancelToken: cancelToken);
