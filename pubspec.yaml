@@ -13,6 +13,9 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
+  listen_core:
+    git:
+      url: https://github.com/listen2code/ListenCoreFlutter.git
   # UI
   cupertino_icons: ^1.0.8
 
