@@ -49,8 +49,6 @@ samples, guidance on mobile development, and a full API reference.
 
 * base
     * base use case; view modelMVI
-    * publish core
-    * publish widget
 * function
     * notification
     * other pages, use
