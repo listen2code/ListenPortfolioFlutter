@@ -41,7 +41,7 @@ class AppInitializer {
     await SecureStorageUtil.init(prefix: "${AppConstants.appName}_");
 
     // 2. Core Architecture Capability Registry
-    ProviderRegistry.setup([
+    ProviderRegistry.init([
       const LoadingProviderImpl(),
       const MessageProviderImpl(),
       const NavigationProviderImpl(),
@@ -49,7 +49,7 @@ class AppInitializer {
     ]);
 
     // 3. Crash Protection (Safe Mode) Configuration
-    CrashManager.setup(
+    CrashManager.init(
       SafeModeConfig(
         onReset: () async {
           await settingManager.resetSettings();

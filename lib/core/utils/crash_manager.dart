@@ -29,7 +29,7 @@ class CrashManager {
   static SafeModeConfig? _config;
 
   /// Initializes the CrashManager with Safe Mode settings.
-  static void setup(SafeModeConfig config) {
+  static void init(SafeModeConfig config) {
     _config = config;
   }
 
