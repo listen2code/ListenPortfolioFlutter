@@ -36,9 +36,16 @@ class AppInitializer {
   static Future<void> _initServices() async {
     WidgetsFlutterBinding.ensureInitialized();
 
-    // 1. Infrastructure (Shared Preferences)
+    // 1. Infrastructure (Shared Preferences & Event Bus)
     await SpUtil.init(prefix: "${AppConstants.appName}_");
     await SecureStorageUtil.init(prefix: "${AppConstants.appName}_");
+
+    // Setup Global Event Bus with logging
+    eventBus.init(
+      onEventFired: (event) {
+        appLogger.d('EventBus: [FIRE] -> $event');
+      },
+    );
 
     // 2. Core Architecture Capability Registry
     ProviderRegistry.init([

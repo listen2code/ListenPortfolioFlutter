@@ -18,6 +18,7 @@ export 'route/app_nav.dart';
 export 'route/route_interceptor.dart';
 export 'utils/cache_manager.dart';
 export 'utils/crash_manager.dart';
+export 'utils/event_bus.dart';
 export 'utils/log_manager.dart';
 export 'utils/logger.dart';
 export 'utils/secure_storage_util.dart';
