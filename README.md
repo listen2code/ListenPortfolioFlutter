@@ -23,7 +23,7 @@ samples, guidance on mobile development, and a full API reference.
 * answer me in chinese, add code with English comments
 * Only modify the relevant code; formatting changes are not needed.
 * Dependency, lib/core <- lib/shared, lib/uikit <- lib/shared, lib/core <- lib/uikit
-* When drawing the screen, you can use the common components from the lib/uikit/widgets directory.
+* When drawing the screen, you can use the common components from the lib/uikit directory.
 * The core architecture code is in the lib/core directory. no business relevant code, that can be publish to pub, can be used for
   another app
 * Business-related screens are under the lib/features directory
@@ -41,7 +41,9 @@ samples, guidance on mobile development, and a full API reference.
   * [base_provider.dart](lib/core/base/base_provider.dart)
   * [api_client.dart](lib/core/network/api_client.dart)
   * [app_nav.dart](lib/core/route/app_nav.dart)
+  * [route_interceptor.dart](lib/core/route/route_interceptor.dart)
   * [zone_manager.dart](lib/core/utils/zone_manager.dart)
+  * [base_page.dart](lib/shared/base/base_page.dart)
 
 ## todo
 
