@@ -720,11 +720,18 @@ packages:
   listen_core:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "31468d9a42e4ecc6a519e65515c77d477b185043"
-      url: "https://github.com/listen2code/ListenCoreFlutter.git"
-    source: git
+      name: listen_core
+      sha256: ecbdb2f33de3930babd326834cd35d3c693d13bc0e096aa9c27767c8729c0a96
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.1"
+  listen_uikit:
+    dependency: "direct main"
+    description:
+      name: listen_uikit
+      sha256: e651ffeded587ca98f6a75524300afbe4478b7f756b3f2536ec7e4ffcc3a9e07
+      url: "https://pub.dev"
+    source: hosted
     version: "0.0.1"
   logger:
     dependency: "direct main"
