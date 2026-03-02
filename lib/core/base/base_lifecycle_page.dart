@@ -31,6 +31,9 @@ class BaseLifeCyclePage extends StatefulWidget {
   /// Whether the page can be popped. If null, it depends on the loading state.
   final bool? canPop;
 
+  /// Maximum duration a loading state can persist before being forcibly cleared.
+  final Duration loadingTimeout;
+
   /// Custom logic to execute when back is intercepted (e.g., custom confirmation dialogs).
   /// If null, default behavior is to cancel requests and hide loading.
   final VoidCallback? onInterceptBack;
@@ -61,6 +64,7 @@ class BaseLifeCyclePage extends StatefulWidget {
     this.useGradientBackground = true,
     this.active = true,
     this.canPop,
+    this.loadingTimeout = const Duration(seconds: 10),
     this.onInterceptBack,
     this.viewModel,
     this.onEffect,
@@ -77,6 +81,7 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
 
   // Local state to track loading based on Effects, used for canPop logic.
   final ValueNotifier<bool> _isInternalLoading = ValueNotifier<bool>(false);
+  Timer? _loadingSafetyTimer;
 
   late final _RouteAwareProxy _routeObserver;
   late final _AppLifecycleProxy _lifecycleObserver;
@@ -131,7 +136,7 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
 
     // Synchronize local loading state if a LoadingEffect is received.
     if (effect is LoadingEffect) {
-      _isInternalLoading.value = effect.show;
+      _updateLoadingState(effect.show);
     }
 
     // Delegate standard effect handling to the ViewModel's mixin logic
@@ -140,6 +145,21 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
     // If not handled by the framework (standard effects), pass it to the specific page logic
     if (!handled) {
       widget.onEffect?.call(effect);
+    }
+  }
+
+  void _updateLoadingState(bool show) {
+    _isInternalLoading.value = show;
+    _loadingSafetyTimer?.cancel();
+
+    if (show) {
+      // Robustness: Start a safety timer to prevent UI from being permanently locked
+      _loadingSafetyTimer = Timer(widget.loadingTimeout, () {
+        if (mounted && _isInternalLoading.value) {
+          appLogger.w("${widget.title ?? runtimeType}: Loading safety timeout reached. Forcing unlock.");
+          _isInternalLoading.value = false;
+        }
+      });
     }
   }
 
@@ -162,6 +182,7 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
 
   @override
   void dispose() {
+    _loadingSafetyTimer?.cancel();
     _effectSubscription?.cancel();
     _isInternalLoading.dispose();
     AppNav.observer.unsubscribe(_routeObserver);
