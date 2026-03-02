@@ -25,12 +25,6 @@ class LoginViewModel extends _$LoginViewModel with ViewModelMixin<LoginState, Lo
     return const LoginState();
   }
 
-  /// Load the saved password from secure storage and update the state.
-  Future<void> _loadSavedPassword() async {
-    final password = await SecureStorageUtil.get(AppConstants.loginPasswordKey) ?? '';
-    updateState(state.copyWith(password: password));
-  }
-
   @override
   FutureOr<void> onIntent(LoginIntent intent) {
     intent.when(
@@ -90,6 +84,12 @@ class LoginViewModel extends _$LoginViewModel with ViewModelMixin<LoginState, Lo
         emitEffect(NavigationEffect.back(result: true));
       },
     );
+  }
+
+  /// Load the saved password from secure storage and update the state.
+  Future<void> _loadSavedPassword() async {
+    final password = await SecureStorageUtil.get(AppConstants.loginPasswordKey) ?? '';
+    updateState(state.copyWith(password: password));
   }
 
   Future<void> _saveOrClearCredentials() async {
