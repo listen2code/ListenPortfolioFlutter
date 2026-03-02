@@ -13,6 +13,9 @@ abstract class BaseIntent {}
 /// Interface for any object that maintains a reactive state.
 abstract class IStateOwner<S> {
   S get state;
+
+  /// Required setter to allow the mixin to update the state.
+  set state(S value);
 }
 
 /// Base interface for all ViewModels.
@@ -49,6 +52,9 @@ mixin ViewModelMixin<S extends BaseState, I extends BaseIntent> implements BaseV
   @override
   S get state;
 
+  @override
+  set state(S value);
+
   final _effectController = StreamController<BaseEffect>.broadcast();
   CancelToken _cancelToken = CancelToken();
 
@@ -60,6 +66,23 @@ mixin ViewModelMixin<S extends BaseState, I extends BaseIntent> implements BaseV
       _cancelToken = CancelToken();
     }
     return _cancelToken;
+  }
+
+  /// Centralized state update method.
+  /// Direct object update is simple and idiomatic in Flutter.
+  /// Use state.copyWith(...) to ensure partial updates.
+  @protected
+  void updateState(S newState) {
+    if (newState == state) return;
+    final oldState = state;
+    state = newState;
+    onStateChanged(oldState, newState);
+  }
+
+  /// Hook for observing state changes.
+  @protected
+  void onStateChanged(S oldState, S newState) {
+    appLogger.d('${runtimeType.toString()}: [STATE] $oldState -> $newState');
   }
 
   @override

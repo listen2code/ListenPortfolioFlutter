@@ -28,7 +28,7 @@ class LoginViewModel extends _$LoginViewModel with ViewModelMixin<LoginState, Lo
   /// Load the saved password from secure storage and update the state.
   Future<void> _loadSavedPassword() async {
     final password = await SecureStorageUtil.get(AppConstants.loginPasswordKey) ?? '';
-    state = state.copyWith(password: password);
+    updateState(state.copyWith(password: password));
   }
 
   @override
@@ -46,21 +46,21 @@ class LoginViewModel extends _$LoginViewModel with ViewModelMixin<LoginState, Lo
   }
 
   Future<void> _onUsernameChanged(String username) async {
-    state = state.copyWith(username: username, usernameError: null);
+    updateState(state.copyWith(username: username, usernameError: null));
     if (state.rememberMe) await _saveOrClearCredentials();
   }
 
   Future<void> _onPasswordChanged(String password) async {
-    state = state.copyWith(password: password, passwordError: null);
+    updateState(state.copyWith(password: password, passwordError: null));
     if (state.rememberMe) await _saveOrClearCredentials();
   }
 
   void _onTogglePasswordVisibility() {
-    state = state.copyWith(isPasswordVisible: !state.isPasswordVisible);
+    updateState(state.copyWith(isPasswordVisible: !state.isPasswordVisible));
   }
 
   Future<void> _onToggleRememberMe() async {
-    state = state.copyWith(rememberMe: !state.rememberMe);
+    updateState(state.copyWith(rememberMe: !state.rememberMe));
     await _saveOrClearCredentials();
   }
 
@@ -77,7 +77,7 @@ class LoginViewModel extends _$LoginViewModel with ViewModelMixin<LoginState, Lo
     );
 
     if (usernameError != null || passwordError != null) {
-      state = state.copyWith(usernameError: usernameError, passwordError: passwordError);
+      updateState(state.copyWith(usernameError: usernameError, passwordError: passwordError));
       return;
     }
 
