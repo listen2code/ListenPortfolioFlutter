@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/usecases/login_use_case.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_intent.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/provider/auth_provider.dart';
@@ -20,13 +21,9 @@ class LoginViewModel extends _$LoginViewModel
     final rememberMe = SpUtil.getBool(AppConstants.loginRememberMeKey);
     if (rememberMe) {
       final username = SpUtil.getString(AppConstants.loginUsernameKey) ?? '';
-
-      // Asynchronously load the password from secure storage to avoid blocking build()
       _loadSavedPassword();
-
       return LoginState(username: username, rememberMe: true);
     }
-
     return const LoginState();
   }
 
@@ -50,22 +47,17 @@ class LoginViewModel extends _$LoginViewModel
         navigateToForgotPassword: () => emitEffect(NavigationEffect(target: Routes.forgotPassword)),
         skipLogin: () => emitEffect(NavigationEffect.back(result: false)),
       ),
-      showLoading: intent is SubmitLogin,
     );
   }
 
   Future<void> _onUsernameChanged(String username) async {
     state = state.copyWith(username: username, usernameError: null);
-    if (state.rememberMe) {
-      await _saveOrClearCredentials();
-    }
+    if (state.rememberMe) await _saveOrClearCredentials();
   }
 
   Future<void> _onPasswordChanged(String password) async {
     state = state.copyWith(password: password, passwordError: null);
-    if (state.rememberMe) {
-      await _saveOrClearCredentials();
-    }
+    if (state.rememberMe) await _saveOrClearCredentials();
   }
 
   void _onTogglePasswordVisibility() {
@@ -94,13 +86,15 @@ class LoginViewModel extends _$LoginViewModel
       return;
     }
 
-    final loginUseCase = await ref.read(loginUseCaseProvider.future);
-    final result = await loginUseCase(LoginParams(username: state.username, password: state.password));
-    await handleResult(result, (user) async {
-      authManager.login(user);
-      emitEffect(MessageEffect(I18nKeys.loginSuccess.tr));
-      emitEffect(NavigationEffect.back(result: true));
-    });
+    await call<UserModel?>(
+      ref.execute(loginUseCaseProvider, LoginParams(username: state.username, password: state.password)),
+      showLoading: true,
+      onSuccess: (user) async {
+        authManager.login(user);
+        emitEffect(MessageEffect(I18nKeys.loginSuccess.tr));
+        emitEffect(NavigationEffect.back(result: true));
+      },
+    );
   }
 
   Future<void> _saveOrClearCredentials() async {

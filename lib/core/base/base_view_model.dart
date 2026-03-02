@@ -72,20 +72,82 @@ mixin ViewModelMixin<S extends BaseState<dynamic>> implements BaseViewModel, ISt
     return ProviderRegistry.handle(effect);
   }
 
-  /// Helper to handle Either results from UseCases/Repositories.
-  /// Automatically calls UI effects on Left, and executes [onSuccess] on Right.
-  /// Returns the result of [onSuccess] or null if failure.
-  FutureOr<void> handleResult<T>(Either<Failure, T> result, FutureOr<void> Function(T data) onSuccess) async {
-    await result.fold((failure) async {
-      if (failure is AuthFailure) {
-        // Trigger global logout effect for auth expiration
-        emitEffect(LogoutEffect(message: failure.message));
-      } else if (failure is ServerApiFailure) {
-        // Global API Business Error: show as a dialog
-        emitEffect(MessageEffect.dialog(failure.message, title: "API Error"));
+  /// Executes a single action and handles result/loading.
+  /// [onSuccess] is a positional parameter.
+  /// If [onFailure] is provided, it handles the error; otherwise, [_handleFailure] is used.
+  Future<void> call<T>(
+    Future<Either<Failure, T>> action, {
+    required FutureOr<void> Function(T data) onSuccess,
+    FutureOr<void> Function(Failure failure)? onFailure,
+    bool showLoading = false,
+    String? loadingMessage,
+  }) async {
+    if (showLoading) emitEffect(LoadingEffect(true, message: loadingMessage));
+    try {
+      final result = await action;
+      await handleResult(result, onSuccess, onFailure: onFailure);
+    } finally {
+      if (showLoading) emitEffect(LoadingEffect(false));
+    }
+  }
+
+  /// Executes multiple actions concurrently.
+  /// If any action fails, the first encountered failure is processed.
+  /// If [onFailure] is provided, it handles the error; otherwise, [_handleFailure] is used.
+  Future<void> callAll(
+    List<Future<Either<Failure, dynamic>>> actions, {
+    required FutureOr<void> Function(List<dynamic> results) onSuccess,
+    FutureOr<void> Function(Failure failure)? onFailure,
+    bool showLoading = false,
+    String? loadingMessage,
+  }) async {
+    if (showLoading) emitEffect(LoadingEffect(true, message: loadingMessage));
+    try {
+      final results = await Future.wait(actions);
+
+      Failure? firstFailure;
+      for (final r in results) {
+        r.fold((f) => firstFailure ??= f, (_) {});
+      }
+
+      if (firstFailure != null) {
+        if (onFailure != null) {
+          await onFailure(firstFailure!);
+        } else {
+          _handleFailure(firstFailure!);
+        }
       } else {
-        // Default fallback for other failure types (Network, Validation etc.)
-        emitEffect(MessageEffect.error(failure.message));
+        final dataList = results.map((r) => r.getOrElse((_) => throw Exception())).toList();
+        await onSuccess(dataList);
+      }
+    } finally {
+      if (showLoading) emitEffect(LoadingEffect(false));
+    }
+  }
+
+  /// Common failure handler to convert domain Failures into UI Effects.
+  void _handleFailure(Failure failure) {
+    if (failure is AuthFailure) {
+      emitEffect(LogoutEffect(message: failure.message));
+    } else if (failure is ServerApiFailure) {
+      emitEffect(MessageEffect.dialog(failure.message, title: "API Error"));
+    } else {
+      emitEffect(MessageEffect.error(failure.message));
+    }
+  }
+
+  /// Helper to handle Either results.
+  /// If [onFailure] is provided, it handles the error; otherwise, [_handleFailure] is used.
+  FutureOr<void> handleResult<T>(
+    Either<Failure, T> result,
+    FutureOr<void> Function(T data) onSuccess, {
+    FutureOr<void> Function(Failure failure)? onFailure,
+  }) async {
+    await result.fold((failure) async {
+      if (onFailure != null) {
+        await onFailure(failure);
+      } else {
+        _handleFailure(failure);
       }
     }, (data) async => await onSuccess(data));
   }
@@ -140,8 +202,6 @@ mixin ViewModelMixin<S extends BaseState<dynamic>> implements BaseViewModel, ISt
         void onComplete() {
           if (showLoading) emitEffect(LoadingEffect(false));
           appLogger.d('$tag: [STATE] <- $state');
-
-          // INJECTED CRASH CHECK: Moved inside the Zone to ensure the Trace ID is correctly associated.
           CrashManager.checkAndTriggerInjectedCrash();
           ZoneManager.mark('Intent Finished');
         }
