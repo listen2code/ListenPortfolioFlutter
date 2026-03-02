@@ -32,13 +32,27 @@ abstract class IApiInterceptorDelegate {
   Future<bool> onRefreshToken();
 }
 
+/// A default, no-op implementation of the delegate to prevent null pointer issues.
+class _DefaultApiDelegate implements IApiInterceptorDelegate {
+  @override
+  Future<void> onInjectAuthHeader(RequestOptions options) async {}
+
+  @override
+  void onInjectTraceHeader(RequestOptions options, String traceId) {
+    options.headers['X-Trace-Id'] = traceId;
+  }
+
+  @override
+  Future<bool> onRefreshToken() async => false;
+}
+
 /// Creates and configures a single Dio instance for the entire application.
 class ApiClient {
   ApiClient._();
 
-  static IApiInterceptorDelegate? _delegate;
+  static IApiInterceptorDelegate _delegate = _DefaultApiDelegate();
 
-  static IApiInterceptorDelegate? get delegate => _delegate;
+  static IApiInterceptorDelegate get delegate => _delegate;
 
   /// Initializes the ApiClient with a concrete delegate implementation.
   static void init(IApiInterceptorDelegate delegate) {
@@ -140,7 +154,7 @@ class _ZoneContextInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     ZoneManager.mark('API Request: ${options.path} Sent');
-    ApiClient.delegate?.onInjectTraceHeader(options, ZoneManager.currentTraceId);
+    ApiClient.delegate.onInjectTraceHeader(options, ZoneManager.currentTraceId);
     final CancelToken? zoneToken = ZoneManager.currentCancelToken;
     if (zoneToken != null && options.cancelToken == null) options.cancelToken = zoneToken;
     handler.next(options);
@@ -167,17 +181,16 @@ class _AuthInterceptor extends Interceptor {
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
-    await ApiClient.delegate?.onInjectAuthHeader(options);
+    await ApiClient.delegate.onInjectAuthHeader(options);
     handler.next(options);
   }
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
-    final delegate = ApiClient.delegate;
     final is401 = err.response?.statusCode == HttpCode.unauthorized;
     final alreadyRefreshed = err.requestOptions.extra[_kIsRefreshedKey] == true;
 
-    if (is401 && !alreadyRefreshed && delegate != null) {
+    if (is401 && !alreadyRefreshed) {
       appLogger.w('AuthInterceptor: [401] detected for ${err.requestOptions.path}');
 
       if (!_isRefreshing) {
@@ -185,7 +198,7 @@ class _AuthInterceptor extends Interceptor {
         appLogger.i('AuthInterceptor: [REFRESH] -> Starting flow: ${err.requestOptions.path}');
 
         try {
-          final bool success = await delegate.onRefreshToken();
+          final bool success = await ApiClient.delegate.onRefreshToken();
           _isRefreshing = false;
 
           if (success) {
