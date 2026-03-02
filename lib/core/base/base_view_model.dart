@@ -6,7 +6,9 @@ import 'package:fpdart/fpdart.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
 
 /// Interface for states. Should only contain persistent UI data.
-abstract class BaseState {}
+abstract class BaseState {
+  const BaseState();
+}
 
 abstract class BaseIntent {}
 
@@ -69,8 +71,6 @@ mixin ViewModelMixin<S extends BaseState, I extends BaseIntent> implements BaseV
   }
 
   /// Centralized state update method.
-  /// Direct object update is simple and idiomatic in Flutter.
-  /// Use state.copyWith(...) to ensure partial updates.
   @protected
   void updateState(S newState) {
     if (newState == state) return;
@@ -97,14 +97,18 @@ mixin ViewModelMixin<S extends BaseState, I extends BaseIntent> implements BaseV
   }
 
   /// Implementation of [handleIntent] that forces the use of [dispatch].
-  /// This ensures all intents benefit from architecture-level features like logging and zone management.
   @override
   FutureOr<void> handleIntent(I intent) {
-    return dispatch(intent, () => onIntent(intent));
+    final useZone = shouldUseZone(intent);
+    return dispatch(intent, () => onIntent(intent), useZone: useZone);
   }
 
+  /// Subclasses can override this to disable Zone creation for high-frequency intents
+  /// (e.g., scroll, drag, or continuous animation updates).
+  @protected
+  bool shouldUseZone(I intent) => true;
+
   /// Subclasses must implement this to handle specific intent logic.
-  /// This is the "protected" area where business logic mapping happens.
   @protected
   FutureOr<void> onIntent(I intent);
 
@@ -214,7 +218,18 @@ mixin ViewModelMixin<S extends BaseState, I extends BaseIntent> implements BaseV
 
   /// Low-level dispatcher. standardizes intent handling with Zone and logging.
   @protected
-  Future<void> dispatch(dynamic intent, FutureOr<void> Function() handler) {
+  Future<void> dispatch(dynamic intent, FutureOr<void> Function() handler, {bool useZone = true}) {
+    if (!useZone) {
+      // Fast Path: Bypass Zone creation for high-frequency events.
+      try {
+        final result = handler();
+        if (result is Future) return result;
+        return Future.value();
+      } catch (e) {
+        rethrow;
+      }
+    }
+
     return ZoneManager.run(() {
       final tag = runtimeType.toString();
       appLogger.d('$tag: [INTENT] -> $intent');
