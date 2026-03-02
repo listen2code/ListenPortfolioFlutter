@@ -71,8 +71,6 @@ class LocalMockServer {
       pathParts.removeAt(0);
     }
 
-    final String resourcePath = pathParts.join('/');
-
     // 3. Build candidate asset paths matching api.js rules
     List<String> candidatePaths = [];
     if (method == 'get') {
