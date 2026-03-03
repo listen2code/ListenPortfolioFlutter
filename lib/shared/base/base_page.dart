@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-/// A custom builder for [BasePage] that provides both the resolved [viewModel] and current [state].
+/// A custom builder for [BasePage] that provides the resolved [viewModel] and current [state].
 typedef BasePageBodyBuilder<V extends BaseViewModel, S extends BaseState> =
     Widget Function(BuildContext context, Widget? child, V? viewModel, S? state);
 
@@ -45,6 +45,9 @@ class BasePage<V extends BaseViewModel, S extends BaseState> extends ConsumerWid
   /// A widget to display when the page is in a loading state (e.g., a Skeleton screen).
   final Widget? onLoading;
 
+  /// A widget to display when the page is in an empty state.
+  final Widget? onEmpty;
+
   const BasePage({
     super.key,
     required this.body,
@@ -70,6 +73,7 @@ class BasePage<V extends BaseViewModel, S extends BaseState> extends ConsumerWid
     this.viewModel,
     this.onEffect,
     this.onLoading,
+    this.onEmpty,
   });
 
   @override
@@ -105,6 +109,7 @@ class BasePage<V extends BaseViewModel, S extends BaseState> extends ConsumerWid
       viewModel: effectiveViewModel,
       onEffect: onEffect,
       onLoading: onLoading,
+      onEmpty: onEmpty,
     );
   }
 }

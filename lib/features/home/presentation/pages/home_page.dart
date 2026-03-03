@@ -51,6 +51,7 @@ class _HomePageState extends State<HomePage> {
       },
       child: BasePage(
         onLoading: _buildOverviewSkeleton(context),
+        onEmpty: CommonEmptyView(type: EmptyType.empty),
         title: _getPageTitle(),
         drawer: _buildDrawer(),
         body: (context, viewModel, state, child) => _buildBody(),
