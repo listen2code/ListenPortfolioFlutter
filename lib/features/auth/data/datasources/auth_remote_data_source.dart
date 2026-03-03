@@ -16,7 +16,7 @@ abstract class AuthRemoteDataSource {
   Future<BaseResponseModel<LoginResponseModel>> login(@Body() LoginRequestModel request);
 
   @POST('/v1/auth/signUp')
-  Future<BaseResponseModel<UserModel>> signUp(@Body() SignupRequestModel request);
+  Future<BaseResponseModel<void>> signUp(@Body() SignupRequestModel request);
 
   @POST('/v1/auth/logout')
   Future<BaseResponseModel<void>> logout();

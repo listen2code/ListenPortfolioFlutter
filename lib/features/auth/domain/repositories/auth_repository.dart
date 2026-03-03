@@ -10,7 +10,7 @@ abstract class AuthRepository {
   Future<Either<Failure, LoginResponseModel?>> login({required String username, required String password});
 
   /// Sign Up a new user.
-  Future<Either<Failure, UserModel?>> signUp({
+  Future<Either<Failure, void>> signUp({
     required String name,
     required String email,
     required String password,

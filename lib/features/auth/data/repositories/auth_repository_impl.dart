@@ -38,17 +38,19 @@ class AuthRepositoryImpl with BaseRepository implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, UserModel?>> signUp({
+  Future<Either<Failure, void>> signUp({
     required String name,
     required String email,
     required String password,
   }) async {
-    final result = await safeCall<UserModel>(
+    final result = await safeCall<void>(
       networkInfo: networkInfo,
       call: () => remoteDataSource.signUp(SignupRequestModel(name: name, email: email, password: password)),
     );
 
-    return result;
+    return result.fold((failure) => Left(failure), (_) async {
+      return const Right(null);
+    });
   }
 
   @override

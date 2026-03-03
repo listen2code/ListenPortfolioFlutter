@@ -1,16 +1,15 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/repositories/auth_repository.dart';
 
 /// Use case for user registration
-class SignupUseCase implements UseCase<UserModel?, SignupParams> {
+class SignupUseCase implements UseCase<void, SignupParams> {
   final AuthRepository repository;
 
   SignupUseCase(this.repository);
 
   @override
-  Future<Either<Failure, UserModel?>> call(SignupParams params) async {
+  Future<Either<Failure, void>> call(SignupParams params) async {
     // Business logic validation
     if (params.name.isEmpty) {
       return const Left(ValidationFailure('Name cannot be empty'));

@@ -39,7 +39,7 @@
     "httpCode": 200
   },
   {
-    "api": "auth/register",
+    "api": "auth/signUp",
     "method": "post",
     "timeout": 500,
     "httpCode": 200
