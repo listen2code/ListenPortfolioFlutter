@@ -1,0 +1,292 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
+// ignore_for_file: type=lint
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
+
+part of 'sign_up_state.dart';
+
+// **************************************************************************
+// FreezedGenerator
+// **************************************************************************
+
+// dart format off
+T _$identity<T>(T value) => value;
+/// @nodoc
+mixin _$SignUpState {
+
+ String get fullName; String get email; String get password; String get confirmPassword; String? get fullNameError; String? get emailError; String? get passwordError; String? get confirmPasswordError;
+/// Create a copy of SignUpState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SignUpStateCopyWith<SignUpState> get copyWith => _$SignUpStateCopyWithImpl<SignUpState>(this as SignUpState, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SignUpState&&(identical(other.fullName, fullName) || other.fullName == fullName)&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password)&&(identical(other.confirmPassword, confirmPassword) || other.confirmPassword == confirmPassword)&&(identical(other.fullNameError, fullNameError) || other.fullNameError == fullNameError)&&(identical(other.emailError, emailError) || other.emailError == emailError)&&(identical(other.passwordError, passwordError) || other.passwordError == passwordError)&&(identical(other.confirmPasswordError, confirmPasswordError) || other.confirmPasswordError == confirmPasswordError));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,fullName,email,password,confirmPassword,fullNameError,emailError,passwordError,confirmPasswordError);
+
+@override
+String toString() {
+  return 'SignUpState(fullName: $fullName, email: $email, password: $password, confirmPassword: $confirmPassword, fullNameError: $fullNameError, emailError: $emailError, passwordError: $passwordError, confirmPasswordError: $confirmPasswordError)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SignUpStateCopyWith<$Res>  {
+  factory $SignUpStateCopyWith(SignUpState value, $Res Function(SignUpState) _then) = _$SignUpStateCopyWithImpl;
+@useResult
+$Res call({
+ String fullName, String email, String password, String confirmPassword, String? fullNameError, String? emailError, String? passwordError, String? confirmPasswordError
+});
+
+
+
+
+}
+/// @nodoc
+class _$SignUpStateCopyWithImpl<$Res>
+    implements $SignUpStateCopyWith<$Res> {
+  _$SignUpStateCopyWithImpl(this._self, this._then);
+
+  final SignUpState _self;
+  final $Res Function(SignUpState) _then;
+
+/// Create a copy of SignUpState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? fullName = null,Object? email = null,Object? password = null,Object? confirmPassword = null,Object? fullNameError = freezed,Object? emailError = freezed,Object? passwordError = freezed,Object? confirmPasswordError = freezed,}) {
+  return _then(_self.copyWith(
+fullName: null == fullName ? _self.fullName : fullName // ignore: cast_nullable_to_non_nullable
+as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as String,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
+as String,confirmPassword: null == confirmPassword ? _self.confirmPassword : confirmPassword // ignore: cast_nullable_to_non_nullable
+as String,fullNameError: freezed == fullNameError ? _self.fullNameError : fullNameError // ignore: cast_nullable_to_non_nullable
+as String?,emailError: freezed == emailError ? _self.emailError : emailError // ignore: cast_nullable_to_non_nullable
+as String?,passwordError: freezed == passwordError ? _self.passwordError : passwordError // ignore: cast_nullable_to_non_nullable
+as String?,confirmPasswordError: freezed == confirmPasswordError ? _self.confirmPasswordError : confirmPasswordError // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [SignUpState].
+extension SignUpStatePatterns on SignUpState {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _SignUpState value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _SignUpState() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _SignUpState value)  $default,){
+final _that = this;
+switch (_that) {
+case _SignUpState():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _SignUpState value)?  $default,){
+final _that = this;
+switch (_that) {
+case _SignUpState() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String fullName,  String email,  String password,  String confirmPassword,  String? fullNameError,  String? emailError,  String? passwordError,  String? confirmPasswordError)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _SignUpState() when $default != null:
+return $default(_that.fullName,_that.email,_that.password,_that.confirmPassword,_that.fullNameError,_that.emailError,_that.passwordError,_that.confirmPasswordError);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String fullName,  String email,  String password,  String confirmPassword,  String? fullNameError,  String? emailError,  String? passwordError,  String? confirmPasswordError)  $default,) {final _that = this;
+switch (_that) {
+case _SignUpState():
+return $default(_that.fullName,_that.email,_that.password,_that.confirmPassword,_that.fullNameError,_that.emailError,_that.passwordError,_that.confirmPasswordError);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String fullName,  String email,  String password,  String confirmPassword,  String? fullNameError,  String? emailError,  String? passwordError,  String? confirmPasswordError)?  $default,) {final _that = this;
+switch (_that) {
+case _SignUpState() when $default != null:
+return $default(_that.fullName,_that.email,_that.password,_that.confirmPassword,_that.fullNameError,_that.emailError,_that.passwordError,_that.confirmPasswordError);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class _SignUpState implements SignUpState {
+  const _SignUpState({this.fullName = '', this.email = '', this.password = '', this.confirmPassword = '', this.fullNameError, this.emailError, this.passwordError, this.confirmPasswordError});
+  
+
+@override@JsonKey() final  String fullName;
+@override@JsonKey() final  String email;
+@override@JsonKey() final  String password;
+@override@JsonKey() final  String confirmPassword;
+@override final  String? fullNameError;
+@override final  String? emailError;
+@override final  String? passwordError;
+@override final  String? confirmPasswordError;
+
+/// Create a copy of SignUpState
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SignUpStateCopyWith<_SignUpState> get copyWith => __$SignUpStateCopyWithImpl<_SignUpState>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SignUpState&&(identical(other.fullName, fullName) || other.fullName == fullName)&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password)&&(identical(other.confirmPassword, confirmPassword) || other.confirmPassword == confirmPassword)&&(identical(other.fullNameError, fullNameError) || other.fullNameError == fullNameError)&&(identical(other.emailError, emailError) || other.emailError == emailError)&&(identical(other.passwordError, passwordError) || other.passwordError == passwordError)&&(identical(other.confirmPasswordError, confirmPasswordError) || other.confirmPasswordError == confirmPasswordError));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,fullName,email,password,confirmPassword,fullNameError,emailError,passwordError,confirmPasswordError);
+
+@override
+String toString() {
+  return 'SignUpState(fullName: $fullName, email: $email, password: $password, confirmPassword: $confirmPassword, fullNameError: $fullNameError, emailError: $emailError, passwordError: $passwordError, confirmPasswordError: $confirmPasswordError)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SignUpStateCopyWith<$Res> implements $SignUpStateCopyWith<$Res> {
+  factory _$SignUpStateCopyWith(_SignUpState value, $Res Function(_SignUpState) _then) = __$SignUpStateCopyWithImpl;
+@override @useResult
+$Res call({
+ String fullName, String email, String password, String confirmPassword, String? fullNameError, String? emailError, String? passwordError, String? confirmPasswordError
+});
+
+
+
+
+}
+/// @nodoc
+class __$SignUpStateCopyWithImpl<$Res>
+    implements _$SignUpStateCopyWith<$Res> {
+  __$SignUpStateCopyWithImpl(this._self, this._then);
+
+  final _SignUpState _self;
+  final $Res Function(_SignUpState) _then;
+
+/// Create a copy of SignUpState
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? fullName = null,Object? email = null,Object? password = null,Object? confirmPassword = null,Object? fullNameError = freezed,Object? emailError = freezed,Object? passwordError = freezed,Object? confirmPasswordError = freezed,}) {
+  return _then(_SignUpState(
+fullName: null == fullName ? _self.fullName : fullName // ignore: cast_nullable_to_non_nullable
+as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as String,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
+as String,confirmPassword: null == confirmPassword ? _self.confirmPassword : confirmPassword // ignore: cast_nullable_to_non_nullable
+as String,fullNameError: freezed == fullNameError ? _self.fullNameError : fullNameError // ignore: cast_nullable_to_non_nullable
+as String?,emailError: freezed == emailError ? _self.emailError : emailError // ignore: cast_nullable_to_non_nullable
+as String?,passwordError: freezed == passwordError ? _self.passwordError : passwordError // ignore: cast_nullable_to_non_nullable
+as String?,confirmPasswordError: freezed == confirmPasswordError ? _self.confirmPasswordError : confirmPasswordError // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
+
+// dart format on
