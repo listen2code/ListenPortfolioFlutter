@@ -1,5 +1,6 @@
 export 'base/base_effect.dart';
 export 'base/base_lifecycle_page.dart';
+export 'base/base_material_app.dart';
 export 'base/base_provider.dart';
 export 'base/base_scaffold_page.dart';
 export 'base/base_view_model.dart';
@@ -7,7 +8,6 @@ export 'core_initializer.dart';
 export 'env/app_env.dart';
 export 'errors/exceptions.dart';
 export 'errors/failures.dart';
-export 'extensions/ref_extension.dart';
 export 'i18n/translations.dart';
 export 'network/api_client.dart';
 export 'network/base_repository.dart';

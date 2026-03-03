@@ -13,19 +13,14 @@ import 'package:listen_uikit/uikit.dart';
 class AppInitializer {
   AppInitializer._();
 
-  /// Global container to access providers during the initialization phase if needed.
-  static late final ProviderContainer container;
-
   /// Executes all initialization steps in order.
   static Future<void> init(ProviderContainer container) async {
-    AppInitializer.container = container;
-
     // 1. Initialize Infrastructure & Core Module (Including Nav & Error Hooks)
-    await _initCore();
+    await _initCore(container);
   }
 
   /// Initializes infrastructure and the centralized ListenCore module.
-  static Future<void> _initCore() async {
+  static Future<void> _initCore(ProviderContainer container) async {
     WidgetsFlutterBinding.ensureInitialized();
 
     // 1. Centralized Core Initialization (Encapsulates Storage, Bus, Net, Crash, I18n, Nav, Error)
@@ -33,8 +28,6 @@ class AppInitializer {
       CoreConfig(
         // Storage Configuration
         storagePrefix: "${AppConstants.appName}_",
-        // Configure Global Event Bus logging
-        onEventFired: (event) => appLogger.d('EventBus: [FIRE] -> $event'),
         // Inject Core Architecture capability providers
         initialProviders: [
           const LoadingProviderImpl(),
@@ -42,8 +35,8 @@ class AppInitializer {
           const NavigationProviderImpl(),
           const LogoutProviderImpl(),
         ],
-        // Link Core Network to Shared Auth Logic
-        apiDelegate: _ApiAuthHandlerImpl(),
+        // Link Core Network to Shared Auth Logic with injected container
+        apiDelegate: _ApiAuthHandlerImpl(container),
         // Configure Crash Protection (Safe Mode)
         safeModeConfig: SafeModeConfig(
           onReset: () async {
@@ -84,10 +77,15 @@ class AppInitializer {
 
 /// Private implementation of the API authentication and tracing handler.
 class _ApiAuthHandlerImpl implements IApiInterceptorDelegate {
+  final ProviderContainer container;
+
+  _ApiAuthHandlerImpl(this.container);
+
   @override
   Future<bool> onRefreshToken() async {
     try {
-      final repository = await AppInitializer.container.read(authRepositoryProvider.future);
+      // Use the injected container to read the repository
+      final repository = await container.read(authRepositoryProvider.future);
       final result = await repository.refreshToken();
       return result.isRight();
     } catch (e) {

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,18 +7,16 @@ import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 
 void main() {
-  final container = ProviderContainer();
-  // Use runGuarded to wrap the entire app execution.
-  // This ensures that all initialization and the app itself run in the same Zone.
-  ZoneManager.runGuarded(
+  // Use Core.run to manage the app lifecycle, automatic crash logging, and global error handling.
+  Core.run(
     () async {
+      ProviderContainer container = ProviderContainer();
       await AppInitializer.init(container);
-      runApp(UncontrolledProviderScope(container: container, child: MyApp()));
+      runApp(UncontrolledProviderScope(container: container, child: const MyApp()));
     },
-    onError: (Object error, StackTrace stack) async {
-      final filePath = await CrashManager.saveCrashLog(error, stack);
-      final context = AppNavConfig.context;
-      if (context != null && filePath != null) {
+    onAppError: (logPath, error, stack) async {
+      if (logPath != null) {
+        // CommonDialog now automatically retrieves context via AppNavConfig.
         final confirmed = await CommonDialog.showConfirm(
           tag: "globalErrorDialog",
           title: I18nKeys.appCrashed.tr,
@@ -26,7 +25,7 @@ void main() {
           cancelText: I18nKeys.dismiss.tr,
         );
         if (confirmed == true) {
-          AppNav.to(Routes.crashLogs, arguments: {Routes.argFilePath: filePath});
+          AppNav.to(Routes.crashLogs, arguments: {Routes.argFilePath: logPath});
         }
       }
     },
@@ -40,11 +39,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return BaseSettingPage(
       builder: (context, child) {
-        return MaterialApp(
-          navigatorKey: AppNavConfig.navigatorKey,
-          navigatorObservers: [AppNav.observer],
+        return BaseMaterialApp(
           title: AppConstants.appName,
-          debugShowCheckedModeBanner: false,
+          debugShowCheckedModeBanner: kDebugMode,
           theme: AppTheme.getLightTheme(settingManager),
           darkTheme: AppTheme.getDarkTheme(settingManager),
           themeMode: settingManager.themeMode,
@@ -62,7 +59,6 @@ class MyApp extends StatelessWidget {
           // Use initialRoute instead of home to ensure the first page (SplashPage)
           // also passes through AppNav.onGenerateRoute and ZoneManager.runPage.
           initialRoute: Routes.root,
-          onGenerateRoute: AppNav.onGenerateRoute,
         );
       },
     );

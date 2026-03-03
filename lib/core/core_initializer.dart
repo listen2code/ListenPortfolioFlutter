@@ -68,9 +68,7 @@ class Core {
     }
 
     // 3. Setup Event Bus
-    if (config.onEventFired != null) {
-      eventBus.init(onEventFired: config.onEventFired);
-    }
+    eventBus.init(onEventFired: config.onEventFired ?? (event) => appLogger.d('EventBus: [FIRE] -> $event'));
 
     // 4. Setup Provider Registry
     if (config.initialProviders != null) {
@@ -107,6 +105,24 @@ class Core {
         onShowLoginDialog: config.onShowLoginDialogCallback,
       );
     }
+  }
+
+  /// Runs the application within a guarded Zone.
+  /// Automatically handles crash logging and provides a hook for UI error handling.
+  static void run(
+    FutureOr<void> Function() body, {
+    required Future<void> Function(String? logPath, Object error, StackTrace stack) onAppError,
+  }) {
+    ZoneManager.runGuarded(
+      body,
+      onError: (error, stack) async {
+        // 1. Automatically persist crash data locally
+        final filePath = await CrashManager.saveCrashLog(error, stack);
+
+        // 2. Delegate UI response to the business layer
+        await onAppError(filePath, error, stack);
+      },
+    );
   }
 
   /// Pipes all Flutter and Platform errors into the current Zone for centralized handling.
