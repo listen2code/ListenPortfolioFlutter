@@ -3,6 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
+import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 
 void main() {
   final container = ProviderContainer();
@@ -13,9 +14,22 @@ void main() {
       await AppInitializer.init(container);
       runApp(UncontrolledProviderScope(container: container, child: MyApp()));
     },
-    traceId: ZoneManager.mainTraceId,
-    label: ZoneManager.mainStart,
-    onError: AppInitializer.handleGlobalError,
+    onError: (Object error, StackTrace stack) async {
+      final filePath = await CrashManager.saveCrashLog(error, stack);
+      final context = AppNavConfig.context;
+      if (context != null && filePath != null) {
+        final confirmed = await CommonDialog.showConfirm(
+          tag: "globalErrorDialog",
+          title: I18nKeys.appCrashed.tr,
+          message: I18nKeys.crashDetectedMsg.tr,
+          okText: I18nKeys.viewReport.tr,
+          cancelText: I18nKeys.dismiss.tr,
+        );
+        if (confirmed == true) {
+          AppNav.to(Routes.crashLogs, arguments: {Routes.argFilePath: filePath});
+        }
+      }
+    },
   );
 }
 

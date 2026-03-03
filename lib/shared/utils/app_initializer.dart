@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -21,127 +20,65 @@ class AppInitializer {
   static Future<void> init(ProviderContainer container) async {
     AppInitializer.container = container;
 
-    // 1. Infrastructure & Core Services
-    await _initServices();
-
-    // 2. Navigation & Error Interceptors
-    _setupNavConfig();
-    _setupErrorHandlers();
-
-    // 3. Network Bridge (Link Core Network to Shared Auth Logic)
-    _setupNetworkBridge();
+    // 1. Initialize Infrastructure & Core Module (Including Nav & Error Hooks)
+    await _initCore();
   }
 
-  /// Initializes infrastructure, core providers, and global managers.
-  static Future<void> _initServices() async {
+  /// Initializes infrastructure and the centralized ListenCore module.
+  static Future<void> _initCore() async {
     WidgetsFlutterBinding.ensureInitialized();
 
-    // 1. Infrastructure (Shared Preferences & Event Bus)
-    await SpUtil.init(prefix: "${AppConstants.appName}_");
-    await SecureStorageUtil.init(prefix: "${AppConstants.appName}_");
-
-    // Setup Global Event Bus with logging
-    eventBus.init(
-      onEventFired: (event) {
-        appLogger.d('EventBus: [FIRE] -> $event');
-      },
-    );
-
-    // 2. Core Architecture Capability Registry
-    ProviderRegistry.init([
-      const LoadingProviderImpl(),
-      const MessageProviderImpl(),
-      const NavigationProviderImpl(),
-      const LogoutProviderImpl(),
-    ]);
-
-    // 3. Crash Protection (Safe Mode) Configuration
-    CrashManager.init(
-      SafeModeConfig(
-        onReset: () async {
-          await settingManager.resetSettings();
-          AppNav.offAll(Routes.home);
-          CommonToast.show(I18nKeys.safetyResetMsg.tr, type: ToastType.error);
+    // 1. Centralized Core Initialization (Encapsulates Storage, Bus, Net, Crash, I18n, Nav, Error)
+    await Core.init(
+      CoreConfig(
+        // Storage Configuration
+        storagePrefix: "${AppConstants.appName}_",
+        // Configure Global Event Bus logging
+        onEventFired: (event) => appLogger.d('EventBus: [FIRE] -> $event'),
+        // Inject Core Architecture capability providers
+        initialProviders: [
+          const LoadingProviderImpl(),
+          const MessageProviderImpl(),
+          const NavigationProviderImpl(),
+          const LogoutProviderImpl(),
+        ],
+        // Link Core Network to Shared Auth Logic
+        apiDelegate: _ApiAuthHandlerImpl(),
+        // Configure Crash Protection (Safe Mode)
+        safeModeConfig: SafeModeConfig(
+          onReset: () async {
+            await settingManager.resetSettings();
+            AppNav.offAll(Routes.home);
+            CommonToast.show(I18nKeys.safetyResetMsg.tr, type: ToastType.error);
+          },
+        ),
+        // Pass Environment configurations
+        envConfigs: EnvConfigs.values,
+        // Localization Configuration
+        i18nData: {AppLanguage.chinese.locale.languageCode: zh, AppLanguage.japanese.locale.languageCode: ja},
+        languageCodeProvider: () => settingManager.locale.languageCode,
+        // Navigation & Auth Interception Logic
+        routes: Routes.routes,
+        isGuestCheck: () => authManager.state.isGuest,
+        onLoginRedirect: (context) async {
+          final result = await AppNav.to(Routes.login);
+          return result == true;
+        },
+        onLoginSuccessCallback: () => CommonToast.show(I18nKeys.loginSuccess.tr),
+        onShowLoginDialogCallback: (context) async {
+          final result = await CommonDialog.showConfirm(
+            title: I18nKeys.loginLink.tr,
+            message: I18nKeys.signInToContinue.tr,
+          );
+          return result == true;
         },
       ),
     );
 
-    // 4. Environment Configuration
-    await AppEnv.init(EnvConfigs.values);
-
-    // 5. Localization & Translation Engine
-    Translations.register(
-      data: {AppLanguage.chinese.locale.languageCode: zh, AppLanguage.japanese.locale.languageCode: ja},
-      languageCodeProvider: () => settingManager.locale.languageCode,
-    );
-
-    // 6. Global Managers Initialization
+    // 2. Shared Layer Services Initialization
     QuickActionsManager.init();
     settingManager.loadSettings();
-
-    // 7. UIKit Styling & Internationalization
     UIKitConfig.setup(stringProvider: (key) => key.tr);
-  }
-
-  /// Injects shared layer data fetching logic into the core network engine.
-  static void _setupNetworkBridge() {
-    // Assign the concrete implementation of the authentication and tracing handler.
-    ApiClient.init(_ApiAuthHandlerImpl());
-  }
-
-  /// Registers global navigation interceptors and auth redirects.
-  static void _setupNavConfig() {
-    AppNavConfig.register(
-      routes: Routes.routes,
-      isGuest: () => authManager.state.isGuest,
-      onLogin: (context) async {
-        final result = await AppNav.to(Routes.login);
-        return result == true;
-      },
-      onLoginSuccess: () => CommonToast.show(I18nKeys.loginSuccess.tr),
-      onShowLoginDialog: (context) async {
-        final result = await CommonDialog.showConfirm(
-          title: I18nKeys.loginLink.tr,
-          message: I18nKeys.signInToContinue.tr,
-        );
-        return result == true;
-      },
-    );
-  }
-
-  /// Configures global error capturing for both Flutter and Platform errors.
-  static void _setupErrorHandlers() {
-    FlutterError.onError = (details) {
-      FlutterError.presentError(details);
-      Zone.current.handleUncaughtError(details, details.stack!);
-    };
-
-    PlatformDispatcher.instance.onError = (error, stack) {
-      Zone.current.handleUncaughtError(error, stack);
-      return true;
-    };
-  }
-
-  /// Standardized global error handler for the Zone.
-  static Future<void> handleGlobalError(Object error, StackTrace stack) async {
-    // 1. PERSIST CRASH DATA LOCALLY
-    final filePath = await CrashManager.saveCrashLog(error, stack);
-
-    // 2. Show a singleton global crash alert dialog
-    final context = AppNavConfig.context;
-    if (context != null && filePath != null) {
-      final confirmed = await CommonDialog.showConfirm(
-        tag: "globalErrorDialog",
-        title: I18nKeys.appCrashed.tr,
-        message: I18nKeys.crashDetectedMsg.tr,
-        okText: I18nKeys.viewReport.tr,
-        cancelText: I18nKeys.dismiss.tr,
-      );
-
-      if (confirmed == true) {
-        AppNav.to(Routes.crashLogs, arguments: {Routes.argFilePath: filePath});
-      }
-    }
   }
 }
 
