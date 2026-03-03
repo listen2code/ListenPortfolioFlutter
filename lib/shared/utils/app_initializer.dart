@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/provider/auth_provider.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
-import 'package:listen_uikit/uikit.dart';
+import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 
 /// A central class to handle all application-wide initializations.
 /// This acts as the 'Composition Root' where core interfaces are tied to shared implementations.
@@ -14,6 +14,7 @@ class AppInitializer {
   AppInitializer._();
 
   /// Executes all initialization steps in order.
+  /// [container] is the Riverpod container to be used for dependency resolution.
   static Future<void> init(ProviderContainer container) async {
     // 1. Initialize Infrastructure & Core Module (Including Nav & Error Hooks)
     await _initCore(container);
@@ -71,7 +72,7 @@ class AppInitializer {
     // 2. Shared Layer Services Initialization
     QuickActionsManager.init();
     settingManager.loadSettings();
-    UIKitConfig.setup(stringProvider: (key) => key.tr);
+    UIKitConfig.init(stringProvider: (key) => key.tr);
   }
 }
 
@@ -84,7 +85,7 @@ class _ApiAuthHandlerImpl implements IApiInterceptorDelegate {
   @override
   Future<bool> onRefreshToken() async {
     try {
-      // Use the injected container to read the repository
+      // Use the local container reference instead of a static one.
       final repository = await container.read(authRepositoryProvider.future);
       final result = await repository.refreshToken();
       return result.isRight();
