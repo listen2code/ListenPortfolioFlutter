@@ -10,7 +10,9 @@ abstract class BaseState {
   const BaseState();
 }
 
-abstract class BaseIntent {}
+abstract class BaseIntent {
+  const BaseIntent();
+}
 
 /// Interface for any object that maintains a reactive state.
 abstract class IStateOwner<S> {

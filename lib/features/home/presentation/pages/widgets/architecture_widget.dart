@@ -72,7 +72,6 @@ class ArchitectureWidget extends StatelessWidget {
   }
 
   Widget _buildSourceCodeSection(BuildContext context) {
-    final accentColor = context.accentColor;
     return _buildCard(
       context,
       title: I18nKeys.openSourceTitle.tr,

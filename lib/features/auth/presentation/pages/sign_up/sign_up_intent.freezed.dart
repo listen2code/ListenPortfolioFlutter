@@ -204,8 +204,8 @@ return navigateToLogin();case _:
 /// @nodoc
 
 
-class _FullNameChanged implements SignUpIntent {
-  const _FullNameChanged(this.name);
+class _FullNameChanged extends SignUpIntent {
+  const _FullNameChanged(this.name): super._();
   
 
  final  String name;
@@ -270,8 +270,8 @@ as String,
 /// @nodoc
 
 
-class _EmailChanged implements SignUpIntent {
-  const _EmailChanged(this.email);
+class _EmailChanged extends SignUpIntent {
+  const _EmailChanged(this.email): super._();
   
 
  final  String email;
@@ -336,8 +336,8 @@ as String,
 /// @nodoc
 
 
-class _PasswordChanged implements SignUpIntent {
-  const _PasswordChanged(this.password);
+class _PasswordChanged extends SignUpIntent {
+  const _PasswordChanged(this.password): super._();
   
 
  final  String password;
@@ -402,8 +402,8 @@ as String,
 /// @nodoc
 
 
-class _ConfirmPasswordChanged implements SignUpIntent {
-  const _ConfirmPasswordChanged(this.password);
+class _ConfirmPasswordChanged extends SignUpIntent {
+  const _ConfirmPasswordChanged(this.password): super._();
   
 
  final  String password;
@@ -468,8 +468,8 @@ as String,
 /// @nodoc
 
 
-class _SubmitSignUp implements SignUpIntent {
-  const _SubmitSignUp();
+class _SubmitSignUp extends SignUpIntent {
+  const _SubmitSignUp(): super._();
   
 
 
@@ -500,8 +500,8 @@ String toString() {
 /// @nodoc
 
 
-class _NavigateToLogin implements SignUpIntent {
-  const _NavigateToLogin();
+class _NavigateToLogin extends SignUpIntent {
+  const _NavigateToLogin(): super._();
   
 
 

@@ -55,17 +55,17 @@ extension LoginIntentPatterns on LoginIntent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( UsernameChanged value)?  usernameChanged,TResult Function( PasswordChanged value)?  passwordChanged,TResult Function( TogglePasswordVisibility value)?  togglePasswordVisibility,TResult Function( ToggleRememberMe value)?  toggleRememberMe,TResult Function( SubmitLogin value)?  submitLogin,TResult Function( NavigateToSignup value)?  navigateToSignup,TResult Function( NavigateToForgotPassword value)?  navigateToForgotPassword,TResult Function( SkipLogin value)?  skipLogin,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _UsernameChanged value)?  usernameChanged,TResult Function( _PasswordChanged value)?  passwordChanged,TResult Function( _TogglePasswordVisibility value)?  togglePasswordVisibility,TResult Function( _ToggleRememberMe value)?  toggleRememberMe,TResult Function( _SubmitLogin value)?  submitLogin,TResult Function( _NavigateToSignup value)?  navigateToSignup,TResult Function( _NavigateToForgotPassword value)?  navigateToForgotPassword,TResult Function( _SkipLogin value)?  skipLogin,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case UsernameChanged() when usernameChanged != null:
-return usernameChanged(_that);case PasswordChanged() when passwordChanged != null:
-return passwordChanged(_that);case TogglePasswordVisibility() when togglePasswordVisibility != null:
-return togglePasswordVisibility(_that);case ToggleRememberMe() when toggleRememberMe != null:
-return toggleRememberMe(_that);case SubmitLogin() when submitLogin != null:
-return submitLogin(_that);case NavigateToSignup() when navigateToSignup != null:
-return navigateToSignup(_that);case NavigateToForgotPassword() when navigateToForgotPassword != null:
-return navigateToForgotPassword(_that);case SkipLogin() when skipLogin != null:
+case _UsernameChanged() when usernameChanged != null:
+return usernameChanged(_that);case _PasswordChanged() when passwordChanged != null:
+return passwordChanged(_that);case _TogglePasswordVisibility() when togglePasswordVisibility != null:
+return togglePasswordVisibility(_that);case _ToggleRememberMe() when toggleRememberMe != null:
+return toggleRememberMe(_that);case _SubmitLogin() when submitLogin != null:
+return submitLogin(_that);case _NavigateToSignup() when navigateToSignup != null:
+return navigateToSignup(_that);case _NavigateToForgotPassword() when navigateToForgotPassword != null:
+return navigateToForgotPassword(_that);case _SkipLogin() when skipLogin != null:
 return skipLogin(_that);case _:
   return orElse();
 
@@ -84,17 +84,17 @@ return skipLogin(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( UsernameChanged value)  usernameChanged,required TResult Function( PasswordChanged value)  passwordChanged,required TResult Function( TogglePasswordVisibility value)  togglePasswordVisibility,required TResult Function( ToggleRememberMe value)  toggleRememberMe,required TResult Function( SubmitLogin value)  submitLogin,required TResult Function( NavigateToSignup value)  navigateToSignup,required TResult Function( NavigateToForgotPassword value)  navigateToForgotPassword,required TResult Function( SkipLogin value)  skipLogin,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _UsernameChanged value)  usernameChanged,required TResult Function( _PasswordChanged value)  passwordChanged,required TResult Function( _TogglePasswordVisibility value)  togglePasswordVisibility,required TResult Function( _ToggleRememberMe value)  toggleRememberMe,required TResult Function( _SubmitLogin value)  submitLogin,required TResult Function( _NavigateToSignup value)  navigateToSignup,required TResult Function( _NavigateToForgotPassword value)  navigateToForgotPassword,required TResult Function( _SkipLogin value)  skipLogin,}){
 final _that = this;
 switch (_that) {
-case UsernameChanged():
-return usernameChanged(_that);case PasswordChanged():
-return passwordChanged(_that);case TogglePasswordVisibility():
-return togglePasswordVisibility(_that);case ToggleRememberMe():
-return toggleRememberMe(_that);case SubmitLogin():
-return submitLogin(_that);case NavigateToSignup():
-return navigateToSignup(_that);case NavigateToForgotPassword():
-return navigateToForgotPassword(_that);case SkipLogin():
+case _UsernameChanged():
+return usernameChanged(_that);case _PasswordChanged():
+return passwordChanged(_that);case _TogglePasswordVisibility():
+return togglePasswordVisibility(_that);case _ToggleRememberMe():
+return toggleRememberMe(_that);case _SubmitLogin():
+return submitLogin(_that);case _NavigateToSignup():
+return navigateToSignup(_that);case _NavigateToForgotPassword():
+return navigateToForgotPassword(_that);case _SkipLogin():
 return skipLogin(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -112,17 +112,17 @@ return skipLogin(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( UsernameChanged value)?  usernameChanged,TResult? Function( PasswordChanged value)?  passwordChanged,TResult? Function( TogglePasswordVisibility value)?  togglePasswordVisibility,TResult? Function( ToggleRememberMe value)?  toggleRememberMe,TResult? Function( SubmitLogin value)?  submitLogin,TResult? Function( NavigateToSignup value)?  navigateToSignup,TResult? Function( NavigateToForgotPassword value)?  navigateToForgotPassword,TResult? Function( SkipLogin value)?  skipLogin,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _UsernameChanged value)?  usernameChanged,TResult? Function( _PasswordChanged value)?  passwordChanged,TResult? Function( _TogglePasswordVisibility value)?  togglePasswordVisibility,TResult? Function( _ToggleRememberMe value)?  toggleRememberMe,TResult? Function( _SubmitLogin value)?  submitLogin,TResult? Function( _NavigateToSignup value)?  navigateToSignup,TResult? Function( _NavigateToForgotPassword value)?  navigateToForgotPassword,TResult? Function( _SkipLogin value)?  skipLogin,}){
 final _that = this;
 switch (_that) {
-case UsernameChanged() when usernameChanged != null:
-return usernameChanged(_that);case PasswordChanged() when passwordChanged != null:
-return passwordChanged(_that);case TogglePasswordVisibility() when togglePasswordVisibility != null:
-return togglePasswordVisibility(_that);case ToggleRememberMe() when toggleRememberMe != null:
-return toggleRememberMe(_that);case SubmitLogin() when submitLogin != null:
-return submitLogin(_that);case NavigateToSignup() when navigateToSignup != null:
-return navigateToSignup(_that);case NavigateToForgotPassword() when navigateToForgotPassword != null:
-return navigateToForgotPassword(_that);case SkipLogin() when skipLogin != null:
+case _UsernameChanged() when usernameChanged != null:
+return usernameChanged(_that);case _PasswordChanged() when passwordChanged != null:
+return passwordChanged(_that);case _TogglePasswordVisibility() when togglePasswordVisibility != null:
+return togglePasswordVisibility(_that);case _ToggleRememberMe() when toggleRememberMe != null:
+return toggleRememberMe(_that);case _SubmitLogin() when submitLogin != null:
+return submitLogin(_that);case _NavigateToSignup() when navigateToSignup != null:
+return navigateToSignup(_that);case _NavigateToForgotPassword() when navigateToForgotPassword != null:
+return navigateToForgotPassword(_that);case _SkipLogin() when skipLogin != null:
 return skipLogin(_that);case _:
   return null;
 
@@ -142,14 +142,14 @@ return skipLogin(_that);case _:
 
 @optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String username)?  usernameChanged,TResult Function( String password)?  passwordChanged,TResult Function()?  togglePasswordVisibility,TResult Function()?  toggleRememberMe,TResult Function()?  submitLogin,TResult Function()?  navigateToSignup,TResult Function()?  navigateToForgotPassword,TResult Function()?  skipLogin,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case UsernameChanged() when usernameChanged != null:
-return usernameChanged(_that.username);case PasswordChanged() when passwordChanged != null:
-return passwordChanged(_that.password);case TogglePasswordVisibility() when togglePasswordVisibility != null:
-return togglePasswordVisibility();case ToggleRememberMe() when toggleRememberMe != null:
-return toggleRememberMe();case SubmitLogin() when submitLogin != null:
-return submitLogin();case NavigateToSignup() when navigateToSignup != null:
-return navigateToSignup();case NavigateToForgotPassword() when navigateToForgotPassword != null:
-return navigateToForgotPassword();case SkipLogin() when skipLogin != null:
+case _UsernameChanged() when usernameChanged != null:
+return usernameChanged(_that.username);case _PasswordChanged() when passwordChanged != null:
+return passwordChanged(_that.password);case _TogglePasswordVisibility() when togglePasswordVisibility != null:
+return togglePasswordVisibility();case _ToggleRememberMe() when toggleRememberMe != null:
+return toggleRememberMe();case _SubmitLogin() when submitLogin != null:
+return submitLogin();case _NavigateToSignup() when navigateToSignup != null:
+return navigateToSignup();case _NavigateToForgotPassword() when navigateToForgotPassword != null:
+return navigateToForgotPassword();case _SkipLogin() when skipLogin != null:
 return skipLogin();case _:
   return orElse();
 
@@ -170,14 +170,14 @@ return skipLogin();case _:
 
 @optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String username)  usernameChanged,required TResult Function( String password)  passwordChanged,required TResult Function()  togglePasswordVisibility,required TResult Function()  toggleRememberMe,required TResult Function()  submitLogin,required TResult Function()  navigateToSignup,required TResult Function()  navigateToForgotPassword,required TResult Function()  skipLogin,}) {final _that = this;
 switch (_that) {
-case UsernameChanged():
-return usernameChanged(_that.username);case PasswordChanged():
-return passwordChanged(_that.password);case TogglePasswordVisibility():
-return togglePasswordVisibility();case ToggleRememberMe():
-return toggleRememberMe();case SubmitLogin():
-return submitLogin();case NavigateToSignup():
-return navigateToSignup();case NavigateToForgotPassword():
-return navigateToForgotPassword();case SkipLogin():
+case _UsernameChanged():
+return usernameChanged(_that.username);case _PasswordChanged():
+return passwordChanged(_that.password);case _TogglePasswordVisibility():
+return togglePasswordVisibility();case _ToggleRememberMe():
+return toggleRememberMe();case _SubmitLogin():
+return submitLogin();case _NavigateToSignup():
+return navigateToSignup();case _NavigateToForgotPassword():
+return navigateToForgotPassword();case _SkipLogin():
 return skipLogin();case _:
   throw StateError('Unexpected subclass');
 
@@ -197,14 +197,14 @@ return skipLogin();case _:
 
 @optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String username)?  usernameChanged,TResult? Function( String password)?  passwordChanged,TResult? Function()?  togglePasswordVisibility,TResult? Function()?  toggleRememberMe,TResult? Function()?  submitLogin,TResult? Function()?  navigateToSignup,TResult? Function()?  navigateToForgotPassword,TResult? Function()?  skipLogin,}) {final _that = this;
 switch (_that) {
-case UsernameChanged() when usernameChanged != null:
-return usernameChanged(_that.username);case PasswordChanged() when passwordChanged != null:
-return passwordChanged(_that.password);case TogglePasswordVisibility() when togglePasswordVisibility != null:
-return togglePasswordVisibility();case ToggleRememberMe() when toggleRememberMe != null:
-return toggleRememberMe();case SubmitLogin() when submitLogin != null:
-return submitLogin();case NavigateToSignup() when navigateToSignup != null:
-return navigateToSignup();case NavigateToForgotPassword() when navigateToForgotPassword != null:
-return navigateToForgotPassword();case SkipLogin() when skipLogin != null:
+case _UsernameChanged() when usernameChanged != null:
+return usernameChanged(_that.username);case _PasswordChanged() when passwordChanged != null:
+return passwordChanged(_that.password);case _TogglePasswordVisibility() when togglePasswordVisibility != null:
+return togglePasswordVisibility();case _ToggleRememberMe() when toggleRememberMe != null:
+return toggleRememberMe();case _SubmitLogin() when submitLogin != null:
+return submitLogin();case _NavigateToSignup() when navigateToSignup != null:
+return navigateToSignup();case _NavigateToForgotPassword() when navigateToForgotPassword != null:
+return navigateToForgotPassword();case _SkipLogin() when skipLogin != null:
 return skipLogin();case _:
   return null;
 
@@ -216,8 +216,8 @@ return skipLogin();case _:
 /// @nodoc
 
 
-class UsernameChanged implements LoginIntent {
-  const UsernameChanged(this.username);
+class _UsernameChanged extends LoginIntent {
+  const _UsernameChanged(this.username): super._();
   
 
  final  String username;
@@ -226,13 +226,13 @@ class UsernameChanged implements LoginIntent {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$UsernameChangedCopyWith<UsernameChanged> get copyWith => _$UsernameChangedCopyWithImpl<UsernameChanged>(this, _$identity);
+_$UsernameChangedCopyWith<_UsernameChanged> get copyWith => __$UsernameChangedCopyWithImpl<_UsernameChanged>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UsernameChanged&&(identical(other.username, username) || other.username == username));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UsernameChanged&&(identical(other.username, username) || other.username == username));
 }
 
 
@@ -248,8 +248,8 @@ String toString() {
 }
 
 /// @nodoc
-abstract mixin class $UsernameChangedCopyWith<$Res> implements $LoginIntentCopyWith<$Res> {
-  factory $UsernameChangedCopyWith(UsernameChanged value, $Res Function(UsernameChanged) _then) = _$UsernameChangedCopyWithImpl;
+abstract mixin class _$UsernameChangedCopyWith<$Res> implements $LoginIntentCopyWith<$Res> {
+  factory _$UsernameChangedCopyWith(_UsernameChanged value, $Res Function(_UsernameChanged) _then) = __$UsernameChangedCopyWithImpl;
 @useResult
 $Res call({
  String username
@@ -260,17 +260,17 @@ $Res call({
 
 }
 /// @nodoc
-class _$UsernameChangedCopyWithImpl<$Res>
-    implements $UsernameChangedCopyWith<$Res> {
-  _$UsernameChangedCopyWithImpl(this._self, this._then);
+class __$UsernameChangedCopyWithImpl<$Res>
+    implements _$UsernameChangedCopyWith<$Res> {
+  __$UsernameChangedCopyWithImpl(this._self, this._then);
 
-  final UsernameChanged _self;
-  final $Res Function(UsernameChanged) _then;
+  final _UsernameChanged _self;
+  final $Res Function(_UsernameChanged) _then;
 
 /// Create a copy of LoginIntent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? username = null,}) {
-  return _then(UsernameChanged(
+  return _then(_UsernameChanged(
 null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -282,8 +282,8 @@ as String,
 /// @nodoc
 
 
-class PasswordChanged implements LoginIntent {
-  const PasswordChanged(this.password);
+class _PasswordChanged extends LoginIntent {
+  const _PasswordChanged(this.password): super._();
   
 
  final  String password;
@@ -292,13 +292,13 @@ class PasswordChanged implements LoginIntent {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$PasswordChangedCopyWith<PasswordChanged> get copyWith => _$PasswordChangedCopyWithImpl<PasswordChanged>(this, _$identity);
+_$PasswordChangedCopyWith<_PasswordChanged> get copyWith => __$PasswordChangedCopyWithImpl<_PasswordChanged>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PasswordChanged&&(identical(other.password, password) || other.password == password));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PasswordChanged&&(identical(other.password, password) || other.password == password));
 }
 
 
@@ -314,8 +314,8 @@ String toString() {
 }
 
 /// @nodoc
-abstract mixin class $PasswordChangedCopyWith<$Res> implements $LoginIntentCopyWith<$Res> {
-  factory $PasswordChangedCopyWith(PasswordChanged value, $Res Function(PasswordChanged) _then) = _$PasswordChangedCopyWithImpl;
+abstract mixin class _$PasswordChangedCopyWith<$Res> implements $LoginIntentCopyWith<$Res> {
+  factory _$PasswordChangedCopyWith(_PasswordChanged value, $Res Function(_PasswordChanged) _then) = __$PasswordChangedCopyWithImpl;
 @useResult
 $Res call({
  String password
@@ -326,17 +326,17 @@ $Res call({
 
 }
 /// @nodoc
-class _$PasswordChangedCopyWithImpl<$Res>
-    implements $PasswordChangedCopyWith<$Res> {
-  _$PasswordChangedCopyWithImpl(this._self, this._then);
+class __$PasswordChangedCopyWithImpl<$Res>
+    implements _$PasswordChangedCopyWith<$Res> {
+  __$PasswordChangedCopyWithImpl(this._self, this._then);
 
-  final PasswordChanged _self;
-  final $Res Function(PasswordChanged) _then;
+  final _PasswordChanged _self;
+  final $Res Function(_PasswordChanged) _then;
 
 /// Create a copy of LoginIntent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? password = null,}) {
-  return _then(PasswordChanged(
+  return _then(_PasswordChanged(
 null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -348,8 +348,8 @@ as String,
 /// @nodoc
 
 
-class TogglePasswordVisibility implements LoginIntent {
-  const TogglePasswordVisibility();
+class _TogglePasswordVisibility extends LoginIntent {
+  const _TogglePasswordVisibility(): super._();
   
 
 
@@ -359,7 +359,7 @@ class TogglePasswordVisibility implements LoginIntent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TogglePasswordVisibility);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TogglePasswordVisibility);
 }
 
 
@@ -380,8 +380,8 @@ String toString() {
 /// @nodoc
 
 
-class ToggleRememberMe implements LoginIntent {
-  const ToggleRememberMe();
+class _ToggleRememberMe extends LoginIntent {
+  const _ToggleRememberMe(): super._();
   
 
 
@@ -391,7 +391,7 @@ class ToggleRememberMe implements LoginIntent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ToggleRememberMe);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ToggleRememberMe);
 }
 
 
@@ -412,8 +412,8 @@ String toString() {
 /// @nodoc
 
 
-class SubmitLogin implements LoginIntent {
-  const SubmitLogin();
+class _SubmitLogin extends LoginIntent {
+  const _SubmitLogin(): super._();
   
 
 
@@ -423,7 +423,7 @@ class SubmitLogin implements LoginIntent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubmitLogin);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SubmitLogin);
 }
 
 
@@ -444,8 +444,8 @@ String toString() {
 /// @nodoc
 
 
-class NavigateToSignup implements LoginIntent {
-  const NavigateToSignup();
+class _NavigateToSignup extends LoginIntent {
+  const _NavigateToSignup(): super._();
   
 
 
@@ -455,7 +455,7 @@ class NavigateToSignup implements LoginIntent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NavigateToSignup);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NavigateToSignup);
 }
 
 
@@ -476,8 +476,8 @@ String toString() {
 /// @nodoc
 
 
-class NavigateToForgotPassword implements LoginIntent {
-  const NavigateToForgotPassword();
+class _NavigateToForgotPassword extends LoginIntent {
+  const _NavigateToForgotPassword(): super._();
   
 
 
@@ -487,7 +487,7 @@ class NavigateToForgotPassword implements LoginIntent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NavigateToForgotPassword);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NavigateToForgotPassword);
 }
 
 
@@ -508,8 +508,8 @@ String toString() {
 /// @nodoc
 
 
-class SkipLogin implements LoginIntent {
-  const SkipLogin();
+class _SkipLogin extends LoginIntent {
+  const _SkipLogin(): super._();
   
 
 
@@ -519,7 +519,7 @@ class SkipLogin implements LoginIntent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SkipLogin);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SkipLogin);
 }
 
 

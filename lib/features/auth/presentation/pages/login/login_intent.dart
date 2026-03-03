@@ -4,13 +4,14 @@ import 'package:listen_portfolio_flutter/core/core.dart';
 part 'login_intent.freezed.dart';
 
 @freezed
-class LoginIntent with _$LoginIntent implements BaseIntent {
-  const factory LoginIntent.usernameChanged(String username) = UsernameChanged;
-  const factory LoginIntent.passwordChanged(String password) = PasswordChanged;
-  const factory LoginIntent.togglePasswordVisibility() = TogglePasswordVisibility;
-  const factory LoginIntent.toggleRememberMe() = ToggleRememberMe;
-  const factory LoginIntent.submitLogin() = SubmitLogin;
-  const factory LoginIntent.navigateToSignup() = NavigateToSignup;
-  const factory LoginIntent.navigateToForgotPassword() = NavigateToForgotPassword;
-  const factory LoginIntent.skipLogin() = SkipLogin;
+abstract class LoginIntent extends BaseIntent with _$LoginIntent {
+  const factory LoginIntent.usernameChanged(String username) = _UsernameChanged;
+  const factory LoginIntent.passwordChanged(String password) = _PasswordChanged;
+  const factory LoginIntent.togglePasswordVisibility() = _TogglePasswordVisibility;
+  const factory LoginIntent.toggleRememberMe() = _ToggleRememberMe;
+  const factory LoginIntent.submitLogin() = _SubmitLogin;
+  const factory LoginIntent.navigateToSignup() = _NavigateToSignup;
+  const factory LoginIntent.navigateToForgotPassword() = _NavigateToForgotPassword;
+  const factory LoginIntent.skipLogin() = _SkipLogin;
+  const LoginIntent._();
 }

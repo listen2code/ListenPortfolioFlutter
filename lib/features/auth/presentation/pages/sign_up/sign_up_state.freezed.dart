@@ -212,8 +212,8 @@ return $default(_that.fullName,_that.email,_that.password,_that.confirmPassword,
 /// @nodoc
 
 
-class _SignUpState implements SignUpState {
-  const _SignUpState({this.fullName = '', this.email = '', this.password = '', this.confirmPassword = '', this.fullNameError, this.emailError, this.passwordError, this.confirmPasswordError});
+class _SignUpState extends SignUpState {
+  const _SignUpState({this.fullName = '', this.email = '', this.password = '', this.confirmPassword = '', this.fullNameError, this.emailError, this.passwordError, this.confirmPasswordError}): super._();
   
 
 @override@JsonKey() final  String fullName;

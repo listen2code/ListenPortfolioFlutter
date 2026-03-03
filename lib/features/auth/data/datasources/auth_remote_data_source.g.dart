@@ -52,14 +52,12 @@ class _AuthRemoteDataSource implements AuthRemoteDataSource {
   }
 
   @override
-  Future<BaseResponseModel<UserModel>> signUp(
-    SignupRequestModel request,
-  ) async {
+  Future<BaseResponseModel<void>> signUp(SignupRequestModel request) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = request;
-    final _options = _setStreamType<BaseResponseModel<UserModel>>(
+    final _options = _setStreamType<BaseResponseModel<void>>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -70,11 +68,11 @@ class _AuthRemoteDataSource implements AuthRemoteDataSource {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late BaseResponseModel<UserModel> _value;
+    late BaseResponseModel<void> _value;
     try {
-      _value = BaseResponseModel<UserModel>.fromJson(
+      _value = BaseResponseModel<void>.fromJson(
         _result.data!,
-        (json) => UserModel.fromJson(json as Map<String, dynamic>),
+        (json) => () {}(),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);

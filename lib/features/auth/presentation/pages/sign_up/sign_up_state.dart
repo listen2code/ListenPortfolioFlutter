@@ -4,7 +4,7 @@ import 'package:listen_portfolio_flutter/core/core.dart';
 part 'sign_up_state.freezed.dart';
 
 @freezed
-abstract class SignUpState with _$SignUpState implements BaseState {
+abstract class SignUpState extends BaseState with _$SignUpState {
   const factory SignUpState({
     @Default('') String fullName,
     @Default('') String email,
@@ -15,4 +15,5 @@ abstract class SignUpState with _$SignUpState implements BaseState {
     String? passwordError,
     String? confirmPasswordError,
   }) = _SignUpState;
+  const SignUpState._();
 }
