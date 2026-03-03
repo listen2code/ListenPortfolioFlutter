@@ -5,6 +5,7 @@ export 'widgets/common_empty_view.dart';
 export 'widgets/common_image.dart';
 export 'widgets/common_ink_well.dart';
 export 'widgets/common_loading.dart';
+export 'widgets/common_skeleton.dart';
 export 'widgets/common_switch.dart';
 export 'widgets/common_text.dart';
 export 'widgets/common_text_field.dart';

@@ -42,6 +42,9 @@ class BasePage<V extends BaseViewModel, S extends BaseState> extends ConsumerWid
   /// Callback for handling custom business side effects.
   final void Function(BaseEffect effect)? onEffect;
 
+  /// A widget to display when the page is in a loading state (e.g., a Skeleton screen).
+  final Widget? onLoading;
+
   const BasePage({
     super.key,
     required this.body,
@@ -66,6 +69,7 @@ class BasePage<V extends BaseViewModel, S extends BaseState> extends ConsumerWid
     this.provider,
     this.viewModel,
     this.onEffect,
+    this.onLoading,
   });
 
   @override
@@ -100,6 +104,7 @@ class BasePage<V extends BaseViewModel, S extends BaseState> extends ConsumerWid
       onInterceptBack: onInterceptBack,
       viewModel: effectiveViewModel,
       onEffect: onEffect,
+      onLoading: onLoading,
     );
   }
 }

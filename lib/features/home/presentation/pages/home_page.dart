@@ -50,6 +50,7 @@ class _HomePageState extends State<HomePage> {
         }
       },
       child: BasePage(
+        onLoading: _buildOverviewSkeleton(context),
         title: _getPageTitle(),
         drawer: _buildDrawer(),
         body: (context, viewModel, state, child) => _buildBody(),
@@ -316,6 +317,59 @@ class _HomePageState extends State<HomePage> {
             }
           },
         ),
+      ),
+    );
+  }
+
+  Widget _buildOverviewSkeleton(BuildContext context) {
+    return SingleChildScrollView(
+      padding: EdgeInsets.symmetric(horizontal: 20.f, vertical: 20.f),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header Skeleton (Title and Subtitle)
+          CommonSkeleton.line(width: 180.f, height: 28.f),
+          SizedBox(height: 12.f),
+          CommonSkeleton.line(width: 260.f, height: 16.f),
+          SizedBox(height: 8.f),
+          Row(
+            children: [
+              CommonSkeleton(width: 60.f, height: 20.f, borderRadius: 6.f),
+              SizedBox(width: 8.f),
+              CommonSkeleton(width: 60.f, height: 20.f, borderRadius: 6.f),
+            ],
+          ),
+
+          SizedBox(height: 24.f),
+          // Status Tag Skeleton
+          CommonSkeleton(width: 120.f, height: 24.f, borderRadius: 20.f),
+
+          SizedBox(height: 32.f),
+          // Experience Grid Skeleton
+          CommonSkeleton(width: double.infinity, height: 100.f, borderRadius: 20.f),
+          SizedBox(height: 12.f),
+          Row(
+            children: [
+              Expanded(
+                child: CommonSkeleton(height: 80.f, borderRadius: 20.f),
+              ),
+              SizedBox(width: 12.f),
+              Expanded(
+                child: CommonSkeleton(height: 80.f, borderRadius: 20.f),
+              ),
+            ],
+          ),
+
+          SizedBox(height: 40.f),
+          // Section Header Skeleton
+          CommonSkeleton.line(width: 120.f, height: 20.f),
+          SizedBox(height: 16.f),
+
+          // List Items Skeleton (Using the helper class)
+          const CommonSkeletonListTile(),
+          const CommonSkeletonListTile(),
+          const CommonSkeletonListTile(),
+        ],
       ),
     );
   }

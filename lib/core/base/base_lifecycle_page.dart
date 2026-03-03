@@ -44,6 +44,10 @@ class BaseLifeCyclePage extends StatefulWidget {
   /// Optional callback to handle custom UI effects.
   final void Function(BaseEffect effect)? onEffect;
 
+  /// A widget to display when the page is in a loading state (e.g., a Skeleton screen).
+  /// If provided, it will automatically replace the body when the page is loading.
+  final Widget? onLoading;
+
   const BaseLifeCyclePage({
     super.key,
     required this.body,
@@ -68,6 +72,7 @@ class BaseLifeCyclePage extends StatefulWidget {
     this.onInterceptBack,
     this.viewModel,
     this.onEffect,
+    this.onLoading,
   });
 
   @override
@@ -207,6 +212,11 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
         // Effective canPop: user's canPop (default true) and not loading
         final effectiveCanPop = (widget.canPop ?? true) && !_isInternalLoading.value;
 
+        // Automatically switch content based on the internal loading state.
+        final Widget content = (_isInternalLoading.value && widget.onLoading != null)
+            ? widget.onLoading!
+            : widget.body(context, child);
+
         return BaseScaffoldPage(
           title: widget.title,
           actions: widget.actions,
@@ -234,7 +244,7 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
               _viewModel?.emitEffect(LoadingEffect(false));
             }
           },
-          child: widget.body(context, child),
+          child: content,
         );
       },
     );
