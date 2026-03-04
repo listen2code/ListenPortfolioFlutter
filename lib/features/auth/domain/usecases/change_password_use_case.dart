@@ -2,7 +2,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/repositories/auth_repository.dart';
 
-/// Use case for changing user password
+/// Use case for updating the user password
 class ChangePasswordUseCase implements UseCase<void, ChangePasswordParams> {
   final AuthRepository repository;
 
@@ -10,18 +10,9 @@ class ChangePasswordUseCase implements UseCase<void, ChangePasswordParams> {
 
   @override
   Future<Either<Failure, void>> call(ChangePasswordParams params) async {
-    // Business logic validation
-    if (params.oldPassword.isEmpty) {
-      return const Left(ValidationFailure('Current password cannot be empty'));
-    }
-    if (params.newPassword.isEmpty) {
-      return const Left(ValidationFailure('New password cannot be empty'));
-    }
-    if (params.newPassword.length < 6) {
-      return const Left(ValidationFailure('New password must be at least 6 characters'));
-    }
-    if (params.oldPassword == params.newPassword) {
-      return const Left(ValidationFailure('New password must be different from current password'));
+    // Level 2 Validation: Business logic validation
+    if (params.newPassword == params.oldPassword) {
+      return const Left(ValidationFailure('New password cannot be the same as the old one'));
     }
 
     return await repository.changePassword(oldPassword: params.oldPassword, newPassword: params.newPassword);

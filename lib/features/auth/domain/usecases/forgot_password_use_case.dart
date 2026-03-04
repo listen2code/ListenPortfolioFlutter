@@ -2,7 +2,8 @@ import 'package:fpdart/fpdart.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/repositories/auth_repository.dart';
 
-/// Use case for password reset
+/// Use case for password reset.
+/// Orchestrates the forgot password flow through the repository.
 class ForgotPasswordUseCase implements UseCase<void, ForgotPasswordParams> {
   final AuthRepository repository;
 
@@ -10,14 +11,8 @@ class ForgotPasswordUseCase implements UseCase<void, ForgotPasswordParams> {
 
   @override
   Future<Either<Failure, void>> call(ForgotPasswordParams params) async {
-    // Business logic validation
-    if (params.email.isEmpty) {
-      return const Left(ValidationFailure('Email cannot be empty'));
-    }
-    if (!params.email.contains('@')) {
-      return const Left(ValidationFailure('Invalid email format'));
-    }
-
+    // Basic validations are handled at Level 1 (ViewModel).
+    // This UseCase handles the domain logic execution.
     return await repository.forgotPassword(email: params.email);
   }
 }

@@ -12,26 +12,18 @@ class LoginUseCase implements UseCase<UserModel?, LoginParams> {
 
   @override
   Future<Either<Failure, UserModel?>> call(LoginParams params) async {
-    // 1. Business logic validation
-    if (params.username.isEmpty) {
-      return const Left(ValidationFailure('Username cannot be empty'));
-    }
-    if (params.password.length < 6) {
-      return const Left(ValidationFailure('Password must be at least 6 characters'));
-    }
-
-    // 2. Perform Login (Authentication)
+    // 1. Perform Login (Authentication)
     final loginResult = await repository.login(username: params.username, password: params.password);
 
-    // 3. If login successful, fetch the complete user profile immediately.
-    // We use fold or flatMap to chain the next operation.
-    return loginResult.fold(
-      (failure) => Left(failure), // If authentication fails, return failure
-      (response) async {
-        // If authentication succeeds, get the full user data
-        return await repository.getCurrentUser(userId: response?.userId ?? "");
-      },
-    );
+    // 2. Orchestration: If login successful, fetch the complete user profile immediately.
+    return loginResult.fold((failure) => Left(failure), (response) async {
+      final userId = response?.userId ?? "";
+      if (userId.isEmpty) {
+        return const Left(ServerFailure('User ID is missing in response'));
+      }
+      // Chain the next operation to get full user data
+      return await repository.getCurrentUser(userId: userId);
+    });
   }
 }
 
