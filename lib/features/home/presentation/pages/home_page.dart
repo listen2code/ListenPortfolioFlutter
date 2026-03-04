@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_intent.dart';
+import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_state.dart';
+import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_view_model.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/widgets/about_me_widget.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/widgets/architecture_widget.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/widgets/overview_widget.dart';
@@ -7,72 +11,53 @@ import 'package:listen_portfolio_flutter/features/home/presentation/pages/widget
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 
-/// Enum to manage home page tabs instead of hardcoded indices
-enum HomeTab { overview, aboutMe, projects, architecture }
-
-class HomePage extends StatefulWidget {
+class HomePage extends ConsumerWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    // 1. Directly watch the reactive state and obtain the viewModel notifier
+    final state = ref.watch(homeViewModelProvider);
+    final viewModel = ref.read(homeViewModelProvider.notifier);
 
-class _HomePageState extends State<HomePage> {
-  HomeTab _currentTab = HomeTab.overview;
+    return BasePage<HomeViewModel, HomeState>(
+      provider: homeViewModelProvider,
 
-  // Get localized title based on selected tab
-  String _getPageTitle() {
-    switch (_currentTab) {
-      case HomeTab.aboutMe:
-        return I18nKeys.aboutMe.tr;
-      case HomeTab.projects:
-        return I18nKeys.featuredProjects.tr;
-      case HomeTab.architecture:
-        return I18nKeys.architecture.tr;
-      case HomeTab.overview:
-        return '';
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return PopScope(
-      // Only allow app exit when on the Overview tab and no loading is showing
-      canPop: _currentTab == HomeTab.overview && !CommonLoading.isShow,
-      onPopInvokedWithResult: (didPop, result) {
-        if (didPop) return;
-        // If loading is shown, let BaseStatelessPage handle it
-        if (CommonLoading.isShow) return;
-
-        // If not on overview, back button takes user back to overview
-        if (_currentTab != HomeTab.overview) {
-          setState(() => _currentTab = HomeTab.overview);
+      // 2. Pass static values derived from the current reactive state
+      title: state.title,
+      drawer: _buildDrawer(context, viewModel, state),
+      canPop: state.currentTab == HomeTab.overview,
+      onInterceptBack: () {
+        if (state.currentTab != HomeTab.overview) {
+          viewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.overview));
         }
       },
-      child: BasePage(
-        onLoading: _buildOverviewSkeleton(context),
-        onEmpty: CommonEmptyView(type: EmptyType.empty),
-        title: _getPageTitle(),
-        drawer: _buildDrawer(),
-        body: (context, viewModel, state, child) => _buildBody(),
-      ),
+
+      // 3. Automated View Switching (Skeleton/Empty)
+      onLoading: _buildOverviewSkeleton(context),
+      onEmpty: const CommonEmptyView(type: EmptyType.empty),
+      isEmptyTitle: false,
+
+      // 4. Content building
+      body: (context, child, viewModel, state) {
+        if (state == null) return const SizedBox.shrink();
+        return _buildBody(viewModel!, state);
+      },
     );
   }
 
-  // Render content based on current tab
-  Widget _buildBody() {
-    switch (_currentTab) {
+  Widget _buildBody(HomeViewModel viewModel, HomeState state) {
+    switch (state.currentTab) {
       case HomeTab.overview:
         return OverviewWidget(
           onResumeRequested: () {
             AppNav.tryLogin(
-              onSuccess: () {
-                setState(() => _currentTab = HomeTab.aboutMe);
-              },
+              onSuccess: () => viewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.aboutMe)),
             );
           },
-          onProjectsRequested: () => setState(() => _currentTab = HomeTab.projects),
-          onArchitectureRequested: () => setState(() => _currentTab = HomeTab.architecture),
+          onProjectsRequested: () => viewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.projects)),
+          onArchitectureRequested: () =>
+              viewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.architecture)),
         );
       case HomeTab.aboutMe:
         return const AboutMeWidget();
@@ -83,87 +68,88 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  // Build sidebar drawer
-  Widget _buildDrawer() {
+  Widget _buildDrawer(BuildContext context, HomeViewModel viewModel, HomeState state) {
     return Drawer(
       backgroundColor: context.theme.canvasColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(topRight: Radius.circular(30.f), bottomRight: Radius.circular(30.f)),
       ),
       child: BaseAuthPage(
-        builder: (BuildContext context, Widget? child) {
-          return Column(
-            children: [
-              _buildDrawerHeader(),
-              SizedBox(height: 10.f),
-              Expanded(
-                child: ListView(
-                  padding: EdgeInsets.symmetric(horizontal: 12.f),
-                  children: [
-                    _buildDrawerItem(
-                      icon: Icons.dashboard_customize_outlined,
-                      label: I18nKeys.overview.tr,
-                      isSelected: _currentTab == HomeTab.overview,
-                      onTap: () {
-                        setState(() => _currentTab = HomeTab.overview);
-                        AppNav.back();
-                      },
-                    ),
-                    _buildDrawerItem(
-                      icon: Icons.person_search_outlined,
-                      label: I18nKeys.aboutMe.tr,
-                      blurLevel: AuthBlurLevel.low,
-                      isSelected: _currentTab == HomeTab.aboutMe,
-                      onTap: () {
-                        AppNav.tryLogin(
-                          onSuccess: () {
-                            setState(() => _currentTab = HomeTab.aboutMe);
-                            AppNav.back();
-                          },
-                        );
-                      },
-                    ),
-                    _buildDrawerItem(
-                      icon: Icons.rocket_launch_outlined,
-                      label: I18nKeys.featuredProjects.tr,
-                      isSelected: _currentTab == HomeTab.projects,
-                      onTap: () {
-                        setState(() => _currentTab = HomeTab.projects);
-                        AppNav.back();
-                      },
-                    ),
-                    _buildDrawerItem(
-                      icon: Icons.account_tree_outlined,
-                      label: I18nKeys.architecture.tr,
-                      isSelected: _currentTab == HomeTab.architecture,
-                      onTap: () {
-                        setState(() => _currentTab = HomeTab.architecture);
-                        AppNav.back();
-                      },
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 10.f, horizontal: 10.f),
-                      child: Divider(color: context.theme.dividerColor.withValues(alpha: 0.1)),
-                    ),
-                    _buildDrawerItem(
-                      icon: Icons.settings_suggest_outlined,
-                      label: I18nKeys.settings.tr,
-                      onTap: () => AppNav.to(Routes.settings),
-                    ),
-                  ],
-                ),
+        builder: (context, child) => Column(
+          children: [
+            _buildDrawerHeader(context),
+            SizedBox(height: 10.f),
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.symmetric(horizontal: 12.f),
+                children: [
+                  _buildDrawerItem(
+                    context,
+                    icon: Icons.dashboard_customize_outlined,
+                    label: I18nKeys.overview.tr,
+                    isSelected: state.currentTab == HomeTab.overview,
+                    onTap: () {
+                      viewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.overview));
+                      AppNav.back();
+                    },
+                  ),
+                  _buildDrawerItem(
+                    context,
+                    icon: Icons.person_search_outlined,
+                    label: I18nKeys.aboutMe.tr,
+                    blurLevel: AuthBlurLevel.low,
+                    isSelected: state.currentTab == HomeTab.aboutMe,
+                    onTap: () {
+                      AppNav.tryLogin(
+                        onSuccess: () {
+                          viewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.aboutMe));
+                          AppNav.back();
+                        },
+                      );
+                    },
+                  ),
+                  _buildDrawerItem(
+                    context,
+                    icon: Icons.rocket_launch_outlined,
+                    label: I18nKeys.featuredProjects.tr,
+                    isSelected: state.currentTab == HomeTab.projects,
+                    onTap: () {
+                      viewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.projects));
+                      AppNav.back();
+                    },
+                  ),
+                  _buildDrawerItem(
+                    context,
+                    icon: Icons.account_tree_outlined,
+                    label: I18nKeys.architecture.tr,
+                    isSelected: state.currentTab == HomeTab.architecture,
+                    onTap: () {
+                      viewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.architecture));
+                      AppNav.back();
+                    },
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10.f, horizontal: 10.f),
+                    child: Divider(color: context.theme.dividerColor.withValues(alpha: 0.1)),
+                  ),
+                  _buildDrawerItem(
+                    context,
+                    icon: Icons.settings_suggest_outlined,
+                    label: I18nKeys.settings.tr,
+                    onTap: () => AppNav.to(Routes.settings),
+                  ),
+                ],
               ),
-              _buildLogoutButton(),
-              SizedBox(height: 20.f),
-            ],
-          );
-        },
+            ),
+            _buildLogoutButton(context, viewModel, state),
+            SizedBox(height: 20.f),
+          ],
+        ),
       ),
     );
   }
 
-  // Build drawer user profile section
-  Widget _buildDrawerHeader() {
+  Widget _buildDrawerHeader(BuildContext context) {
     final themeMode = settingManager.themeMode;
     final bool isLoggedIn = !authManager.state.isGuest;
     final accentColor = context.accentColor;
@@ -239,8 +225,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // Build individual drawer menu items
-  Widget _buildDrawerItem({
+  Widget _buildDrawerItem(
+    BuildContext context, {
     required IconData icon,
     required String label,
     bool isSelected = false,
@@ -248,7 +234,6 @@ class _HomePageState extends State<HomePage> {
     AuthBlurLevel blurLevel = AuthBlurLevel.none,
   }) {
     final accentColor = context.accentColor;
-
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 2.f),
       child: Material(
@@ -273,8 +258,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // Build Login or Logout button at the bottom of drawer
-  Widget _buildLogoutButton() {
+  Widget _buildLogoutButton(BuildContext context, HomeViewModel viewModel, HomeState state) {
     final bool isGuest = authManager.state.isGuest;
     final accentColor = context.accentColor;
     final errorColor = context.theme.colorScheme.error;
@@ -304,17 +288,7 @@ class _HomePageState extends State<HomePage> {
             if (isGuest) {
               AppNav.to(Routes.login);
             } else {
-              CommonDialog.showConfirm(title: I18nKeys.logout.tr, message: I18nKeys.logoutTips.tr).then((
-                confirmed,
-              ) {
-                if (confirmed == true) {
-                  authManager.logout();
-                  if (_currentTab == HomeTab.aboutMe) {
-                    setState(() => _currentTab = HomeTab.overview);
-                  }
-                  AppNav.to(Routes.login);
-                }
-              });
+              viewModel.handleIntent(const HomeIntent.logout());
             }
           },
         ),
@@ -328,25 +302,10 @@ class _HomePageState extends State<HomePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header Skeleton (Title and Subtitle)
           CommonSkeleton.line(width: 180.f, height: 28.f),
           SizedBox(height: 12.f),
           CommonSkeleton.line(width: 260.f, height: 16.f),
-          SizedBox(height: 8.f),
-          Row(
-            children: [
-              CommonSkeleton(width: 60.f, height: 20.f, borderRadius: 6.f),
-              SizedBox(width: 8.f),
-              CommonSkeleton(width: 60.f, height: 20.f, borderRadius: 6.f),
-            ],
-          ),
-
           SizedBox(height: 24.f),
-          // Status Tag Skeleton
-          CommonSkeleton(width: 120.f, height: 24.f, borderRadius: 20.f),
-
-          SizedBox(height: 32.f),
-          // Experience Grid Skeleton
           CommonSkeleton(width: double.infinity, height: 100.f, borderRadius: 20.f),
           SizedBox(height: 12.f),
           Row(
@@ -360,14 +319,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
-
           SizedBox(height: 40.f),
-          // Section Header Skeleton
-          CommonSkeleton.line(width: 120.f, height: 20.f),
-          SizedBox(height: 16.f),
-
-          // List Items Skeleton (Using the helper class)
-          const CommonSkeletonListTile(),
           const CommonSkeletonListTile(),
           const CommonSkeletonListTile(),
         ],
