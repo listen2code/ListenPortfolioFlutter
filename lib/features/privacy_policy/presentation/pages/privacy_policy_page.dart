@@ -1,26 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_portfolio_flutter/features/privacy_policy/presentation/pages/privacy_policy_intent.dart';
+import 'package:listen_portfolio_flutter/features/privacy_policy/presentation/pages/privacy_policy_state.dart';
+import 'package:listen_portfolio_flutter/features/privacy_policy/presentation/pages/privacy_policy_view_model.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 
-// todo details
-class PrivacyPolicyPage extends StatelessWidget {
+class PrivacyPolicyPage extends ConsumerWidget {
   const PrivacyPolicyPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return BasePage(
+  Widget build(BuildContext context, WidgetRef ref) {
+    return BasePage<PrivacyPolicyViewModel, PrivacyPolicyState>(
+      provider: privacyPolicyViewModelProvider,
       title: I18nKeys.privacyPolicy.tr,
       body: (context, child, viewModel, state) => SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(20.f),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Last Updated: May 2024',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey),
+            CommonText(
+              'Last Updated: ${state?.lastUpdated ?? ''}',
+              style: context.textTheme.bodySmall?.copyWith(color: Colors.grey),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20.f),
             _buildSection(
               context,
               '1. Information Collection',
@@ -51,7 +55,7 @@ class PrivacyPolicyPage extends StatelessWidget {
               'Contact Us',
               'If you have any questions or suggestions about our Privacy Policy, do not hesitate to contact us at listen2code@gmail.com.',
             ),
-            const SizedBox(height: 40),
+            SizedBox(height: 40.f),
           ],
         ),
       ),
@@ -60,7 +64,7 @@ class PrivacyPolicyPage extends StatelessWidget {
 
   Widget _buildSection(BuildContext context, String title, String content) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 24),
+      padding: EdgeInsets.only(bottom: 24.f),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -69,7 +73,7 @@ class PrivacyPolicyPage extends StatelessWidget {
             style: context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             maxLines: 1,
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.f),
           Text(content, style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey, height: 1.5)),
         ],
       ),
