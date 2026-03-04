@@ -11,8 +11,6 @@ class CoreConfig {
 
   // Event Bus
   final void Function(BaseEvent)? onEventFired;
-
-  // Provider Registry
   final List<BaseProvider<BaseEffect>>? initialProviders;
 
   // Network
@@ -56,46 +54,53 @@ class CoreConfig {
 class Core {
   Core._();
 
+  static late final IDeviceInfo deviceInfo;
+  static late final IPackageInfo packageInfo;
+
   /// Initializes all core utilities in the correct order.
   static Future<void> init(CoreConfig config) async {
     // 1. Setup Error Handlers (Infrastructure level)
     _setupGlobalErrorHooks();
 
-    // 2. Setup Storage
+    // 2. Setup System Information
+    deviceInfo = await DeviceInfoImpl.create();
+    packageInfo = await PackageImpl.create();
+
+    // 3. Setup Storage
     if (config.storagePrefix != null) {
       await SpUtil.init(prefix: config.storagePrefix!);
       await SecureStorageUtil.init(prefix: config.storagePrefix!);
     }
 
-    // 3. Setup Event Bus
+    // 4. Setup Event Bus
     eventBus.init(onEventFired: config.onEventFired ?? (event) => appLogger.d('EventBus: [FIRE] -> $event'));
 
-    // 4. Setup Provider Registry
+    // 5. Setup Provider Registry
     if (config.initialProviders != null) {
       ProviderRegistry.init(config.initialProviders!);
     }
 
-    // 5. Setup Network Client
+    // 6. Setup Network Client
     if (config.apiDelegate != null) {
       ApiClient.init(config.apiDelegate!);
     }
 
-    // 6. Setup Crash Protection
+    // 7. Setup Crash Protection
     if (config.safeModeConfig != null) {
       CrashManager.init(config.safeModeConfig!);
     }
 
-    // 7. Setup Environment
+    // 8. Setup Environment
     if (config.envConfigs != null) {
       await AppEnv.init(config.envConfigs!);
     }
 
-    // 8. Setup Localization
+    // 9. Setup Localization
     if (config.i18nData != null && config.languageCodeProvider != null) {
       Translations.register(data: config.i18nData!, languageCodeProvider: config.languageCodeProvider!);
     }
 
-    // 9. Setup Navigation Config
+    // 10. Setup Navigation Config
     if (config.isGuestCheck != null && config.onLoginRedirect != null) {
       AppNavConfig.register(
         routes: config.routes,
