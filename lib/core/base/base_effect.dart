@@ -81,11 +81,12 @@ class NavigationEffect extends BaseEffect {
 /// Typically emitted when an [AuthFailure] (like session timeout) occurs.
 class LogoutEffect extends BaseEffect {
   final String? message;
+  final String? to;
 
-  LogoutEffect({this.message});
+  LogoutEffect({this.message, this.to});
 
   @override
   String toString() {
-    return "LogoutEffect(message: $message)";
+    return "LogoutEffect(message: $message, to: $to)";
   }
 }

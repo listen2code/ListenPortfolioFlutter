@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_portfolio_flutter/features/auth/presentation/provider/auth_provider.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -40,11 +41,16 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
     );
 
     if (confirmed == true) {
-      authManager.logout();
-      if (state.currentTab == HomeTab.aboutMe) {
-        updateState(state.copyWith(currentTab: HomeTab.overview));
-      }
-      emitEffect(NavigationEffect(target: Routes.login));
+      await call<void>(
+        ref.execute(logoutUseCaseProvider, NoParams()),
+        showLoading: true,
+        onSuccess: (_) async {
+          if (state.currentTab == HomeTab.aboutMe) {
+            updateState(state.copyWith(currentTab: HomeTab.overview));
+          }
+          emitEffect(LogoutEffect(to: Routes.login, message: "Logout Success!"));
+        },
+      );
     }
   }
 }

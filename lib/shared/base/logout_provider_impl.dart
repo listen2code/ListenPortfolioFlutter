@@ -16,8 +16,14 @@ class LogoutProviderImpl extends BaseProvider<LogoutEffect> {
     // Await ensures credentials are cleared before the next navigation occurs
     authManager.logout();
 
-    // 3. Navigation Strategy:
-    // First, clear the entire navigation stack and reset to Home.
-    await AppNav.offAll(Routes.home);
+    if (effect.to?.isNotEmpty == true) {
+      // 3. Navigation Strategy:
+      // First, clear the entire navigation stack and reset to Home.
+      await AppNav.to(effect.to);
+    } else {
+      // 3. Navigation Strategy:
+      // First, clear the entire navigation stack and reset to Home.
+      await AppNav.offAll(Routes.home);
+    }
   }
 }
