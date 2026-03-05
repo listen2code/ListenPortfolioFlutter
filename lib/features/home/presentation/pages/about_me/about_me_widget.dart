@@ -1,100 +1,39 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_portfolio_flutter/features/home/presentation/pages/about_me/about_me_intent.dart';
+import 'package:listen_portfolio_flutter/features/home/presentation/pages/about_me/about_me_state.dart';
+import 'package:listen_portfolio_flutter/features/home/presentation/pages/about_me/about_me_view_model.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 
-class AboutMeWidget extends StatefulWidget {
-  const AboutMeWidget({super.key});
+class AboutMeWidget extends StatelessWidget {
+  final bool active;
 
-  @override
-  State<AboutMeWidget> createState() => _AboutMeWidgetState();
-}
-
-class _AboutMeWidgetState extends State<AboutMeWidget> {
-  File? _imageFile;
-  final ImagePicker _picker = ImagePicker();
-
-  Future<void> _pickImage(ImageSource source) async {
-    try {
-      final XFile? pickedFile = await _picker.pickImage(source: source);
-      if (pickedFile != null) {
-        setState(() {
-          _imageFile = File(pickedFile.path);
-        });
-      }
-    } catch (e) {
-      debugPrint('Error picking image: $e');
-    }
-  }
-
-  void _removeImage() {
-    setState(() {
-      _imageFile = null;
-    });
-  }
-
-  void _showPickerMenu() {
-    showModalBottomSheet(
-      context: context,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20.f))),
-      builder: (context) {
-        return SafeArea(
-          child: Wrap(
-            children: [
-              ListTile(
-                leading: Icon(Icons.photo_library_outlined, size: 24.f),
-                title: CommonText(I18nKeys.chooseFromGallery.tr),
-                onTap: () {
-                  _pickImage(ImageSource.gallery);
-                  AppNav.back();
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.camera_alt_outlined, size: 24.f),
-                title: CommonText(I18nKeys.takePhoto.tr),
-                onTap: () {
-                  _pickImage(ImageSource.camera);
-                  AppNav.back();
-                },
-              ),
-              if (_imageFile != null)
-                ListTile(
-                  leading: Icon(Icons.delete_outline, color: Colors.red, size: 24.f),
-                  title: CommonText(I18nKeys.removePhoto.tr, style: const TextStyle(color: Colors.red)),
-                  onTap: () {
-                    _removeImage();
-                    AppNav.back();
-                  },
-                ),
-            ],
-          ),
-        );
-      },
-    );
-  }
+  const AboutMeWidget({super.key, required this.active});
 
   @override
   Widget build(BuildContext context) {
-    return BaseSettingPage(
-      builder: (context, child) {
+    return BasePage<AboutMeViewModel, AboutMeState>(
+      provider: aboutMeViewModelProvider,
+      useScaffold: false,
+      active: active,
+      body: (context, child, viewModel, state) {
         return SingleChildScrollView(
           padding: EdgeInsets.all(20.f),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 40.f),
-              _buildHeader(),
+              _buildHeader(context, viewModel!, state!),
               SizedBox(height: 35.f),
-              _buildBioSection(),
+              _buildBioSection(context),
               SizedBox(height: 25.f),
-              _buildDetailedExperience(),
+              _buildDetailedExperience(context),
               SizedBox(height: 25.f),
-              _buildEducationSection(),
+              _buildEducationSection(context),
               SizedBox(height: 25.f),
-              _buildComprehensiveSkills(),
+              _buildComprehensiveSkills(context),
               SizedBox(height: 40.f),
             ],
           ),
@@ -103,9 +42,8 @@ class _AboutMeWidgetState extends State<AboutMeWidget> {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(BuildContext context, AboutMeViewModel viewModel, AboutMeState state) {
     final accentColor = context.accentColor;
-
     return Center(
       child: Column(
         children: [
@@ -117,8 +55,8 @@ class _AboutMeWidgetState extends State<AboutMeWidget> {
                   shape: BoxShape.circle,
                   border: Border.all(color: accentColor, width: 2.f),
                 ),
-                child: _imageFile != null
-                    ? CommonImage.file(_imageFile!, width: 120.f, height: 120.f, borderRadius: 60.f)
+                child: state.imageFile != null
+                    ? CommonImage.file(state.imageFile!, width: 120.f, height: 120.f, borderRadius: 60.f)
                     : CommonImage.url(
                         authManager.state.user?.avatarUrl ?? "",
                         width: 120.f,
@@ -131,11 +69,11 @@ class _AboutMeWidgetState extends State<AboutMeWidget> {
                 right: 0,
                 child: Material(
                   color: accentColor,
-                  shape: CircleBorder(),
+                  shape: const CircleBorder(),
                   elevation: 4.f,
                   child: InkWell(
-                    onTap: _showPickerMenu,
-                    customBorder: CircleBorder(),
+                    onTap: () => _showPickerMenu(context, viewModel, state),
+                    customBorder: const CircleBorder(),
                     child: Padding(
                       padding: EdgeInsets.all(8.f),
                       child: Icon(Icons.camera_alt, color: Colors.white, size: 20.f),
@@ -168,11 +106,51 @@ class _AboutMeWidgetState extends State<AboutMeWidget> {
     );
   }
 
-  Widget _buildBioSection() {
+  void _showPickerMenu(BuildContext context, AboutMeViewModel viewModel, AboutMeState state) {
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20.f))),
+      builder: (context) {
+        return SafeArea(
+          child: Wrap(
+            children: [
+              ListTile(
+                leading: Icon(Icons.photo_library_outlined, size: 24.f),
+                title: CommonText(I18nKeys.chooseFromGallery.tr),
+                onTap: () {
+                  viewModel.handleIntent(const AboutMeIntent.pickImage(ImageSource.gallery));
+                  AppNav.back();
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.camera_alt_outlined, size: 24.f),
+                title: CommonText(I18nKeys.takePhoto.tr),
+                onTap: () {
+                  viewModel.handleIntent(const AboutMeIntent.pickImage(ImageSource.camera));
+                  AppNav.back();
+                },
+              ),
+              if (state.imageFile != null)
+                ListTile(
+                  leading: Icon(Icons.delete_outline, color: Colors.red, size: 24.f),
+                  title: CommonText(I18nKeys.removePhoto.tr, style: const TextStyle(color: Colors.red)),
+                  onTap: () {
+                    viewModel.handleIntent(const AboutMeIntent.removeImage());
+                    AppNav.back();
+                  },
+                ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildBioSection(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionTitle(I18nKeys.aboutMe.tr),
+        _buildSectionTitle(context, I18nKeys.aboutMe.tr),
         SizedBox(height: 12.f),
         CommonText(
           'A seasoned mobile developer with over 10 years of experience in Android and 2+ years in Flutter. Specialized in high-performance application development, clean architecture, and reactive programming. Proven track record of leading cross-functional teams and delivering complex enterprise solutions.',
@@ -183,25 +161,28 @@ class _AboutMeWidgetState extends State<AboutMeWidget> {
     );
   }
 
-  Widget _buildDetailedExperience() {
+  Widget _buildDetailedExperience(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionTitle(I18nKeys.experience.tr),
+        _buildSectionTitle(context, I18nKeys.experience.tr),
         SizedBox(height: 15.f),
         _buildTimelineItem(
+          context,
           'Senior Mobile Architect',
           'Global Tech Solutions',
           '2021 - ${I18nKeys.present.tr}',
           'Leading the migration of core native apps to Flutter, optimizing CI/CD pipelines, and establishing mobile engineering best practices.',
         ),
         _buildTimelineItem(
+          context,
           'Lead Android Developer',
           'Innovation Hub',
           '2015 - 2021',
           'Designed and developed large-scale financial applications with millions of active users. Implemented robust security protocols.',
         ),
         _buildTimelineItem(
+          context,
           'Junior Developer',
           'Start-up Inc.',
           '2013 - 2015',
@@ -211,13 +192,14 @@ class _AboutMeWidgetState extends State<AboutMeWidget> {
     );
   }
 
-  Widget _buildEducationSection() {
+  Widget _buildEducationSection(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionTitle(I18nKeys.education.tr),
+        _buildSectionTitle(context, I18nKeys.education.tr),
         SizedBox(height: 15.f),
         _buildTimelineItem(
+          context,
           'Bachelor of Computer Science',
           'Tech University',
           '2009 - 2013',
@@ -228,29 +210,36 @@ class _AboutMeWidgetState extends State<AboutMeWidget> {
     );
   }
 
-  Widget _buildComprehensiveSkills() {
+  Widget _buildComprehensiveSkills(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionTitle(I18nKeys.coreSkills.tr),
+        _buildSectionTitle(context, I18nKeys.coreSkills.tr),
         SizedBox(height: 15.f),
-        _buildSkillCategory('Mobile', ['Flutter', 'Android Native', 'Dart', 'Kotlin', 'Java']),
+        _buildSkillCategory(context, 'Mobile', ['Flutter', 'Android Native', 'Dart', 'Kotlin', 'Java']),
         SizedBox(height: 10.f),
-        _buildSkillCategory('Architecture', ['Clean Architecture', 'MVI', 'MVVM', 'SOLID']),
+        _buildSkillCategory(context, 'Architecture', ['Clean Architecture', 'MVI', 'MVVM', 'SOLID']),
         SizedBox(height: 10.f),
-        _buildSkillCategory('Backend & DevOps', ['Spring Boot', 'SQL', 'Docker', 'CI/CD']),
+        _buildSkillCategory(context, 'Backend & DevOps', ['Spring Boot', 'SQL', 'Docker', 'CI/CD']),
       ],
     );
   }
 
-  Widget _buildSectionTitle(String title) {
+  Widget _buildSectionTitle(BuildContext context, String title) {
     return CommonText(
       title,
       style: context.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: context.accentColor),
     );
   }
 
-  Widget _buildTimelineItem(String title, String company, String date, String desc, {bool isLast = false}) {
+  Widget _buildTimelineItem(
+    BuildContext context,
+    String title,
+    String company,
+    String date,
+    String desc, {
+    bool isLast = false,
+  }) {
     final accentColor = context.accentColor;
     return IntrinsicHeight(
       child: Row(
@@ -300,7 +289,7 @@ class _AboutMeWidgetState extends State<AboutMeWidget> {
     );
   }
 
-  Widget _buildSkillCategory(String title, List<String> skills) {
+  Widget _buildSkillCategory(BuildContext context, String title, List<String> skills) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

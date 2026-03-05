@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:listen_portfolio_flutter/features/home/presentation/pages/projects/projects_state.dart';
+import 'package:listen_portfolio_flutter/features/home/presentation/pages/projects/projects_view_model.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 
 class ProjectsWidget extends StatelessWidget {
-  const ProjectsWidget({super.key});
+  final bool active;
+  const ProjectsWidget({super.key, required this.active});
 
   @override
   Widget build(BuildContext context) {
-    return BaseSettingPage(
-      builder: (context, child) {
+    return BasePage<ProjectsViewModel, ProjectsState>(
+      provider: projectsViewModelProvider,
+      useScaffold: false,
+      active: active,
+      body: (context, child, viewModel, state) {
         final accentColor = context.accentColor;
         final projects = [
           {

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_portfolio_flutter/features/home/presentation/pages/about_me/about_me_widget.dart';
+import 'package:listen_portfolio_flutter/features/home/presentation/pages/architecture/architecture_widget.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_intent.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_state.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_view_model.dart';
-import 'package:listen_portfolio_flutter/features/home/presentation/pages/widgets/about_me_widget.dart';
-import 'package:listen_portfolio_flutter/features/home/presentation/pages/widgets/architecture_widget.dart';
-import 'package:listen_portfolio_flutter/features/home/presentation/pages/widgets/overview_widget.dart';
-import 'package:listen_portfolio_flutter/features/home/presentation/pages/widgets/projects_widget.dart';
+import 'package:listen_portfolio_flutter/features/home/presentation/pages/overview/overview_widget.dart';
+import 'package:listen_portfolio_flutter/features/home/presentation/pages/projects/projects_widget.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 
@@ -16,14 +16,11 @@ class HomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // 1. Directly watch the reactive state and obtain the viewModel notifier
     final state = ref.watch(homeViewModelProvider);
     final viewModel = ref.read(homeViewModelProvider.notifier);
 
     return BasePage<HomeViewModel, HomeState>(
       provider: homeViewModelProvider,
-
-      // 2. Pass static values derived from the current reactive state
       title: state.title,
       drawer: _buildDrawer(context, viewModel, state),
       canPop: state.currentTab == HomeTab.overview,
@@ -32,40 +29,22 @@ class HomePage extends ConsumerWidget {
           viewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.overview));
         }
       },
-
-      // 3. Automated View Switching (Skeleton/Empty)
       onLoading: _buildOverviewSkeleton(context),
-      onEmpty: const CommonEmptyView(type: EmptyType.empty),
       isEmptyTitle: false,
-
-      // 4. Content building
       body: (context, child, viewModel, state) {
         if (state == null) return const SizedBox.shrink();
-        return _buildBody(viewModel!, state);
+        // Use IndexedStack to persist sub-page states while driving lifecycles via active flag
+        return IndexedStack(
+          index: state.currentTab.index,
+          children: [
+            OverviewWidget(active: state.currentTab == HomeTab.overview, homeViewModel: viewModel!),
+            AboutMeWidget(active: state.currentTab == HomeTab.aboutMe),
+            ProjectsWidget(active: state.currentTab == HomeTab.projects),
+            ArchitectureWidget(active: state.currentTab == HomeTab.architecture),
+          ],
+        );
       },
     );
-  }
-
-  Widget _buildBody(HomeViewModel viewModel, HomeState state) {
-    switch (state.currentTab) {
-      case HomeTab.overview:
-        return OverviewWidget(
-          onResumeRequested: () {
-            AppNav.tryLogin(
-              onSuccess: () => viewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.aboutMe)),
-            );
-          },
-          onProjectsRequested: () => viewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.projects)),
-          onArchitectureRequested: () =>
-              viewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.architecture)),
-        );
-      case HomeTab.aboutMe:
-        return const AboutMeWidget();
-      case HomeTab.projects:
-        return const ProjectsWidget();
-      case HomeTab.architecture:
-        return const ArchitectureWidget();
-    }
   }
 
   Widget _buildDrawer(BuildContext context, HomeViewModel viewModel, HomeState state) {

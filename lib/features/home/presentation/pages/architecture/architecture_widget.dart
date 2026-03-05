@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_portfolio_flutter/features/home/presentation/pages/architecture/architecture_state.dart';
+import 'package:listen_portfolio_flutter/features/home/presentation/pages/architecture/architecture_view_model.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ArchitectureWidget extends StatelessWidget {
-  const ArchitectureWidget({super.key});
+  final bool active;
+
+  const ArchitectureWidget({super.key, required this.active});
 
   @override
   Widget build(BuildContext context) {
-    return BaseSettingPage(
-      builder: (context, child) {
+    return BasePage<ArchitectureViewModel, ArchitectureState>(
+      provider: architectureViewModelProvider,
+      useScaffold: false,
+      active: active,
+      body: (context, child, viewModel, state) {
         return SingleChildScrollView(
           padding: EdgeInsets.all(20.f),
           child: Column(
