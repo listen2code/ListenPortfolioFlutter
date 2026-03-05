@@ -51,6 +51,10 @@ class BaseLifeCyclePage extends StatefulWidget {
   /// A widget to display when the page is in an empty state.
   final Widget? onEmpty;
 
+  /// Whether to wrap the content in a [BaseScaffoldPage].
+  /// Set to false when using this as a sub-page/tab within another page.
+  final bool useScaffold;
+
   const BaseLifeCyclePage({
     super.key,
     required this.body,
@@ -77,6 +81,7 @@ class BaseLifeCyclePage extends StatefulWidget {
     this.onEffect,
     this.onLoading,
     this.onEmpty,
+    this.useScaffold = true,
   });
 
   @override
@@ -156,16 +161,13 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
     final handled = _viewModel?.handleEffect(effect) ?? false;
 
     // If not handled by the framework (standard effects), pass it to the specific page logic
-    if (!handled) {
-      widget.onEffect?.call(effect);
-    }
+    if (!handled) widget.onEffect?.call(effect);
   }
 
   void _updateLoadingState(bool show) {
     if (_isInternalLoading.value == show) return;
     _isInternalLoading.value = show;
     _loadingSafetyTimer?.cancel();
-
     if (show) {
       // Robustness: Start a safety timer to prevent UI from being permanently locked
       _loadingSafetyTimer = Timer(widget.loadingTimeout, () {
@@ -181,9 +183,7 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     final route = ModalRoute.of(context);
-    if (route is PageRoute) {
-      AppNav.observer.subscribe(_routeObserver, route);
-    }
+    if (route is PageRoute) AppNav.observer.subscribe(_routeObserver, route);
   }
 
   @override
@@ -219,12 +219,6 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
     return ListenableBuilder(
       listenable: Listenable.merge([_isInternalLoading, _isInternalEmpty]),
       builder: (context, child) {
-        final effectiveCanPop = (widget.canPop ?? true) && !_isInternalLoading.value;
-
-        // Content Switching Logic:
-        // 1. Loading (Priority 1)
-        // 2. Empty (Priority 2)
-        // 3. Normal Body (Default)
         Widget content;
         if (_isInternalLoading.value && widget.onLoading != null) {
           content = widget.onLoading!;
@@ -233,6 +227,8 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
         } else {
           content = widget.body(context, child);
         }
+
+        if (!widget.useScaffold) return content;
 
         return BaseScaffoldPage(
           title: widget.title,
@@ -250,7 +246,7 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
           statusBarColor: widget.statusBarColor,
           bottomBarColor: widget.bottomBarColor,
           useGradientBackground: widget.useGradientBackground,
-          canPop: effectiveCanPop,
+          canPop: (widget.canPop ?? true) && !_isInternalLoading.value,
           onBackInvoked: () {
             // Priority given to custom interception logic
             if (widget.onInterceptBack != null) {

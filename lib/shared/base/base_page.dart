@@ -11,13 +11,15 @@ typedef BasePageBodyBuilder<V extends BaseViewModel, S extends BaseState> =
 /// This widget acts as a bridge between business-specific Riverpod providers
 /// and the pure core architecture, keeping [BaseLifeCyclePage] independent.
 class BasePage<V extends BaseViewModel, S extends BaseState> extends ConsumerWidget {
-  /// The builder for the page content, now receiving the [viewModel] and [state].
+  /// The builder for the page content.
   final BasePageBodyBuilder<V, S> body;
 
   final String? title;
+  final Widget? drawer;
+  final bool? canPop;
+  final VoidCallback? onInterceptBack;
   final List<Widget>? actions;
   final PreferredSizeWidget? appBar;
-  final Widget? drawer;
   final Widget? floatingActionButton;
   final bool useSafeArea;
   final EdgeInsetsGeometry? padding;
@@ -30,8 +32,10 @@ class BasePage<V extends BaseViewModel, S extends BaseState> extends ConsumerWid
   final Color bottomBarColor;
   final bool useGradientBackground;
   final bool active;
-  final bool? canPop;
-  final VoidCallback? onInterceptBack;
+
+  /// Whether to wrap the content in a Scaffold.
+  /// Defaults to true for root pages, false for embedded sub-pages.
+  final bool useScaffold;
 
   /// The Riverpod Provider used to automatically resolve the [BaseViewModel] and [BaseState].
   final ProviderListenable<S>? provider;
@@ -42,7 +46,7 @@ class BasePage<V extends BaseViewModel, S extends BaseState> extends ConsumerWid
   /// Callback for handling custom business side effects.
   final void Function(BaseEffect effect)? onEffect;
 
-  /// A widget to display when the page is in a loading state (e.g., a Skeleton screen).
+  /// A widget to display when the page is in a loading state.
   final Widget? onLoading;
 
   /// A widget to display when the page is in an empty state.
@@ -52,9 +56,11 @@ class BasePage<V extends BaseViewModel, S extends BaseState> extends ConsumerWid
     super.key,
     required this.body,
     this.title,
+    this.drawer,
+    this.canPop,
+    this.onInterceptBack,
     this.actions,
     this.appBar,
-    this.drawer,
     this.floatingActionButton,
     this.useSafeArea = true,
     this.padding,
@@ -67,8 +73,7 @@ class BasePage<V extends BaseViewModel, S extends BaseState> extends ConsumerWid
     this.bottomBarColor = Colors.transparent,
     this.useGradientBackground = true,
     this.active = true,
-    this.canPop,
-    this.onInterceptBack,
+    this.useScaffold = true,
     this.provider,
     this.viewModel,
     this.onEffect,
@@ -78,20 +83,21 @@ class BasePage<V extends BaseViewModel, S extends BaseState> extends ConsumerWid
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // 1. Resolve the ViewModel instance (logic remains ref.read to get the notifier)
+    // 1. Resolve the ViewModel instance
     final effectiveViewModel =
         viewModel ?? (provider != null ? ref.read((provider as dynamic).notifier) as V : null);
 
-    // 2. Resolve the current State (use ref.watch to ensure the body rebuilds on state changes)
+    // 2. Resolve the current State
     final state = provider != null ? ref.watch(provider!) : null;
 
     return BaseLifeCyclePage(
-      // Inject both viewModel and state into the user's body builder
       body: (context, child) => body(context, child, effectiveViewModel, state),
       title: title,
+      drawer: drawer,
+      canPop: canPop,
+      onInterceptBack: onInterceptBack,
       actions: actions,
       appBar: appBar,
-      drawer: drawer,
       floatingActionButton: floatingActionButton,
       useSafeArea: useSafeArea,
       padding: padding,
@@ -104,8 +110,7 @@ class BasePage<V extends BaseViewModel, S extends BaseState> extends ConsumerWid
       bottomBarColor: bottomBarColor,
       useGradientBackground: useGradientBackground,
       active: active,
-      canPop: canPop,
-      onInterceptBack: onInterceptBack,
+      useScaffold: useScaffold, // Correctly pass the flag down to core
       viewModel: effectiveViewModel,
       onEffect: onEffect,
       onLoading: onLoading,

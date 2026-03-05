@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'home_view_model.dart';
+part of 'about_me_view_model.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -9,51 +9,51 @@ part of 'home_view_model.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(HomeViewModel)
-final homeViewModelProvider = HomeViewModelProvider._();
+@ProviderFor(AboutMeViewModel)
+final aboutMeViewModelProvider = AboutMeViewModelProvider._();
 
-final class HomeViewModelProvider
-    extends $NotifierProvider<HomeViewModel, HomeState> {
-  HomeViewModelProvider._()
+final class AboutMeViewModelProvider
+    extends $NotifierProvider<AboutMeViewModel, AboutMeState> {
+  AboutMeViewModelProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'homeViewModelProvider',
+        name: r'aboutMeViewModelProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$homeViewModelHash();
+  String debugGetCreateSourceHash() => _$aboutMeViewModelHash();
 
   @$internal
   @override
-  HomeViewModel create() => HomeViewModel();
+  AboutMeViewModel create() => AboutMeViewModel();
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(HomeState value) {
+  Override overrideWithValue(AboutMeState value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<HomeState>(value),
+      providerOverride: $SyncValueProvider<AboutMeState>(value),
     );
   }
 }
 
-String _$homeViewModelHash() => r'c0f7993fbfaca303f5d605d6f815b795c63e48b6';
+String _$aboutMeViewModelHash() => r'd75c9fa548de4d2d0fbe3ef027e8519642d60eda';
 
-abstract class _$HomeViewModel extends $Notifier<HomeState> {
-  HomeState build();
+abstract class _$AboutMeViewModel extends $Notifier<AboutMeState> {
+  AboutMeState build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final ref = this.ref as $Ref<HomeState, HomeState>;
+    final ref = this.ref as $Ref<AboutMeState, AboutMeState>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<HomeState, HomeState>,
-              HomeState,
+              AnyNotifier<AboutMeState, AboutMeState>,
+              AboutMeState,
               Object?,
               Object?
             >;
