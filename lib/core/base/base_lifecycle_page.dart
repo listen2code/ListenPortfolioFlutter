@@ -90,6 +90,8 @@ class BaseLifeCyclePage extends StatefulWidget {
 
 class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
   bool _isRouteVisible = false;
+  bool _isActuallyVisible = false; // Tracks (Route Visible && widget.active)
+  bool _isReady = false; // Tracks if onReady has been called
   BaseViewModel? _viewModel;
   StreamSubscription<BaseEffect>? _effectSubscription;
 
@@ -114,16 +116,24 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
       _effectSubscription = _viewModel!.effectStream.listen(_handleEffect);
     }
 
-    // Initialize Observers
     _routeObserver = _RouteAwareProxy(
-      onVisible: () => _checkVisibilityChange(true),
-      onInVisible: () => _checkVisibilityChange(false),
-      onPush: () => _isRouteVisible = true,
+      onVisible: () {
+        _isRouteVisible = true;
+        _evaluateVisibility();
+      },
+      onInVisible: () {
+        _isRouteVisible = false;
+        _evaluateVisibility();
+      },
+      onPush: () {
+        _isRouteVisible = true;
+        _evaluateVisibility();
+      },
     );
 
     _lifecycleObserver = _AppLifecycleProxy(
       onStateChanged: (state) {
-        if (!_isRouteVisible || !widget.active) return;
+        if (!_isActuallyVisible) return;
 
         if (state == AppLifecycleState.resumed) {
           _viewModel?.onResume();
@@ -142,9 +152,27 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         _viewModel?.onReady();
-        if (widget.active) _checkVisibilityChange(true);
+        _isReady = true;
+        _evaluateVisibility();
       }
     });
+  }
+
+  /// Evaluates and triggers ViewModel lifecycle methods based on the current
+  /// combination of Route visibility and the [widget.active] flag.
+  void _evaluateVisibility() {
+    // Block onVisible until the component is ready (onReady called)
+    if (!_isReady) return;
+
+    final bool currentlyVisible = _isRouteVisible && widget.active;
+    if (currentlyVisible != _isActuallyVisible) {
+      _isActuallyVisible = currentlyVisible;
+      if (_isActuallyVisible) {
+        _viewModel?.onVisible();
+      } else {
+        _viewModel?.onInVisible();
+      }
+    }
   }
 
   void _handleEffect(BaseEffect effect) {
@@ -190,7 +218,7 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
   void didUpdateWidget(BaseLifeCyclePage oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.active != widget.active) {
-      _checkVisibilityChange(widget.active);
+      _evaluateVisibility();
     }
   }
 
@@ -204,14 +232,6 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
     WidgetsBinding.instance.removeObserver(_lifecycleObserver);
     _viewModel?.onDispose();
     super.dispose();
-  }
-
-  void _checkVisibilityChange(bool isVisible) {
-    if (isVisible) {
-      _viewModel?.onVisible();
-    } else {
-      _viewModel?.onInVisible();
-    }
   }
 
   @override

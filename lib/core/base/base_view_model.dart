@@ -227,7 +227,7 @@ mixin ViewModelMixin<S extends BaseState, I extends BaseIntent> implements BaseV
   @override
   void onPause() => appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onPause');
   @override
-  void onInactive() => appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onInactive');
+  void onInactive() => {};
 
   @override
   @mustCallSuper
