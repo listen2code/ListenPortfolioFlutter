@@ -1,25 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_intent.dart';
+import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_state.dart';
+import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_view_model.dart';
+import 'package:listen_portfolio_flutter/features/home/presentation/pages/overview/overview_state.dart';
+import 'package:listen_portfolio_flutter/features/home/presentation/pages/overview/overview_view_model.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class OverviewWidget extends StatelessWidget {
-  final VoidCallback onResumeRequested;
-  final VoidCallback onProjectsRequested;
-  final VoidCallback onArchitectureRequested;
+  final bool active;
+  final HomeViewModel homeViewModel;
 
-  const OverviewWidget({
-    super.key,
-    required this.onResumeRequested,
-    required this.onProjectsRequested,
-    required this.onArchitectureRequested,
-  });
+  const OverviewWidget({super.key, required this.active, required this.homeViewModel});
 
   @override
   Widget build(BuildContext context) {
-    return BaseSettingPage(
-      builder: (context, child) {
+    return BasePage<OverviewViewModel, OverviewState>(
+      provider: overviewViewModelProvider,
+      useScaffold: false,
+      active: active,
+      body: (context, child, viewModel, state) {
         return SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,7 +50,8 @@ class OverviewWidget extends StatelessWidget {
                       context,
                       I18nKeys.featuredProjects.tr,
                       showSeeAll: true,
-                      onPressed: onProjectsRequested,
+                      onPressed: () =>
+                          homeViewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.projects)),
                     ),
                     SizedBox(height: 12.f),
                   ],
@@ -344,7 +347,11 @@ class OverviewWidget extends StatelessWidget {
               I18nKeys.aboutMe.tr,
               Icons.person_outline_rounded,
               accentColor,
-              onResumeRequested,
+              () {
+                AppNav.tryLogin(
+                  onSuccess: () => homeViewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.aboutMe)),
+                );
+              },
               subtitle: 'Detailed CV',
               blurLevel: AuthBlurLevel.low,
             ),
@@ -354,7 +361,7 @@ class OverviewWidget extends StatelessWidget {
               I18nKeys.architecture.tr,
               Icons.account_tree_outlined,
               Colors.orange,
-              onArchitectureRequested,
+              () => homeViewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.architecture)),
               subtitle: 'App Design',
             ),
           ],
