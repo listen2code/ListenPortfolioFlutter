@@ -1,200 +1,189 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:listen_portfolio_flutter/generated/r.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 
-class SettingsPage extends StatefulWidget {
+import 'settings_intent.dart';
+import 'settings_state.dart';
+import 'settings_view_model.dart';
+
+class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
 
   @override
-  State<SettingsPage> createState() => _SettingsPageState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    return BaseRefreshPage<SettingsViewModel, SettingsState>(
+      title: I18nKeys.settings.tr,
+      provider: settingsViewModelProvider,
+      body: (context, child, viewModel, state) {
+        if (state == null) return const SizedBox.shrink();
 
-class _SettingsPageState extends State<SettingsPage> {
-  bool _notificationsEnabled = true;
-  String _cacheSize = '...';
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 1. PREFERENCES: UI and localization
+              _buildSectionTitle(context, I18nKeys.general.tr),
+              _buildSettingsCard(context, [
+                _buildListTile(
+                  context,
+                  icon: Icons.palette_outlined,
+                  title: I18nKeys.appearance.tr,
+                  subtitle: I18nKeys.appearanceSubtitle.tr,
+                  onTap: () => AppNav.to(Routes.appearance),
+                ),
+                _buildListTile(
+                  context,
+                  icon: Icons.language_outlined,
+                  title: I18nKeys.language.tr,
+                  trailing: Text(
+                    state.currentLanguage.label,
+                    style: context.textTheme.bodySmall?.copyWith(color: Colors.grey),
+                  ),
+                  onTap: () => _showLanguageDialog(context, viewModel, state),
+                ),
+              ]),
 
-  @override
-  void initState() {
-    super.initState();
-    _updateCacheSize();
-  }
+              SizedBox(height: 25.f),
 
-  // Fetch and update cache size display
-  Future<void> _updateCacheSize() async {
-    final size = await CacheManager.getCacheSize();
-    if (mounted) {
-      setState(() => _cacheSize = size);
-    }
-  }
+              // 2. ACCOUNT & SECURITY
+              _buildSectionTitle(context, I18nKeys.account.tr),
+              _buildSettingsCard(context, [
+                _buildListTile(
+                  context,
+                  icon: Icons.lock_outline_rounded,
+                  title: I18nKeys.changePassword.tr,
+                  blurLevel: AuthBlurLevel.low,
+                  onTap: () => AppNav.to(Routes.changePassword, needLogin: true),
+                ),
+                _buildSwitchTile(
+                  context,
+                  icon: Icons.notifications_none_rounded,
+                  title: I18nKeys.notifications.tr,
+                  value: state.notificationsEnabled,
+                  onChanged: (val) => viewModel?.handleIntent(SettingsIntent.toggleNotifications(val)),
+                ),
+                _buildListTile(
+                  context,
+                  icon: Icons.no_accounts_outlined,
+                  title: I18nKeys.deleteAccount.tr,
+                  blurLevel: AuthBlurLevel.low,
+                  onTap: () => AppNav.to(Routes.deleteAccount, needLogin: true),
+                ),
+              ]),
 
-  @override
-  Widget build(BuildContext context) {
-    return BaseSettingPage(
-      builder: (context, child) {
-        return BaseRefreshPage(
-          title: I18nKeys.settings.tr,
-          body: (context, child, viewModel, state) {
-            return SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // 1. PREFERENCES: UI and localization
-                  _buildSectionTitle(I18nKeys.general.tr),
-                  _buildSettingsCard([
-                    _buildListTile(
-                      icon: Icons.palette_outlined,
-                      title: I18nKeys.appearance.tr,
-                      subtitle: I18nKeys.appearanceSubtitle.tr,
-                      onTap: () => AppNav.to(Routes.appearance),
-                    ),
-                    _buildListTile(
-                      icon: Icons.language_outlined,
-                      title: I18nKeys.language.tr,
-                      trailing: Text(
-                        settingManager.language.label,
-                        style: context.textTheme.bodySmall?.copyWith(color: Colors.grey),
-                      ),
-                      onTap: () => _showLanguageDialog(),
-                    ),
-                  ]),
+              SizedBox(height: 25.f),
 
-                  SizedBox(height: 25.f),
+              // 3. STORAGE & MAINTENANCE
+              _buildSectionTitle(context, I18nKeys.systemStorage.tr),
+              _buildSettingsCard(context, [
+                _buildListTile(
+                  context,
+                  icon: Icons.cleaning_services_outlined,
+                  title: I18nKeys.clearCache.tr,
+                  trailing: Text(
+                    state.cacheSize,
+                    style: context.textTheme.bodySmall?.copyWith(color: Colors.grey),
+                  ),
+                  onTap: () => viewModel?.handleIntent(const SettingsIntent.clearCache()),
+                ),
+                _buildListTile(
+                  context,
+                  icon: Icons.restart_alt_rounded,
+                  title: I18nKeys.resetSettings.tr,
+                  onTap: () => _showResetConfirmation(viewModel),
+                ),
+              ]),
 
-                  // 2. ACCOUNT & SECURITY
-                  _buildSectionTitle(I18nKeys.account.tr),
-                  _buildSettingsCard([
-                    _buildListTile(
-                      icon: Icons.lock_outline_rounded,
-                      title: I18nKeys.changePassword.tr,
-                      blurLevel: AuthBlurLevel.low,
-                      onTap: () => AppNav.to(Routes.changePassword, needLogin: true),
-                    ),
-                    _buildSwitchTile(
-                      icon: Icons.notifications_none_rounded,
-                      title: I18nKeys.notifications.tr,
-                      value: _notificationsEnabled,
-                      onChanged: (val) => setState(() => _notificationsEnabled = val),
-                    ),
-                    _buildListTile(
-                      icon: Icons.no_accounts_outlined,
-                      title: I18nKeys.deleteAccount.tr,
-                      blurLevel: AuthBlurLevel.low,
-                      onTap: () => AppNav.to(Routes.deleteAccount, needLogin: true),
-                    ),
-                  ]),
+              SizedBox(height: 25.f),
 
-                  SizedBox(height: 25.f),
+              // 4. DEVELOPER TOOLS
+              _buildSectionTitle(context, I18nKeys.developer.tr),
+              _buildSettingsCard(context, [
+                _buildSwitchTile(
+                  context,
+                  icon: Icons.terminal_rounded,
+                  title: I18nKeys.viewLogs.tr,
+                  value: state.isLogOverlayShowing,
+                  onChanged: (val) {
+                    if (val) {
+                      LogOverlayManager.show(context);
+                    } else {
+                      LogOverlayManager.hide();
+                    }
+                    viewModel?.handleIntent(SettingsIntent.toggleLogOverlay(val));
+                  },
+                ),
+                _buildListTile(
+                  context,
+                  icon: Icons.bug_report_outlined,
+                  title: I18nKeys.crashReports.tr,
+                  subtitle: I18nKeys.crashReportsSubtitle.tr,
+                  onTap: () => AppNav.to(Routes.crashLogs),
+                ),
+                _buildListTile(
+                  context,
+                  icon: Icons.settings_input_antenna_rounded,
+                  title: I18nKeys.switchEnv.tr,
+                  subtitle: '${I18nKeys.currentlyActive.tr}: ${state.currentEnv.name}',
+                  onTap: () => _showEnvSwitchDialog(context, viewModel, state),
+                ),
+              ]),
 
-                  // 3. STORAGE & MAINTENANCE
-                  _buildSectionTitle(I18nKeys.systemStorage.tr),
-                  _buildSettingsCard([
-                    _buildListTile(
-                      icon: Icons.cleaning_services_outlined,
-                      title: I18nKeys.clearCache.tr,
-                      trailing: Text(
-                        _cacheSize,
-                        style: context.textTheme.bodySmall?.copyWith(color: Colors.grey),
-                      ),
-                      onTap: () => _handleClearCache(),
-                    ),
-                    _buildListTile(
-                      icon: Icons.restart_alt_rounded,
-                      title: I18nKeys.resetSettings.tr,
-                      onTap: () => _showResetConfirmation(),
-                    ),
-                  ]),
+              SizedBox(height: 25.f),
 
-                  SizedBox(height: 25.f),
-
-                  // 4. DEVELOPER TOOLS
-                  _buildSectionTitle(I18nKeys.developer.tr),
-                  _buildSettingsCard([
-                    // Log Overlay Switch
-                    ValueListenableBuilder<bool>(
-                      valueListenable: LogOverlayManager.isShowingNotifier,
-                      builder: (context, isShowing, child) {
-                        return _buildSwitchTile(
-                          icon: Icons.terminal_rounded,
-                          title: I18nKeys.viewLogs.tr,
-                          value: isShowing,
-                          onChanged: (val) {
-                            if (val) {
-                              LogOverlayManager.show(context);
-                            } else {
-                              LogOverlayManager.hide();
-                            }
-                          },
-                        );
-                      },
-                    ),
-                    // Crash Reports Entry
-                    _buildListTile(
-                      icon: Icons.bug_report_outlined,
-                      title: I18nKeys.crashReports.tr,
-                      subtitle: I18nKeys.crashReportsSubtitle.tr,
-                      onTap: () => AppNav.to(Routes.crashLogs),
-                    ),
-                    _buildListTile(
-                      icon: Icons.settings_input_antenna_rounded,
-                      title: I18nKeys.switchEnv.tr,
-                      subtitle: '${I18nKeys.currentlyActive.tr}: ${AppEnv.env}',
-                      onTap: () => _showEnvSwitchDialog(),
-                    ),
-                  ]),
-
-                  SizedBox(height: 25.f),
-
-                  // 5. LEGAL & ABOUT
-                  _buildSectionTitle(I18nKeys.about.tr),
-                  _buildSettingsCard([
-                    _buildListTile(
-                      icon: Icons.privacy_tip_outlined,
-                      title: I18nKeys.privacyPolicy.tr,
-                      onTap: () => AppNav.to(Routes.privacyPolicy),
-                    ),
-                    _buildListTile(
-                      icon: Icons.gavel_outlined,
-                      title: I18nKeys.termsOfService.tr,
-                      onTap: () => AppNav.to(Routes.termsOfService),
-                    ),
-                    _buildListTile(
-                      icon: Icons.info_outline_rounded,
-                      title: I18nKeys.licenses.tr,
-                      onTap: () => showLicensePage(
-                        context: context,
-                        applicationName: AppConstants.appName,
-                        applicationVersion: AppConstants.appVersion,
-                        applicationIcon: Padding(
-                          padding: EdgeInsets.all(8.f),
-                          child: Image.asset(
-                            R.imagesIcLauncherAdaptiveFore,
-                            width: 48.f,
-                            height: 48.f,
-                            color: context.accentColor,
-                            colorBlendMode: BlendMode.srcIn,
-                          ),
-                        ),
-                        applicationLegalese: '© ${AppConstants.date} ${AppConstants.author}',
+              // 5. LEGAL & ABOUT
+              _buildSectionTitle(context, I18nKeys.about.tr),
+              _buildSettingsCard(context, [
+                _buildListTile(
+                  context,
+                  icon: Icons.privacy_tip_outlined,
+                  title: I18nKeys.privacyPolicy.tr,
+                  onTap: () => AppNav.to(Routes.privacyPolicy),
+                ),
+                _buildListTile(
+                  context,
+                  icon: Icons.gavel_outlined,
+                  title: I18nKeys.termsOfService.tr,
+                  onTap: () => AppNav.to(Routes.termsOfService),
+                ),
+                _buildListTile(
+                  context,
+                  icon: Icons.info_outline_rounded,
+                  title: I18nKeys.licenses.tr,
+                  onTap: () => showLicensePage(
+                    context: context,
+                    applicationName: AppConstants.appName,
+                    applicationVersion: AppConstants.appVersion,
+                    applicationIcon: Padding(
+                      padding: EdgeInsets.all(8.f),
+                      child: Image.asset(
+                        R.imagesIcLauncherAdaptiveFore,
+                        width: 48.f,
+                        height: 48.f,
+                        color: context.accentColor,
+                        colorBlendMode: BlendMode.srcIn,
                       ),
                     ),
-                    ListTile(
-                      dense: true,
-                      title: Center(
-                        child: Text(
-                          '${I18nKeys.appVersion.tr} ${AppConstants.appVersion}',
-                          style: context.textTheme.labelSmall?.copyWith(color: Colors.grey),
-                        ),
-                      ),
+                    applicationLegalese: '© ${AppConstants.date} ${AppConstants.author}',
+                  ),
+                ),
+                ListTile(
+                  dense: true,
+                  title: Center(
+                    child: Text(
+                      '${I18nKeys.appVersion.tr} ${AppConstants.appVersion}',
+                      style: context.textTheme.labelSmall?.copyWith(color: Colors.grey),
                     ),
-                  ]),
-                  SizedBox(height: 40.f),
-                ],
-              ),
-            );
-          },
+                  ),
+                ),
+              ]),
+              SizedBox(height: 40.f),
+            ],
+          ),
         );
       },
     );
@@ -202,15 +191,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   // --- Logic Handlers ---
 
-  void _handleClearCache() async {
-    await CacheManager.clearAllCache();
-    await _updateCacheSize();
-    if (mounted) {
-      CommonToast.show(I18nKeys.cacheCleared.tr);
-    }
-  }
-
-  void _showResetConfirmation() {
+  void _showResetConfirmation(SettingsViewModel? viewModel) {
     CommonDialog.showConfirm(
       title: I18nKeys.resetConfirmTitle.tr,
       message: I18nKeys.resetConfirmContent.tr,
@@ -218,28 +199,20 @@ class _SettingsPageState extends State<SettingsPage> {
       okColor: Colors.red,
     ).then((confirmed) async {
       if (confirmed == true) {
-        CommonLoading.show();
-        try {
-          await settingManager.resetSettings();
-          await _updateCacheSize();
-          CommonToast.show(I18nKeys.settingsResetSuccess.tr);
-        } finally {
-          CommonLoading.hide();
-        }
+        viewModel?.handleIntent(const SettingsIntent.resetSettings());
       }
     });
   }
 
-  void _showEnvSwitchDialog() {
+  void _showEnvSwitchDialog(BuildContext context, SettingsViewModel? viewModel, SettingsState state) {
     CommonDialog.showSwitchDialog(
       title: I18nKeys.switchEnv.tr,
       items: EnvConfigs.values.map((config) {
         return DialogSwitchItem(
           label: _getEnvLabel(config.env),
-          value: AppEnv.currentEnv == config.env,
-          onChanged: (_) async {
-            await AppEnv.setEnvironment(config.env);
-            if (mounted) setState(() {});
+          value: state.currentEnv == config.env,
+          onChanged: (_) {
+            viewModel?.handleIntent(SettingsIntent.switchEnv(config.env));
             AppNav.back();
           },
         );
@@ -260,15 +233,15 @@ class _SettingsPageState extends State<SettingsPage> {
     }
   }
 
-  void _showLanguageDialog() {
+  void _showLanguageDialog(BuildContext context, SettingsViewModel? viewModel, SettingsState state) {
     CommonDialog.showSwitchDialog(
       title: I18nKeys.selectLanguage.tr,
       items: AppLanguage.values.map((lang) {
         return DialogSwitchItem(
           label: lang.label,
-          value: settingManager.language == lang,
+          value: state.currentLanguage == lang,
           onChanged: (_) {
-            settingManager.setLanguage(lang);
+            viewModel?.handleIntent(SettingsIntent.switchLanguage(lang));
             AppNav.back();
           },
         );
@@ -278,7 +251,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   // --- UI Builders ---
 
-  Widget _buildSectionTitle(String title) {
+  Widget _buildSectionTitle(BuildContext context, String title) {
     return Padding(
       padding: EdgeInsets.only(left: 10.f, bottom: 8.f, top: 5.f),
       child: Text(
@@ -292,7 +265,7 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Widget _buildSettingsCard(List<Widget> children) {
+  Widget _buildSettingsCard(BuildContext context, List<Widget> children) {
     return Container(
       decoration: BoxDecoration(
         boxShadow: [
@@ -322,7 +295,8 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Widget _buildListTile({
+  Widget _buildListTile(
+    BuildContext context, {
     required IconData icon,
     required String title,
     String? subtitle,
@@ -364,7 +338,8 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Widget _buildSwitchTile({
+  Widget _buildSwitchTile(
+    BuildContext context, {
     required IconData icon,
     required String title,
     required bool value,

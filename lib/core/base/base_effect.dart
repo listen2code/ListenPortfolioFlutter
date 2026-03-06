@@ -12,6 +12,9 @@ class MessageEffect extends BaseEffect {
 
   MessageEffect(this.message, {this.title, this.type = MessageType.info});
 
+  /// Factory for info messages (usually shown as Toast)
+  factory MessageEffect.info(String message) => MessageEffect(message, type: MessageType.info);
+
   /// Factory for error messages (usually shown as Toast)
   factory MessageEffect.error(String message) => MessageEffect(message, type: MessageType.error);
 

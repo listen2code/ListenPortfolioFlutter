@@ -127,7 +127,12 @@ class CommonDialog {
   }
 
   /// Shows a list of selection options with checkmarks.
-  static Future<void> showSwitchDialog({required String title, required List<DialogSwitchItem> items}) async {
+  /// [isMultiSelect] If false, selecting an item will deselect all others.
+  static Future<void> showSwitchDialog({
+    required String title,
+    required List<DialogSwitchItem> items,
+    bool isMultiSelect = false,
+  }) async {
     await _show<void>(
       tag: null,
       builder: (context) => StatefulBuilder(
@@ -145,13 +150,22 @@ class CommonDialog {
                         title: Text(item.label, style: const TextStyle(fontSize: 14)),
                         trailing: item.value ? Icon(Icons.check_circle, color: accentColor) : null,
                         onTap: () async {
-                          final newValue = !item.value;
-                          await item.onChanged(newValue);
+                          if (!isMultiSelect && item.value) return;
+
+                          final newValue = isMultiSelect ? !item.value : true;
+
                           if (context.mounted) {
                             setDialogState(() {
+                              if (!isMultiSelect) {
+                                for (var otherItem in items) {
+                                  otherItem.value = false;
+                                }
+                              }
                               item.value = newValue;
                             });
                           }
+
+                          await item.onChanged(newValue);
                         },
                       ),
                     )

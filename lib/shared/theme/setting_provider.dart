@@ -112,7 +112,7 @@ class SettingManager extends ChangeNotifier {
     await SpUtil.clear();
     await SecureStorageUtil.clear();
     await CacheManager.clearAllCache();
-    EventBus().dispose();
+    EventBus().clearAllSticky();
     // Restore defaults after clearing
     await setThemeMode(_themeMode);
     await setAccentColor(_accentColor);
