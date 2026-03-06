@@ -23,6 +23,7 @@ class OverviewWidget extends StatelessWidget {
       onRefresh: (viewModel, state) async {
         viewModel?.handleIntent(const OverviewIntent.refresh());
       },
+      onLoading: _buildSkeleton(context),
       useScaffold: false,
       active: active,
       body: (context, child, viewModel, state) {
@@ -60,6 +61,81 @@ class OverviewWidget extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+
+  Widget _buildSkeleton(BuildContext context) {
+    return SingleChildScrollView(
+      padding: EdgeInsets.symmetric(horizontal: 20.f, vertical: 20.f),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header Skeleton
+          CommonSkeleton.line(width: 180.f, height: 28.f),
+          SizedBox(height: 12.f),
+          CommonSkeleton.line(width: 260.f, height: 16.f),
+          SizedBox(height: 24.f),
+
+          // Status Tag Skeleton
+          CommonSkeleton(width: 120.f, height: 24.f, borderRadius: 20.f),
+          SizedBox(height: 32.f),
+
+          // Experience Grid Skeleton
+          CommonSkeleton(width: double.infinity, height: 100.f, borderRadius: 20.f),
+          SizedBox(height: 12.f),
+          Row(
+            children: [
+              Expanded(
+                child: CommonSkeleton(height: 80.f, borderRadius: 20.f),
+              ),
+              SizedBox(width: 12.f),
+              Expanded(
+                child: CommonSkeleton(height: 80.f, borderRadius: 20.f),
+              ),
+            ],
+          ),
+
+          SizedBox(height: 40.f),
+          // Section Header Skeleton
+          CommonSkeleton.line(width: 120.f, height: 20.f),
+          SizedBox(height: 16.f),
+
+          // Quick Actions Skeleton
+          Row(
+            children: [
+              Expanded(
+                child: CommonSkeleton(height: 90.f, borderRadius: 16.f),
+              ),
+              SizedBox(width: 12.f),
+              Expanded(
+                child: CommonSkeleton(height: 90.f, borderRadius: 16.f),
+              ),
+              SizedBox(width: 12.f),
+              Expanded(
+                child: CommonSkeleton(height: 90.f, borderRadius: 16.f),
+              ),
+            ],
+          ),
+
+          SizedBox(height: 40.f),
+          // Featured Projects Skeleton
+          CommonSkeleton.line(width: 150.f, height: 20.f),
+          SizedBox(height: 16.f),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            physics: const NeverScrollableScrollPhysics(),
+            child: Row(
+              children: List.generate(
+                2,
+                (index) => Padding(
+                  padding: EdgeInsets.only(right: 16.f),
+                  child: CommonSkeleton(width: 260.f, height: 160.f, borderRadius: 24.f),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

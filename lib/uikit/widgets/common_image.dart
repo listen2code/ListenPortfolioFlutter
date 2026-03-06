@@ -44,7 +44,6 @@ class CommonImage extends StatelessWidget {
     this.memCacheHeight,
   }) : _type = _ImageType.network;
 
-  // Removed 'const' because file.path is evaluated at runtime
   CommonImage.file(
     File file, {
     super.key,
@@ -60,6 +59,11 @@ class CommonImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 1. Guard for empty source
+    if (source.trim().isEmpty) {
+      return _buildErrorWidget(context);
+    }
+
     Widget image;
 
     final isSvg = source.toLowerCase().endsWith('.svg');
