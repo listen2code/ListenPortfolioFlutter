@@ -29,7 +29,7 @@ class _ChangePasswordPageState extends ConsumerState<ChangePasswordPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BasePage<ChangePasswordViewModel, ChangePasswordState>(
+    return BaseRefreshPage<ChangePasswordViewModel, ChangePasswordState>(
       isEmptyTitle: true,
       provider: changePasswordViewModelProvider,
       body: (context, child, viewModel, state) => SingleChildScrollView(

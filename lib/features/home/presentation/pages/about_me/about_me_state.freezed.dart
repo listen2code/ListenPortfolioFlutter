@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AboutMeState {
 
- File? get imageFile;
+ File? get imageFile; bool get isInitialLoaded;
 /// Create a copy of AboutMeState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $AboutMeStateCopyWith<AboutMeState> get copyWith => _$AboutMeStateCopyWithImpl<A
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AboutMeState&&(identical(other.imageFile, imageFile) || other.imageFile == imageFile));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AboutMeState&&(identical(other.imageFile, imageFile) || other.imageFile == imageFile)&&(identical(other.isInitialLoaded, isInitialLoaded) || other.isInitialLoaded == isInitialLoaded));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,imageFile);
+int get hashCode => Object.hash(runtimeType,imageFile,isInitialLoaded);
 
 @override
 String toString() {
-  return 'AboutMeState(imageFile: $imageFile)';
+  return 'AboutMeState(imageFile: $imageFile, isInitialLoaded: $isInitialLoaded)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $AboutMeStateCopyWith<$Res>  {
   factory $AboutMeStateCopyWith(AboutMeState value, $Res Function(AboutMeState) _then) = _$AboutMeStateCopyWithImpl;
 @useResult
 $Res call({
- File? imageFile
+ File? imageFile, bool isInitialLoaded
 });
 
 
@@ -62,10 +62,11 @@ class _$AboutMeStateCopyWithImpl<$Res>
 
 /// Create a copy of AboutMeState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? imageFile = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? imageFile = freezed,Object? isInitialLoaded = null,}) {
   return _then(_self.copyWith(
 imageFile: freezed == imageFile ? _self.imageFile : imageFile // ignore: cast_nullable_to_non_nullable
-as File?,
+as File?,isInitialLoaded: null == isInitialLoaded ? _self.isInitialLoaded : isInitialLoaded // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
@@ -150,10 +151,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( File? imageFile)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( File? imageFile,  bool isInitialLoaded)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AboutMeState() when $default != null:
-return $default(_that.imageFile);case _:
+return $default(_that.imageFile,_that.isInitialLoaded);case _:
   return orElse();
 
 }
@@ -171,10 +172,10 @@ return $default(_that.imageFile);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( File? imageFile)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( File? imageFile,  bool isInitialLoaded)  $default,) {final _that = this;
 switch (_that) {
 case _AboutMeState():
-return $default(_that.imageFile);case _:
+return $default(_that.imageFile,_that.isInitialLoaded);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -191,10 +192,10 @@ return $default(_that.imageFile);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( File? imageFile)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( File? imageFile,  bool isInitialLoaded)?  $default,) {final _that = this;
 switch (_that) {
 case _AboutMeState() when $default != null:
-return $default(_that.imageFile);case _:
+return $default(_that.imageFile,_that.isInitialLoaded);case _:
   return null;
 
 }
@@ -206,10 +207,11 @@ return $default(_that.imageFile);case _:
 
 
 class _AboutMeState extends AboutMeState {
-  const _AboutMeState({this.imageFile}): super._();
+  const _AboutMeState({this.imageFile, this.isInitialLoaded = false}): super._();
   
 
 @override final  File? imageFile;
+@override@JsonKey() final  bool isInitialLoaded;
 
 /// Create a copy of AboutMeState
 /// with the given fields replaced by the non-null parameter values.
@@ -221,16 +223,16 @@ _$AboutMeStateCopyWith<_AboutMeState> get copyWith => __$AboutMeStateCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AboutMeState&&(identical(other.imageFile, imageFile) || other.imageFile == imageFile));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AboutMeState&&(identical(other.imageFile, imageFile) || other.imageFile == imageFile)&&(identical(other.isInitialLoaded, isInitialLoaded) || other.isInitialLoaded == isInitialLoaded));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,imageFile);
+int get hashCode => Object.hash(runtimeType,imageFile,isInitialLoaded);
 
 @override
 String toString() {
-  return 'AboutMeState(imageFile: $imageFile)';
+  return 'AboutMeState(imageFile: $imageFile, isInitialLoaded: $isInitialLoaded)';
 }
 
 
@@ -241,7 +243,7 @@ abstract mixin class _$AboutMeStateCopyWith<$Res> implements $AboutMeStateCopyWi
   factory _$AboutMeStateCopyWith(_AboutMeState value, $Res Function(_AboutMeState) _then) = __$AboutMeStateCopyWithImpl;
 @override @useResult
 $Res call({
- File? imageFile
+ File? imageFile, bool isInitialLoaded
 });
 
 
@@ -258,10 +260,11 @@ class __$AboutMeStateCopyWithImpl<$Res>
 
 /// Create a copy of AboutMeState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? imageFile = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? imageFile = freezed,Object? isInitialLoaded = null,}) {
   return _then(_AboutMeState(
 imageFile: freezed == imageFile ? _self.imageFile : imageFile // ignore: cast_nullable_to_non_nullable
-as File?,
+as File?,isInitialLoaded: null == isInitialLoaded ? _self.isInitialLoaded : isInitialLoaded // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

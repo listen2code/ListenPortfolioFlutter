@@ -14,12 +14,15 @@ class AboutMeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BasePage<AboutMeViewModel, AboutMeState>(
+    return BaseRefreshPage<AboutMeViewModel, AboutMeState>(
       provider: aboutMeViewModelProvider,
       useScaffold: false,
+      onRefresh: (viewModel, state) async {
+        viewModel?.handleIntent(const AboutMeIntent.refresh());
+      },
       active: active,
       body: (context, child, viewModel, state) {
-        return SingleChildScrollView(
+        return Container(
           padding: EdgeInsets.all(20.f),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

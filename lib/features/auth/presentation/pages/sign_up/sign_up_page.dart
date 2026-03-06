@@ -39,7 +39,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BasePage<SignUpViewModel, SignUpState>(
+    return BaseRefreshPage<SignUpViewModel, SignUpState>(
       isEmptyTitle: true,
       provider: signUpViewModelProvider,
       body: (context, child, viewModel, state) => SingleChildScrollView(

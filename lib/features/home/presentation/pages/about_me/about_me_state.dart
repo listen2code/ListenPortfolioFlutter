@@ -7,7 +7,7 @@ part 'about_me_state.freezed.dart';
 
 @freezed
 abstract class AboutMeState extends BaseState with _$AboutMeState {
-  const factory AboutMeState({File? imageFile}) = _AboutMeState;
+  const factory AboutMeState({File? imageFile, @Default(false) bool isInitialLoaded}) = _AboutMeState;
 
   const AboutMeState._();
 }

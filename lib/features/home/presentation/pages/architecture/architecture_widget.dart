@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_portfolio_flutter/features/home/presentation/pages/architecture/architecture_intent.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/architecture/architecture_state.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/architecture/architecture_view_model.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
@@ -13,12 +14,15 @@ class ArchitectureWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BasePage<ArchitectureViewModel, ArchitectureState>(
+    return BaseRefreshPage<ArchitectureViewModel, ArchitectureState>(
       provider: architectureViewModelProvider,
       useScaffold: false,
       active: active,
+      onRefresh: (viewModel, state) async {
+        viewModel?.handleIntent(const ArchitectureIntent.refresh());
+      },
       body: (context, child, viewModel, state) {
-        return SingleChildScrollView(
+        return Container(
           padding: EdgeInsets.all(20.f),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

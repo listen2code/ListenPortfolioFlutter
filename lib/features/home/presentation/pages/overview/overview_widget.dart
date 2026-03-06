@@ -3,6 +3,7 @@ import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_intent.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_state.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_view_model.dart';
+import 'package:listen_portfolio_flutter/features/home/presentation/pages/overview/overview_intent.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/overview/overview_state.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/overview/overview_view_model.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
@@ -17,50 +18,46 @@ class OverviewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BasePage<OverviewViewModel, OverviewState>(
+    return BaseRefreshPage<OverviewViewModel, OverviewState>(
       provider: overviewViewModelProvider,
+      onRefresh: (viewModel, state) async {
+        viewModel?.handleIntent(const OverviewIntent.refresh());
+      },
       useScaffold: false,
       active: active,
       body: (context, child, viewModel, state) {
-        return SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.f),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildWelcomeHeader(context),
-                    SizedBox(height: 16.f),
-                    _buildStatusTag(context),
-                    SizedBox(height: 24.f),
-                    _buildExperienceGrid(context),
-                    SizedBox(height: 28.f),
-                    _buildSectionHeader(
-                      context,
-                      I18nKeys.quickActions.tr,
-                      showSeeAll: false,
-                      onPressed: () {},
-                    ),
-                    SizedBox(height: 12.f),
-                    _buildQuickActions(context),
-                    SizedBox(height: 28.f),
-                    _buildSectionHeader(
-                      context,
-                      I18nKeys.featuredProjects.tr,
-                      showSeeAll: true,
-                      onPressed: () =>
-                          homeViewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.projects)),
-                    ),
-                    SizedBox(height: 12.f),
-                  ],
-                ),
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.f),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildWelcomeHeader(context),
+                  SizedBox(height: 16.f),
+                  _buildStatusTag(context),
+                  SizedBox(height: 24.f),
+                  _buildExperienceGrid(context),
+                  SizedBox(height: 28.f),
+                  _buildSectionHeader(context, I18nKeys.quickActions.tr, showSeeAll: false, onPressed: () {}),
+                  SizedBox(height: 12.f),
+                  _buildQuickActions(context),
+                  SizedBox(height: 28.f),
+                  _buildSectionHeader(
+                    context,
+                    I18nKeys.featuredProjects.tr,
+                    showSeeAll: true,
+                    onPressed: () =>
+                        homeViewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.projects)),
+                  ),
+                  SizedBox(height: 12.f),
+                ],
               ),
-              _buildFeaturedProjects(context),
-              SizedBox(height: 30.f),
-            ],
-          ),
+            ),
+            _buildFeaturedProjects(context),
+            SizedBox(height: 30.f),
+          ],
         );
       },
     );

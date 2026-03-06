@@ -33,7 +33,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return BaseSettingPage(
       builder: (context, child) {
-        return BasePage(
+        return BaseRefreshPage(
           title: I18nKeys.settings.tr,
           body: (context, child, viewModel, state) {
             return SingleChildScrollView(

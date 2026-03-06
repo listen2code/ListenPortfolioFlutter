@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-/// A custom builder for [BasePage] that provides the resolved [viewModel] and current [state].
+/// A custom builder for [BaseRefreshPage] that provides the resolved [viewModel] and current [state].
 typedef BasePageBodyBuilder<V extends BaseViewModel, S extends BaseState> =
     Widget Function(BuildContext context, Widget? child, V? viewModel, S? state);
 
 /// A shared-layer wrapper for the core [BaseLifeCyclePage].
 /// This widget acts as a bridge between business-specific Riverpod providers
 /// and the pure core architecture, keeping [BaseLifeCyclePage] independent.
-class BasePage<V extends BaseViewModel, S extends BaseState> extends ConsumerWidget {
+class BaseRefreshPage<V extends BaseViewModel, S extends BaseState> extends ConsumerWidget {
   /// The builder for the page content.
-  final BasePageBodyBuilder<V, S> body;
-
+  final BasePageBodyBuilder<V, S>? body;
   final String? title;
   final Widget? drawer;
   final bool? canPop;
@@ -52,9 +52,20 @@ class BasePage<V extends BaseViewModel, S extends BaseState> extends ConsumerWid
   /// A widget to display when the page is in an empty state.
   final Widget? onEmpty;
 
-  const BasePage({
+  // --- Refresh Integration ---
+  /// If provided, the page content will be wrapped in a [RefreshIndicator].
+  /// Provides the current [viewModel] and [state] for easy intent dispatching.
+  final Future<void> Function(V? viewModel, S? state)? onRefresh;
+
+  /// Optional list of items. If provided, renders as a ListView.
+  final List<dynamic>? items;
+
+  /// Builder for list items. Required if [items] is provided.
+  final Widget Function(BuildContext context, dynamic item, int index)? itemBuilder;
+
+  const BaseRefreshPage({
     super.key,
-    required this.body,
+    this.body,
     this.title,
     this.drawer,
     this.canPop,
@@ -79,7 +90,13 @@ class BasePage<V extends BaseViewModel, S extends BaseState> extends ConsumerWid
     this.onEffect,
     this.onLoading,
     this.onEmpty,
-  });
+    this.onRefresh,
+    this.items,
+    this.itemBuilder,
+  }) : assert(
+         body != null || (items != null && itemBuilder != null),
+         'Either body or both items and itemBuilder must be provided',
+       );
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -90,8 +107,25 @@ class BasePage<V extends BaseViewModel, S extends BaseState> extends ConsumerWid
     // 2. Resolve the current State
     final state = provider != null ? ref.watch(provider!) : null;
 
+    Widget? content;
+    if (body != null) {
+      content = body!(context, null, effectiveViewModel, state);
+    }
+
+    if (onRefresh != null) {
+      if (itemBuilder != null && items != null) {
+        content = CommonRefreshList(
+          onRefresh: () => onRefresh!(effectiveViewModel, state),
+          itemBuilder: itemBuilder,
+          items: items,
+        );
+      } else {
+        content = CommonRefreshList(onRefresh: () => onRefresh!(effectiveViewModel, state), child: content);
+      }
+    }
+
     return BaseLifeCyclePage(
-      body: (context, child) => body(context, child, effectiveViewModel, state),
+      body: (context, child) => content ?? CommonEmptyView(),
       title: title,
       drawer: drawer,
       canPop: canPop,

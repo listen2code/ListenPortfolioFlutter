@@ -16,8 +16,6 @@ class SecureStorageUtil {
     // In tests, this allows resetting the state if needed.
     _storage = const FlutterSecureStorage(
       aOptions: AndroidOptions(
-        // encryptedSharedPreferences is used to encrypt the shared preferences file.
-        encryptedSharedPreferences: true,
       ),
       iOptions: IOSOptions(
         // Keychain accessibility options for iOS.

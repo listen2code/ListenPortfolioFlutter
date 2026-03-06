@@ -19,7 +19,7 @@ class HomePage extends ConsumerWidget {
     final state = ref.watch(homeViewModelProvider);
     final viewModel = ref.read(homeViewModelProvider.notifier);
 
-    return BasePage<HomeViewModel, HomeState>(
+    return BaseRefreshPage<HomeViewModel, HomeState>(
       provider: homeViewModelProvider,
       title: state.title,
       drawer: _buildDrawer(context, viewModel, state),

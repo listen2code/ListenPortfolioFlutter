@@ -43,7 +43,7 @@ samples, guidance on mobile development, and a full API reference.
   * [app_nav.dart](lib/core/route/app_nav.dart)
   * [route_interceptor.dart](lib/core/route/route_interceptor.dart)
   * [zone_manager.dart](lib/core/utils/zone_manager.dart)
-  * [base_page.dart](lib/shared/base/base_page.dart)
+  * [base_page.dart](lib/shared/base/base_refresh_page.dart)
 
 ## todo
 

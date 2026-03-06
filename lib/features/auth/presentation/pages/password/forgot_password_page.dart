@@ -25,7 +25,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BasePage<ForgotPasswordViewModel, ForgotPasswordState>(
+    return BaseRefreshPage<ForgotPasswordViewModel, ForgotPasswordState>(
       isEmptyTitle: true,
       provider: forgotPasswordViewModelProvider,
       body: (context, child, viewModel, state) => SingleChildScrollView(

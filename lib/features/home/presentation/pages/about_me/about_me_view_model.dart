@@ -18,7 +18,9 @@ class AboutMeViewModel extends _$AboutMeViewModel with ViewModelMixin<AboutMeSta
   @override
   void onVisible() {
     super.onVisible();
-    // Refresh about me info from profile if needed
+    if (!state.isInitialLoaded) {
+      handleIntent(const AboutMeIntent.refresh());
+    }
   }
 
   @override
@@ -26,6 +28,7 @@ class AboutMeViewModel extends _$AboutMeViewModel with ViewModelMixin<AboutMeSta
     intent.when(
       pickImage: (source) => _onPickImage(source),
       removeImage: () => updateState(state.copyWith(imageFile: null)),
+      refresh: _onRefresh,
     );
   }
 
@@ -36,5 +39,13 @@ class AboutMeViewModel extends _$AboutMeViewModel with ViewModelMixin<AboutMeSta
     if (pickedFile != null) {
       updateState(state.copyWith(imageFile: File(pickedFile.path)));
     }
+  }
+
+  Future<void> _onRefresh() async {
+    emitEffect(LoadingEffect(true));
+    // Simulate initial data loading delay
+    await Future.delayed(const Duration(milliseconds: 1000));
+    updateState(state.copyWith(isInitialLoaded: true));
+    emitEffect(LoadingEffect(false));
   }
 }

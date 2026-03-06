@@ -53,7 +53,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
     final accentColor = context.accentColor;
 
-    return BasePage<LoginViewModel, LoginState>(
+    return BaseRefreshPage<LoginViewModel, LoginState>(
       provider: loginViewModelProvider,
       body: (context, child, viewModel, state) {
         return SingleChildScrollView(
