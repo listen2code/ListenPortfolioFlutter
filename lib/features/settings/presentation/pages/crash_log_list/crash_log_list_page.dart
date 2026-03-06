@@ -53,7 +53,7 @@ class _CrashLogListPageState extends State<CrashLogListPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BasePage(
+    return BaseRefreshPage(
       title: I18nKeys.crashReports.tr,
       actions: [
         IconButton(

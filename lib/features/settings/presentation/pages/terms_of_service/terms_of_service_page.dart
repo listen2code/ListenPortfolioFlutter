@@ -9,7 +9,7 @@ class TermsOfServicePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BasePage(
+    return BaseRefreshPage(
       title: I18nKeys.termsOfService.tr,
       body: (context, child, viewModel, state) => SingleChildScrollView(
         padding: const EdgeInsets.all(20),

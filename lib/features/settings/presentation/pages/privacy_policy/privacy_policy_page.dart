@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
-import 'package:listen_portfolio_flutter/features/privacy_policy/presentation/pages/privacy_policy_intent.dart';
-import 'package:listen_portfolio_flutter/features/privacy_policy/presentation/pages/privacy_policy_state.dart';
-import 'package:listen_portfolio_flutter/features/privacy_policy/presentation/pages/privacy_policy_view_model.dart';
+import 'package:listen_portfolio_flutter/features/settings/presentation/pages/privacy_policy/privacy_policy_state.dart';
+import 'package:listen_portfolio_flutter/features/settings/presentation/pages/privacy_policy/privacy_policy_view_model.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 
@@ -12,7 +11,7 @@ class PrivacyPolicyPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return BasePage<PrivacyPolicyViewModel, PrivacyPolicyState>(
+    return BaseRefreshPage<PrivacyPolicyViewModel, PrivacyPolicyState>(
       provider: privacyPolicyViewModelProvider,
       title: I18nKeys.privacyPolicy.tr,
       body: (context, child, viewModel, state) => SingleChildScrollView(

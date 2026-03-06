@@ -1,16 +1,16 @@
 import 'package:listen_portfolio_flutter/core/core.dart';
-import 'package:listen_portfolio_flutter/features/appearance/presentation/pages/appearance_page.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_page.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/password/change_password_page.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/password/forgot_password_page.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/sign_up/sign_up_page.dart';
-import 'package:listen_portfolio_flutter/features/crash_log_list/presentation/pages/crash_log_list_page.dart';
-import 'package:listen_portfolio_flutter/features/delete_account/presentation/pages/delete_account_page.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_page.dart';
-import 'package:listen_portfolio_flutter/features/privacy_policy/presentation/pages/privacy_policy_page.dart';
+import 'package:listen_portfolio_flutter/features/settings/presentation/pages/appearance/appearance_page.dart';
+import 'package:listen_portfolio_flutter/features/settings/presentation/pages/crash_log_list/crash_log_list_page.dart';
+import 'package:listen_portfolio_flutter/features/settings/presentation/pages/delete_account/delete_account_page.dart';
+import 'package:listen_portfolio_flutter/features/settings/presentation/pages/privacy_policy/privacy_policy_page.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/settings_page.dart';
+import 'package:listen_portfolio_flutter/features/settings/presentation/pages/terms_of_service/terms_of_service_page.dart';
 import 'package:listen_portfolio_flutter/features/splash/presentation/pages/splash_page.dart';
-import 'package:listen_portfolio_flutter/features/terms_of_service/presentation/pages/terms_of_service_page.dart';
 
 /// Centralized route definitions and registry for the application.
 class Routes {

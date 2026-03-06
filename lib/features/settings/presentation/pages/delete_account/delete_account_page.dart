@@ -41,7 +41,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BasePage(
+    return BaseRefreshPage(
       title: I18nKeys.deleteAccount.tr,
       padding: EdgeInsets.all(24.f),
       body: (context, child, viewModel, state) => Column(

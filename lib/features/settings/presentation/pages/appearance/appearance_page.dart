@@ -17,7 +17,7 @@ class _AppearancePageState extends State<AppearancePage> {
       builder: (context, child) {
         final accentColor = settingManager.accentColor;
 
-        return BasePage(
+        return BaseRefreshPage(
           title: I18nKeys.appearance.tr,
           padding: const EdgeInsets.all(20),
           body: (context, child, viewModel, state) {
