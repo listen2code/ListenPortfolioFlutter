@@ -133,6 +133,7 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
 
     _lifecycleObserver = _AppLifecycleProxy(
       onStateChanged: (state) {
+        // Strict visibility check before triggering lifecycle
         if (!_isActuallyVisible) return;
 
         if (state == AppLifecycleState.resumed) {
@@ -211,7 +212,11 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     final route = ModalRoute.of(context);
-    if (route is PageRoute) AppNav.observer.subscribe(_routeObserver, route);
+    if (route is PageRoute) {
+      AppNav.observer.subscribe(_routeObserver, route);
+      // Initialize the correct visibility state: if the route is not current, it's covered.
+      _isRouteVisible = route.isCurrent;
+    }
   }
 
   @override
@@ -239,14 +244,26 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
     return ListenableBuilder(
       listenable: Listenable.merge([_isInternalLoading, _isInternalEmpty]),
       builder: (context, child) {
-        Widget content;
-        if (_isInternalLoading.value && widget.onLoading != null) {
-          content = widget.onLoading!;
-        } else if (_isInternalEmpty.value && widget.onEmpty != null) {
-          content = widget.onEmpty!;
-        } else {
-          content = widget.body(context, child);
-        }
+        // Use a Stack instead of conditional returning to keep the 'body'
+        // widget tree (and its ViewModel state) alive during loading toggles.
+        Widget content = Stack(
+          children: [
+            // Normal content is always present to preserve State/ViewModel continuity
+            widget.body(context, child),
+
+            // Loading Overlay (e.g., Skeleton)
+            if (_isInternalLoading.value && widget.onLoading != null)
+              Positioned.fill(
+                child: ColoredBox(color: Theme.of(context).scaffoldBackgroundColor, child: widget.onLoading!),
+              ),
+
+            // Empty State Overlay
+            if (!_isInternalLoading.value && _isInternalEmpty.value && widget.onEmpty != null)
+              Positioned.fill(
+                child: ColoredBox(color: Theme.of(context).scaffoldBackgroundColor, child: widget.onEmpty!),
+              ),
+          ],
+        );
 
         if (!widget.useScaffold) return content;
 
