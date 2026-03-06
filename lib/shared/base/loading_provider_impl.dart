@@ -7,6 +7,8 @@ class LoadingProviderImpl extends BaseProvider<LoadingEffect> {
 
   @override
   void handleEffect(LoadingEffect effect) {
+    if (effect.type == LoadingType.page) return;
+
     if (effect.show) {
       CommonLoading.show(message: effect.message);
     } else {

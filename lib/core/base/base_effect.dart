@@ -25,16 +25,19 @@ class MessageEffect extends BaseEffect {
   }
 }
 
+enum LoadingType { dialog, page, both }
+
 /// Standard Effect for controlling global loading state.
 class LoadingEffect extends BaseEffect {
   final bool show;
   final String? message;
+  final LoadingType? type;
 
-  LoadingEffect(this.show, {this.message});
+  LoadingEffect(this.show, {this.message, this.type = LoadingType.dialog});
 
   @override
   String toString() {
-    return "LoadingEffect(show: $show, message: $message)";
+    return "LoadingEffect(show: $show, message: $message, type: $type)";
   }
 }
 

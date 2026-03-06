@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -26,7 +27,7 @@ class OverviewViewModel extends _$OverviewViewModel with ViewModelMixin<Overview
   }
 
   Future<void> _onRefresh() async {
-    emitEffect(LoadingEffect(true));
+    emitEffect(LoadingEffect(true, type: LoadingType.page));
     // Simulate initial data loading delay
     await Future.delayed(const Duration(milliseconds: 1000));
     updateState(state.copyWith(isInitialLoaded: true));
