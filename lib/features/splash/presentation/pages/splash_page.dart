@@ -1,89 +1,79 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:listen_portfolio_flutter/generated/r.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 
-class SplashPage extends StatefulWidget {
+import 'splash_state.dart';
+import 'splash_view_model.dart';
+
+class SplashPage extends ConsumerWidget {
   const SplashPage({super.key});
 
   @override
-  State<SplashPage> createState() => _SplashPageState();
-}
-
-class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _fadeAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 1500));
-    _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
-
-    _controller.forward();
-
-    // Check and show Log Overlay if it was enabled
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      LogOverlayManager.init(context);
-    });
-
-    _navigateToHome();
-  }
-
-  // Transition to HomePage. RouteInterceptor handles guest redirection if needed.
-  Future<void> _navigateToHome() async {
-    await Future.delayed(const Duration(seconds: 3));
-    if (mounted) {
-      AppNav.off(Routes.home);
-    }
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return BaseRefreshPage(
+  Widget build(BuildContext context, WidgetRef ref) {
+    return BaseRefreshPage<SplashViewModel, SplashState>(
+      provider: splashViewModelProvider,
+      // No scaffold for splash to allow full-screen branding
+      useScaffold: false,
+      // Handle UI-related lifecycle logic via the new parameter
+      lifecycle: _SplashLifecycle(context),
       body: (context, child, viewModel, state) {
         final accentColor = settingManager.accentColor;
-        return Center(
-          child: FadeTransition(
-            opacity: _fadeAnimation,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Hero(
-                  tag: 'logo',
-                  child: Image.asset(
-                    R.imagesIcLauncherAdaptiveFore,
-                    width: 120,
-                    height: 120,
-                    color: accentColor,
-                    colorBlendMode: BlendMode.srcIn,
+
+        return Scaffold(
+          backgroundColor: context.theme.scaffoldBackgroundColor,
+          body: Center(
+            // Use TweenAnimationBuilder to handle fade animation without manually managing AnimationController
+            child: TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0.0, end: 1.0),
+              duration: const Duration(milliseconds: 1500),
+              curve: Curves.easeIn,
+              builder: (context, opacity, child) {
+                return Opacity(opacity: opacity, child: child);
+              },
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Hero(
+                    tag: 'logo',
+                    child: Image.asset(
+                      R.imagesIcLauncherAdaptiveFore,
+                      width: 120,
+                      height: 120,
+                      color: accentColor,
+                      colorBlendMode: BlendMode.srcIn,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 24),
-                Text(
-                  AppConstants.appName,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.w300,
-                    color: accentColor,
-                    letterSpacing: 1.2,
+                  const SizedBox(height: 24),
+                  Text(
+                    AppConstants.appName,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.w300,
+                      color: accentColor,
+                      letterSpacing: 1.2,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );
       },
     );
+  }
+}
+
+/// Dedicated lifecycle observer for UI-level initialization
+class _SplashLifecycle extends PageLifecycle {
+  final BuildContext context;
+  _SplashLifecycle(this.context);
+
+  @override
+  void onReady() {
+    // Initialize Log Overlay when the page is fully ready
+    LogOverlayManager.init(context);
   }
 }

@@ -63,6 +63,8 @@ class BaseRefreshPage<V extends BaseViewModel, S extends BaseState> extends Cons
   /// Builder for list items. Required if [items] is provided.
   final Widget Function(BuildContext context, dynamic item, int index)? itemBuilder;
 
+  /// Optional UI-layer lifecycle listener.
+  final PageLifecycle? lifecycle;
   const BaseRefreshPage({
     super.key,
     this.body,
@@ -93,6 +95,7 @@ class BaseRefreshPage<V extends BaseViewModel, S extends BaseState> extends Cons
     this.onRefresh,
     this.items,
     this.itemBuilder,
+    this.lifecycle,
   }) : assert(
          body != null || (items != null && itemBuilder != null),
          'Either body or both items and itemBuilder must be provided',
@@ -149,6 +152,7 @@ class BaseRefreshPage<V extends BaseViewModel, S extends BaseState> extends Cons
       onEffect: onEffect,
       onLoading: onLoading,
       onEmpty: onEmpty,
+      lifecycle: lifecycle,
     );
   }
 }

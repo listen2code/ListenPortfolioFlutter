@@ -42,7 +42,7 @@ final class AppearanceViewModelProvider
 }
 
 String _$appearanceViewModelHash() =>
-    r'c6374bdd19626c3a397900262ed2bd2047b373aa';
+    r'ab198332e852aaa5d94d9fbb3175e219f4361665';
 
 abstract class _$AppearanceViewModel extends $Notifier<AppearanceState> {
   AppearanceState build();

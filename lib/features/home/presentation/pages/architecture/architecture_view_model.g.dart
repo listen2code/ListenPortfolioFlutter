@@ -42,7 +42,7 @@ final class ArchitectureViewModelProvider
 }
 
 String _$architectureViewModelHash() =>
-    r'3c01eb374ccce8a27c4578091593f8ac7c8a8d1a';
+    r'73381ccc73be2bf5c24b7bd01a92cf0028de434a';
 
 abstract class _$ArchitectureViewModel extends $Notifier<ArchitectureState> {
   ArchitectureState build();

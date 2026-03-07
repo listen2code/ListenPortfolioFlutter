@@ -42,7 +42,7 @@ final class PrivacyPolicyViewModelProvider
 }
 
 String _$privacyPolicyViewModelHash() =>
-    r'ad5a2505af17fc2fb0a296041bd0f2f183e646e4';
+    r'a1ec3b2adc2637c6bcc9fc4a9c170dab059dccc1';
 
 abstract class _$PrivacyPolicyViewModel extends $Notifier<PrivacyPolicyState> {
   PrivacyPolicyState build();

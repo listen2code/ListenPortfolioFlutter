@@ -5,6 +5,17 @@ import 'package:flutter/foundation.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
 
+abstract class PageLifecycle {
+  void onInit() {}
+  void onReady() {}
+  void onVisible() {}
+  void onInVisible() {}
+  void onResume() {}
+  void onPause() {}
+  void onInactive() {}
+  void onDispose() {}
+}
+
 /// Interface for states. Should only contain persistent UI data.
 abstract class BaseState {
   const BaseState();
@@ -24,17 +35,7 @@ abstract class IStateOwner<S> {
 
 /// Base interface for all ViewModels.
 /// [I] is the type of Intent this ViewModel can handle.
-abstract class BaseViewModel<I> {
-  // Lifecycle hooks
-  void onInit();
-  void onReady();
-  void onVisible();
-  void onInVisible();
-  void onResume();
-  void onPause();
-  void onInactive();
-  void onDispose();
-
+abstract class BaseViewModel<I> implements PageLifecycle {
   void cancelRequests(String reason);
 
   /// Reactive stream for one-time UI effects.
@@ -48,6 +49,10 @@ abstract class BaseViewModel<I> {
   /// Unified entry point for all UI Intents.
   /// Subclasses should implementation logic in [onIntent] instead.
   FutureOr<void> handleIntent(I intent);
+
+  /// Optional UI-layer lifecycle listener.
+  PageLifecycle? get lifecycle;
+  set lifecycle(PageLifecycle? value);
 }
 
 /// Mixin to handle common UI states, lifecycle logging, and side effects.
@@ -58,6 +63,9 @@ mixin ViewModelMixin<S extends BaseState, I extends BaseIntent> implements BaseV
 
   @override
   set state(S value);
+
+  @override
+  PageLifecycle? lifecycle;
 
   final _effectController = StreamController<BaseEffect>.broadcast();
   CancelToken _cancelToken = CancelToken();
@@ -215,24 +223,51 @@ mixin ViewModelMixin<S extends BaseState, I extends BaseIntent> implements BaseV
   }
 
   @override
-  void onInit() => appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onInit');
+  void onInit() {
+    appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onInit');
+    lifecycle?.onInit();
+  }
+
   @override
-  void onReady() => appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onReady');
+  void onReady() {
+    appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onReady');
+    lifecycle?.onReady();
+  }
+
   @override
-  void onVisible() => appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onVisible');
+  void onVisible() {
+    appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onVisible');
+    lifecycle?.onVisible();
+  }
+
   @override
-  void onInVisible() => appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onInVisible');
+  void onInVisible() {
+    appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onInVisible');
+    lifecycle?.onInVisible();
+  }
+
   @override
-  void onResume() => appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onResume');
+  void onResume() {
+    appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onResume');
+    lifecycle?.onResume();
+  }
+
   @override
-  void onPause() => appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onPause');
+  void onPause() {
+    appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onPause');
+    lifecycle?.onPause();
+  }
+
   @override
-  void onInactive() => {};
+  void onInactive() {
+    lifecycle?.onInactive();
+  }
 
   @override
   @mustCallSuper
   void onDispose() {
     appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onDispose');
+    lifecycle?.onDispose();
     cancelRequests('${runtimeType.toString()} disposed');
 
     // Automatically cancel all event bus subscriptions to prevent memory leaks.

@@ -41,6 +41,9 @@ class BaseLifeCyclePage extends StatefulWidget {
   /// Explicitly provided ViewModel instance.
   final BaseViewModel? viewModel;
 
+  /// Optional UI-layer lifecycle listener.
+  final PageLifecycle? lifecycle;
+
   /// Optional callback to handle custom UI effects.
   final void Function(BaseEffect effect)? onEffect;
 
@@ -78,6 +81,7 @@ class BaseLifeCyclePage extends StatefulWidget {
     this.loadingTimeout = const Duration(seconds: 10),
     this.onInterceptBack,
     this.viewModel,
+    this.lifecycle,
     this.onEffect,
     this.onLoading,
     this.onEmpty,
@@ -114,6 +118,7 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
     // Subscribe to Effects (Toast, Loading, Navigation, etc.)
     if (_viewModel != null) {
       _effectSubscription = _viewModel!.effectStream.listen(_handleEffect);
+      _viewModel!.lifecycle = widget.lifecycle;
     }
 
     _routeObserver = _RouteAwareProxy(

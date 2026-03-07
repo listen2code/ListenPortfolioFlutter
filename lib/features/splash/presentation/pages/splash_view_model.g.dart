@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'sign_up_view_model.dart';
+part of 'splash_view_model.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -9,51 +9,51 @@ part of 'sign_up_view_model.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(SignUpViewModel)
-final signUpViewModelProvider = SignUpViewModelProvider._();
+@ProviderFor(SplashViewModel)
+final splashViewModelProvider = SplashViewModelProvider._();
 
-final class SignUpViewModelProvider
-    extends $NotifierProvider<SignUpViewModel, SignUpState> {
-  SignUpViewModelProvider._()
+final class SplashViewModelProvider
+    extends $NotifierProvider<SplashViewModel, SplashState> {
+  SplashViewModelProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'signUpViewModelProvider',
+        name: r'splashViewModelProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$signUpViewModelHash();
+  String debugGetCreateSourceHash() => _$splashViewModelHash();
 
   @$internal
   @override
-  SignUpViewModel create() => SignUpViewModel();
+  SplashViewModel create() => SplashViewModel();
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(SignUpState value) {
+  Override overrideWithValue(SplashState value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<SignUpState>(value),
+      providerOverride: $SyncValueProvider<SplashState>(value),
     );
   }
 }
 
-String _$signUpViewModelHash() => r'56e964fd19eb706221a377e18ad47cb256da43d4';
+String _$splashViewModelHash() => r'3670a22d1a09b40f7e1678968b8aa9ffa54b5311';
 
-abstract class _$SignUpViewModel extends $Notifier<SignUpState> {
-  SignUpState build();
+abstract class _$SplashViewModel extends $Notifier<SplashState> {
+  SplashState build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final ref = this.ref as $Ref<SignUpState, SignUpState>;
+    final ref = this.ref as $Ref<SplashState, SplashState>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<SignUpState, SignUpState>,
-              SignUpState,
+              AnyNotifier<SplashState, SplashState>,
+              SplashState,
               Object?,
               Object?
             >;
