@@ -206,7 +206,7 @@ return $default(_that.lastUpdated);case _:
 
 
 class _PrivacyPolicyState extends PrivacyPolicyState {
-  const _PrivacyPolicyState({this.lastUpdated = 'May 2024'}): super._();
+  const _PrivacyPolicyState({this.lastUpdated = 'May 2026'}): super._();
   
 
 @override@JsonKey() final  String lastUpdated;

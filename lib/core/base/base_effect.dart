@@ -83,6 +83,20 @@ class NavigationEffect extends BaseEffect {
   }
 }
 
+/// Standard Effect for sharing files or text.
+class ShareEffect extends BaseEffect {
+  final List<String> files;
+  final String? text;
+  final String? subject;
+
+  ShareEffect({required this.files, this.text, this.subject});
+
+  @override
+  String toString() {
+    return "ShareEffect(files: $files, text: $text, subject: $subject)";
+  }
+}
+
 /// Effect to trigger a global logout operation.
 /// Typically emitted when an [AuthFailure] (like session timeout) occurs.
 class LogoutEffect extends BaseEffect {
