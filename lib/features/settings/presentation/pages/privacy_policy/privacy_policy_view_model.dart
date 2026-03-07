@@ -16,7 +16,7 @@ class PrivacyPolicyViewModel extends _$PrivacyPolicyViewModel
 
   @override
   FutureOr<void> onIntent(PrivacyPolicyIntent intent) {
-    intent.when(refresh: () => _onRefresh());
+    return intent.when<FutureOr<void>>(refresh: () => _onRefresh());
   }
 
   Future<void> _onRefresh() async {

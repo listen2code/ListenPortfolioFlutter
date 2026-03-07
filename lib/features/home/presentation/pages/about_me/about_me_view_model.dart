@@ -25,7 +25,7 @@ class AboutMeViewModel extends _$AboutMeViewModel with ViewModelMixin<AboutMeSta
 
   @override
   FutureOr<void> onIntent(AboutMeIntent intent) {
-    intent.when(
+    return intent.when<FutureOr<void>>(
       pickImage: (source) => _onPickImage(source),
       removeImage: () => updateState(state.copyWith(imageFile: null)),
       refresh: _onRefresh,

@@ -14,7 +14,7 @@ class TermsOfServiceViewModel extends _$TermsOfServiceViewModel
 
   @override
   FutureOr<void> onIntent(TermsOfServiceIntent intent) {
-    intent.when(init: _onInit);
+    return intent.when<FutureOr<void>>(init: _onInit);
   }
 
   Future<void> _onInit() async {

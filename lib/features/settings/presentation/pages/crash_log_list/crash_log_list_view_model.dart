@@ -25,7 +25,7 @@ class CrashLogListViewModel extends _$CrashLogListViewModel
 
   @override
   FutureOr<void> onIntent(CrashLogListIntent intent) {
-    intent.when(
+    return intent.when<FutureOr<void>>(
       init: _onInit,
       refresh: _onRefresh,
       triggerCrash: _onTriggerCrash,

@@ -17,7 +17,7 @@ class DeleteAccountViewModel extends _$DeleteAccountViewModel
 
   @override
   FutureOr<void> onIntent(DeleteAccountIntent intent) {
-    intent.when(toggleConfirm: _onToggleConfirm, deleteAccount: _onDeleteAccount);
+    return intent.when<FutureOr<void>>(toggleConfirm: _onToggleConfirm, deleteAccount: _onDeleteAccount);
   }
 
   void _onToggleConfirm() {

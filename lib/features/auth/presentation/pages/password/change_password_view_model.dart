@@ -18,7 +18,7 @@ class ChangePasswordViewModel extends _$ChangePasswordViewModel
 
   @override
   FutureOr<void> onIntent(ChangePasswordIntent intent) {
-    intent.when(
+    return intent.when<FutureOr<void>>(
       oldPasswordChanged: (pwd) => updateState(state.copyWith(oldPassword: pwd, oldPasswordError: null)),
       newPasswordChanged: (pwd) => updateState(state.copyWith(newPassword: pwd, newPasswordError: null)),
       confirmPasswordChanged: (pwd) =>

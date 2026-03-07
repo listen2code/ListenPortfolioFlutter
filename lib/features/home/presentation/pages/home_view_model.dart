@@ -18,7 +18,7 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
 
   @override
   FutureOr<void> onIntent(HomeIntent intent) {
-    intent.when(
+    return intent.when<FutureOr<void>>(
       tabChanged: (tab) => updateState(state.copyWith(currentTab: tab)),
       refresh: _onRefresh,
       logout: _onLogout,

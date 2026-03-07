@@ -21,7 +21,7 @@ class SignUpViewModel extends _$SignUpViewModel with ViewModelMixin<SignUpState,
 
   @override
   FutureOr<void> onIntent(SignUpIntent intent) {
-    intent.when(
+    return intent.when<FutureOr<void>>(
       fullNameChanged: (name) => updateState(state.copyWith(fullName: name, fullNameError: null)),
       emailChanged: (email) => updateState(state.copyWith(email: email, emailError: null)),
       passwordChanged: (password) => updateState(state.copyWith(password: password, passwordError: null)),

@@ -28,7 +28,7 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
 
   @override
   FutureOr<void> onIntent(SettingsIntent intent) {
-    intent.when(
+    return intent.when<FutureOr<void>>(
       init: _onInit,
       toggleNotifications: _onToggleNotifications,
       clearCache: _onClearCache,

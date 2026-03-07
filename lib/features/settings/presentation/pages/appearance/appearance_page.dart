@@ -1,89 +1,89 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 
-class AppearancePage extends StatefulWidget {
+import 'appearance_intent.dart';
+import 'appearance_state.dart';
+import 'appearance_view_model.dart';
+
+class AppearancePage extends ConsumerWidget {
   const AppearancePage({super.key});
 
   @override
-  State<AppearancePage> createState() => _AppearancePageState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    return BaseRefreshPage<AppearanceViewModel, AppearanceState>(
+      title: I18nKeys.appearance.tr,
+      provider: appearanceViewModelProvider,
+      padding: const EdgeInsets.all(20),
+      body: (context, child, viewModel, state) {
+        if (state == null) return const SizedBox.shrink();
 
-class _AppearancePageState extends State<AppearancePage> {
-  @override
-  Widget build(BuildContext context) {
-    return BaseSettingPage(
-      builder: (context, child) {
-        final accentColor = settingManager.accentColor;
-
-        return BaseRefreshPage(
-          title: I18nKeys.appearance.tr,
-          padding: const EdgeInsets.all(20),
-          body: (context, child, viewModel, state) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildSectionTitle(I18nKeys.themeMode.tr),
-                _buildSettingsCard(context, [
-                  _buildThemeOption(
-                    I18nKeys.system.tr,
-                    Icons.settings_brightness_outlined,
-                    ThemeMode.system,
-                    settingManager.themeMode,
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildSectionTitle(I18nKeys.themeMode.tr),
+            _buildSettingsCard(context, [
+              _buildThemeOption(
+                context,
+                viewModel,
+                I18nKeys.system.tr,
+                Icons.settings_brightness_outlined,
+                ThemeMode.system,
+                state,
+              ),
+              _buildThemeOption(
+                context,
+                viewModel,
+                I18nKeys.light.tr,
+                Icons.light_mode_outlined,
+                ThemeMode.light,
+                state,
+              ),
+              _buildThemeOption(
+                context,
+                viewModel,
+                I18nKeys.dark.tr,
+                Icons.dark_mode_outlined,
+                ThemeMode.dark,
+                state,
+              ),
+            ]),
+            const SizedBox(height: 25),
+            _buildSectionTitle(I18nKeys.accentColor.tr),
+            _buildSettingsCard(context, [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
+                child: GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: 8,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 4,
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 20,
+                    childAspectRatio: 1.0,
                   ),
-                  _buildThemeOption(
-                    I18nKeys.light.tr,
-                    Icons.light_mode_outlined,
-                    ThemeMode.light,
-                    settingManager.themeMode,
-                  ),
-                  _buildThemeOption(
-                    I18nKeys.dark.tr,
-                    Icons.dark_mode_outlined,
-                    ThemeMode.dark,
-                    settingManager.themeMode,
-                  ),
-                ]),
-                const SizedBox(height: 25),
-                _buildSectionTitle(I18nKeys.accentColor.tr),
-                _buildSettingsCard(context, [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
-                    child: GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      // 7 preset colors + 1 custom color button = 8 items
-                      itemCount: 8,
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 4,
-                        mainAxisSpacing: 10,
-                        crossAxisSpacing: 20,
-                        childAspectRatio: 1.0,
-                      ),
-                      itemBuilder: (context, index) {
-                        if (index < 7) {
-                          // Preset colors
-                          final color = SettingManager.accentColors[index];
-                          return _buildColorOption(color, currentAccentColor: accentColor);
-                        } else {
-                          // Custom color button
-                          return _buildCustomColorOption(currentAccentColor: accentColor);
-                        }
-                      },
-                    ),
-                  ),
-                ]),
-                const SizedBox(height: 25),
-                _buildSectionTitle(I18nKeys.fontSize.tr),
-                _buildSettingsCard(context, [
-                  _buildFontSizeOption(I18nKeys.standard.tr, AppFontSize.standard),
-                  _buildFontSizeOption(I18nKeys.large.tr, AppFontSize.large),
-                ]),
-                const SizedBox(height: 40),
-              ],
-            );
-          },
+                  itemBuilder: (context, index) {
+                    if (index < 7) {
+                      final color = SettingManager.accentColors[index];
+                      return _buildColorOption(viewModel, color, state.accentColor);
+                    } else {
+                      return _buildCustomColorOption(context, viewModel, state.accentColor);
+                    }
+                  },
+                ),
+              ),
+            ]),
+            const SizedBox(height: 25),
+            _buildSectionTitle(I18nKeys.fontSize.tr),
+            _buildSettingsCard(context, [
+              _buildFontSizeOption(viewModel, I18nKeys.standard.tr, AppFontSize.standard, state),
+              _buildFontSizeOption(viewModel, I18nKeys.large.tr, AppFontSize.large, state),
+            ]),
+            const SizedBox(height: 40),
+          ],
         );
       },
     );
@@ -134,31 +134,50 @@ class _AppearancePageState extends State<AppearancePage> {
     );
   }
 
-  Widget _buildThemeOption(String label, IconData icon, ThemeMode mode, ThemeMode currentMode) {
-    final isSelected = mode == currentMode;
+  Widget _buildThemeOption(
+    BuildContext context,
+    AppearanceViewModel? viewModel,
+    String label,
+    IconData icon,
+    ThemeMode mode,
+    AppearanceState state,
+  ) {
+    final isSelected = mode == state.themeMode;
     return ListTile(
-      leading: SizedBox(width: 20, child: Icon(icon, color: isSelected ? null : Colors.grey)),
+      leading: SizedBox(width: 20, child: Icon(icon, color: isSelected ? state.accentColor : Colors.grey)),
       title: Text(label),
-      trailing: isSelected ? Icon(Icons.check_circle, color: settingManager.accentColor) : null,
-      onTap: () => settingManager.setThemeMode(mode),
+      trailing: isSelected ? Icon(Icons.check_circle, color: state.accentColor) : null,
+      onTap: () => viewModel?.handleIntent(AppearanceIntent.setThemeMode(mode)),
     );
   }
 
-  Widget _buildFontSizeOption(String label, AppFontSize fontSize) {
-    final isSelected = settingManager.fontSize == fontSize;
+  Widget _buildFontSizeOption(
+    AppearanceViewModel? viewModel,
+    String label,
+    AppFontSize fontSize,
+    AppearanceState state,
+  ) {
+    final isSelected = state.fontSize == fontSize;
     return ListTile(
-      leading: SizedBox(width: 20, child: Icon(Icons.text_fields, size: fontSize.iconSize)),
+      leading: SizedBox(
+        width: 20,
+        child: Icon(
+          Icons.text_fields,
+          size: fontSize.iconSize,
+          color: isSelected ? state.accentColor : Colors.grey,
+        ),
+      ),
       title: Text(label),
-      trailing: isSelected ? Icon(Icons.check_circle, color: settingManager.accentColor) : null,
-      onTap: () => settingManager.setFontSize(fontSize),
+      trailing: isSelected ? Icon(Icons.check_circle, color: state.accentColor) : null,
+      onTap: () => viewModel?.handleIntent(AppearanceIntent.setFontSize(fontSize)),
     );
   }
 
-  Widget _buildColorOption(Color color, {required Color currentAccentColor}) {
+  Widget _buildColorOption(AppearanceViewModel? viewModel, Color color, Color currentAccentColor) {
     final isSelected = currentAccentColor.value == color.value;
     return Center(
       child: GestureDetector(
-        onTap: () => settingManager.setAccentColor(color),
+        onTap: () => viewModel?.handleIntent(AppearanceIntent.setAccentColor(color)),
         child: Container(
           width: 48,
           height: 48,
@@ -176,14 +195,17 @@ class _AppearancePageState extends State<AppearancePage> {
     );
   }
 
-  Widget _buildCustomColorOption({required Color currentAccentColor}) {
-    // Check if current accent color is one of the preset colors
+  Widget _buildCustomColorOption(
+    BuildContext context,
+    AppearanceViewModel? viewModel,
+    Color currentAccentColor,
+  ) {
     final isPreset = SettingManager.accentColors.any((c) => c.value == currentAccentColor.value);
     final isSelected = !isPreset;
 
     return Center(
       child: GestureDetector(
-        onTap: () => _showColorPickerDialog(currentAccentColor),
+        onTap: () => _showColorPickerDialog(context, viewModel, currentAccentColor),
         child: Container(
           width: 48,
           height: 48,
@@ -209,7 +231,7 @@ class _AppearancePageState extends State<AppearancePage> {
     );
   }
 
-  void _showColorPickerDialog(Color initialColor) {
+  void _showColorPickerDialog(BuildContext context, AppearanceViewModel? viewModel, Color initialColor) {
     Color selectedColor = initialColor;
 
     CommonDialog.showCustom(
@@ -244,13 +266,13 @@ class _AppearancePageState extends State<AppearancePage> {
       ),
       actions: [
         TextButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => AppNav.back(),
           child: Text(I18nKeys.cancel.tr, style: const TextStyle(color: Colors.grey)),
         ),
         TextButton(
           onPressed: () {
-            settingManager.setAccentColor(selectedColor);
-            Navigator.pop(context);
+            viewModel?.handleIntent(AppearanceIntent.setAccentColor(selectedColor));
+            AppNav.back();
           },
           child: Text(I18nKeys.ok.tr, style: const TextStyle(fontWeight: FontWeight.bold)),
         ),

@@ -23,7 +23,7 @@ class OverviewViewModel extends _$OverviewViewModel with ViewModelMixin<Overview
 
   @override
   FutureOr<void> onIntent(OverviewIntent intent) {
-    intent.when(refresh: () => _onRefresh());
+    return intent.when<FutureOr<void>>(refresh: () => _onRefresh());
   }
 
   Future<void> _onRefresh() async {

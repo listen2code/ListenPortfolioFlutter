@@ -18,7 +18,7 @@ class ForgotPasswordViewModel extends _$ForgotPasswordViewModel
 
   @override
   FutureOr<void> onIntent(ForgotPasswordIntent intent) {
-    intent.when(
+    return intent.when<FutureOr<void>>(
       emailChanged: (email) => updateState(state.copyWith(email: email, emailError: null)),
       submitReset: _onSubmitReset,
       navigateToLogin: () => emitEffect(NavigationEffect.back()),

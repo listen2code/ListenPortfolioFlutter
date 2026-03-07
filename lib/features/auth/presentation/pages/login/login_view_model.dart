@@ -27,7 +27,7 @@ class LoginViewModel extends _$LoginViewModel with ViewModelMixin<LoginState, Lo
 
   @override
   FutureOr<void> onIntent(LoginIntent intent) {
-    intent.when(
+    return intent.when<FutureOr<void>>(
       usernameChanged: _onUsernameChanged,
       passwordChanged: _onPasswordChanged,
       togglePasswordVisibility: _onTogglePasswordVisibility,

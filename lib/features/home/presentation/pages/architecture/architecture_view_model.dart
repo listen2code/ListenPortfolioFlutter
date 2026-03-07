@@ -24,7 +24,7 @@ class ArchitectureViewModel extends _$ArchitectureViewModel
 
   @override
   FutureOr<void> onIntent(ArchitectureIntent intent) {
-    intent.when(refresh: () => _onRefresh());
+    return intent.when<FutureOr<void>>(refresh: () => _onRefresh());
   }
 
   Future<void> _onRefresh() async {
