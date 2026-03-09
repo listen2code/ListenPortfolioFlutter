@@ -49,6 +49,8 @@ samples, guidance on mobile development, and a full API reference.
 
 * base
     * base use case; view modelMVI
+    * onVisible, onInVisible
+    * state record
 * function
     * notification
     * other pages, use
