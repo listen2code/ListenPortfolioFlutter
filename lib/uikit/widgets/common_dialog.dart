@@ -11,12 +11,6 @@ class CommonDialog {
   /// Map to track currently active singleton dialogs by their Route handles.
   static final Map<String, Route> _activeRoutes = {};
 
-  /// Internal helper to resolve accent color from theme.
-  static Color _getAccentColor(BuildContext context) {
-    final theme = Theme.of(context);
-    return theme.iconTheme.color ?? theme.colorScheme.primary;
-  }
-
   /// Internal logic to push a dialog route with singleton support.
   static Future<T?> _show<T>({
     required String? tag,
@@ -67,21 +61,22 @@ class CommonDialog {
     required String message,
     String? buttonText,
     String? tag,
+    bool barrierDismissible = true,
   }) async {
     await _show<void>(
       tag: tag,
+      barrierDismissible: barrierDismissible,
       builder: (context) {
-        final accentColor = _getAccentColor(context);
         return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           title: CommonText(title, style: const TextStyle(fontWeight: FontWeight.bold)),
           content: Text(message),
           actions: [
-            TextButton(
+            CommonButton(
+              text: buttonText ?? UIKitConfig.getString(UIKitConfig.kOk),
+              type: ButtonType.text,
+              isFullWidth: false,
               onPressed: () => AppNav.back(),
-              child: Text(
-                buttonText ?? UIKitConfig.getString(UIKitConfig.kOk),
-                style: TextStyle(color: accentColor),
-              ),
             ),
           ],
         );
@@ -97,29 +92,30 @@ class CommonDialog {
     String? cancelText,
     Color? okColor,
     String? tag,
+    bool barrierDismissible = false,
   }) {
     return _show<bool>(
       tag: tag,
+      barrierDismissible: barrierDismissible,
       builder: (context) {
-        final accentColor = _getAccentColor(context);
         return AlertDialog(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           title: CommonText(title, style: const TextStyle(fontWeight: FontWeight.bold)),
           content: Text(message),
           actions: [
-            TextButton(
+            CommonButton(
+              text: cancelText ?? UIKitConfig.getString(UIKitConfig.kCancel),
+              type: ButtonType.text,
+              foregroundColor: Colors.grey,
+              isFullWidth: false,
               onPressed: () => AppNav.back(false),
-              child: Text(
-                cancelText ?? UIKitConfig.getString(UIKitConfig.kCancel),
-                style: const TextStyle(color: Colors.grey),
-              ),
             ),
-            TextButton(
+            CommonButton(
+              text: okText ?? UIKitConfig.getString(UIKitConfig.kOk),
+              type: ButtonType.text,
+              backgroundColor: okColor,
+              isFullWidth: false,
               onPressed: () => AppNav.back(true),
-              child: Text(
-                okText ?? UIKitConfig.getString(UIKitConfig.kOk),
-                style: TextStyle(color: okColor ?? accentColor, fontWeight: FontWeight.bold),
-              ),
             ),
           ],
         );
@@ -128,7 +124,6 @@ class CommonDialog {
   }
 
   /// Shows a list of selection options with checkmarks.
-  /// [isMultiSelect] If false, selecting an item will deselect all others.
   static Future<void> showSwitchDialog({
     required String title,
     required List<DialogSwitchItem> items,
@@ -138,8 +133,10 @@ class CommonDialog {
       tag: null,
       builder: (context) => StatefulBuilder(
         builder: (context, setDialogState) {
-          final accentColor = _getAccentColor(context);
+          final theme = Theme.of(context);
+          final accentColor = theme.iconTheme.color ?? theme.colorScheme.primary;
           return AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
             title: CommonText(title, style: const TextStyle(fontWeight: FontWeight.bold)),
             content: SingleChildScrollView(
               child: Column(
@@ -173,6 +170,14 @@ class CommonDialog {
                     .toList(),
               ),
             ),
+            actions: [
+              CommonButton(
+                text: UIKitConfig.getString(UIKitConfig.kOk),
+                type: ButtonType.text,
+                isFullWidth: false,
+                onPressed: () => AppNav.back(),
+              ),
+            ],
           );
         },
       ),
@@ -180,9 +185,15 @@ class CommonDialog {
   }
 
   /// Shows a custom content dialog with a title and optional actions.
-  static Future<T?> showCustom<T>({required String title, required Widget body, List<Widget>? actions}) {
+  static Future<T?> showCustom<T>({
+    required String title,
+    required Widget body,
+    List<Widget>? actions,
+    bool barrierDismissible = true,
+  }) {
     return _show<T>(
       tag: null,
+      barrierDismissible: barrierDismissible,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: CommonText(title, style: const TextStyle(fontWeight: FontWeight.bold)),

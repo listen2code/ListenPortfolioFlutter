@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 /// A universal wrapper that adds Material ripple effects to any widget.
-/// It solves the common issue where ripples are hidden by the child's background color.
+/// Integrated with [HapticFeedback] for a better tactile experience.
 class CommonInkWell extends StatelessWidget {
   final Widget child;
   final VoidCallback? onTap;
@@ -9,6 +10,9 @@ class CommonInkWell extends StatelessWidget {
   final BorderRadius? borderRadius;
   final Color? splashColor;
   final Color? highlightColor;
+
+  /// Whether to trigger a light haptic feedback on tap.
+  final bool useHaptic;
 
   const CommonInkWell({
     super.key,
@@ -18,6 +22,7 @@ class CommonInkWell extends StatelessWidget {
     this.borderRadius,
     this.splashColor,
     this.highlightColor,
+    this.useHaptic = true,
   });
 
   @override
@@ -28,10 +33,20 @@ class CommonInkWell extends StatelessWidget {
     }
 
     return Material(
-      color: Colors.transparent, // Keeps the background transparent to show underlying colors
+      color: Colors.transparent,
       child: InkWell(
-        onTap: onTap,
-        onLongPress: onLongPress,
+        onTap: () {
+          if (useHaptic) {
+            HapticFeedback.lightImpact();
+          }
+          onTap?.call();
+        },
+        onLongPress: () {
+          if (useHaptic) {
+            HapticFeedback.mediumImpact();
+          }
+          onLongPress?.call();
+        },
         borderRadius: borderRadius ?? BorderRadius.circular(0),
         splashColor: splashColor,
         highlightColor: highlightColor,
