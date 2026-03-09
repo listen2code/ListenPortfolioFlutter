@@ -21,6 +21,7 @@ samples, guidance on mobile development, and a full API reference.
 * The current flutter version is 3.38.3, please use the latest API.
 * Base on Clean + MVI architecture
 * answer me in chinese, add code with English comments
+* Do not delete my comments casually; you can modify them.
 * Only modify the relevant code; formatting changes are not needed.
 * Dependency, lib/core <- lib/shared, lib/uikit <- lib/shared, lib/core <- lib/uikit
 * When drawing the screen, you can use the common components from the lib/uikit directory.
