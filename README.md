@@ -2,22 +2,9 @@
 
 A new Flutter project.
 
-## Get
-ting Started
+## prompt
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-
-## rules
-
+* This is an app that introduces personal technical skills and resume.
 * The current flutter version is 3.38.3, please use the latest API.
 * Base on Clean + MVI architecture
 * answer me in chinese, add code with English comments
@@ -51,7 +38,7 @@ samples, guidance on mobile development, and a full API reference.
 * base
     * base use case; view modelMVI
     * onVisible, onInVisible
-    * state record
+    * state roaming
 * function
     * notification
     * other pages, use
