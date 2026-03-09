@@ -6,7 +6,6 @@ import '../uikit.dart';
 enum ButtonType { filled, outlined, text }
 
 class CommonButton extends StatefulWidget {
-  // Changed to StatefulWidget for debounce logic
   final String text;
   final VoidCallback? onPressed;
   final ButtonType type;
@@ -20,8 +19,8 @@ class CommonButton extends StatefulWidget {
   final IconData? icon;
   final bool isFullWidth;
   final double? fontSize;
-  final bool useHaptic; // New property
-  final Duration debounceDuration; // New property
+  final bool useHaptic;
+  final Duration debounceDuration;
 
   const CommonButton({
     super.key,
@@ -47,23 +46,24 @@ class CommonButton extends StatefulWidget {
 }
 
 class _CommonButtonState extends State<CommonButton> {
-  bool _isIgnoreRequest = false;
+  // Use timestamp to handle debounce without triggering setState and visual flickering
+  int _lastClickTime = 0;
 
-  void _handlePress() async {
-    if (widget.onPressed == null || widget.isLoading || _isIgnoreRequest) return;
+  void _handlePress() {
+    if (widget.onPressed == null || widget.isLoading) return;
+
+    final int now = DateTime.now().millisecondsSinceEpoch;
+    if (now - _lastClickTime < widget.debounceDuration.inMilliseconds) {
+      // Ignore rapid clicks
+      return;
+    }
+    _lastClickTime = now;
 
     if (widget.useHaptic) {
       HapticFeedback.lightImpact();
     }
 
-    setState(() => _isIgnoreRequest = true);
     widget.onPressed!();
-
-    // Reset debounce after duration
-    await Future.delayed(widget.debounceDuration);
-    if (mounted) {
-      setState(() => _isIgnoreRequest = false);
-    }
   }
 
   @override
@@ -112,11 +112,17 @@ class _CommonButtonState extends State<CommonButton> {
     final shape = RoundedRectangleBorder(borderRadius: BorderRadius.circular(widget.borderRadius));
     final padding = widget.padding ?? const EdgeInsets.symmetric(vertical: 12);
 
+    // Visual 'enabled' state only depends on isLoading and provided callback.
+    // Debounce is handled internally in _handlePress.
+    final VoidCallback? effectiveOnPressed = (widget.onPressed == null || widget.isLoading)
+        ? null
+        : _handlePress;
+
     Widget button;
     switch (widget.type) {
       case ButtonType.filled:
         button = ElevatedButton(
-          onPressed: (widget.isLoading || _isIgnoreRequest) ? null : _handlePress,
+          onPressed: effectiveOnPressed,
           style: ElevatedButton.styleFrom(
             backgroundColor: effectiveAccentColor,
             foregroundColor: Colors.white,
@@ -129,7 +135,7 @@ class _CommonButtonState extends State<CommonButton> {
         break;
       case ButtonType.outlined:
         button = OutlinedButton(
-          onPressed: (widget.isLoading || _isIgnoreRequest) ? null : _handlePress,
+          onPressed: effectiveOnPressed,
           style: OutlinedButton.styleFrom(
             foregroundColor: effectiveAccentColor,
             side: BorderSide(color: effectiveAccentColor, width: 1.5),
@@ -141,7 +147,7 @@ class _CommonButtonState extends State<CommonButton> {
         break;
       case ButtonType.text:
         button = TextButton(
-          onPressed: (widget.isLoading || _isIgnoreRequest) ? null : _handlePress,
+          onPressed: effectiveOnPressed,
           style: TextButton.styleFrom(
             foregroundColor: effectiveAccentColor,
             shape: shape,
