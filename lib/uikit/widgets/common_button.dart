@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:listen_portfolio_flutter/uikit/uikit.dart';
+import 'package:flutter/services.dart';
+
+import '../uikit.dart';
 
 enum ButtonType { filled, outlined, text }
 
-class CommonButton extends StatelessWidget {
+class CommonButton extends StatefulWidget {
+  // Changed to StatefulWidget for debounce logic
   final String text;
   final VoidCallback? onPressed;
   final ButtonType type;
@@ -17,6 +20,8 @@ class CommonButton extends StatelessWidget {
   final IconData? icon;
   final bool isFullWidth;
   final double? fontSize;
+  final bool useHaptic; // New property
+  final Duration debounceDuration; // New property
 
   const CommonButton({
     super.key,
@@ -33,7 +38,33 @@ class CommonButton extends StatelessWidget {
     this.icon,
     this.isFullWidth = true,
     this.fontSize,
+    this.useHaptic = true,
+    this.debounceDuration = const Duration(milliseconds: 500),
   });
+
+  @override
+  State<CommonButton> createState() => _CommonButtonState();
+}
+
+class _CommonButtonState extends State<CommonButton> {
+  bool _isIgnoreRequest = false;
+
+  void _handlePress() async {
+    if (widget.onPressed == null || widget.isLoading || _isIgnoreRequest) return;
+
+    if (widget.useHaptic) {
+      HapticFeedback.lightImpact();
+    }
+
+    setState(() => _isIgnoreRequest = true);
+    widget.onPressed!();
+
+    // Reset debounce after duration
+    await Future.delayed(widget.debounceDuration);
+    if (mounted) {
+      setState(() => _isIgnoreRequest = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,15 +74,15 @@ class CommonButton extends StatelessWidget {
     // 1. Manual backgroundColor
     // 2. Original accent color from iconTheme
     // 3. M3 primary color
-    final effectiveAccentColor = backgroundColor ?? theme.iconTheme.color ?? theme.colorScheme.primary;
-
-    final contentColor = foregroundColor ?? (type == ButtonType.filled ? Colors.white : effectiveAccentColor);
+    final effectiveAccentColor = widget.backgroundColor ?? theme.iconTheme.color ?? theme.colorScheme.primary;
+    final contentColor =
+        widget.foregroundColor ?? (widget.type == ButtonType.filled ? Colors.white : effectiveAccentColor);
 
     Widget buttonChild = Row(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        if (isLoading) ...[
+        if (widget.isLoading) ...[
           SizedBox(
             width: 18,
             height: 18,
@@ -61,64 +92,71 @@ class CommonButton extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 10),
-        ] else if (icon != null) ...[
-          Icon(icon, size: 18, color: contentColor),
+        ] else if (widget.icon != null) ...[
+          Icon(widget.icon, size: 18, color: contentColor),
           const SizedBox(width: 8),
         ],
         Flexible(
           child: CommonText(
-            text,
+            widget.text,
             style: theme.textTheme.labelLarge?.copyWith(
               color: contentColor,
               fontWeight: FontWeight.bold,
-              fontSize: fontSize ?? 16,
+              fontSize: widget.fontSize ?? 16,
             ),
           ),
         ),
       ],
     );
 
-    ButtonStyle style;
-    final shape = RoundedRectangleBorder(borderRadius: BorderRadius.circular(borderRadius));
+    final shape = RoundedRectangleBorder(borderRadius: BorderRadius.circular(widget.borderRadius));
+    final padding = widget.padding ?? const EdgeInsets.symmetric(vertical: 12);
 
-    switch (type) {
+    Widget button;
+    switch (widget.type) {
       case ButtonType.filled:
-        style = ElevatedButton.styleFrom(
-          backgroundColor: effectiveAccentColor,
-          foregroundColor: Colors.white,
-          elevation: 0,
-          shape: shape,
-          padding: padding ?? const EdgeInsets.symmetric(vertical: 12),
+        button = ElevatedButton(
+          onPressed: (widget.isLoading || _isIgnoreRequest) ? null : _handlePress,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: effectiveAccentColor,
+            foregroundColor: Colors.white,
+            elevation: 0,
+            shape: shape,
+            padding: padding,
+          ),
+          child: buttonChild,
         );
         break;
       case ButtonType.outlined:
-        style = OutlinedButton.styleFrom(
-          foregroundColor: effectiveAccentColor,
-          side: BorderSide(color: effectiveAccentColor, width: 1.5),
-          shape: shape,
-          padding: padding ?? const EdgeInsets.symmetric(vertical: 12),
+        button = OutlinedButton(
+          onPressed: (widget.isLoading || _isIgnoreRequest) ? null : _handlePress,
+          style: OutlinedButton.styleFrom(
+            foregroundColor: effectiveAccentColor,
+            side: BorderSide(color: effectiveAccentColor, width: 1.5),
+            shape: shape,
+            padding: padding,
+          ),
+          child: buttonChild,
         );
         break;
       case ButtonType.text:
-        style = TextButton.styleFrom(
-          foregroundColor: effectiveAccentColor,
-          shape: shape,
-          padding: padding ?? const EdgeInsets.symmetric(vertical: 12),
-          splashFactory: NoSplash.splashFactory,
-          overlayColor: Colors.transparent,
+        button = TextButton(
+          onPressed: (widget.isLoading || _isIgnoreRequest) ? null : _handlePress,
+          style: TextButton.styleFrom(
+            foregroundColor: effectiveAccentColor,
+            shape: shape,
+            padding: padding,
+            splashFactory: NoSplash.splashFactory,
+          ),
+          child: buttonChild,
         );
         break;
     }
 
-    Widget button;
-    if (type == ButtonType.filled) {
-      button = ElevatedButton(onPressed: isLoading ? null : onPressed, style: style, child: buttonChild);
-    } else if (type == ButtonType.outlined) {
-      button = OutlinedButton(onPressed: isLoading ? null : onPressed, style: style, child: buttonChild);
-    } else {
-      button = TextButton(onPressed: isLoading ? null : onPressed, style: style, child: buttonChild);
-    }
-
-    return SizedBox(width: isFullWidth ? double.infinity : width, height: height ?? 52, child: button);
+    return SizedBox(
+      width: widget.isFullWidth ? double.infinity : widget.width,
+      height: widget.height ?? 52,
+      child: button,
+    );
   }
 }

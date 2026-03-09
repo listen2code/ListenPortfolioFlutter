@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:listen_portfolio_flutter/uikit/uikit.dart';
+
+import '../uikit.dart';
 
 /// Preset types for the empty view to quickly configure common scenarios.
 enum EmptyType {

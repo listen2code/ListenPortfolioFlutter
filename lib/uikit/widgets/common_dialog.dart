@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
-import 'package:listen_portfolio_flutter/uikit/uikit.dart';
+
+import '../uikit.dart';
 
 /// Centralized utility for showing various types of dialogs.
 /// Uses specific Route references to manage singleton dialogs reliably.

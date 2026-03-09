@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
-import 'package:listen_portfolio_flutter/uikit/uikit.dart';
+
+import '../uikit.dart';
 
 /// A global loading indicator widget managed via Overlay.
 class CommonLoading {
