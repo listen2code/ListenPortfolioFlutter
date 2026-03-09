@@ -55,7 +55,10 @@ A new Flutter project.
     * markdown resume, download pdf
     * channel plugin
     * jni
-    * AuthInterceptor: token, refreshToken 
+    * AuthInterceptor: token, refreshToken
+    * Third login: google
+    * Material You: Dynamic Color
+    * accessibility a11y
 * ide plugin
     * assets
 * framework
