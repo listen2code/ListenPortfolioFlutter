@@ -43,41 +43,29 @@ A new Flutter project.
     * notification
     * other pages, use
     * switch env: input url; mock api; config each api; separate mock
-    * apm: layout check; lag check; app launch; apk size; net inspector
+    * apm: layout check; lag check; app launch; apk size; net inspector; FPS; Cpu usage; memory; 
     * app review
     * finger auth
     * CustomPainter show skills graph
     * ai intro assistant
-    * pdf show, download resume
+    * markdown show, download pdf resume
     * unit test
-    * session timeout; auto login;
     * profile image upload
-    * markdown resume, download pdf
     * channel plugin
     * jni
-    * AuthInterceptor: token, refreshToken
+    * AuthInterceptor: token, refreshToken, session timeout; auto login;
     * Third login: google
     * Material You: Dynamic Color
     * accessibility a11y
+    * CI CD：upload to S3
 * ide plugin
     * assets
-* framework
-    * library
-        * package_base: only dart
-            * package_libs: basic third util, network, sp, event_bus, theme, globalization
-                * package_widget: base widgets, button, text, image, dialog, toast, loading, refreshList, tabView,
-                    * package_biz: base biz
-                        * package_webView: webView
-                        * package_splash: splash module
-                        * package_login: login module
-                        * package_share: share module
-                        * plugin_native: plugin for native basic info
-* server/
+* server
     * db data design
     * api
     * i18
     * build web
-* readme: screen capture, architect, tech stack
+* doc: screen capture, architect, tech stack
 * issue
     * ndk bundle;
     * pixel icon cache
