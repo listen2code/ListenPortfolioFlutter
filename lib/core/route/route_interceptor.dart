@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:listen_portfolio_flutter/core/core.dart';
-
+import '../core.dart';
 
 abstract class _RouteInterceptor {
   /// Priority of the interceptor. Lower value means higher priority.

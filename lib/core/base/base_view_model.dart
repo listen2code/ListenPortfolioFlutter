@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:listen_portfolio_flutter/core/core.dart';
+import '../core.dart';
 
 abstract class PageLifecycle {
   void onInit() {}

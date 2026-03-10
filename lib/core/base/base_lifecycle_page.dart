@@ -1,8 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+
+import '../core.dart';
 
 /// A professional, unified page wrapper that handles lifecycle management
 /// and ViewModel state listening, delegating UI structure to [BaseScaffoldPage].

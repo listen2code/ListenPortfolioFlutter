@@ -2,7 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
-import 'package:listen_portfolio_flutter/core/core.dart';
+
+import '../core.dart';
 
 /// A lightweight HTTP server running inside the app to provide real network responses.
 /// Path resolution logic is synchronized with tools/api/api.js structure.

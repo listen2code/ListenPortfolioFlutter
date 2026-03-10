@@ -2,7 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:listen_portfolio_flutter/core/core.dart';
+
+import '../core.dart';
 
 class HttpCode {
   HttpCode._();

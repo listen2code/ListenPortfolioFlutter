@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
-import 'package:listen_portfolio_flutter/core/core.dart';
+import '../core.dart';
 import 'package:uuid/uuid.dart';
 
 /// Manages data stored in the current [Zone].

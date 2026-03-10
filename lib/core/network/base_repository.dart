@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:listen_portfolio_flutter/core/core.dart';
+
+import '../core.dart';
 
 mixin BaseRepository {
   Future<Either<Failure, T>> safeCall<T>({

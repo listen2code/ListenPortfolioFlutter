@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:listen_portfolio_flutter/core/core.dart';
+import '../core.dart';
 
 /// Builder function to create a page for a specific route path.
 typedef RoutePageBuilder = Widget Function();

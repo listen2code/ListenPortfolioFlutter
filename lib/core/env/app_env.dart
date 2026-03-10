@@ -1,4 +1,4 @@
-import 'package:listen_portfolio_flutter/core/core.dart';
+import '../core.dart';
 
 enum AppEnvironment {
   mock(AppEnv.defaultEnv),
