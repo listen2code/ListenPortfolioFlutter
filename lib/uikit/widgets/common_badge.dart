@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:listen_portfolio_flutter/uikit/uikit.dart';
+
+import '../uikit.dart';
 
 /// A small UI component to display status, counts, or categories.
 /// Supports optional icons and granular style control to match specific UI designs.

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:listen_portfolio_flutter/uikit/uikit.dart';
+
+import '../uikit.dart';
 
 /// A standard list item component with a leading icon, title, subtitle, and trailing widget.
 /// Commonly used for settings, menus, or simple data lists.
