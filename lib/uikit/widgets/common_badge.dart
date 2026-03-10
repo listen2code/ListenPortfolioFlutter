@@ -2,24 +2,37 @@ import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 
 /// A small UI component to display status, counts, or categories.
+/// Supports optional icons and granular style control to match specific UI designs.
 class CommonBadge extends StatelessWidget {
   final String text;
+  final IconData? icon;
+  final double? iconSize;
   final Color? color;
   final Color? textColor;
+  final Color? borderColor; // Added for precise border control
   final bool isOutline;
   final double borderRadius;
   final EdgeInsetsGeometry? padding;
   final double? fontSize;
+  final double? borderWidth;
+  final double? spacing;
+  final double? letterSpacing;
 
   const CommonBadge({
     super.key,
     required this.text,
+    this.icon,
+    this.iconSize,
     this.color,
     this.textColor,
+    this.borderColor,
     this.isOutline = false,
     this.borderRadius = 4.0,
     this.padding,
     this.fontSize = 11.0,
+    this.borderWidth,
+    this.spacing = 4.0,
+    this.letterSpacing,
   });
 
   @override
@@ -28,20 +41,41 @@ class CommonBadge extends StatelessWidget {
     final effectiveColor = color ?? theme.colorScheme.primary;
     final effectiveTextColor = textColor ?? (isOutline ? effectiveColor : Colors.white);
 
+    // Logic: Use provided borderColor, or fall back to effectiveColor if outlined,
+    // or transparent if solid with no border width specified.
+    final effectiveBorderColor =
+        borderColor ??
+        (isOutline ? effectiveColor : (borderWidth != null ? effectiveColor : Colors.transparent));
+
     return Container(
       padding: padding ?? const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
         color: isOutline ? Colors.transparent : effectiveColor,
         borderRadius: BorderRadius.circular(borderRadius),
-        border: isOutline ? Border.all(color: effectiveColor, width: 1) : null,
+        border: (isOutline || borderWidth != null || borderColor != null)
+            ? Border.all(color: effectiveBorderColor, width: borderWidth ?? 1.0)
+            : null,
       ),
-      child: CommonText(
-        text,
-        style: theme.textTheme.labelSmall?.copyWith(
-          color: effectiveTextColor,
-          fontSize: fontSize,
-          fontWeight: FontWeight.bold,
-        ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          if (icon != null) ...[
+            Icon(icon, size: iconSize ?? 12.0, color: effectiveTextColor),
+            SizedBox(width: spacing),
+          ],
+          CommonText(
+            text,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: effectiveTextColor,
+              fontSize: fontSize,
+              fontWeight: FontWeight.bold,
+              letterSpacing: letterSpacing,
+            ),
+            maxLines: 1,
+            useFittedBox: false, // Disable scaling to maintain original layout behavior
+          ),
+        ],
       ),
     );
   }

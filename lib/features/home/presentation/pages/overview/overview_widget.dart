@@ -184,48 +184,33 @@ class OverviewWidget extends StatelessWidget {
   }
 
   Widget _buildCertBadge(Color color, String label) {
-    return Container(
+    return CommonBadge(
+      text: label,
+      icon: Icons.workspace_premium_outlined,
+      iconSize: 12.f,
+      color: color.withValues(alpha: 0.1),
+      textColor: color,
+      borderColor: color.withValues(alpha: 0.3),
+      borderWidth: 0.5.f,
+      borderRadius: 6.f,
       padding: EdgeInsets.symmetric(horizontal: 8.f, vertical: 3.f),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(6.f),
-        border: Border.all(color: color.withValues(alpha: 0.3), width: 0.5.f),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.workspace_premium_outlined, size: 12.f, color: color),
-          SizedBox(width: 4.f),
-          CommonText(
-            label,
-            style: TextStyle(color: color, fontSize: 10.f, fontWeight: FontWeight.bold, letterSpacing: 0.5.f),
-            maxLines: 1,
-          ),
-        ],
-      ),
+      fontSize: 10.f,
+      spacing: 4.f,
+      letterSpacing: 0.5.f,
     );
   }
 
   Widget _buildStatusTag(BuildContext context) {
-    return Container(
+    return CommonBadge(
+      text: I18nKeys.availableStatus.tr,
+      icon: Icons.circle,
+      iconSize: 6.f,
+      color: Colors.green.withValues(alpha: 0.1),
+      textColor: Colors.green,
+      borderColor: Colors.green.withValues(alpha: 0.2),
+      borderRadius: 20.f,
       padding: EdgeInsets.symmetric(horizontal: 10.f, vertical: 4.f),
-      decoration: BoxDecoration(
-        color: Colors.green.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(20.f),
-        border: Border.all(color: Colors.green.withValues(alpha: 0.2)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.circle, color: Colors.green, size: 6.f),
-          SizedBox(width: 6.f),
-          CommonText(
-            I18nKeys.availableStatus.tr,
-            style: context.textTheme.labelSmall?.copyWith(color: Colors.green, fontWeight: FontWeight.bold),
-            maxLines: 1,
-          ),
-        ],
-      ),
+      spacing: 6.f,
     );
   }
 
@@ -318,17 +303,13 @@ class OverviewWidget extends StatelessWidget {
   }
 
   Widget _buildTag(String label, Color color) {
-    return Container(
+    return CommonBadge(
+      text: label,
+      color: color.withValues(alpha: 0.1),
+      textColor: color,
+      borderRadius: 6.f,
       padding: EdgeInsets.symmetric(horizontal: 8.f, vertical: 2.f),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(6.f),
-      ),
-      child: CommonText(
-        label,
-        style: TextStyle(color: color, fontSize: 10.f, fontWeight: FontWeight.bold),
-        maxLines: 1,
-      ),
+      fontSize: 10.f,
     );
   }
 
@@ -621,17 +602,13 @@ class OverviewWidget extends StatelessWidget {
             child: Icon(icon, color: Colors.white, size: 28.f),
           ),
           Spacer(),
-          Container(
+          CommonBadge(
+            text: tag,
+            color: color.withValues(alpha: 0.1),
+            textColor: color,
+            borderRadius: 6.f,
             padding: EdgeInsets.symmetric(horizontal: 8.f, vertical: 4.f),
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(6.f),
-            ),
-            child: CommonText(
-              tag,
-              style: TextStyle(color: color, fontSize: 10.f, fontWeight: FontWeight.bold),
-              maxLines: 1,
-            ),
+            fontSize: 10.f,
           ),
           SizedBox(height: 8.f),
           Expanded(
