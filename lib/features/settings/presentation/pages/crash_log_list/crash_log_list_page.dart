@@ -40,10 +40,6 @@ class CrashLogListPage extends ConsumerWidget {
       body: (context, child, viewModel, state) {
         if (state == null) return const SizedBox.shrink();
 
-        if (state.isLoading) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
         if (state.logs.isEmpty) {
           return Center(
             child: Column(

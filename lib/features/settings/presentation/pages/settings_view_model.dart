@@ -54,7 +54,7 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
 
   Future<void> _onClearCache() async {
     // todo effect
-    emitEffect(LoadingEffect(true, message: "Cleaning..."));
+    emitEffect(LoadingEffect(true));
     await CacheManager.clearAllCache();
     await _updateCacheSize();
     emitEffect(LoadingEffect(false));
@@ -74,8 +74,8 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
     }
   }
 
-  void _onSwitchLanguage(AppLanguage language) {
-    settingManager.setLanguage(language);
+  Future<void> _onSwitchLanguage(AppLanguage language) async {
+    await settingManager.setLanguage(language);
     updateState(state.copyWith(currentLanguage: language));
   }
 

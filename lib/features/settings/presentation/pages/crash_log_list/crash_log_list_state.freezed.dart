@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CrashLogListState {
 
- List<File> get logs; bool get isLoading;
+ List<File> get logs;
 /// Create a copy of CrashLogListState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $CrashLogListStateCopyWith<CrashLogListState> get copyWith => _$CrashLogListStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CrashLogListState&&const DeepCollectionEquality().equals(other.logs, logs)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CrashLogListState&&const DeepCollectionEquality().equals(other.logs, logs));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(logs),isLoading);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(logs));
 
 @override
 String toString() {
-  return 'CrashLogListState(logs: $logs, isLoading: $isLoading)';
+  return 'CrashLogListState(logs: $logs)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $CrashLogListStateCopyWith<$Res>  {
   factory $CrashLogListStateCopyWith(CrashLogListState value, $Res Function(CrashLogListState) _then) = _$CrashLogListStateCopyWithImpl;
 @useResult
 $Res call({
- List<File> logs, bool isLoading
+ List<File> logs
 });
 
 
@@ -62,11 +62,10 @@ class _$CrashLogListStateCopyWithImpl<$Res>
 
 /// Create a copy of CrashLogListState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? logs = null,Object? isLoading = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? logs = null,}) {
   return _then(_self.copyWith(
 logs: null == logs ? _self.logs : logs // ignore: cast_nullable_to_non_nullable
-as List<File>,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
-as bool,
+as List<File>,
   ));
 }
 
@@ -151,10 +150,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<File> logs,  bool isLoading)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<File> logs)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CrashLogListState() when $default != null:
-return $default(_that.logs,_that.isLoading);case _:
+return $default(_that.logs);case _:
   return orElse();
 
 }
@@ -172,10 +171,10 @@ return $default(_that.logs,_that.isLoading);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<File> logs,  bool isLoading)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<File> logs)  $default,) {final _that = this;
 switch (_that) {
 case _CrashLogListState():
-return $default(_that.logs,_that.isLoading);case _:
+return $default(_that.logs);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -192,10 +191,10 @@ return $default(_that.logs,_that.isLoading);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<File> logs,  bool isLoading)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<File> logs)?  $default,) {final _that = this;
 switch (_that) {
 case _CrashLogListState() when $default != null:
-return $default(_that.logs,_that.isLoading);case _:
+return $default(_that.logs);case _:
   return null;
 
 }
@@ -207,7 +206,7 @@ return $default(_that.logs,_that.isLoading);case _:
 
 
 class _CrashLogListState extends CrashLogListState {
-  const _CrashLogListState({final  List<File> logs = const [], this.isLoading = true}): _logs = logs,super._();
+  const _CrashLogListState({final  List<File> logs = const []}): _logs = logs,super._();
   
 
  final  List<File> _logs;
@@ -217,7 +216,6 @@ class _CrashLogListState extends CrashLogListState {
   return EqualUnmodifiableListView(_logs);
 }
 
-@override@JsonKey() final  bool isLoading;
 
 /// Create a copy of CrashLogListState
 /// with the given fields replaced by the non-null parameter values.
@@ -229,16 +227,16 @@ _$CrashLogListStateCopyWith<_CrashLogListState> get copyWith => __$CrashLogListS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CrashLogListState&&const DeepCollectionEquality().equals(other._logs, _logs)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CrashLogListState&&const DeepCollectionEquality().equals(other._logs, _logs));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_logs),isLoading);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_logs));
 
 @override
 String toString() {
-  return 'CrashLogListState(logs: $logs, isLoading: $isLoading)';
+  return 'CrashLogListState(logs: $logs)';
 }
 
 
@@ -249,7 +247,7 @@ abstract mixin class _$CrashLogListStateCopyWith<$Res> implements $CrashLogListS
   factory _$CrashLogListStateCopyWith(_CrashLogListState value, $Res Function(_CrashLogListState) _then) = __$CrashLogListStateCopyWithImpl;
 @override @useResult
 $Res call({
- List<File> logs, bool isLoading
+ List<File> logs
 });
 
 
@@ -266,11 +264,10 @@ class __$CrashLogListStateCopyWithImpl<$Res>
 
 /// Create a copy of CrashLogListState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? logs = null,Object? isLoading = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? logs = null,}) {
   return _then(_CrashLogListState(
 logs: null == logs ? _self._logs : logs // ignore: cast_nullable_to_non_nullable
-as List<File>,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
-as bool,
+as List<File>,
   ));
 }
 

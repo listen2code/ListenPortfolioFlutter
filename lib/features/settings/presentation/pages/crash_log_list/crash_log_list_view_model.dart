@@ -37,6 +37,7 @@ class CrashLogListViewModel extends _$CrashLogListViewModel
   }
 
   Future<void> _onInit() async {
+    emitEffect(LoadingEffect(true));
     await _loadLogs();
 
     final String? initialFilePath = AppNav.getParam<String>(Routes.argFilePath);
@@ -46,6 +47,7 @@ class CrashLogListViewModel extends _$CrashLogListViewModel
         await _onViewLog(file);
       }
     }
+    emitEffect(LoadingEffect(false));
   }
 
   Future<void> _onRefresh() async {
@@ -53,13 +55,14 @@ class CrashLogListViewModel extends _$CrashLogListViewModel
   }
 
   Future<void> _loadLogs() async {
-    updateState(state.copyWith(isLoading: true));
+    emitEffect(LoadingEffect(true));
     try {
       final logs = await CrashManager.getSavedCrashLogs();
-      updateState(state.copyWith(logs: logs, isLoading: false));
+      updateState(state.copyWith(logs: logs));
     } catch (e) {
-      updateState(state.copyWith(isLoading: false));
       emitEffect(MessageEffect.error(e.toString()));
+    } finally {
+      emitEffect(LoadingEffect(false));
     }
   }
 
