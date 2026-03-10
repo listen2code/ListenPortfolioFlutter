@@ -10,6 +10,13 @@ abstract class PageLifecycle {
   void onReady() {}
   void onVisible() {}
   void onInVisible() {}
+
+  /// Triggered when the widget physically enters the viewport.
+  void onViewVisible() {}
+
+  /// Triggered when the widget physically leaves the viewport.
+  void onViewInVisible() {}
+
   void onResume() {}
   void onPause() {}
   void onInactive() {}
@@ -244,6 +251,18 @@ mixin ViewModelMixin<S extends BaseState, I extends BaseIntent> implements BaseV
   void onInVisible() {
     appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onInVisible');
     lifecycle?.onInVisible();
+  }
+
+  @override
+  void onViewVisible() {
+    appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onViewVisible');
+    lifecycle?.onViewVisible();
+  }
+
+  @override
+  void onViewInVisible() {
+    appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onViewInVisible');
+    lifecycle?.onViewInVisible();
   }
 
   @override

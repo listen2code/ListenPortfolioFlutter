@@ -37,7 +37,6 @@ A new Flutter project.
 
 * base
     * base use case; view modelMVI
-    * onVisible, onInVisible
     * state roaming
 * function
     * notification

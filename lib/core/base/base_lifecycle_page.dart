@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 /// A professional, unified page wrapper that handles lifecycle management
 /// and ViewModel state listening, delegating UI structure to [BaseScaffoldPage].
@@ -95,6 +96,7 @@ class BaseLifeCyclePage extends StatefulWidget {
 class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
   bool _isRouteVisible = false;
   bool _isActuallyVisible = false; // Tracks (Route Visible && widget.active)
+  bool _isViewVisible = false; // Tracks physical visibility in viewport
   bool _isReady = false; // Tracks if onReady has been called
   BaseViewModel? _viewModel;
   StreamSubscription<BaseEffect>? _effectSubscription;
@@ -181,6 +183,18 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
     }
   }
 
+  void _onVisibilityChanged(VisibilityInfo info) {
+    final bool currentlyVisible = info.visibleFraction > 0;
+    if (currentlyVisible != _isViewVisible) {
+      _isViewVisible = currentlyVisible;
+      if (_isViewVisible) {
+        _viewModel?.onViewVisible();
+      } else {
+        _viewModel?.onViewInVisible();
+      }
+    }
+  }
+
   void _handleEffect(BaseEffect effect) {
     if (!mounted) return;
 
@@ -251,23 +265,27 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
       builder: (context, child) {
         // Use a Stack instead of conditional returning to keep the 'body'
         // widget tree (and its ViewModel state) alive during loading toggles.
-        Widget content = Stack(
-          children: [
-            // Normal content is always present to preserve State/ViewModel continuity
-            widget.body(context, child),
+        Widget content = VisibilityDetector(
+          key: Key('visibility-${widget.title ?? runtimeType}'),
+          onVisibilityChanged: _onVisibilityChanged,
+          child: Stack(
+            children: [
+              // Normal content is always present to preserve State/ViewModel continuity
+              widget.body(context, child),
 
-            // Loading Overlay (e.g., Skeleton)
-            if (_isInternalLoading.value && widget.onLoading != null)
-              Positioned.fill(
-                child: ColoredBox(color: Theme.of(context).scaffoldBackgroundColor, child: widget.onLoading!),
-              ),
+              // Loading Overlay (e.g., Skeleton)
+              if (_isInternalLoading.value && widget.onLoading != null)
+                Positioned.fill(
+                  child: ColoredBox(color: Theme.of(context).scaffoldBackgroundColor, child: widget.onLoading!),
+                ),
 
-            // Empty State Overlay
-            if (!_isInternalLoading.value && _isInternalEmpty.value && widget.onEmpty != null)
-              Positioned.fill(
-                child: ColoredBox(color: Theme.of(context).scaffoldBackgroundColor, child: widget.onEmpty!),
-              ),
-          ],
+              // Empty State Overlay
+              if (!_isInternalLoading.value && _isInternalEmpty.value && widget.onEmpty != null)
+                Positioned.fill(
+                  child: ColoredBox(color: Theme.of(context).scaffoldBackgroundColor, child: widget.onEmpty!),
+                ),
+            ],
+          ),
         );
 
         if (!widget.useScaffold) return content;
