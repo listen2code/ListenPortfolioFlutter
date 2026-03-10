@@ -59,6 +59,10 @@ class BaseLifeCyclePage extends StatefulWidget {
   /// Set to false when using this as a sub-page/tab within another page.
   final bool useScaffold;
 
+  /// Whether to enable viewport visibility detection (onViewVisible/onViewInVisible).
+  /// Disable this for simple static pages to improve performance.
+  final bool useVisibilityDetector;
+
   const BaseLifeCyclePage({
     super.key,
     required this.body,
@@ -87,6 +91,7 @@ class BaseLifeCyclePage extends StatefulWidget {
     this.onLoading,
     this.onEmpty,
     this.useScaffold = true,
+    this.useVisibilityDetector = true,
   });
 
   @override
@@ -113,6 +118,10 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
   @override
   void initState() {
     super.initState();
+
+    // Optimize: Set global VisibilityDetector update interval to reduce overhead during scrolling.
+    // 150ms is generally imperceptible but significantly reduces CPU usage.
+    VisibilityDetectorController.instance.updateInterval = const Duration(milliseconds: 150);
 
     // Directly use the provided viewModel instance
     _viewModel = widget.viewModel;
@@ -265,28 +274,32 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
       builder: (context, child) {
         // Use a Stack instead of conditional returning to keep the 'body'
         // widget tree (and its ViewModel state) alive during loading toggles.
-        Widget content = VisibilityDetector(
-          key: Key('visibility-${widget.title ?? runtimeType}'),
-          onVisibilityChanged: _onVisibilityChanged,
-          child: Stack(
-            children: [
-              // Normal content is always present to preserve State/ViewModel continuity
-              widget.body(context, child),
+        Widget content = Stack(
+          children: [
+            // Normal content is always present to preserve State/ViewModel continuity
+            widget.body(context, child),
 
-              // Loading Overlay (e.g., Skeleton)
-              if (_isInternalLoading.value && widget.onLoading != null)
-                Positioned.fill(
-                  child: ColoredBox(color: Theme.of(context).scaffoldBackgroundColor, child: widget.onLoading!),
-                ),
+            // Loading Overlay (e.g., Skeleton)
+            if (_isInternalLoading.value && widget.onLoading != null)
+              Positioned.fill(
+                child: ColoredBox(color: Theme.of(context).scaffoldBackgroundColor, child: widget.onLoading!),
+              ),
 
-              // Empty State Overlay
-              if (!_isInternalLoading.value && _isInternalEmpty.value && widget.onEmpty != null)
-                Positioned.fill(
-                  child: ColoredBox(color: Theme.of(context).scaffoldBackgroundColor, child: widget.onEmpty!),
-                ),
-            ],
-          ),
+            // Empty State Overlay
+            if (!_isInternalLoading.value && _isInternalEmpty.value && widget.onEmpty != null)
+              Positioned.fill(
+                child: ColoredBox(color: Theme.of(context).scaffoldBackgroundColor, child: widget.onEmpty!),
+              ),
+          ],
         );
+
+        if (widget.useVisibilityDetector) {
+          content = VisibilityDetector(
+            key: Key('visibility-${widget.title ?? runtimeType}'),
+            onVisibilityChanged: _onVisibilityChanged,
+            child: content,
+          );
+        }
 
         if (!widget.useScaffold) return content;
 
