@@ -19,6 +19,7 @@ class OverviewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Get user data from AuthManager
     UserModel? userModel = authManager.state.user;
 
     return BaseRefreshPage<OverviewViewModel, OverviewState>(
@@ -133,11 +134,16 @@ class OverviewWidget extends StatelessWidget {
 
   Widget _buildWelcomeHeader(BuildContext context, UserModel? userModel) {
     final accentColor = context.accentColor;
+    final String name = userModel?.name ?? AppConstants.author;
+    final String jobTitle = userModel?.jobTitle ?? "Full Stack Mobile Architect";
+    final String graduationYear = userModel?.graduationYear ?? "2013";
+    final String major = userModel?.major?.tr ?? I18nKeys.softwareEngineering.tr;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonText(
-          I18nKeys.hello.trArgs([userModel?.name ?? AppConstants.author]),
+          I18nKeys.hello.trArgs([name]),
           style: context.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
           maxLines: 1,
         ),
@@ -146,27 +152,29 @@ class OverviewWidget extends StatelessWidget {
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             CommonText(
-              '${userModel?.jobTitle ?? ""} (${I18nKeys.graduated.tr}',
+              '$jobTitle (${I18nKeys.graduated.tr}',
               style: context.textTheme.labelSmall?.copyWith(color: accentColor, fontWeight: FontWeight.w600),
               maxLines: 1,
             ),
             CommonAuthText(
-              ' ${userModel?.graduationYear ?? ""} ',
+              ' $graduationYear ',
               style: context.textTheme.labelSmall?.copyWith(color: accentColor, fontWeight: FontWeight.w600),
               maxLines: 1,
               blurLevel: AuthBlurLevel.low,
             ),
-            CommonText(
-              '| ${userModel?.major?.tr ?? ""})',
+            CommonAuthText(
+              '| $major)',
               style: context.textTheme.labelSmall?.copyWith(color: accentColor, fontWeight: FontWeight.w600),
               maxLines: 1,
+              blurLevel: AuthBlurLevel.low,
             ),
           ],
         ),
         SizedBox(height: 8.f),
-        if (userModel?.certifications != null)
+        // Certifications section
+        if (userModel?.certifications != null || userModel == null)
           Row(
-            children: userModel!.certifications!
+            children: (userModel?.certifications ?? [I18nKeys.jlptN1, I18nKeys.bjtJ2])
                 .map(
                   (certKey) => Padding(
                     padding: EdgeInsets.only(right: 8.f),
@@ -181,18 +189,19 @@ class OverviewWidget extends StatelessWidget {
 
   Widget _buildCertBadge(Color color, String label) {
     return CommonBadge(
-      text: label,
       icon: Icons.workspace_premium_outlined,
       iconSize: 12.f,
       color: color.withValues(alpha: 0.1),
-      textColor: color,
       borderColor: color.withValues(alpha: 0.3),
       borderWidth: 0.5.f,
       borderRadius: 6.f,
       padding: EdgeInsets.symmetric(horizontal: 8.f, vertical: 3.f),
-      fontSize: 10.f,
       spacing: 4.f,
-      letterSpacing: 0.5.f,
+      child: CommonAuthText(
+        label,
+        style: TextStyle(color: color, fontSize: 10.f, fontWeight: FontWeight.w600),
+        blurLevel: AuthBlurLevel.low,
+      ),
     );
   }
 
@@ -211,10 +220,22 @@ class OverviewWidget extends StatelessWidget {
   }
 
   Widget _buildExperienceGrid(BuildContext context, UserModel? userModel) {
-    final experiences = userModel?.experiences ?? [];
+    // If not logged in, we provide default experience data based on users.json logic
+    final List<ExperienceModel> experiences =
+        userModel?.experiences ??
+        const [
+          ExperienceModel(
+            id: 'android',
+            year: '10',
+            label: I18nKeys.androidExp,
+            tags: [I18nKeys.archDesign, I18nKeys.perfOptimization],
+          ),
+          ExperienceModel(id: 'flutter', year: '2', label: I18nKeys.flutterExp),
+          ExperienceModel(id: 'java_web', year: '1', label: I18nKeys.javaWeb),
+        ];
+
     if (experiences.isEmpty) return const SizedBox.shrink();
 
-    // The first item is usually the main highlight (e.g., Android)
     final mainExp = experiences.first;
     final otherExps = experiences.skip(1).toList();
 
@@ -301,9 +322,10 @@ class OverviewWidget extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CommonText(
+                CommonAuthText(
                   value,
                   style: context.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+                  blurLevel: AuthBlurLevel.medium,
                   maxLines: 1,
                 ),
                 SizedBox(height: 4.f),
@@ -374,9 +396,10 @@ class OverviewWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  CommonText(
+                  CommonAuthText(
                     value,
                     style: context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                    blurLevel: AuthBlurLevel.medium,
                     maxLines: 1,
                   ),
                   CommonText(
@@ -545,9 +568,7 @@ class OverviewWidget extends StatelessWidget {
       child: CommonButton(
         text: title,
         icon: icon,
-        // Using backgroundColor instead of color
         backgroundColor: context.theme.cardColor,
-        // Using foregroundColor instead of textColor
         foregroundColor: context.textTheme.bodyLarge?.color,
         isFullWidth: true,
         height: 48.f,

@@ -5,7 +5,8 @@ import '../uikit.dart';
 /// A small UI component to display status, counts, or categories.
 /// Supports optional icons and granular style control to match specific UI designs.
 class CommonBadge extends StatelessWidget {
-  final String text;
+  final String? text;
+  final Widget? child; // Added to support custom widgets like CommonAuthText
   final IconData? icon;
   final double? iconSize;
   final Color? color;
@@ -21,7 +22,8 @@ class CommonBadge extends StatelessWidget {
 
   const CommonBadge({
     super.key,
-    required this.text,
+    this.text,
+    this.child,
     this.icon,
     this.iconSize,
     this.color,
@@ -34,7 +36,7 @@ class CommonBadge extends StatelessWidget {
     this.borderWidth,
     this.spacing = 4.0,
     this.letterSpacing,
-  });
+  }) : assert(text != null || child != null, 'Either text or child must be provided');
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +49,21 @@ class CommonBadge extends StatelessWidget {
     final effectiveBorderColor =
         borderColor ??
         (isOutline ? effectiveColor : (borderWidth != null ? effectiveColor : Colors.transparent));
+
+    // If child is provided, use it. Otherwise, wrap text in CommonText.
+    final Widget labelWidget =
+        child ??
+        CommonText(
+          text ?? "",
+          style: theme.textTheme.labelSmall?.copyWith(
+            color: effectiveTextColor,
+            fontSize: fontSize,
+            fontWeight: FontWeight.bold,
+            letterSpacing: letterSpacing,
+          ),
+          maxLines: 1,
+          useFittedBox: false,
+        );
 
     return Container(
       padding: padding ?? const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
@@ -65,17 +82,7 @@ class CommonBadge extends StatelessWidget {
             Icon(icon, size: iconSize ?? 12.0, color: effectiveTextColor),
             SizedBox(width: spacing),
           ],
-          CommonText(
-            text,
-            style: theme.textTheme.labelSmall?.copyWith(
-              color: effectiveTextColor,
-              fontSize: fontSize,
-              fontWeight: FontWeight.bold,
-              letterSpacing: letterSpacing,
-            ),
-            maxLines: 1,
-            useFittedBox: false, // Disable scaling to maintain original layout behavior
-          ),
+          labelWidget,
         ],
       ),
     );
