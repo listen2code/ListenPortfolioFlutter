@@ -296,7 +296,8 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
 
         if (widget.useVisibilityDetector) {
           content = VisibilityDetector(
-            key: Key('visibility-${widget.title ?? runtimeType}'),
+            // FIX: Use a stable key that doesn't depend on title to prevent rebuilds on title changes.
+            key: ValueKey('visibility-${_viewModel?.runtimeType ?? runtimeType}'),
             onVisibilityChanged: _onVisibilityChanged,
             child: content,
           );
