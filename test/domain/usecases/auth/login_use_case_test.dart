@@ -24,12 +24,7 @@ void main() {
     const testPassword = 'password123';
     const testUserId = 'user_123';
 
-    final testUser = UserModel(
-      id: testUserId,
-      name: 'Test UserModel',
-      email: 'test@example.com',
-      createdAt: "2026-02-03",
-    );
+    final testUser = UserModel(id: testUserId, name: 'Test UserModel', email: 'test@example.com');
 
     final testLoginResponse = LoginResponseModel(token: 'token_abc', userId: testUserId);
 

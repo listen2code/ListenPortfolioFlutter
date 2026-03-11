@@ -6,23 +6,69 @@ part of 'user_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_UserModel _$UserModelFromJson(Map json) =>
-    $checkedCreate('_UserModel', json, ($checkedConvert) {
-      final val = _UserModel(
-        id: $checkedConvert('id', (v) => v as String?),
-        name: $checkedConvert('name', (v) => v as String?),
-        email: $checkedConvert('email', (v) => v as String?),
-        avatarUrl: $checkedConvert('avatarUrl', (v) => v as String?),
-        createdAt: $checkedConvert('createdAt', (v) => v as String?),
-      );
-      return val;
-    });
+_UserModel _$UserModelFromJson(Map json) => $checkedCreate('_UserModel', json, (
+  $checkedConvert,
+) {
+  final val = _UserModel(
+    id: $checkedConvert('id', (v) => v as String?),
+    name: $checkedConvert('name', (v) => v as String?),
+    avatarUrl: $checkedConvert('avatarUrl', (v) => v as String?),
+    jobTitle: $checkedConvert('jobTitle', (v) => v as String?),
+    graduationYear: $checkedConvert('graduationYear', (v) => v as String?),
+    major: $checkedConvert('major', (v) => v as String?),
+    status: $checkedConvert('status', (v) => v as String?),
+    github: $checkedConvert('github', (v) => v as String?),
+    email: $checkedConvert('email', (v) => v as String?),
+    certifications: $checkedConvert(
+      'certifications',
+      (v) => (v as List<dynamic>?)?.map((e) => e as String).toList(),
+    ),
+    experiences: $checkedConvert(
+      'experiences',
+      (v) => (v as List<dynamic>?)
+          ?.map(
+            (e) =>
+                ExperienceModel.fromJson(Map<String, Object?>.from(e as Map)),
+          )
+          .toList(),
+    ),
+  );
+  return val;
+});
 
 Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
-      'email': instance.email,
       'avatarUrl': instance.avatarUrl,
-      'createdAt': instance.createdAt,
+      'jobTitle': instance.jobTitle,
+      'graduationYear': instance.graduationYear,
+      'major': instance.major,
+      'status': instance.status,
+      'github': instance.github,
+      'email': instance.email,
+      'certifications': instance.certifications,
+      'experiences': instance.experiences?.map((e) => e.toJson()).toList(),
+    };
+
+_ExperienceModel _$ExperienceModelFromJson(Map json) =>
+    $checkedCreate('_ExperienceModel', json, ($checkedConvert) {
+      final val = _ExperienceModel(
+        id: $checkedConvert('id', (v) => v as String?),
+        year: $checkedConvert('year', (v) => v as String?),
+        label: $checkedConvert('label', (v) => v as String?),
+        tags: $checkedConvert(
+          'tags',
+          (v) => (v as List<dynamic>?)?.map((e) => e as String).toList(),
+        ),
+      );
+      return val;
+    });
+
+Map<String, dynamic> _$ExperienceModelToJson(_ExperienceModel instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'year': instance.year,
+      'label': instance.label,
+      'tags': instance.tags,
     };

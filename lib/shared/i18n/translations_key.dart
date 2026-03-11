@@ -122,6 +122,7 @@ class I18nKeys {
   static const String bjtJ2 = 'BJT J2';
   static const String archDesign = 'Arch Design';
   static const String perfOptimization = 'Perf Optimization';
+  static const String viewProject = 'View Project';
 
   // Profile Page
   static const String editInformation = 'Edit Information';
@@ -157,7 +158,8 @@ class I18nKeys {
   static const String crashReportsSubtitle = 'View and manage local crash logs';
   static const String noCrashReports = 'No crash reports found';
   static const String triggerCrash = 'Trigger Injected Crash';
-  static const String triggerCrashDesc = 'A random exception will be injected into any "dispatch" (UI interaction) that occurs after 10-20 seconds. Continue?';
+  static const String triggerCrashDesc =
+      'A random exception will be injected into any "dispatch" (UI interaction) that occurs after 10-20 seconds. Continue?';
   static const String startTimer = 'Start Timer';
   static const String crashScheduled = 'Crash injection scheduled!';
   static const String uploading = 'Uploading...';
@@ -167,7 +169,8 @@ class I18nKeys {
   static const String deleteReportConfirm = 'Are you sure you want to delete this crash report?';
   static const String copiedToClipboard = 'Copied to clipboard';
   static const String appCrashed = 'App Crashed';
-  static const String crashDetectedMsg = 'A crash has been detected and logged. Would you like to view the detailed report?';
+  static const String crashDetectedMsg =
+      'A crash has been detected and logged. Would you like to view the detailed report?';
   static const String viewReport = 'View Report';
   static const String dismiss = 'Dismiss';
   static const String safetyResetMsg = 'Triggering safety reset...';

@@ -108,12 +108,7 @@ void main() {
 
     test('Intent: submitLogin success should navigate back', () async {
       final notifier = container.read(loginViewModelProvider.notifier);
-      final testUser = UserModel(
-        id: '1',
-        name: 'Listen',
-        email: 'test@test.com',
-        createdAt: DateTime.now().toString(),
-      );
+      final testUser = UserModel(id: '1', name: 'Listen', email: 'test@test.com');
 
       when(() => mockUseCase.call(any())).thenAnswer((_) async => Right(testUser));
 

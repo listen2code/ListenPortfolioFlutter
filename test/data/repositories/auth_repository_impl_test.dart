@@ -33,7 +33,7 @@ void main() {
     );
 
     // Register fallback values for mocktail
-    registerFallbackValue(UserModel(id: '', name: '', email: '', createdAt: ''));
+    registerFallbackValue(UserModel(id: '', name: '', email: ''));
     registerFallbackValue(const LoginRequestModel(username: '', password: ''));
   });
 
@@ -68,12 +68,7 @@ void main() {
 
   group('AuthRepositoryImpl - getCurrentUser', () {
     const testUserId = 'user_123';
-    final testUserModel = UserModel(
-      id: testUserId,
-      name: 'Test',
-      email: 'test@example.com',
-      createdAt: "2026",
-    );
+    final testUserModel = UserModel(id: testUserId, name: 'Test', email: 'test@example.com');
     final testApiResponse = BaseResponseModel<UserModel>(result: ApiResult.success, body: testUserModel);
 
     test('should return remote user and update cache when API call is successful', () async {

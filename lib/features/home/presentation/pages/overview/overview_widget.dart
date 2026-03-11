@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_intent.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_state.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_view_model.dart';
@@ -18,6 +19,8 @@ class OverviewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    UserModel? userModel = authManager.state.user;
+
     return BaseRefreshPage<OverviewViewModel, OverviewState>(
       provider: overviewViewModelProvider,
       onRefresh: (viewModel, state) async {
@@ -35,15 +38,15 @@ class OverviewWidget extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildWelcomeHeader(context),
+                  _buildWelcomeHeader(context, userModel),
                   SizedBox(height: 16.f),
-                  _buildStatusTag(context),
+                  _buildStatusTag(context, userModel),
                   SizedBox(height: 24.f),
-                  _buildExperienceGrid(context),
+                  _buildExperienceGrid(context, userModel),
                   SizedBox(height: 28.f),
                   _buildSectionHeader(context, I18nKeys.quickActions.tr, showSeeAll: false, onPressed: () {}),
                   SizedBox(height: 12.f),
-                  _buildQuickActions(context),
+                  _buildQuickActions(context, userModel),
                   SizedBox(height: 28.f),
                   _buildSectionHeader(
                     context,
@@ -70,17 +73,12 @@ class OverviewWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header Skeleton
           CommonSkeleton.line(width: 180.f, height: 28.f),
           SizedBox(height: 12.f),
           CommonSkeleton.line(width: 260.f, height: 16.f),
           SizedBox(height: 24.f),
-
-          // Status Tag Skeleton
           CommonSkeleton(width: 120.f, height: 24.f, borderRadius: 20.f),
           SizedBox(height: 32.f),
-
-          // Experience Grid Skeleton
           CommonSkeleton(width: double.infinity, height: 100.f, borderRadius: 20.f),
           SizedBox(height: 12.f),
           Row(
@@ -94,13 +92,9 @@ class OverviewWidget extends StatelessWidget {
               ),
             ],
           ),
-
           SizedBox(height: 40.f),
-          // Section Header Skeleton
           CommonSkeleton.line(width: 120.f, height: 20.f),
           SizedBox(height: 16.f),
-
-          // Quick Actions Skeleton
           Row(
             children: [
               Expanded(
@@ -116,9 +110,7 @@ class OverviewWidget extends StatelessWidget {
               ),
             ],
           ),
-
           SizedBox(height: 40.f),
-          // Featured Projects Skeleton
           CommonSkeleton.line(width: 150.f, height: 20.f),
           SizedBox(height: 16.f),
           SingleChildScrollView(
@@ -139,13 +131,13 @@ class OverviewWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildWelcomeHeader(BuildContext context) {
+  Widget _buildWelcomeHeader(BuildContext context, UserModel? userModel) {
     final accentColor = context.accentColor;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonText(
-          I18nKeys.hello.trArgs([AppConstants.author]),
+          I18nKeys.hello.trArgs([userModel?.name ?? AppConstants.author]),
           style: context.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
           maxLines: 1,
         ),
@@ -154,31 +146,35 @@ class OverviewWidget extends StatelessWidget {
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             CommonText(
-              'Full Stack Mobile Architect (${I18nKeys.graduated.tr}',
+              '${userModel?.jobTitle ?? ""} (${I18nKeys.graduated.tr}',
               style: context.textTheme.labelSmall?.copyWith(color: accentColor, fontWeight: FontWeight.w600),
               maxLines: 1,
             ),
             CommonAuthText(
-              ' 2013 ',
+              ' ${userModel?.graduationYear ?? ""} ',
               style: context.textTheme.labelSmall?.copyWith(color: accentColor, fontWeight: FontWeight.w600),
               maxLines: 1,
               blurLevel: AuthBlurLevel.low,
             ),
             CommonText(
-              '| ${I18nKeys.softwareEngineering.tr})',
+              '| ${userModel?.major?.tr ?? ""})',
               style: context.textTheme.labelSmall?.copyWith(color: accentColor, fontWeight: FontWeight.w600),
               maxLines: 1,
             ),
           ],
         ),
         SizedBox(height: 8.f),
-        Row(
-          children: [
-            _buildCertBadge(accentColor, I18nKeys.jlptN1.tr),
-            SizedBox(width: 8.f),
-            _buildCertBadge(accentColor, I18nKeys.bjtJ2.tr),
-          ],
-        ),
+        if (userModel?.certifications != null)
+          Row(
+            children: userModel!.certifications!
+                .map(
+                  (certKey) => Padding(
+                    padding: EdgeInsets.only(right: 8.f),
+                    child: _buildCertBadge(accentColor, certKey.tr),
+                  ),
+                )
+                .toList(),
+          ),
       ],
     );
   }
@@ -200,9 +196,9 @@ class OverviewWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusTag(BuildContext context) {
+  Widget _buildStatusTag(BuildContext context, UserModel? userModel) {
     return CommonBadge(
-      text: I18nKeys.availableStatus.tr,
+      text: userModel?.status?.tr ?? I18nKeys.availableStatus.tr,
       icon: Icons.circle,
       iconSize: 6.f,
       color: Colors.green.withValues(alpha: 0.1),
@@ -214,49 +210,80 @@ class OverviewWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildExperienceGrid(BuildContext context) {
+  Widget _buildExperienceGrid(BuildContext context, UserModel? userModel) {
+    final experiences = userModel?.experiences ?? [];
+    if (experiences.isEmpty) return const SizedBox.shrink();
+
+    // The first item is usually the main highlight (e.g., Android)
+    final mainExp = experiences.first;
+    final otherExps = experiences.skip(1).toList();
+
     return Column(
       children: [
-        _buildAndroidStatCard(
+        _buildHighlightStatCard(
           context,
-          '10${I18nKeys.yearsShort.tr}+',
-          I18nKeys.androidExp.tr,
-          Icons.android_rounded,
-          Colors.green,
+          '${mainExp.year}${I18nKeys.yearsShort.tr}+',
+          mainExp.label?.tr ?? "",
+          _getExperienceIcon(mainExp.id),
+          _getExperienceColor(mainExp.id),
+          tags: mainExp.tags,
         ),
-        SizedBox(height: 12.f),
-        Row(
-          children: [
-            _buildStatCard(
-              context,
-              '2${I18nKeys.yearsShort.tr}+',
-              I18nKeys.flutterExp.tr,
-              Icons.flutter_dash_rounded,
-              Colors.blue,
-              flex: 1,
-            ),
-            SizedBox(width: 12.f),
-            _buildStatCard(
-              context,
-              '1${I18nKeys.yearsShort.tr}+',
-              I18nKeys.javaWeb.tr,
-              Icons.code_rounded,
-              Colors.orange,
-              flex: 1,
-            ),
-          ],
-        ),
+        if (otherExps.isNotEmpty) ...[
+          SizedBox(height: 12.f),
+          Row(
+            children: [
+              for (int i = 0; i < otherExps.length; i++) ...[
+                if (i > 0) SizedBox(width: 12.f),
+                _buildStatCard(
+                  context,
+                  '${otherExps[i].year}${I18nKeys.yearsShort.tr}+',
+                  otherExps[i].label?.tr ?? "",
+                  _getExperienceIcon(otherExps[i].id),
+                  _getExperienceColor(otherExps[i].id),
+                  flex: 1,
+                ),
+              ],
+            ],
+          ),
+        ],
       ],
     );
   }
 
-  Widget _buildAndroidStatCard(
+  IconData _getExperienceIcon(String? id) {
+    switch (id) {
+      case 'android':
+        return Icons.android_rounded;
+      case 'flutter':
+        return Icons.flutter_dash_rounded;
+      case 'java_web':
+        return Icons.code_rounded;
+      default:
+        return Icons.help_outline_rounded;
+    }
+  }
+
+  Color _getExperienceColor(String? id) {
+    switch (id) {
+      case 'android':
+        return Colors.green;
+      case 'flutter':
+        return Colors.blue;
+      case 'java_web':
+        return Colors.orange;
+      default:
+        return Colors.grey;
+    }
+  }
+
+  Widget _buildHighlightStatCard(
     BuildContext context,
     String value,
     String label,
     IconData icon,
-    Color iconColor,
-  ) {
+    Color iconColor, {
+    List<String>? tags,
+  }) {
     return Container(
       padding: EdgeInsets.all(16.f),
       decoration: BoxDecoration(
@@ -288,15 +315,21 @@ class OverviewWidget extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(width: 10.f),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              _buildTag(I18nKeys.archDesign.tr, iconColor),
-              SizedBox(height: 4.f),
-              _buildTag(I18nKeys.perfOptimization.tr, iconColor),
-            ],
-          ),
+          if (tags != null && tags.isNotEmpty) ...[
+            SizedBox(width: 10.f),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: tags
+                  .take(2)
+                  .map(
+                    (tag) => Padding(
+                      padding: EdgeInsets.only(bottom: 4.f),
+                      child: _buildTag(tag.tr, iconColor),
+                    ),
+                  )
+                  .toList(),
+            ),
+          ],
         ],
       ),
     );
@@ -390,7 +423,7 @@ class OverviewWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildQuickActions(BuildContext context) {
+  Widget _buildQuickActions(BuildContext context, UserModel? userModel) {
     final accentColor = context.accentColor;
     return Column(
       children: [
@@ -428,7 +461,7 @@ class OverviewWidget extends StatelessWidget {
               I18nKeys.github.tr,
               Icons.code_rounded,
               Colors.grey,
-              () => _launchURL(AppConstants.github),
+              () => _launchURL(userModel?.github ?? AppConstants.github),
             ),
             SizedBox(width: 12.f),
             _buildActionButton(
@@ -436,7 +469,8 @@ class OverviewWidget extends StatelessWidget {
               I18nKeys.contactMe.tr,
               Icons.alternate_email_rounded,
               Colors.grey,
-              () => _launchURL('mailto:${AppConstants.mail}?subject=Portfolio%20Feedback'),
+              () =>
+                  _launchURL('mailto:${userModel?.email ?? AppConstants.mail}?subject=Portfolio%20Feedback'),
             ),
           ],
         ),
@@ -489,6 +523,7 @@ class OverviewWidget extends StatelessWidget {
                     subtitle,
                     style: context.textTheme.bodySmall?.copyWith(color: Colors.grey),
                     blurLevel: blurLevel,
+                    onTap: onTap,
                     maxLines: 1,
                   ),
               ],
@@ -501,134 +536,104 @@ class OverviewWidget extends StatelessWidget {
 
   Widget _buildActionButton(
     BuildContext context,
-    String label,
+    String title,
     IconData icon,
     Color color,
     VoidCallback onTap,
   ) {
     return Expanded(
-      child: Material(
-        color: context.theme.cardColor,
-        borderRadius: BorderRadius.circular(16.f),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(16.f),
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 12.f, vertical: 10.f),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16.f),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.03),
-                  blurRadius: 10.f,
-                  offset: Offset(0, 5.f),
-                ),
-              ],
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(icon, color: color, size: 18.f),
-                SizedBox(width: 8.f),
-                // Wrap text in Flexible to prevent Row overflow
-                Flexible(
-                  child: CommonText(
-                    label,
-                    style: context.textTheme.bodySmall?.copyWith(color: color, fontWeight: FontWeight.bold),
-                    maxLines: 1,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+      child: CommonButton(
+        text: title,
+        icon: icon,
+        // Using backgroundColor instead of color
+        backgroundColor: context.theme.cardColor,
+        // Using foregroundColor instead of textColor
+        foregroundColor: context.textTheme.bodyLarge?.color,
+        isFullWidth: true,
+        height: 48.f,
+        borderRadius: 16.f,
+        onPressed: onTap,
       ),
     );
   }
 
   Widget _buildFeaturedProjects(BuildContext context) {
-    final projects = [
-      {
-        'title': 'lPortfolio',
-        'tag': 'MVI Architecture',
-        'icon': Icons.auto_awesome_mosaic_rounded,
-        'color': context.accentColor,
-      },
-      {'title': 'AI Chatbot', 'tag': 'OpenAI SDK', 'icon': Icons.smart_toy_rounded, 'color': Colors.purple},
-    ];
-
-    return SizedBox(
-      height: 160.f,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.symmetric(horizontal: 20.f),
-        itemCount: projects.length,
-        itemBuilder: (context, index) {
-          final project = projects[index];
-          return _buildProjectCard(
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: EdgeInsets.symmetric(horizontal: 20.f),
+      child: Row(
+        children: [
+          _buildProjectCard(
             context,
-            title: project['title'] as String,
-            tag: project['tag'] as String,
-            icon: project['icon'] as IconData,
-            color: project['color'] as Color,
-          );
-        },
+            'lPortfolio',
+            'MVI Architecture',
+            Icons.auto_awesome_mosaic_rounded,
+            context.accentColor,
+          ),
+          SizedBox(width: 16.f),
+          _buildProjectCard(context, 'AI Chatbot', 'OpenAI SDK', Icons.smart_toy_rounded, Colors.purple),
+        ],
       ),
     );
   }
 
-  Widget _buildProjectCard(
-    BuildContext context, {
-    required String title,
-    required String tag,
-    required IconData icon,
-    required Color color,
-  }) {
+  Widget _buildProjectCard(BuildContext context, String title, String tag, IconData icon, Color color) {
     return Container(
       width: 260.f,
-      margin: EdgeInsets.only(right: 16.f),
-      padding: EdgeInsets.all(24.f),
+      padding: EdgeInsets.all(20.f),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
+        color: context.theme.cardColor,
         borderRadius: BorderRadius.circular(24.f),
-        border: Border.all(color: color.withValues(alpha: 0.2), width: 1.f),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 15.f, offset: Offset(0, 8.f)),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: EdgeInsets.all(12.f),
-            decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(16.f)),
-            child: Icon(icon, color: Colors.white, size: 28.f),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding: EdgeInsets.all(10.f),
+                decoration: BoxDecoration(color: color.withValues(alpha: 0.1), shape: BoxShape.circle),
+                child: Icon(icon, color: color, size: 24.f),
+              ),
+              CommonBadge(
+                text: tag,
+                color: Colors.blue.withValues(alpha: 0.05),
+                textColor: Colors.blue,
+                fontSize: 10.f,
+                borderRadius: 8.f,
+              ),
+            ],
           ),
-          Spacer(),
-          CommonBadge(
-            text: tag,
-            color: color.withValues(alpha: 0.1),
-            textColor: color,
-            borderRadius: 6.f,
-            padding: EdgeInsets.symmetric(horizontal: 8.f, vertical: 4.f),
-            fontSize: 10.f,
+          SizedBox(height: 20.f),
+          CommonText(
+            title,
+            style: context.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+            maxLines: 1,
           ),
           SizedBox(height: 8.f),
-          Expanded(
-            child: CommonText(
-              title,
-              style: context.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: context.isDark ? Colors.white : Colors.black87,
+          Row(
+            children: [
+              CommonText(
+                I18nKeys.viewProject.tr,
+                style: context.textTheme.bodySmall?.copyWith(color: color, fontWeight: FontWeight.w600),
               ),
-              maxLines: 1,
-            ),
+              SizedBox(width: 4.f),
+              Icon(Icons.arrow_forward_rounded, size: 14.f, color: color),
+            ],
           ),
         ],
       ),
     );
   }
 
-  Future<void> _launchURL(String urlString) async {
-    if (!await launchUrl(Uri.parse(urlString))) {
-      CommonToast.show('${I18nKeys.couldNotLaunchGithub.tr}: $urlString');
+  Future<void> _launchURL(String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
     }
   }
 }

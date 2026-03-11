@@ -104,6 +104,7 @@ final Map<String, String> zh = {
   I18nKeys.bjtJ2: 'BJT J2',
   I18nKeys.archDesign: '架构设计',
   I18nKeys.perfOptimization: '性能优化',
+  I18nKeys.viewProject: '查看项目',
   I18nKeys.editInformation: '编辑资料',
   I18nKeys.changeProfilePhoto: '更换头像',
   I18nKeys.chooseFromGallery: '从相册选择',
