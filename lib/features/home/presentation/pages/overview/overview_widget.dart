@@ -635,17 +635,6 @@ class OverviewWidget extends StatelessWidget {
             style: context.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             maxLines: 1,
           ),
-          SizedBox(height: 8.f),
-          Row(
-            children: [
-              CommonText(
-                I18nKeys.viewProject.tr,
-                style: context.textTheme.bodySmall?.copyWith(color: color, fontWeight: FontWeight.w600),
-              ),
-              SizedBox(width: 4.f),
-              Icon(Icons.arrow_forward_rounded, size: 14.f, color: color),
-            ],
-          ),
         ],
       ),
     );
