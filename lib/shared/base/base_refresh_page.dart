@@ -60,11 +60,16 @@ class BaseRefreshPage<V extends BaseViewModel, S extends BaseState> extends Cons
   /// Optional list of items. If provided, renders as a ListView.
   final List<dynamic>? items;
 
-  /// Builder for list items. Required if [items] is provided.
+  /// A function to extract the list of items from the [state].
+  /// Use this to avoid watching the state manually in the parent widget.
+  final List<dynamic> Function(S state)? itemSource;
+
+  /// Builder for list items. Required if [items] or [itemSource] is provided.
   final Widget Function(BuildContext context, dynamic item, int index)? itemBuilder;
 
   /// Optional UI-layer lifecycle listener.
   final PageLifecycle? lifecycle;
+
   const BaseRefreshPage({
     super.key,
     this.body,
@@ -94,11 +99,12 @@ class BaseRefreshPage<V extends BaseViewModel, S extends BaseState> extends Cons
     this.onEmpty,
     this.onRefresh,
     this.items,
+    this.itemSource,
     this.itemBuilder,
     this.lifecycle,
   }) : assert(
-         body != null || (items != null && itemBuilder != null),
-         'Either body or both items and itemBuilder must be provided',
+         body != null || ((items != null || itemSource != null) && itemBuilder != null),
+         'Either body or a combination of (items/itemSource + itemBuilder) must be provided',
        );
 
   @override
@@ -110,17 +116,20 @@ class BaseRefreshPage<V extends BaseViewModel, S extends BaseState> extends Cons
     // 2. Resolve the current State
     final state = provider != null ? ref.watch(provider!) : null;
 
+    // 3. Resolve items from either static [items] or dynamic [itemSource]
+    final effectiveItems = items ?? (state != null ? itemSource?.call(state) : null);
+
     Widget? content;
     if (body != null) {
       content = body!(context, null, effectiveViewModel, state);
     }
 
     if (onRefresh != null) {
-      if (itemBuilder != null && items != null) {
+      if (itemBuilder != null && effectiveItems != null) {
         content = CommonRefreshList(
           onRefresh: () => onRefresh!(effectiveViewModel, state),
           itemBuilder: itemBuilder,
-          items: items,
+          items: effectiveItems,
         );
       } else {
         content = CommonRefreshList(onRefresh: () => onRefresh!(effectiveViewModel, state), child: content);
@@ -128,7 +137,7 @@ class BaseRefreshPage<V extends BaseViewModel, S extends BaseState> extends Cons
     }
 
     return BaseLifeCyclePage(
-      body: (context, child) => content ?? CommonEmptyView(),
+      body: (context, child) => content ?? const CommonEmptyView(),
       title: title,
       drawer: drawer,
       canPop: canPop,
@@ -147,7 +156,7 @@ class BaseRefreshPage<V extends BaseViewModel, S extends BaseState> extends Cons
       bottomBarColor: bottomBarColor,
       useGradientBackground: useGradientBackground,
       active: active,
-      useScaffold: useScaffold, // Correctly pass the flag down to core
+      useScaffold: useScaffold,
       viewModel: effectiveViewModel,
       onEffect: onEffect,
       onLoading: onLoading,

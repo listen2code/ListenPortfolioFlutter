@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:listen_portfolio_flutter/features/home/data/models/project_model.dart';
+import 'package:listen_portfolio_flutter/features/home/presentation/pages/projects/projects_intent.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/projects/projects_state.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/projects/projects_view_model.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
@@ -16,22 +18,18 @@ class ProjectsWidget extends StatelessWidget {
       provider: projectsViewModelProvider,
       useScaffold: false,
       active: active,
-      body: (context, child, viewModel, state) {
-        final projects = state?.projects ?? [];
-        return ListView.builder(
-          // Ensure enough space for the last item
-          padding: EdgeInsets.only(top: 10.f, bottom: 20.f),
-          itemCount: projects.length,
-          itemBuilder: (context, index) {
-            final project = projects[index];
-            return _buildProjectCard(
-              context,
-              project.title ?? '',
-              project.subtitle ?? '',
-              project.desc ?? '',
-              accentColor,
-            );
-          },
+      itemSource: (state) => state.projects,
+      onRefresh: (viewModel, state) async {
+        viewModel?.handleIntent(const ProjectsIntent.refresh());
+      },
+      itemBuilder: (context, item, index) {
+        final project = item as ProjectModel;
+        return _buildProjectCard(
+          context,
+          project.title ?? '',
+          project.subtitle ?? '',
+          project.desc ?? '',
+          accentColor,
         );
       },
     );
