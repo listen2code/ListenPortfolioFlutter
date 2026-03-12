@@ -28,7 +28,7 @@ class ProjectsViewModel extends _$ProjectsViewModel with ViewModelMixin<Projects
   }
 
   Future<void> _onRefresh() async {
-    emitEffect(LoadingEffect(true));
+    emitEffect(LoadingEffect(true, type: LoadingType.page));
 
     // Simulate API delay
     await Future.delayed(const Duration(milliseconds: 1000));

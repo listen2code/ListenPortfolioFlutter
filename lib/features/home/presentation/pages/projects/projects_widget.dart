@@ -18,6 +18,7 @@ class ProjectsWidget extends StatelessWidget {
       provider: projectsViewModelProvider,
       useScaffold: false,
       active: active,
+      onLoading: _buildSkeleton(context),
       itemSource: (state) => state.projects,
       onRefresh: (viewModel, state) async {
         viewModel?.handleIntent(const ProjectsIntent.refresh());
@@ -32,6 +33,59 @@ class ProjectsWidget extends StatelessWidget {
           accentColor,
         );
       },
+    );
+  }
+
+  Widget _buildSkeleton(BuildContext context) {
+    return ListView.builder(
+      padding: EdgeInsets.only(top: 10.f, bottom: 20.f),
+      itemCount: 3,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) => Container(
+        margin: EdgeInsets.only(bottom: 20.f, left: 20.f, right: 20.f),
+        decoration: BoxDecoration(
+          color: context.theme.cardColor.withValues(alpha: 0.5),
+          borderRadius: BorderRadius.circular(24.f),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CommonSkeleton(width: double.infinity, height: 120.f, borderRadius: 0),
+            Padding(
+              padding: EdgeInsets.all(20.f),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CommonSkeleton.line(width: 140.f, height: 20.f),
+                      CommonSkeleton(width: 60.f, height: 20.f, borderRadius: 8.f),
+                    ],
+                  ),
+                  SizedBox(height: 16.f),
+                  CommonSkeleton.line(width: double.infinity, height: 14.f),
+                  SizedBox(height: 8.f),
+                  CommonSkeleton.line(width: 200.f, height: 14.f),
+                  SizedBox(height: 24.f),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: CommonSkeleton(height: 36.f, borderRadius: 10.f),
+                      ),
+                      SizedBox(width: 12.f),
+                      Expanded(
+                        child: CommonSkeleton(height: 36.f, borderRadius: 10.f),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
