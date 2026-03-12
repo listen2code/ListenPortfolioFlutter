@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ProjectsState {
 
- List<Map<String, dynamic>> get projects; bool get isInitialLoaded;
+ List<ProjectModel> get projects; bool get isInitialLoaded;
 /// Create a copy of ProjectsState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -45,7 +45,7 @@ abstract mixin class $ProjectsStateCopyWith<$Res>  {
   factory $ProjectsStateCopyWith(ProjectsState value, $Res Function(ProjectsState) _then) = _$ProjectsStateCopyWithImpl;
 @useResult
 $Res call({
- List<Map<String, dynamic>> projects, bool isInitialLoaded
+ List<ProjectModel> projects, bool isInitialLoaded
 });
 
 
@@ -65,7 +65,7 @@ class _$ProjectsStateCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') @override $Res call({Object? projects = null,Object? isInitialLoaded = null,}) {
   return _then(_self.copyWith(
 projects: null == projects ? _self.projects : projects // ignore: cast_nullable_to_non_nullable
-as List<Map<String, dynamic>>,isInitialLoaded: null == isInitialLoaded ? _self.isInitialLoaded : isInitialLoaded // ignore: cast_nullable_to_non_nullable
+as List<ProjectModel>,isInitialLoaded: null == isInitialLoaded ? _self.isInitialLoaded : isInitialLoaded // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -151,7 +151,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<Map<String, dynamic>> projects,  bool isInitialLoaded)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<ProjectModel> projects,  bool isInitialLoaded)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ProjectsState() when $default != null:
 return $default(_that.projects,_that.isInitialLoaded);case _:
@@ -172,7 +172,7 @@ return $default(_that.projects,_that.isInitialLoaded);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<Map<String, dynamic>> projects,  bool isInitialLoaded)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<ProjectModel> projects,  bool isInitialLoaded)  $default,) {final _that = this;
 switch (_that) {
 case _ProjectsState():
 return $default(_that.projects,_that.isInitialLoaded);case _:
@@ -192,7 +192,7 @@ return $default(_that.projects,_that.isInitialLoaded);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<Map<String, dynamic>> projects,  bool isInitialLoaded)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<ProjectModel> projects,  bool isInitialLoaded)?  $default,) {final _that = this;
 switch (_that) {
 case _ProjectsState() when $default != null:
 return $default(_that.projects,_that.isInitialLoaded);case _:
@@ -207,11 +207,11 @@ return $default(_that.projects,_that.isInitialLoaded);case _:
 
 
 class _ProjectsState extends ProjectsState {
-  const _ProjectsState({final  List<Map<String, dynamic>> projects = const [], this.isInitialLoaded = false}): _projects = projects,super._();
+  const _ProjectsState({final  List<ProjectModel> projects = const [], this.isInitialLoaded = false}): _projects = projects,super._();
   
 
- final  List<Map<String, dynamic>> _projects;
-@override@JsonKey() List<Map<String, dynamic>> get projects {
+ final  List<ProjectModel> _projects;
+@override@JsonKey() List<ProjectModel> get projects {
   if (_projects is EqualUnmodifiableListView) return _projects;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_projects);
@@ -249,7 +249,7 @@ abstract mixin class _$ProjectsStateCopyWith<$Res> implements $ProjectsStateCopy
   factory _$ProjectsStateCopyWith(_ProjectsState value, $Res Function(_ProjectsState) _then) = __$ProjectsStateCopyWithImpl;
 @override @useResult
 $Res call({
- List<Map<String, dynamic>> projects, bool isInitialLoaded
+ List<ProjectModel> projects, bool isInitialLoaded
 });
 
 
@@ -269,7 +269,7 @@ class __$ProjectsStateCopyWithImpl<$Res>
 @override @pragma('vm:prefer-inline') $Res call({Object? projects = null,Object? isInitialLoaded = null,}) {
   return _then(_ProjectsState(
 projects: null == projects ? _self._projects : projects // ignore: cast_nullable_to_non_nullable
-as List<Map<String, dynamic>>,isInitialLoaded: null == isInitialLoaded ? _self.isInitialLoaded : isInitialLoaded // ignore: cast_nullable_to_non_nullable
+as List<ProjectModel>,isInitialLoaded: null == isInitialLoaded ? _self.isInitialLoaded : isInitialLoaded // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }

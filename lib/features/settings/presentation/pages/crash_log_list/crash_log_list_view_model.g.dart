@@ -42,7 +42,7 @@ final class CrashLogListViewModelProvider
 }
 
 String _$crashLogListViewModelHash() =>
-    r'eef6e29b9703ce20828420fdfd568735ddc43b75';
+    r'a0f8376b1e675c2233be412d3050eec990ca7c55';
 
 abstract class _$CrashLogListViewModel extends $Notifier<CrashLogListState> {
   CrashLogListState build();
