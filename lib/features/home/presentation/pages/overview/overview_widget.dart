@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
+import 'package:listen_portfolio_flutter/features/home/data/models/project_model.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_intent.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_state.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_view_model.dart';
@@ -60,7 +61,7 @@ class OverviewWidget extends StatelessWidget {
                 ],
               ),
             ),
-            _buildFeaturedProjects(context),
+            _buildFeaturedProjects(context, state?.featuredProjects ?? []),
             SizedBox(height: 30.f),
           ],
         );
@@ -578,22 +579,28 @@ class OverviewWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildFeaturedProjects(BuildContext context) {
+  Widget _buildFeaturedProjects(BuildContext context, List<ProjectModel> projects) {
+    if (projects.isEmpty) return const SizedBox.shrink();
+    final accentColor = context.accentColor;
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       padding: EdgeInsets.symmetric(horizontal: 20.f),
       child: Row(
-        children: [
-          _buildProjectCard(
-            context,
-            'lPortfolio',
-            'MVI Architecture',
-            Icons.auto_awesome_mosaic_rounded,
-            context.accentColor,
-          ),
-          SizedBox(width: 16.f),
-          _buildProjectCard(context, 'AI Chatbot', 'OpenAI SDK', Icons.smart_toy_rounded, Colors.purple),
-        ],
+        children: projects.asMap().entries.map((entry) {
+          final index = entry.key;
+          final project = entry.value;
+          return Padding(
+            padding: EdgeInsets.only(right: index == projects.length - 1 ? 0 : 16.f),
+            child: _buildProjectCard(
+              context,
+              project.title ?? '',
+              project.subtitle ?? '',
+              Icons.rocket_launch_rounded, // Default icon for projects
+              accentColor,
+            ),
+          );
+        }).toList(),
       ),
     );
   }

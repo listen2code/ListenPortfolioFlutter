@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$OverviewState {
 
- bool get isInitialLoaded;
+ bool get isInitialLoaded; List<ProjectModel> get featuredProjects;
 /// Create a copy of OverviewState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $OverviewStateCopyWith<OverviewState> get copyWith => _$OverviewStateCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OverviewState&&(identical(other.isInitialLoaded, isInitialLoaded) || other.isInitialLoaded == isInitialLoaded));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OverviewState&&(identical(other.isInitialLoaded, isInitialLoaded) || other.isInitialLoaded == isInitialLoaded)&&const DeepCollectionEquality().equals(other.featuredProjects, featuredProjects));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isInitialLoaded);
+int get hashCode => Object.hash(runtimeType,isInitialLoaded,const DeepCollectionEquality().hash(featuredProjects));
 
 @override
 String toString() {
-  return 'OverviewState(isInitialLoaded: $isInitialLoaded)';
+  return 'OverviewState(isInitialLoaded: $isInitialLoaded, featuredProjects: $featuredProjects)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $OverviewStateCopyWith<$Res>  {
   factory $OverviewStateCopyWith(OverviewState value, $Res Function(OverviewState) _then) = _$OverviewStateCopyWithImpl;
 @useResult
 $Res call({
- bool isInitialLoaded
+ bool isInitialLoaded, List<ProjectModel> featuredProjects
 });
 
 
@@ -62,10 +62,11 @@ class _$OverviewStateCopyWithImpl<$Res>
 
 /// Create a copy of OverviewState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? isInitialLoaded = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? isInitialLoaded = null,Object? featuredProjects = null,}) {
   return _then(_self.copyWith(
 isInitialLoaded: null == isInitialLoaded ? _self.isInitialLoaded : isInitialLoaded // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,featuredProjects: null == featuredProjects ? _self.featuredProjects : featuredProjects // ignore: cast_nullable_to_non_nullable
+as List<ProjectModel>,
   ));
 }
 
@@ -150,10 +151,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isInitialLoaded)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isInitialLoaded,  List<ProjectModel> featuredProjects)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _OverviewState() when $default != null:
-return $default(_that.isInitialLoaded);case _:
+return $default(_that.isInitialLoaded,_that.featuredProjects);case _:
   return orElse();
 
 }
@@ -171,10 +172,10 @@ return $default(_that.isInitialLoaded);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isInitialLoaded)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isInitialLoaded,  List<ProjectModel> featuredProjects)  $default,) {final _that = this;
 switch (_that) {
 case _OverviewState():
-return $default(_that.isInitialLoaded);case _:
+return $default(_that.isInitialLoaded,_that.featuredProjects);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -191,10 +192,10 @@ return $default(_that.isInitialLoaded);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isInitialLoaded)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isInitialLoaded,  List<ProjectModel> featuredProjects)?  $default,) {final _that = this;
 switch (_that) {
 case _OverviewState() when $default != null:
-return $default(_that.isInitialLoaded);case _:
+return $default(_that.isInitialLoaded,_that.featuredProjects);case _:
   return null;
 
 }
@@ -206,10 +207,17 @@ return $default(_that.isInitialLoaded);case _:
 
 
 class _OverviewState extends OverviewState {
-  const _OverviewState({this.isInitialLoaded = false}): super._();
+  const _OverviewState({this.isInitialLoaded = false, final  List<ProjectModel> featuredProjects = const []}): _featuredProjects = featuredProjects,super._();
   
 
 @override@JsonKey() final  bool isInitialLoaded;
+ final  List<ProjectModel> _featuredProjects;
+@override@JsonKey() List<ProjectModel> get featuredProjects {
+  if (_featuredProjects is EqualUnmodifiableListView) return _featuredProjects;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_featuredProjects);
+}
+
 
 /// Create a copy of OverviewState
 /// with the given fields replaced by the non-null parameter values.
@@ -221,16 +229,16 @@ _$OverviewStateCopyWith<_OverviewState> get copyWith => __$OverviewStateCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OverviewState&&(identical(other.isInitialLoaded, isInitialLoaded) || other.isInitialLoaded == isInitialLoaded));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OverviewState&&(identical(other.isInitialLoaded, isInitialLoaded) || other.isInitialLoaded == isInitialLoaded)&&const DeepCollectionEquality().equals(other._featuredProjects, _featuredProjects));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isInitialLoaded);
+int get hashCode => Object.hash(runtimeType,isInitialLoaded,const DeepCollectionEquality().hash(_featuredProjects));
 
 @override
 String toString() {
-  return 'OverviewState(isInitialLoaded: $isInitialLoaded)';
+  return 'OverviewState(isInitialLoaded: $isInitialLoaded, featuredProjects: $featuredProjects)';
 }
 
 
@@ -241,7 +249,7 @@ abstract mixin class _$OverviewStateCopyWith<$Res> implements $OverviewStateCopy
   factory _$OverviewStateCopyWith(_OverviewState value, $Res Function(_OverviewState) _then) = __$OverviewStateCopyWithImpl;
 @override @useResult
 $Res call({
- bool isInitialLoaded
+ bool isInitialLoaded, List<ProjectModel> featuredProjects
 });
 
 
@@ -258,10 +266,11 @@ class __$OverviewStateCopyWithImpl<$Res>
 
 /// Create a copy of OverviewState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? isInitialLoaded = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? isInitialLoaded = null,Object? featuredProjects = null,}) {
   return _then(_OverviewState(
 isInitialLoaded: null == isInitialLoaded ? _self.isInitialLoaded : isInitialLoaded // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,featuredProjects: null == featuredProjects ? _self._featuredProjects : featuredProjects // ignore: cast_nullable_to_non_nullable
+as List<ProjectModel>,
   ));
 }
 

@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_portfolio_flutter/features/home/presentation/provider/projects_provider.dart';
+import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'overview_intent.dart';
@@ -27,10 +29,14 @@ class OverviewViewModel extends _$OverviewViewModel with ViewModelMixin<Overview
   }
 
   Future<void> _onRefresh() async {
-    emitEffect(LoadingEffect(true, type: LoadingType.page));
-    // Simulate initial data loading delay
-    await Future.delayed(const Duration(milliseconds: 1000));
-    updateState(state.copyWith(isInitialLoaded: true));
-    emitEffect(LoadingEffect(false));
+    await call(
+      ref.execute(getProjectsUseCaseProvider, const NoParams()),
+      showLoading: true,
+      loadingType: LoadingType.page,
+      onSuccess: (projects) {
+        final featured = projects.take(2).toList();
+        updateState(state.copyWith(featuredProjects: featured, isInitialLoaded: true));
+      },
+    );
   }
 }

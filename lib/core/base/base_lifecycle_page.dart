@@ -276,8 +276,10 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
         // Use a Stack instead of conditional returning to keep the 'body'
         // widget tree (and its ViewModel state) alive during loading toggles.
         Widget content = Stack(
+          fit: StackFit.expand, // Ensures the stack (and Positioned.fill children) fill available space.
           children: [
-            // Normal content is always present to preserve State/ViewModel continuity
+            // Normal content is always present to preserve State/ViewModel continuity.
+            // Using a KeyedSubtree or ensuring the widget is sized by the Stack's fit.
             widget.body(context, child),
 
             // Loading Overlay (e.g., Skeleton)
