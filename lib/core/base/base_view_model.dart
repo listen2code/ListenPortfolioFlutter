@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:fpdart/fpdart.dart';
+
 import '../core.dart';
 
 abstract class PageLifecycle {
@@ -153,9 +154,10 @@ mixin ViewModelMixin<S extends BaseState, I extends BaseIntent> implements BaseV
     FutureOr<void> Function(Failure failure)? onFailure,
     required FutureOr<void> Function(T data) onSuccess,
     bool showLoading = false,
+    LoadingType loadingType = LoadingType.both,
     String? loadingMessage,
   }) async {
-    if (showLoading) emitEffect(LoadingEffect(true, message: loadingMessage));
+    if (showLoading) emitEffect(LoadingEffect(true, message: loadingMessage, type: loadingType));
     try {
       final result = await action;
       await handleResult(result, onSuccess: onSuccess, onFailure: onFailure);

@@ -61,5 +61,11 @@
     "method": "post",
     "timeout": 500,
     "httpCode": 200
+  },
+  {
+    "api": "projects",
+    "method": "get",
+    "timeout": 500,
+    "httpCode": 200
   }
 ]

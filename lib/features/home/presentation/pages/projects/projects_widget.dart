@@ -38,7 +38,7 @@ class ProjectsWidget extends StatelessWidget {
 
   Widget _buildSkeleton(BuildContext context) {
     return ListView.builder(
-      padding: EdgeInsets.only(top: 10.f, bottom: 20.f),
+      padding: EdgeInsets.only(bottom: 20.f),
       itemCount: 3,
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) => Container(
