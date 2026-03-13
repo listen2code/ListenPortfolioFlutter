@@ -57,46 +57,6 @@ class EmptyEffect extends BaseEffect {
   }
 }
 
-/// Standard Effect for navigating to a new target reactively.
-class NavigationEffect extends BaseEffect {
-  /// The navigation target (Route path or Object). Can be null for back operations.
-  final dynamic target;
-  final bool isReplace;
-  final bool isBack;
-  final Object? arguments;
-  final bool needLogin;
-
-  NavigationEffect({
-    this.target,
-    this.isReplace = false,
-    this.isBack = false,
-    this.arguments,
-    this.needLogin = false,
-  });
-
-  /// Helper constructor for back navigation.
-  factory NavigationEffect.back({Object? result}) => NavigationEffect(isBack: true, arguments: result);
-
-  @override
-  String toString() {
-    return "NavigationEffect(target: $target, isReplace: $isReplace, isBack: $isBack, needLogin: $needLogin, arguments: $arguments";
-  }
-}
-
-/// Standard Effect for sharing files or text.
-class ShareEffect extends BaseEffect {
-  final List<String> files;
-  final String? text;
-  final String? subject;
-
-  ShareEffect({required this.files, this.text, this.subject});
-
-  @override
-  String toString() {
-    return "ShareEffect(files: $files, text: $text, subject: $subject)";
-  }
-}
-
 /// Effect to trigger a global logout operation.
 /// Typically emitted when an [AuthFailure] (like session timeout) occurs.
 class LogoutEffect extends BaseEffect {

@@ -1,5 +1,31 @@
 import 'package:listen_portfolio_flutter/core/core.dart';
 
+/// Standard Effect for navigating to a new target reactively.
+class NavigationEffect extends BaseEffect {
+  /// The navigation target (Route path or Object). Can be null for back operations.
+  final dynamic target;
+  final bool isReplace;
+  final bool isBack;
+  final Object? arguments;
+  final bool needLogin;
+
+  NavigationEffect({
+    this.target,
+    this.isReplace = false,
+    this.isBack = false,
+    this.arguments,
+    this.needLogin = false,
+  });
+
+  /// Helper constructor for back navigation.
+  factory NavigationEffect.back({Object? result}) => NavigationEffect(isBack: true, arguments: result);
+
+  @override
+  String toString() {
+    return "NavigationEffect(target: $target, isReplace: $isReplace, isBack: $isBack, needLogin: $needLogin, arguments: $arguments";
+  }
+}
+
 /// Concrete implementation for handling [NavigationEffect] using [AppNav].
 class NavigationProviderImpl extends BaseProvider<NavigationEffect> {
   const NavigationProviderImpl();
