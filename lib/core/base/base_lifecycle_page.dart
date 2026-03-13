@@ -106,6 +106,9 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
   bool _isReady = false; // Tracks if onReady has been called
   BaseViewModel? _viewModel;
 
+  // Added to track state transitions for filtering onInactive calls.
+  AppLifecycleState? _lastAppState;
+
   // Local state to track loading based on Effects, used for canPop logic.
   final ValueNotifier<bool> _isInternalLoading = ValueNotifier<bool>(false);
   final ValueNotifier<bool> _isInternalEmpty = ValueNotifier<bool>(false);
@@ -119,14 +122,16 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
   void initState() {
     super.initState();
 
+    // Initialize the last known app state.
+    _lastAppState = WidgetsBinding.instance.lifecycleState;
+
     // Optimize: Set global VisibilityDetector update interval to reduce overhead during scrolling.
-    // 150ms is generally imperceptible but significantly reduces CPU usage.
     VisibilityDetectorController.instance.updateInterval = const Duration(milliseconds: 150);
 
     // Directly use the provided viewModel instance
     _viewModel = widget.viewModel;
 
-    // Simplified Effect binding: the ViewModel now manages the subscription lifecycle.
+    // Bind effects: ViewModel manages the subscription lifecycle internally.
     if (_viewModel != null) {
       _viewModel!.onBindEffect(_handleEffect);
       _viewModel!.lifecycle = widget.lifecycle;
@@ -157,8 +162,13 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
         } else if (state == AppLifecycleState.paused) {
           _viewModel?.onPause();
         } else if (state == AppLifecycleState.inactive) {
-          _viewModel?.onInactive();
+          // Trigger onInactive ONLY when moving from resumed (going towards background/loss of focus).
+          // Skip when moving from paused (coming back to foreground).
+          if (_lastAppState == AppLifecycleState.resumed) {
+            _viewModel?.onInactive();
+          }
         }
+        _lastAppState = state;
       },
     );
 
@@ -277,7 +287,6 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
           fit: StackFit.expand, // Ensures the stack (and Positioned.fill children) fill available space.
           children: [
             // Normal content is always present to preserve State/ViewModel continuity.
-            // Using a KeyedSubtree or ensuring the widget is sized by the Stack's fit.
             widget.body(context, child),
 
             // Loading Overlay (e.g., Skeleton)
