@@ -57,10 +57,6 @@ abstract class BaseViewModel<I> implements PageLifecycle {
 
   /// Registers a handler for UI effects and manages its lifecycle internally.
   void onBindEffect(void Function(BaseEffect effect) handler);
-
-  /// Optional UI-layer lifecycle listener.
-  PageLifecycle? get lifecycle;
-  set lifecycle(PageLifecycle? value);
 }
 
 /// Mixin to handle common UI states, lifecycle logging, and side effects.
@@ -71,9 +67,6 @@ mixin ViewModelMixin<S extends BaseState, I extends BaseIntent> implements BaseV
 
   @override
   set state(S value);
-
-  @override
-  PageLifecycle? lifecycle;
 
   final _effectController = StreamController<BaseEffect>.broadcast();
   CancelToken _cancelToken = CancelToken();
@@ -240,62 +233,52 @@ mixin ViewModelMixin<S extends BaseState, I extends BaseIntent> implements BaseV
   @override
   void onInit() {
     appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onInit');
-    lifecycle?.onInit();
   }
 
   @override
   void onReady() {
     appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onReady');
-    lifecycle?.onReady();
   }
 
   @override
   void onVisible() {
     appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onVisible');
-    lifecycle?.onVisible();
   }
 
   @override
   void onInVisible() {
     appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onInVisible');
-    lifecycle?.onInVisible();
   }
 
   @override
   void onViewVisible() {
     appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onViewVisible');
-    lifecycle?.onViewVisible();
   }
 
   @override
   void onViewInVisible() {
     appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onViewInVisible');
-    lifecycle?.onViewInVisible();
   }
 
   @override
   void onResume() {
     appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onResume');
-    lifecycle?.onResume();
   }
 
   @override
   void onPause() {
     appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onPause');
-    lifecycle?.onPause();
   }
 
   @override
   void onInactive() {
     appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onInactive');
-    lifecycle?.onInactive();
   }
 
   @override
   @mustCallSuper
   void onDispose() {
     appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onDispose');
-    lifecycle?.onDispose();
     cancelRequests('${runtimeType.toString()} disposed');
 
     // Automatically cancel all event bus subscriptions to prevent memory leaks.

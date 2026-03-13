@@ -134,7 +134,6 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
     // Bind effects: ViewModel manages the subscription lifecycle internally.
     if (_viewModel != null) {
       _viewModel!.onBindEffect(_handleEffect);
-      _viewModel!.lifecycle = widget.lifecycle;
     }
 
     _routeObserver = _RouteAwareProxy(
@@ -158,14 +157,14 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
         if (!_isActuallyVisible) return;
 
         if (state == AppLifecycleState.resumed) {
-          _viewModel?.onResume();
+          _trigger((l) => l.onResume());
         } else if (state == AppLifecycleState.paused) {
-          _viewModel?.onPause();
+          _trigger((l) => l.onPause());
         } else if (state == AppLifecycleState.inactive) {
           // Trigger onInactive ONLY when moving from resumed (going towards background/loss of focus).
           // Skip when moving from paused (coming back to foreground).
           if (_lastAppState == AppLifecycleState.resumed) {
-            _viewModel?.onInactive();
+            _trigger((l) => l.onInactive());
           }
         }
         _lastAppState = state;
@@ -174,15 +173,21 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
 
     WidgetsBinding.instance.addObserver(_lifecycleObserver);
 
-    _viewModel?.onInit();
+    _trigger((l) => l.onInit());
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        _viewModel?.onReady();
+        _trigger((l) => l.onReady());
         _isReady = true;
         _evaluateVisibility();
       }
     });
+  }
+
+  /// Helper to dispatch lifecycle events to both ViewModel and widget.lifecycle.
+  void _trigger(void Function(PageLifecycle lifecycle) action) {
+    if (_viewModel != null) action(_viewModel!);
+    if (widget.lifecycle != null) action(widget.lifecycle!);
   }
 
   /// Evaluates and triggers ViewModel lifecycle methods based on the current
@@ -195,9 +200,9 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
     if (currentlyVisible != _isActuallyVisible) {
       _isActuallyVisible = currentlyVisible;
       if (_isActuallyVisible) {
-        _viewModel?.onVisible();
+        _trigger((l) => l.onVisible());
       } else {
-        _viewModel?.onInVisible();
+        _trigger((l) => l.onInVisible());
       }
     }
   }
@@ -207,9 +212,9 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
     if (currentlyVisible != _isViewVisible) {
       _isViewVisible = currentlyVisible;
       if (_isViewVisible) {
-        _viewModel?.onViewVisible();
+        _trigger((l) => l.onViewVisible());
       } else {
-        _viewModel?.onViewInVisible();
+        _trigger((l) => l.onViewInVisible());
       }
     }
   }
@@ -272,7 +277,7 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
     _isInternalEmpty.dispose();
     AppNav.observer.unsubscribe(_routeObserver);
     WidgetsBinding.instance.removeObserver(_lifecycleObserver);
-    _viewModel?.onDispose();
+    _trigger((l) => l.onDispose());
     super.dispose();
   }
 
