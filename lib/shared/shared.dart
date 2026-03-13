@@ -5,6 +5,7 @@ export 'base/loading_provider_impl.dart';
 export 'base/logout_provider_impl.dart';
 export 'base/message_provider_impl.dart';
 export 'base/navigation_provider_impl.dart';
+export 'base/share_provider_impl.dart';
 export 'constants/app_constants.dart';
 export 'constants/env_config.dart';
 export 'extensions/ref_extension.dart';
