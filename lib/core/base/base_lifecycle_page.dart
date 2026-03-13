@@ -145,10 +145,6 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
         _isRouteVisible = false;
         _evaluateVisibility();
       },
-      onPush: () {
-        _isRouteVisible = true;
-        _evaluateVisibility();
-      },
     );
 
     _lifecycleObserver = _AppLifecycleProxy(
@@ -357,13 +353,12 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
 class _RouteAwareProxy extends RouteAware {
   final VoidCallback onVisible;
   final VoidCallback onInVisible;
-  final VoidCallback onPush;
 
-  _RouteAwareProxy({required this.onVisible, required this.onInVisible, required this.onPush});
+  _RouteAwareProxy({required this.onVisible, required this.onInVisible});
 
   @override
   /// Called when the current route has been pushed.
-  void didPush() => onPush();
+  void didPush() => onVisible();
 
   @override
   /// Called when the top route has been popped off, and the current route shows up.
