@@ -46,9 +46,6 @@ abstract class IStateOwner<S> {
 abstract class BaseViewModel<I> implements PageLifecycle {
   void cancelRequests(String reason);
 
-  /// Reactive stream for one-time UI effects.
-  Stream<BaseEffect> get effectStream;
-
   void emitEffect(BaseEffect effect);
 
   /// Handles standard UI effects (Loading, Message, Navigation).
@@ -57,6 +54,9 @@ abstract class BaseViewModel<I> implements PageLifecycle {
   /// Unified entry point for all UI Intents.
   /// Subclasses should implementation logic in [onIntent] instead.
   FutureOr<void> handleIntent(I intent);
+
+  /// Registers a handler for UI effects and manages its lifecycle internally.
+  void onBindEffect(void Function(BaseEffect effect) handler);
 
   /// Optional UI-layer lifecycle listener.
   PageLifecycle? get lifecycle;
@@ -81,8 +81,9 @@ mixin ViewModelMixin<S extends BaseState, I extends BaseIntent> implements BaseV
   /// Internal list to manage event bus subscriptions and ensure they are disposed.
   final List<StreamSubscription> _eventSubscriptions = [];
 
-  @override
-  Stream<BaseEffect> get effectStream => _effectController.stream;
+  /// Internal stream for one-time UI effects.
+  @protected
+  Stream<BaseEffect> get effectSt ream => _effectController.stream;
 
   CancelToken get cancelToken {
     if (_cancelToken.isCancelled) {
@@ -105,6 +106,11 @@ mixin ViewModelMixin<S extends BaseState, I extends BaseIntent> implements BaseV
   }) {
     final sub = eventBus.on<T>(onData, key: key, sticky: sticky, where: where);
     _eventSubscriptions.add(sub);
+  }
+
+  @override
+  void onBindEffect(void Function(BaseEffect effect) handler) {
+    _eventSubscriptions.add(effectStream.listen(handler));
   }
 
   /// Centralized state update method.

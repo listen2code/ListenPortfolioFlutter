@@ -105,7 +105,6 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
   bool _isViewVisible = false; // Tracks physical visibility in viewport
   bool _isReady = false; // Tracks if onReady has been called
   BaseViewModel? _viewModel;
-  StreamSubscription<BaseEffect>? _effectSubscription;
 
   // Local state to track loading based on Effects, used for canPop logic.
   final ValueNotifier<bool> _isInternalLoading = ValueNotifier<bool>(false);
@@ -127,9 +126,9 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
     // Directly use the provided viewModel instance
     _viewModel = widget.viewModel;
 
-    // Subscribe to Effects (Toast, Loading, Navigation, etc.)
+    // Simplified Effect binding: the ViewModel now manages the subscription lifecycle.
     if (_viewModel != null) {
-      _effectSubscription = _viewModel!.effectStream.listen(_handleEffect);
+      _viewModel!.onBindEffect(_handleEffect);
       _viewModel!.lifecycle = widget.lifecycle;
     }
 
@@ -259,7 +258,6 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
   @override
   void dispose() {
     _loadingSafetyTimer?.cancel();
-    _effectSubscription?.cancel();
     _isInternalLoading.dispose();
     _isInternalEmpty.dispose();
     AppNav.observer.unsubscribe(_routeObserver);
