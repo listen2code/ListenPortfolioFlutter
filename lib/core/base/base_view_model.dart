@@ -83,7 +83,7 @@ mixin ViewModelMixin<S extends BaseState, I extends BaseIntent> implements BaseV
 
   /// Internal stream for one-time UI effects.
   @protected
-  Stream<BaseEffect> get effectSt ream => _effectController.stream;
+  Stream<BaseEffect> get effectStream => _effectController.stream;
 
   CancelToken get cancelToken {
     if (_cancelToken.isCancelled) {
