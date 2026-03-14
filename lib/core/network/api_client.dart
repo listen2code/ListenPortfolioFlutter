@@ -75,8 +75,8 @@ class ApiClient {
     );
 
     // Order matters for logic flow:
-    // onRequest: runs in order added (Zone -> Error -> Logging -> Auth)
-    // onError: runs in REVERSE order (Auth -> Logging -> Error -> Zone)
+    // onRequest: runs in order added (Zone -> Error -> Auth -> Logging)
+    // onError: runs in REVERSE order (Logging -> Auth -> Error -> Zone)
     // This ensures:
     // 1. AuthInterceptor is the FIRST to handle onError, allowing it to retry before mapping to AppException.
     // 2. LoggingInterceptor records all attempts.
