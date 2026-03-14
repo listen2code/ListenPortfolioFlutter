@@ -53,7 +53,8 @@ abstract class BaseViewModel<I> implements PageLifecycle {
 
   /// Unified entry point for all UI Intents.
   /// Subclasses should implementation logic in [onIntent] instead.
-  FutureOr<void> handleIntent(I intent);
+  /// [useZone] can be used to manually override the default Zone policy.
+  FutureOr<void> handleIntent(I intent, {bool? useZone});
 
   /// Registers a handler for UI effects and manages its lifecycle internally.
   void onBindEffect(void Function(BaseEffect effect) handler);
@@ -133,10 +134,11 @@ mixin ViewModelMixin<S extends BaseState, I extends BaseIntent> implements BaseV
   }
 
   /// Implementation of [handleIntent] that forces the use of [dispatch].
+  /// The priority of Zone policy is: Parameter [useZone] > Method [shouldUseZone].
   @override
-  FutureOr<void> handleIntent(I intent) {
-    final useZone = shouldUseZone(intent);
-    return dispatch(intent, () => onIntent(intent), useZone: useZone);
+  FutureOr<void> handleIntent(I intent, {bool? useZone}) {
+    final effectiveUseZone = useZone ?? shouldUseZone(intent);
+    return dispatch(intent, () => onIntent(intent), useZone: effectiveUseZone);
   }
 
   /// Subclasses can override this to disable Zone creation for high_frequency intents.
