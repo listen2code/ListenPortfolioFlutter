@@ -13,14 +13,6 @@ class HttpCode {
   static const int internalServerError = 500;
 }
 
-class ApiResult {
-  ApiResult._();
-
-  static const String success = "0";
-  static const String serverError = "1";
-  static const String sessionTimeout = "3";
-}
-
 /// Interface for delegating API request lifecycle logic to the shared layer.
 abstract class IApiInterceptorDelegate {
   /// Injects authentication headers into the request.

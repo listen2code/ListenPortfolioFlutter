@@ -31,3 +31,11 @@ class BaseResponseModel<T> {
     };
   }
 }
+
+class ApiResult {
+  ApiResult._();
+
+  static const String success = "0";
+  static const String serverError = "1";
+  static const String sessionTimeout = "3";
+}
