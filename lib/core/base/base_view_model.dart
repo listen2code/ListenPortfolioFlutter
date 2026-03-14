@@ -74,7 +74,7 @@ mixin ViewModelMixin<S extends BaseState, I extends BaseIntent> implements BaseV
   /// Internal list to manage event bus subscriptions and ensure they are disposed.
   final List<StreamSubscription> _eventSubscriptions = [];
 
-  /// Internal stream for one-time UI effects.
+  /// Internal stream for one_time UI effects.
   @protected
   Stream<BaseEffect> get effectStream => _effectController.stream;
 
@@ -139,7 +139,7 @@ mixin ViewModelMixin<S extends BaseState, I extends BaseIntent> implements BaseV
     return dispatch(intent, () => onIntent(intent), useZone: useZone);
   }
 
-  /// Subclasses can override this to disable Zone creation for high-frequency intents.
+  /// Subclasses can override this to disable Zone creation for high_frequency intents.
   @protected
   bool shouldUseZone(I intent) => true;
 
@@ -186,7 +186,7 @@ mixin ViewModelMixin<S extends BaseState, I extends BaseIntent> implements BaseV
         if (onFailure != null) {
           await onFailure(firstFailure!);
         } else {
-          _handleFailure(firstFailure!);
+          handleFailure(firstFailure!);
         }
       } else {
         final dataList = results.map((r) => r.getOrElse((_) => throw Exception())).toList();
@@ -207,13 +207,14 @@ mixin ViewModelMixin<S extends BaseState, I extends BaseIntent> implements BaseV
       if (onFailure != null) {
         await onFailure(failure);
       } else {
-        _handleFailure(failure);
+        handleFailure(failure);
       }
     }, (data) async => await onSuccess(data));
   }
 
-  /// Common failure handler.
-  void _handleFailure(Failure failure) {
+  /// Common failure handler. Can be overridden by subclasses for custom error handling.
+  @protected
+  void handleFailure(Failure failure) {
     if (failure is AuthFailure) {
       emitEffect(LogoutEffect(message: failure.message));
     } else if (failure is ServerApiFailure) {
@@ -291,7 +292,7 @@ mixin ViewModelMixin<S extends BaseState, I extends BaseIntent> implements BaseV
     _effectController.close();
   }
 
-  /// Low-level dispatcher. standardizes intent handling with Zone and logging.
+  /// Low_level dispatcher. standardizes intent handling with Zone and logging.
   @protected
   Future<void> dispatch(dynamic intent, FutureOr<void> Function() handler, {bool useZone = true}) {
     if (!useZone) {
