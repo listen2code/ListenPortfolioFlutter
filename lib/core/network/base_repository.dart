@@ -22,7 +22,8 @@ mixin BaseRepository {
       } else if (response.result == ApiResult.sessionTimeout) {
         return Left(AuthFailure(response.message ?? 'Session expired'));
       } else if (response.result == ApiResult.serverError) {
-        return Left(ServerApiFailure(response.message ?? 'Server API Error'));
+        // Pass messageId to failure for better identification in UI/Logic layers
+        return Left(ServerApiFailure(response.message ?? 'Server API Error', messageId: response.messageId));
       } else {
         return Left(ServerFailure(response.message ?? 'Unknown Server Error'));
       }
