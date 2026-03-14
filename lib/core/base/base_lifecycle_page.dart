@@ -125,9 +125,6 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
     // Initialize the last known app state.
     _lastAppState = WidgetsBinding.instance.lifecycleState;
 
-    // Optimize: Set global VisibilityDetector update interval to reduce overhead during scrolling.
-    VisibilityDetectorController.instance.updateInterval = const Duration(milliseconds: 150);
-
     // Directly use the provided viewModel instance
     _viewModel = widget.viewModel;
 
