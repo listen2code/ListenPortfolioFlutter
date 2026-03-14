@@ -11,13 +11,8 @@ import 'package:listen_portfolio_flutter/features/auth/domain/repositories/auth_
 class AuthRepositoryImpl with BaseRepository implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
   final AuthLocalDataSource localDataSource;
-  final NetworkInfo networkInfo;
 
-  AuthRepositoryImpl({
-    required this.remoteDataSource,
-    required this.localDataSource,
-    required this.networkInfo,
-  });
+  AuthRepositoryImpl({required this.remoteDataSource, required this.localDataSource});
 
   @override
   Future<Either<Failure, LoginResponseModel?>> login({
@@ -25,7 +20,6 @@ class AuthRepositoryImpl with BaseRepository implements AuthRepository {
     required String password,
   }) async {
     final result = await safeCall<LoginResponseModel>(
-      networkInfo: networkInfo,
       call: () => remoteDataSource.login(LoginRequestModel(username: username, password: password)),
     );
 
@@ -44,7 +38,6 @@ class AuthRepositoryImpl with BaseRepository implements AuthRepository {
     required String password,
   }) async {
     final result = await safeCall<void>(
-      networkInfo: networkInfo,
       call: () => remoteDataSource.signUp(SignupRequestModel(name: name, email: email, password: password)),
     );
 
@@ -55,7 +48,7 @@ class AuthRepositoryImpl with BaseRepository implements AuthRepository {
 
   @override
   Future<Either<Failure, void>> logout() async {
-    final result = await safeCall<void>(networkInfo: networkInfo, call: () => remoteDataSource.logout());
+    final result = await safeCall<void>(call: () => remoteDataSource.logout());
 
     return result.fold((failure) => Left(failure), (_) async {
       await localDataSource.clearAuthData();
@@ -65,7 +58,7 @@ class AuthRepositoryImpl with BaseRepository implements AuthRepository {
 
   @override
   Future<Either<Failure, void>> forgotPassword({required String email}) async {
-    return await safeCall<void>(networkInfo: networkInfo, call: () => remoteDataSource.forgotPassword(email));
+    return await safeCall<void>(call: () => remoteDataSource.forgotPassword(email));
   }
 
   @override
@@ -73,18 +66,12 @@ class AuthRepositoryImpl with BaseRepository implements AuthRepository {
     required String oldPassword,
     required String newPassword,
   }) async {
-    return await safeCall<void>(
-      networkInfo: networkInfo,
-      call: () => remoteDataSource.changePassword(oldPassword, newPassword),
-    );
+    return await safeCall<void>(call: () => remoteDataSource.changePassword(oldPassword, newPassword));
   }
 
   @override
   Future<Either<Failure, UserModel?>> getCurrentUser({required String userId}) async {
-    final result = await safeCall<UserModel>(
-      networkInfo: networkInfo,
-      call: () => remoteDataSource.getUserById(userId),
-    );
+    final result = await safeCall<UserModel>(call: () => remoteDataSource.getUserById(userId));
 
     return result.fold(
       (failure) async {
@@ -111,7 +98,6 @@ class AuthRepositoryImpl with BaseRepository implements AuthRepository {
 
     // 2. Request new credentials from server
     final result = await safeCall<LoginResponseModel>(
-      networkInfo: networkInfo,
       call: () => remoteDataSource.refreshToken(refreshToken),
     );
 

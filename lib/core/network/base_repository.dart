@@ -1,14 +1,16 @@
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 import '../core.dart';
 
 mixin BaseRepository {
-  Future<Either<Failure, T>> safeCall<T>({
-    required Future<BaseResponseModel<T>> Function() call,
-    required NetworkInfo networkInfo,
-  }) async {
-    if (!await networkInfo.isConnected) {
+  /// Internal access to network info without injecting it into every repository.
+  /// Create a new instance directly since it's lightweight and uses the Connectivity singleton internally.
+  NetworkInfo get _networkInfo => NetworkInfoImpl(Connectivity());
+
+  Future<Either<Failure, T>> safeCall<T>({required Future<BaseResponseModel<T>> Function() call}) async {
+    if (!await _networkInfo.isConnected) {
       return const Left(NetworkFailure('No internet connection'));
     }
 

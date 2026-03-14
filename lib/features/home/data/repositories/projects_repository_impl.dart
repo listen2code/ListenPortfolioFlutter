@@ -8,20 +8,12 @@ import 'package:listen_portfolio_flutter/features/home/domain/repositories/proje
 class ProjectsRepositoryImpl with BaseRepository implements ProjectsRepository {
   final ProjectsRemoteDataSource remoteDataSource;
   final ProjectsLocalDataSource localDataSource;
-  final NetworkInfo networkInfo;
 
-  ProjectsRepositoryImpl({
-    required this.remoteDataSource,
-    required this.localDataSource,
-    required this.networkInfo,
-  });
+  ProjectsRepositoryImpl({required this.remoteDataSource, required this.localDataSource});
 
   @override
   Future<Either<Failure, List<ProjectModel>>> getProjects() async {
-    final result = await safeCall<List<ProjectModel>>(
-      networkInfo: networkInfo,
-      call: () => remoteDataSource.getProjects(),
-    );
+    final result = await safeCall<List<ProjectModel>>(call: () => remoteDataSource.getProjects());
 
     return result.fold(
       (failure) async {

@@ -8,98 +8,6 @@ part of 'auth_provider.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// Provides Connectivity instance
-
-@ProviderFor(connectivity)
-final connectivityProvider = ConnectivityProvider._();
-
-/// Provides Connectivity instance
-
-final class ConnectivityProvider
-    extends $FunctionalProvider<Connectivity, Connectivity, Connectivity>
-    with $Provider<Connectivity> {
-  /// Provides Connectivity instance
-  ConnectivityProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'connectivityProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$connectivityHash();
-
-  @$internal
-  @override
-  $ProviderElement<Connectivity> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
-
-  @override
-  Connectivity create(Ref ref) {
-    return connectivity(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(Connectivity value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<Connectivity>(value),
-    );
-  }
-}
-
-String _$connectivityHash() => r'6d67af0ea4110f6ee0246dd332f90f8901380eda';
-
-/// Provides NetworkInfo instance
-
-@ProviderFor(networkInfo)
-final networkInfoProvider = NetworkInfoProvider._();
-
-/// Provides NetworkInfo instance
-
-final class NetworkInfoProvider
-    extends $FunctionalProvider<NetworkInfo, NetworkInfo, NetworkInfo>
-    with $Provider<NetworkInfo> {
-  /// Provides NetworkInfo instance
-  NetworkInfoProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'networkInfoProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$networkInfoHash();
-
-  @$internal
-  @override
-  $ProviderElement<NetworkInfo> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
-
-  @override
-  NetworkInfo create(Ref ref) {
-    return networkInfo(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(NetworkInfo value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<NetworkInfo>(value),
-    );
-  }
-}
-
-String _$networkInfoHash() => r'ff5904d9b92850789e49524fa786994adf155a46';
-
 /// Provides AuthRemoteDataSource instance
 
 @ProviderFor(authRemoteDataSource)
@@ -248,7 +156,7 @@ final class AuthRepositoryProvider
   }
 }
 
-String _$authRepositoryHash() => r'7f372f81091dce0d3f461b0fa38dec4c421dbc29';
+String _$authRepositoryHash() => r'32e83f19f771e27f6156ae5b2e68168e52ad6d4c';
 
 /// Provides LoginUseCase instance
 

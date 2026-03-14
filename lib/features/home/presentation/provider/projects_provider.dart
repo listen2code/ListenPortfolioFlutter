@@ -23,13 +23,8 @@ ProjectsLocalDataSource projectsLocalDataSource(Ref ref) {
 ProjectsRepository projectsRepository(Ref ref) {
   final remoteDataSource = ref.watch(projectsRemoteDataSourceProvider);
   final localDataSource = ref.watch(projectsLocalDataSourceProvider);
-  final networkInfo = ref.watch(networkInfoProvider);
 
-  return ProjectsRepositoryImpl(
-    remoteDataSource: remoteDataSource,
-    localDataSource: localDataSource,
-    networkInfo: networkInfo,
-  );
+  return ProjectsRepositoryImpl(remoteDataSource: remoteDataSource, localDataSource: localDataSource);
 }
 
 /// Define as Future to support ref.execute extension

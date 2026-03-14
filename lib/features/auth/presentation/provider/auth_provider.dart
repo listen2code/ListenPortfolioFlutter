@@ -15,23 +15,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'auth_provider.g.dart';
 
 // ============================================================================
-// Infrastructure Providers
-// ============================================================================
-
-/// Provides Connectivity instance
-@riverpod
-Connectivity connectivity(Ref ref) {
-  return Connectivity();
-}
-
-/// Provides NetworkInfo instance
-@riverpod
-NetworkInfo networkInfo(Ref ref) {
-  final connectivity = ref.watch(connectivityProvider);
-  return NetworkInfoImpl(connectivity);
-}
-
-// ============================================================================
 // Data Source Providers
 // ============================================================================
 
@@ -56,13 +39,8 @@ AuthLocalDataSource authLocalDataSource(Ref ref) {
 Future<AuthRepository> authRepository(Ref ref) async {
   final remoteDataSource = ref.watch(authRemoteDataSourceProvider);
   final localDataSource = ref.watch(authLocalDataSourceProvider);
-  final networkInfo = ref.watch(networkInfoProvider);
 
-  return AuthRepositoryImpl(
-    remoteDataSource: remoteDataSource,
-    localDataSource: localDataSource,
-    networkInfo: networkInfo,
-  );
+  return AuthRepositoryImpl(remoteDataSource: remoteDataSource, localDataSource: localDataSource);
 }
 
 // ============================================================================
