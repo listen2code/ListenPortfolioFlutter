@@ -51,6 +51,10 @@ class _DefaultApiDelegate implements IApiInterceptorDelegate {
 class ApiClient {
   ApiClient._();
 
+  /// Key to specify that a request does not require authentication.
+  /// Usage: dio.get(path, options: Options(extra: {ApiClient.kNoAuthKey: true}))
+  static const String kNoAuthKey = 'no_auth';
+
   static IApiInterceptorDelegate _delegate = _DefaultApiDelegate();
 
   static IApiInterceptorDelegate get delegate => _delegate;
@@ -182,7 +186,11 @@ class _AuthInterceptor extends Interceptor {
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
-    await ApiClient.delegate.onInjectAuthHeader(options);
+    // Check if the request explicitly disables authentication.
+    final bool noAuth = options.extra[ApiClient.kNoAuthKey] == true;
+    if (!noAuth) {
+      await ApiClient.delegate.onInjectAuthHeader(options);
+    }
     handler.next(options);
   }
 
@@ -190,8 +198,10 @@ class _AuthInterceptor extends Interceptor {
   void onError(DioException err, ErrorInterceptorHandler handler) async {
     final is401 = err.response?.statusCode == HttpCode.unauthorized;
     final alreadyRefreshed = err.requestOptions.extra[_kIsRefreshedKey] == true;
+    final bool noAuth = err.requestOptions.extra[ApiClient.kNoAuthKey] == true;
 
-    if (is401 && !alreadyRefreshed) {
+    // Do not attempt token refresh if auth is disabled for this request.
+    if (is401 && !alreadyRefreshed && !noAuth) {
       appLogger.w('AuthInterceptor: [401] detected for ${err.requestOptions.path}');
 
       if (!_isRefreshing) {
@@ -286,10 +296,16 @@ class _ErrorInterceptor extends Interceptor {
           exception = ServerException(message ?? "", statusCode);
         }
         break;
+      case DioExceptionType.badCertificate:
+        exception = NetworkException('Bad certificate');
+        break;
+      case DioExceptionType.connectionError:
+        exception = NetworkException('Connection error');
+        break;
       case DioExceptionType.cancel:
         exception = AppException('Request cancelled');
         break;
-      default:
+      case DioExceptionType.unknown:
         exception = ServerException(err.toString());
     }
 
