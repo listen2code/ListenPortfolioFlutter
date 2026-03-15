@@ -228,7 +228,7 @@ mixin ViewModelMixin<S extends BaseState, I extends BaseIntent> implements BaseV
 
   @override
   void cancelRequests(String reason) {
-    appLogger.i('${runtimeType.toString()}: cancelRequests(${_cancelToken.isCancelled}) $reason');
+    appLogger.i('${runtimeType.toString()} cancelRequests(${_cancelToken.isCancelled}) $reason');
     if (!_cancelToken.isCancelled) {
       _cancelToken.cancel(reason);
     }
