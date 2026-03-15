@@ -297,30 +297,22 @@ mixin ViewModelMixin<S extends BaseState, I extends BaseIntent> implements BaseV
   /// Low_level dispatcher. standardizes intent handling with Zone and logging.
   @protected
   Future<void> dispatch(dynamic intent, FutureOr<void> Function() handler, {bool useZone = true}) {
-    if (!useZone) {
-      try {
-        final result = handler();
-        if (result is Future) return result;
-        return Future.value();
-      } catch (e) {
-        rethrow;
-      }
-    }
+    final tag = runtimeType.toString();
 
-    return ZoneManager.run(() {
-      final tag = runtimeType.toString();
+    void onStart() {
       appLogger.d('$tag: [INTENT] -> $intent');
       ZoneManager.mark('Intent [$intent] Started');
+    }
 
+    void onComplete() {
+      appLogger.d('$tag: [STATE] <- $state');
+      CrashManager.checkAndTriggerInjectedCrash();
+      ZoneManager.mark('Intent Finished');
+    }
+
+    Future<void> execute() {
       try {
         final result = handler();
-
-        void onComplete() {
-          appLogger.d('$tag: [STATE] <- $state');
-          CrashManager.checkAndTriggerInjectedCrash();
-          ZoneManager.mark('Intent Finished');
-        }
-
         if (result is Future) {
           return result.then((_) => onComplete(), onError: (e, s) => throw e);
         } else {
@@ -330,6 +322,16 @@ mixin ViewModelMixin<S extends BaseState, I extends BaseIntent> implements BaseV
       } catch (e) {
         rethrow;
       }
+    }
+
+    if (!useZone) {
+      onStart();
+      return execute();
+    }
+
+    return ZoneManager.run(() {
+      onStart();
+      return execute();
     }, cancelToken: cancelToken);
   }
 }
