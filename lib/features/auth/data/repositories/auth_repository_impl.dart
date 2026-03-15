@@ -19,16 +19,14 @@ class AuthRepositoryImpl with BaseRepository implements AuthRepository {
     required String username,
     required String password,
   }) async {
-    final result = await safeCall<LoginResponseModel>(
+    return await safeCall<LoginResponseModel>(
       call: () => remoteDataSource.login(LoginRequestModel(username: username, password: password)),
+      saveCache: (response) async {
+        if (response.token != null) {
+          await localDataSource.cacheAuthToken(response.token!);
+        }
+      },
     );
-
-    return result.fold((failure) => Left(failure), (loginResponse) async {
-      if (loginResponse.token != null) {
-        await localDataSource.cacheAuthToken(loginResponse.token!);
-      }
-      return Right(loginResponse);
-    });
   }
 
   @override
@@ -37,13 +35,9 @@ class AuthRepositoryImpl with BaseRepository implements AuthRepository {
     required String email,
     required String password,
   }) async {
-    final result = await safeCall<void>(
+    return await safeCall<void>(
       call: () => remoteDataSource.signUp(SignupRequestModel(name: name, email: email, password: password)),
     );
-
-    return result.fold((failure) => Left(failure), (_) async {
-      return const Right(null);
-    });
   }
 
   @override
@@ -71,45 +65,35 @@ class AuthRepositoryImpl with BaseRepository implements AuthRepository {
 
   @override
   Future<Either<Failure, UserModel?>> getCurrentUser({required String userId}) async {
-    final result = await safeCall<UserModel>(call: () => remoteDataSource.getUserById(userId));
-
-    return result.fold(
-      (failure) async {
-        final cachedUser = await localDataSource.getCachedUser();
-        if (cachedUser != null && failure is! ServerFailure) {
-          return Right(cachedUser);
-        }
-        return Left(failure);
-      },
-      (user) async {
-        await localDataSource.cacheUser(user);
-        return Right(user);
-      },
+    return await safeCall<UserModel>(
+      call: () => remoteDataSource.getUserById(userId),
+      saveCache: (user) => localDataSource.cacheUser(user),
+      getCached: () => localDataSource.getCachedUser(),
     );
   }
 
   @override
   Future<Either<Failure, String>> refreshToken() async {
     // 1. Retrieve the stored refresh token
-    final refreshToken = await localDataSource.getRefreshToken();
-    if (refreshToken == null) {
+    final storedRefreshToken = await localDataSource.getRefreshToken();
+    if (storedRefreshToken == null) {
       return const Left(AuthFailure('No refresh token available'));
     }
 
-    // 2. Request new credentials from server
+    // 2. Request new credentials and persist them using the unified safeCall pipeline
     final result = await safeCall<LoginResponseModel>(
-      call: () => remoteDataSource.refreshToken(refreshToken),
+      call: () => remoteDataSource.refreshToken(storedRefreshToken),
+      saveCache: (response) async {
+        if (response.token != null) {
+          await localDataSource.cacheAuthToken(response.token!);
+        }
+        if (response.refreshToken != null) {
+          await localDataSource.cacheRefreshToken(response.refreshToken!);
+        }
+      },
     );
 
-    // 3. Update local cache and return the new access token
-    return result.fold((failure) => Left(failure), (response) async {
-      if (response.token != null) {
-        await localDataSource.cacheAuthToken(response.token!);
-      }
-      if (response.refreshToken != null) {
-        await localDataSource.cacheRefreshToken(response.refreshToken!);
-      }
-      return Right(response.token ?? '');
-    });
+    // 3. Return the new access token if successful
+    return result.map((response) => response.token ?? '');
   }
 }

@@ -6,39 +6,91 @@ import '../core.dart';
 
 mixin BaseRepository {
   /// Internal access to network info without injecting it into every repository.
-  /// Create a new instance directly since it's lightweight and uses the Connectivity singleton internally.
   NetworkInfo get _networkInfo => NetworkInfoImpl(Connectivity());
 
-  Future<Either<Failure, T>> safeCall<T>({required Future<BaseResponseModel<T>> Function() call}) async {
+  /// Unified network call wrapper with optional caching support.
+  /// - [call]: The primary remote data source execution.
+  /// - [saveCache]: Optional callback to persist data upon successful network response.
+  /// - [getCached]: Optional callback to retrieve stale data if the network fails.
+  /// - [useCacheCondition]: Optional filter to decide if specific Failures should trigger cache fallback.
+  Future<Either<Failure, T>> safeCall<T>({
+    required Future<BaseResponseModel<T>> Function() call,
+    Future<void> Function(T data)? saveCache,
+    Future<T?> Function()? getCached,
+    bool Function(Failure failure)? useCacheCondition,
+  }) async {
+    // 1. Connectivity Check & Immediate Cache Fallback
     if (!await _networkInfo.isConnected) {
+      if (getCached != null) {
+        final cached = await getCached();
+        if (cached != null) {
+          appLogger.d('Repository: No connection, returning cached data.');
+          return Right(cached);
+        }
+      }
       return const Left(NetworkFailure('No internet connection'));
     }
 
     try {
       final response = await call();
 
+      // 2. Handle Success
       if (response.result == ApiResult.success) {
-        return Right(response.body as T);
-      } else if (response.result == ApiResult.sessionTimeout) {
-        return Left(AuthFailure(response.message ?? 'Session expired'));
+        final data = response.body as T;
+        if (saveCache != null) await saveCache(data);
+        return Right(data);
+      }
+
+      // 3. Map Business Error to Failure
+      Failure failure;
+      if (response.result == ApiResult.sessionTimeout) {
+        failure = AuthFailure(response.message ?? 'Session expired');
       } else if (response.result == ApiResult.serverError) {
-        // Pass messageId to failure for better identification in UI/Logic layers
-        return Left(ServerApiFailure(response.message ?? 'Server API Error', messageId: response.messageId));
+        failure = ServerApiFailure(response.message ?? 'Server API Error', messageId: response.messageId);
       } else {
-        return Left(ServerFailure(response.message ?? 'Unknown Server Error'));
+        failure = ServerFailure(response.message ?? 'Unknown Server Error');
       }
+
+      return await _handleFailureFallback(failure, getCached, useCacheCondition);
     } on DioException catch (e) {
-      if (e.error is AppException) {
-        final appEx = e.error as AppException;
-        if (appEx is AuthException) return Left(AuthFailure(appEx.message));
-        return Left(ServerFailure(appEx.message));
-      }
-      return Left(ServerFailure(e.message ?? 'Network Error'));
+      return await _handleFailureFallback(_mapDioException(e), getCached, useCacheCondition);
     } on TypeError catch (e) {
-      appLogger.e('Data type mismatch: $e');
-      return Left(ParseFailure('Unexpected data format from server'));
+      appLogger.e('Repository Data Type Mismatch: $e');
+      return const Left(ParseFailure('Unexpected data format from server'));
     } catch (e) {
+      appLogger.e('Unexpected Repository Error: $e');
       return Left(UnknownFailure(e.toString()));
     }
+  }
+
+  /// Internal helper to map DioException to domain Failure.
+  Failure _mapDioException(DioException e) {
+    if (e.error is AppException) {
+      final appEx = e.error as AppException;
+      if (appEx is AuthException) return AuthFailure(appEx.message);
+      return ServerFailure(appEx.message);
+    }
+    return ServerFailure(e.message ?? 'Network Error');
+  }
+
+  /// Decides whether to return cached data based on the type of failure.
+  Future<Either<Failure, T>> _handleFailureFallback<T>(
+    Failure failure,
+    Future<T?> Function()? getCached,
+    bool Function(Failure failure)? useCacheCondition,
+  ) async {
+    if (getCached != null) {
+      // By default, we fallback to cache for non-critical errors (Network, Auth timeouts, etc.)
+      // but skip for critical ServerFailures (500s) unless explicitly overridden.
+      final shouldTryCache = useCacheCondition?.call(failure) ?? (failure is! ServerFailure);
+      if (shouldTryCache) {
+        final cachedData = await getCached();
+        if (cachedData != null) {
+          appLogger.d('Repository: Network failed ($failure), falling back to local cache.');
+          return Right(cachedData);
+        }
+      }
+    }
+    return Left(failure);
   }
 }

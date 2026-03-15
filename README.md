@@ -7,6 +7,8 @@ A Flutter project Of My Resume
 * base
     * base use case; view modelMVI
     * state roaming
+    * all code can be config in core
+      * BaseResponseModel serverError
 * function
     * notification
     * other pages, use

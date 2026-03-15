@@ -13,22 +13,10 @@ class ProjectsRepositoryImpl with BaseRepository implements ProjectsRepository {
 
   @override
   Future<Either<Failure, List<ProjectModel>>> getProjects() async {
-    final result = await safeCall<List<ProjectModel>>(call: () => remoteDataSource.getProjects());
-
-    return result.fold(
-      (failure) async {
-        // If network fails, try to get from local cache
-        final cached = await localDataSource.getCachedProjects();
-        if (cached != null && failure is! ServerFailure) {
-          return Right(cached);
-        }
-        return Left(failure);
-      },
-      (projects) async {
-        // Cache data on success
-        await localDataSource.cacheProjects(projects);
-        return Right(projects);
-      },
+    return await safeCall<List<ProjectModel>>(
+      call: () => remoteDataSource.getProjects(),
+      saveCache: (projects) => localDataSource.cacheProjects(projects),
+      getCached: () => localDataSource.getCachedProjects(),
     );
   }
 }
