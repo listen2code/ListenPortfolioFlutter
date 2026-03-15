@@ -228,7 +228,7 @@ mixin ViewModelMixin<S extends BaseState, I extends BaseIntent> implements BaseV
 
   @override
   void cancelRequests(String reason) {
-    appLogger.i('${runtimeType.toString()}:isCancelled=${_cancelToken.isCancelled} $reason');
+    appLogger.i('${runtimeType.toString()}: cancelRequests(${_cancelToken.isCancelled}) $reason');
     if (!_cancelToken.isCancelled) {
       _cancelToken.cancel(reason);
     }
@@ -283,7 +283,7 @@ mixin ViewModelMixin<S extends BaseState, I extends BaseIntent> implements BaseV
   @mustCallSuper
   void onDispose() {
     appLogger.i('${runtimeType.toString()}: [LIFECYCLE] -> onDispose');
-    cancelRequests('${runtimeType.toString()} cancelRequests on disposed');
+    cancelRequests('onDispose');
 
     // Automatically cancel all event bus subscriptions to prevent memory leaks.
     for (var sub in _eventSubscriptions) {
