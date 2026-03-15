@@ -8,7 +8,7 @@ A Flutter project Of My Resume
     * base use case; view modelMVI
     * state roaming
     * all code can be config in core
-      * BaseResponseModel serverError
+    * BaseResponseModel serverError
 * function
     * notification
     * other pages, use
@@ -28,6 +28,8 @@ A Flutter project Of My Resume
     * Material You: Dynamic Color
     * accessibility a11y
     * CI CD：upload to S3
+    * if (!widget.useScaffold); onBackInvoked
+    * merge _effectController and eventBus in baseModel
 * ide plugin
     * assets
 * server
