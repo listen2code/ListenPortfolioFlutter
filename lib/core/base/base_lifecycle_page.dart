@@ -334,7 +334,7 @@ class _BaseLifeCyclePageState extends State<BaseLifeCyclePage> {
             if (widget.onInterceptBack != null) {
               widget.onInterceptBack!();
             } else {
-              _viewModel?.cancelRequests("on BackInvoked");
+              _viewModel?.cancelRequests("onBackInvoked");
               // Loading is managed via effects to keep local _isInternalLoading in sync.
               _viewModel?.emitEffect(LoadingEffect(false));
             }
