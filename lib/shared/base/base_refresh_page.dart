@@ -5,8 +5,9 @@ import 'package:listen_portfolio_flutter/uikit/uikit.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 /// A custom builder for [BaseRefreshPage] that provides the resolved [viewModel] and current [state].
+/// Modified to return [Widget?] to allow framework to handle default empty states.
 typedef BasePageBodyBuilder<V extends BaseViewModel, S extends BaseState> =
-    Widget Function(BuildContext context, Widget? child, V? viewModel, S? state);
+    Widget? Function(BuildContext context, Widget? child, V? viewModel, S? state);
 
 /// A shared-layer wrapper for the core [BaseLifeCyclePage].
 /// This widget acts as a bridge between business-specific Riverpod providers
@@ -54,7 +55,6 @@ class BaseRefreshPage<V extends BaseViewModel, S extends BaseState> extends Cons
 
   // --- Refresh Integration ---
   /// If provided, the page content will be wrapped in a [RefreshIndicator].
-  /// Provides the current [viewModel] and [state] for easy intent dispatching.
   final Future<void> Function(V? viewModel, S? state)? onRefresh;
 
   /// Optional list of items. If provided, renders as a ListView.
@@ -132,7 +132,12 @@ class BaseRefreshPage<V extends BaseViewModel, S extends BaseState> extends Cons
           items: effectiveItems,
         );
       } else {
-        content = CommonRefreshList(onRefresh: () => onRefresh!(effectiveViewModel, state), child: content);
+        // Fix: If content is null (meaning empty state), provide a fallback scrollable widget
+        // so that the RefreshIndicator in CommonRefreshList doesn't crash and still works.
+        content = CommonRefreshList(
+          onRefresh: () => onRefresh!(effectiveViewModel, state),
+          child: content ?? const CommonEmptyView(),
+        );
       }
     }
 

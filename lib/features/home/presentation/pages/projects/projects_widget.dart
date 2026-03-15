@@ -25,12 +25,15 @@ class ProjectsWidget extends StatelessWidget {
       },
       itemBuilder: (context, item, index) {
         final project = item as ProjectModel;
-        return _buildProjectCard(
-          context,
-          project.title ?? '',
-          project.subtitle ?? '',
-          project.desc ?? '',
-          accentColor,
+        return Padding(
+          padding: EdgeInsetsGeometry.only(top: index == 0 ? 20 : 0),
+          child: _buildProjectCard(
+            context,
+            project.title ?? '',
+            project.subtitle ?? '',
+            project.desc ?? '',
+            accentColor,
+          ),
         );
       },
     );
@@ -38,7 +41,8 @@ class ProjectsWidget extends StatelessWidget {
 
   Widget _buildSkeleton(BuildContext context) {
     return ListView.builder(
-      padding: EdgeInsets.only(bottom: 20.f),
+      padding: EdgeInsets.only(bottom: 20.f, top: 20),
+
       itemCount: 3,
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) => Container(

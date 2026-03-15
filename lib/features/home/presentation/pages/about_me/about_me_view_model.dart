@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:image_picker/image_picker.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_portfolio_flutter/features/home/presentation/provider/about_me_provider.dart';
+import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'about_me_intent.dart';
@@ -42,10 +44,12 @@ class AboutMeViewModel extends _$AboutMeViewModel with ViewModelMixin<AboutMeSta
   }
 
   Future<void> _onRefresh() async {
-    emitEffect(LoadingEffect(true));
-    // Simulate initial data loading delay
-    await Future.delayed(const Duration(milliseconds: 1000));
-    updateState(state.copyWith(isInitialLoaded: true));
-    emitEffect(LoadingEffect(false));
+    await call(
+      ref.execute(getAboutMeUseCaseProvider, const NoParams()),
+      showLoading: true,
+      onSuccess: (aboutMe) {
+        updateState(state.copyWith(data: aboutMe, isInitialLoaded: true));
+      },
+    );
   }
 }

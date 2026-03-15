@@ -67,5 +67,11 @@
     "method": "get",
     "timeout": 500,
     "httpCode": 200
+  },
+  {
+    "api": "aboutMe",
+    "method": "get",
+    "timeout": 500,
+    "httpCode": 200
   }
 ]

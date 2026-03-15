@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_portfolio_flutter/features/home/data/models/about_me_model.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/about_me/about_me_intent.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/about_me/about_me_state.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/about_me/about_me_view_model.dart';
@@ -22,21 +23,29 @@ class AboutMeWidget extends StatelessWidget {
       },
       active: active,
       body: (context, child, viewModel, state) {
-        return Container(
+        return Padding(
           padding: EdgeInsets.all(20.f),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 40.f),
               _buildHeader(context, viewModel!, state!),
-              SizedBox(height: 35.f),
-              _buildBioSection(context),
-              SizedBox(height: 25.f),
-              _buildDetailedExperience(context),
-              SizedBox(height: 25.f),
-              _buildEducationSection(context),
-              SizedBox(height: 25.f),
-              _buildComprehensiveSkills(context),
+              if (state.data?.bio != null) ...[
+                SizedBox(height: 35.f),
+                _buildBioSection(context, state.data!.bio!),
+              ],
+              if (state.data?.experiences.isNotEmpty == true) ...[
+                SizedBox(height: 25.f),
+                _buildDetailedExperience(context, state.data?.experiences),
+              ],
+              if (state.data?.education.isNotEmpty == true) ...[
+                SizedBox(height: 25.f),
+                _buildEducationSection(context, state.data?.education),
+              ],
+              if (state.data?.skills.isNotEmpty == true) ...[
+                SizedBox(height: 25.f),
+                _buildComprehensiveSkills(context, state.data?.skills),
+              ],
               SizedBox(height: 40.f),
             ],
           ),
@@ -88,11 +97,11 @@ class AboutMeWidget extends StatelessWidget {
           ),
           SizedBox(height: 16.f),
           CommonText(
-            AppConstants.author,
+            authManager.state.user?.name ?? AppConstants.author,
             style: context.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
           ),
           CommonText(
-            'Full Stack Mobile Architect',
+            authManager.state.user?.jobTitle ?? 'Full Stack Mobile Architect',
             style: TextStyle(color: accentColor, fontSize: 16.f),
           ),
           SizedBox(height: 8.f),
@@ -149,81 +158,73 @@ class AboutMeWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildBioSection(BuildContext context) {
+  Widget _buildBioSection(BuildContext context, String bio) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildSectionTitle(context, I18nKeys.aboutMe.tr),
         SizedBox(height: 12.f),
-        CommonText(
-          'A seasoned mobile developer with over 10 years of experience in Android and 2+ years in Flutter. Specialized in high-performance application development, clean architecture, and reactive programming. Proven track record of leading cross-functional teams and delivering complex enterprise solutions.',
-          style: context.textTheme.bodyMedium?.copyWith(height: 1.6),
-          useFittedBox: false,
-        ),
+        CommonText(bio, style: context.textTheme.bodyMedium?.copyWith(height: 1.6), useFittedBox: false),
       ],
     );
   }
 
-  Widget _buildDetailedExperience(BuildContext context) {
+  Widget _buildDetailedExperience(BuildContext context, List<ExperienceItemModel>? experiences) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildSectionTitle(context, I18nKeys.experience.tr),
         SizedBox(height: 15.f),
-        _buildTimelineItem(
-          context,
-          'Senior Mobile Architect',
-          'Global Tech Solutions',
-          '2021 - ${I18nKeys.present.tr}',
-          'Leading the migration of core native apps to Flutter, optimizing CI/CD pipelines, and establishing mobile engineering best practices.',
-        ),
-        _buildTimelineItem(
-          context,
-          'Lead Android Developer',
-          'Innovation Hub',
-          '2015 - 2021',
-          'Designed and developed large-scale financial applications with millions of active users. Implemented robust security protocols.',
-        ),
-        _buildTimelineItem(
-          context,
-          'Junior Developer',
-          'Start-up Inc.',
-          '2013 - 2015',
-          'Focusing on UI/UX implementation and RESTful API integration for Android platform.',
-        ),
+        ...?experiences?.asMap().entries.map((entry) {
+          final isLast = entry.key == experiences.length - 1;
+          final item = entry.value;
+          return _buildTimelineItem(
+            context,
+            item.title ?? "",
+            item.company ?? "",
+            item.period ?? "",
+            item.description ?? "",
+            isLast: isLast,
+          );
+        }),
       ],
     );
   }
 
-  Widget _buildEducationSection(BuildContext context) {
+  Widget _buildEducationSection(BuildContext context, List<EducationItemModel>? education) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildSectionTitle(context, I18nKeys.education.tr),
         SizedBox(height: 15.f),
-        _buildTimelineItem(
-          context,
-          'Bachelor of Computer Science',
-          'Tech University',
-          '2009 - 2013',
-          'Specialized in Software Engineering and Mobile Systems.',
-          isLast: true,
-        ),
+        ...?education?.asMap().entries.map((entry) {
+          final isLast = entry.key == education.length - 1;
+          final item = entry.value;
+          return _buildTimelineItem(
+            context,
+            item.degree ?? "",
+            item.school ?? "",
+            item.period ?? "",
+            item.description ?? "",
+            isLast: isLast,
+          );
+        }),
       ],
     );
   }
 
-  Widget _buildComprehensiveSkills(BuildContext context) {
+  Widget _buildComprehensiveSkills(BuildContext context, List<SkillCategoryModel>? skills) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildSectionTitle(context, I18nKeys.coreSkills.tr),
         SizedBox(height: 15.f),
-        _buildSkillCategory(context, 'Mobile', ['Flutter', 'Android Native', 'Dart', 'Kotlin', 'Java']),
-        SizedBox(height: 10.f),
-        _buildSkillCategory(context, 'Architecture', ['Clean Architecture', 'MVI', 'MVVM', 'SOLID']),
-        SizedBox(height: 10.f),
-        _buildSkillCategory(context, 'Backend & DevOps', ['Spring Boot', 'SQL', 'Docker', 'CI/CD']),
+        ...?skills?.map(
+          (s) => Padding(
+            padding: EdgeInsets.only(bottom: 10.f),
+            child: _buildSkillCategory(context, s.category ?? "", s.items),
+          ),
+        ),
       ],
     );
   }

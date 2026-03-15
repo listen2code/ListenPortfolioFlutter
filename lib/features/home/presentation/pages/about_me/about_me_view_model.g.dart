@@ -41,7 +41,7 @@ final class AboutMeViewModelProvider
   }
 }
 
-String _$aboutMeViewModelHash() => r'6761745565b75adb346f52aba9bf5ba56437fe2c';
+String _$aboutMeViewModelHash() => r'70d01f9e67e3f3cfbf0dcf19e6d60628ae792e53';
 
 abstract class _$AboutMeViewModel extends $Notifier<AboutMeState> {
   AboutMeState build();
