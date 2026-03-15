@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:listen_portfolio_flutter/core/core.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/domain/usecases/login_use_case.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/login_request_model.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/user_response_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_intent.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/provider/auth_provider.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
@@ -75,8 +75,11 @@ class LoginViewModel extends _$LoginViewModel with ViewModelMixin<LoginState, Lo
       return;
     }
 
-    await call<UserModel?>(
-      ref.execute(loginUseCaseProvider, LoginParams(username: state.username, password: state.password)),
+    await call<UserResponseModel?>(
+      ref.execute(
+        loginUseCaseProvider,
+        LoginRequestModel(username: state.username, password: state.password),
+      ),
       showLoading: true,
       onSuccess: (user) async {
         authManager.login(user);

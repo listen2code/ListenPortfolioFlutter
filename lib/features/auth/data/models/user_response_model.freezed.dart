@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'user_model.dart';
+part of 'user_response_model.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -13,22 +13,22 @@ part of 'user_model.dart';
 T _$identity<T>(T value) => value;
 
 /// @nodoc
-mixin _$UserModel {
+mixin _$UserResponseModel {
 
  String? get id; String? get name; String? get avatarUrl; String? get jobTitle; String? get graduationYear; String? get major; String? get status; String? get github; String? get email; List<String>? get certifications; List<ExperienceModel>? get experiences;
-/// Create a copy of UserModel
+/// Create a copy of UserResponseModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$UserModelCopyWith<UserModel> get copyWith => _$UserModelCopyWithImpl<UserModel>(this as UserModel, _$identity);
+$UserResponseModelCopyWith<UserResponseModel> get copyWith => _$UserResponseModelCopyWithImpl<UserResponseModel>(this as UserResponseModel, _$identity);
 
-  /// Serializes this UserModel to a JSON map.
+  /// Serializes this UserResponseModel to a JSON map.
   Map<String, dynamic> toJson();
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.jobTitle, jobTitle) || other.jobTitle == jobTitle)&&(identical(other.graduationYear, graduationYear) || other.graduationYear == graduationYear)&&(identical(other.major, major) || other.major == major)&&(identical(other.status, status) || other.status == status)&&(identical(other.github, github) || other.github == github)&&(identical(other.email, email) || other.email == email)&&const DeepCollectionEquality().equals(other.certifications, certifications)&&const DeepCollectionEquality().equals(other.experiences, experiences));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserResponseModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.jobTitle, jobTitle) || other.jobTitle == jobTitle)&&(identical(other.graduationYear, graduationYear) || other.graduationYear == graduationYear)&&(identical(other.major, major) || other.major == major)&&(identical(other.status, status) || other.status == status)&&(identical(other.github, github) || other.github == github)&&(identical(other.email, email) || other.email == email)&&const DeepCollectionEquality().equals(other.certifications, certifications)&&const DeepCollectionEquality().equals(other.experiences, experiences));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -37,15 +37,15 @@ int get hashCode => Object.hash(runtimeType,id,name,avatarUrl,jobTitle,graduatio
 
 @override
 String toString() {
-  return 'UserModel(id: $id, name: $name, avatarUrl: $avatarUrl, jobTitle: $jobTitle, graduationYear: $graduationYear, major: $major, status: $status, github: $github, email: $email, certifications: $certifications, experiences: $experiences)';
+  return 'UserResponseModel(id: $id, name: $name, avatarUrl: $avatarUrl, jobTitle: $jobTitle, graduationYear: $graduationYear, major: $major, status: $status, github: $github, email: $email, certifications: $certifications, experiences: $experiences)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $UserModelCopyWith<$Res>  {
-  factory $UserModelCopyWith(UserModel value, $Res Function(UserModel) _then) = _$UserModelCopyWithImpl;
+abstract mixin class $UserResponseModelCopyWith<$Res>  {
+  factory $UserResponseModelCopyWith(UserResponseModel value, $Res Function(UserResponseModel) _then) = _$UserResponseModelCopyWithImpl;
 @useResult
 $Res call({
  String? id, String? name, String? avatarUrl, String? jobTitle, String? graduationYear, String? major, String? status, String? github, String? email, List<String>? certifications, List<ExperienceModel>? experiences
@@ -56,14 +56,14 @@ $Res call({
 
 }
 /// @nodoc
-class _$UserModelCopyWithImpl<$Res>
-    implements $UserModelCopyWith<$Res> {
-  _$UserModelCopyWithImpl(this._self, this._then);
+class _$UserResponseModelCopyWithImpl<$Res>
+    implements $UserResponseModelCopyWith<$Res> {
+  _$UserResponseModelCopyWithImpl(this._self, this._then);
 
-  final UserModel _self;
-  final $Res Function(UserModel) _then;
+  final UserResponseModel _self;
+  final $Res Function(UserResponseModel) _then;
 
-/// Create a copy of UserModel
+/// Create a copy of UserResponseModel
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? name = freezed,Object? avatarUrl = freezed,Object? jobTitle = freezed,Object? graduationYear = freezed,Object? major = freezed,Object? status = freezed,Object? github = freezed,Object? email = freezed,Object? certifications = freezed,Object? experiences = freezed,}) {
   return _then(_self.copyWith(
@@ -85,8 +85,8 @@ as List<ExperienceModel>?,
 }
 
 
-/// Adds pattern-matching-related methods to [UserModel].
-extension UserModelPatterns on UserModel {
+/// Adds pattern-matching-related methods to [UserResponseModel].
+extension UserResponseModelPatterns on UserResponseModel {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -99,10 +99,10 @@ extension UserModelPatterns on UserModel {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _UserModel value)?  $default,{required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _UserResponseModel value)?  $default,{required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _UserModel() when $default != null:
+case _UserResponseModel() when $default != null:
 return $default(_that);case _:
   return orElse();
 
@@ -121,10 +121,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _UserModel value)  $default,){
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _UserResponseModel value)  $default,){
 final _that = this;
 switch (_that) {
-case _UserModel():
+case _UserResponseModel():
 return $default(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -142,10 +142,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _UserModel value)?  $default,){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _UserResponseModel value)?  $default,){
 final _that = this;
 switch (_that) {
-case _UserModel() when $default != null:
+case _UserResponseModel() when $default != null:
 return $default(_that);case _:
   return null;
 
@@ -165,7 +165,7 @@ return $default(_that);case _:
 
 @optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? id,  String? name,  String? avatarUrl,  String? jobTitle,  String? graduationYear,  String? major,  String? status,  String? github,  String? email,  List<String>? certifications,  List<ExperienceModel>? experiences)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _UserModel() when $default != null:
+case _UserResponseModel() when $default != null:
 return $default(_that.id,_that.name,_that.avatarUrl,_that.jobTitle,_that.graduationYear,_that.major,_that.status,_that.github,_that.email,_that.certifications,_that.experiences);case _:
   return orElse();
 
@@ -186,7 +186,7 @@ return $default(_that.id,_that.name,_that.avatarUrl,_that.jobTitle,_that.graduat
 
 @optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? id,  String? name,  String? avatarUrl,  String? jobTitle,  String? graduationYear,  String? major,  String? status,  String? github,  String? email,  List<String>? certifications,  List<ExperienceModel>? experiences)  $default,) {final _that = this;
 switch (_that) {
-case _UserModel():
+case _UserResponseModel():
 return $default(_that.id,_that.name,_that.avatarUrl,_that.jobTitle,_that.graduationYear,_that.major,_that.status,_that.github,_that.email,_that.certifications,_that.experiences);case _:
   throw StateError('Unexpected subclass');
 
@@ -206,7 +206,7 @@ return $default(_that.id,_that.name,_that.avatarUrl,_that.jobTitle,_that.graduat
 
 @optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? id,  String? name,  String? avatarUrl,  String? jobTitle,  String? graduationYear,  String? major,  String? status,  String? github,  String? email,  List<String>? certifications,  List<ExperienceModel>? experiences)?  $default,) {final _that = this;
 switch (_that) {
-case _UserModel() when $default != null:
+case _UserResponseModel() when $default != null:
 return $default(_that.id,_that.name,_that.avatarUrl,_that.jobTitle,_that.graduationYear,_that.major,_that.status,_that.github,_that.email,_that.certifications,_that.experiences);case _:
   return null;
 
@@ -218,9 +218,9 @@ return $default(_that.id,_that.name,_that.avatarUrl,_that.jobTitle,_that.graduat
 /// @nodoc
 @JsonSerializable()
 
-class _UserModel implements UserModel {
-  const _UserModel({this.id, this.name, this.avatarUrl, this.jobTitle, this.graduationYear, this.major, this.status, this.github, this.email, final  List<String>? certifications, final  List<ExperienceModel>? experiences}): _certifications = certifications,_experiences = experiences;
-  factory _UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
+class _UserResponseModel implements UserResponseModel {
+  const _UserResponseModel({this.id, this.name, this.avatarUrl, this.jobTitle, this.graduationYear, this.major, this.status, this.github, this.email, final  List<String>? certifications, final  List<ExperienceModel>? experiences}): _certifications = certifications,_experiences = experiences;
+  factory _UserResponseModel.fromJson(Map<String, dynamic> json) => _$UserResponseModelFromJson(json);
 
 @override final  String? id;
 @override final  String? name;
@@ -250,20 +250,20 @@ class _UserModel implements UserModel {
 }
 
 
-/// Create a copy of UserModel
+/// Create a copy of UserResponseModel
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$UserModelCopyWith<_UserModel> get copyWith => __$UserModelCopyWithImpl<_UserModel>(this, _$identity);
+_$UserResponseModelCopyWith<_UserResponseModel> get copyWith => __$UserResponseModelCopyWithImpl<_UserResponseModel>(this, _$identity);
 
 @override
 Map<String, dynamic> toJson() {
-  return _$UserModelToJson(this, );
+  return _$UserResponseModelToJson(this, );
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.jobTitle, jobTitle) || other.jobTitle == jobTitle)&&(identical(other.graduationYear, graduationYear) || other.graduationYear == graduationYear)&&(identical(other.major, major) || other.major == major)&&(identical(other.status, status) || other.status == status)&&(identical(other.github, github) || other.github == github)&&(identical(other.email, email) || other.email == email)&&const DeepCollectionEquality().equals(other._certifications, _certifications)&&const DeepCollectionEquality().equals(other._experiences, _experiences));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserResponseModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.jobTitle, jobTitle) || other.jobTitle == jobTitle)&&(identical(other.graduationYear, graduationYear) || other.graduationYear == graduationYear)&&(identical(other.major, major) || other.major == major)&&(identical(other.status, status) || other.status == status)&&(identical(other.github, github) || other.github == github)&&(identical(other.email, email) || other.email == email)&&const DeepCollectionEquality().equals(other._certifications, _certifications)&&const DeepCollectionEquality().equals(other._experiences, _experiences));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -272,15 +272,15 @@ int get hashCode => Object.hash(runtimeType,id,name,avatarUrl,jobTitle,graduatio
 
 @override
 String toString() {
-  return 'UserModel(id: $id, name: $name, avatarUrl: $avatarUrl, jobTitle: $jobTitle, graduationYear: $graduationYear, major: $major, status: $status, github: $github, email: $email, certifications: $certifications, experiences: $experiences)';
+  return 'UserResponseModel(id: $id, name: $name, avatarUrl: $avatarUrl, jobTitle: $jobTitle, graduationYear: $graduationYear, major: $major, status: $status, github: $github, email: $email, certifications: $certifications, experiences: $experiences)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$UserModelCopyWith<$Res> implements $UserModelCopyWith<$Res> {
-  factory _$UserModelCopyWith(_UserModel value, $Res Function(_UserModel) _then) = __$UserModelCopyWithImpl;
+abstract mixin class _$UserResponseModelCopyWith<$Res> implements $UserResponseModelCopyWith<$Res> {
+  factory _$UserResponseModelCopyWith(_UserResponseModel value, $Res Function(_UserResponseModel) _then) = __$UserResponseModelCopyWithImpl;
 @override @useResult
 $Res call({
  String? id, String? name, String? avatarUrl, String? jobTitle, String? graduationYear, String? major, String? status, String? github, String? email, List<String>? certifications, List<ExperienceModel>? experiences
@@ -291,17 +291,17 @@ $Res call({
 
 }
 /// @nodoc
-class __$UserModelCopyWithImpl<$Res>
-    implements _$UserModelCopyWith<$Res> {
-  __$UserModelCopyWithImpl(this._self, this._then);
+class __$UserResponseModelCopyWithImpl<$Res>
+    implements _$UserResponseModelCopyWith<$Res> {
+  __$UserResponseModelCopyWithImpl(this._self, this._then);
 
-  final _UserModel _self;
-  final $Res Function(_UserModel) _then;
+  final _UserResponseModel _self;
+  final $Res Function(_UserResponseModel) _then;
 
-/// Create a copy of UserModel
+/// Create a copy of UserResponseModel
 /// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? name = freezed,Object? avatarUrl = freezed,Object? jobTitle = freezed,Object? graduationYear = freezed,Object? major = freezed,Object? status = freezed,Object? github = freezed,Object? email = freezed,Object? certifications = freezed,Object? experiences = freezed,}) {
-  return _then(_UserModel(
+  return _then(_UserResponseModel(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,avatarUrl: freezed == avatarUrl ? _self.avatarUrl : avatarUrl // ignore: cast_nullable_to_non_nullable

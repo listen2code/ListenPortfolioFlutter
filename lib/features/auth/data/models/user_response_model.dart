@@ -1,11 +1,11 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'user_model.freezed.dart';
-part 'user_model.g.dart';
+part 'user_response_model.freezed.dart';
+part 'user_response_model.g.dart';
 
 @freezed
-abstract class UserModel with _$UserModel {
-  const factory UserModel({
+abstract class UserResponseModel with _$UserResponseModel {
+  const factory UserResponseModel({
     String? id,
     String? name,
     String? avatarUrl,
@@ -17,9 +17,9 @@ abstract class UserModel with _$UserModel {
     String? email,
     List<String>? certifications,
     List<ExperienceModel>? experiences,
-  }) = _UserModel;
+  }) = _UserResponseModel;
 
-  factory UserModel.fromJson(Map<String, Object?> json) => _$UserModelFromJson(json);
+  factory UserResponseModel.fromJson(Map<String, Object?> json) => _$UserResponseModelFromJson(json);
 }
 
 @freezed

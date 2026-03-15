@@ -1,8 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/get_current_user_request_model.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/login_request_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/login_response_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/user_response_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/repositories/auth_repository.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/usecases/login_use_case.dart';
 import 'package:mocktail/mocktail.dart';
@@ -24,7 +26,7 @@ void main() {
     const testPassword = 'password123';
     const testUserId = 'user_123';
 
-    final testUser = UserModel(id: testUserId, name: 'Test UserModel', email: 'test@example.com');
+    final testUser = UserResponseModel(id: testUserId, name: 'Test UserModel', email: 'test@example.com');
 
     final testLoginResponse = LoginResponseModel(token: 'token_abc', userId: testUserId);
 
@@ -32,37 +34,49 @@ void main() {
       // Arrange: Mock both login and subsequent profile fetch
       when(
         () => mockRepository.login(
-          username: any(named: 'username'),
-          password: any(named: 'password'),
+          param: LoginRequestModel(
+            username: any(named: 'username'),
+            password: any(named: 'password'),
+          ),
         ),
       ).thenAnswer((_) async => Right(testLoginResponse));
 
       when(
-        () => mockRepository.getCurrentUser(userId: any(named: 'userId')),
+        () => mockRepository.getCurrentUser(
+          param: GetCurrentUserRequestModel(userId: any(named: 'userId')),
+        ),
       ).thenAnswer((_) async => Right(testUser));
 
       // Act
-      final result = await useCase(LoginParams(username: testUsername, password: testPassword));
+      final result = await useCase(LoginRequestModel(username: testUsername, password: testPassword));
 
       // Assert
-      expect(result, Right<Failure, UserModel?>(testUser));
+      expect(result, Right<Failure, UserResponseModel?>(testUser));
 
       // Verify the sequence of calls
-      verify(() => mockRepository.login(username: testUsername, password: testPassword)).called(1);
-      verify(() => mockRepository.getCurrentUser(userId: testUserId)).called(1);
+      verify(
+        () => mockRepository.login(
+          param: LoginRequestModel(username: testUsername, password: testPassword),
+        ),
+      ).called(1);
+      verify(
+        () => mockRepository.getCurrentUser(param: GetCurrentUserRequestModel(userId: testUserId)),
+      ).called(1);
       verifyNoMoreInteractions(mockRepository);
     });
 
     test('should return ValidationFailure when username is empty', () async {
       // Act
-      final result = await useCase(LoginParams(username: '', password: testPassword));
+      final result = await useCase(LoginRequestModel(username: '', password: testPassword));
 
       // Assert
-      expect(result, const Left<Failure, UserModel?>(ValidationFailure('Username cannot be empty')));
+      expect(result, const Left<Failure, UserResponseModel?>(ValidationFailure('Username cannot be empty')));
       verifyNever(
         () => mockRepository.login(
-          username: any(named: 'username'),
-          password: any(named: 'password'),
+          param: LoginRequestModel(
+            username: any(named: 'username'),
+            password: any(named: 'password'),
+          ),
         ),
       );
     });
@@ -72,18 +86,28 @@ void main() {
       const serverFailure = ServerFailure('Invalid Credentials');
       when(
         () => mockRepository.login(
-          username: any(named: 'username'),
-          password: any(named: 'password'),
+          param: LoginRequestModel(
+            username: any(named: 'username'),
+            password: any(named: 'password'),
+          ),
         ),
       ).thenAnswer((_) async => const Left(serverFailure));
 
       // Act
-      final result = await useCase(LoginParams(username: testUsername, password: testPassword));
+      final result = await useCase(LoginRequestModel(username: testUsername, password: testPassword));
 
       // Assert
-      expect(result, const Left<Failure, UserModel?>(serverFailure));
-      verify(() => mockRepository.login(username: testUsername, password: testPassword)).called(1);
-      verifyNever(() => mockRepository.getCurrentUser(userId: any(named: 'userId')));
+      expect(result, const Left<Failure, UserResponseModel?>(serverFailure));
+      verify(
+        () => mockRepository.login(
+          param: LoginRequestModel(username: testUsername, password: testPassword),
+        ),
+      ).called(1);
+      verifyNever(
+        () => mockRepository.getCurrentUser(
+          param: GetCurrentUserRequestModel(userId: any(named: 'userId')),
+        ),
+      );
     });
   });
 }

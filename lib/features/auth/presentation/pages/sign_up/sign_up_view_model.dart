@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:listen_portfolio_flutter/core/core.dart';
-import 'package:listen_portfolio_flutter/features/auth/domain/usecases/signup_use_case.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/signup_request_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/sign_up/sign_up_intent.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/provider/auth_provider.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
@@ -72,7 +72,7 @@ class SignUpViewModel extends _$SignUpViewModel with ViewModelMixin<SignUpState,
     await call<void>(
       ref.execute(
         signupUseCaseProvider,
-        SignupParams(name: state.fullName, email: state.email, password: state.password),
+        SignupRequestModel(name: state.fullName, email: state.email, password: state.password),
       ),
       showLoading: true,
       onSuccess: (_) {

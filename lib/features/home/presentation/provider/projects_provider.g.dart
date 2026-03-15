@@ -151,7 +151,7 @@ final class ProjectsRepositoryProvider
 }
 
 String _$projectsRepositoryHash() =>
-    r'6467ecf8f1a33db8ba59f10b9f4a37026b07d257';
+    r'7b90bdddeef2846335d2545863f8baf0f3b60eb6';
 
 /// Define as Future to support ref.execute extension
 

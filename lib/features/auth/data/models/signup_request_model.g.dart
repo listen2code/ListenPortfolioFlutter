@@ -9,9 +9,9 @@ part of 'signup_request_model.dart';
 _SignupRequestModel _$SignupRequestModelFromJson(Map json) =>
     $checkedCreate('_SignupRequestModel', json, ($checkedConvert) {
       final val = _SignupRequestModel(
-        name: $checkedConvert('name', (v) => v as String?),
-        email: $checkedConvert('email', (v) => v as String?),
-        password: $checkedConvert('password', (v) => v as String?),
+        name: $checkedConvert('name', (v) => v as String),
+        email: $checkedConvert('email', (v) => v as String),
+        password: $checkedConvert('password', (v) => v as String),
       );
       return val;
     });

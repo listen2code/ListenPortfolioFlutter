@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:listen_portfolio_flutter/core/core.dart';
-import 'package:listen_portfolio_flutter/features/auth/domain/usecases/change_password_use_case.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/change_password_request_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/password/change_password_intent.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/password/change_password_state.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/provider/auth_provider.dart';
@@ -58,7 +58,7 @@ class ChangePasswordViewModel extends _$ChangePasswordViewModel
     await call<void>(
       ref.execute(
         changePasswordUseCaseProvider,
-        ChangePasswordParams(oldPassword: state.oldPassword, newPassword: state.newPassword),
+        ChangePasswordRequestModel(oldPassword: state.oldPassword, newPassword: state.newPassword),
       ),
       showLoading: true,
       onSuccess: (_) {

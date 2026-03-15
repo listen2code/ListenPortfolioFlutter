@@ -21,7 +21,7 @@ class _ProjectsRemoteDataSource implements ProjectsRemoteDataSource {
 
   @override
   Future<BaseResponseModel<List<ProjectModel>>> getProjects() async {
-    final _extra = <String, dynamic>{};
+    final _extra = <String, dynamic>{'no_auth': true};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;

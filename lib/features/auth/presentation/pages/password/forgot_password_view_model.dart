@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:listen_portfolio_flutter/core/core.dart';
-import 'package:listen_portfolio_flutter/features/auth/domain/usecases/forgot_password_use_case.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/forgot_password_request_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/password/forgot_password_intent.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/password/forgot_password_state.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/provider/auth_provider.dart';
@@ -40,7 +40,7 @@ class ForgotPasswordViewModel extends _$ForgotPasswordViewModel
 
     // 2. Real Reset Link Request via UseCase
     await call<void>(
-      ref.execute(forgotPasswordUseCaseProvider, ForgotPasswordParams(email: state.email)),
+      ref.execute(forgotPasswordUseCaseProvider, ForgotPasswordRequestModel(email: state.email)),
       showLoading: true,
       onSuccess: (_) {
         // Show success message and go back to login

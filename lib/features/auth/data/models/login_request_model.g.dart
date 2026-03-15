@@ -9,8 +9,8 @@ part of 'login_request_model.dart';
 _LoginRequestModel _$LoginRequestModelFromJson(Map json) =>
     $checkedCreate('_LoginRequestModel', json, ($checkedConvert) {
       final val = _LoginRequestModel(
-        username: $checkedConvert('username', (v) => v as String?),
-        password: $checkedConvert('password', (v) => v as String?),
+        username: $checkedConvert('username', (v) => v as String),
+        password: $checkedConvert('password', (v) => v as String),
       );
       return val;
     });

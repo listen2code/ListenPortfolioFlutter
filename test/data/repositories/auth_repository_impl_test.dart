@@ -2,9 +2,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/datasources/auth_local_data_source.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/datasources/auth_remote_data_source.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/get_current_user_request_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/login_request_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/login_response_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/user_response_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -30,7 +31,7 @@ void main() {
     );
 
     // Register fallback values for mocktail
-    registerFallbackValue(UserModel(id: '', name: '', email: ''));
+    registerFallbackValue(UserResponseModel(id: '', name: '', email: ''));
     registerFallbackValue(const LoginRequestModel(username: '', password: ''));
   });
 
@@ -52,7 +53,9 @@ void main() {
       when(() => mockLocalDataSource.cacheRefreshToken(any())).thenAnswer((_) async => {});
 
       // Act
-      final result = await repository.login(username: testUsername, password: testPassword);
+      final result = await repository.login(
+        param: LoginRequestModel(username: testUsername, password: testPassword),
+      );
 
       // Assert
       final response = result.getRight().toNullable();
@@ -64,8 +67,11 @@ void main() {
 
   group('AuthRepositoryImpl - getCurrentUser', () {
     const testUserId = 'user_123';
-    final testUserModel = UserModel(id: testUserId, name: 'Test', email: 'test@example.com');
-    final testApiResponse = BaseResponseModel<UserModel>(result: ApiResult.success, body: testUserModel);
+    final testUserModel = UserResponseModel(id: testUserId, name: 'Test', email: 'test@example.com');
+    final testApiResponse = BaseResponseModel<UserResponseModel>(
+      result: ApiResult.success,
+      body: testUserModel,
+    );
 
     test('should return remote user and update cache when API call is successful', () async {
       // Arrange
@@ -73,7 +79,7 @@ void main() {
       when(() => mockLocalDataSource.cacheUser(any())).thenAnswer((_) async => {});
 
       // Act
-      final result = await repository.getCurrentUser(userId: testUserId);
+      final result = await repository.getCurrentUser(param: GetCurrentUserRequestModel(userId: testUserId));
 
       // Assert
       expect(result.getRight().toNullable(), testUserModel);
@@ -86,7 +92,7 @@ void main() {
       when(() => mockLocalDataSource.getCachedUser()).thenAnswer((_) async => testUserModel);
 
       // Act
-      final result = await repository.getCurrentUser(userId: testUserId);
+      final result = await repository.getCurrentUser(param: GetCurrentUserRequestModel(userId: testUserId));
 
       // Assert
       expect(result.getRight().toNullable(), testUserModel);
@@ -99,7 +105,7 @@ void main() {
       when(() => mockLocalDataSource.getCachedUser()).thenAnswer((_) async => null);
 
       // Act
-      final result = await repository.getCurrentUser(userId: testUserId);
+      final result = await repository.getCurrentUser(param: GetCurrentUserRequestModel(userId: testUserId));
 
       // Assert
       expect(result.isLeft(), true);

@@ -1,19 +1,21 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/get_current_user_request_model.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/login_request_model.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/user_response_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/repositories/auth_repository.dart';
 
 /// Use case for user login flow.
 /// It orchestrates the authentication and fetching the current user profile.
-class LoginUseCase implements UseCase<UserModel?, LoginParams> {
+class LoginUseCase implements UseCase<UserResponseModel?, LoginRequestModel> {
   final AuthRepository repository;
 
   LoginUseCase(this.repository);
 
   @override
-  Future<Either<Failure, UserModel?>> call(LoginParams params) async {
+  Future<Either<Failure, UserResponseModel?>> call(LoginRequestModel param) async {
     // 1. Perform Login (Authentication)
-    final loginResult = await repository.login(username: params.username, password: params.password);
+    final loginResult = await repository.login(param: param);
 
     // 2. Orchestration: If login successful, fetch the complete user profile immediately.
     return loginResult.fold((failure) => Left(failure), (response) async {
@@ -22,15 +24,7 @@ class LoginUseCase implements UseCase<UserModel?, LoginParams> {
         return const Left(ServerFailure('User ID is missing in response'));
       }
       // Chain the next operation to get full user data
-      return await repository.getCurrentUser(userId: userId);
+      return await repository.getCurrentUser(param: GetCurrentUserRequestModel(userId: userId));
     });
   }
-}
-
-/// Parameters for login use case
-class LoginParams {
-  final String username;
-  final String password;
-
-  LoginParams({required this.username, required this.password});
 }

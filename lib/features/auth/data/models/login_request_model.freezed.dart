@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$LoginRequestModel {
 
- String? get username; String? get password;
+ String get username; String get password;
 /// Create a copy of LoginRequestModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $LoginRequestModelCopyWith<$Res>  {
   factory $LoginRequestModelCopyWith(LoginRequestModel value, $Res Function(LoginRequestModel) _then) = _$LoginRequestModelCopyWithImpl;
 @useResult
 $Res call({
- String? username, String? password
+ String username, String password
 });
 
 
@@ -65,11 +65,11 @@ class _$LoginRequestModelCopyWithImpl<$Res>
 
 /// Create a copy of LoginRequestModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? username = freezed,Object? password = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? username = null,Object? password = null,}) {
   return _then(_self.copyWith(
-username: freezed == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
-as String?,password: freezed == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
-as String?,
+username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
+as String,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 
@@ -154,7 +154,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? username,  String? password)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String username,  String password)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _LoginRequestModel() when $default != null:
 return $default(_that.username,_that.password);case _:
@@ -175,7 +175,7 @@ return $default(_that.username,_that.password);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? username,  String? password)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String username,  String password)  $default,) {final _that = this;
 switch (_that) {
 case _LoginRequestModel():
 return $default(_that.username,_that.password);case _:
@@ -195,7 +195,7 @@ return $default(_that.username,_that.password);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? username,  String? password)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String username,  String password)?  $default,) {final _that = this;
 switch (_that) {
 case _LoginRequestModel() when $default != null:
 return $default(_that.username,_that.password);case _:
@@ -210,11 +210,11 @@ return $default(_that.username,_that.password);case _:
 @JsonSerializable()
 
 class _LoginRequestModel implements LoginRequestModel {
-  const _LoginRequestModel({this.username, this.password});
+  const _LoginRequestModel({required this.username, required this.password});
   factory _LoginRequestModel.fromJson(Map<String, dynamic> json) => _$LoginRequestModelFromJson(json);
 
-@override final  String? username;
-@override final  String? password;
+@override final  String username;
+@override final  String password;
 
 /// Create a copy of LoginRequestModel
 /// with the given fields replaced by the non-null parameter values.
@@ -249,7 +249,7 @@ abstract mixin class _$LoginRequestModelCopyWith<$Res> implements $LoginRequestM
   factory _$LoginRequestModelCopyWith(_LoginRequestModel value, $Res Function(_LoginRequestModel) _then) = __$LoginRequestModelCopyWithImpl;
 @override @useResult
 $Res call({
- String? username, String? password
+ String username, String password
 });
 
 
@@ -266,11 +266,11 @@ class __$LoginRequestModelCopyWithImpl<$Res>
 
 /// Create a copy of LoginRequestModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? username = freezed,Object? password = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? username = null,Object? password = null,}) {
   return _then(_LoginRequestModel(
-username: freezed == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
-as String?,password: freezed == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
-as String?,
+username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
+as String,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/user_response_model.dart';
 
 /// Global specialized instance for this application
-final authManager = BaseAuthManager<UserModel>();
+final authManager = BaseAuthManager<UserResponseModel>();
 
 /// Represents the possible authentication statuses
 enum AuthStatus { loggedIn, loggedOut }

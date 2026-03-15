@@ -2,10 +2,13 @@ import 'package:fpdart/fpdart.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/datasources/auth_local_data_source.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/datasources/auth_remote_data_source.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/change_password_request_model.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/forgot_password_request_model.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/get_current_user_request_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/login_request_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/login_response_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/signup_request_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/user_response_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/repositories/auth_repository.dart';
 
 class AuthRepositoryImpl with BaseRepository implements AuthRepository {
@@ -15,12 +18,9 @@ class AuthRepositoryImpl with BaseRepository implements AuthRepository {
   AuthRepositoryImpl({required this.remoteDataSource, required this.localDataSource});
 
   @override
-  Future<Either<Failure, LoginResponseModel?>> login({
-    required String username,
-    required String password,
-  }) async {
+  Future<Either<Failure, LoginResponseModel?>> login({required LoginRequestModel param}) async {
     return await safeCall<LoginResponseModel>(
-      call: () => remoteDataSource.login(LoginRequestModel(username: username, password: password)),
+      call: () => remoteDataSource.login(param),
       saveCache: (response) async {
         if (response.token != null) {
           await localDataSource.cacheAuthToken(response.token!);
@@ -30,14 +30,8 @@ class AuthRepositoryImpl with BaseRepository implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, void>> signUp({
-    required String name,
-    required String email,
-    required String password,
-  }) async {
-    return await safeCall<void>(
-      call: () => remoteDataSource.signUp(SignupRequestModel(name: name, email: email, password: password)),
-    );
+  Future<Either<Failure, void>> signUp({required SignupRequestModel param}) async {
+    return await safeCall<void>(call: () => remoteDataSource.signUp(param));
   }
 
   @override
@@ -51,22 +45,21 @@ class AuthRepositoryImpl with BaseRepository implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, void>> forgotPassword({required String email}) async {
-    return await safeCall<void>(call: () => remoteDataSource.forgotPassword(email));
+  Future<Either<Failure, void>> forgotPassword({required ForgotPasswordRequestModel param}) async {
+    return await safeCall<void>(call: () => remoteDataSource.forgotPassword(param));
   }
 
   @override
-  Future<Either<Failure, void>> changePassword({
-    required String oldPassword,
-    required String newPassword,
+  Future<Either<Failure, void>> changePassword({required ChangePasswordRequestModel param}) async {
+    return await safeCall<void>(call: () => remoteDataSource.changePassword(param));
+  }
+
+  @override
+  Future<Either<Failure, UserResponseModel?>> getCurrentUser({
+    required GetCurrentUserRequestModel param,
   }) async {
-    return await safeCall<void>(call: () => remoteDataSource.changePassword(oldPassword, newPassword));
-  }
-
-  @override
-  Future<Either<Failure, UserModel?>> getCurrentUser({required String userId}) async {
-    return await safeCall<UserModel>(
-      call: () => remoteDataSource.getUserById(userId),
+    return await safeCall<UserResponseModel>(
+      call: () => remoteDataSource.getUserById(param.userId),
       saveCache: (user) => localDataSource.cacheUser(user),
       getCached: () => localDataSource.getCachedUser(),
     );
