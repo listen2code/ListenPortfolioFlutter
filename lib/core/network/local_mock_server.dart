@@ -87,22 +87,10 @@ class LocalMockServer {
 
     // 5. Build candidate asset paths matching api.js rules
     List<String> candidatePaths = [];
-    if (method == 'get') {
-      if (pathParts.length > 1) {
-        final resource = pathParts[0];
-        candidatePaths.add(_buildPath(versionDir, 'get', [resource]));
-        candidatePaths.add(_buildPath(versionDir, 'get', pathParts));
-      } else if (pathParts.length == 1) {
-        final resource = pathParts[0];
-        candidatePaths.add(_buildPath(versionDir, 'get/list', [resource]));
-        candidatePaths.add(_buildPath(versionDir, 'get', [resource]));
-      }
-    } else {
-      if (pathParts.length > 1) {
-        candidatePaths.add(_buildPath(versionDir, method, [pathParts[0]]));
-      }
-      candidatePaths.add(_buildPath(versionDir, method, pathParts));
+    if (pathParts.length > 1) {
+      candidatePaths.add(_buildPath(versionDir, method, [pathParts[0]]));
     }
+    candidatePaths.add(_buildPath(versionDir, method, pathParts));
 
     String? jsonData;
     String? matchedPath;

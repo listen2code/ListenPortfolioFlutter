@@ -29,7 +29,7 @@ abstract class AuthRemoteDataSource {
   @POST('/v1/auth/change-password')
   Future<BaseResponseModel<void>> changePassword(@Body() ChangePasswordRequestModel request);
 
-  @GET('/v1/users/{id}')
+  @GET('/v1/user')
   Future<BaseResponseModel<UserResponseModel>> getUserById(@Path('id') String id);
 
   @POST('/v1/auth/refresh')

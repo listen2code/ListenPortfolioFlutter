@@ -1,0 +1,39 @@
+{
+  "result": "0",
+  "message": "success",
+  "body": {
+    "name": "Listen",
+    "jobTitle": "Full Stack Mobile Architect",
+    "graduationYear": "2013",
+    "major": "softwareEngineering",
+    "status": "available",
+    "github": "https://github.com/listen2code",
+    "email": "listen2code@gmail.com",
+    "avatarUrl": "",
+    "certifications": [
+      "jlptN1",
+      "bjtJ2"
+    ],
+    "experiences": [
+      {
+        "id": "android",
+        "year": "10",
+        "label": "androidExp",
+        "tags": [
+          "archDesign",
+          "perfOptimization"
+        ]
+      },
+      {
+        "id": "flutter",
+        "year": "2",
+        "label": "flutterExp"
+      },
+      {
+        "id": "java_web",
+        "year": "1",
+        "label": "javaWeb"
+      }
+    ]
+  }
+}

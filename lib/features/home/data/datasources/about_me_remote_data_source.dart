@@ -9,6 +9,6 @@ part 'about_me_remote_data_source.g.dart';
 abstract class AboutMeRemoteDataSource {
   factory AboutMeRemoteDataSource(Dio dio, {String baseUrl}) = _AboutMeRemoteDataSource;
 
-  @GET('/v1/get/aboutMe')
+  @GET('/v1/aboutMe')
   Future<BaseResponseModel<AboutMeModel>> getAboutMe();
 }

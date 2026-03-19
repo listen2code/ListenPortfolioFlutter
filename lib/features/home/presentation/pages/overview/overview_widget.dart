@@ -221,7 +221,7 @@ class OverviewWidget extends StatelessWidget {
   }
 
   Widget _buildExperienceGrid(BuildContext context, UserResponseModel? userModel) {
-    // If not logged in, we provide default experience data based on users.json logic
+    // If not logged in, we provide default experience data based on user.json logic
     final List<ExperienceModel> experiences =
         userModel?.experiences ??
         const [

@@ -8,12 +8,8 @@ class R {
   static const String authLogout = 'assets/mock/v1/post/auth/logout.json';
   static const String authRefresh = 'assets/mock/v1/post/auth/refresh.json';
   static const String authSignUp = 'assets/mock/v1/post/auth/signUp.json';
-  static const String deleteUsers = 'assets/mock/v1/delete/users.json';
-  static const String getUsers = 'assets/mock/v1/get/users.json';
+  static const String getAboutMe = 'assets/mock/v1/get/aboutMe.json';
+  static const String getProjects = 'assets/mock/v1/get/projects.json';
+  static const String getUser = 'assets/mock/v1/get/user.json';
   static const String imagesIcLauncherAdaptiveFore = 'assets/images/ic_launcher_adaptive_fore.png';
-  static const String listAboutMe = 'assets/mock/v1/get/list/aboutMe.json';
-  static const String listProjects = 'assets/mock/v1/get/list/projects.json';
-  static const String listUsers = 'assets/mock/v1/get/list/users.json';
-  static const String postUsers = 'assets/mock/v1/post/users.json';
-  static const String putUsers = 'assets/mock/v1/put/users.json';
 }

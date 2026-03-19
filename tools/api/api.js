@@ -119,15 +119,7 @@ async function handleRequest(req, res, requestBody) {
     const resourceName = matchedApiName.endsWith('/') ? matchedApiName.slice(0, -1) : matchedApiName;
 
     let targetFile = "";
-    if (method === "get") {
-        if (matchedApiName.endsWith('/')) {
-            targetFile = path.join(baseDir, 'get', `${resourceName}.json`);
-        } else {
-            targetFile = path.join(baseDir, 'get', 'list', `${resourceName}.json`);
-        }
-    } else {
-        targetFile = path.join(baseDir, method, `${resourceName}.json`);
-    }
+    targetFile = path.join(baseDir, method, `${resourceName}.json`);
 
     // 5. Read file and log Response
     try {

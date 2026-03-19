@@ -29,7 +29,7 @@ class _AboutMeRemoteDataSource implements AboutMeRemoteDataSource {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/v1/get/aboutMe',
+            '/v1/aboutMe',
             queryParameters: queryParameters,
             data: _data,
           )
