@@ -1,6 +1,7 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/change_password_request_model.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/delete_account_request_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/forgot_password_request_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/get_current_user_request_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/login_model.dart';
@@ -25,6 +26,9 @@ abstract class AuthRepository {
 
   /// Change user password.
   Future<Either<Failure, void>> changePassword({required ChangePasswordRequestModel? param});
+
+  /// Delete account.
+  Future<Either<Failure, void>> deleteAccount({required DeleteAccountRequestModel? param});
 
   /// Fetches the authenticated user's profile by ID.
   Future<Either<Failure, UserModel?>> getCurrentUser({required GetCurrentUserRequestModel? param});

@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/change_password_request_model.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/delete_account_request_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/forgot_password_request_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/login_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/login_request_model.dart';
@@ -28,6 +29,9 @@ abstract class AuthRemoteDataSource {
 
   @POST('/v1/auth/change-password')
   Future<BaseResponseModel<void>> changePassword(@Body() ChangePasswordRequestModel? request);
+
+  @DELETE('/v1/auth/delete-account')
+  Future<BaseResponseModel<void>> deleteAccount(@Body() DeleteAccountRequestModel? request);
 
   @GET('/v1/user')
   Future<BaseResponseModel<UserModel>> getUserById(@Path('id') String id);

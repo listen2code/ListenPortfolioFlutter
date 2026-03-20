@@ -3,10 +3,11 @@ import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/datasources/auth_local_data_source.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/change_password_request_model.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/delete_account_request_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/forgot_password_request_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/get_current_user_request_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/login_request_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/login_model.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/login_request_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/signup_request_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/repositories/auth_repository.dart';
@@ -86,5 +87,11 @@ class AuthRepositoryImpl with BaseRepository implements AuthRepository {
 
     // 3. Return the new access token if successful
     return result.map((response) => response.token ?? '');
+  }
+
+  @override
+  Future<Either<Failure, void>> deleteAccount({required DeleteAccountRequestModel? param}) {
+    // TODO: implement deleteAccount
+    throw UnimplementedError();
   }
 }
