@@ -1,11 +1,5 @@
 [
   {
-    "api": "user",
-    "method": "get",
-    "timeout": 1000,
-    "httpCode": 200
-  },
-  {
     "api": "auth/login",
     "method": "post",
     "timeout": 500,
@@ -51,6 +45,12 @@
     "api": "aboutMe",
     "method": "get",
     "timeout": 500,
+    "httpCode": 200
+  },
+  {
+    "api": "user",
+    "method": "get",
+    "timeout": 1000,
     "httpCode": 200
   }
 ]

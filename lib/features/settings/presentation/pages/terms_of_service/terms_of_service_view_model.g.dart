@@ -42,7 +42,7 @@ final class TermsOfServiceViewModelProvider
 }
 
 String _$termsOfServiceViewModelHash() =>
-    r'2d532f65fdaa2b5a4c46e293e7e9b52ec4186b2d';
+    r'7658113b911254fbe75f9529bcb328a13bd54daf';
 
 abstract class _$TermsOfServiceViewModel
     extends $Notifier<TermsOfServiceState> {
