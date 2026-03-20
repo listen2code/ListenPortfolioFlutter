@@ -5,7 +5,15 @@ part 'privacy_policy_state.freezed.dart';
 
 @freezed
 abstract class PrivacyPolicyState extends BaseState with _$PrivacyPolicyState {
-  const factory PrivacyPolicyState({@Default('May 2026') String lastUpdated}) = _PrivacyPolicyState;
+  const factory PrivacyPolicyState({
+    @Default('') String lastUpdated,
+    @Default([]) List<PrivacySection> sections,
+  }) = _PrivacyPolicyState;
 
   const PrivacyPolicyState._();
+}
+
+@freezed
+abstract class PrivacySection with _$PrivacySection {
+  const factory PrivacySection({required String title, required String content}) = _PrivacySection;
 }
