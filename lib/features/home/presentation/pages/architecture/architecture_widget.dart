@@ -23,20 +23,23 @@ class ArchitectureWidget extends StatelessWidget {
         viewModel?.handleIntent(const ArchitectureIntent.refresh());
       },
       body: (context, child, viewModel, state) {
+        if (state == null || state.sections.isEmpty) return null;
+
         return SingleChildScrollView(
           padding: EdgeInsets.all(20.f),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildHeader(context),
-              SizedBox(height: 30.f),
-              _buildCleanMVISection(context),
-              SizedBox(height: 25.f),
-              _buildLibSection(context),
-              SizedBox(height: 25.f),
-              _buildSourceCodeSection(context),
-              SizedBox(height: 25.f),
-              _buildBackendSection(context),
+              if (state.header != null)
+                Padding(
+                  padding: EdgeInsets.only(bottom: 30.f),
+                  child: CommonText(
+                    state.header!,
+                    style: context.textTheme.bodyLarge?.copyWith(color: Colors.grey, height: 1.5),
+                    useFittedBox: false,
+                  ),
+                ),
+              ...state.sections.map((section) => _buildSectionCard(context, section)),
               SizedBox(height: 30.f),
             ],
           ),
@@ -45,125 +48,43 @@ class ArchitectureWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildSkeleton(BuildContext context) {
-    return SingleChildScrollView(
-      padding: EdgeInsets.all(20.f),
-      physics: const NeverScrollableScrollPhysics(),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CommonSkeleton.line(width: double.infinity, height: 16.f),
-          SizedBox(height: 8.f),
-          CommonSkeleton.line(width: 200.f, height: 16.f),
-          SizedBox(height: 30.f),
-          ...List.generate(
-            4,
-            (index) => Container(
-              margin: EdgeInsets.only(bottom: 25.f),
-              padding: EdgeInsets.all(20.f),
-              decoration: BoxDecoration(
-                color: context.theme.cardColor.withValues(alpha: 0.5),
-                borderRadius: BorderRadius.circular(20.f),
+  Widget _buildSectionCard(BuildContext context, ArchitectureSection section) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 25.f),
+      child: _buildCard(
+        context,
+        title: section.title,
+        icon: section.icon is IconData ? section.icon as IconData : Icons.help_outline,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (section.content.isNotEmpty)
+              CommonText(
+                section.content,
+                style: context.textTheme.bodyMedium?.copyWith(height: 1.6),
+                useFittedBox: false,
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      CommonSkeleton.circle(size: 24.f),
-                      SizedBox(width: 12.f),
-                      CommonSkeleton.line(width: 150.f, height: 18.f),
-                    ],
-                  ),
-                  SizedBox(height: 20.f),
-                  CommonSkeleton.line(width: double.infinity, height: 14.f),
-                  SizedBox(height: 10.f),
-                  CommonSkeleton.line(width: double.infinity, height: 14.f),
-                  SizedBox(height: 10.f),
-                  CommonSkeleton.line(width: 180.f, height: 14.f),
-                ],
+            if (section.libs != null)
+              Padding(
+                padding: EdgeInsets.only(top: section.content.isNotEmpty ? 15.f : 0),
+                child: Column(
+                  children: section.libs!.map((lib) => _buildLibItem(context, lib.name, lib.desc)).toList(),
+                ),
               ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHeader(BuildContext context) {
-    return CommonText(
-      I18nKeys.architectureHeader.tr,
-      style: context.textTheme.bodyLarge?.copyWith(color: Colors.grey, height: 1.5),
-      useFittedBox: false,
-    );
-  }
-
-  Widget _buildCleanMVISection(BuildContext context) {
-    return _buildCard(
-      context,
-      title: I18nKeys.cleanMVITitle.tr,
-      icon: Icons.layers_outlined,
-      child: CommonText(
-        'The app follows Clean Architecture principles to separate concerns into Data, Domain, and Presentation layers. '
-        'On the Presentation layer, the MVI (Model-View-Intent) pattern ensures unidirectional data flow.',
-        style: context.textTheme.bodyMedium?.copyWith(height: 1.6),
-        useFittedBox: false,
-      ),
-    );
-  }
-
-  Widget _buildLibSection(BuildContext context) {
-    final libs = [
-      {'name': 'Riverpod', 'desc': 'State management & DI'},
-      {'name': 'Freezed', 'desc': 'Code generation for immutable states'},
-      {'name': 'Dio & Retrofit', 'desc': 'Type-safe networking'},
-      {'name': 'Fpdart', 'desc': 'Functional programming (Either/Option)'},
-    ];
-
-    return _buildCard(
-      context,
-      title: I18nKeys.coreLibrariesTitle.tr,
-      icon: Icons.library_books_outlined,
-      child: Column(children: libs.map((lib) => _buildLibItem(context, lib['name']!, lib['desc']!)).toList()),
-    );
-  }
-
-  Widget _buildSourceCodeSection(BuildContext context) {
-    return _buildCard(
-      context,
-      title: I18nKeys.openSourceTitle.tr,
-      icon: Icons.code_rounded,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CommonText(
-            I18nKeys.openSourceDesc.tr,
-            style: context.textTheme.bodyMedium?.copyWith(height: 1.6),
-            useFittedBox: false,
-          ),
-          SizedBox(height: 15.f),
-          CommonButton(
-            text: 'github.com/listen2code',
-            type: ButtonType.text,
-            isFullWidth: false,
-            padding: EdgeInsets.zero,
-            icon: Icons.link,
-            onPressed: () => _launchURL(context, AppConstants.github),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBackendSection(BuildContext context) {
-    return _buildCard(
-      context,
-      title: I18nKeys.backendDevOpsTitle.tr,
-      icon: Icons.cloud_done_outlined,
-      child: CommonText(
-        'The backend services are deployed on AWS using a serverless approach. Key services include Lambda, API Gateway, and DynamoDB.',
-        style: context.textTheme.bodyMedium?.copyWith(height: 1.6),
-        useFittedBox: false,
+            if (section.linkLabel != null && section.linkUrl != null)
+              Padding(
+                padding: EdgeInsets.only(top: 15.f),
+                child: CommonButton(
+                  text: section.linkLabel!,
+                  type: ButtonType.text,
+                  isFullWidth: false,
+                  padding: EdgeInsets.zero,
+                  icon: Icons.link,
+                  onPressed: () => _launchURL(context, section.linkUrl!),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -231,6 +152,51 @@ class ArchitectureWidget extends StatelessWidget {
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   TextSpan(text: desc),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSkeleton(BuildContext context) {
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(20.f),
+      physics: const NeverScrollableScrollPhysics(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CommonSkeleton.line(width: double.infinity, height: 16.f),
+          SizedBox(height: 8.f),
+          CommonSkeleton.line(width: 200.f, height: 16.f),
+          SizedBox(height: 30.f),
+          ...List.generate(
+            4,
+            (index) => Container(
+              margin: EdgeInsets.only(bottom: 25.f),
+              padding: EdgeInsets.all(20.f),
+              decoration: BoxDecoration(
+                color: context.theme.cardColor.withValues(alpha: 0.5),
+                borderRadius: BorderRadius.circular(20.f),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      CommonSkeleton.circle(size: 24.f),
+                      SizedBox(width: 12.f),
+                      CommonSkeleton.line(width: 150.f, height: 18.f),
+                    ],
+                  ),
+                  SizedBox(height: 20.f),
+                  CommonSkeleton.line(width: double.infinity, height: 14.f),
+                  SizedBox(height: 10.f),
+                  CommonSkeleton.line(width: double.infinity, height: 14.f),
+                  SizedBox(height: 10.f),
+                  CommonSkeleton.line(width: 180.f, height: 14.f),
                 ],
               ),
             ),
