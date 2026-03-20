@@ -20,7 +20,7 @@ class _AuthRemoteDataSource implements AuthRemoteDataSource {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<BaseResponseModel<LoginResponseModel>> login(
+  Future<BaseResponseModel<LoginModel>> login(
     LoginRequestModel? request,
   ) async {
     final _extra = <String, dynamic>{};
@@ -28,7 +28,7 @@ class _AuthRemoteDataSource implements AuthRemoteDataSource {
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     final _data = request;
-    final _options = _setStreamType<BaseResponseModel<LoginResponseModel>>(
+    final _options = _setStreamType<BaseResponseModel<LoginModel>>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -39,11 +39,11 @@ class _AuthRemoteDataSource implements AuthRemoteDataSource {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late BaseResponseModel<LoginResponseModel> _value;
+    late BaseResponseModel<LoginModel> _value;
     try {
-      _value = BaseResponseModel<LoginResponseModel>.fromJson(
+      _value = BaseResponseModel<LoginModel>.fromJson(
         _result.data!,
-        (json) => LoginResponseModel.fromJson(json as Map<String, dynamic>),
+        (json) => LoginModel.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
@@ -180,12 +180,12 @@ class _AuthRemoteDataSource implements AuthRemoteDataSource {
   }
 
   @override
-  Future<BaseResponseModel<UserResponseModel>> getUserById(String id) async {
+  Future<BaseResponseModel<UserModel>> getUserById(String id) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<BaseResponseModel<UserResponseModel>>(
+    final _options = _setStreamType<BaseResponseModel<UserModel>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -196,11 +196,11 @@ class _AuthRemoteDataSource implements AuthRemoteDataSource {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late BaseResponseModel<UserResponseModel> _value;
+    late BaseResponseModel<UserModel> _value;
     try {
-      _value = BaseResponseModel<UserResponseModel>.fromJson(
+      _value = BaseResponseModel<UserModel>.fromJson(
         _result.data!,
-        (json) => UserResponseModel.fromJson(json as Map<String, dynamic>),
+        (json) => UserModel.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
@@ -210,14 +210,14 @@ class _AuthRemoteDataSource implements AuthRemoteDataSource {
   }
 
   @override
-  Future<BaseResponseModel<LoginResponseModel>> refreshToken(
+  Future<BaseResponseModel<LoginModel>> refreshToken(
     String refreshToken,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = {'refreshToken': refreshToken};
-    final _options = _setStreamType<BaseResponseModel<LoginResponseModel>>(
+    final _options = _setStreamType<BaseResponseModel<LoginModel>>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -228,11 +228,11 @@ class _AuthRemoteDataSource implements AuthRemoteDataSource {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late BaseResponseModel<LoginResponseModel> _value;
+    late BaseResponseModel<LoginModel> _value;
     try {
-      _value = BaseResponseModel<LoginResponseModel>.fromJson(
+      _value = BaseResponseModel<LoginModel>.fromJson(
         _result.data!,
-        (json) => LoginResponseModel.fromJson(json as Map<String, dynamic>),
+        (json) => LoginModel.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);

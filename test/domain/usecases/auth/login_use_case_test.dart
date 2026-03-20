@@ -2,9 +2,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/get_current_user_request_model.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/login_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/login_request_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/login_response_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/user_response_model.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/repositories/auth_repository.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/usecases/login_use_case.dart';
 import 'package:mocktail/mocktail.dart';
@@ -26,9 +26,9 @@ void main() {
     const testPassword = 'password123';
     const testUserId = 'user_123';
 
-    final testUser = UserResponseModel(id: testUserId, name: 'Test UserModel', email: 'test@example.com');
+    final testUser = UserModel(id: testUserId, name: 'Test UserModel', email: 'test@example.com');
 
-    final testLoginResponse = LoginResponseModel(token: 'token_abc', userId: testUserId);
+    final testLoginResponse = LoginModel(token: 'token_abc', userId: testUserId);
 
     test('should return UserModel when login and getCurrentUser are successful', () async {
       // Arrange: Mock both login and subsequent profile fetch
@@ -53,7 +53,7 @@ void main() {
       );
 
       // Assert
-      expect(result, Right<Failure, UserResponseModel?>(testUser));
+      expect(result, Right<Failure, UserModel?>(testUser));
 
       // Verify the sequence of calls
       verify(
@@ -74,7 +74,7 @@ void main() {
       );
 
       // Assert
-      expect(result, const Left<Failure, UserResponseModel?>(ValidationFailure('Username cannot be empty')));
+      expect(result, const Left<Failure, UserModel?>(ValidationFailure('Username cannot be empty')));
       verifyNever(
         () => mockRepository.login(
           param: LoginRequestModel(
@@ -103,7 +103,7 @@ void main() {
       );
 
       // Assert
-      expect(result, const Left<Failure, UserResponseModel?>(serverFailure));
+      expect(result, const Left<Failure, UserModel?>(serverFailure));
       verify(
         () => mockRepository.login(
           param: LoginRequestModel(username: testUsername, password: testPassword),

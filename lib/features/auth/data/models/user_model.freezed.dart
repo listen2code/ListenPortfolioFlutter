@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'user_response_model.dart';
+part of 'user_model.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -13,22 +13,22 @@ part of 'user_response_model.dart';
 T _$identity<T>(T value) => value;
 
 /// @nodoc
-mixin _$UserResponseModel {
+mixin _$UserModel {
 
  String? get id; String? get name; String? get location; String? get email; String? get avatarUrl;
-/// Create a copy of UserResponseModel
+/// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$UserResponseModelCopyWith<UserResponseModel> get copyWith => _$UserResponseModelCopyWithImpl<UserResponseModel>(this as UserResponseModel, _$identity);
+$UserModelCopyWith<UserModel> get copyWith => _$UserModelCopyWithImpl<UserModel>(this as UserModel, _$identity);
 
-  /// Serializes this UserResponseModel to a JSON map.
+  /// Serializes this UserModel to a JSON map.
   Map<String, dynamic> toJson();
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserResponseModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.location, location) || other.location == location)&&(identical(other.email, email) || other.email == email)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.location, location) || other.location == location)&&(identical(other.email, email) || other.email == email)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -37,15 +37,15 @@ int get hashCode => Object.hash(runtimeType,id,name,location,email,avatarUrl);
 
 @override
 String toString() {
-  return 'UserResponseModel(id: $id, name: $name, location: $location, email: $email, avatarUrl: $avatarUrl)';
+  return 'UserModel(id: $id, name: $name, location: $location, email: $email, avatarUrl: $avatarUrl)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $UserResponseModelCopyWith<$Res>  {
-  factory $UserResponseModelCopyWith(UserResponseModel value, $Res Function(UserResponseModel) _then) = _$UserResponseModelCopyWithImpl;
+abstract mixin class $UserModelCopyWith<$Res>  {
+  factory $UserModelCopyWith(UserModel value, $Res Function(UserModel) _then) = _$UserModelCopyWithImpl;
 @useResult
 $Res call({
  String? id, String? name, String? location, String? email, String? avatarUrl
@@ -56,14 +56,14 @@ $Res call({
 
 }
 /// @nodoc
-class _$UserResponseModelCopyWithImpl<$Res>
-    implements $UserResponseModelCopyWith<$Res> {
-  _$UserResponseModelCopyWithImpl(this._self, this._then);
+class _$UserModelCopyWithImpl<$Res>
+    implements $UserModelCopyWith<$Res> {
+  _$UserModelCopyWithImpl(this._self, this._then);
 
-  final UserResponseModel _self;
-  final $Res Function(UserResponseModel) _then;
+  final UserModel _self;
+  final $Res Function(UserModel) _then;
 
-/// Create a copy of UserResponseModel
+/// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? name = freezed,Object? location = freezed,Object? email = freezed,Object? avatarUrl = freezed,}) {
   return _then(_self.copyWith(
@@ -79,8 +79,8 @@ as String?,
 }
 
 
-/// Adds pattern-matching-related methods to [UserResponseModel].
-extension UserResponseModelPatterns on UserResponseModel {
+/// Adds pattern-matching-related methods to [UserModel].
+extension UserModelPatterns on UserModel {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -93,10 +93,10 @@ extension UserResponseModelPatterns on UserResponseModel {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _UserResponseModel value)?  $default,{required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _UserModel value)?  $default,{required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _UserResponseModel() when $default != null:
+case _UserModel() when $default != null:
 return $default(_that);case _:
   return orElse();
 
@@ -115,10 +115,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _UserResponseModel value)  $default,){
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _UserModel value)  $default,){
 final _that = this;
 switch (_that) {
-case _UserResponseModel():
+case _UserModel():
 return $default(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -136,10 +136,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _UserResponseModel value)?  $default,){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _UserModel value)?  $default,){
 final _that = this;
 switch (_that) {
-case _UserResponseModel() when $default != null:
+case _UserModel() when $default != null:
 return $default(_that);case _:
   return null;
 
@@ -159,7 +159,7 @@ return $default(_that);case _:
 
 @optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? id,  String? name,  String? location,  String? email,  String? avatarUrl)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _UserResponseModel() when $default != null:
+case _UserModel() when $default != null:
 return $default(_that.id,_that.name,_that.location,_that.email,_that.avatarUrl);case _:
   return orElse();
 
@@ -180,7 +180,7 @@ return $default(_that.id,_that.name,_that.location,_that.email,_that.avatarUrl);
 
 @optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? id,  String? name,  String? location,  String? email,  String? avatarUrl)  $default,) {final _that = this;
 switch (_that) {
-case _UserResponseModel():
+case _UserModel():
 return $default(_that.id,_that.name,_that.location,_that.email,_that.avatarUrl);case _:
   throw StateError('Unexpected subclass');
 
@@ -200,7 +200,7 @@ return $default(_that.id,_that.name,_that.location,_that.email,_that.avatarUrl);
 
 @optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? id,  String? name,  String? location,  String? email,  String? avatarUrl)?  $default,) {final _that = this;
 switch (_that) {
-case _UserResponseModel() when $default != null:
+case _UserModel() when $default != null:
 return $default(_that.id,_that.name,_that.location,_that.email,_that.avatarUrl);case _:
   return null;
 
@@ -212,9 +212,9 @@ return $default(_that.id,_that.name,_that.location,_that.email,_that.avatarUrl);
 /// @nodoc
 @JsonSerializable()
 
-class _UserResponseModel implements UserResponseModel {
-  const _UserResponseModel({this.id, this.name, this.location, this.email, this.avatarUrl});
-  factory _UserResponseModel.fromJson(Map<String, dynamic> json) => _$UserResponseModelFromJson(json);
+class _UserModel implements UserModel {
+  const _UserModel({this.id, this.name, this.location, this.email, this.avatarUrl});
+  factory _UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
 
 @override final  String? id;
 @override final  String? name;
@@ -222,20 +222,20 @@ class _UserResponseModel implements UserResponseModel {
 @override final  String? email;
 @override final  String? avatarUrl;
 
-/// Create a copy of UserResponseModel
+/// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$UserResponseModelCopyWith<_UserResponseModel> get copyWith => __$UserResponseModelCopyWithImpl<_UserResponseModel>(this, _$identity);
+_$UserModelCopyWith<_UserModel> get copyWith => __$UserModelCopyWithImpl<_UserModel>(this, _$identity);
 
 @override
 Map<String, dynamic> toJson() {
-  return _$UserResponseModelToJson(this, );
+  return _$UserModelToJson(this, );
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserResponseModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.location, location) || other.location == location)&&(identical(other.email, email) || other.email == email)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.location, location) || other.location == location)&&(identical(other.email, email) || other.email == email)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -244,15 +244,15 @@ int get hashCode => Object.hash(runtimeType,id,name,location,email,avatarUrl);
 
 @override
 String toString() {
-  return 'UserResponseModel(id: $id, name: $name, location: $location, email: $email, avatarUrl: $avatarUrl)';
+  return 'UserModel(id: $id, name: $name, location: $location, email: $email, avatarUrl: $avatarUrl)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$UserResponseModelCopyWith<$Res> implements $UserResponseModelCopyWith<$Res> {
-  factory _$UserResponseModelCopyWith(_UserResponseModel value, $Res Function(_UserResponseModel) _then) = __$UserResponseModelCopyWithImpl;
+abstract mixin class _$UserModelCopyWith<$Res> implements $UserModelCopyWith<$Res> {
+  factory _$UserModelCopyWith(_UserModel value, $Res Function(_UserModel) _then) = __$UserModelCopyWithImpl;
 @override @useResult
 $Res call({
  String? id, String? name, String? location, String? email, String? avatarUrl
@@ -263,17 +263,17 @@ $Res call({
 
 }
 /// @nodoc
-class __$UserResponseModelCopyWithImpl<$Res>
-    implements _$UserResponseModelCopyWith<$Res> {
-  __$UserResponseModelCopyWithImpl(this._self, this._then);
+class __$UserModelCopyWithImpl<$Res>
+    implements _$UserModelCopyWith<$Res> {
+  __$UserModelCopyWithImpl(this._self, this._then);
 
-  final _UserResponseModel _self;
-  final $Res Function(_UserResponseModel) _then;
+  final _UserModel _self;
+  final $Res Function(_UserModel) _then;
 
-/// Create a copy of UserResponseModel
+/// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? name = freezed,Object? location = freezed,Object? email = freezed,Object? avatarUrl = freezed,}) {
-  return _then(_UserResponseModel(
+  return _then(_UserModel(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,location: freezed == location ? _self.location : location // ignore: cast_nullable_to_non_nullable

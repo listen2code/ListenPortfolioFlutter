@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:listen_portfolio_flutter/core/core.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/user_response_model.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 
 /// Local data source for authentication.
@@ -67,7 +67,7 @@ class AuthLocalDataSource {
   }
 
   /// Cache user data using SpUtil.
-  Future<void> cacheUser(UserResponseModel? user) async {
+  Future<void> cacheUser(UserModel? user) async {
     appLogger.d('AuthLocalDataSource: Starting to cache user data');
     try {
       final userJson = json.encode(user?.toJson());
@@ -80,12 +80,12 @@ class AuthLocalDataSource {
   }
 
   /// Get cached user data
-  Future<UserResponseModel?> getCachedUser() async {
+  Future<UserModel?> getCachedUser() async {
     appLogger.d('AuthLocalDataSource: Fetching user data from cache');
     try {
       final userJson = SpUtil.getString(AppConstants.userDataKey);
       if (userJson != null) {
-        final user = UserResponseModel.fromJson(json.decode(userJson));
+        final user = UserModel.fromJson(json.decode(userJson));
         appLogger.d('AuthLocalDataSource: UserModel retrieved from cache: ${user.id}');
         return user;
       }

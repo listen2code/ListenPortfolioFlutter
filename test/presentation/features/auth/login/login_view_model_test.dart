@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/login_request_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/user_response_model.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/usecases/login_use_case.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_intent.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_view_model.dart';
@@ -109,7 +109,7 @@ void main() {
 
     test('Intent: submitLogin success should navigate back', () async {
       final notifier = container.read(loginViewModelProvider.notifier);
-      final testUser = UserResponseModel(id: '1', name: 'Listen', email: 'test@test.com');
+      final testUser = UserModel(id: '1', name: 'Listen', email: 'test@test.com');
 
       when(() => mockUseCase.call()).thenAnswer((_) async => Right(testUser));
 

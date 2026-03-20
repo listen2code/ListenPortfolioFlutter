@@ -1,14 +1,14 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'login_response_model.dart';
+part of 'login_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_LoginResponseModel _$LoginResponseModelFromJson(Map json) =>
-    $checkedCreate('_LoginResponseModel', json, ($checkedConvert) {
-      final val = _LoginResponseModel(
+_LoginModel _$LoginModelFromJson(Map json) =>
+    $checkedCreate('_LoginModel', json, ($checkedConvert) {
+      final val = _LoginModel(
         userId: $checkedConvert('userId', (v) => v as String?),
         token: $checkedConvert('token', (v) => v as String?),
         refreshToken: $checkedConvert('refreshToken', (v) => v as String?),
@@ -16,7 +16,7 @@ _LoginResponseModel _$LoginResponseModelFromJson(Map json) =>
       return val;
     });
 
-Map<String, dynamic> _$LoginResponseModelToJson(_LoginResponseModel instance) =>
+Map<String, dynamic> _$LoginModelToJson(_LoginModel instance) =>
     <String, dynamic>{
       'userId': instance.userId,
       'token': instance.token,

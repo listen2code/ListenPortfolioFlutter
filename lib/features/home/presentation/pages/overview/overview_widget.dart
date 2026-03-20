@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/user_response_model.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
 import 'package:listen_portfolio_flutter/features/home/data/models/about_me_model.dart';
 import 'package:listen_portfolio_flutter/features/home/data/models/project_model.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_intent.dart';
@@ -22,7 +22,7 @@ class OverviewWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Get user data from AuthManager
-    UserResponseModel? userModel = authManager.state.user;
+    UserModel? userModel = authManager.state.user;
 
     return BaseRefreshPage<OverviewViewModel, OverviewState>(
       provider: overviewViewModelProvider,
@@ -134,7 +134,7 @@ class OverviewWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildWelcomeHeader(BuildContext context, UserResponseModel? userModel, OverviewState? state) {
+  Widget _buildWelcomeHeader(BuildContext context, UserModel? userModel, OverviewState? state) {
     final accentColor = context.accentColor;
     final String name = userModel?.name ?? AppConstants.author;
     final String jobTitle = state?.aboutMe?.jobTitle ?? "Full Stack Mobile Architect";
@@ -448,7 +448,7 @@ class OverviewWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildQuickActions(BuildContext context, UserResponseModel? userModel, OverviewState? state) {
+  Widget _buildQuickActions(BuildContext context, UserModel? userModel, OverviewState? state) {
     final accentColor = context.accentColor;
     return Column(
       children: [

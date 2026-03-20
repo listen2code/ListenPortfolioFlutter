@@ -4,8 +4,8 @@ import 'package:listen_portfolio_flutter/features/auth/data/datasources/auth_loc
 import 'package:listen_portfolio_flutter/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/get_current_user_request_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/login_request_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/login_response_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/user_response_model.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/login_model.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -31,7 +31,7 @@ void main() {
     );
 
     // Register fallback values for mocktail
-    registerFallbackValue(UserResponseModel(id: '', name: '', email: ''));
+    registerFallbackValue(UserModel(id: '', name: '', email: ''));
     registerFallbackValue(const LoginRequestModel(username: '', password: ''));
   });
 
@@ -41,9 +41,9 @@ void main() {
     const testUserId = 'user_123';
     const testToken = 'mock_token';
 
-    final testLoginResponse = BaseResponseModel<LoginResponseModel>(
+    final testLoginResponse = BaseResponseModel<LoginModel>(
       result: ApiResult.success, // Success status
-      body: const LoginResponseModel(userId: testUserId, token: testToken),
+      body: const LoginModel(userId: testUserId, token: testToken),
     );
 
     test('should cache token and return LoginResponseModel when successful', () async {
@@ -67,11 +67,8 @@ void main() {
 
   group('AuthRepositoryImpl - getCurrentUser', () {
     const testUserId = 'user_123';
-    final testUserModel = UserResponseModel(id: testUserId, name: 'Test', email: 'test@example.com');
-    final testApiResponse = BaseResponseModel<UserResponseModel>(
-      result: ApiResult.success,
-      body: testUserModel,
-    );
+    final testUserModel = UserModel(id: testUserId, name: 'Test', email: 'test@example.com');
+    final testApiResponse = BaseResponseModel<UserModel>(result: ApiResult.success, body: testUserModel);
 
     test('should return remote user and update cache when API call is successful', () async {
       // Arrange
@@ -124,7 +121,7 @@ void main() {
       when(() => mockRemoteDataSource.refreshToken(testOldRefreshToken)).thenAnswer(
         (_) async => BaseResponseModel(
           result: ApiResult.success,
-          body: const LoginResponseModel(token: testNewAccessToken, refreshToken: testNewRefreshToken),
+          body: const LoginModel(token: testNewAccessToken, refreshToken: testNewRefreshToken),
         ),
       );
       when(() => mockLocalDataSource.cacheAuthToken(any())).thenAnswer((_) async => {});

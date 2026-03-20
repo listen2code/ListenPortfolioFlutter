@@ -1,14 +1,14 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'user_response_model.dart';
+part of 'user_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_UserResponseModel _$UserResponseModelFromJson(Map json) =>
-    $checkedCreate('_UserResponseModel', json, ($checkedConvert) {
-      final val = _UserResponseModel(
+_UserModel _$UserModelFromJson(Map json) =>
+    $checkedCreate('_UserModel', json, ($checkedConvert) {
+      final val = _UserModel(
         id: $checkedConvert('id', (v) => v as String?),
         name: $checkedConvert('name', (v) => v as String?),
         location: $checkedConvert('location', (v) => v as String?),
@@ -18,7 +18,7 @@ _UserResponseModel _$UserResponseModelFromJson(Map json) =>
       return val;
     });
 
-Map<String, dynamic> _$UserResponseModelToJson(_UserResponseModel instance) =>
+Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,

@@ -6,9 +6,9 @@ import 'package:listen_portfolio_flutter/features/auth/data/models/change_passwo
 import 'package:listen_portfolio_flutter/features/auth/data/models/forgot_password_request_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/get_current_user_request_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/login_request_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/login_response_model.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/login_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/signup_request_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/user_response_model.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/repositories/auth_repository.dart';
 
 class AuthRepositoryImpl with BaseRepository implements AuthRepository {
@@ -18,8 +18,8 @@ class AuthRepositoryImpl with BaseRepository implements AuthRepository {
   AuthRepositoryImpl({required this.remoteDataSource, required this.localDataSource});
 
   @override
-  Future<Either<Failure, LoginResponseModel?>> login({required LoginRequestModel? param}) async {
-    return await safeCall<LoginResponseModel>(
+  Future<Either<Failure, LoginModel?>> login({required LoginRequestModel? param}) async {
+    return await safeCall<LoginModel>(
       call: () => remoteDataSource.login(param),
       saveCache: (response) async {
         if (response.token != null) {
@@ -55,10 +55,8 @@ class AuthRepositoryImpl with BaseRepository implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, UserResponseModel?>> getCurrentUser({
-    required GetCurrentUserRequestModel? param,
-  }) async {
-    return await safeCall<UserResponseModel>(
+  Future<Either<Failure, UserModel?>> getCurrentUser({required GetCurrentUserRequestModel? param}) async {
+    return await safeCall<UserModel>(
       call: () => remoteDataSource.getUserById(param?.userId ?? ""),
       saveCache: (user) => localDataSource.cacheUser(user),
       getCached: () => localDataSource.getCachedUser(),
@@ -74,7 +72,7 @@ class AuthRepositoryImpl with BaseRepository implements AuthRepository {
     }
 
     // 2. Request new credentials and persist them using the unified safeCall pipeline
-    final result = await safeCall<LoginResponseModel>(
+    final result = await safeCall<LoginModel>(
       call: () => remoteDataSource.refreshToken(storedRefreshToken),
       saveCache: (response) async {
         if (response.token != null) {
