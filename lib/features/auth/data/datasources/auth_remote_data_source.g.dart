@@ -21,10 +21,11 @@ class _AuthRemoteDataSource implements AuthRemoteDataSource {
 
   @override
   Future<BaseResponseModel<LoginResponseModel>> login(
-    LoginRequestModel request,
+    LoginRequestModel? request,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     final _data = request;
     final _options = _setStreamType<BaseResponseModel<LoginResponseModel>>(
@@ -52,9 +53,10 @@ class _AuthRemoteDataSource implements AuthRemoteDataSource {
   }
 
   @override
-  Future<BaseResponseModel<void>> signUp(SignupRequestModel request) async {
+  Future<BaseResponseModel<void>> signUp(SignupRequestModel? request) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     final _data = request;
     final _options = _setStreamType<BaseResponseModel<void>>(
@@ -113,10 +115,11 @@ class _AuthRemoteDataSource implements AuthRemoteDataSource {
 
   @override
   Future<BaseResponseModel<void>> forgotPassword(
-    ForgotPasswordRequestModel request,
+    ForgotPasswordRequestModel? request,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     final _data = request;
     final _options = _setStreamType<BaseResponseModel<void>>(
@@ -145,10 +148,11 @@ class _AuthRemoteDataSource implements AuthRemoteDataSource {
 
   @override
   Future<BaseResponseModel<void>> changePassword(
-    ChangePasswordRequestModel request,
+    ChangePasswordRequestModel? request,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     final _data = request;
     final _options = _setStreamType<BaseResponseModel<void>>(

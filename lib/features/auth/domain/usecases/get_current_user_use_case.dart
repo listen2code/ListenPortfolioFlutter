@@ -11,7 +11,7 @@ class GetCurrentUserUseCase implements UseCase<UserResponseModel?, GetCurrentUse
   GetCurrentUserUseCase(this.repository);
 
   @override
-  Future<Either<Failure, UserResponseModel?>> call(GetCurrentUserRequestModel param) async {
+  Future<Either<Failure, UserResponseModel?>> call({GetCurrentUserRequestModel? param}) async {
     return await repository.getCurrentUser(param: param);
   }
 }

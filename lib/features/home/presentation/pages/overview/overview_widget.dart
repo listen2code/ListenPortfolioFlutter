@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/user_response_model.dart';
+import 'package:listen_portfolio_flutter/features/home/data/models/about_me_model.dart';
 import 'package:listen_portfolio_flutter/features/home/data/models/project_model.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_intent.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_state.dart';
@@ -40,15 +41,15 @@ class OverviewWidget extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildWelcomeHeader(context, userModel),
+                  _buildWelcomeHeader(context, userModel, state),
                   SizedBox(height: 16.f),
-                  _buildStatusTag(context, userModel),
+                  _buildStatusTag(context, state),
                   SizedBox(height: 24.f),
-                  _buildExperienceGrid(context, userModel),
+                  _buildExperienceGrid(context, state),
                   SizedBox(height: 28.f),
                   _buildSectionHeader(context, I18nKeys.quickActions.tr, showSeeAll: false, onPressed: () {}),
                   SizedBox(height: 12.f),
-                  _buildQuickActions(context, userModel),
+                  _buildQuickActions(context, userModel, state),
                   SizedBox(height: 28.f),
                   _buildSectionHeader(
                     context,
@@ -133,12 +134,12 @@ class OverviewWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildWelcomeHeader(BuildContext context, UserResponseModel? userModel) {
+  Widget _buildWelcomeHeader(BuildContext context, UserResponseModel? userModel, OverviewState? state) {
     final accentColor = context.accentColor;
     final String name = userModel?.name ?? AppConstants.author;
-    final String jobTitle = userModel?.jobTitle ?? "Full Stack Mobile Architect";
-    final String graduationYear = userModel?.graduationYear ?? "2013";
-    final String major = userModel?.major?.tr ?? I18nKeys.softwareEngineering.tr;
+    final String jobTitle = state?.aboutMe?.jobTitle ?? "Full Stack Mobile Architect";
+    final String graduationYear = state?.aboutMe?.graduationYear ?? "2013";
+    final String major = state?.aboutMe?.major?.tr ?? I18nKeys.softwareEngineering.tr;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -173,9 +174,9 @@ class OverviewWidget extends StatelessWidget {
         ),
         SizedBox(height: 8.f),
         // Certifications section
-        if (userModel?.certifications != null || userModel == null)
+        if (state?.aboutMe?.certifications != null || userModel == null)
           Row(
-            children: (userModel?.certifications ?? [I18nKeys.jlptN1, I18nKeys.bjtJ2])
+            children: (state?.aboutMe?.certifications ?? [I18nKeys.jlptN1, I18nKeys.bjtJ2])
                 .map(
                   (certKey) => Padding(
                     padding: EdgeInsets.only(right: 8.f),
@@ -206,9 +207,9 @@ class OverviewWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusTag(BuildContext context, UserResponseModel? userModel) {
+  Widget _buildStatusTag(BuildContext context, OverviewState? state) {
     return CommonBadge(
-      text: userModel?.status?.tr ?? I18nKeys.availableStatus.tr,
+      text: state?.aboutMe?.status?.tr ?? I18nKeys.availableStatus.tr,
       icon: Icons.circle,
       iconSize: 6.f,
       color: Colors.green.withValues(alpha: 0.1),
@@ -220,25 +221,25 @@ class OverviewWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildExperienceGrid(BuildContext context, UserResponseModel? userModel) {
+  Widget _buildExperienceGrid(BuildContext context, OverviewState? state) {
     // If not logged in, we provide default experience data based on user.json logic
-    final List<ExperienceModel> experiences =
-        userModel?.experiences ??
+    final List<AboutMeStatModel> stats =
+        state?.aboutMe?.stats ??
         const [
-          ExperienceModel(
+          AboutMeStatModel(
             id: 'android',
             year: '10',
             label: I18nKeys.androidExp,
             tags: [I18nKeys.archDesign, I18nKeys.perfOptimization],
           ),
-          ExperienceModel(id: 'flutter', year: '2', label: I18nKeys.flutterExp),
-          ExperienceModel(id: 'java_web', year: '1', label: I18nKeys.javaWeb),
+          AboutMeStatModel(id: 'flutter', year: '2', label: I18nKeys.flutterExp),
+          AboutMeStatModel(id: 'java_web', year: '1', label: I18nKeys.javaWeb),
         ];
 
-    if (experiences.isEmpty) return const SizedBox.shrink();
+    if (stats.isEmpty) return const SizedBox.shrink();
 
-    final mainExp = experiences.first;
-    final otherExps = experiences.skip(1).toList();
+    final mainExp = stats.first;
+    final otherExps = stats.skip(1).toList();
 
     return Column(
       children: [
@@ -447,7 +448,7 @@ class OverviewWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildQuickActions(BuildContext context, UserResponseModel? userModel) {
+  Widget _buildQuickActions(BuildContext context, UserResponseModel? userModel, OverviewState? state) {
     final accentColor = context.accentColor;
     return Column(
       children: [
@@ -485,7 +486,7 @@ class OverviewWidget extends StatelessWidget {
               I18nKeys.github.tr,
               Icons.code_rounded,
               Colors.grey,
-              () => _launchURL(userModel?.github ?? AppConstants.github),
+              () => _launchURL(state?.aboutMe?.github ?? AppConstants.github),
             ),
             SizedBox(width: 12.f),
             _buildActionButton(

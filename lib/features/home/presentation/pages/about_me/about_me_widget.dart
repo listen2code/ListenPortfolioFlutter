@@ -181,7 +181,7 @@ class AboutMeWidget extends StatelessWidget {
             style: context.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
           ),
           CommonText(
-            authManager.state.user?.jobTitle ?? 'Full Stack Mobile Architect',
+            state.data?.jobTitle ?? 'Full Stack Mobile Architect',
             style: TextStyle(color: accentColor, fontSize: 16.f),
           ),
           SizedBox(height: 8.f),

@@ -30,7 +30,7 @@ class ProjectsViewModel extends _$ProjectsViewModel with ViewModelMixin<Projects
 
   Future<void> _onRefresh() async {
     await call(
-      ref.execute(getProjectsUseCaseProvider, NoParams()),
+      ref.execute(getProjectsUseCaseProvider),
       showLoading: true,
       loadingType: LoadingType.page,
       onSuccess: (projects) {

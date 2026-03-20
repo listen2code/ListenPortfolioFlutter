@@ -6,13 +6,29 @@ part 'about_me_model.g.dart';
 @freezed
 abstract class AboutMeModel with _$AboutMeModel {
   const factory AboutMeModel({
+    String? status,
+    String? jobTitle,
     String? bio,
+    String? graduationYear,
+    String? major,
+    String? github,
+    @Default([]) List<String> certifications,
+    @Default([]) List<AboutMeStatModel> stats,
     @Default([]) List<ExperienceItemModel> experiences,
     @Default([]) List<EducationItemModel> education,
     @Default([]) List<SkillCategoryModel> skills,
+    @Default([]) List<LanguageItemModel> languages,
   }) = _AboutMeModel;
 
   factory AboutMeModel.fromJson(Map<String, Object?> json) => _$AboutMeModelFromJson(json);
+}
+
+@freezed
+abstract class AboutMeStatModel with _$AboutMeStatModel {
+  const factory AboutMeStatModel({String? id, String? year, String? label, @Default([]) List<String> tags}) =
+      _AboutMeStatModel;
+
+  factory AboutMeStatModel.fromJson(Map<String, Object?> json) => _$AboutMeStatModelFromJson(json);
 }
 
 @freezed
@@ -36,4 +52,11 @@ abstract class SkillCategoryModel with _$SkillCategoryModel {
   const factory SkillCategoryModel({String? category, @Default([]) List<String> items}) = _SkillCategoryModel;
 
   factory SkillCategoryModel.fromJson(Map<String, Object?> json) => _$SkillCategoryModelFromJson(json);
+}
+
+@freezed
+abstract class LanguageItemModel with _$LanguageItemModel {
+  const factory LanguageItemModel({String? name, String? level}) = _LanguageItemModel;
+
+  factory LanguageItemModel.fromJson(Map<String, Object?> json) => _$LanguageItemModelFromJson(json);
 }

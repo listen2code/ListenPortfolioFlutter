@@ -11,7 +11,7 @@ class ForgotPasswordUseCase implements UseCase<void, ForgotPasswordRequestModel>
   ForgotPasswordUseCase(this.repository);
 
   @override
-  Future<Either<Failure, void>> call(ForgotPasswordRequestModel param) async {
+  Future<Either<Failure, void>> call({ForgotPasswordRequestModel? param}) async {
     // Basic validations are handled at Level 1 (ViewModel).
     // This UseCase handles the domain logic execution.
     return await repository.forgotPassword(param: param);

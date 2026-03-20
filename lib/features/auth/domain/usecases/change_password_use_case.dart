@@ -10,9 +10,9 @@ class ChangePasswordUseCase implements UseCase<void, ChangePasswordRequestModel>
   ChangePasswordUseCase(this.repository);
 
   @override
-  Future<Either<Failure, void>> call(ChangePasswordRequestModel param) async {
+  Future<Either<Failure, void>> call({ChangePasswordRequestModel? param}) async {
     // Level 2 Validation: Business logic validation
-    if (param.newPassword == param.oldPassword) {
+    if (param?.newPassword == param?.oldPassword) {
       return const Left(ValidationFailure('New password cannot be the same as the old one'));
     }
 

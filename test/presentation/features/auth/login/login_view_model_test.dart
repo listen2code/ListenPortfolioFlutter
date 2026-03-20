@@ -111,7 +111,7 @@ void main() {
       final notifier = container.read(loginViewModelProvider.notifier);
       final testUser = UserResponseModel(id: '1', name: 'Listen', email: 'test@test.com');
 
-      when(() => mockUseCase.call(any())).thenAnswer((_) async => Right(testUser));
+      when(() => mockUseCase.call()).thenAnswer((_) async => Right(testUser));
 
       await notifier.handleIntent(const LoginIntent.usernameChanged('validUser'));
       await notifier.handleIntent(const LoginIntent.passwordChanged('validPassword123'));

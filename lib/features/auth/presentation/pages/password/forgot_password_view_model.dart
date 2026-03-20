@@ -40,7 +40,7 @@ class ForgotPasswordViewModel extends _$ForgotPasswordViewModel
 
     // 2. Real Reset Link Request via UseCase
     await call<void>(
-      ref.execute(forgotPasswordUseCaseProvider, ForgotPasswordRequestModel(email: state.email)),
+      ref.execute(forgotPasswordUseCaseProvider, param: ForgotPasswordRequestModel(email: state.email)),
       showLoading: true,
       onSuccess: (_) {
         // Show success message and go back to login

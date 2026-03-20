@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_portfolio_flutter/features/home/presentation/provider/about_me_provider.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/provider/projects_provider.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -29,13 +30,13 @@ class OverviewViewModel extends _$OverviewViewModel with ViewModelMixin<Overview
   }
 
   Future<void> _onRefresh() async {
-    await call(
-      ref.execute(getProjectsUseCaseProvider, const NoParams()),
+    await callAll(
+      [ref.execute(getProjectsUseCaseProvider), ref.execute(getAboutMeUseCaseProvider)],
       showLoading: true,
       loadingType: LoadingType.page,
-      onSuccess: (projects) {
-        final featured = projects.take(2).toList();
-        updateState(state.copyWith(featuredProjects: featured, isInitialLoaded: true));
+      onSuccess: (results) {
+        final projects = results[0].take(2).toList();
+        updateState(state.copyWith(featuredProjects: projects, aboutMe: results[1], isInitialLoaded: true));
       },
     );
   }

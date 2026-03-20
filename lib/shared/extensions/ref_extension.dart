@@ -13,13 +13,13 @@ extension UseCaseRefX on Ref {
   /// ```dart
   /// final result = await ref.execute(loginUseCaseProvider, params);
   /// ```
-  Future<Either<Failure, T>> execute<T, P>(dynamic provider, P params) async {
+  Future<Either<Failure, T>> execute<T, P>(dynamic provider, {P? param}) async {
     // In Riverpod, async providers (FutureProvider, AsyncNotifierProvider, etc.)
     // expose a .future property which is a ProviderListenable.
     // By using dynamic, we can hide this implementation detail from the caller.
     final uc = await read(provider.future as ProviderListenable<Future<UseCase<T, P>>>);
 
     // Execute the business logic encapsulated in the UseCase.
-    return uc.call(params);
+    return uc.call(param: param);
   }
 }

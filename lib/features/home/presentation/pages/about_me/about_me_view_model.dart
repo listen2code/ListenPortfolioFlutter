@@ -45,7 +45,7 @@ class AboutMeViewModel extends _$AboutMeViewModel with ViewModelMixin<AboutMeSta
 
   Future<void> _onRefresh() async {
     await call(
-      ref.execute(getAboutMeUseCaseProvider, const NoParams()),
+      ref.execute(getAboutMeUseCaseProvider),
       showLoading: true,
       loadingType: LoadingType.page,
       onSuccess: (aboutMe) {

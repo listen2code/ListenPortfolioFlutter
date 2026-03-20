@@ -78,7 +78,7 @@ class LoginViewModel extends _$LoginViewModel with ViewModelMixin<LoginState, Lo
     await call<UserResponseModel?>(
       ref.execute(
         loginUseCaseProvider,
-        LoginRequestModel(username: state.username, password: state.password),
+        param: LoginRequestModel(username: state.username, password: state.password),
       ),
       showLoading: true,
       onSuccess: (user) async {

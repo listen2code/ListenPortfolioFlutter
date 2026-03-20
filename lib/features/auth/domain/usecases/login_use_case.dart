@@ -13,7 +13,7 @@ class LoginUseCase implements UseCase<UserResponseModel?, LoginRequestModel> {
   LoginUseCase(this.repository);
 
   @override
-  Future<Either<Failure, UserResponseModel?>> call(LoginRequestModel param) async {
+  Future<Either<Failure, UserResponseModel?>> call({LoginRequestModel? param}) async {
     // 1. Perform Login (Authentication)
     final loginResult = await repository.login(param: param);
 

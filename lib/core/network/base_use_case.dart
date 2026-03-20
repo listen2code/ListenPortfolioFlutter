@@ -6,11 +6,11 @@ import '../core.dart';
 /// Use cases encapsulate business logic and are the entry point to the domain layer
 /// T: The return type of the use case
 /// Params: The parameters required by the use case
-abstract class UseCase<T, Params> {
-  Future<Either<Failure, T>> call(Params params);
+abstract class UseCase<T, P> {
+  Future<Either<Failure, T>> call({P? param});
 }
 
 /// Used for use cases that don't require any parameters
-class NoParams {
-  const NoParams();
+class BaseParam {
+  const BaseParam();
 }

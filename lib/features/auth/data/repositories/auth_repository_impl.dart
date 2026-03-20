@@ -18,7 +18,7 @@ class AuthRepositoryImpl with BaseRepository implements AuthRepository {
   AuthRepositoryImpl({required this.remoteDataSource, required this.localDataSource});
 
   @override
-  Future<Either<Failure, LoginResponseModel?>> login({required LoginRequestModel param}) async {
+  Future<Either<Failure, LoginResponseModel?>> login({required LoginRequestModel? param}) async {
     return await safeCall<LoginResponseModel>(
       call: () => remoteDataSource.login(param),
       saveCache: (response) async {
@@ -30,7 +30,7 @@ class AuthRepositoryImpl with BaseRepository implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, void>> signUp({required SignupRequestModel param}) async {
+  Future<Either<Failure, void>> signUp({required SignupRequestModel? param}) async {
     return await safeCall<void>(call: () => remoteDataSource.signUp(param));
   }
 
@@ -45,21 +45,21 @@ class AuthRepositoryImpl with BaseRepository implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, void>> forgotPassword({required ForgotPasswordRequestModel param}) async {
+  Future<Either<Failure, void>> forgotPassword({required ForgotPasswordRequestModel? param}) async {
     return await safeCall<void>(call: () => remoteDataSource.forgotPassword(param));
   }
 
   @override
-  Future<Either<Failure, void>> changePassword({required ChangePasswordRequestModel param}) async {
+  Future<Either<Failure, void>> changePassword({required ChangePasswordRequestModel? param}) async {
     return await safeCall<void>(call: () => remoteDataSource.changePassword(param));
   }
 
   @override
   Future<Either<Failure, UserResponseModel?>> getCurrentUser({
-    required GetCurrentUserRequestModel param,
+    required GetCurrentUserRequestModel? param,
   }) async {
     return await safeCall<UserResponseModel>(
-      call: () => remoteDataSource.getUserById(param.userId),
+      call: () => remoteDataSource.getUserById(param?.userId ?? ""),
       saveCache: (user) => localDataSource.cacheUser(user),
       getCached: () => localDataSource.getCachedUser(),
     );

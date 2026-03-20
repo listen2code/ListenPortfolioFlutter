@@ -41,7 +41,7 @@ final class OverviewViewModelProvider
   }
 }
 
-String _$overviewViewModelHash() => r'e3b3a1ebc05f983442767365ca69818b3d64aecb';
+String _$overviewViewModelHash() => r'cea826b11374bcc96b62c9d44288a56166d6aaf4';
 
 abstract class _$OverviewViewModel extends $Notifier<OverviewState> {
   OverviewState build();

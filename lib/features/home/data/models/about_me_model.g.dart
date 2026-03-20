@@ -11,7 +11,29 @@ _AboutMeModel _$AboutMeModelFromJson(Map json) => $checkedCreate(
   json,
   ($checkedConvert) {
     final val = _AboutMeModel(
+      status: $checkedConvert('status', (v) => v as String?),
+      jobTitle: $checkedConvert('jobTitle', (v) => v as String?),
       bio: $checkedConvert('bio', (v) => v as String?),
+      graduationYear: $checkedConvert('graduationYear', (v) => v as String?),
+      major: $checkedConvert('major', (v) => v as String?),
+      github: $checkedConvert('github', (v) => v as String?),
+      certifications: $checkedConvert(
+        'certifications',
+        (v) =>
+            (v as List<dynamic>?)?.map((e) => e as String).toList() ?? const [],
+      ),
+      stats: $checkedConvert(
+        'stats',
+        (v) =>
+            (v as List<dynamic>?)
+                ?.map(
+                  (e) => AboutMeStatModel.fromJson(
+                    Map<String, Object?>.from(e as Map),
+                  ),
+                )
+                .toList() ??
+            const [],
+      ),
       experiences: $checkedConvert(
         'experiences',
         (v) =>
@@ -48,6 +70,18 @@ _AboutMeModel _$AboutMeModelFromJson(Map json) => $checkedCreate(
                 .toList() ??
             const [],
       ),
+      languages: $checkedConvert(
+        'languages',
+        (v) =>
+            (v as List<dynamic>?)
+                ?.map(
+                  (e) => LanguageItemModel.fromJson(
+                    Map<String, Object?>.from(e as Map),
+                  ),
+                )
+                .toList() ??
+            const [],
+      ),
     );
     return val;
   },
@@ -55,10 +89,44 @@ _AboutMeModel _$AboutMeModelFromJson(Map json) => $checkedCreate(
 
 Map<String, dynamic> _$AboutMeModelToJson(_AboutMeModel instance) =>
     <String, dynamic>{
+      'status': instance.status,
+      'jobTitle': instance.jobTitle,
       'bio': instance.bio,
+      'graduationYear': instance.graduationYear,
+      'major': instance.major,
+      'github': instance.github,
+      'certifications': instance.certifications,
+      'stats': instance.stats.map((e) => e.toJson()).toList(),
       'experiences': instance.experiences.map((e) => e.toJson()).toList(),
       'education': instance.education.map((e) => e.toJson()).toList(),
       'skills': instance.skills.map((e) => e.toJson()).toList(),
+      'languages': instance.languages.map((e) => e.toJson()).toList(),
+    };
+
+_AboutMeStatModel _$AboutMeStatModelFromJson(Map json) => $checkedCreate(
+  '_AboutMeStatModel',
+  json,
+  ($checkedConvert) {
+    final val = _AboutMeStatModel(
+      id: $checkedConvert('id', (v) => v as String?),
+      year: $checkedConvert('year', (v) => v as String?),
+      label: $checkedConvert('label', (v) => v as String?),
+      tags: $checkedConvert(
+        'tags',
+        (v) =>
+            (v as List<dynamic>?)?.map((e) => e as String).toList() ?? const [],
+      ),
+    );
+    return val;
+  },
+);
+
+Map<String, dynamic> _$AboutMeStatModelToJson(_AboutMeStatModel instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'year': instance.year,
+      'label': instance.label,
+      'tags': instance.tags,
     };
 
 _ExperienceItemModel _$ExperienceItemModelFromJson(Map json) =>
@@ -118,3 +186,15 @@ _SkillCategoryModel _$SkillCategoryModelFromJson(Map json) => $checkedCreate(
 
 Map<String, dynamic> _$SkillCategoryModelToJson(_SkillCategoryModel instance) =>
     <String, dynamic>{'category': instance.category, 'items': instance.items};
+
+_LanguageItemModel _$LanguageItemModelFromJson(Map json) =>
+    $checkedCreate('_LanguageItemModel', json, ($checkedConvert) {
+      final val = _LanguageItemModel(
+        name: $checkedConvert('name', (v) => v as String?),
+        level: $checkedConvert('level', (v) => v as String?),
+      );
+      return val;
+    });
+
+Map<String, dynamic> _$LanguageItemModelToJson(_LanguageItemModel instance) =>
+    <String, dynamic>{'name': instance.name, 'level': instance.level};

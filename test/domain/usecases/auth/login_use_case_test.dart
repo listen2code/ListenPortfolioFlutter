@@ -48,7 +48,9 @@ void main() {
       ).thenAnswer((_) async => Right(testUser));
 
       // Act
-      final result = await useCase(LoginRequestModel(username: testUsername, password: testPassword));
+      final result = await useCase(
+        param: LoginRequestModel(username: testUsername, password: testPassword),
+      );
 
       // Assert
       expect(result, Right<Failure, UserResponseModel?>(testUser));
@@ -67,7 +69,9 @@ void main() {
 
     test('should return ValidationFailure when username is empty', () async {
       // Act
-      final result = await useCase(LoginRequestModel(username: '', password: testPassword));
+      final result = await useCase(
+        param: LoginRequestModel(username: '', password: testPassword),
+      );
 
       // Assert
       expect(result, const Left<Failure, UserResponseModel?>(ValidationFailure('Username cannot be empty')));
@@ -94,7 +98,9 @@ void main() {
       ).thenAnswer((_) async => const Left(serverFailure));
 
       // Act
-      final result = await useCase(LoginRequestModel(username: testUsername, password: testPassword));
+      final result = await useCase(
+        param: LoginRequestModel(username: testUsername, password: testPassword),
+      );
 
       // Assert
       expect(result, const Left<Failure, UserResponseModel?>(serverFailure));

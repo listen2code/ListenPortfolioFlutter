@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AboutMeModel {
 
- String? get bio; List<ExperienceItemModel> get experiences; List<EducationItemModel> get education; List<SkillCategoryModel> get skills;
+ String? get status; String? get jobTitle; String? get bio; String? get graduationYear; String? get major; String? get github; List<String> get certifications; List<AboutMeStatModel> get stats; List<ExperienceItemModel> get experiences; List<EducationItemModel> get education; List<SkillCategoryModel> get skills; List<LanguageItemModel> get languages;
 /// Create a copy of AboutMeModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $AboutMeModelCopyWith<AboutMeModel> get copyWith => _$AboutMeModelCopyWithImpl<A
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AboutMeModel&&(identical(other.bio, bio) || other.bio == bio)&&const DeepCollectionEquality().equals(other.experiences, experiences)&&const DeepCollectionEquality().equals(other.education, education)&&const DeepCollectionEquality().equals(other.skills, skills));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AboutMeModel&&(identical(other.status, status) || other.status == status)&&(identical(other.jobTitle, jobTitle) || other.jobTitle == jobTitle)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.graduationYear, graduationYear) || other.graduationYear == graduationYear)&&(identical(other.major, major) || other.major == major)&&(identical(other.github, github) || other.github == github)&&const DeepCollectionEquality().equals(other.certifications, certifications)&&const DeepCollectionEquality().equals(other.stats, stats)&&const DeepCollectionEquality().equals(other.experiences, experiences)&&const DeepCollectionEquality().equals(other.education, education)&&const DeepCollectionEquality().equals(other.skills, skills)&&const DeepCollectionEquality().equals(other.languages, languages));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,bio,const DeepCollectionEquality().hash(experiences),const DeepCollectionEquality().hash(education),const DeepCollectionEquality().hash(skills));
+int get hashCode => Object.hash(runtimeType,status,jobTitle,bio,graduationYear,major,github,const DeepCollectionEquality().hash(certifications),const DeepCollectionEquality().hash(stats),const DeepCollectionEquality().hash(experiences),const DeepCollectionEquality().hash(education),const DeepCollectionEquality().hash(skills),const DeepCollectionEquality().hash(languages));
 
 @override
 String toString() {
-  return 'AboutMeModel(bio: $bio, experiences: $experiences, education: $education, skills: $skills)';
+  return 'AboutMeModel(status: $status, jobTitle: $jobTitle, bio: $bio, graduationYear: $graduationYear, major: $major, github: $github, certifications: $certifications, stats: $stats, experiences: $experiences, education: $education, skills: $skills, languages: $languages)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $AboutMeModelCopyWith<$Res>  {
   factory $AboutMeModelCopyWith(AboutMeModel value, $Res Function(AboutMeModel) _then) = _$AboutMeModelCopyWithImpl;
 @useResult
 $Res call({
- String? bio, List<ExperienceItemModel> experiences, List<EducationItemModel> education, List<SkillCategoryModel> skills
+ String? status, String? jobTitle, String? bio, String? graduationYear, String? major, String? github, List<String> certifications, List<AboutMeStatModel> stats, List<ExperienceItemModel> experiences, List<EducationItemModel> education, List<SkillCategoryModel> skills, List<LanguageItemModel> languages
 });
 
 
@@ -65,13 +65,21 @@ class _$AboutMeModelCopyWithImpl<$Res>
 
 /// Create a copy of AboutMeModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? bio = freezed,Object? experiences = null,Object? education = null,Object? skills = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? status = freezed,Object? jobTitle = freezed,Object? bio = freezed,Object? graduationYear = freezed,Object? major = freezed,Object? github = freezed,Object? certifications = null,Object? stats = null,Object? experiences = null,Object? education = null,Object? skills = null,Object? languages = null,}) {
   return _then(_self.copyWith(
-bio: freezed == bio ? _self.bio : bio // ignore: cast_nullable_to_non_nullable
-as String?,experiences: null == experiences ? _self.experiences : experiences // ignore: cast_nullable_to_non_nullable
+status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as String?,jobTitle: freezed == jobTitle ? _self.jobTitle : jobTitle // ignore: cast_nullable_to_non_nullable
+as String?,bio: freezed == bio ? _self.bio : bio // ignore: cast_nullable_to_non_nullable
+as String?,graduationYear: freezed == graduationYear ? _self.graduationYear : graduationYear // ignore: cast_nullable_to_non_nullable
+as String?,major: freezed == major ? _self.major : major // ignore: cast_nullable_to_non_nullable
+as String?,github: freezed == github ? _self.github : github // ignore: cast_nullable_to_non_nullable
+as String?,certifications: null == certifications ? _self.certifications : certifications // ignore: cast_nullable_to_non_nullable
+as List<String>,stats: null == stats ? _self.stats : stats // ignore: cast_nullable_to_non_nullable
+as List<AboutMeStatModel>,experiences: null == experiences ? _self.experiences : experiences // ignore: cast_nullable_to_non_nullable
 as List<ExperienceItemModel>,education: null == education ? _self.education : education // ignore: cast_nullable_to_non_nullable
 as List<EducationItemModel>,skills: null == skills ? _self.skills : skills // ignore: cast_nullable_to_non_nullable
-as List<SkillCategoryModel>,
+as List<SkillCategoryModel>,languages: null == languages ? _self.languages : languages // ignore: cast_nullable_to_non_nullable
+as List<LanguageItemModel>,
   ));
 }
 
@@ -156,10 +164,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? bio,  List<ExperienceItemModel> experiences,  List<EducationItemModel> education,  List<SkillCategoryModel> skills)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? status,  String? jobTitle,  String? bio,  String? graduationYear,  String? major,  String? github,  List<String> certifications,  List<AboutMeStatModel> stats,  List<ExperienceItemModel> experiences,  List<EducationItemModel> education,  List<SkillCategoryModel> skills,  List<LanguageItemModel> languages)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AboutMeModel() when $default != null:
-return $default(_that.bio,_that.experiences,_that.education,_that.skills);case _:
+return $default(_that.status,_that.jobTitle,_that.bio,_that.graduationYear,_that.major,_that.github,_that.certifications,_that.stats,_that.experiences,_that.education,_that.skills,_that.languages);case _:
   return orElse();
 
 }
@@ -177,10 +185,10 @@ return $default(_that.bio,_that.experiences,_that.education,_that.skills);case _
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? bio,  List<ExperienceItemModel> experiences,  List<EducationItemModel> education,  List<SkillCategoryModel> skills)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? status,  String? jobTitle,  String? bio,  String? graduationYear,  String? major,  String? github,  List<String> certifications,  List<AboutMeStatModel> stats,  List<ExperienceItemModel> experiences,  List<EducationItemModel> education,  List<SkillCategoryModel> skills,  List<LanguageItemModel> languages)  $default,) {final _that = this;
 switch (_that) {
 case _AboutMeModel():
-return $default(_that.bio,_that.experiences,_that.education,_that.skills);case _:
+return $default(_that.status,_that.jobTitle,_that.bio,_that.graduationYear,_that.major,_that.github,_that.certifications,_that.stats,_that.experiences,_that.education,_that.skills,_that.languages);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -197,10 +205,10 @@ return $default(_that.bio,_that.experiences,_that.education,_that.skills);case _
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? bio,  List<ExperienceItemModel> experiences,  List<EducationItemModel> education,  List<SkillCategoryModel> skills)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? status,  String? jobTitle,  String? bio,  String? graduationYear,  String? major,  String? github,  List<String> certifications,  List<AboutMeStatModel> stats,  List<ExperienceItemModel> experiences,  List<EducationItemModel> education,  List<SkillCategoryModel> skills,  List<LanguageItemModel> languages)?  $default,) {final _that = this;
 switch (_that) {
 case _AboutMeModel() when $default != null:
-return $default(_that.bio,_that.experiences,_that.education,_that.skills);case _:
+return $default(_that.status,_that.jobTitle,_that.bio,_that.graduationYear,_that.major,_that.github,_that.certifications,_that.stats,_that.experiences,_that.education,_that.skills,_that.languages);case _:
   return null;
 
 }
@@ -212,10 +220,29 @@ return $default(_that.bio,_that.experiences,_that.education,_that.skills);case _
 @JsonSerializable()
 
 class _AboutMeModel implements AboutMeModel {
-  const _AboutMeModel({this.bio, final  List<ExperienceItemModel> experiences = const [], final  List<EducationItemModel> education = const [], final  List<SkillCategoryModel> skills = const []}): _experiences = experiences,_education = education,_skills = skills;
+  const _AboutMeModel({this.status, this.jobTitle, this.bio, this.graduationYear, this.major, this.github, final  List<String> certifications = const [], final  List<AboutMeStatModel> stats = const [], final  List<ExperienceItemModel> experiences = const [], final  List<EducationItemModel> education = const [], final  List<SkillCategoryModel> skills = const [], final  List<LanguageItemModel> languages = const []}): _certifications = certifications,_stats = stats,_experiences = experiences,_education = education,_skills = skills,_languages = languages;
   factory _AboutMeModel.fromJson(Map<String, dynamic> json) => _$AboutMeModelFromJson(json);
 
+@override final  String? status;
+@override final  String? jobTitle;
 @override final  String? bio;
+@override final  String? graduationYear;
+@override final  String? major;
+@override final  String? github;
+ final  List<String> _certifications;
+@override@JsonKey() List<String> get certifications {
+  if (_certifications is EqualUnmodifiableListView) return _certifications;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_certifications);
+}
+
+ final  List<AboutMeStatModel> _stats;
+@override@JsonKey() List<AboutMeStatModel> get stats {
+  if (_stats is EqualUnmodifiableListView) return _stats;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_stats);
+}
+
  final  List<ExperienceItemModel> _experiences;
 @override@JsonKey() List<ExperienceItemModel> get experiences {
   if (_experiences is EqualUnmodifiableListView) return _experiences;
@@ -237,6 +264,13 @@ class _AboutMeModel implements AboutMeModel {
   return EqualUnmodifiableListView(_skills);
 }
 
+ final  List<LanguageItemModel> _languages;
+@override@JsonKey() List<LanguageItemModel> get languages {
+  if (_languages is EqualUnmodifiableListView) return _languages;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_languages);
+}
+
 
 /// Create a copy of AboutMeModel
 /// with the given fields replaced by the non-null parameter values.
@@ -251,16 +285,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AboutMeModel&&(identical(other.bio, bio) || other.bio == bio)&&const DeepCollectionEquality().equals(other._experiences, _experiences)&&const DeepCollectionEquality().equals(other._education, _education)&&const DeepCollectionEquality().equals(other._skills, _skills));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AboutMeModel&&(identical(other.status, status) || other.status == status)&&(identical(other.jobTitle, jobTitle) || other.jobTitle == jobTitle)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.graduationYear, graduationYear) || other.graduationYear == graduationYear)&&(identical(other.major, major) || other.major == major)&&(identical(other.github, github) || other.github == github)&&const DeepCollectionEquality().equals(other._certifications, _certifications)&&const DeepCollectionEquality().equals(other._stats, _stats)&&const DeepCollectionEquality().equals(other._experiences, _experiences)&&const DeepCollectionEquality().equals(other._education, _education)&&const DeepCollectionEquality().equals(other._skills, _skills)&&const DeepCollectionEquality().equals(other._languages, _languages));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,bio,const DeepCollectionEquality().hash(_experiences),const DeepCollectionEquality().hash(_education),const DeepCollectionEquality().hash(_skills));
+int get hashCode => Object.hash(runtimeType,status,jobTitle,bio,graduationYear,major,github,const DeepCollectionEquality().hash(_certifications),const DeepCollectionEquality().hash(_stats),const DeepCollectionEquality().hash(_experiences),const DeepCollectionEquality().hash(_education),const DeepCollectionEquality().hash(_skills),const DeepCollectionEquality().hash(_languages));
 
 @override
 String toString() {
-  return 'AboutMeModel(bio: $bio, experiences: $experiences, education: $education, skills: $skills)';
+  return 'AboutMeModel(status: $status, jobTitle: $jobTitle, bio: $bio, graduationYear: $graduationYear, major: $major, github: $github, certifications: $certifications, stats: $stats, experiences: $experiences, education: $education, skills: $skills, languages: $languages)';
 }
 
 
@@ -271,7 +305,7 @@ abstract mixin class _$AboutMeModelCopyWith<$Res> implements $AboutMeModelCopyWi
   factory _$AboutMeModelCopyWith(_AboutMeModel value, $Res Function(_AboutMeModel) _then) = __$AboutMeModelCopyWithImpl;
 @override @useResult
 $Res call({
- String? bio, List<ExperienceItemModel> experiences, List<EducationItemModel> education, List<SkillCategoryModel> skills
+ String? status, String? jobTitle, String? bio, String? graduationYear, String? major, String? github, List<String> certifications, List<AboutMeStatModel> stats, List<ExperienceItemModel> experiences, List<EducationItemModel> education, List<SkillCategoryModel> skills, List<LanguageItemModel> languages
 });
 
 
@@ -288,13 +322,299 @@ class __$AboutMeModelCopyWithImpl<$Res>
 
 /// Create a copy of AboutMeModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? bio = freezed,Object? experiences = null,Object? education = null,Object? skills = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? status = freezed,Object? jobTitle = freezed,Object? bio = freezed,Object? graduationYear = freezed,Object? major = freezed,Object? github = freezed,Object? certifications = null,Object? stats = null,Object? experiences = null,Object? education = null,Object? skills = null,Object? languages = null,}) {
   return _then(_AboutMeModel(
-bio: freezed == bio ? _self.bio : bio // ignore: cast_nullable_to_non_nullable
-as String?,experiences: null == experiences ? _self._experiences : experiences // ignore: cast_nullable_to_non_nullable
+status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as String?,jobTitle: freezed == jobTitle ? _self.jobTitle : jobTitle // ignore: cast_nullable_to_non_nullable
+as String?,bio: freezed == bio ? _self.bio : bio // ignore: cast_nullable_to_non_nullable
+as String?,graduationYear: freezed == graduationYear ? _self.graduationYear : graduationYear // ignore: cast_nullable_to_non_nullable
+as String?,major: freezed == major ? _self.major : major // ignore: cast_nullable_to_non_nullable
+as String?,github: freezed == github ? _self.github : github // ignore: cast_nullable_to_non_nullable
+as String?,certifications: null == certifications ? _self._certifications : certifications // ignore: cast_nullable_to_non_nullable
+as List<String>,stats: null == stats ? _self._stats : stats // ignore: cast_nullable_to_non_nullable
+as List<AboutMeStatModel>,experiences: null == experiences ? _self._experiences : experiences // ignore: cast_nullable_to_non_nullable
 as List<ExperienceItemModel>,education: null == education ? _self._education : education // ignore: cast_nullable_to_non_nullable
 as List<EducationItemModel>,skills: null == skills ? _self._skills : skills // ignore: cast_nullable_to_non_nullable
-as List<SkillCategoryModel>,
+as List<SkillCategoryModel>,languages: null == languages ? _self._languages : languages // ignore: cast_nullable_to_non_nullable
+as List<LanguageItemModel>,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$AboutMeStatModel {
+
+ String? get id; String? get year; String? get label; List<String> get tags;
+/// Create a copy of AboutMeStatModel
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AboutMeStatModelCopyWith<AboutMeStatModel> get copyWith => _$AboutMeStatModelCopyWithImpl<AboutMeStatModel>(this as AboutMeStatModel, _$identity);
+
+  /// Serializes this AboutMeStatModel to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AboutMeStatModel&&(identical(other.id, id) || other.id == id)&&(identical(other.year, year) || other.year == year)&&(identical(other.label, label) || other.label == label)&&const DeepCollectionEquality().equals(other.tags, tags));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,year,label,const DeepCollectionEquality().hash(tags));
+
+@override
+String toString() {
+  return 'AboutMeStatModel(id: $id, year: $year, label: $label, tags: $tags)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $AboutMeStatModelCopyWith<$Res>  {
+  factory $AboutMeStatModelCopyWith(AboutMeStatModel value, $Res Function(AboutMeStatModel) _then) = _$AboutMeStatModelCopyWithImpl;
+@useResult
+$Res call({
+ String? id, String? year, String? label, List<String> tags
+});
+
+
+
+
+}
+/// @nodoc
+class _$AboutMeStatModelCopyWithImpl<$Res>
+    implements $AboutMeStatModelCopyWith<$Res> {
+  _$AboutMeStatModelCopyWithImpl(this._self, this._then);
+
+  final AboutMeStatModel _self;
+  final $Res Function(AboutMeStatModel) _then;
+
+/// Create a copy of AboutMeStatModel
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? year = freezed,Object? label = freezed,Object? tags = null,}) {
+  return _then(_self.copyWith(
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,year: freezed == year ? _self.year : year // ignore: cast_nullable_to_non_nullable
+as String?,label: freezed == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
+as String?,tags: null == tags ? _self.tags : tags // ignore: cast_nullable_to_non_nullable
+as List<String>,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [AboutMeStatModel].
+extension AboutMeStatModelPatterns on AboutMeStatModel {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _AboutMeStatModel value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _AboutMeStatModel() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _AboutMeStatModel value)  $default,){
+final _that = this;
+switch (_that) {
+case _AboutMeStatModel():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _AboutMeStatModel value)?  $default,){
+final _that = this;
+switch (_that) {
+case _AboutMeStatModel() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? id,  String? year,  String? label,  List<String> tags)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _AboutMeStatModel() when $default != null:
+return $default(_that.id,_that.year,_that.label,_that.tags);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? id,  String? year,  String? label,  List<String> tags)  $default,) {final _that = this;
+switch (_that) {
+case _AboutMeStatModel():
+return $default(_that.id,_that.year,_that.label,_that.tags);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? id,  String? year,  String? label,  List<String> tags)?  $default,) {final _that = this;
+switch (_that) {
+case _AboutMeStatModel() when $default != null:
+return $default(_that.id,_that.year,_that.label,_that.tags);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _AboutMeStatModel implements AboutMeStatModel {
+  const _AboutMeStatModel({this.id, this.year, this.label, final  List<String> tags = const []}): _tags = tags;
+  factory _AboutMeStatModel.fromJson(Map<String, dynamic> json) => _$AboutMeStatModelFromJson(json);
+
+@override final  String? id;
+@override final  String? year;
+@override final  String? label;
+ final  List<String> _tags;
+@override@JsonKey() List<String> get tags {
+  if (_tags is EqualUnmodifiableListView) return _tags;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_tags);
+}
+
+
+/// Create a copy of AboutMeStatModel
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$AboutMeStatModelCopyWith<_AboutMeStatModel> get copyWith => __$AboutMeStatModelCopyWithImpl<_AboutMeStatModel>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$AboutMeStatModelToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AboutMeStatModel&&(identical(other.id, id) || other.id == id)&&(identical(other.year, year) || other.year == year)&&(identical(other.label, label) || other.label == label)&&const DeepCollectionEquality().equals(other._tags, _tags));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,year,label,const DeepCollectionEquality().hash(_tags));
+
+@override
+String toString() {
+  return 'AboutMeStatModel(id: $id, year: $year, label: $label, tags: $tags)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$AboutMeStatModelCopyWith<$Res> implements $AboutMeStatModelCopyWith<$Res> {
+  factory _$AboutMeStatModelCopyWith(_AboutMeStatModel value, $Res Function(_AboutMeStatModel) _then) = __$AboutMeStatModelCopyWithImpl;
+@override @useResult
+$Res call({
+ String? id, String? year, String? label, List<String> tags
+});
+
+
+
+
+}
+/// @nodoc
+class __$AboutMeStatModelCopyWithImpl<$Res>
+    implements _$AboutMeStatModelCopyWith<$Res> {
+  __$AboutMeStatModelCopyWithImpl(this._self, this._then);
+
+  final _AboutMeStatModel _self;
+  final $Res Function(_AboutMeStatModel) _then;
+
+/// Create a copy of AboutMeStatModel
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? year = freezed,Object? label = freezed,Object? tags = null,}) {
+  return _then(_AboutMeStatModel(
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,year: freezed == year ? _self.year : year // ignore: cast_nullable_to_non_nullable
+as String?,label: freezed == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
+as String?,tags: null == tags ? _self._tags : tags // ignore: cast_nullable_to_non_nullable
+as List<String>,
   ));
 }
 
@@ -1111,6 +1431,272 @@ class __$SkillCategoryModelCopyWithImpl<$Res>
 category: freezed == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
 as String?,items: null == items ? _self._items : items // ignore: cast_nullable_to_non_nullable
 as List<String>,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$LanguageItemModel {
+
+ String? get name; String? get level;
+/// Create a copy of LanguageItemModel
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$LanguageItemModelCopyWith<LanguageItemModel> get copyWith => _$LanguageItemModelCopyWithImpl<LanguageItemModel>(this as LanguageItemModel, _$identity);
+
+  /// Serializes this LanguageItemModel to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LanguageItemModel&&(identical(other.name, name) || other.name == name)&&(identical(other.level, level) || other.level == level));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,name,level);
+
+@override
+String toString() {
+  return 'LanguageItemModel(name: $name, level: $level)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $LanguageItemModelCopyWith<$Res>  {
+  factory $LanguageItemModelCopyWith(LanguageItemModel value, $Res Function(LanguageItemModel) _then) = _$LanguageItemModelCopyWithImpl;
+@useResult
+$Res call({
+ String? name, String? level
+});
+
+
+
+
+}
+/// @nodoc
+class _$LanguageItemModelCopyWithImpl<$Res>
+    implements $LanguageItemModelCopyWith<$Res> {
+  _$LanguageItemModelCopyWithImpl(this._self, this._then);
+
+  final LanguageItemModel _self;
+  final $Res Function(LanguageItemModel) _then;
+
+/// Create a copy of LanguageItemModel
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? name = freezed,Object? level = freezed,}) {
+  return _then(_self.copyWith(
+name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String?,level: freezed == level ? _self.level : level // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [LanguageItemModel].
+extension LanguageItemModelPatterns on LanguageItemModel {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _LanguageItemModel value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _LanguageItemModel() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _LanguageItemModel value)  $default,){
+final _that = this;
+switch (_that) {
+case _LanguageItemModel():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _LanguageItemModel value)?  $default,){
+final _that = this;
+switch (_that) {
+case _LanguageItemModel() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? name,  String? level)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _LanguageItemModel() when $default != null:
+return $default(_that.name,_that.level);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? name,  String? level)  $default,) {final _that = this;
+switch (_that) {
+case _LanguageItemModel():
+return $default(_that.name,_that.level);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? name,  String? level)?  $default,) {final _that = this;
+switch (_that) {
+case _LanguageItemModel() when $default != null:
+return $default(_that.name,_that.level);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _LanguageItemModel implements LanguageItemModel {
+  const _LanguageItemModel({this.name, this.level});
+  factory _LanguageItemModel.fromJson(Map<String, dynamic> json) => _$LanguageItemModelFromJson(json);
+
+@override final  String? name;
+@override final  String? level;
+
+/// Create a copy of LanguageItemModel
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$LanguageItemModelCopyWith<_LanguageItemModel> get copyWith => __$LanguageItemModelCopyWithImpl<_LanguageItemModel>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$LanguageItemModelToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LanguageItemModel&&(identical(other.name, name) || other.name == name)&&(identical(other.level, level) || other.level == level));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,name,level);
+
+@override
+String toString() {
+  return 'LanguageItemModel(name: $name, level: $level)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$LanguageItemModelCopyWith<$Res> implements $LanguageItemModelCopyWith<$Res> {
+  factory _$LanguageItemModelCopyWith(_LanguageItemModel value, $Res Function(_LanguageItemModel) _then) = __$LanguageItemModelCopyWithImpl;
+@override @useResult
+$Res call({
+ String? name, String? level
+});
+
+
+
+
+}
+/// @nodoc
+class __$LanguageItemModelCopyWithImpl<$Res>
+    implements _$LanguageItemModelCopyWith<$Res> {
+  __$LanguageItemModelCopyWithImpl(this._self, this._then);
+
+  final _LanguageItemModel _self;
+  final $Res Function(_LanguageItemModel) _then;
+
+/// Create a copy of LanguageItemModel
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? name = freezed,Object? level = freezed,}) {
+  return _then(_LanguageItemModel(
+name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String?,level: freezed == level ? _self.level : level // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

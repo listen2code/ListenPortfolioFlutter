@@ -15,19 +15,19 @@ abstract class AuthRemoteDataSource {
   factory AuthRemoteDataSource(Dio dio, {String baseUrl}) = _AuthRemoteDataSource;
 
   @POST('/v1/auth/login')
-  Future<BaseResponseModel<LoginResponseModel>> login(@Body() LoginRequestModel request);
+  Future<BaseResponseModel<LoginResponseModel>> login(@Body() LoginRequestModel? request);
 
   @POST('/v1/auth/signUp')
-  Future<BaseResponseModel<void>> signUp(@Body() SignupRequestModel request);
+  Future<BaseResponseModel<void>> signUp(@Body() SignupRequestModel? request);
 
   @POST('/v1/auth/logout')
   Future<BaseResponseModel<void>> logout();
 
   @POST('/v1/auth/forgot-password')
-  Future<BaseResponseModel<void>> forgotPassword(@Body() ForgotPasswordRequestModel request);
+  Future<BaseResponseModel<void>> forgotPassword(@Body() ForgotPasswordRequestModel? request);
 
   @POST('/v1/auth/change-password')
-  Future<BaseResponseModel<void>> changePassword(@Body() ChangePasswordRequestModel request);
+  Future<BaseResponseModel<void>> changePassword(@Body() ChangePasswordRequestModel? request);
 
   @GET('/v1/user')
   Future<BaseResponseModel<UserResponseModel>> getUserById(@Path('id') String id);

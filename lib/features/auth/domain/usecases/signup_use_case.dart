@@ -11,7 +11,7 @@ class SignupUseCase implements UseCase<void, SignupRequestModel> {
   SignupUseCase(this.repository);
 
   @override
-  Future<Either<Failure, void>> call(SignupRequestModel param) async {
+  Future<Either<Failure, void>> call({SignupRequestModel? param}) async {
     // Basic validations are handled at Level 1 (ViewModel).
     // This UseCase handles the execution of the signup domain logic.
     return await repository.signUp(param: param);

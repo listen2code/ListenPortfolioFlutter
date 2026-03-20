@@ -42,7 +42,7 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
 
     if (confirmed == true) {
       await call<void>(
-        ref.execute(logoutUseCaseProvider, NoParams()),
+        ref.execute(logoutUseCaseProvider),
         showLoading: true,
         onSuccess: (_) async {
           if (state.currentTab == HomeTab.aboutMe) {

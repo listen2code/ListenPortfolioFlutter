@@ -173,9 +173,10 @@ mixin ViewModelMixin<S extends BaseState, I extends BaseIntent> implements BaseV
     FutureOr<void> Function(Failure failure)? onFailure,
     required FutureOr<void> Function(List<dynamic> results) onSuccess,
     bool showLoading = false,
+    LoadingType loadingType = LoadingType.both,
     String? loadingMessage,
   }) async {
-    if (showLoading) emitEffect(LoadingEffect(true, message: loadingMessage));
+    if (showLoading) emitEffect(LoadingEffect(true, message: loadingMessage, type: loadingType));
     try {
       final results = await Future.wait(actions);
 

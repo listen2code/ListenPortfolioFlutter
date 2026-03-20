@@ -12,22 +12,22 @@ import 'package:listen_portfolio_flutter/features/auth/data/models/user_response
 /// This defines the contract that the data layer must implement.
 abstract class AuthRepository {
   /// Login with username and password.
-  Future<Either<Failure, LoginResponseModel?>> login({required LoginRequestModel param});
+  Future<Either<Failure, LoginResponseModel?>> login({required LoginRequestModel? param});
 
   /// Sign Up a new user.
-  Future<Either<Failure, void>> signUp({required SignupRequestModel param});
+  Future<Either<Failure, void>> signUp({required SignupRequestModel? param});
 
   /// Logout current user.
   Future<Either<Failure, void>> logout();
 
   /// Send password reset email.
-  Future<Either<Failure, void>> forgotPassword({required ForgotPasswordRequestModel param});
+  Future<Either<Failure, void>> forgotPassword({required ForgotPasswordRequestModel? param});
 
   /// Change user password.
-  Future<Either<Failure, void>> changePassword({required ChangePasswordRequestModel param});
+  Future<Either<Failure, void>> changePassword({required ChangePasswordRequestModel? param});
 
   /// Fetches the authenticated user's profile by ID.
-  Future<Either<Failure, UserResponseModel?>> getCurrentUser({required GetCurrentUserRequestModel param});
+  Future<Either<Failure, UserResponseModel?>> getCurrentUser({required GetCurrentUserRequestModel? param});
 
   /// Refreshes the authentication token using the stored refresh token.
   /// Returns the new access token if successful.
