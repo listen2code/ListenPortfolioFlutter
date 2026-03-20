@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:listen_portfolio_flutter/features/home/data/models/project_model.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/projects/projects_intent.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/projects/projects_state.dart';
@@ -90,8 +91,8 @@ class ProjectsWidget extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 24.f),
-                      // Action button (Match chip style)
-                      CommonSkeleton(width: 120.f, height: 36.f, borderRadius: 10.f),
+                      // Action button (Full width skeleton)
+                      CommonSkeleton(width: double.infinity, height: 36.f, borderRadius: 10.f),
                     ],
                   ),
                 ),
@@ -201,12 +202,18 @@ class ProjectsWidget extends StatelessWidget {
                 SizedBox(height: 20.f),
                 // Only show Source Code button if githubUrl exists
                 if (!isTodo && project.githubUrl != null)
-                  _buildActionChip(
-                    context,
-                    Icons.code,
-                    'Source Code',
-                    baseColor,
-                    onPressed: () => _launchURL(context, project.githubUrl!),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildActionChip(
+                          context,
+                          Icons.code,
+                          'Source Code',
+                          baseColor,
+                          onPressed: () => _launchURL(context, project.githubUrl!),
+                        ),
+                      ),
+                    ],
                   ),
               ],
             ),
@@ -249,7 +256,6 @@ class ProjectsWidget extends StatelessWidget {
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
           children: [
             Icon(icon, size: 14.f, color: color),
             SizedBox(width: 6.f),
