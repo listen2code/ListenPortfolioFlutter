@@ -21,36 +21,116 @@ class AboutMeWidget extends StatelessWidget {
       onRefresh: (viewModel, state) async {
         viewModel?.handleIntent(const AboutMeIntent.refresh());
       },
+      onLoading: _buildSkeleton(context),
       active: active,
       body: (context, child, viewModel, state) {
-        return Padding(
+        final data = state?.data;
+        // Returning null triggers the default empty view in BaseRefreshPage
+        if (data == null) return null;
+
+        return SingleChildScrollView(
           padding: EdgeInsets.all(20.f),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 40.f),
               _buildHeader(context, viewModel!, state!),
-              if (state.data?.bio != null) ...[
-                SizedBox(height: 35.f),
-                _buildBioSection(context, state.data!.bio!),
-              ],
-              if (state.data?.experiences.isNotEmpty == true) ...[
+              if (data.bio != null) ...[SizedBox(height: 35.f), _buildBioSection(context, data.bio!)],
+              if (data.experiences.isNotEmpty) ...[
                 SizedBox(height: 25.f),
-                _buildDetailedExperience(context, state.data?.experiences),
+                _buildDetailedExperience(context, data.experiences),
               ],
-              if (state.data?.education.isNotEmpty == true) ...[
+              if (data.education.isNotEmpty) ...[
                 SizedBox(height: 25.f),
-                _buildEducationSection(context, state.data?.education),
+                _buildEducationSection(context, data.education),
               ],
-              if (state.data?.skills.isNotEmpty == true) ...[
+              if (data.skills.isNotEmpty) ...[
                 SizedBox(height: 25.f),
-                _buildComprehensiveSkills(context, state.data?.skills),
+                _buildComprehensiveSkills(context, data.skills),
               ],
               SizedBox(height: 40.f),
             ],
           ),
         );
       },
+    );
+  }
+
+  Widget _buildSkeleton(BuildContext context) {
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(20.f),
+      physics: const NeverScrollableScrollPhysics(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(height: 40.f),
+          // Header Skeleton
+          Center(
+            child: Column(
+              children: [
+                CommonSkeleton.circle(size: 120.f),
+                SizedBox(height: 16.f),
+                CommonSkeleton.line(width: 150.f, height: 24.f),
+                SizedBox(height: 8.f),
+                CommonSkeleton.line(width: 200.f, height: 16.f),
+                SizedBox(height: 8.f),
+                CommonSkeleton.line(width: 100.f, height: 14.f),
+              ],
+            ),
+          ),
+          SizedBox(height: 35.f),
+          // Bio Skeleton
+          CommonSkeleton.line(width: 100.f, height: 20.f),
+          SizedBox(height: 12.f),
+          CommonSkeleton.line(width: double.infinity, height: 14.f),
+          SizedBox(height: 8.f),
+          CommonSkeleton.line(width: double.infinity, height: 14.f),
+          SizedBox(height: 8.f),
+          CommonSkeleton.line(width: 200.f, height: 14.f),
+          SizedBox(height: 25.f),
+          // Timeline Section Skeleton (Experience/Education)
+          CommonSkeleton.line(width: 120.f, height: 20.f),
+          SizedBox(height: 15.f),
+          ...List.generate(
+            3,
+            (index) => Padding(
+              padding: EdgeInsets.only(bottom: 20.f),
+              child: IntrinsicHeight(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                      children: [
+                        CommonSkeleton.circle(size: 12.f),
+                        Expanded(
+                          child: Container(
+                            width: 2.f,
+                            margin: EdgeInsets.symmetric(vertical: 4.f),
+                            color: context.theme.dividerColor.withValues(alpha: 0.1),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(width: 15.f),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CommonSkeleton.line(width: 180.f, height: 16.f),
+                          SizedBox(height: 4.f),
+                          CommonSkeleton.line(width: 120.f, height: 12.f),
+                          SizedBox(height: 8.f),
+                          CommonSkeleton.line(width: double.infinity, height: 14.f),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -169,13 +249,13 @@ class AboutMeWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildDetailedExperience(BuildContext context, List<ExperienceItemModel>? experiences) {
+  Widget _buildDetailedExperience(BuildContext context, List<ExperienceItemModel> experiences) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildSectionTitle(context, I18nKeys.experience.tr),
         SizedBox(height: 15.f),
-        ...?experiences?.asMap().entries.map((entry) {
+        ...experiences.asMap().entries.map((entry) {
           final isLast = entry.key == experiences.length - 1;
           final item = entry.value;
           return _buildTimelineItem(
@@ -191,13 +271,13 @@ class AboutMeWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildEducationSection(BuildContext context, List<EducationItemModel>? education) {
+  Widget _buildEducationSection(BuildContext context, List<EducationItemModel> education) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildSectionTitle(context, I18nKeys.education.tr),
         SizedBox(height: 15.f),
-        ...?education?.asMap().entries.map((entry) {
+        ...education.asMap().entries.map((entry) {
           final isLast = entry.key == education.length - 1;
           final item = entry.value;
           return _buildTimelineItem(
@@ -213,13 +293,13 @@ class AboutMeWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildComprehensiveSkills(BuildContext context, List<SkillCategoryModel>? skills) {
+  Widget _buildComprehensiveSkills(BuildContext context, List<SkillCategoryModel> skills) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildSectionTitle(context, I18nKeys.coreSkills.tr),
         SizedBox(height: 15.f),
-        ...?skills?.map(
+        ...skills.map(
           (s) => Padding(
             padding: EdgeInsets.only(bottom: 10.f),
             child: _buildSkillCategory(context, s.category ?? "", s.items),

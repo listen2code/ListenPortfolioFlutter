@@ -47,6 +47,7 @@ class AboutMeViewModel extends _$AboutMeViewModel with ViewModelMixin<AboutMeSta
     await call(
       ref.execute(getAboutMeUseCaseProvider, const NoParams()),
       showLoading: true,
+      loadingType: LoadingType.page,
       onSuccess: (aboutMe) {
         updateState(state.copyWith(data: aboutMe, isInitialLoaded: true));
       },
