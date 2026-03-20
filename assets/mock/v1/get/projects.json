@@ -3,58 +3,49 @@
   "message": "success",
   "body": [
     {
-      "id": "p1",
-      "title": "lPortfolio",
-      "subtitle": "Current App",
-      "desc": "This portfolio app! Built with Clean Architecture, MVI pattern, and Riverpod to demonstrate modern Flutter development practices."
+      "id": "1",
+      "title": "lPortfolio Flutter",
+      "subtitle": "Current Project",
+      "desc": "My personal portfolio app (this one!). Demonstrating Clean Architecture, MVI pattern, and advanced Riverpod state management in Flutter.",
+      "imageUrl": "https://images.unsplash.com/photo-1551288049-bbda38a5f452?w=500&q=80",
+      "githubUrl": "https://github.com/listen2code/ListenPortfolioFlutter",
+      "techStack": ["Flutter", "Riverpod", "Clean Architecture", "MVI"]
     },
     {
-      "id": "p2",
-      "title": "AI Chatbot",
-      "subtitle": "Dart & OpenAI",
-      "desc": "An intelligent conversational agent powered by GPT-4, supporting voice input and multi-language support."
+      "id": "2",
+      "title": "Listen Core Flutter",
+      "subtitle": "Framework",
+      "desc": "A foundational framework for Flutter projects providing base classes for MVI, standardized network wrappers, and lifecycle management.",
+      "imageUrl": "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=500&q=80",
+      "githubUrl": "https://github.com/listen2code/ListenCoreFlutter",
+      "techStack": ["Dart", "Riverpod", "Dio", "Architecture"]
     },
     {
-      "id": "p3",
-      "title": "Portfolio Web",
-      "subtitle": "Flutter Web",
-      "desc": "A responsive personal website built with Flutter Web, showcasing projects and experience with smooth animations."
-    },
-    {
-      "id": "p4",
-      "title": "Android Perf Toolkit",
-      "subtitle": "Optimization",
-      "desc": "An Android project focused on advanced profiling, memory leak detection, and rendering optimization tools for complex Android apps."
-    },
-    {
-      "id": "p5",
-      "title": "Flutter Gallery Pro",
-      "subtitle": "UI/UX Showcases",
-      "desc": "A dedicated showcase app demonstrating complex animations, custom painters, and modern UI components for rapid prototyping."
-    },
-    {
-      "id": "p6",
-      "title": "Listen Core Plugin",
-      "subtitle": "Architecture",
-      "desc": "Foundation plugin providing base classes, network wrappers, and utilities. Planned for release on pub.dev as an infrastructure base."
-    },
-    {
-      "id": "p7",
+      "id": "3",
       "title": "Listen UI Kit",
-      "subtitle": "Common Widgets",
-      "desc": "A reusable widget library designed to speed up development and ensure design consistency across multiple Flutter projects."
+      "subtitle": "Common Library",
+      "desc": "A comprehensive UI component library for consistent branding and rapid development across multiple Flutter applications.",
+      "imageUrl": "https://images.unsplash.com/photo-1586717791821-3f44a563eb4c?w=500&q=80",
+      "githubUrl": "https://github.com/listen2code/ListenUikitFlutter",
+      "techStack": ["Flutter", "Design System", "CustomPainter"]
     },
     {
-      "id": "p8",
-      "title": "English Learning App",
-      "subtitle": "TODO",
-      "desc": "A comprehensive language learning platform featuring spaced repetition, AI speech recognition, and interactive lessons."
+      "id": "4",
+      "title": "Portfolio Backend",
+      "subtitle": "Cloud Infrastructure",
+      "desc": "The server-side implementation for this portfolio, managing user data, projects, and dynamic configurations.",
+      "imageUrl": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=500&q=80",
+      "githubUrl": "https://github.com/listen2code/ListenPortfolioBackend",
+      "techStack": ["Node.js", "Express", "AWS", "DynamoDB"]
     },
     {
-      "id": "p9",
-      "title": "Video Player App",
-      "subtitle": "TODO",
-      "desc": "A high-performance media player supporting local/network streaming, background playback, and picture-in-picture mode."
+      "id": "5",
+      "title": "Tech Knowledge Base",
+      "subtitle": "Articles & Docs",
+      "desc": "A curated collection of my technical articles, architecture notes, and development experiences over the past 10 years.",
+      "imageUrl": "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=500&q=80",
+      "githubUrl": "https://github.com/listen2code/article",
+      "techStack": ["Markdown", "Documentation", "Knowledge Sharing"]
     }
   ]
 }

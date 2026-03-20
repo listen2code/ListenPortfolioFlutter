@@ -2,7 +2,37 @@
   "result": "0",
   "message": "success",
   "body": {
+    "status": "available",
+    "jobTitle": "Full Stack Mobile Architect",
     "bio": "A seasoned mobile developer with over 10 years of experience in Android and 2+ years in Flutter. Specialized in high-performance application development, clean architecture, and reactive programming. Proven track record of leading cross-functional teams and delivering complex enterprise solutions.",
+    "graduationYear": "2013",
+    "github": "https://github.com/listen2code",
+    "major": "softwareEngineering",
+    "certifications": [
+      "jlptN1",
+      "bjtJ2"
+    ],
+    "stats": [
+      {
+        "id": "android",
+        "year": "10",
+        "label": "androidExp",
+        "tags": [
+          "archDesign",
+          "perfOptimization"
+        ]
+      },
+      {
+        "id": "flutter",
+        "year": "2",
+        "label": "flutterExp"
+      },
+      {
+        "id": "java_web",
+        "year": "1",
+        "label": "javaWeb"
+      }
+    ],
     "experiences": [
       {
         "title": "Senior Mobile Architect",
@@ -31,6 +61,11 @@
         "description": "Specialized in Software Engineering and Mobile Systems."
       }
     ],
+    "languages": [
+      { "name": "English", "level": "CET4" },
+      { "name": "Japanese", "level": "N1" },
+      { "name": "Chinese", "level": "Native" }
+    ],
     "skills": [
       {
         "category": "Mobile",
@@ -52,7 +87,7 @@
         ]
       },
       {
-        "category": "Backend \u0026 DevOps",
+        "category": "Backend & DevOps",
         "items": [
           "Spring Boot",
           "SQL",
