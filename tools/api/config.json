@@ -36,6 +36,12 @@
     "httpCode": 200
   },
   {
+    "api": "auth/delete-account",
+    "method": "delete",
+    "timeout": 500,
+    "httpCode": 200
+  },
+  {
     "api": "projects",
     "method": "get",
     "timeout": 500,

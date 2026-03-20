@@ -91,6 +91,7 @@ flutter:
   assets:
     - assets/images/
     - assets/mock/v1/delete/
+    - assets/mock/v1/delete/auth/
     - assets/mock/v1/get/
     - assets/mock/v1/post/
     - assets/mock/v1/post/auth/

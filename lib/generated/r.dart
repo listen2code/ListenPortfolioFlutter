@@ -3,6 +3,7 @@ class R {
   R._();
 
   static const String authChangePassword = 'assets/mock/v1/post/auth/change-password.json';
+  static const String authDeleteAccount = 'assets/mock/v1/delete/auth/delete-account.json';
   static const String authForgotPassword = 'assets/mock/v1/post/auth/forgot-password.json';
   static const String authLogin = 'assets/mock/v1/post/auth/login.json';
   static const String authLogout = 'assets/mock/v1/post/auth/logout.json';
