@@ -28,7 +28,7 @@ class ArchitectureViewModel extends _$ArchitectureViewModel
   }
 
   Future<void> _onRefresh() async {
-    emitEffect(LoadingEffect(true));
+    emitEffect(LoadingEffect(true, type: LoadingType.page));
     // Simulate loading for architecture summary
     await Future.delayed(const Duration(milliseconds: 800));
     updateState(state.copyWith(isInitialLoaded: true));

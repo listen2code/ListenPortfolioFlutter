@@ -19,7 +19,7 @@ class CrashLogListViewModel extends _$CrashLogListViewModel
   CrashLogListState build() => const CrashLogListState();
 
   @override
-  void onInit() {
+  void onReady() {
     handleIntent(const CrashLogListIntent.init());
   }
 
