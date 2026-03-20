@@ -12,4 +12,14 @@ class R {
   static const String getProjects = 'assets/mock/v1/get/projects.json';
   static const String getUser = 'assets/mock/v1/get/user.json';
   static const String imagesIcLauncherAdaptiveFore = 'assets/images/ic_launcher_adaptive_fore.png';
+  static const String imagesProject1 = 'assets/mock/resource/images/project1.jpg';
+  static const String imagesProject10 = 'assets/mock/resource/images/project10.jpg';
+  static const String imagesProject2 = 'assets/mock/resource/images/project2.jpg';
+  static const String imagesProject3 = 'assets/mock/resource/images/project3.jpg';
+  static const String imagesProject4 = 'assets/mock/resource/images/project4.jpg';
+  static const String imagesProject5 = 'assets/mock/resource/images/project5.jpg';
+  static const String imagesProject6 = 'assets/mock/resource/images/project6.jpg';
+  static const String imagesProject7 = 'assets/mock/resource/images/project7.jpg';
+  static const String imagesProject8 = 'assets/mock/resource/images/project8.jpg';
+  static const String imagesProject9 = 'assets/mock/resource/images/project9.jpg';
 }

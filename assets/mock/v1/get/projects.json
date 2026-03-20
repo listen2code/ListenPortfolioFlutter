@@ -7,7 +7,7 @@
       "title": "lPortfolio Flutter",
       "subtitle": "Current Project",
       "desc": "My personal portfolio app (this one!). Demonstrating Clean Architecture, MVI pattern, and advanced Riverpod state management in Flutter.",
-      "imageUrl": "https://images.unsplash.com/photo-1551288049-bbda38a5f452?w=500&q=80",
+      "imageUrl": "https://images.unsplash.com/photo-1617042375876-a13e36732a04?w=500&q=80",
       "githubUrl": "https://github.com/listen2code/ListenPortfolioFlutter",
       "techStack": ["Flutter", "Riverpod", "Clean Architecture", "MVI"]
     },
@@ -25,7 +25,7 @@
       "title": "Listen UI Kit",
       "subtitle": "Common Library",
       "desc": "A comprehensive UI component library for consistent branding and rapid development across multiple Flutter applications.",
-      "imageUrl": "https://images.unsplash.com/photo-1586717791821-3f44a563eb4c?w=500&q=80",
+      "imageUrl": "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?w=500&q=80",
       "githubUrl": "https://github.com/listen2code/ListenUikitFlutter",
       "techStack": ["Flutter", "Design System", "CustomPainter"]
     },

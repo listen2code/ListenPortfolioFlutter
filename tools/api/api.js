@@ -7,6 +7,17 @@ const url = require('url');
 const port = 9898;
 const readFileAsync = util.promisify(fs.readFile);
 
+// Supported image types and their MIME types
+const mimeTypes = {
+    '.jpg': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.png': 'image/png',
+    '.gif': 'image/gif',
+    '.webp': 'image/webp',
+    '.svg': 'image/svg+xml',
+    '.ico': 'image/x-icon'
+};
+
 // Helper to get formatted current date/time
 function getDate() {
     const now = new Date();
@@ -39,6 +50,33 @@ async function handleRequest(req, res, requestBody) {
 
     console.log(`\n${getDate()} >>> [${req.method.toUpperCase()}] ${pathname}`);
 
+    // --- Part 1: Handle Static Resources (Images) ---
+    // Detect if path contains "/resource/"
+    if (pathname.includes('/resource/')) {
+        const ext = path.extname(pathname).toLowerCase();
+        if (mimeTypes[ext]) {
+            // Updated Path Logic:
+            // URL: /v1/resource/images/project1.jpg
+            // Physical Path: tools/api/resource/images/project1.jpg
+            // We strip the version prefix (e.g., /v1) to match the physical directory structure
+            const relativePath = pathname.replace(/^\/v\d+/, '');
+            const filePath = path.join(__dirname, relativePath);
+
+            if (fs.existsSync(filePath)) {
+                const data = await readFileAsync(filePath);
+                res.writeHead(200, { 'Content-Type': mimeTypes[ext] });
+                res.end(data);
+                console.log(`${getDate()} [Success] Returned Image: ${filePath}`);
+                return;
+            } else {
+                console.error(`${getDate()} [404] Image not found at: ${filePath}`);
+                res.writeHead(404, { 'Content-Type': 'application/json' });
+                return res.end(JSON.stringify({ result: "1", message: "Image not found" }));
+            }
+        }
+    }
+
+    // --- Part 2: Handle API JSON Requests ---
     // Log Request Headers
     console.log(`${getDate()} [Request Headers]:\n${JSON.stringify(req.headers, null, 2)}`);
 
@@ -117,9 +155,7 @@ async function handleRequest(req, res, requestBody) {
 
     const baseDir = path.join(__dirname, 'json', versionDir);
     const resourceName = matchedApiName.endsWith('/') ? matchedApiName.slice(0, -1) : matchedApiName;
-
-    let targetFile = "";
-    targetFile = path.join(baseDir, method, `${resourceName}.json`);
+    const targetFile = path.join(baseDir, method, `${resourceName}.json`);
 
     // 5. Read file and log Response
     try {

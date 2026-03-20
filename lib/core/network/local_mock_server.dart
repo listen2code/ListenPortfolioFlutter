@@ -11,6 +11,16 @@ class LocalMockServer {
   static HttpServer? _server;
   static const int port = 9999;
 
+  // Supported image extensions and their corresponding ContentTypes
+  static const _imageExtensions = {
+    '.jpg': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.png': 'image/png',
+    '.gif': 'image/gif',
+    '.webp': 'image/webp',
+    '.svg': 'image/svg+xml',
+  };
+
   /// Starts the server on localhost:9999
   static Future<void> start() async {
     if (_server != null) return;
@@ -77,6 +87,36 @@ class LocalMockServer {
 
     // Simulate network latency
     await Future.delayed(const Duration(seconds: 1));
+
+    // --- ADDED: Handle Static Resources (Images) ---
+    if (uriPath.contains('/resource/')) {
+      final ext = _imageExtensions.keys.firstWhere(
+        (e) => uriPath.toLowerCase().endsWith(e),
+        orElse: () => '',
+      );
+
+      if (ext.isNotEmpty) {
+        // Map URL: /v1/resource/images/project1.jpg -> assets/mock/resource/images/project1.jpg
+        // Stripping the version prefix if present to match the physical directory structure
+        final relativePath = uriPath.replaceFirst(RegExp(r'^/v\d+'), '');
+        final assetPath = 'assets/mock$relativePath';
+
+        try {
+          final ByteData data = await rootBundle.load(assetPath);
+          request.response
+            ..statusCode = HttpStatus.ok
+            ..headers.contentType = ContentType.parse(_imageExtensions[ext]!)
+            ..add(data.buffer.asUint8List());
+
+          appLogger.w('MockServer: <<< [200 OK] Returned Image: $assetPath');
+          await request.response.close();
+          return;
+        } catch (e) {
+          // If image not found in assets, we fall through to JSON resolution or 404 handler
+          appLogger.e('MockServer: Resource not found in assets: $assetPath');
+        }
+      }
+    }
 
     // 4. Identify version directory (e.g., v1)
     String versionDir = "";

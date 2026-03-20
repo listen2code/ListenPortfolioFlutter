@@ -5,7 +5,15 @@ part 'project_model.g.dart';
 
 @freezed
 abstract class ProjectModel with _$ProjectModel {
-  const factory ProjectModel({String? id, String? title, String? subtitle, String? desc}) = _ProjectModel;
+  const factory ProjectModel({
+    String? id,
+    String? title,
+    String? subtitle,
+    String? desc,
+    String? imageUrl,
+    String? githubUrl,
+    @Default([]) List<String> techStack,
+  }) = _ProjectModel;
 
   factory ProjectModel.fromJson(Map<String, Object?> json) => _$ProjectModelFromJson(json);
 }
