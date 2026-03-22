@@ -1,11 +1,13 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:listen_portfolio_flutter/core/utils/json_converters.dart';
 
 part 'login_model.freezed.dart';
 part 'login_model.g.dart';
 
 @freezed
 abstract class LoginModel with _$LoginModel {
-  const factory LoginModel({String? userId, String? token, String? refreshToken}) = _LoginModel;
+  const factory LoginModel({@ToStringConverter() String? userId, String? token, String? refreshToken}) =
+      _LoginModel;
 
   factory LoginModel.fromJson(Map<String, Object?> json) => _$LoginModelFromJson(json);
 }

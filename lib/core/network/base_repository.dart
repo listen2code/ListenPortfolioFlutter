@@ -1,6 +1,6 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 
 import '../core.dart';
 
@@ -54,11 +54,11 @@ mixin BaseRepository {
       return await _handleFailureFallback(failure, getCached, useCacheCondition);
     } on DioException catch (e) {
       return await _handleFailureFallback(_mapDioException(e), getCached, useCacheCondition);
-    } on TypeError catch (e) {
-      appLogger.e('Repository Data Type Mismatch: $e');
+    } on TypeError catch (e, t) {
+      appLogger.e('Repository Data Type Mismatch: $e \n$t');
       return const Left(ParseFailure('Unexpected data format from server'));
-    } catch (e) {
-      appLogger.e('Unexpected Repository Error: $e');
+    } catch (e, t) {
+      appLogger.e('Unexpected Repository Error: $e \n$t');
       return Left(UnknownFailure(e.toString()));
     }
   }

@@ -34,7 +34,7 @@ abstract class AuthRemoteDataSource {
   Future<BaseResponseModel<void>> deleteAccount(@Body() DeleteAccountRequestModel? request);
 
   @GET('/v1/user')
-  Future<BaseResponseModel<UserModel>> getUserById(@Path('id') String id);
+  Future<BaseResponseModel<UserModel>> getUserById(@Query('id') String id);
 
   @POST('/v1/auth/refresh')
   Future<BaseResponseModel<LoginModel>> refreshToken(@Field('refreshToken') String refreshToken);

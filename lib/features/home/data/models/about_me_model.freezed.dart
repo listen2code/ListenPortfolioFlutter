@@ -347,7 +347,7 @@ as List<LanguageItemModel>,
 /// @nodoc
 mixin _$AboutMeStatModel {
 
- String? get id; String? get year; String? get label; List<String> get tags;
+@ToStringConverter() String? get id; String? get year; String? get label; List<String> get tags;
 /// Create a copy of AboutMeStatModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -380,7 +380,7 @@ abstract mixin class $AboutMeStatModelCopyWith<$Res>  {
   factory $AboutMeStatModelCopyWith(AboutMeStatModel value, $Res Function(AboutMeStatModel) _then) = _$AboutMeStatModelCopyWithImpl;
 @useResult
 $Res call({
- String? id, String? year, String? label, List<String> tags
+@ToStringConverter() String? id, String? year, String? label, List<String> tags
 });
 
 
@@ -488,7 +488,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? id,  String? year,  String? label,  List<String> tags)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@ToStringConverter()  String? id,  String? year,  String? label,  List<String> tags)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AboutMeStatModel() when $default != null:
 return $default(_that.id,_that.year,_that.label,_that.tags);case _:
@@ -509,7 +509,7 @@ return $default(_that.id,_that.year,_that.label,_that.tags);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? id,  String? year,  String? label,  List<String> tags)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@ToStringConverter()  String? id,  String? year,  String? label,  List<String> tags)  $default,) {final _that = this;
 switch (_that) {
 case _AboutMeStatModel():
 return $default(_that.id,_that.year,_that.label,_that.tags);case _:
@@ -529,7 +529,7 @@ return $default(_that.id,_that.year,_that.label,_that.tags);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? id,  String? year,  String? label,  List<String> tags)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@ToStringConverter()  String? id,  String? year,  String? label,  List<String> tags)?  $default,) {final _that = this;
 switch (_that) {
 case _AboutMeStatModel() when $default != null:
 return $default(_that.id,_that.year,_that.label,_that.tags);case _:
@@ -544,10 +544,10 @@ return $default(_that.id,_that.year,_that.label,_that.tags);case _:
 @JsonSerializable()
 
 class _AboutMeStatModel implements AboutMeStatModel {
-  const _AboutMeStatModel({this.id, this.year, this.label, final  List<String> tags = const []}): _tags = tags;
+  const _AboutMeStatModel({@ToStringConverter() this.id, this.year, this.label, final  List<String> tags = const []}): _tags = tags;
   factory _AboutMeStatModel.fromJson(Map<String, dynamic> json) => _$AboutMeStatModelFromJson(json);
 
-@override final  String? id;
+@override@ToStringConverter() final  String? id;
 @override final  String? year;
 @override final  String? label;
  final  List<String> _tags;
@@ -591,7 +591,7 @@ abstract mixin class _$AboutMeStatModelCopyWith<$Res> implements $AboutMeStatMod
   factory _$AboutMeStatModelCopyWith(_AboutMeStatModel value, $Res Function(_AboutMeStatModel) _then) = __$AboutMeStatModelCopyWithImpl;
 @override @useResult
 $Res call({
- String? id, String? year, String? label, List<String> tags
+@ToStringConverter() String? id, String? year, String? label, List<String> tags
 });
 
 

@@ -30,6 +30,8 @@ class OverviewViewModel extends _$OverviewViewModel with ViewModelMixin<Overview
   }
 
   Future<void> _onRefresh() async {
+    if (authManager.state.isGuest) return;
+
     await callAll(
       [ref.execute(getProjectsUseCaseProvider), ref.execute(getAboutMeUseCaseProvider)],
       showLoading: true,

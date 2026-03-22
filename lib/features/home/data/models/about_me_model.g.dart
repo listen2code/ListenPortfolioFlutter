@@ -108,7 +108,7 @@ _AboutMeStatModel _$AboutMeStatModelFromJson(Map json) => $checkedCreate(
   json,
   ($checkedConvert) {
     final val = _AboutMeStatModel(
-      id: $checkedConvert('id', (v) => v as String?),
+      id: $checkedConvert('id', (v) => const ToStringConverter().fromJson(v)),
       year: $checkedConvert('year', (v) => v as String?),
       label: $checkedConvert('label', (v) => v as String?),
       tags: $checkedConvert(
@@ -123,7 +123,7 @@ _AboutMeStatModel _$AboutMeStatModelFromJson(Map json) => $checkedCreate(
 
 Map<String, dynamic> _$AboutMeStatModelToJson(_AboutMeStatModel instance) =>
     <String, dynamic>{
-      'id': instance.id,
+      'id': const ToStringConverter().toJson(instance.id),
       'year': instance.year,
       'label': instance.label,
       'tags': instance.tags,

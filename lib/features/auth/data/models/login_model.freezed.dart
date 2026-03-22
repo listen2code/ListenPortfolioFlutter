@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$LoginModel {
 
- String? get userId; String? get token; String? get refreshToken;
+@ToStringConverter() String? get userId; String? get token; String? get refreshToken;
 /// Create a copy of LoginModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $LoginModelCopyWith<$Res>  {
   factory $LoginModelCopyWith(LoginModel value, $Res Function(LoginModel) _then) = _$LoginModelCopyWithImpl;
 @useResult
 $Res call({
- String? userId, String? token, String? refreshToken
+@ToStringConverter() String? userId, String? token, String? refreshToken
 });
 
 
@@ -155,7 +155,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? userId,  String? token,  String? refreshToken)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@ToStringConverter()  String? userId,  String? token,  String? refreshToken)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _LoginModel() when $default != null:
 return $default(_that.userId,_that.token,_that.refreshToken);case _:
@@ -176,7 +176,7 @@ return $default(_that.userId,_that.token,_that.refreshToken);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? userId,  String? token,  String? refreshToken)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@ToStringConverter()  String? userId,  String? token,  String? refreshToken)  $default,) {final _that = this;
 switch (_that) {
 case _LoginModel():
 return $default(_that.userId,_that.token,_that.refreshToken);case _:
@@ -196,7 +196,7 @@ return $default(_that.userId,_that.token,_that.refreshToken);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? userId,  String? token,  String? refreshToken)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@ToStringConverter()  String? userId,  String? token,  String? refreshToken)?  $default,) {final _that = this;
 switch (_that) {
 case _LoginModel() when $default != null:
 return $default(_that.userId,_that.token,_that.refreshToken);case _:
@@ -211,10 +211,10 @@ return $default(_that.userId,_that.token,_that.refreshToken);case _:
 @JsonSerializable()
 
 class _LoginModel implements LoginModel {
-  const _LoginModel({this.userId, this.token, this.refreshToken});
+  const _LoginModel({@ToStringConverter() this.userId, this.token, this.refreshToken});
   factory _LoginModel.fromJson(Map<String, dynamic> json) => _$LoginModelFromJson(json);
 
-@override final  String? userId;
+@override@ToStringConverter() final  String? userId;
 @override final  String? token;
 @override final  String? refreshToken;
 
@@ -251,7 +251,7 @@ abstract mixin class _$LoginModelCopyWith<$Res> implements $LoginModelCopyWith<$
   factory _$LoginModelCopyWith(_LoginModel value, $Res Function(_LoginModel) _then) = __$LoginModelCopyWithImpl;
 @override @useResult
 $Res call({
- String? userId, String? token, String? refreshToken
+@ToStringConverter() String? userId, String? token, String? refreshToken
 });
 
 

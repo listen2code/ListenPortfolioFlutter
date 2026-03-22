@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserModel {
 
- String? get id; String? get name; String? get location; String? get email; String? get avatarUrl;
+@ToStringConverter() String? get id; String? get name; String? get location; String? get email; String? get avatarUrl;
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $UserModelCopyWith<$Res>  {
   factory $UserModelCopyWith(UserModel value, $Res Function(UserModel) _then) = _$UserModelCopyWithImpl;
 @useResult
 $Res call({
- String? id, String? name, String? location, String? email, String? avatarUrl
+@ToStringConverter() String? id, String? name, String? location, String? email, String? avatarUrl
 });
 
 
@@ -157,7 +157,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? id,  String? name,  String? location,  String? email,  String? avatarUrl)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@ToStringConverter()  String? id,  String? name,  String? location,  String? email,  String? avatarUrl)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserModel() when $default != null:
 return $default(_that.id,_that.name,_that.location,_that.email,_that.avatarUrl);case _:
@@ -178,7 +178,7 @@ return $default(_that.id,_that.name,_that.location,_that.email,_that.avatarUrl);
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? id,  String? name,  String? location,  String? email,  String? avatarUrl)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@ToStringConverter()  String? id,  String? name,  String? location,  String? email,  String? avatarUrl)  $default,) {final _that = this;
 switch (_that) {
 case _UserModel():
 return $default(_that.id,_that.name,_that.location,_that.email,_that.avatarUrl);case _:
@@ -198,7 +198,7 @@ return $default(_that.id,_that.name,_that.location,_that.email,_that.avatarUrl);
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? id,  String? name,  String? location,  String? email,  String? avatarUrl)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@ToStringConverter()  String? id,  String? name,  String? location,  String? email,  String? avatarUrl)?  $default,) {final _that = this;
 switch (_that) {
 case _UserModel() when $default != null:
 return $default(_that.id,_that.name,_that.location,_that.email,_that.avatarUrl);case _:
@@ -213,10 +213,10 @@ return $default(_that.id,_that.name,_that.location,_that.email,_that.avatarUrl);
 @JsonSerializable()
 
 class _UserModel implements UserModel {
-  const _UserModel({this.id, this.name, this.location, this.email, this.avatarUrl});
+  const _UserModel({@ToStringConverter() this.id, this.name, this.location, this.email, this.avatarUrl});
   factory _UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
 
-@override final  String? id;
+@override@ToStringConverter() final  String? id;
 @override final  String? name;
 @override final  String? location;
 @override final  String? email;
@@ -255,7 +255,7 @@ abstract mixin class _$UserModelCopyWith<$Res> implements $UserModelCopyWith<$Re
   factory _$UserModelCopyWith(_UserModel value, $Res Function(_UserModel) _then) = __$UserModelCopyWithImpl;
 @override @useResult
 $Res call({
- String? id, String? name, String? location, String? email, String? avatarUrl
+@ToStringConverter() String? id, String? name, String? location, String? email, String? avatarUrl
 });
 
 

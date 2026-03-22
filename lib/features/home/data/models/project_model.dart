@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:listen_portfolio_flutter/core/utils/json_converters.dart';
 
 part 'project_model.freezed.dart';
 part 'project_model.g.dart';
@@ -6,7 +7,7 @@ part 'project_model.g.dart';
 @freezed
 abstract class ProjectModel with _$ProjectModel {
   const factory ProjectModel({
-    String? id,
+    @ToStringConverter() String? id,
     String? title,
     String? subtitle,
     String? desc,

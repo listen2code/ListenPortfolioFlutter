@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:listen_portfolio_flutter/core/utils/json_converters.dart';
 
 part 'about_me_model.freezed.dart';
 part 'about_me_model.g.dart';
@@ -25,8 +26,12 @@ abstract class AboutMeModel with _$AboutMeModel {
 
 @freezed
 abstract class AboutMeStatModel with _$AboutMeStatModel {
-  const factory AboutMeStatModel({String? id, String? year, String? label, @Default([]) List<String> tags}) =
-      _AboutMeStatModel;
+  const factory AboutMeStatModel({
+    @ToStringConverter() String? id,
+    String? year,
+    String? label,
+    @Default([]) List<String> tags,
+  }) = _AboutMeStatModel;
 
   factory AboutMeStatModel.fromJson(Map<String, Object?> json) => _$AboutMeStatModelFromJson(json);
 }

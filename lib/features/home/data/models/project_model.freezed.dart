@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ProjectModel {
 
- String? get id; String? get title; String? get subtitle; String? get desc; String? get imageUrl; String? get githubUrl; List<String> get techStack;
+@ToStringConverter() String? get id; String? get title; String? get subtitle; String? get desc; String? get imageUrl; String? get githubUrl; List<String> get techStack;
 /// Create a copy of ProjectModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $ProjectModelCopyWith<$Res>  {
   factory $ProjectModelCopyWith(ProjectModel value, $Res Function(ProjectModel) _then) = _$ProjectModelCopyWithImpl;
 @useResult
 $Res call({
- String? id, String? title, String? subtitle, String? desc, String? imageUrl, String? githubUrl, List<String> techStack
+@ToStringConverter() String? id, String? title, String? subtitle, String? desc, String? imageUrl, String? githubUrl, List<String> techStack
 });
 
 
@@ -159,7 +159,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? id,  String? title,  String? subtitle,  String? desc,  String? imageUrl,  String? githubUrl,  List<String> techStack)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@ToStringConverter()  String? id,  String? title,  String? subtitle,  String? desc,  String? imageUrl,  String? githubUrl,  List<String> techStack)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ProjectModel() when $default != null:
 return $default(_that.id,_that.title,_that.subtitle,_that.desc,_that.imageUrl,_that.githubUrl,_that.techStack);case _:
@@ -180,7 +180,7 @@ return $default(_that.id,_that.title,_that.subtitle,_that.desc,_that.imageUrl,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? id,  String? title,  String? subtitle,  String? desc,  String? imageUrl,  String? githubUrl,  List<String> techStack)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@ToStringConverter()  String? id,  String? title,  String? subtitle,  String? desc,  String? imageUrl,  String? githubUrl,  List<String> techStack)  $default,) {final _that = this;
 switch (_that) {
 case _ProjectModel():
 return $default(_that.id,_that.title,_that.subtitle,_that.desc,_that.imageUrl,_that.githubUrl,_that.techStack);case _:
@@ -200,7 +200,7 @@ return $default(_that.id,_that.title,_that.subtitle,_that.desc,_that.imageUrl,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? id,  String? title,  String? subtitle,  String? desc,  String? imageUrl,  String? githubUrl,  List<String> techStack)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@ToStringConverter()  String? id,  String? title,  String? subtitle,  String? desc,  String? imageUrl,  String? githubUrl,  List<String> techStack)?  $default,) {final _that = this;
 switch (_that) {
 case _ProjectModel() when $default != null:
 return $default(_that.id,_that.title,_that.subtitle,_that.desc,_that.imageUrl,_that.githubUrl,_that.techStack);case _:
@@ -215,10 +215,10 @@ return $default(_that.id,_that.title,_that.subtitle,_that.desc,_that.imageUrl,_t
 @JsonSerializable()
 
 class _ProjectModel implements ProjectModel {
-  const _ProjectModel({this.id, this.title, this.subtitle, this.desc, this.imageUrl, this.githubUrl, final  List<String> techStack = const []}): _techStack = techStack;
+  const _ProjectModel({@ToStringConverter() this.id, this.title, this.subtitle, this.desc, this.imageUrl, this.githubUrl, final  List<String> techStack = const []}): _techStack = techStack;
   factory _ProjectModel.fromJson(Map<String, dynamic> json) => _$ProjectModelFromJson(json);
 
-@override final  String? id;
+@override@ToStringConverter() final  String? id;
 @override final  String? title;
 @override final  String? subtitle;
 @override final  String? desc;
@@ -265,7 +265,7 @@ abstract mixin class _$ProjectModelCopyWith<$Res> implements $ProjectModelCopyWi
   factory _$ProjectModelCopyWith(_ProjectModel value, $Res Function(_ProjectModel) _then) = __$ProjectModelCopyWithImpl;
 @override @useResult
 $Res call({
- String? id, String? title, String? subtitle, String? desc, String? imageUrl, String? githubUrl, List<String> techStack
+@ToStringConverter() String? id, String? title, String? subtitle, String? desc, String? imageUrl, String? githubUrl, List<String> techStack
 });
 
 
