@@ -41,7 +41,7 @@ void main() {
     // CRITICAL: Keep the auto-dispose provider alive
     container.listen(loginViewModelProvider, (previous, next) {});
 
-    registerFallbackValue(LoginRequestModel(username: '', password: ''));
+    registerFallbackValue(LoginRequestModel(userName: '', password: ''));
   });
 
   tearDown(() => container.dispose());

@@ -5,8 +5,11 @@ part 'change_password_request_model.g.dart';
 
 @freezed
 abstract class ChangePasswordRequestModel with _$ChangePasswordRequestModel {
-  const factory ChangePasswordRequestModel({required String oldPassword, required String newPassword}) =
-      _ChangePasswordRequestModel;
+  const factory ChangePasswordRequestModel({
+    required String userId,
+    required String oldPassword,
+    required String newPassword,
+  }) = _ChangePasswordRequestModel;
 
   factory ChangePasswordRequestModel.fromJson(Map<String, Object?> json) =>
       _$ChangePasswordRequestModelFromJson(json);

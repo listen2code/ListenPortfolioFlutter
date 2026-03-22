@@ -3,8 +3,8 @@ import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/datasources/auth_local_data_source.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/get_current_user_request_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/login_request_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/login_model.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/login_request_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:mocktail/mocktail.dart';
@@ -32,7 +32,7 @@ void main() {
 
     // Register fallback values for mocktail
     registerFallbackValue(UserModel(id: '', name: '', email: ''));
-    registerFallbackValue(const LoginRequestModel(username: '', password: ''));
+    registerFallbackValue(const LoginRequestModel(userName: '', password: ''));
   });
 
   group('AuthRepositoryImpl - login', () {
@@ -54,7 +54,7 @@ void main() {
 
       // Act
       final result = await repository.login(
-        param: LoginRequestModel(username: testUsername, password: testPassword),
+        param: LoginRequestModel(userName: testUsername, password: testPassword),
       );
 
       // Assert

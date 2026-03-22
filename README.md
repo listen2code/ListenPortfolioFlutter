@@ -10,6 +10,7 @@ A Flutter project Of My Resume
     * all code can be config in core
     * BaseResponseModel serverError
 * function
+    * crash dialog
     * delete account
     * notification
     * other pages, use

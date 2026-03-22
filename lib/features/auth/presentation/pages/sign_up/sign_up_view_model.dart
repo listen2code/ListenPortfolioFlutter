@@ -72,7 +72,7 @@ class SignUpViewModel extends _$SignUpViewModel with ViewModelMixin<SignUpState,
     await call<void>(
       ref.execute(
         signupUseCaseProvider,
-        param: SignupRequestModel(name: state.fullName, email: state.email, password: state.password),
+        param: SignupRequestModel(userName: state.fullName, email: state.email, password: state.password),
       ),
       showLoading: true,
       onSuccess: (_) {

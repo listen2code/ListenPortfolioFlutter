@@ -19,7 +19,7 @@ enum EnvConfigs implements BaseEnvConfig {
   ),
   test(
     env: AppEnvironment.test,
-    baseUrl: 'http://192.168.0.100:9898',
+    baseUrl: 'http://192.168.0.223:8080',
     apiTimeout: 30000,
     connectTimeout: 15000,
     receiveTimeout: 15000,

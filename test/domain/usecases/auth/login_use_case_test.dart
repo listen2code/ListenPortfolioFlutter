@@ -35,7 +35,7 @@ void main() {
       when(
         () => mockRepository.login(
           param: LoginRequestModel(
-            username: any(named: 'username'),
+            userName: any(named: 'username'),
             password: any(named: 'password'),
           ),
         ),
@@ -49,7 +49,7 @@ void main() {
 
       // Act
       final result = await useCase(
-        param: LoginRequestModel(username: testUsername, password: testPassword),
+        param: LoginRequestModel(userName: testUsername, password: testPassword),
       );
 
       // Assert
@@ -58,7 +58,7 @@ void main() {
       // Verify the sequence of calls
       verify(
         () => mockRepository.login(
-          param: LoginRequestModel(username: testUsername, password: testPassword),
+          param: LoginRequestModel(userName: testUsername, password: testPassword),
         ),
       ).called(1);
       verify(
@@ -70,7 +70,7 @@ void main() {
     test('should return ValidationFailure when username is empty', () async {
       // Act
       final result = await useCase(
-        param: LoginRequestModel(username: '', password: testPassword),
+        param: LoginRequestModel(userName: '', password: testPassword),
       );
 
       // Assert
@@ -78,7 +78,7 @@ void main() {
       verifyNever(
         () => mockRepository.login(
           param: LoginRequestModel(
-            username: any(named: 'username'),
+            userName: any(named: 'username'),
             password: any(named: 'password'),
           ),
         ),
@@ -91,7 +91,7 @@ void main() {
       when(
         () => mockRepository.login(
           param: LoginRequestModel(
-            username: any(named: 'username'),
+            userName: any(named: 'username'),
             password: any(named: 'password'),
           ),
         ),
@@ -99,14 +99,14 @@ void main() {
 
       // Act
       final result = await useCase(
-        param: LoginRequestModel(username: testUsername, password: testPassword),
+        param: LoginRequestModel(userName: testUsername, password: testPassword),
       );
 
       // Assert
       expect(result, const Left<Failure, UserModel?>(serverFailure));
       verify(
         () => mockRepository.login(
-          param: LoginRequestModel(username: testUsername, password: testPassword),
+          param: LoginRequestModel(userName: testUsername, password: testPassword),
         ),
       ).called(1);
       verifyNever(

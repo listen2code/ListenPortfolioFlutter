@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ChangePasswordRequestModel {
 
- String get oldPassword; String get newPassword;
+ String get userId; String get oldPassword; String get newPassword;
 /// Create a copy of ChangePasswordRequestModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $ChangePasswordRequestModelCopyWith<ChangePasswordRequestModel> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChangePasswordRequestModel&&(identical(other.oldPassword, oldPassword) || other.oldPassword == oldPassword)&&(identical(other.newPassword, newPassword) || other.newPassword == newPassword));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChangePasswordRequestModel&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.oldPassword, oldPassword) || other.oldPassword == oldPassword)&&(identical(other.newPassword, newPassword) || other.newPassword == newPassword));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,oldPassword,newPassword);
+int get hashCode => Object.hash(runtimeType,userId,oldPassword,newPassword);
 
 @override
 String toString() {
-  return 'ChangePasswordRequestModel(oldPassword: $oldPassword, newPassword: $newPassword)';
+  return 'ChangePasswordRequestModel(userId: $userId, oldPassword: $oldPassword, newPassword: $newPassword)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $ChangePasswordRequestModelCopyWith<$Res>  {
   factory $ChangePasswordRequestModelCopyWith(ChangePasswordRequestModel value, $Res Function(ChangePasswordRequestModel) _then) = _$ChangePasswordRequestModelCopyWithImpl;
 @useResult
 $Res call({
- String oldPassword, String newPassword
+ String userId, String oldPassword, String newPassword
 });
 
 
@@ -65,9 +65,10 @@ class _$ChangePasswordRequestModelCopyWithImpl<$Res>
 
 /// Create a copy of ChangePasswordRequestModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? oldPassword = null,Object? newPassword = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? userId = null,Object? oldPassword = null,Object? newPassword = null,}) {
   return _then(_self.copyWith(
-oldPassword: null == oldPassword ? _self.oldPassword : oldPassword // ignore: cast_nullable_to_non_nullable
+userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as String,oldPassword: null == oldPassword ? _self.oldPassword : oldPassword // ignore: cast_nullable_to_non_nullable
 as String,newPassword: null == newPassword ? _self.newPassword : newPassword // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -154,10 +155,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String oldPassword,  String newPassword)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String userId,  String oldPassword,  String newPassword)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ChangePasswordRequestModel() when $default != null:
-return $default(_that.oldPassword,_that.newPassword);case _:
+return $default(_that.userId,_that.oldPassword,_that.newPassword);case _:
   return orElse();
 
 }
@@ -175,10 +176,10 @@ return $default(_that.oldPassword,_that.newPassword);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String oldPassword,  String newPassword)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String userId,  String oldPassword,  String newPassword)  $default,) {final _that = this;
 switch (_that) {
 case _ChangePasswordRequestModel():
-return $default(_that.oldPassword,_that.newPassword);case _:
+return $default(_that.userId,_that.oldPassword,_that.newPassword);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -195,10 +196,10 @@ return $default(_that.oldPassword,_that.newPassword);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String oldPassword,  String newPassword)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String userId,  String oldPassword,  String newPassword)?  $default,) {final _that = this;
 switch (_that) {
 case _ChangePasswordRequestModel() when $default != null:
-return $default(_that.oldPassword,_that.newPassword);case _:
+return $default(_that.userId,_that.oldPassword,_that.newPassword);case _:
   return null;
 
 }
@@ -210,9 +211,10 @@ return $default(_that.oldPassword,_that.newPassword);case _:
 @JsonSerializable()
 
 class _ChangePasswordRequestModel implements ChangePasswordRequestModel {
-  const _ChangePasswordRequestModel({required this.oldPassword, required this.newPassword});
+  const _ChangePasswordRequestModel({required this.userId, required this.oldPassword, required this.newPassword});
   factory _ChangePasswordRequestModel.fromJson(Map<String, dynamic> json) => _$ChangePasswordRequestModelFromJson(json);
 
+@override final  String userId;
 @override final  String oldPassword;
 @override final  String newPassword;
 
@@ -229,16 +231,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ChangePasswordRequestModel&&(identical(other.oldPassword, oldPassword) || other.oldPassword == oldPassword)&&(identical(other.newPassword, newPassword) || other.newPassword == newPassword));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ChangePasswordRequestModel&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.oldPassword, oldPassword) || other.oldPassword == oldPassword)&&(identical(other.newPassword, newPassword) || other.newPassword == newPassword));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,oldPassword,newPassword);
+int get hashCode => Object.hash(runtimeType,userId,oldPassword,newPassword);
 
 @override
 String toString() {
-  return 'ChangePasswordRequestModel(oldPassword: $oldPassword, newPassword: $newPassword)';
+  return 'ChangePasswordRequestModel(userId: $userId, oldPassword: $oldPassword, newPassword: $newPassword)';
 }
 
 
@@ -249,7 +251,7 @@ abstract mixin class _$ChangePasswordRequestModelCopyWith<$Res> implements $Chan
   factory _$ChangePasswordRequestModelCopyWith(_ChangePasswordRequestModel value, $Res Function(_ChangePasswordRequestModel) _then) = __$ChangePasswordRequestModelCopyWithImpl;
 @override @useResult
 $Res call({
- String oldPassword, String newPassword
+ String userId, String oldPassword, String newPassword
 });
 
 
@@ -266,9 +268,10 @@ class __$ChangePasswordRequestModelCopyWithImpl<$Res>
 
 /// Create a copy of ChangePasswordRequestModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? oldPassword = null,Object? newPassword = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? userId = null,Object? oldPassword = null,Object? newPassword = null,}) {
   return _then(_ChangePasswordRequestModel(
-oldPassword: null == oldPassword ? _self.oldPassword : oldPassword // ignore: cast_nullable_to_non_nullable
+userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as String,oldPassword: null == oldPassword ? _self.oldPassword : oldPassword // ignore: cast_nullable_to_non_nullable
 as String,newPassword: null == newPassword ? _self.newPassword : newPassword // ignore: cast_nullable_to_non_nullable
 as String,
   ));

@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SignupRequestModel {
 
- String get name; String get email; String get password;
+ String get userName; String get email; String get password;
 /// Create a copy of SignupRequestModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $SignupRequestModelCopyWith<SignupRequestModel> get copyWith => _$SignupRequestM
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SignupRequestModel&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SignupRequestModel&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,email,password);
+int get hashCode => Object.hash(runtimeType,userName,email,password);
 
 @override
 String toString() {
-  return 'SignupRequestModel(name: $name, email: $email, password: $password)';
+  return 'SignupRequestModel(userName: $userName, email: $email, password: $password)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $SignupRequestModelCopyWith<$Res>  {
   factory $SignupRequestModelCopyWith(SignupRequestModel value, $Res Function(SignupRequestModel) _then) = _$SignupRequestModelCopyWithImpl;
 @useResult
 $Res call({
- String name, String email, String password
+ String userName, String email, String password
 });
 
 
@@ -65,9 +65,9 @@ class _$SignupRequestModelCopyWithImpl<$Res>
 
 /// Create a copy of SignupRequestModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? email = null,Object? password = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? userName = null,Object? email = null,Object? password = null,}) {
   return _then(_self.copyWith(
-name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+userName: null == userName ? _self.userName : userName // ignore: cast_nullable_to_non_nullable
 as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
 as String,
@@ -155,10 +155,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  String email,  String password)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String userName,  String email,  String password)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SignupRequestModel() when $default != null:
-return $default(_that.name,_that.email,_that.password);case _:
+return $default(_that.userName,_that.email,_that.password);case _:
   return orElse();
 
 }
@@ -176,10 +176,10 @@ return $default(_that.name,_that.email,_that.password);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  String email,  String password)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String userName,  String email,  String password)  $default,) {final _that = this;
 switch (_that) {
 case _SignupRequestModel():
-return $default(_that.name,_that.email,_that.password);case _:
+return $default(_that.userName,_that.email,_that.password);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -196,10 +196,10 @@ return $default(_that.name,_that.email,_that.password);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  String email,  String password)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String userName,  String email,  String password)?  $default,) {final _that = this;
 switch (_that) {
 case _SignupRequestModel() when $default != null:
-return $default(_that.name,_that.email,_that.password);case _:
+return $default(_that.userName,_that.email,_that.password);case _:
   return null;
 
 }
@@ -211,10 +211,10 @@ return $default(_that.name,_that.email,_that.password);case _:
 @JsonSerializable()
 
 class _SignupRequestModel implements SignupRequestModel {
-  const _SignupRequestModel({required this.name, required this.email, required this.password});
+  const _SignupRequestModel({required this.userName, required this.email, required this.password});
   factory _SignupRequestModel.fromJson(Map<String, dynamic> json) => _$SignupRequestModelFromJson(json);
 
-@override final  String name;
+@override final  String userName;
 @override final  String email;
 @override final  String password;
 
@@ -231,16 +231,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SignupRequestModel&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SignupRequestModel&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,email,password);
+int get hashCode => Object.hash(runtimeType,userName,email,password);
 
 @override
 String toString() {
-  return 'SignupRequestModel(name: $name, email: $email, password: $password)';
+  return 'SignupRequestModel(userName: $userName, email: $email, password: $password)';
 }
 
 
@@ -251,7 +251,7 @@ abstract mixin class _$SignupRequestModelCopyWith<$Res> implements $SignupReques
   factory _$SignupRequestModelCopyWith(_SignupRequestModel value, $Res Function(_SignupRequestModel) _then) = __$SignupRequestModelCopyWithImpl;
 @override @useResult
 $Res call({
- String name, String email, String password
+ String userName, String email, String password
 });
 
 
@@ -268,9 +268,9 @@ class __$SignupRequestModelCopyWithImpl<$Res>
 
 /// Create a copy of SignupRequestModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? email = null,Object? password = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? userName = null,Object? email = null,Object? password = null,}) {
   return _then(_SignupRequestModel(
-name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+userName: null == userName ? _self.userName : userName // ignore: cast_nullable_to_non_nullable
 as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
 as String,

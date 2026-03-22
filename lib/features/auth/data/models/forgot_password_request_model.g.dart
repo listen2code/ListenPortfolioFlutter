@@ -8,9 +8,12 @@ part of 'forgot_password_request_model.dart';
 
 _ForgotPasswordRequestModel _$ForgotPasswordRequestModelFromJson(Map json) =>
     $checkedCreate('_ForgotPasswordRequestModel', json, ($checkedConvert) {
-      final val = _ForgotPasswordRequestModel(email: $checkedConvert('email', (v) => v as String));
+      final val = _ForgotPasswordRequestModel(
+        email: $checkedConvert('email', (v) => v as String),
+      );
       return val;
     });
 
-Map<String, dynamic> _$ForgotPasswordRequestModelToJson(_ForgotPasswordRequestModel instance) =>
-    <String, dynamic>{'email': instance.email};
+Map<String, dynamic> _$ForgotPasswordRequestModelToJson(
+  _ForgotPasswordRequestModel instance,
+) => <String, dynamic>{'email': instance.email};

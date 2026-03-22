@@ -9,7 +9,7 @@ part of 'signup_request_model.dart';
 _SignupRequestModel _$SignupRequestModelFromJson(Map json) =>
     $checkedCreate('_SignupRequestModel', json, ($checkedConvert) {
       final val = _SignupRequestModel(
-        name: $checkedConvert('name', (v) => v as String),
+        userName: $checkedConvert('userName', (v) => v as String),
         email: $checkedConvert('email', (v) => v as String),
         password: $checkedConvert('password', (v) => v as String),
       );
@@ -18,7 +18,7 @@ _SignupRequestModel _$SignupRequestModelFromJson(Map json) =>
 
 Map<String, dynamic> _$SignupRequestModelToJson(_SignupRequestModel instance) =>
     <String, dynamic>{
-      'name': instance.name,
+      'userName': instance.userName,
       'email': instance.email,
       'password': instance.password,
     };

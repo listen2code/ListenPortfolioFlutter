@@ -9,7 +9,7 @@ part of 'login_request_model.dart';
 _LoginRequestModel _$LoginRequestModelFromJson(Map json) =>
     $checkedCreate('_LoginRequestModel', json, ($checkedConvert) {
       final val = _LoginRequestModel(
-        username: $checkedConvert('username', (v) => v as String),
+        userName: $checkedConvert('userName', (v) => v as String),
         password: $checkedConvert('password', (v) => v as String),
       );
       return val;
@@ -17,6 +17,6 @@ _LoginRequestModel _$LoginRequestModelFromJson(Map json) =>
 
 Map<String, dynamic> _$LoginRequestModelToJson(_LoginRequestModel instance) =>
     <String, dynamic>{
-      'username': instance.username,
+      'userName': instance.userName,
       'password': instance.password,
     };
