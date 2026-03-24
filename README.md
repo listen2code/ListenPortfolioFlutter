@@ -1,6 +1,16 @@
-# listen_portfolio_flutter
+# ListenPortfolioFlutter
 
-A Flutter project Of My Resume
+This is a personal portfolio project built with Flutter, showcasing a modern and robust mobile application architecture. The project demonstrates best practices in Flutter development, including Clean Architecture, Riverpod for state management, and a comprehensive set of tools for building scalable and maintainable applications.
+
+## Features
+
+*   **Clean Architecture:** The project follows a strict Clean Architecture pattern, separating the codebase into `core`, `features`, `data`, `domain`, and `presentation` layers.
+*   **State Management:** Utilizes `flutter_riverpod` for efficient and scalable state management.
+*   **Networking:** Implements a robust networking layer using `dio` and `retrofit` for type-safe API calls, with a built-in `AuthInterceptor` for handling authentication.
+*   **Code Generation:** Leverages code generation tools like `freezed`, `json_serializable`, and `riverpod_generator` to minimize boilerplate code.
+*   **Routing:** Uses `go_router` for declarative and flexible navigation.
+*   **Local Mock Server:** Includes a local mock server for development and testing, allowing the frontend to be developed independently of the backend.
+*   **Comprehensive Core Layer:** A well-defined `core` layer provides common functionalities such as error handling, dependency injection, internationalization, and utility services.
 
 ## todo
 
@@ -10,8 +20,6 @@ A Flutter project Of My Resume
     * all code can be config in core
     * BaseResponseModel serverError
 * function
-    * delete account
-    * notification
     * other pages, use
     * switch env: input url; mock api; config each api; separate mock
     * apm: layout check; lag check; app launch; apk size; net inspector; FPS; Cpu usage; memory; 
