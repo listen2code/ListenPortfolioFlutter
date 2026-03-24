@@ -43,6 +43,14 @@ class _DefaultApiDelegate implements IApiInterceptorDelegate {
 class ApiClient {
   ApiClient._();
 
+  static const String signUp = '/v1/auth/signUp';
+  static const String login = '/v1/auth/login';
+  static const String forgotPassword = '/v1/auth/forgot-password';
+  static const String refreshToken = '/v1/auth/refresh';
+  static const String projects = '/v1/projects';
+
+  static const List<String> visitorPath = [signUp, login, forgotPassword, refreshToken, projects];
+
   /// Key to specify that a request does not require authentication.
   /// Usage: dio.get(path, options: Options(extra: {ApiClient.kNoAuthKey: true}))
   static const String kNoAuthKey = 'no_auth';
@@ -180,7 +188,7 @@ class _AuthInterceptor extends Interceptor {
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
     // Check if the request explicitly disables authentication.
     final bool noAuth = options.extra[ApiClient.kNoAuthKey] == true;
-    if (!noAuth) {
+    if (!noAuth && ApiClient.visitorPath.contains(options.path) == false) {
       await ApiClient.delegate.onInjectAuthHeader(options);
     }
     handler.next(options);

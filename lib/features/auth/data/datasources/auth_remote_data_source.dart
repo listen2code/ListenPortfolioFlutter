@@ -15,16 +15,16 @@ part 'auth_remote_data_source.g.dart';
 abstract class AuthRemoteDataSource {
   factory AuthRemoteDataSource(Dio dio, {String baseUrl}) = _AuthRemoteDataSource;
 
-  @POST('/v1/auth/login')
+  @POST(ApiClient.login)
   Future<BaseResponseModel<LoginModel>> login(@Body() LoginRequestModel? request);
 
-  @POST('/v1/auth/signUp')
+  @POST(ApiClient.signUp)
   Future<BaseResponseModel<void>> signUp(@Body() SignupRequestModel? request);
 
   @POST('/v1/auth/logout')
   Future<BaseResponseModel<void>> logout();
 
-  @POST('/v1/auth/forgot-password')
+  @POST((ApiClient.forgotPassword))
   Future<BaseResponseModel<void>> forgotPassword(@Body() ForgotPasswordRequestModel? request);
 
   @POST('/v1/auth/change-password')
@@ -36,6 +36,6 @@ abstract class AuthRemoteDataSource {
   @GET('/v1/user')
   Future<BaseResponseModel<UserModel>> getUserById(@Query('id') String id);
 
-  @POST('/v1/auth/refresh')
+  @POST(ApiClient.refreshToken)
   Future<BaseResponseModel<LoginModel>> refreshToken(@Field('refreshToken') String refreshToken);
 }
