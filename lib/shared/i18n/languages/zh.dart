@@ -80,6 +80,7 @@ final Map<String, String> zh = {
   I18nKeys.resetLinkSent: '密码重置链接已发送至',
   I18nKeys.invalidEmail: '请输入有效的邮箱地址',
   I18nKeys.overview: '概览',
+  I18nKeys.projects: '项目',
   I18nKeys.aboutMe: '关于我',
   I18nKeys.architecture: '架构设计',
   I18nKeys.logout: '退出登录',

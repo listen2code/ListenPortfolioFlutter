@@ -95,6 +95,7 @@ class I18nKeys {
   static const String invalidEmail = 'Please enter a valid email address';
 
   // Home Page
+  static const String projects = 'Projects';
   static const String overview = 'Overview';
   static const String aboutMe = 'About Me';
   static const String architecture = 'Architecture';

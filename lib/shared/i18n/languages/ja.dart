@@ -80,6 +80,7 @@ final Map<String, String> ja = {
   I18nKeys.resetLinkSent: 'リセットリンクを送信しました：',
   I18nKeys.invalidEmail: '有効なメールアドレスを入力してください',
   I18nKeys.overview: '概要',
+  I18nKeys.projects: 'プロジェクト',
   I18nKeys.aboutMe: 'プロフィール',
   I18nKeys.architecture: 'アーキテクチャ',
   I18nKeys.logout: 'ログアウト',
