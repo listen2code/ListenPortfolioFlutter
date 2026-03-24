@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_portfolio_flutter/features/settings/presentation/pages/crash_log_list/view_log_effect.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_portfolio_flutter/uikit/widgets/common_dialog.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -125,9 +126,8 @@ class CrashLogListViewModel extends _$CrashLogListViewModel
   Future<void> _onViewLog(File file) async {
     emitEffect(LoadingEffect(true));
     try {
-      final content = await file.readAsString();
       emitEffect(LoadingEffect(false));
-      emitEffect(MessageEffect.dialog(content, title: file.path.split('/').last));
+      emitEffect(ViewLogEffect(file));
     } catch (e) {
       emitEffect(LoadingEffect(false));
       emitEffect(MessageEffect.error(e.toString()));
