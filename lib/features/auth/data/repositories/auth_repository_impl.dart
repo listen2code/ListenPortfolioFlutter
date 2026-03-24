@@ -90,8 +90,7 @@ class AuthRepositoryImpl with BaseRepository implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, void>> deleteAccount({required DeleteAccountRequestModel? param}) {
-    // TODO: implement deleteAccount
-    throw UnimplementedError();
+  Future<Either<Failure, void>> deleteAccount({required DeleteAccountRequestModel? param}) async {
+    return await safeCall<void>(call: () => remoteDataSource.deleteAccount(param));
   }
 }

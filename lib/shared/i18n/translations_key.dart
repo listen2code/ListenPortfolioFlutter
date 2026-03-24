@@ -185,6 +185,7 @@ class I18nKeys {
   static const String deleteAccountWarningIrreversible = 'Account cannot be recovered.';
   static const String deleteAccountWarningSubscriptions = 'Active subscriptions will be canceled.';
   static const String deleteAccountIUnderstand = 'I understand the consequences.';
+  static const String deleteAccountFailed = 'Failed to delete account. Please try again.';
 
   // General terms
   static const String account = 'Account';

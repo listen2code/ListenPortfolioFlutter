@@ -58,9 +58,8 @@ class ChangePasswordViewModel extends _$ChangePasswordViewModel
     await call<void>(
       ref.execute(
         changePasswordUseCaseProvider,
-        // todo
         param: ChangePasswordRequestModel(
-          userId: "1",
+          userId: authManager.state.user?.id ?? "",
           oldPassword: state.oldPassword,
           newPassword: state.newPassword,
         ),

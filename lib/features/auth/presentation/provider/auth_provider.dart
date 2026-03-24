@@ -4,6 +4,7 @@ import 'package:listen_portfolio_flutter/features/auth/data/datasources/auth_rem
 import 'package:listen_portfolio_flutter/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/repositories/auth_repository.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/usecases/change_password_use_case.dart';
+import 'package:listen_portfolio_flutter/features/auth/domain/usecases/delete_account_use_case.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/usecases/forgot_password_use_case.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/usecases/get_current_user_use_case.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/usecases/login_use_case.dart';
@@ -86,4 +87,11 @@ Future<ChangePasswordUseCase> changePasswordUseCase(Ref ref) async {
 Future<GetCurrentUserUseCase> getCurrentUserUseCase(Ref ref) async {
   final repository = await ref.watch(authRepositoryProvider.future);
   return GetCurrentUserUseCase(repository);
+}
+
+/// Provides DeleteAccountUseCase instance
+@riverpod
+Future<DeleteAccountUseCase> deleteAccountUseCase(Ref ref) async {
+  final repository = await ref.watch(authRepositoryProvider.future);
+  return DeleteAccountUseCase(repository);
 }

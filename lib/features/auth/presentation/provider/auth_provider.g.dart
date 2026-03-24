@@ -430,3 +430,50 @@ final class GetCurrentUserUseCaseProvider
 
 String _$getCurrentUserUseCaseHash() =>
     r'5befefa06ce2b648b012af5ebb103d66dc61ab65';
+
+/// Provides DeleteAccountUseCase instance
+
+@ProviderFor(deleteAccountUseCase)
+final deleteAccountUseCaseProvider = DeleteAccountUseCaseProvider._();
+
+/// Provides DeleteAccountUseCase instance
+
+final class DeleteAccountUseCaseProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<DeleteAccountUseCase>,
+          DeleteAccountUseCase,
+          FutureOr<DeleteAccountUseCase>
+        >
+    with
+        $FutureModifier<DeleteAccountUseCase>,
+        $FutureProvider<DeleteAccountUseCase> {
+  /// Provides DeleteAccountUseCase instance
+  DeleteAccountUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'deleteAccountUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$deleteAccountUseCaseHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<DeleteAccountUseCase> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<DeleteAccountUseCase> create(Ref ref) {
+    return deleteAccountUseCase(ref);
+  }
+}
+
+String _$deleteAccountUseCaseHash() =>
+    r'424ee60a78eea211e7469e0415fde8bfd960bc02';
