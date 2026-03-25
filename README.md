@@ -28,7 +28,7 @@ lib/
 - **MVI Pattern**: Implements Model-View-Intent architecture with clear separation
 - **State Management**: Utilizes Riverpod for reactive state management
 - **UI Components**: Custom widgets with consistent design system
-- **Navigation**: GoRouter for declarative navigation with deep linking support
+- **Navigation**: Custom AppNav + centralized Routes registry (MaterialPageRoute), with login interception support
 
 #### 2. Domain Layer
 - **Use Cases**: Business logic encapsulation with single responsibility
@@ -65,28 +65,26 @@ lib/
 ## 🚀 Key Features
 
 ### Authentication System
-- **Multi-factor Authentication**: Secure login with token-based authentication
-- **Password Management**: Change password, forgot password with email verification
-- **Session Management**: Automatic token refresh and session timeout handling
-- **Account Management**: User profile management and account deletion (Google Play compliant)
+- **Login & Signup**: Token-based authentication with guest mode support
+- **Password Management**: Change password, forgot password
+- **Session Management**: Automatic token refresh on 401 with queued retry
+- **Account Management**: Account deletion flow and related policy pages
 
 ### Portfolio Management
 - **Project Showcase**: Dynamic project display with rich media support
-- **Skills Visualization**: Interactive skills graph with CustomPainter
-- **Experience Timeline**: Professional experience with detailed descriptions
-- **Certifications**: Professional certifications and achievements display
+- **About Me**: Personal info module (login-gated)
+- **Architecture Showcase**: Dedicated page to demonstrate architecture/engineering highlights
 
 ### User Experience
 - **Multi-language Support**: i18n implementation with English, Japanese, and Chinese
-- **Theme Customization**: Dynamic theming with Material You support
-- **Accessibility**: Full accessibility support (a11y) with screen reader compatibility
+- **Theme Customization**: Light/Dark/System modes and runtime switching
 - **Responsive Design**: Adaptive layouts for different screen sizes
 
 ### Developer Features
 - **Environment Switching**: Development, testing, staging, and production environments
 - **Mock API Server**: Local mock server for development without backend dependency
-- **Crash Reporting**: Comprehensive crash logging and reporting system
-- **Performance Monitoring**: Built-in performance metrics and monitoring
+- **Crash Reporting**: Automatic crash log persistence + safe mode reset capability
+- **Diagnostics**: Log overlay, traceId-based logging, and Zone-based performance marks
 
 ## 🛠️ Technical Stack
 
@@ -154,7 +152,10 @@ settings/
     └── pages/
         ├── appearance/   # Theme and appearance settings
         ├── crash_log_list/ # Crash report management
-        └── developer/    # Developer tools and settings
+        ├── delete_account/ # Account deletion flow
+        ├── privacy_policy/ # Privacy policy page
+        ├── terms_of_service/ # Terms of service page
+        └── settings_page.dart # Entry page (env/lang/log overlay/cache tools)
 ```
 
 ## 🌍 Internationalization (i18n)
@@ -173,7 +174,6 @@ settings/
 ## 🎨 Theme System
 
 ### Theme Architecture
-- **Material You**: Dynamic color extraction from wallpaper
 - **Light/Dark Modes**: Complete theme support
 - **Custom Colors**: User-selectable accent colors
 - **Font Size**: Standard and large font options
@@ -217,7 +217,6 @@ settings/
 ### Testing Architecture
 - **Unit Tests**: Business logic validation
 - **Widget Tests**: UI component testing
-- **Integration Tests**: End-to-end feature testing
 - **Mock Strategy**: Comprehensive mocking with Mocktail
 
 ### Testing Tools
@@ -235,7 +234,6 @@ settings/
 - **Version Management**: Automated versioning
 
 ### Deployment Pipeline
-- **CI/CD Ready**: GitHub Actions workflow
 - **Automated Testing**: Pre-deployment testing
 - **Code Quality**: Linting and formatting
 - **Release Management**: Automated release notes
@@ -263,10 +261,70 @@ settings/
 - **Social Integration**: LinkedIn/GitHub integration
 
 ### Technical Enhancements
-- **Material You**: Complete dynamic theming
 - **Accessibility**: Enhanced a11y features
 - **Performance**: Advanced optimization techniques
 - **Security**: Enhanced security measures
+
+## 📌 Implementation Notes (Code References)
+
+This section describes the current implementation in code (not only the roadmap).
+
+### App Entry & Composition Root
+
+- App entry: `lib/main.dart` uses `Core.run(...)` to centralize crash capture and delegate UI behavior on crash.
+- Composition Root: `lib/shared/utils/app_initializer.dart` wires core interfaces to shared implementations:
+  - Storage prefix
+  - Initial Effect providers (Loading/Message/Navigation/Logout/Share)
+  - API auth bridge (`IApiInterceptorDelegate`) for header injection + refresh token
+  - Safe mode reset behavior
+  - Env configs registration (`EnvConfigs.values`)
+  - i18n registration (zh/ja)
+  - Route registry (`Routes.routes`) + login interception callbacks
+
+### Navigation
+
+- Central route registry: `lib/shared/utils/routes.dart`
+- Navigation API + login interception: `lib/core/route/app_nav.dart`
+
+### Network & Error Mapping
+
+- Dio client and interceptors: `lib/core/network/api_client.dart`
+- Standard API envelope: `lib/core/network/base_response_model.dart`
+- Unified call wrapper with cache fallback: `lib/core/network/base_repository.dart`
+
+### Environment & Mock Server
+
+- Environment switching: `lib/core/env/app_env.dart`
+- Project env configs: `lib/shared/constants/env_config.dart`
+- In-app mock server: `lib/core/network/local_mock_server.dart`
+- Mock assets:
+  - JSON: `assets/mock/v1/*`
+  - Images: `assets/mock/images/*` (served via `/v1/resource/...`)
+
+### Crash & Diagnostics
+
+- Crash logs + safe mode: `lib/core/utils/crash_manager.dart`
+- Zone-based tracing/performance: `lib/core/utils/zone_manager.dart`
+- Log overlay: `lib/shared/utils/log_overlay_manager.dart`
+
+## 🏃 Getting Started
+
+```bash
+# Install dependencies
+flutter pub get
+
+# Generate code (Freezed/Json/Riverpod/Retrofit)
+dart run build_runner build --delete-conflicting-outputs
+
+# Run with mock env (starts LocalMockServer at http://localhost:9999)
+flutter run --dart-define=APP_ENV=mock
+```
+
+## 🧪 Run Tests
+
+```bash
+flutter test
+```
 
 ## 🎯 Conclusion
 
