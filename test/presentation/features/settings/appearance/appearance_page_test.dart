@@ -15,18 +15,30 @@ void main() {
     });
 
     testWidgets('Should display appearance page', (WidgetTester tester) async {
+      addTearDown(() async {
+        await tester.binding.setSurfaceSize(null);
+      });
+      await tester.binding.setSurfaceSize(const Size(800, 2000));
       await tester.pumpWidget(const ProviderScope(child: MaterialApp(home: AppearancePage())));
       await tester.pumpAndSettle();
       expect(find.byType(AppearancePage), findsOneWidget);
     });
 
     testWidgets('Should display theme mode options', (WidgetTester tester) async {
+      addTearDown(() async {
+        await tester.binding.setSurfaceSize(null);
+      });
+      await tester.binding.setSurfaceSize(const Size(800, 2000));
       await tester.pumpWidget(const ProviderScope(child: MaterialApp(home: AppearancePage())));
       await tester.pumpAndSettle();
       expect(find.byType(ListTile), findsWidgets);
     });
 
     testWidgets('Should display accent color options', (WidgetTester tester) async {
+      addTearDown(() async {
+        await tester.binding.setSurfaceSize(null);
+      });
+      await tester.binding.setSurfaceSize(const Size(800, 2000));
       await tester.pumpWidget(const ProviderScope(child: MaterialApp(home: AppearancePage())));
       await tester.pumpAndSettle();
       expect(find.byType(GridView), findsWidgets);
