@@ -21,21 +21,21 @@ abstract class AuthRemoteDataSource {
   @POST(ApiClient.signUp)
   Future<BaseResponseModel<void>> signUp(@Body() SignupRequestModel? request);
 
-  @POST('/v1/auth/logout')
-  Future<BaseResponseModel<void>> logout();
-
   @POST((ApiClient.forgotPassword))
   Future<BaseResponseModel<void>> forgotPassword(@Body() ForgotPasswordRequestModel? request);
 
-  @POST('/v1/auth/change-password')
+  @POST(ApiClient.refreshToken)
+  Future<BaseResponseModel<LoginModel>> refreshToken(@Field('refreshToken') String refreshToken);
+
+  @POST('/v1/user/logout')
+  Future<BaseResponseModel<void>> logout();
+
+  @POST('/v1/user/change-password')
   Future<BaseResponseModel<void>> changePassword(@Body() ChangePasswordRequestModel? request);
 
-  @DELETE('/v1/auth/delete-account')
+  @DELETE('/v1/user/delete-account')
   Future<BaseResponseModel<void>> deleteAccount(@Body() DeleteAccountRequestModel? request);
 
   @GET('/v1/user')
   Future<BaseResponseModel<UserModel>> getUserById(@Query('id') String id);
-
-  @POST(ApiClient.refreshToken)
-  Future<BaseResponseModel<LoginModel>> refreshToken(@Field('refreshToken') String refreshToken);
 }
