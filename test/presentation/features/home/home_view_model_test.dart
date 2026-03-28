@@ -1,0 +1,66 @@
+import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_intent.dart';
+import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_state.dart';
+import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_view_model.dart';
+
+void main() {
+  group('HomeViewModel Tests', () {
+    late ProviderContainer container;
+    late HomeViewModel viewModel;
+    final List<BaseEffect> emittedEffects = [];
+
+    setUp(() {
+      container = ProviderContainer();
+      // 1. Get the ViewModel instance
+      viewModel = container.read(homeViewModelProvider.notifier);
+
+      // 2. Listen to effects for verification
+      emittedEffects.clear();
+      viewModel.onBindEffect((effect) {
+        emittedEffects.add(effect);
+      });
+    });
+
+    tearDown(() {
+      container.dispose();
+    });
+
+    test('Should have initial state with overview tab', () {
+      final state = container.read(homeViewModelProvider);
+      expect(state.currentTab, HomeTab.overview);
+    });
+
+    test('Should update tab when tab changed intent is handled', () async {
+      const newTab = HomeTab.aboutMe;
+
+      // When - Change tab
+      await viewModel.handleIntent(const HomeIntent.tabChanged(newTab));
+
+      // Then - State updated, no effects expected for simple tab change
+      final state = container.read(homeViewModelProvider);
+      expect(state.currentTab, newTab);
+      expect(emittedEffects, isEmpty);
+    });
+
+    test('Should handle all tab changes correctly in sequence', () async {
+      final tabs = [HomeTab.aboutMe, HomeTab.projects, HomeTab.architecture, HomeTab.overview];
+
+      for (final tab in tabs) {
+        await viewModel.handleIntent(HomeIntent.tabChanged(tab));
+        expect(container.read(homeViewModelProvider).currentTab, tab);
+      }
+    });
+
+    test('Should handle lifecycle events without crashing', () {
+      // Verify base lifecycle methods from ViewModelMixin
+      viewModel.onInit();
+      viewModel.onReady();
+      viewModel.onVisible();
+      viewModel.onInVisible();
+
+      expect(container.read(homeViewModelProvider), isNotNull);
+    });
+  });
+}
