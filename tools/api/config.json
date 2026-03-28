@@ -6,19 +6,7 @@
     "httpCode": 200
   },
   {
-    "api": "auth/refresh",
-    "method": "post",
-    "timeout": 500,
-    "httpCode": 200
-  },
-  {
     "api": "auth/signUp",
-    "method": "post",
-    "timeout": 500,
-    "httpCode": 200
-  },
-  {
-    "api": "auth/logout",
     "method": "post",
     "timeout": 500,
     "httpCode": 200
@@ -30,14 +18,26 @@
     "httpCode": 200
   },
   {
-    "api": "auth/change-password",
+    "api": "auth/delete-account",
+    "method": "delete",
+    "timeout": 500,
+    "httpCode": 200
+  },
+  {
+    "api": "user/logout",
     "method": "post",
     "timeout": 500,
     "httpCode": 200
   },
   {
-    "api": "auth/delete-account",
-    "method": "delete",
+    "api": "user/refresh",
+    "method": "post",
+    "timeout": 500,
+    "httpCode": 200
+  },
+  {
+    "api": "user/change-password",
+    "method": "post",
     "timeout": 500,
     "httpCode": 200
   },
