@@ -103,6 +103,7 @@
     * apm: layout check; lag check; app launch; apk size; net inspector; FPS; Cpu usage; memory;
     * AuthInterceptor: token, refreshToken, session timeout; auto login;
     * if (!widget.useScaffold); onBackInvoked
+    * 切换账户的时候，清除上个账户的缓存，和留在画面的数据
 * 开发IDE的plugin
     * json模型转换
     * asset资源生成到R.dart
