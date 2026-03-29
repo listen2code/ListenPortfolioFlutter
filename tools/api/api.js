@@ -154,7 +154,12 @@ async function handleRequest(req, res, requestBody) {
     }
 
     const baseDir = path.join(__dirname, 'json', versionDir);
-    const resourceName = matchedApiName.endsWith('/') ? matchedApiName.slice(0, -1) : matchedApiName;
+
+    // 修改点：不再仅仅依赖 matchedApiName，而是直接从 pathname 中提取资源路径
+    // 移除版本号前缀 (例如 /v1) 和开头的斜杠
+    const resourcePath = pathname.replace(new RegExp(`^/${versionDir}`), '').replace(/^\//, '');
+    const resourceName = resourcePath.endsWith('/') ? resourcePath.slice(0, -1) : resourcePath;
+
     const targetFile = path.join(baseDir, method, `${resourceName}.json`);
 
     // 5. Read file and log Response
