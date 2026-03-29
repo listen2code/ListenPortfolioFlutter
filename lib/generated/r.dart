@@ -2,7 +2,7 @@
 class R {
   R._();
 
-  static const String authChangePassword = 'assets/mock/v1/post/auth/change-password.json';
+  static const String authForgotPassword = 'assets/mock/v1/post/auth/forgot-password.json';
   static const String authLogin = 'assets/mock/v1/post/auth/login.json';
   static const String authRefresh = 'assets/mock/v1/post/auth/refresh.json';
   static const String authSignUp = 'assets/mock/v1/post/auth/signUp.json';
@@ -20,8 +20,7 @@ class R {
   static const String imagesProject7 = 'assets/mock/images/project7.jpg';
   static const String imagesProject8 = 'assets/mock/images/project8.jpg';
   static const String imagesProject9 = 'assets/mock/images/project9.jpg';
+  static const String userChangePassword = 'assets/mock/v1/post/user/change-password.json';
   static const String userDeleteAccount = 'assets/mock/v1/delete/user/delete-account.json';
-  static const String userForgotPassword = 'assets/mock/v1/post/user/forgot-password.json';
   static const String userLogout = 'assets/mock/v1/post/user/logout.json';
-
 }
