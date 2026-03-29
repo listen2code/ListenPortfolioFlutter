@@ -89,14 +89,14 @@ class LocalMockServer {
     await Future.delayed(const Duration(seconds: 1));
 
     // --- ADDED: Handle Static Resources (Images) ---
-    if (uriPath.contains('/resource/')) {
+    if (uriPath.contains('/images/')) {
       final ext = _imageExtensions.keys.firstWhere(
         (e) => uriPath.toLowerCase().endsWith(e),
         orElse: () => '',
       );
 
       if (ext.isNotEmpty) {
-        // Map URL: /v1/resource/images/project1.jpg -> assets/mock/resource/images/project1.jpg
+        // Map URL: /v1/images/project1.jpg -> assets/mock/images/project1.jpg
         // Stripping the version prefix if present to match the physical directory structure
         final relativePath = uriPath.replaceFirst(RegExp(r'^/v\d+'), '');
         final assetPath = 'assets/mock$relativePath';

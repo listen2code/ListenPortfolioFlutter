@@ -51,13 +51,13 @@ async function handleRequest(req, res, requestBody) {
     console.log(`\n${getDate()} >>> [${req.method.toUpperCase()}] ${pathname}`);
 
     // --- Part 1: Handle Static Resources (Images) ---
-    // Detect if path contains "/resource/"
-    if (pathname.includes('/resource/')) {
+    // Detect if path contains "/images/"
+    if (pathname.includes('/images/')) {
         const ext = path.extname(pathname).toLowerCase();
         if (mimeTypes[ext]) {
             // Updated Path Logic:
-            // URL: /v1/resource/images/project1.jpg
-            // Physical Path: tools/api/resource/images/project1.jpg
+            // URL: /v1/images/project1.jpg
+            // Physical Path: tools/api/images/project1.jpg
             // We strip the version prefix (e.g., /v1) to match the physical directory structure
             const relativePath = pathname.replace(/^\/v\d+/, '');
             const filePath = path.join(__dirname, relativePath);
