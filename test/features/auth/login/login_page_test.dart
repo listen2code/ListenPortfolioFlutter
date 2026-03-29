@@ -16,31 +16,26 @@ void main() {
 
     testWidgets('Should display login form elements', (WidgetTester tester) async {
       // 3. Build UI and trigger frame
-      await tester.pumpWidget(
-        const ProviderScope(
-          child: MaterialApp(
-            home: LoginPage(),
-          ),
-        ),
-      );
+      await tester.pumpWidget(const ProviderScope(child: MaterialApp(home: LoginPage())));
 
-      // 4. Wait for animations/async loads
-      await tester.pumpAndSettle();
+      // 4. Wait for first frame (avoid pumpAndSettle due to timers)
+      await tester.pump();
 
-      // 5. Verify key elements exist
+      // 5. Wait for any async initialization
+      await tester.pump(const Duration(milliseconds: 100));
+
+      // 6. Verify key elements exist
       expect(find.byType(Hero), findsOneWidget); // Logo
       expect(find.byType(TextFormField), findsNWidgets(2)); // User & Pass
-      expect(find.byType(ElevatedButton), findsOneWidget); // Login button
+      expect(find.text('Login'), findsOneWidget); // Login button
     });
 
     testWidgets('Entering text should update state', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        const ProviderScope(
-          child: MaterialApp(
-            home: LoginPage(),
-          ),
-        ),
-      );
+      await tester.pumpWidget(const ProviderScope(child: MaterialApp(home: LoginPage())));
+
+      // Wait for initial frame
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
 
       // Enter username
       await tester.enterText(find.byType(TextFormField).first, 'test_user');
