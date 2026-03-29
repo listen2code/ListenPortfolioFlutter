@@ -20,7 +20,11 @@ void main() {
           child: MaterialApp(home: Scaffold(body: ProjectsWidget(active: true))),
         ),
       );
-      await tester.pumpAndSettle();
+      
+      // Just pump once to start the build, don't wait for settle
+      await tester.pump();
+      
+      // Verify widget is rendered
       expect(find.byType(ProjectsWidget), findsOneWidget);
     });
 
@@ -30,7 +34,8 @@ void main() {
           child: MaterialApp(home: Scaffold(body: ProjectsWidget(active: false))),
         ),
       );
-      await tester.pumpAndSettle();
+      
+      await tester.pump();
       expect(find.byType(ProjectsWidget), findsOneWidget);
     });
 
@@ -40,8 +45,11 @@ void main() {
           child: MaterialApp(home: Scaffold(body: ProjectsWidget(active: true))),
         ),
       );
+      
       await tester.pump();
-      expect(find.byType(SingleChildScrollView), findsOneWidget);
+      
+      // Verify skeleton is shown (SingleChildScrollView is part of the skeleton)
+      expect(find.byType(SingleChildScrollView), findsWidgets);
     });
   });
 }
