@@ -22,8 +22,8 @@
 ### 🧱 架构与基础设施优化
 
 - [ ] 明确依赖边界与治理：core/shared/uikit/features 的依赖方向检查（可用 lint/自定义脚本）
-- [ ] 依赖清理或落地：明确 `listen_core`/`listen_uikit` 本地依赖路径与状态（pubspec.yaml 中的路径依赖是否仍有效）；评估 `go_router`/`equatable` 是否真正使用并决定保留或移除
-- [ ] "state roaming" 定义与实现：跨 tab/跨 page 状态共享策略（EventBus？Riverpod provider？）
+- [ ] 依赖清理或落地：明确 `listen_core`/`listen_uikit` 本地依赖路径与状态（pubspec.yaml 中的路径依赖是否仍有效）；
+- [ ] "state roaming" 定义与实现：跨 tab/跨 page 状态共享策略（EventBus？Riverpod provider？） 支持状态漫游，并可以在开发模式下通过示例展示
 - [ ] merge _effectController 和 eventBus 的设计评估与落地（统一一次性事件/全局事件的语义与生命周期）
 - [ ] BaseResponseModel / Failure 体系补全：messageId -> i18n 文案映射、统一错误码表、链路 traceId 关联（客户端/服务端）
 - [ ] AppNav 增强：参数解析类型安全、深链路（Deep Link）支持、`onBackInvoked` 系统返回拦截策略统一化
@@ -36,7 +36,7 @@
 - [ ] Skills 图表：CustomPainter/Canvas 绘制技能图谱
 - [ ] Markdown 展示 + PDF 简历导出/下载（移动端 & Web）
 - [ ] AI intro assistant（离线提示词/在线 LLM 接入、隐私合规、可观测性）
-- [ ] Profile 头像上传（image_picker + permission_handler 已引入，补齐业务流程/存储/CDN）
+- [ ] Profile 头像上传（image_picker + permission_handler 已引入，补齐业务流程/存储/CDN），头像上传并保存（Spring项目，或AWS的S3）
 - [ ] 指纹/生物识别登录（local_auth，结合 token/refreshToken 安全策略）
 - [ ] 第三方登录：Google（OAuth、账号绑定/解绑、隐私政策与合规）
 - [ ] App Review 引导（平台能力封装 + 策略）
@@ -65,6 +65,7 @@
 
 - [ ] CI：Flutter analyze + test + build（多环境、分渠道）
 - [ ] CD：产物上传到 S3（含 mapping/符号表）+ Release notes 自动化
+- [ ] CI CD：upload to S3
 
 ### 🧩 插件/底层探索
 
@@ -73,10 +74,8 @@
 
 ### 🗄️ 服务端（如计划自建）
 
-- [ ] DB 数据设计
-- [ ] API 设计（含错误码/traceId/鉴权/刷新 token）
-- [ ] i18n（服务端文案或 messageId 体系）
-- [ ] Web build / 部署策略
+- [ ] 服务端文案i18n
+- [ ] 直接将目前项目打包成web模块并部署
 
 ### 📚 文档
 
@@ -88,12 +87,6 @@
 - [ ] ADR（Architecture Decision Records）：记录关键架构决策（Zone tracing、SafeMode、MockServer 设计背景）
 - [ ] dartdoc：公开 API 文档生成（尤其是 core/ 模块，为 pub 发布准备）
 
-### 🐞 已知问题
-
-- [ ] NDK bundle 相关问题（Android 构建时 ndk bundle 报错，需明确 NDK 版本或 abiFilters 配置）
-- [ ] Pixel icon cache 相关问题（部分 Pixel 设备 launcher icon 缓存不刷新，需调查 adaptive icon 配置）
-- [ ] `if (!widget.useScaffold)` 逻辑完善：当前部分页面可能绕过 Scaffold，需统一页面容器策略
-
 ### 🔧 开发体验（DX）
 
 - [ ] 标准化开发工作流文档：`build_runner watch` 常驻代码生成、`APP_ENV=mock` 为默认调试环境、Log Overlay 使用说明
@@ -103,37 +96,18 @@
 
 ### 其他
 * base
-    * 支持状态漫游，并可以在开发模式下通过示例展示
     * core目录下的相关配置，都不是写死的，可以通过CoreConfig进行配置
     * BaseResponseModel serverError
 * function
     * switch env: input url; mock api; config each api; separate mock
     * apm: layout check; lag check; app launch; apk size; net inspector; FPS; Cpu usage; memory;
-    * google play的评价功能
-    * 生体，指纹认证
-    * CustomPainter show skills graph
-    * AI辅助助手，介绍功能
-    * markdown模式查看简历，下载pdf简历
-    * 完善单元测试
-    * 头像上传并保存（Spring项目，或AWS的S3）
-    * MethodChannel的示例
-    * jni的示例
     * AuthInterceptor: token, refreshToken, session timeout; auto login;
-    * 第三方google登录
-    * Material You: Dynamic Color
-    * accessibility a11y
-    * CI CD：upload to S3
     * if (!widget.useScaffold); onBackInvoked
-    * merge _effectController and eventBus in baseModel
 * 开发IDE的plugin
     * json模型转换
     * asset资源生成到R.dart
-* 服务端
-    * 完善app段需要的api
-    * 支持i18
-    * 直接将目前项目打包成web模块并部署
 * 文档
     * 画面截图
 * 问题
-    * 打包时，出现ndk bundle的错误
-    * pixel手机，会有icon被缓存的情况
+    * NDK bundle 相关问题（Android 构建时 ndk bundle 报错，需明确 NDK 版本或 abiFilters 配置）
+    * Pixel icon cache 相关问题（部分 Pixel 设备 launcher icon 缓存不刷新，需调查 adaptive icon 配置）

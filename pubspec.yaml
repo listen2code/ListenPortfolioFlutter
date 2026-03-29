@@ -48,8 +48,6 @@ dependencies:
   package_info_plus: ^9.0.0
 
   # Routing
-  go_router: ^17.0.1
-  equatable: ^2.0.8
   path_provider: ^2.1.5
   image_picker: ^1.2.1
   permission_handler: ^12.0.1
