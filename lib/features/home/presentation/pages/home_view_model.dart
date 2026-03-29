@@ -14,7 +14,16 @@ part 'home_view_model.g.dart';
 @riverpod
 class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeIntent> {
   @override
-  HomeState build() => const HomeState();
+  HomeState build() {
+    // Subscribe to logout event to reset to overview tab
+    subscribeEvent<CommonEvent>((event) {
+      if (state.currentTab != HomeTab.overview) {
+        updateState(state.copyWith(currentTab: HomeTab.overview));
+      }
+    }, key: AppConstants.resetOverview);
+
+    return const HomeState();
+  }
 
   @override
   FutureOr<void> onIntent(HomeIntent intent) {

@@ -17,13 +17,15 @@ class LogoutProviderImpl extends BaseProvider<LogoutEffect> {
     authManager.logout();
 
     if (effect.to?.isNotEmpty == true) {
-      // 3. Navigation Strategy:
-      // First, clear the entire navigation stack and reset to Home.
+      // 3. Navigation Strategy: Navigate to specific target
       await AppNav.to(effect.to);
     } else {
-      // 3. Navigation Strategy:
-      // First, clear the entire navigation stack and reset to Home.
-      await AppNav.offAll(Routes.home);
+      // 3. Navigation Strategy: Pop all routes until HomePage is reached
+      // This keeps HomePage alive and avoids recreating ViewModels
+      await AppNav.offAll(Routes.home, isReplace: false);
+
+      // 4. Fire event to notify HomeViewModel to reset to overview tab
+      eventBus.fire(const CommonEvent(AppConstants.resetOverview));
     }
   }
 }
