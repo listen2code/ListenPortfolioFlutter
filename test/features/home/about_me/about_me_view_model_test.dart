@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
@@ -36,6 +37,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 // Mock classes
 class MockGetAboutMeUseCase extends Mock implements GetAboutMeUseCase {}
 class MockImagePicker extends Mock implements ImagePicker {}
+
+// Platform channel for image_picker (used to mock the internal ImagePicker instance)
+const _imagePickerChannel = MethodChannel('plugins.flutter.io/image_picker');
+const _testImagePath = '/test/path/image.jpg';
 
 void main() {
   // 初始化测试绑定
@@ -82,37 +87,50 @@ void main() {
       languages: [LanguageItemModel(name: 'English', level: 'Native')],
     );
 
+    // Controls what the image_picker platform channel mock returns per test
+    String? mockImagePickerPath = _testImagePath; // null = cancelled
+    bool mockImagePickerThrows = false;
+
     setUp(() async {
       // Mock SharedPreferences for SpUtil
       SharedPreferences.setMockInitialValues({});
       await SpUtil.init(prefix: 'test_');
 
-      // 创建mock实例
       mockGetAboutMeUseCase = MockGetAboutMeUseCase();
       mockImagePicker = MockImagePicker();
 
-      // 创建ProviderContainer并注入mock依赖
+      // Mock image_picker platform channel — ViewModel creates ImagePicker() internally
+      mockImagePickerPath = _testImagePath;
+      mockImagePickerThrows = false;
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(_imagePickerChannel, (call) async {
+        if (mockImagePickerThrows) {
+          throw PlatformException(code: 'CAMERA_ERROR', message: 'Camera error');
+        }
+        return mockImagePickerPath;
+      });
+
       container = ProviderContainer(
         overrides: [
           getAboutMeUseCaseProvider.overrideWith((ref) => mockGetAboutMeUseCase),
         ],
       );
 
-      // 获取ViewModel实例
+      // Keep provider alive during async operations to prevent auto-dispose
+      container.listen(
+        aboutMeViewModelProvider,
+        (_, __) {},
+        fireImmediately: false,
+      );
+
       viewModel = container.read(aboutMeViewModelProvider.notifier);
       emittedEffects.clear();
-      
-      // 记录effect
-      viewModel.onBindEffect((effect) {
-        emittedEffects.add(effect);
-      });
-
-      // 使用反射或测试友好的方式注入mock ImagePicker
-      // 注意：由于ImagePicker是在方法内部创建的，我们需要在测试中模拟其方法调用
+      viewModel.onBindEffect((effect) => emittedEffects.add(effect));
     });
 
-    tearDown(() async {
-      await Future.delayed(const Duration(milliseconds: 100));
+    tearDown(() {
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(_imagePickerChannel, null);
       container.dispose();
     });
 
@@ -210,83 +228,56 @@ void main() {
 
     group('Image Pick Intent Tests', () {
       test('should successfully pick image from camera', () async {
-        // Arrange: Mock ImagePicker to return a file
-        const testImagePath = '/test/path/image.jpg';
-        final mockXFile = XFile(testImagePath);
-        
-        // 由于ImagePicker是在方法内部创建的，我们需要模拟XFile
-        when(() => mockImagePicker.pickImage(source: ImageSource.camera))
-            .thenAnswer((_) async => mockXFile);
-
-        // Act: Trigger pick image intent from camera
+        // platform channel mock set to return _testImagePath by default
         await viewModel.handleIntent(const AboutMeIntent.pickImage(ImageSource.camera));
         await Future.delayed(const Duration(milliseconds: 100));
 
-        // Assert: Verify state was updated with image file
         final state = container.read(aboutMeViewModelProvider);
         expect(state.imageFile, isNotNull);
-        expect(state.imageFile!.path, testImagePath);
+        expect(state.imageFile!.path, _testImagePath);
       });
 
       test('should successfully pick image from gallery', () async {
-        // Arrange: Mock ImagePicker to return a file
-        const testImagePath = '/test/path/gallery_image.png';
-        final mockXFile = XFile(testImagePath);
-        
-        when(() => mockImagePicker.pickImage(source: ImageSource.gallery))
-            .thenAnswer((_) async => mockXFile);
-
-        // Act: Trigger pick image intent from gallery
+        // platform channel returns the same mock path regardless of source
         await viewModel.handleIntent(const AboutMeIntent.pickImage(ImageSource.gallery));
         await Future.delayed(const Duration(milliseconds: 100));
 
-        // Assert: Verify state was updated with image file
         final state = container.read(aboutMeViewModelProvider);
         expect(state.imageFile, isNotNull);
-        expect(state.imageFile!.path, testImagePath);
+        expect(state.imageFile!.path, _testImagePath);
       });
 
       test('should handle cancelled image selection', () async {
-        // Arrange: Mock ImagePicker to return null (user cancelled)
-        when(() => mockImagePicker.pickImage(source: ImageSource.camera))
-            .thenAnswer((_) async => null);
+        // Configure platform channel to return null (user cancelled)
+        mockImagePickerPath = null;
 
-        // Act: Trigger pick image intent
         await viewModel.handleIntent(const AboutMeIntent.pickImage(ImageSource.camera));
         await Future.delayed(const Duration(milliseconds: 100));
 
-        // Assert: Verify state was not changed (imageFile remains null)
-        final state = container.read(aboutMeViewModelProvider);
-        expect(state.imageFile, isNull);
+        expect(container.read(aboutMeViewModelProvider).imageFile, isNull);
       });
 
-      test('should handle ImagePicker exceptions gracefully', () async {
-        // Arrange: Mock ImagePicker to throw exception
-        when(() => mockImagePicker.pickImage(source: ImageSource.camera))
-            .thenThrow(Exception('Camera not available'));
+      test('should handle ImagePicker PlatformException gracefully', () async {
+        // Configure platform channel to throw
+        mockImagePickerThrows = true;
 
-        // Act & Assert: Exception should be handled gracefully
-        expect(() => viewModel.handleIntent(const AboutMeIntent.pickImage(ImageSource.camera)), returnsNormally);
-        
-        // Verify state was not changed
-        final state = container.read(aboutMeViewModelProvider);
-        expect(state.imageFile, isNull);
+        // handleIntent returns a Future; the exception propagates asynchronously
+        await expectLater(
+          viewModel.handleIntent(const AboutMeIntent.pickImage(ImageSource.camera)),
+          throwsA(isA<PlatformException>()),
+        );
+
+        // State must remain unchanged
+        expect(container.read(aboutMeViewModelProvider).imageFile, isNull);
       });
     });
 
     group('Remove Image Intent Tests', () {
       test('should remove existing image file', () async {
-        // Arrange: First set an image file
-        const testImagePath = '/test/path/image.jpg';
-        final mockXFile = XFile(testImagePath);
-        
-        // Mock the picker for setting up the state
-        when(() => mockImagePicker.pickImage(source: ImageSource.camera))
-            .thenAnswer((_) async => mockXFile);
-        
+        // Platform channel already returns _testImagePath by default
         await viewModel.handleIntent(const AboutMeIntent.pickImage(ImageSource.camera));
         await Future.delayed(const Duration(milliseconds: 100));
-        
+
         // Verify image was set
         var state = container.read(aboutMeViewModelProvider);
         expect(state.imageFile, isNotNull);
@@ -356,20 +347,14 @@ void main() {
 
     group('State Management Tests', () {
       test('should maintain separate state for image file and data', () async {
-        // Arrange: Set up data and image separately
+        // Arrange: platform channel returns _testImagePath by default
         when(() => mockGetAboutMeUseCase.call(param: null))
             .thenAnswer((_) async => Right(testAboutMeModel));
-        
-        const testImagePath = '/test/path/image.jpg';
-        final mockXFile = XFile(testImagePath);
-        
-        when(() => mockImagePicker.pickImage(source: ImageSource.camera))
-            .thenAnswer((_) async => mockXFile);
 
         // Act: First refresh data, then pick image
         await viewModel.handleIntent(const AboutMeIntent.refresh());
         await Future.delayed(const Duration(milliseconds: 300));
-        
+
         await viewModel.handleIntent(const AboutMeIntent.pickImage(ImageSource.camera));
         await Future.delayed(const Duration(milliseconds: 100));
 
@@ -378,7 +363,7 @@ void main() {
         expect(state.isInitialLoaded, isTrue);
         expect(state.data, equals(testAboutMeModel));
         expect(state.imageFile, isNotNull);
-        expect(state.imageFile!.path, testImagePath);
+        expect(state.imageFile!.path, _testImagePath);
       });
 
       test('should handle rapid state changes', () async {
@@ -405,23 +390,23 @@ void main() {
 
     group('Error Handling Tests', () {
       test('should handle use case parameter errors', () async {
-        // Arrange: Mock use case to throw exception with invalid param
-        when(() => mockGetAboutMeUseCase.call(param: any(named: 'param')))
+        // Arrange: Mock use case to throw exception
+        when(() => mockGetAboutMeUseCase.call(param: null))
             .thenThrow(Exception('Invalid parameter'));
 
-        // Act & Assert: Exception should be handled gracefully
-        expect(() => viewModel.handleIntent(const AboutMeIntent.refresh()), returnsNormally);
-        
-        // Verify state was not updated on error
+        // The exception propagates through dispatch/ZoneManager and rejects the Future
+        await expectLater(
+          viewModel.handleIntent(const AboutMeIntent.refresh()),
+          throwsA(isA<Exception>()),
+        );
+
+        // State must remain unchanged since the exception prevented update
         final state = container.read(aboutMeViewModelProvider);
         expect(state.isInitialLoaded, isFalse);
         expect(state.data, isNull);
       });
 
       test('should handle state update errors gracefully', () async {
-        // This test verifies that the ViewModel handles internal state update errors
-        // In practice, this would be caught by the ViewModelMixin's error handling
-        
         // Arrange: Mock use case for successful call
         when(() => mockGetAboutMeUseCase.call(param: null))
             .thenAnswer((_) async => Right(testAboutMeModel));

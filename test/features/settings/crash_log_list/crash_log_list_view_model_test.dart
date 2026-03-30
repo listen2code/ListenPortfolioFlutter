@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_portfolio_flutter/core/core.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/crash_log_list/crash_log_list_intent.dart';
+import 'package:listen_portfolio_flutter/features/settings/presentation/pages/crash_log_list/crash_log_list_state.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/crash_log_list/crash_log_list_view_model.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/crash_log_list/view_log_effect.dart';
 import 'package:listen_portfolio_flutter/shared/base/navigation_provider_impl.dart';
@@ -20,6 +21,7 @@ void main() {
   group('CrashLogListViewModel Tests', () {
     late ProviderContainer container;
     late CrashLogListViewModel viewModel;
+    late ProviderSubscription<CrashLogListState> subscription;
     final List<BaseEffect> emittedEffects = [];
 
     setUp(() async {
@@ -29,6 +31,12 @@ void main() {
 
       // 3. Create a ProviderContainer for testing
       container = ProviderContainer();
+      // Keep provider alive during async operations to prevent auto-dispose
+      subscription = container.listen(
+        crashLogListViewModelProvider,
+        (_, __) {},
+        fireImmediately: false,
+      );
       viewModel = container.read(crashLogListViewModelProvider.notifier);
 
       // 4. Record all emitted effects for verification
@@ -38,9 +46,8 @@ void main() {
       });
     });
 
-    tearDown(() async {
-      // Wait for all async operations to complete before disposing
-      await Future.delayed(const Duration(milliseconds: 500));
+    tearDown(() {
+      subscription.close();
       container.dispose();
     });
 
@@ -52,6 +59,8 @@ void main() {
     test('Should emit LoadingEffect during refresh intent', () async {
       // When - Trigger refresh intent to reload crash logs
       await viewModel.handleIntent(const CrashLogListIntent.refresh());
+      // Yield to event loop for async stream delivery
+      await Future.delayed(Duration.zero);
 
       // Then - Should show and then hide loading status
       final loadingEffects = emittedEffects.whereType<LoadingEffect>().toList();
@@ -66,6 +75,7 @@ void main() {
 
       // When - Trigger viewLog intent with mock file
       await viewModel.handleIntent(CrashLogListIntent.viewLog(mockFile));
+      await Future.delayed(Duration.zero);
 
       // Then - Should emit ViewLogEffect targeting the correct file
       expect(emittedEffects.any((e) => e is ViewLogEffect && e.file == mockFile), isTrue);
