@@ -7,10 +7,17 @@ import '../core.dart';
 
 class HttpCode {
   HttpCode._();
-  static const int ok = 200;
-  static const int unauthorized = 401;
-  static const int forbidden = 403;
-  static const int internalServerError = 500;
+  static int ok = 200;
+  static int unauthorized = 401;
+  static int forbidden = 403;
+  static int internalServerError = 500;
+
+  static void updateConfig(NetworkConfig config) {
+    ok = config.ok;
+    unauthorized = config.unauthorized;
+    forbidden = config.forbidden;
+    internalServerError = config.internalServerError;
+  }
 }
 
 /// Interface for delegating API request lifecycle logic to the shared layer.
@@ -43,25 +50,25 @@ class _DefaultApiDelegate implements IApiInterceptorDelegate {
 class ApiClient {
   ApiClient._();
 
-  static const String signUp = '/v1/auth/signUp';
-  static const String login = '/v1/auth/login';
-  static const String forgotPassword = '/v1/auth/forgot-password';
-  static const String refreshToken = '/v1/auth/refresh';
-  static const String projects = '/v1/projects';
-
-  static const List<String> visitorPath = [signUp, login, forgotPassword, refreshToken, projects];
-
   /// Key to specify that a request does not require authentication.
   /// Usage: dio.get(path, options: Options(extra: {ApiClient.kNoAuthKey: true}))
   static const String kNoAuthKey = 'no_auth';
 
   static IApiInterceptorDelegate _delegate = _DefaultApiDelegate();
+  static NetworkConfig? _networkConfig;
 
   static IApiInterceptorDelegate get delegate => _delegate;
+  static NetworkConfig? get networkConfig => _networkConfig;
 
   /// Initializes the ApiClient with a concrete delegate implementation.
   static void init(IApiInterceptorDelegate delegate) {
     _delegate = delegate;
+  }
+
+  /// Initializes network configuration
+  static void initNetworkConfig(NetworkConfig config) {
+    _networkConfig = config;
+    HttpCode.updateConfig(config);
   }
 
   static final Dio _dio = _initDio();
@@ -188,7 +195,8 @@ class _AuthInterceptor extends Interceptor {
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
     // Check if the request explicitly disables authentication.
     final bool noAuth = options.extra[ApiClient.kNoAuthKey] == true;
-    if (!noAuth && ApiClient.visitorPath.contains(options.path) == false) {
+    final networkConfig = ApiClient.networkConfig;
+    if (!noAuth && networkConfig != null && !networkConfig.visitorPaths.contains(options.path)) {
       await ApiClient.delegate.onInjectAuthHeader(options);
     }
     handler.next(options);
@@ -287,7 +295,7 @@ class _ErrorInterceptor extends Interceptor {
         break;
       case DioExceptionType.badResponse:
         final statusCode = err.response?.statusCode;
-        final message = err.response?.data?[BaseResponseModel.kMessage] ?? err.message;
+        final message = err.response?.data?[BaseResponseModel.messageKey] ?? err.message;
         if (statusCode == HttpCode.unauthorized || statusCode == HttpCode.forbidden) {
           exception = AuthException(message ?? "", statusCode);
         } else if (statusCode != null && statusCode >= HttpCode.internalServerError) {

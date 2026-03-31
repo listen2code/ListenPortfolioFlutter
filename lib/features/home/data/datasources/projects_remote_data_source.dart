@@ -9,7 +9,7 @@ part 'projects_remote_data_source.g.dart';
 abstract class ProjectsRemoteDataSource {
   factory ProjectsRemoteDataSource(Dio dio, {String baseUrl}) = _ProjectsRemoteDataSource;
 
-  @GET(ApiClient.projects)
+  @GET('/v1/projects')
   @Extra({ApiClient.kNoAuthKey: true})
   Future<BaseResponseModel<List<ProjectModel>>> getProjects();
 }

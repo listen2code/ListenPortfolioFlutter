@@ -96,7 +96,6 @@
 
 ### 其他
 * base
-    * core目录下的相关配置，都不是写死的，可以通过CoreConfig进行配置
     * BaseResponseModel serverError
 * function
     * switch env: input url; mock api; config each api; separate mock

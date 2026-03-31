@@ -16,6 +16,10 @@ class CoreConfig {
 
   // Network
   final IApiInterceptorDelegate? apiDelegate;
+  final NetworkConfig? networkConfig;
+
+  // Response
+  final ResponseConfig? responseConfig;
 
   // Crash Manager
   final SafeModeConfig? safeModeConfig;
@@ -34,11 +38,22 @@ class CoreConfig {
   final void Function()? onLoginSuccessCallback;
   final Future<bool> Function(BuildContext context)? onShowLoginDialogCallback;
 
+  // Mock Server
+  final MockServerConfig? mockServerConfig;
+
+  // Logging
+  final LogConfig? logConfig;
+
+  // Storage
+  final StorageConfig? storageConfig;
+
   const CoreConfig({
     this.storagePrefix,
     this.onEventFired,
     this.initialProviders,
     this.apiDelegate,
+    this.networkConfig,
+    this.responseConfig,
     this.safeModeConfig,
     this.envConfigs,
     this.i18nData,
@@ -48,7 +63,21 @@ class CoreConfig {
     this.onLoginRedirect,
     this.onLoginSuccessCallback,
     this.onShowLoginDialogCallback,
+    this.mockServerConfig,
+    this.logConfig,
+    this.storageConfig,
   });
+
+  /// Creates a default configuration with sensible defaults
+  factory CoreConfig.defaultConfig() {
+    return CoreConfig(
+      networkConfig: const NetworkConfig(),
+      responseConfig: const ResponseConfig(),
+      mockServerConfig: const MockServerConfig(),
+      logConfig: const LogConfig(),
+      storageConfig: const StorageConfig(),
+    );
+  }
 }
 
 /// The main entry point for the Core module.
@@ -68,9 +97,10 @@ class Core {
     packageInfo = await PackageImpl.create();
 
     // 3. Setup Storage
-    if (config.storagePrefix != null) {
-      await SpUtil.init(prefix: config.storagePrefix!);
-      await SecureStorageUtil.init(prefix: config.storagePrefix!);
+    final storagePrefix = config.storagePrefix ?? config.storageConfig?.defaultStoragePrefix;
+    if (storagePrefix != null) {
+      await SpUtil.init(prefix: storagePrefix);
+      await SecureStorageUtil.init(prefix: storagePrefix);
     }
 
     // 4. Setup Event Bus
@@ -85,10 +115,19 @@ class Core {
     if (config.apiDelegate != null) {
       ApiClient.init(config.apiDelegate!);
     }
+    if (config.networkConfig != null) {
+      ApiClient.initNetworkConfig(config.networkConfig!);
+    }
+    if (config.responseConfig != null) {
+      BaseResponseModel.initConfig(config.responseConfig!);
+    }
 
     // 7. Setup Crash Protection
     if (config.safeModeConfig != null) {
       CrashManager.init(config.safeModeConfig!);
+    }
+    if (config.storageConfig != null) {
+      CrashManager.initStorageConfig(config.storageConfig!);
     }
 
     // 8. Setup Environment
@@ -110,6 +149,16 @@ class Core {
         onLoginSuccess: config.onLoginSuccessCallback,
         onShowLoginDialog: config.onShowLoginDialogCallback,
       );
+    }
+
+    // 12. Setup Mock Server Config
+    if (config.mockServerConfig != null) {
+      LocalMockServer.initConfig(config.mockServerConfig!);
+    }
+
+    // 13. Setup Log Config
+    if (config.logConfig != null) {
+      LogManager.initConfig(config.logConfig!);
     }
   }
 

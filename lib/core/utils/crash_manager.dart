@@ -25,9 +25,14 @@ class CrashManager {
 
   static DateTime? _scheduledCrashTime;
 
-  static const String _keyCrashTimestamps = 'rapid_crash_timestamps';
+  static String _keyCrashTimestamps = 'rapid_crash_timestamps';
 
   static SafeModeConfig? _config;
+
+  /// Initialize storage configuration
+  static void initStorageConfig(StorageConfig config) {
+    _keyCrashTimestamps = config.rapidCrashTimestampsKey;
+  }
 
   /// Initializes the CrashManager with Safe Mode settings.
   static void init(SafeModeConfig config) {

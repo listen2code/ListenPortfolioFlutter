@@ -67,6 +67,15 @@ class AppInitializer {
           );
           return result == true;
         },
+        networkConfig: NetworkConfig(
+          visitorPaths: [
+            '/v1/auth/signUp',
+            '/v1/auth/login',
+            '/v1/auth/forgot-password',
+            '/v1/auth/refresh',
+            '/v1/projects',
+          ],
+        ),
       ),
     );
 

@@ -9,10 +9,10 @@ import '../core.dart';
 /// Path resolution logic is synchronized with tools/api/api.js structure.
 class LocalMockServer {
   static HttpServer? _server;
-  static const int port = 9999;
+  static int port = 9999;
 
   // Supported image extensions and their corresponding ContentTypes
-  static const _imageExtensions = {
+  static Map<String, String> _imageExtensions = {
     '.jpg': 'image/jpeg',
     '.jpeg': 'image/jpeg',
     '.png': 'image/png',
@@ -20,6 +20,18 @@ class LocalMockServer {
     '.webp': 'image/webp',
     '.svg': 'image/svg+xml',
   };
+
+  // Configuration
+  static Duration _networkLatency = const Duration(seconds: 1);
+  static String _assetsBasePath = 'assets/mock';
+
+  /// Initialize configuration
+  static void initConfig(MockServerConfig config) {
+    port = config.port;
+    _imageExtensions = config.imageExtensions;
+    _networkLatency = config.networkLatency;
+    _assetsBasePath = config.assetsBasePath;
+  }
 
   /// Starts the server on localhost:9999
   static Future<void> start() async {
@@ -86,7 +98,7 @@ class LocalMockServer {
     appLogger.w(reqBuffer.toString().trim());
 
     // Simulate network latency
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(_networkLatency);
 
     // --- ADDED: Handle Static Resources (Images) ---
     if (uriPath.contains('/images/')) {
@@ -99,7 +111,7 @@ class LocalMockServer {
         // Map URL: /v1/images/project1.jpg -> assets/mock/images/project1.jpg
         // Stripping the version prefix if present to match the physical directory structure
         final relativePath = uriPath.replaceFirst(RegExp(r'^/v\d+'), '');
-        final assetPath = 'assets/mock$relativePath';
+        final assetPath = '$_assetsBasePath$relativePath';
 
         try {
           final ByteData data = await rootBundle.load(assetPath);
@@ -183,7 +195,7 @@ class LocalMockServer {
 
   /// Helper to join path segments safely
   static String _buildPath(String version, String method, List<String> parts) {
-    final segments = ['assets/mock', if (version.isNotEmpty) version, method, ...parts];
+    final segments = [_assetsBasePath, if (version.isNotEmpty) version, method, ...parts];
     return '${segments.join('/')}.json'.replaceAll('//', '/');
   }
 }
