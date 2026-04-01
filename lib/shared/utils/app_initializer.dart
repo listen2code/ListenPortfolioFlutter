@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/provider/auth_provider.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
-import 'package:listen_portfolio_flutter/uikit/uikit.dart';
+import 'package:listen_uikit/uikit.dart';
 
 /// A central class to handle all application-wide initializations.
 /// This acts as the 'Composition Root' where core interfaces are tied to shared implementations.

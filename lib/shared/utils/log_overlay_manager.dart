@@ -1,8 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:listen_portfolio_flutter/core/core.dart';
-import 'package:listen_portfolio_flutter/uikit/uikit.dart';
+import 'package:listen_core/core.dart';
+import 'package:listen_uikit/uikit.dart';
 
 enum LogFilter { all, server, app, perf }
 

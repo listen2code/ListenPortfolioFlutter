@@ -1,6 +1,6 @@
-import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
-import 'package:listen_portfolio_flutter/uikit/uikit.dart';
+import 'package:listen_uikit/uikit.dart';
 
 /// Concrete implementation for handling [LogoutEffect].
 /// Performs session cleanup and redirects the user to the login screen while keeping Home in stack.

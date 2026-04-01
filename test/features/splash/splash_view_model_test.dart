@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/features/splash/presentation/pages/splash_intent.dart';
 import 'package:listen_portfolio_flutter/features/splash/presentation/pages/splash_state.dart';
 import 'package:listen_portfolio_flutter/features/splash/presentation/pages/splash_view_model.dart';
@@ -22,11 +22,7 @@ void main() {
 
       container = ProviderContainer();
       // Keep provider alive during the 2s artificial delay
-      subscription = container.listen(
-        splashViewModelProvider,
-        (_, __) {},
-        fireImmediately: false,
-      );
+      subscription = container.listen(splashViewModelProvider, (_, __) {}, fireImmediately: false);
       viewModel = container.read(splashViewModelProvider.notifier);
       emittedEffects.clear();
       viewModel.onBindEffect((effect) => emittedEffects.add(effect));

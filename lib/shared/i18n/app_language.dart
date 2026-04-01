@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 
 enum AppLanguage {

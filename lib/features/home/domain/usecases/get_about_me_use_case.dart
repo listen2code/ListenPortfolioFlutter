@@ -1,5 +1,5 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/features/home/data/models/about_me_model.dart';
 import 'package:listen_portfolio_flutter/features/home/domain/repositories/about_me_repository.dart';
 

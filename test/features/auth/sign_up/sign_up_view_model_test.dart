@@ -1,6 +1,6 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/sign_up/sign_up_intent.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/sign_up/sign_up_view_model.dart';
 import 'package:listen_portfolio_flutter/shared/base/navigation_provider_impl.dart';

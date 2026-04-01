@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_core/core.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'terms_of_service_intent.dart';
 import 'terms_of_service_state.dart';

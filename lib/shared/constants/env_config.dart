@@ -1,4 +1,4 @@
-import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_core/core.dart';
 
 /// Project-specific environment configurations.
 /// Using an enum here allows us to leverage [.values] for automatic registration in [AppEnv].

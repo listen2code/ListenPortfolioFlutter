@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:listen_portfolio_flutter/core/utils/json_converters.dart';
+import 'package:listen_core/core.dart';
 
 part 'login_model.freezed.dart';
 part 'login_model.g.dart';

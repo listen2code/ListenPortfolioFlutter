@@ -1,4 +1,4 @@
-import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_core/core.dart';
 import 'package:share_plus/share_plus.dart';
 
 /// Standard Effect for sharing files or text.

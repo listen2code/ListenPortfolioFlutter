@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/crash_log_list/view_log_effect.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
-import 'package:listen_portfolio_flutter/uikit/widgets/common_dialog.dart';
+import 'package:listen_uikit/uikit.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'crash_log_list_intent.dart';

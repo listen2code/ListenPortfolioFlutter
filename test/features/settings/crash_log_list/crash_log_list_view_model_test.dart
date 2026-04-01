@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/crash_log_list/crash_log_list_intent.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/crash_log_list/crash_log_list_state.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/crash_log_list/crash_log_list_view_model.dart';
@@ -32,11 +32,7 @@ void main() {
       // 3. Create a ProviderContainer for testing
       container = ProviderContainer();
       // Keep provider alive during async operations to prevent auto-dispose
-      subscription = container.listen(
-        crashLogListViewModelProvider,
-        (_, __) {},
-        fireImmediately: false,
-      );
+      subscription = container.listen(crashLogListViewModelProvider, (_, __) {}, fireImmediately: false);
       viewModel = container.read(crashLogListViewModelProvider.notifier);
 
       // 4. Record all emitted effects for verification

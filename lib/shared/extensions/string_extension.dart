@@ -1,4 +1,4 @@
-import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_core/core.dart';
 
 extension StringUrlExtension on String {
   /// Converts a mock URL (starting with localhost) to a full API URL using the current environment's base URL.

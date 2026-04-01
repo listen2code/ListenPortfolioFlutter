@@ -1,7 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/features/home/data/datasources/projects_local_data_source.dart';
 import 'package:listen_portfolio_flutter/features/home/data/datasources/projects_remote_data_source.dart';
 import 'package:listen_portfolio_flutter/features/home/data/models/project_model.dart';
@@ -47,18 +47,14 @@ void main() {
     SharedPreferences.setMockInitialValues({});
 
     // Mock the connectivity_plus platform channel to simulate wifi connection
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
       const MethodChannel('dev.fluttercommunity.plus/connectivity'),
       (MethodCall call) async => ['wifi'],
     );
 
     mockRemote = MockProjectsRemoteDataSource();
     mockLocal = MockProjectsLocalDataSource();
-    repository = ProjectsRepositoryImpl(
-      remoteDataSource: mockRemote,
-      localDataSource: mockLocal,
-    );
+    repository = ProjectsRepositoryImpl(remoteDataSource: mockRemote, localDataSource: mockLocal);
   });
 
   group('ProjectsRepositoryImpl - getProjects', () {
@@ -72,13 +68,10 @@ void main() {
 
       // Assert
       expect(result.isRight(), isTrue);
-      result.fold(
-        (failure) => fail('Expected Right but got Left: $failure'),
-        (data) {
-          expect(data.length, testProjects.length);
-          expect(data.first.title, testProjects.first.title);
-        },
-      );
+      result.fold((failure) => fail('Expected Right but got Left: $failure'), (data) {
+        expect(data.length, testProjects.length);
+        expect(data.first.title, testProjects.first.title);
+      });
       verify(() => mockRemote.getProjects()).called(1);
       verify(() => mockLocal.cacheProjects(any())).called(1);
     });
@@ -159,10 +152,7 @@ void main() {
 
     test('should return empty list when remote returns empty body', () async {
       // Arrange — server returns success but with empty list
-      final emptyResponse = BaseResponseModel<List<ProjectModel>>(
-        result: ApiResult.success,
-        body: [],
-      );
+      final emptyResponse = BaseResponseModel<List<ProjectModel>>(result: ApiResult.success, body: []);
       when(() => mockRemote.getProjects()).thenAnswer((_) async => emptyResponse);
       when(() => mockLocal.cacheProjects(any())).thenAnswer((_) async {});
 
@@ -171,10 +161,7 @@ void main() {
 
       // Assert
       expect(result.isRight(), isTrue);
-      result.fold(
-        (failure) => fail('Expected Right but got Left'),
-        (data) => expect(data, isEmpty),
-      );
+      result.fold((failure) => fail('Expected Right but got Left'), (data) => expect(data, isEmpty));
     });
   });
 }

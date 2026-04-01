@@ -1,5 +1,5 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_core/core.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 extension UseCaseRefX on Ref {

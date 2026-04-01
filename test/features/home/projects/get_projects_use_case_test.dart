@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/features/home/data/models/project_model.dart';
 import 'package:listen_portfolio_flutter/features/home/domain/repositories/projects_repository.dart';
 import 'package:listen_portfolio_flutter/features/home/domain/usecases/get_projects_use_case.dart';
@@ -220,15 +220,12 @@ void main() {
 
       // Assert
       expect(result, Right<Failure, List<ProjectModel>>(minimalProjectsList));
-      result.fold(
-        (failure) => fail('Expected Right but got Left: $failure'),
-        (projects) {
-          expect(projects[0].title, 'Minimal Project');
-          expect(projects[0].subtitle, isNull);
-          expect(projects[0].desc, isNull);
-          expect(projects[0].techStack, isEmpty);
-        },
-      );
+      result.fold((failure) => fail('Expected Right but got Left: $failure'), (projects) {
+        expect(projects[0].title, 'Minimal Project');
+        expect(projects[0].subtitle, isNull);
+        expect(projects[0].desc, isNull);
+        expect(projects[0].techStack, isEmpty);
+      });
       verify(() => mockRepository.getProjects()).called(1);
       verifyNoMoreInteractions(mockRepository);
     });

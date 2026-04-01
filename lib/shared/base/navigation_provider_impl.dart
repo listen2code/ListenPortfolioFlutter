@@ -1,4 +1,4 @@
-import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_core/core.dart';
 
 /// Standard Effect for navigating to a new target reactively.
 class NavigationEffect extends BaseEffect {

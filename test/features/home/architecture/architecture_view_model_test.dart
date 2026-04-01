@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/architecture/architecture_intent.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/architecture/architecture_state.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/architecture/architecture_view_model.dart';
@@ -22,11 +22,7 @@ void main() {
 
       container = ProviderContainer();
       // Keep provider alive during async delays by holding a subscription
-      subscription = container.listen(
-        architectureViewModelProvider,
-        (_, __) {},
-        fireImmediately: false,
-      );
+      subscription = container.listen(architectureViewModelProvider, (_, __) {}, fireImmediately: false);
       viewModel = container.read(architectureViewModelProvider.notifier);
       emittedEffects.clear();
       viewModel.onBindEffect((effect) => emittedEffects.add(effect));
@@ -91,8 +87,7 @@ void main() {
         await viewModel.handleIntent(const ArchitectureIntent.refresh());
         await Future.delayed(const Duration(milliseconds: 100));
 
-        final sectionsAfterFirstLoad =
-            container.read(architectureViewModelProvider).sections.length;
+        final sectionsAfterFirstLoad = container.read(architectureViewModelProvider).sections.length;
         emittedEffects.clear();
 
         // Act
@@ -101,10 +96,7 @@ void main() {
 
         // Assert — no new loading effects emitted
         expect(emittedEffects.whereType<LoadingEffect>().toList(), isEmpty);
-        expect(
-          container.read(architectureViewModelProvider).sections.length,
-          sectionsAfterFirstLoad,
-        );
+        expect(container.read(architectureViewModelProvider).sections.length, sectionsAfterFirstLoad);
       });
 
       test('should produce at least 4 architecture sections', () async {

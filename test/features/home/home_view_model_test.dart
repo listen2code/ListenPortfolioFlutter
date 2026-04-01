@@ -1,6 +1,6 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_intent.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_state.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_view_model.dart';

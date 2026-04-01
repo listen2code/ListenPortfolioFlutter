@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/delete_account_request_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/repositories/auth_repository.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/usecases/delete_account_use_case.dart';
@@ -24,8 +24,9 @@ void main() {
 
     test('should return Right(void) on successful account deletion', () async {
       // Arrange
-      when(() => mockRepository.deleteAccount(param: any(named: 'param')))
-          .thenAnswer((_) async => const Right(null));
+      when(
+        () => mockRepository.deleteAccount(param: any(named: 'param')),
+      ).thenAnswer((_) async => const Right(null));
 
       // Act
       final result = await useCase(param: testParam);
@@ -39,8 +40,9 @@ void main() {
     test('should return ServerFailure when deletion fails on server', () async {
       // Arrange
       const failure = ServerFailure('Failed to delete account');
-      when(() => mockRepository.deleteAccount(param: any(named: 'param')))
-          .thenAnswer((_) async => const Left(failure));
+      when(
+        () => mockRepository.deleteAccount(param: any(named: 'param')),
+      ).thenAnswer((_) async => const Left(failure));
 
       // Act
       final result = await useCase(param: testParam);
@@ -53,8 +55,9 @@ void main() {
     test('should return AuthFailure when user is not authenticated', () async {
       // Arrange
       const failure = AuthFailure('Not authorized to delete this account');
-      when(() => mockRepository.deleteAccount(param: any(named: 'param')))
-          .thenAnswer((_) async => const Left(failure));
+      when(
+        () => mockRepository.deleteAccount(param: any(named: 'param')),
+      ).thenAnswer((_) async => const Left(failure));
 
       // Act
       final result = await useCase(param: testParam);
@@ -66,8 +69,9 @@ void main() {
     test('should return NetworkFailure on network error', () async {
       // Arrange
       const failure = NetworkFailure('No internet connection');
-      when(() => mockRepository.deleteAccount(param: any(named: 'param')))
-          .thenAnswer((_) async => const Left(failure));
+      when(
+        () => mockRepository.deleteAccount(param: any(named: 'param')),
+      ).thenAnswer((_) async => const Left(failure));
 
       // Act
       final result = await useCase(param: testParam);
@@ -79,8 +83,7 @@ void main() {
     test('should pass null param directly to repository', () async {
       // Arrange — validation is the ViewModel's responsibility
       const failure = ServerFailure('Missing user ID');
-      when(() => mockRepository.deleteAccount(param: null))
-          .thenAnswer((_) async => const Left(failure));
+      when(() => mockRepository.deleteAccount(param: null)).thenAnswer((_) async => const Left(failure));
 
       // Act
       final result = await useCase(param: null);

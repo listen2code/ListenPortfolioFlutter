@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/provider/auth_provider.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
-import 'package:listen_portfolio_flutter/uikit/uikit.dart';
+import 'package:listen_uikit/uikit.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'home_intent.dart';

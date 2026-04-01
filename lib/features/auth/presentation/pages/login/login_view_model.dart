@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/login_request_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_intent.dart';

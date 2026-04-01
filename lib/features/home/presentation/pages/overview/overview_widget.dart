@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
 import 'package:listen_portfolio_flutter/features/home/data/models/about_me_model.dart';
 import 'package:listen_portfolio_flutter/features/home/data/models/project_model.dart';
@@ -10,7 +10,7 @@ import 'package:listen_portfolio_flutter/features/home/presentation/pages/overvi
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/overview/overview_state.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/overview/overview_view_model.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
-import 'package:listen_portfolio_flutter/uikit/uikit.dart';
+import 'package:listen_uikit/uikit.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class OverviewWidget extends StatelessWidget {

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/datasources/auth_local_data_source.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/get_current_user_request_model.dart';

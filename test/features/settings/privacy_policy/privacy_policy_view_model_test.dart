@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/privacy_policy/privacy_policy_intent.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/privacy_policy/privacy_policy_state.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/privacy_policy/privacy_policy_view_model.dart';
@@ -20,11 +20,7 @@ void main() {
       await SpUtil.init(prefix: 'test_');
 
       container = ProviderContainer();
-      subscription = container.listen(
-        privacyPolicyViewModelProvider,
-        (_, __) {},
-        fireImmediately: false,
-      );
+      subscription = container.listen(privacyPolicyViewModelProvider, (_, __) {}, fireImmediately: false);
       viewModel = container.read(privacyPolicyViewModelProvider.notifier);
     });
 
@@ -105,8 +101,7 @@ void main() {
         await viewModel.handleIntent(const PrivacyPolicyIntent.refresh());
         await Future.delayed(const Duration(milliseconds: 100));
 
-        final sectionsAfterFirstLoad =
-            container.read(privacyPolicyViewModelProvider).sections.length;
+        final sectionsAfterFirstLoad = container.read(privacyPolicyViewModelProvider).sections.length;
 
         // Act — trigger onReady again
         viewModel.onReady();

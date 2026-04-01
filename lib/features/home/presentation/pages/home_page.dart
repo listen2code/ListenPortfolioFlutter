@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/about_me/about_me_widget.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/architecture/architecture_widget.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_intent.dart';
@@ -9,7 +9,7 @@ import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_v
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/overview/overview_widget.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/projects/projects_widget.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
-import 'package:listen_portfolio_flutter/uikit/uikit.dart';
+import 'package:listen_uikit/uikit.dart';
 
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});

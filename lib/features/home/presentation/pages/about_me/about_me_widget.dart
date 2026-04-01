@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/features/home/data/models/about_me_model.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/about_me/about_me_intent.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/about_me/about_me_state.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/about_me/about_me_view_model.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
-import 'package:listen_portfolio_flutter/uikit/uikit.dart';
+import 'package:listen_uikit/uikit.dart';
 
 class AboutMeWidget extends StatelessWidget {
   final bool active;

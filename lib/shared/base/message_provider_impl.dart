@@ -1,5 +1,5 @@
-import 'package:listen_portfolio_flutter/core/core.dart';
-import 'package:listen_portfolio_flutter/uikit/uikit.dart';
+import 'package:listen_core/core.dart';
+import 'package:listen_uikit/uikit.dart';
 
 /// Concrete implementation for handling [MessageEffect] using [CommonToast].
 class MessageProviderImpl extends BaseProvider<MessageEffect> {

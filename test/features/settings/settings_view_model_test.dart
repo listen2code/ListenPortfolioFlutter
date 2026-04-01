@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/settings_intent.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/settings_state.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/settings_view_model.dart';
@@ -21,11 +21,7 @@ void main() {
       await SpUtil.init(prefix: 'test_');
 
       container = ProviderContainer();
-      subscription = container.listen(
-        settingsViewModelProvider,
-        (_, __) {},
-        fireImmediately: false,
-      );
+      subscription = container.listen(settingsViewModelProvider, (_, __) {}, fireImmediately: false);
       viewModel = container.read(settingsViewModelProvider.notifier);
       emittedEffects.clear();
       viewModel.onBindEffect((effect) => emittedEffects.add(effect));
@@ -85,10 +81,7 @@ void main() {
         await Future.delayed(const Duration(milliseconds: 100));
 
         // Assert
-        expect(
-          container.read(settingsViewModelProvider).currentLanguage,
-          AppLanguage.english,
-        );
+        expect(container.read(settingsViewModelProvider).currentLanguage, AppLanguage.english);
       });
 
       test('should update currentLanguage to Chinese', () async {
@@ -101,10 +94,7 @@ void main() {
         await Future.delayed(const Duration(milliseconds: 100));
 
         // Assert
-        expect(
-          container.read(settingsViewModelProvider).currentLanguage,
-          AppLanguage.chinese,
-        );
+        expect(container.read(settingsViewModelProvider).currentLanguage, AppLanguage.chinese);
       });
     });
 

@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/terms_of_service/terms_of_service_intent.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/terms_of_service/terms_of_service_state.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/terms_of_service/terms_of_service_view_model.dart';
@@ -20,11 +20,7 @@ void main() {
       await SpUtil.init(prefix: 'test_');
 
       container = ProviderContainer();
-      subscription = container.listen(
-        termsOfServiceViewModelProvider,
-        (_, __) {},
-        fireImmediately: false,
-      );
+      subscription = container.listen(termsOfServiceViewModelProvider, (_, __) {}, fireImmediately: false);
       viewModel = container.read(termsOfServiceViewModelProvider.notifier);
     });
 
@@ -105,8 +101,7 @@ void main() {
         await viewModel.handleIntent(const TermsOfServiceIntent.init());
         await Future.delayed(const Duration(milliseconds: 100));
 
-        final countAfterFirstLoad =
-            container.read(termsOfServiceViewModelProvider).sections.length;
+        final countAfterFirstLoad = container.read(termsOfServiceViewModelProvider).sections.length;
 
         // Act — trigger onReady again
         viewModel.onReady();

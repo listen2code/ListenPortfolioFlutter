@@ -1,7 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/features/home/data/datasources/about_me_local_data_source.dart';
 import 'package:listen_portfolio_flutter/features/home/data/datasources/about_me_remote_data_source.dart';
 import 'package:listen_portfolio_flutter/features/home/data/models/about_me_model.dart';
@@ -49,18 +49,14 @@ void main() {
     SharedPreferences.setMockInitialValues({});
 
     // Mock the connectivity_plus platform channel to simulate wifi connection
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
       const MethodChannel('dev.fluttercommunity.plus/connectivity'),
       (MethodCall call) async => ['wifi'],
     );
 
     mockRemote = MockAboutMeRemoteDataSource();
     mockLocal = MockAboutMeLocalDataSource();
-    repository = AboutMeRepositoryImpl(
-      remoteDataSource: mockRemote,
-      localDataSource: mockLocal,
-    );
+    repository = AboutMeRepositoryImpl(remoteDataSource: mockRemote, localDataSource: mockLocal);
   });
 
   group('AboutMeRepositoryImpl - getAboutMe', () {
@@ -74,13 +70,10 @@ void main() {
 
       // Assert
       expect(result.isRight(), isTrue);
-      result.fold(
-        (failure) => fail('Expected Right but got Left: $failure'),
-        (data) {
-          expect(data.status, testAboutMe.status);
-          expect(data.jobTitle, testAboutMe.jobTitle);
-        },
-      );
+      result.fold((failure) => fail('Expected Right but got Left: $failure'), (data) {
+        expect(data.status, testAboutMe.status);
+        expect(data.jobTitle, testAboutMe.jobTitle);
+      });
       verify(() => mockRemote.getAboutMe()).called(1);
       verify(() => mockLocal.cacheAboutMe(any())).called(1);
     });

@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/features/home/data/models/project_model.dart';
 import 'package:listen_portfolio_flutter/features/home/domain/usecases/get_projects_use_case.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/projects/projects_intent.dart';
@@ -38,16 +38,10 @@ void main() {
       mockUseCase = MockGetProjectsUseCase();
 
       container = ProviderContainer(
-        overrides: [
-          getProjectsUseCaseProvider.overrideWith((ref) => mockUseCase),
-        ],
+        overrides: [getProjectsUseCaseProvider.overrideWith((ref) => mockUseCase)],
       );
 
-      subscription = container.listen(
-        projectsViewModelProvider,
-        (_, __) {},
-        fireImmediately: false,
-      );
+      subscription = container.listen(projectsViewModelProvider, (_, __) {}, fireImmediately: false);
       viewModel = container.read(projectsViewModelProvider.notifier);
       emittedEffects.clear();
       viewModel.onBindEffect((effect) => emittedEffects.add(effect));
@@ -69,8 +63,7 @@ void main() {
     group('Refresh Intent — Success', () {
       test('should update state with projects on successful refresh', () async {
         // Arrange
-        when(() => mockUseCase.call(param: null))
-            .thenAnswer((_) async => Right(testProjects));
+        when(() => mockUseCase.call(param: null)).thenAnswer((_) async => Right(testProjects));
 
         // Act
         await viewModel.handleIntent(const ProjectsIntent.refresh());
@@ -84,8 +77,7 @@ void main() {
 
       test('should set isInitialLoaded to true after successful refresh', () async {
         // Arrange
-        when(() => mockUseCase.call(param: null))
-            .thenAnswer((_) async => Right(testProjects));
+        when(() => mockUseCase.call(param: null)).thenAnswer((_) async => Right(testProjects));
 
         // Act
         await viewModel.handleIntent(const ProjectsIntent.refresh());
@@ -97,8 +89,7 @@ void main() {
 
       test('should handle empty project list from server', () async {
         // Arrange
-        when(() => mockUseCase.call(param: null))
-            .thenAnswer((_) async => const Right([]));
+        when(() => mockUseCase.call(param: null)).thenAnswer((_) async => const Right([]));
 
         // Act
         await viewModel.handleIntent(const ProjectsIntent.refresh());
@@ -115,8 +106,7 @@ void main() {
       test('should NOT set isInitialLoaded on server failure', () async {
         // Arrange
         const failure = ServerFailure('Failed to load projects');
-        when(() => mockUseCase.call(param: null))
-            .thenAnswer((_) async => const Left(failure));
+        when(() => mockUseCase.call(param: null)).thenAnswer((_) async => const Left(failure));
 
         // Act
         await viewModel.handleIntent(const ProjectsIntent.refresh());
@@ -131,8 +121,7 @@ void main() {
       test('should NOT update projects on network failure', () async {
         // Arrange
         const failure = NetworkFailure('No internet connection');
-        when(() => mockUseCase.call(param: null))
-            .thenAnswer((_) async => const Left(failure));
+        when(() => mockUseCase.call(param: null)).thenAnswer((_) async => const Left(failure));
 
         // Act
         await viewModel.handleIntent(const ProjectsIntent.refresh());
@@ -146,8 +135,7 @@ void main() {
     group('onVisible Lifecycle', () {
       test('should trigger refresh on first onVisible call', () async {
         // Arrange
-        when(() => mockUseCase.call(param: null))
-            .thenAnswer((_) async => Right(testProjects));
+        when(() => mockUseCase.call(param: null)).thenAnswer((_) async => Right(testProjects));
 
         // Act
         viewModel.onVisible();
@@ -161,8 +149,7 @@ void main() {
 
       test('should NOT re-trigger refresh when already loaded', () async {
         // Arrange — load once
-        when(() => mockUseCase.call(param: null))
-            .thenAnswer((_) async => Right(testProjects));
+        when(() => mockUseCase.call(param: null)).thenAnswer((_) async => Right(testProjects));
 
         await viewModel.handleIntent(const ProjectsIntent.refresh());
         await Future.delayed(const Duration(milliseconds: 300));

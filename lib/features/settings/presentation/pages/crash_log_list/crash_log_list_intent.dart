@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_core/core.dart';
 
 part 'crash_log_list_intent.freezed.dart';
 

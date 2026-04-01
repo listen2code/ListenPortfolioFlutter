@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/forgot_password_request_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/password/forgot_password_intent.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/password/forgot_password_state.dart';

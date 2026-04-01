@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:image_picker/image_picker.dart';
-import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/provider/about_me_provider.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -13,7 +13,7 @@ import 'about_me_state.dart';
 part 'about_me_view_model.g.dart';
 
 /// ViewModel for the About Me page
-/// 
+///
 /// Manages the state and business logic for displaying and editing user profile information.
 /// Handles data fetching, image selection, and state updates following the MVI pattern.
 @riverpod

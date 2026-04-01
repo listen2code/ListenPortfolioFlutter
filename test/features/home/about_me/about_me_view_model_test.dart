@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/features/home/data/models/about_me_model.dart';
 import 'package:listen_portfolio_flutter/features/home/domain/usecases/get_about_me_use_case.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/about_me/about_me_intent.dart';
@@ -18,7 +18,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 ///
 /// AboutMeViewModel 单元测试
-/// 
+///
 /// 测试覆盖范围：
 /// 1. 初始状态验证
 /// 2. 刷新功能（成功、失败、空数据）
@@ -36,6 +36,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 // Mock classes
 class MockGetAboutMeUseCase extends Mock implements GetAboutMeUseCase {}
+
 class MockImagePicker extends Mock implements ImagePicker {}
 
 // Platform channel for image_picker (used to mock the internal ImagePicker instance)
@@ -102,26 +103,22 @@ void main() {
       // Mock image_picker platform channel — ViewModel creates ImagePicker() internally
       mockImagePickerPath = _testImagePath;
       mockImagePickerThrows = false;
-      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-          .setMockMethodCallHandler(_imagePickerChannel, (call) async {
-        if (mockImagePickerThrows) {
-          throw PlatformException(code: 'CAMERA_ERROR', message: 'Camera error');
-        }
-        return mockImagePickerPath;
-      });
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+        _imagePickerChannel,
+        (call) async {
+          if (mockImagePickerThrows) {
+            throw PlatformException(code: 'CAMERA_ERROR', message: 'Camera error');
+          }
+          return mockImagePickerPath;
+        },
+      );
 
       container = ProviderContainer(
-        overrides: [
-          getAboutMeUseCaseProvider.overrideWith((ref) => mockGetAboutMeUseCase),
-        ],
+        overrides: [getAboutMeUseCaseProvider.overrideWith((ref) => mockGetAboutMeUseCase)],
       );
 
       // Keep provider alive during async operations to prevent auto-dispose
-      container.listen(
-        aboutMeViewModelProvider,
-        (_, __) {},
-        fireImmediately: false,
-      );
+      container.listen(aboutMeViewModelProvider, (_, __) {}, fireImmediately: false);
 
       viewModel = container.read(aboutMeViewModelProvider.notifier);
       emittedEffects.clear();
@@ -129,15 +126,17 @@ void main() {
     });
 
     tearDown(() {
-      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-          .setMockMethodCallHandler(_imagePickerChannel, null);
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+        _imagePickerChannel,
+        null,
+      );
       container.dispose();
     });
 
     group('Initial State Tests', () {
       test('should have correct initial state', () {
         final state = container.read(aboutMeViewModelProvider);
-        
+
         expect(state.isInitialLoaded, isFalse);
         expect(state.data, isNull);
         expect(state.imageFile, isNull);
@@ -147,8 +146,7 @@ void main() {
     group('Refresh Intent Tests', () {
       test('should successfully refresh and update state with data', () async {
         // Arrange: Mock use case to return success
-        when(() => mockGetAboutMeUseCase.call(param: null))
-            .thenAnswer((_) async => Right(testAboutMeModel));
+        when(() => mockGetAboutMeUseCase.call(param: null)).thenAnswer((_) async => Right(testAboutMeModel));
 
         // Act: Trigger refresh intent
         await viewModel.handleIntent(const AboutMeIntent.refresh());
@@ -167,8 +165,7 @@ void main() {
       test('should handle refresh failure gracefully', () async {
         // Arrange: Mock use case to return failure
         const failure = ServerFailure('Failed to load about me data');
-        when(() => mockGetAboutMeUseCase.call(param: null))
-            .thenAnswer((_) async => const Left(failure));
+        when(() => mockGetAboutMeUseCase.call(param: null)).thenAnswer((_) async => const Left(failure));
 
         // Act: Trigger refresh intent
         await viewModel.handleIntent(const AboutMeIntent.refresh());
@@ -186,8 +183,7 @@ void main() {
       test('should handle empty data from refresh', () async {
         // Arrange: Mock use case to return empty data
         final emptyAboutMeModel = AboutMeModel();
-        when(() => mockGetAboutMeUseCase.call(param: null))
-            .thenAnswer((_) async => Right(emptyAboutMeModel));
+        when(() => mockGetAboutMeUseCase.call(param: null)).thenAnswer((_) async => Right(emptyAboutMeModel));
 
         // Act: Trigger refresh intent
         await viewModel.handleIntent(const AboutMeIntent.refresh());
@@ -209,8 +205,9 @@ void main() {
       test('should handle network failure during refresh', () async {
         // Arrange: Mock use case to return network failure
         const networkFailure = NetworkFailure('No internet connection');
-        when(() => mockGetAboutMeUseCase.call(param: null))
-            .thenAnswer((_) async => const Left(networkFailure));
+        when(
+          () => mockGetAboutMeUseCase.call(param: null),
+        ).thenAnswer((_) async => const Left(networkFailure));
 
         // Act: Trigger refresh intent
         await viewModel.handleIntent(const AboutMeIntent.refresh());
@@ -309,8 +306,7 @@ void main() {
     group('Lifecycle Tests', () {
       test('should trigger refresh onVisible when not initially loaded', () async {
         // Arrange: Mock use case for successful refresh
-        when(() => mockGetAboutMeUseCase.call(param: null))
-            .thenAnswer((_) async => Right(testAboutMeModel));
+        when(() => mockGetAboutMeUseCase.call(param: null)).thenAnswer((_) async => Right(testAboutMeModel));
 
         // Act: Trigger onVisible lifecycle
         viewModel.onVisible();
@@ -327,9 +323,8 @@ void main() {
 
       test('should not trigger refresh onVisible when already loaded', () async {
         // Arrange: First load the data
-        when(() => mockGetAboutMeUseCase.call(param: null))
-            .thenAnswer((_) async => Right(testAboutMeModel));
-        
+        when(() => mockGetAboutMeUseCase.call(param: null)).thenAnswer((_) async => Right(testAboutMeModel));
+
         await viewModel.handleIntent(const AboutMeIntent.refresh());
         await Future.delayed(const Duration(milliseconds: 300));
 
@@ -348,8 +343,7 @@ void main() {
     group('State Management Tests', () {
       test('should maintain separate state for image file and data', () async {
         // Arrange: platform channel returns _testImagePath by default
-        when(() => mockGetAboutMeUseCase.call(param: null))
-            .thenAnswer((_) async => Right(testAboutMeModel));
+        when(() => mockGetAboutMeUseCase.call(param: null)).thenAnswer((_) async => Right(testAboutMeModel));
 
         // Act: First refresh data, then pick image
         await viewModel.handleIntent(const AboutMeIntent.refresh());
@@ -368,14 +362,13 @@ void main() {
 
       test('should handle rapid state changes', () async {
         // Arrange: Mock use case
-        when(() => mockGetAboutMeUseCase.call(param: null))
-            .thenAnswer((_) async => Right(testAboutMeModel));
+        when(() => mockGetAboutMeUseCase.call(param: null)).thenAnswer((_) async => Right(testAboutMeModel));
 
         // Act: Trigger multiple intents rapidly
         viewModel.handleIntent(const AboutMeIntent.refresh());
         viewModel.handleIntent(const AboutMeIntent.refresh());
         viewModel.handleIntent(const AboutMeIntent.refresh());
-        
+
         await Future.delayed(const Duration(milliseconds: 500));
 
         // Assert: Verify state is consistent (should handle concurrent calls gracefully)
@@ -391,14 +384,10 @@ void main() {
     group('Error Handling Tests', () {
       test('should handle use case parameter errors', () async {
         // Arrange: Mock use case to throw exception
-        when(() => mockGetAboutMeUseCase.call(param: null))
-            .thenThrow(Exception('Invalid parameter'));
+        when(() => mockGetAboutMeUseCase.call(param: null)).thenThrow(Exception('Invalid parameter'));
 
         // The exception propagates through dispatch/ZoneManager and rejects the Future
-        await expectLater(
-          viewModel.handleIntent(const AboutMeIntent.refresh()),
-          throwsA(isA<Exception>()),
-        );
+        await expectLater(viewModel.handleIntent(const AboutMeIntent.refresh()), throwsA(isA<Exception>()));
 
         // State must remain unchanged since the exception prevented update
         final state = container.read(aboutMeViewModelProvider);
@@ -408,8 +397,7 @@ void main() {
 
       test('should handle state update errors gracefully', () async {
         // Arrange: Mock use case for successful call
-        when(() => mockGetAboutMeUseCase.call(param: null))
-            .thenAnswer((_) async => Right(testAboutMeModel));
+        when(() => mockGetAboutMeUseCase.call(param: null)).thenAnswer((_) async => Right(testAboutMeModel));
 
         // Act: Trigger refresh
         await viewModel.handleIntent(const AboutMeIntent.refresh());

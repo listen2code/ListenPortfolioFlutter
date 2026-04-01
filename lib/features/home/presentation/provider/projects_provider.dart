@@ -1,4 +1,4 @@
-import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/features/home/data/datasources/projects_local_data_source.dart';
 import 'package:listen_portfolio_flutter/features/home/data/datasources/projects_remote_data_source.dart';
 import 'package:listen_portfolio_flutter/features/home/data/repositories/projects_repository_impl.dart';

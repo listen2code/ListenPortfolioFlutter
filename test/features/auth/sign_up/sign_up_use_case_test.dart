@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:listen_portfolio_flutter/core/core.dart';
+import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/signup_request_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/repositories/auth_repository.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/usecases/signup_use_case.dart';
@@ -27,8 +27,9 @@ void main() {
 
     test('should return Right(void) on successful signup', () async {
       // Arrange
-      when(() => mockRepository.signUp(param: any(named: 'param')))
-          .thenAnswer((_) async => const Right(null));
+      when(
+        () => mockRepository.signUp(param: any(named: 'param')),
+      ).thenAnswer((_) async => const Right(null));
 
       // Act
       final result = await useCase(param: validParam);
@@ -42,8 +43,9 @@ void main() {
     test('should return ServerFailure when server rejects signup', () async {
       // Arrange
       const failure = ServerFailure('Username already taken');
-      when(() => mockRepository.signUp(param: any(named: 'param')))
-          .thenAnswer((_) async => const Left(failure));
+      when(
+        () => mockRepository.signUp(param: any(named: 'param')),
+      ).thenAnswer((_) async => const Left(failure));
 
       // Act
       final result = await useCase(param: validParam);
@@ -57,8 +59,9 @@ void main() {
     test('should return NetworkFailure on network error', () async {
       // Arrange
       const failure = NetworkFailure('No internet connection');
-      when(() => mockRepository.signUp(param: any(named: 'param')))
-          .thenAnswer((_) async => const Left(failure));
+      when(
+        () => mockRepository.signUp(param: any(named: 'param')),
+      ).thenAnswer((_) async => const Left(failure));
 
       // Act
       final result = await useCase(param: validParam);
@@ -76,8 +79,9 @@ void main() {
         email: 'existing@example.com',
         password: 'password123',
       );
-      when(() => mockRepository.signUp(param: any(named: 'param')))
-          .thenAnswer((_) async => const Left(failure));
+      when(
+        () => mockRepository.signUp(param: any(named: 'param')),
+      ).thenAnswer((_) async => const Left(failure));
 
       // Act
       final result = await useCase(param: duplicateEmailParam);
@@ -89,8 +93,7 @@ void main() {
     test('should pass null param directly to repository', () async {
       // Arrange — validation belongs to ViewModel layer, not UseCase
       const failure = ServerFailure('Invalid request');
-      when(() => mockRepository.signUp(param: null))
-          .thenAnswer((_) async => const Left(failure));
+      when(() => mockRepository.signUp(param: null)).thenAnswer((_) async => const Left(failure));
 
       // Act
       final result = await useCase(param: null);
@@ -103,8 +106,9 @@ void main() {
     test('should propagate AuthFailure from repository', () async {
       // Arrange
       const failure = AuthFailure('Unauthorized signup attempt');
-      when(() => mockRepository.signUp(param: any(named: 'param')))
-          .thenAnswer((_) async => const Left(failure));
+      when(
+        () => mockRepository.signUp(param: any(named: 'param')),
+      ).thenAnswer((_) async => const Left(failure));
 
       // Act
       final result = await useCase(param: validParam);
