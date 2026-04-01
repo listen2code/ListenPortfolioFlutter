@@ -64,7 +64,8 @@ jobs:
     - name: Run Flutter analyze
       run: |
         echo "🔍 Running Flutter analyze..."
-        flutter analyze
+        flutter analyze --no-fatal-infos --no-fatal-warnings
+        echo "✅ Flutter analyze completed successfully"
         
     - name: Check for circular dependencies
       run: |

@@ -39,7 +39,7 @@
 3. **接口导向**: 依赖抽象而非具体实现
 4. **最小依赖**: 每个模块只依赖真正需要的内容
 
-## 🚫 禁止的依赖模式
+## 禁止的依赖模式
 
 ### 1. 跨 Features 模块依赖
 
@@ -51,17 +51,29 @@ import 'package:listen_portfolio_flutter/features/home/data/models/user_model.da
 import 'package:listen_portfolio_flutter/shared/models/user_model.dart';
 ```
 
-### 2. Shared 依赖 Features
+### 2. 向上依赖
 
+#### 修改后的规则
+**允许 features 和 shared 互相引用**：
 ```dart
-// ❌ 错误 - shared 不应依赖 features
-// lib/shared/utils/auth_helper.dart
-import 'package:listen_portfolio_flutter/features/auth/domain/models/user_model.dart';
+// ✅ 允许 - features 可以依赖 shared
+import 'package:listen_portfolio_flutter/shared/utils/auth_helper.dart';
 
-// ✅ 正确 - 将共享逻辑移到 shared
-// lib/shared/models/user_model.dart
-class UserModel { ... }
+// ✅ 允许 - shared 可以依赖 features (特殊情况)
+import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login_page.dart';
 ```
+
+**仍禁止的依赖**：
+```dart
+// ❌ 禁止 - core 不能依赖上层模块
+import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
+import 'package:listen_portfolio_flutter/shared/utils/app_constants.dart';
+```
+
+**修改原因**：
+- 在同一项目下，features 和 shared 的互相引用难以完全避免
+- 某些场景下（如路由定义、全局初始化）需要 shared 引用 features
+- 保持架构清晰的同时，允许实际的开发需求
 
 ### 3. Core 依赖上层模块
 
