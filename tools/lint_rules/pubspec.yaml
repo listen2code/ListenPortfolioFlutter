@@ -1,0 +1,15 @@
+name: dependency_lint_rules
+description: Custom lint rules for dependency boundary checking
+version: 1.0.0
+publish_to: 'none'
+
+environment:
+  sdk: ^3.10.1
+
+dependencies:
+  analyzer: ^8.4.0
+  custom_lint: ^0.8.1
+
+dev_dependencies:
+  custom_lint: ^0.8.1
+  lints: ^4.0.0

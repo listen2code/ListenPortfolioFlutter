@@ -1,0 +1,11 @@
+analyzer:
+  errors:
+    dependency_boundary: error
+    circular_dependency: error
+    implementation_import: warning
+
+linter:
+  rules:
+    - dependency_boundary
+    - circular_dependency
+    - implementation_import

@@ -5,6 +5,21 @@
 # IDEs (https://dart.dev/tools#ides-and-editors). The analyzer can also be
 # invoked from the command line by running `flutter analyze`.
 
+# Enable custom lint rules
+analyzer:
+  exclude:
+    - "**/*.g.dart"               # Exclude generated files (build_runner)
+    - "**/*.freezed.dart"         # Exclude Freezed generated files
+    - "**/generated/**"           # Exclude all generated content directories
+  
+  language:
+    strict-casts: true            # Enable strict type casting checks
+    strict-inference: true        # Enable strict type inference
+    strict-raw-types: true        # Enable strict raw type checks
+
+# Include custom lint rules
+include: package:dependency_lint_rules/dependency_lint_rules.yaml
+
 # The following line activates a set of recommended lints for Flutter apps,
 # packages, and plugins designed to encourage good coding practices.
 include: package:flutter_lints/flutter.yaml
@@ -21,8 +36,40 @@ linter:
   # `// ignore_for_file: name_of_lint` syntax on the line or in the file
   # producing the lint.
   rules:
-    # avoid_print: false  # Uncomment to disable the `avoid_print` rule
-    # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
+    # Dependency boundary rules
+    - avoid_relative_lib_imports        # Avoid importing files from lib/ directory using relative paths
+    - prefer_relative_imports           # Prefer relative imports for files within the same package
+    - implementation_imports            # Avoid importing implementation files from another package
+    - depend_on_referenced_packages     # Ensure all referenced packages are listed in pubspec.yaml
+    
+    # Code quality rules
+    - avoid_print                       # Avoid using print statements in production code
+    - prefer_single_quotes              # Use single quotes for strings unless they contain single quotes
+    - prefer_final_fields               # Prefer final for class fields that are only set once
+    - prefer_final_locals               # Prefer final for local variables that are not reassigned
+    - prefer_const_constructors         # Prefer const constructors for creating immutable objects
+    - prefer_const_literals_to_create_immutables  # Prefer const literals for creating immutable collections
+    - unnecessary_const                 # Avoid unnecessary const keywords
+    - unnecessary_new                   # Avoid unnecessary new keywords
+    - prefer_is_empty                   # Prefer isEmpty() to check if collections are empty
+    - prefer_is_not_empty               # Prefer isNotEmpty() to check if collections are not empty
+    - avoid_unnecessary_containers      # Avoid wrapping widgets in unnecessary Container widgets
+    - sized_box_for_whitespace          # Use SizedBox instead of Container for adding whitespace
+    - use_key_in_widget_constructors    # Use Key parameter in widget constructors for better widget identification
+    
+    # Architecture-related rules
+    - one_member_abstracts              # Prefer typedefs over single-method abstract classes
+    - avoid_classes_with_only_static_members  # Avoid classes that only contain static members
+    - type_init_formals                 # Use type initialization formals for constructor parameters
+    - cascade_invocations               # Use cascade invocations for chaining method calls
+    - join_return_with_assignment       # Join return statement with assignment when possible
+
+# Custom lint rules configuration
+custom_lint:
+  rules:
+    - dependency_boundary              # Check for dependency boundary violations (cross-module, upward dependencies)
+    - circular_dependency             # Detect potential circular dependencies between modules
+    - implementation_import            # Prevent importing private implementation files
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options

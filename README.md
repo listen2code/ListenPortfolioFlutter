@@ -348,6 +348,14 @@ flutter run --dart-define=APP_ENV=mock
 flutter test
 ```
 
+```bash
+# Check dependency boundaries (architecture compliance)
+dart tools/dependency_rules.dart
+
+# Generate dependency graph for visualization
+dart tools/dependency_rules.dart --graph
+```
+
 ## 📌 Implementation Notes
 
 | Concern | File |
@@ -718,6 +726,14 @@ flutter run --dart-define=APP_ENV=mock
 ```bash
 # 运行测试
 flutter test
+```
+
+```bash
+# 检查依赖边界（架构合规性）
+dart tools/dependency_rules.dart
+
+# 生成依赖关系图（可视化分析）
+dart tools/dependency_rules.dart --graph
 ```
 
 ## 📌 代码索引
@@ -1091,6 +1107,14 @@ flutter run --dart-define=APP_ENV=mock
 ```bash
 # テスト実行
 flutter test
+```
+
+```bash
+# 依存関係境界のチェック（アーキテクチャ準拠）
+dart tools/dependency_rules.dart
+
+# 依存関係グラフの生成（可視化分析）
+dart tools/dependency_rules.dart --graph
 ```
 
 ## 📌 実装ノート（コード参照）

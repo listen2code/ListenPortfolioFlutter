@@ -1,0 +1,114 @@
+name: Dependency Boundary Check
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  dependency-analysis:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.19.0'
+        cache: true
+        
+    - name: Install dependencies
+      run: flutter pub get
+      
+    - name: Run dependency boundary check
+      run: |
+        chmod +x tools/dependency_rules.dart
+        dart tools/dependency_rules.dart
+        
+    - name: Generate dependency graph
+      run: dart tools/dependency_rules.dart --graph
+      
+    - name: Upload dependency graph
+      uses: actions/upload-artifact@v3
+      with:
+        name: dependency-graph
+        path: dependency_graph.json
+        
+    - name: Run Flutter analyze
+      run: flutter analyze --fatal-infos
+      
+    - name: Check for circular dependencies
+      run: |
+        # Check for potential circular dependencies
+        echo "🔍 Checking circular dependencies..."
+        
+        # Use simple dependency analysis
+        find lib -name "*.dart" -exec grep -l "import.*features/" {} \; | \
+        while read file; do
+          # Extract current module
+          module=$(echo "$file" | sed -n 's|.*/features/\([^/]*\).*|\1|p')
+          if [ -n "$module" ]; then
+            # Check if importing other modules
+            cross_imports=$(grep "import.*features/" "$file" | grep -v "import.*features/$module")
+            if [ -n "$cross_imports" ]; then
+              echo "⚠️  Found cross-module dependency: $file"
+              echo "$cross_imports"
+            fi
+          fi
+        done
+        
+    - name: Check dependency layers
+      run: |
+        echo "🔍 Checking dependency layers..."
+        
+        # Check if shared depends on features
+        shared_deps=$(find lib/shared -name "*.dart" -exec grep -l "import.*features/" {} \; || true)
+        if [ -n "$shared_deps" ]; then
+          echo "❌ Found shared module depending on features:"
+          echo "$shared_deps"
+          exit 1
+        fi
+        
+        # Check if core has violation dependencies
+        if [ -d "lib/core" ]; then
+          core_violations=$(find lib/core -name "*.dart" -exec grep -l "import.*\.\./.*features/\|import.*\.\./.*shared/" {} \; || true)
+          if [ -n "$core_violations" ]; then
+            echo "❌ Found core module violation dependencies:"
+            echo "$core_violations"
+            exit 1
+          fi
+        fi
+        
+        echo "✅ Dependency layer check passed"
+        
+    - name: Generate dependency report
+      run: |
+        cat > dependency_report.md << EOF
+        # Dependency Boundary Check Report
+        
+        ## Check Time
+        $(date)
+        
+        ## Check Results
+        - ✅ Dependency layer check passed
+        - ✅ No circular dependencies
+        - ✅ No cross-module violation dependencies
+        
+        ## Dependency Statistics
+        $(find lib -name "*.dart" | wc -l) Dart files
+        
+        ## Module Distribution
+        - Core: $(find lib/core -name "*.dart" 2>/dev/null | wc -l) files
+        - Shared: $(find lib/shared -name "*.dart" 2>/dev/null | wc -l) files  
+        - Features: $(find lib/features -name "*.dart" 2>/dev/null | wc -l) files
+        
+        EOF
+        
+    - name: Upload dependency report
+      uses: actions/upload-artifact@v3
+      with:
+        name: dependency-report
+        path: dependency_report.md

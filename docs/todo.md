@@ -19,10 +19,10 @@
 - [x] Settings 支持语言切换、环境切换、清缓存：`features/settings/presentation/pages/settings_*`
 - [x] README 多语言版本（中文/英文/日文单文件，含架构图/代码示例/技术亮点）
 - [x] 依赖清理或落地：明确 listen_core/listen_uikit 本地依赖路径与状态（pubspec.yaml 中的路径依赖是否仍有效）；
+- [x] 明确依赖边界与治理：core/shared/uikit/features 的依赖方向检查（可用 lint/自定义脚本）
 
 ### 🧱 架构与基础设施优化
 
-- [ ] 明确依赖边界与治理：core/shared/uikit/features 的依赖方向检查（可用 lint/自定义脚本）
 - [ ] "state roaming" 定义与实现：跨 tab/跨 page 状态共享策略（EventBus？Riverpod provider？） 支持状态漫游，并可以在开发模式下通过示例展示
 - [ ] merge _effectController 和 eventBus 的设计评估与落地（统一一次性事件/全局事件的语义与生命周期）
 - [ ] BaseResponseModel / Failure 体系补全：messageId -> i18n 文案映射、统一错误码表、链路 traceId 关联（客户端/服务端）
