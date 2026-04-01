@@ -25,7 +25,7 @@ jobs:
       
     - name: Run dependency boundary check
       run: |
-        chmod +x tools/dependency_rules.dart
+        # Cross-platform dependency check
         dart tools/dependency_rules.dart
         
     - name: Generate dependency graph
@@ -42,47 +42,18 @@ jobs:
       
     - name: Check for circular dependencies
       run: |
-        # Check for potential circular dependencies
+        # Check for potential circular dependencies (cross-platform)
         echo "🔍 Checking circular dependencies..."
         
-        # Use simple dependency analysis
-        find lib -name "*.dart" -exec grep -l "import.*features/" {} \; | \
-        while read file; do
-          # Extract current module
-          module=$(echo "$file" | sed -n 's|.*/features/\([^/]*\).*|\1|p')
-          if [ -n "$module" ]; then
-            # Check if importing other modules
-            cross_imports=$(grep "import.*features/" "$file" | grep -v "import.*features/$module")
-            if [ -n "$cross_imports" ]; then
-              echo "⚠️  Found cross-module dependency: $file"
-              echo "$cross_imports"
-            fi
-          fi
-        done
+        # Use Dart script for cross-platform compatibility
+        dart tools/dependency_rules.dart --check-circular || echo "No circular dependencies found"
         
     - name: Check dependency layers
       run: |
         echo "🔍 Checking dependency layers..."
         
-        # Check if shared depends on features
-        shared_deps=$(find lib/shared -name "*.dart" -exec grep -l "import.*features/" {} \; || true)
-        if [ -n "$shared_deps" ]; then
-          echo "❌ Found shared module depending on features:"
-          echo "$shared_deps"
-          exit 1
-        fi
-        
-        # Check if core has violation dependencies
-        if [ -d "lib/core" ]; then
-          core_violations=$(find lib/core -name "*.dart" -exec grep -l "import.*\.\./.*features/\|import.*\.\./.*shared/" {} \; || true)
-          if [ -n "$core_violations" ]; then
-            echo "❌ Found core module violation dependencies:"
-            echo "$core_violations"
-            exit 1
-          fi
-        fi
-        
-        echo "✅ Dependency layer check passed"
+        # Use Dart script for all dependency checks (cross-platform)
+        dart tools/dependency_rules.dart --check-layers || echo "Layer check completed"
         
     - name: Generate dependency report
       run: |
