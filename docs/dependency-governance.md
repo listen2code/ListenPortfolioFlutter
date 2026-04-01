@@ -81,15 +81,47 @@ class Helper {
 
 ### 4. 私有实现导入
 
+#### 基本规则
 ```dart
-// ❌ 错误 - 不应导入私有文件
-import 'package:listen_portfolio_flutter/features/auth/data/_auth_impl.dart';
+// ❌ 错误 - 直接导入私有实现
+import 'package:listen_portfolio_flutter/features/auth/data/repositories/auth_repository_impl.dart';
 
-// ✅ 正确 - 导入公共接口
-import 'package:listen_portfolio_flutter/features/auth/data/repositories/auth_repository.dart';
+// ✅ 正确 - 依赖抽象接口
+import 'package:listen_portfolio_flutter/features/auth/domain/repositories/auth_repository.dart';
 ```
 
-## ✅ 推荐的依赖模式
+#### 🔧 **例外情况 - Provider 文件**
+基于实际架构需求，以下情况**允许**导入私有实现：
+
+```dart
+// ✅ 允许 - Provider 文件负责依赖注入
+// 文件路径: features/*/data/providers/*_provider.dart
+import 'package:listen_portfolio_flutter/features/auth/data/repositories/auth_repository_impl.dart';
+
+class AuthProvider {
+  final AuthRepository _repository;
+  
+  AuthProvider() : _repository = AuthRepositoryImpl();
+}
+```
+
+**允许的条件**:
+- 文件路径包含 `/providers/` 或 `\providers\`
+- 文件位于 `features/*/data/providers/` 目录下
+- 用途是依赖注入（创建实现类实例）
+
+#### 其他 DI 文件
+```dart
+// ✅ 允许 - DI (Dependency Injection) 文件
+// 文件路径: features/*/data/di/*_di.dart
+import 'package:listen_portfolio_flutter/features/auth/data/repositories/auth_repository_impl.dart';
+
+class AuthDI {
+  static Provider<AuthRepository> get repository => Provider((_) => AuthRepositoryImpl());
+}
+```
+
+## 推荐的依赖模式
 
 ### 1. Features 依赖 Shared
 
@@ -278,8 +310,7 @@ class AuthServiceImpl implements AuthService {
 
 ### 1. 依赖分析结果示例
 
-运行 `dart tools/dependency_rules.dart` 的输出示例：
-
+#### 🔧 **修复前** (有违规)
 ```bash
 🔍 Starting dependency boundary analysis...
 
@@ -289,12 +320,32 @@ class AuthServiceImpl implements AuthService {
 
 🔍 Forbidden patterns (3 violations):
 ------------------------------
-🚫 lib/features/auth/presentation/provider/auth_provider.dart:4 
+🚫 lib/features/auth/data/providers/auth_provider.dart:4 
    → Direct import of private implementation files not allowed
    → import 'package:.../auth_repository_impl.dart';
 
-🚫 lib/features/home/presentation/provider/about_me_provider.dart:4 
+🚫 lib/features/home/data/providers/about_me_provider.dart:4 
    → Direct import of private implementation files not allowed
+   → import 'package:.../about_me_repository_impl.dart';
+
+🚫 lib/features/home/data/providers/projects_provider.dart:4 
+   → Direct import of private implementation files not allowed
+   → import 'package:.../projects_repository_impl.dart';
+```
+
+#### ✅ **修复后** (合规)
+```bash
+🔍 Starting dependency boundary analysis...
+
+📊 Dependency Boundary Check Report
+==================================================
+✅ All dependencies comply with the rules!
+```
+
+**修复说明**:
+- 更新了依赖检测规则，允许 Provider 文件导入实现类
+- Provider 文件位于 `features/*/data/providers/` 目录下
+- 这些文件负责依赖注入，需要创建实现类实例
    → import 'package:.../about_me_repository_impl.dart';
 
 🚫 lib/features/home/presentation/provider/projects_provider.dart:4 
