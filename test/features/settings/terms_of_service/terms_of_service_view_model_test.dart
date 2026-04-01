@@ -5,7 +5,6 @@ import 'package:listen_portfolio_flutter/features/settings/presentation/pages/te
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/terms_of_service/terms_of_service_state.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/terms_of_service/terms_of_service_view_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:listen_portfolio_flutter/shared/shared.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

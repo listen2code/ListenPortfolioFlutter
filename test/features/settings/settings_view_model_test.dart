@@ -24,7 +24,7 @@ void main() {
       subscription = container.listen(settingsViewModelProvider, (_, __) {}, fireImmediately: false);
       viewModel = container.read(settingsViewModelProvider.notifier);
       emittedEffects.clear();
-      viewModel.onBindEffect((effect) => emittedEffects.add(effect));
+      viewModel.onBindEffect((BaseEffect effect) => emittedEffects.add(effect));
     });
 
     tearDown(() {

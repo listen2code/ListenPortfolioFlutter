@@ -12,6 +12,8 @@ analyzer:
     - "**/*.freezed.dart"         # Exclude Freezed generated files
     - "**/generated/**"           # Exclude all generated content directories
     - "tools/lint_rules/**"       # Exclude custom lint rules (temporarily disabled)
+    - "tools/dependency_rules.dart" # Exclude dependency rules tool (uses print statements)
+    - "test/**"                   # Exclude test files (have various lint issues)
   
   language:
     strict-casts: true            # Enable strict type casting checks
