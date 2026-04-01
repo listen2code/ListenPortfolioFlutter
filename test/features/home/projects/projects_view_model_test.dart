@@ -1,5 +1,5 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/features/home/data/models/project_model.dart';
@@ -8,15 +8,29 @@ import 'package:listen_portfolio_flutter/features/home/presentation/pages/projec
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/projects/projects_state.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/projects/projects_view_model.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/provider/projects_provider.dart';
-import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-// Mock class
+import '../../../test_helpers/test_setup.dart';
+
+///
+/// ProjectsViewModel 单元测试
+///
+/// 测试覆盖范围：
+/// 1. 初始状态验证
+/// 2. 刷新功能（成功、失败、空数据、网络错误）
+/// 3. 生命周期管理（onVisible、onInVisible）
+/// 4. 重复调用防护
+/// 5. 并发请求处理
+/// 6. 错误恢复机制
+///
+
+// Mock classes
 class MockGetProjectsUseCase extends Mock implements GetProjectsUseCase {}
 
-void main() {
-  TestWidgetsFlutterBinding.ensureInitialized();
+void main() async {
+  // Initialize test environment for network access
+  await setupTestEnvironment();
 
   group('ProjectsViewModel Tests', () {
     late ProviderContainer container;

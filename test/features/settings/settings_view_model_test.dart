@@ -126,7 +126,9 @@ void main() {
       test('should emit LoadingEffect(true) then LoadingEffect(false)', () async {
         // Act
         await viewModel.handleIntent(const SettingsIntent.clearCache());
-        await Future.delayed(const Duration(milliseconds: 300));
+        
+        // Wait for async operations to complete
+        await Future.delayed(const Duration(milliseconds: 100));
 
         // Assert
         final loadingEffects = emittedEffects.whereType<LoadingEffect>().toList();
@@ -138,11 +140,14 @@ void main() {
       test('should emit a MessageEffect after clearing cache', () async {
         // Act
         await viewModel.handleIntent(const SettingsIntent.clearCache());
-        await Future.delayed(const Duration(milliseconds: 300));
+        
+        // Wait for async operations to complete
+        await Future.delayed(const Duration(milliseconds: 100));
 
         // Assert
         final messageEffects = emittedEffects.whereType<MessageEffect>().toList();
         expect(messageEffects, isNotEmpty);
+        expect(messageEffects.last.message, I18nKeys.cacheCleared.tr);
       });
     });
 
@@ -150,7 +155,9 @@ void main() {
       test('should emit LoadingEffect(true) then LoadingEffect(false)', () async {
         // Act
         await viewModel.handleIntent(const SettingsIntent.resetSettings());
-        await Future.delayed(const Duration(milliseconds: 300));
+        
+        // Wait for async operations to complete
+        await Future.delayed(const Duration(milliseconds: 100));
 
         // Assert
         final loadingEffects = emittedEffects.whereType<LoadingEffect>().toList();
@@ -162,11 +169,14 @@ void main() {
       test('should emit a MessageEffect after resetting settings', () async {
         // Act
         await viewModel.handleIntent(const SettingsIntent.resetSettings());
-        await Future.delayed(const Duration(milliseconds: 300));
+        
+        // Wait for async operations to complete
+        await Future.delayed(const Duration(milliseconds: 100));
 
         // Assert
         final messageEffects = emittedEffects.whereType<MessageEffect>().toList();
         expect(messageEffects, isNotEmpty);
+        expect(messageEffects.last.message, I18nKeys.settingsResetSuccess.tr);
       });
     });
   });

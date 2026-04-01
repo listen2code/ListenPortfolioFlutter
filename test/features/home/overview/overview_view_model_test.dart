@@ -4,10 +4,14 @@ import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/overview/overview_intent.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/overview/overview_view_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../test_helpers/test_setup.dart';
 
-void main() {
+void main() async {
   // 1. Initialize test binding
   TestWidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize test environment for network access
+  await setupTestEnvironment();
 
   group('OverviewViewModel Tests', () {
     late ProviderContainer container;

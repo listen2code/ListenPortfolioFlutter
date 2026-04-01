@@ -15,6 +15,7 @@ import 'package:listen_portfolio_flutter/features/home/presentation/provider/abo
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../test_helpers/test_setup.dart';
 
 ///
 /// AboutMeViewModel 单元测试
@@ -43,9 +44,12 @@ class MockImagePicker extends Mock implements ImagePicker {}
 const _imagePickerChannel = MethodChannel('plugins.flutter.io/image_picker');
 const _testImagePath = '/test/path/image.jpg';
 
-void main() {
+void main() async {
   // 初始化测试绑定
   TestWidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize test environment for network access
+  await setupTestEnvironment();
 
   group('AboutMeViewModel Tests', () {
     late ProviderContainer container;

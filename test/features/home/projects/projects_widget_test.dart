@@ -4,9 +4,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/projects/projects_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+import '../../../test_helpers/test_setup.dart';
 
-void main() {
-  TestWidgetsFlutterBinding.ensureInitialized();
+void main() async {
+  // Initialize test environment for network access
+  await setupTestEnvironment();
 
   group('ProjectsWidget Widget Tests', () {
     setUp(() {
