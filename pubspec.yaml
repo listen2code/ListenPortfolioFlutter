@@ -13,8 +13,8 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  listen_core: ^0.0.1
-  listen_uikit: ^0.0.1
+  listen_core: ^0.0.3
+  listen_uikit: ^0.0.2
 
   # UI
   cupertino_icons: ^1.0.8
@@ -64,6 +64,9 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^6.0.0
   flutter_launcher_icons: ^0.14.4
+  
+  # Custom Lint Rules
+  custom_lint: 0.8.1
 
   # Code Generation
   build_runner: ^2.4.13
