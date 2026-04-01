@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:listen_core/core.dart';
+import 'package:listen_portfolio_flutter/features/home/data/models/about_me_model.dart';
+import 'package:listen_portfolio_flutter/features/home/data/models/project_model.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/provider/about_me_provider.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/provider/projects_provider.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
@@ -37,8 +39,8 @@ class OverviewViewModel extends _$OverviewViewModel with ViewModelMixin<Overview
       showLoading: true,
       loadingType: LoadingType.page,
       onSuccess: (results) {
-        final projects = results[0].take(2).toList();
-        updateState(state.copyWith(featuredProjects: projects, aboutMe: results[1], isInitialLoaded: true));
+        final projects = (results[0] as List<ProjectModel>).take(2).toList();
+        updateState(state.copyWith(featuredProjects: projects, aboutMe: results[1] as AboutMeModel?, isInitialLoaded: true));
       },
     );
   }

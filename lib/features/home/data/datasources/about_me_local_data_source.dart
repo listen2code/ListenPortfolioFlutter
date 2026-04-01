@@ -17,7 +17,7 @@ class AboutMeLocalDataSource {
     try {
       final jsonString = SpUtil.getString(AppConstants.aboutMeDataKey);
       if (jsonString != null) {
-        return AboutMeModel.fromJson(json.decode(jsonString));
+        return AboutMeModel.fromJson(json.decode(jsonString) as Map<String, dynamic>);
       }
     } catch (e) {
       appLogger.e('AboutMeLocalDataSource: Failed to get cached about me: $e');

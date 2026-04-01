@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:listen_core/core.dart';
+import 'package:listen_portfolio_flutter/features/home/data/models/project_model.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/provider/projects_provider.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -34,7 +35,7 @@ class ProjectsViewModel extends _$ProjectsViewModel with ViewModelMixin<Projects
       showLoading: true,
       loadingType: LoadingType.page,
       onSuccess: (projects) {
-        updateState(state.copyWith(projects: projects, isInitialLoaded: true));
+        updateState(state.copyWith(projects: projects as List<ProjectModel>, isInitialLoaded: true));
       },
     );
   }

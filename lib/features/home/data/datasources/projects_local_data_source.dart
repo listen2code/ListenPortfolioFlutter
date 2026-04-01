@@ -18,7 +18,7 @@ class ProjectsLocalDataSource {
     try {
       final jsonString = SpUtil.getString(AppConstants.projectsDataKey);
       if (jsonString != null) {
-        final List<dynamic> decoded = json.decode(jsonString);
+        final List<dynamic> decoded = json.decode(jsonString) as List<dynamic>;
         return decoded.map((e) => ProjectModel.fromJson(e as Map<String, dynamic>)).toList();
       }
     } catch (e) {

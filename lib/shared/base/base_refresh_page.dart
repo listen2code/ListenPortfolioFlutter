@@ -111,7 +111,7 @@ class BaseRefreshPage<V extends BaseViewModel, S extends BaseState> extends Cons
   Widget build(BuildContext context, WidgetRef ref) {
     // 1. Resolve the ViewModel instance
     final effectiveViewModel =
-        viewModel ?? (provider != null ? ref.read((provider as dynamic).notifier) as V : null);
+        viewModel ?? (provider != null ? ref.read(provider as ProviderListenable<V>) as V : null);
 
     // 2. Resolve the current State
     final state = provider != null ? ref.watch(provider!) : null;

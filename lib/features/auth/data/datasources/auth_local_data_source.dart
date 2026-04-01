@@ -85,7 +85,7 @@ class AuthLocalDataSource {
     try {
       final userJson = SpUtil.getString(AppConstants.userDataKey);
       if (userJson != null) {
-        final user = UserModel.fromJson(json.decode(userJson));
+        final user = UserModel.fromJson(json.decode(userJson) as Map<String, dynamic>);
         appLogger.d('AuthLocalDataSource: UserModel retrieved from cache: ${user.id}');
         return user;
       }
