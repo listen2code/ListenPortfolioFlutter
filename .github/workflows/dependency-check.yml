@@ -14,10 +14,15 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       
+    - name: Setup Dart SDK
+      uses: dart-lang/setup-dart@v1
+      with:
+        sdk: stable
+        
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.19.0'
+        flutter-version: '3.38.3'
         cache: true
         
     - name: Install dependencies
@@ -25,38 +30,55 @@ jobs:
       
     - name: Run dependency boundary check
       run: |
-        # Cross-platform dependency check
-        dart tools/dependency_rules.dart
+        echo "🔍 Starting dependency boundary analysis..."
+        echo "📁 Current directory: $(pwd)"
+        echo "📋 Files in tools directory:"
+        ls -la tools/ || echo "Tools directory not found"
+        echo "🔍 Checking if dependency_rules.dart exists:"
+        if [ -f "tools/dependency_rules.dart" ]; then
+          echo "✅ dependency_rules.dart found"
+          dart tools/dependency_rules.dart
+          if [ $? -ne 0 ]; then
+            echo "❌ Dependency boundary check failed"
+            exit 1
+          fi
+          echo "✅ Dependency boundary check passed"
+        else
+          echo "❌ dependency_rules.dart not found"
+          exit 1
+        fi
         
     - name: Generate dependency graph
-      run: dart tools/dependency_rules.dart --graph
-      
+      run: |
+        echo "📈 Generating dependency graph..."
+        dart tools/dependency_rules.dart --graph
+        
     - name: Upload dependency graph
       uses: actions/upload-artifact@v3
+      if: always()
       with:
         name: dependency-graph
         path: dependency_graph.json
+        retention-days: 30
         
     - name: Run Flutter analyze
-      run: flutter analyze --fatal-infos
-      
+      run: |
+        echo "🔍 Running Flutter analyze..."
+        flutter analyze --fatal-infos
+        
     - name: Check for circular dependencies
       run: |
-        # Check for potential circular dependencies (cross-platform)
         echo "🔍 Checking circular dependencies..."
-        
-        # Use Dart script for cross-platform compatibility
-        dart tools/dependency_rules.dart --check-circular || echo "No circular dependencies found"
+        dart tools/dependency_rules.dart --check-circular
         
     - name: Check dependency layers
       run: |
         echo "🔍 Checking dependency layers..."
-        
-        # Use Dart script for all dependency checks (cross-platform)
-        dart tools/dependency_rules.dart --check-layers || echo "Layer check completed"
+        dart tools/dependency_rules.dart --check-layers
         
     - name: Generate dependency report
       run: |
+        echo "📝 Generating dependency report..."
         cat > dependency_report.md << EOF
         # Dependency Boundary Check Report
         
@@ -80,6 +102,8 @@ jobs:
         
     - name: Upload dependency report
       uses: actions/upload-artifact@v3
+      if: always()
       with:
         name: dependency-report
         path: dependency_report.md
+        retention-days: 30
