@@ -54,7 +54,7 @@ jobs:
         dart tools/dependency_rules.dart --graph
         
     - name: Upload dependency graph
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: dependency-graph
@@ -101,7 +101,7 @@ jobs:
         EOF
         
     - name: Upload dependency report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: dependency-report
