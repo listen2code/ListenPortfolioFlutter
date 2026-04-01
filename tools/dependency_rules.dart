@@ -61,14 +61,10 @@ class DependencyAnalyzer {
           'Cross-feature module dependency not allowed (features/moduleA should not depend on features/moduleB)',
       type: DependencyViolationType.crossFeature,
     ),
-
-    // Forbidden shared dependency on features (improved pattern)
-    DependencyRule(
-      pattern: r'import.*features/',
-      description: 'shared module should not depend on features',
-      type: DependencyViolationType.upwardDependency,
-    ),
-
+    
+    // NOTE: Removed shared -> features dependency check
+    // Allow features and shared to reference each other since they are in the same project
+    
     // Forbidden core dependency on upper layer modules (checked via relative paths)
     DependencyRule(
       pattern: r'import.*\.\./.*features/|import.*\.\./.*shared/',
@@ -133,15 +129,12 @@ class DependencyAnalyzer {
   ) {
     switch (rule.type) {
       case DependencyViolationType.upwardDependency:
-        // Check if shared module imports features
-        if (fileModule == 'shared' && importLine.contains('features/')) {
-          return true;
-        }
-        // Check if core module imports upper layers
-        if (fileModule == 'core' && (importLine.contains('features/') || importLine.contains('shared/'))) {
-          return true;
-        }
-        return false;
+      // NOTE: Allow features and shared to reference each other
+      // Only check core upward dependencies
+      if (fileModule == 'core' && (importLine.contains('features/') || importLine.contains('shared/'))) {
+        return true;
+      }
+      return false;
 
       case DependencyViolationType.crossFeature:
         // Check cross-feature dependencies

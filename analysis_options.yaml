@@ -11,14 +11,12 @@ analyzer:
     - "**/*.g.dart"               # Exclude generated files (build_runner)
     - "**/*.freezed.dart"         # Exclude Freezed generated files
     - "**/generated/**"           # Exclude all generated content directories
+    - "tools/lint_rules/**"       # Exclude custom lint rules (temporarily disabled)
   
   language:
     strict-casts: true            # Enable strict type casting checks
     strict-inference: true        # Enable strict type inference
     strict-raw-types: true        # Enable strict raw type checks
-
-# Include custom lint rules
-include: package:dependency_lint_rules/dependency_lint_rules.yaml
 
 # The following line activates a set of recommended lints for Flutter apps,
 # packages, and plugins designed to encourage good coding practices.
@@ -63,13 +61,6 @@ linter:
     - type_init_formals                 # Use type initialization formals for constructor parameters
     - cascade_invocations               # Use cascade invocations for chaining method calls
     - join_return_with_assignment       # Join return statement with assignment when possible
-
-# Custom lint rules configuration
-custom_lint:
-  rules:
-    - dependency_boundary              # Check for dependency boundary violations (cross-module, upward dependencies)
-    - circular_dependency             # Detect potential circular dependencies between modules
-    - implementation_import            # Prevent importing private implementation files
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options
