@@ -51,9 +51,10 @@ jobs:
         # 检查 commit message 是否包含特殊标记
         if [ "$SHOULD_BUILD_APK" == "false" ]; then
           COMMIT_MSG="${{ github.event.head_commit.message }}"
-          if echo "$COMMIT_MSG" | grep -qE "\[build-apk\]|\[apk\]|\[deploy\]"; then
+          # 安全地检查 commit message，避免特殊字符问题
+          if echo "$COMMIT_MSG" | grep -q "\[build-apk\]" || echo "$COMMIT_MSG" | grep -q "\[apk\]" || echo "$COMMIT_MSG" | grep -q "\[deploy\]"; then
             SHOULD_BUILD_APK="true"
-            echo "Found build trigger in commit message: $COMMIT_MSG"
+            echo "Found build trigger in commit message"
           fi
         fi
         
@@ -79,7 +80,7 @@ jobs:
             "https://api.github.com/repos/${{ github.repository }}/actions/runs?event=push&status=success&per_page=1" | \
             jq -r '.workflow_runs[0].created_at // ""')
           
-          if [ -n "$LAST_BUILD" ]; then
+          if [ -n "$LAST_BUILD" ] && [ "$LAST_BUILD" != "null" ]; then
             # 计算时间差（小时）
             CURRENT_TIME=$(date -u +%s)
             LAST_BUILD_TIME=$(date -d "$LAST_BUILD" -u +%s 2>/dev/null || echo 0)
