@@ -209,46 +209,9 @@ jobs:
         fi
         echo "environment=$ENV" >> $GITHUB_OUTPUT
         
-    - name: Make build script executable
-      run: chmod +x buildAndroid.sh
-      
-    - name: Setup Android signing
+    - name: Build Debug APK
       run: |
-        echo "Setting up Android signing for CI..."
-        
-        # Create keystore directory
-        mkdir -p android/keystore
-        
-        # Create keystore.properties from template and secrets
-        if [ -f "android/keystore/keystore.properties.template" ]; then
-          echo "Creating keystore.properties from template..."
-          cp android/keystore/keystore.properties.template android/keystore/keystore.properties
-          
-          # Replace placeholders with actual secrets
-          sed -i "s/\${SIGNING_STORE_PASSWORD}/${SIGNING_STORE_PASSWORD}/g" android/keystore/keystore.properties
-          sed -i "s/\${SIGNING_KEY_PASSWORD}/${SIGNING_KEY_PASSWORD}/g" android/keystore/keystore.properties
-          sed -i "s/\${SIGNING_KEY_ALIAS}/${SIGNING_KEY_ALIAS}/g" android/keystore/keystore.properties
-          sed -i "s/\${SIGNING_STORE_FILE}/${SIGNING_STORE_FILE}/g" android/keystore/keystore.properties
-          
-          echo "keystore.properties created successfully"
-          cat android/keystore/keystore.properties
-        else
-          echo "Warning: keystore.properties.template not found"
-        fi
-        
-        # Decode keystore file from base64
-        if [ -n "$SIGNING_KEYSTORE_BASE64" ]; then
-          echo "Decoding keystore file..."
-          echo "$SIGNING_KEYSTORE_BASE64" | base64 -d > android/keystore/${SIGNING_STORE_FILE}
-          echo "Keystore file decoded successfully"
-          ls -la android/keystore/
-        else
-          echo "Warning: SIGNING_KEYSTORE_BASE64 not found"
-        fi
-      
-    - name: Build APK
-      run: |
-        echo "Building APK for ${{ steps.env.outputs.environment }} environment"
+        echo "Building debug APK for ${{ steps.env.outputs.environment }} environment"
         
         # Find the correct Java home directory
         JAVA_HOME_DIR=$(dirname $(dirname $(readlink -f $(which java))))
@@ -259,23 +222,25 @@ jobs:
         export ANDROID_HOME="/usr/local/lib/android/sdk"
         export PATH="$JAVA_HOME/bin:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$PATH"
         
-        # Verify Java installation
-        echo "Java home: $JAVA_HOME"
-        echo "Java version: $(java -version 2>&1 | head -1)"
-        echo "Which java: $(which java)"
+        # Create output directory
+        mkdir -p apkOutput
         
-        # Build with error handling
-        if ! ./buildAndroid.sh apk ${{ steps.env.outputs.environment }}; then
-          echo "Build failed, collecting debug information..."
-          echo "Flutter version:"
-          flutter --version
-          echo "Java version:"
-          java -version
-          echo "JAVA_HOME: $JAVA_HOME"
-          echo "Android SDK path:"
-          echo $ANDROID_HOME
-          echo "Build directory contents:"
-          find build -name "*.apk" -o -name "*.aab" 2>/dev/null || echo "No build files found"
+        # Build debug APK directly with Flutter
+        echo "Building debug APK..."
+        flutter build apk --debug \
+          --dart-define=APP_ENV=${{ steps.env.outputs.environment }} \
+          --dart-define=APP_VERSION=$(grep '^version: ' pubspec.yaml | cut -d ' ' -f 2 | cut -d '+' -f 1)
+        
+        # Find and copy the built APK
+        APK_FILE=$(find build/app/outputs/flutter-apk -name "*.apk" | head -n 1)
+        if [[ -n "$APK_FILE" ]]; then
+          cp "$APK_FILE" "apkOutput/lPortfolio-${{ steps.env.outputs.environment }}-debug.apk"
+          echo ">>> Build successful. Output: apkOutput/lPortfolio-${{ steps.env.outputs.environment }}-debug.apk"
+          echo ">>> File size: $(du -h apkOutput/lPortfolio-${{ steps.env.outputs.environment }}-debug.apk | cut -f1)"
+        else
+          echo ">>> Error: APK file not found"
+          echo ">>> Build directory contents:"
+          find build -name "*.apk" 2>/dev/null || echo "No APK files found"
           exit 1
         fi
         
@@ -312,6 +277,7 @@ jobs:
         - Commit: ${{ github.sha }}
         - Build Time: $(date)
         - Trigger: ${{ github.event_name }}
+        - Build Type: Debug (No signing required)
         
         ## APK Information
         - File Name: ${{ steps.apk_info.outputs.apk_filename }}
@@ -335,7 +301,14 @@ jobs:
         2. Enable "Install from unknown sources" on your Android device
         3. Install the APK file
         
-        Note: This is a ${{ steps.env.outputs.environment }} build. Do not use for production unless explicitly built for production.
+        ## Important Notes
+        
+        - This is a **DEBUG** build for testing purposes
+        - No signing required - can be installed directly
+        - Not suitable for production use
+        - Contains debug symbols and logging
+        
+        Environment: ${{ steps.env.outputs.environment }}
         EOF
         
     - name: Upload download info
