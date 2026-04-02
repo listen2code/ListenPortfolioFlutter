@@ -1,0 +1,397 @@
+name: Dependency Check and APK Build
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Build environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+        - mock
+        - dev
+        - test
+        - prod
+      force_build_apk:
+        description: 'Force build APK even if conditions not met'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  check-build-conditions:
+    runs-on: ubuntu-latest
+    outputs:
+      should_build_apk: ${{ steps.check.outputs.should_build_apk }}
+      environment: ${{ steps.check.outputs.environment }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # 获取完整历史以检查时间间隔
+        
+    - name: Check APK build conditions
+      id: check
+      run: |
+        SHOULD_BUILD_APK="false"
+        ENVIRONMENT="dev"
+        
+        # 检查是否强制构建
+        if [ "${{ github.event.inputs.force_build_apk }}" == "true" ]; then
+          SHOULD_BUILD_APK="true"
+          ENVIRONMENT="${{ github.event.inputs.environment }}"
+          echo "Force APK build requested"
+        fi
+        
+        # 检查 commit message 是否包含特殊标记
+        if [ "$SHOULD_BUILD_APK" == "false" ]; then
+          COMMIT_MSG="${{ github.event.head_commit.message }}"
+          if echo "$COMMIT_MSG" | grep -qE "\[build-apk\]|\[apk\]|\[deploy\]"; then
+            SHOULD_BUILD_APK="true"
+            echo "Found build trigger in commit message: $COMMIT_MSG"
+          fi
+        fi
+        
+        # 检查是否是手动触发
+        if [ "${{ github.event_name }}" == "workflow_dispatch" ] && [ "$SHOULD_BUILD_APK" == "false" ]; then
+          SHOULD_BUILD_APK="true"
+          ENVIRONMENT="${{ github.event.inputs.environment }}"
+          echo "Manual workflow dispatch with environment: $ENVIRONMENT"
+        fi
+        
+        # 检查是否是 PR
+        if [ "${{ github.event_name }}" == "pull_request" ] && [ "$SHOULD_BUILD_APK" == "false" ]; then
+          SHOULD_BUILD_APK="true"
+          echo "Pull request trigger"
+        fi
+        
+        # 检查上次构建时间（仅对 push 事件）
+        if [ "${{ github.event_name }}" == "push" ] && [ "$SHOULD_BUILD_APK" == "false" ]; then
+          echo "Checking last build time..."
+          
+          # 获取最近一次成功构建的时间
+          LAST_BUILD=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/runs?event=push&status=success&per_page=1" | \
+            jq -r '.workflow_runs[0].created_at // ""')
+          
+          if [ -n "$LAST_BUILD" ]; then
+            # 计算时间差（小时）
+            CURRENT_TIME=$(date -u +%s)
+            LAST_BUILD_TIME=$(date -d "$LAST_BUILD" -u +%s 2>/dev/null || echo 0)
+            TIME_DIFF=$(( (CURRENT_TIME - LAST_BUILD_TIME) / 3600 ))
+            
+            echo "Last build: $LAST_BUILD"
+            echo "Time difference: $TIME_DIFF hours"
+            
+            # 如果距离上次构建超过 2 小时，则构建
+            if [ $TIME_DIFF -ge 2 ]; then
+              SHOULD_BUILD_APK="true"
+              echo "Building APK due to time interval (2+ hours since last build)"
+            fi
+          else
+            # 如果没有找到之前的构建，则构建
+            SHOULD_BUILD_APK="true"
+            echo "No previous build found, building APK now"
+          fi
+        fi
+        
+        echo "should_build_apk=$SHOULD_BUILD_APK" >> $GITHUB_OUTPUT
+        echo "environment=$ENVIRONMENT" >> $GITHUB_OUTPUT
+        echo "APK build condition result: $SHOULD_BUILD_APK"
+
+  dependency-analysis:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Dart SDK
+      uses: dart-lang/setup-dart@v1
+      with:
+        sdk: stable
+        
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.38.3'
+        cache: true
+        
+    - name: Install dependencies
+      run: flutter pub get
+      
+    - name: Run dependency boundary check
+      run: |
+        echo "🔍 Starting dependency boundary analysis..."
+        echo "📁 Current directory: $(pwd)"
+        echo "📋 Files in tools directory:"
+        ls -la tools/ || echo "Tools directory not found"
+        echo "🔍 Checking if dependency_rules.dart exists:"
+        if [ -f "tools/dependency_rules.dart" ]; then
+          echo "✅ dependency_rules.dart found"
+          dart tools/dependency_rules.dart
+          if [ $? -ne 0 ]; then
+            echo "❌ Dependency boundary check failed"
+            exit 1
+          fi
+          echo "✅ Dependency boundary check passed"
+        else
+          echo "❌ dependency_rules.dart not found"
+          exit 1
+        fi
+        
+    - name: Generate dependency graph
+      run: |
+        echo "📈 Generating dependency graph..."
+        dart tools/dependency_rules.dart --graph
+        
+    - name: Upload dependency graph
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: dependency-graph
+        path: dependency_graph.json
+        retention-days: 30
+        
+    - name: Run Flutter analyze
+      run: |
+        echo "🔍 Running Flutter analyze..."
+        flutter analyze --no-fatal-infos --no-fatal-warnings
+        echo "✅ Flutter analyze completed successfully"
+        
+    - name: Check for circular dependencies
+      run: |
+        echo "🔍 Checking circular dependencies..."
+        dart tools/dependency_rules.dart --check-circular
+        
+    - name: Check dependency layers
+      run: |
+        echo "🔍 Checking dependency layers..."
+        dart tools/dependency_rules.dart --check-layers
+        
+    - name: Generate dependency report
+      run: |
+        echo "📝 Generating dependency report..."
+        cat > dependency_report.md << EOF
+        # Dependency Boundary Check Report
+        
+        ## Check Time
+        $(date)
+        
+        ## Check Results
+        - ✅ Dependency layer check passed
+        - ✅ No circular dependencies
+        - ✅ No cross-module violation dependencies
+        
+        ## Dependency Statistics
+        $(find lib -name "*.dart" | wc -l) Dart files
+        
+        ## Module Distribution
+        - Core: $(find lib/core -name "*.dart" 2>/dev/null | wc -l) files
+        - Shared: $(find lib/shared -name "*.dart" 2>/dev/null | wc -l) files  
+        - Features: $(find lib/features -name "*.dart" 2>/dev/null | wc -l) files
+        
+        EOF
+        
+    - name: Upload dependency report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: dependency-report
+        path: dependency_report.md
+        retention-days: 30
+
+  build-apk:
+    needs: [check-build-conditions, dependency-analysis]
+    if: needs.check-build-conditions.outputs.should_build_apk == 'true' && needs.dependency-analysis.result == 'success'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'zulu'
+        java-version: '17'
+        
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.38.3'
+        cache: true
+        
+    - name: Install dependencies
+      run: flutter pub get
+      
+    - name: Determine environment
+      id: env
+      run: |
+        if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+          ENV="${{ github.event.inputs.environment }}"
+        else
+          ENV="${{ needs.check-build-conditions.outputs.environment }}"
+        fi
+        echo "environment=$ENV" >> $GITHUB_OUTPUT
+        
+    - name: Make build script executable
+      run: chmod +x buildAndroid.sh
+      
+    - name: Build APK
+      run: |
+        echo ">>> Building APK for ${{ steps.env.outputs.environment }} environment"
+        
+        # Set environment variables for GitHub Actions
+        export JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
+        export ANDROID_HOME="/usr/local/lib/android/sdk"
+        export PATH="$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools"
+        
+        # Build with error handling
+        if ! ./buildAndroid.sh apk ${{ steps.env.outputs.environment }}; then
+          echo ">>> Build failed, collecting debug information..."
+          echo ">>> Flutter version:"
+          flutter --version
+          echo ">>> Java version:"
+          java -version
+          echo ">>> Android SDK path:"
+          echo $ANDROID_HOME
+          echo ">>> Build directory contents:"
+          find build -name "*.apk" -o -name "*.aab" 2>/dev/null || echo "No build files found"
+          exit 1
+        fi
+        
+    - name: Get APK info
+      id: apk_info
+      run: |
+        APK_FILE=$(find apkOutput -name "*.apk" | head -n 1)
+        if [ -n "$APK_FILE" ]; then
+          FILENAME=$(basename "$APK_FILE")
+          SIZE=$(stat -c%s "$APK_FILE")
+          echo "apk_file=$APK_FILE" >> $GITHUB_OUTPUT
+          echo "apk_filename=$FILENAME" >> $GITHUB_OUTPUT
+          echo "apk_size=$SIZE" >> $GITHUB_OUTPUT
+        else
+          echo "No APK file found"
+          exit 1
+        fi
+        
+    - name: Upload APK as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: lPortfolio-${{ steps.env.outputs.environment }}-apk
+        path: ${{ steps.apk_info.outputs.apk_file }}
+        retention-days: 30
+        
+    - name: Generate download info
+      run: |
+        cat > download_info.md << 'EOF'
+        # APK Download Information
+        
+        ## Build Details
+        - **Environment**: ${{ steps.env.outputs.environment }}
+        - **Branch**: ${{ github.ref_name }}
+        - **Commit**: ${{ github.sha }}
+        - **Build Time**: $(date)
+        - **Trigger**: ${{ github.event_name }}
+        - **Commit Message**: ${{ github.event.head_commit.message }}
+        
+        ## APK Information
+        - **File Name**: ${{ steps.apk_info.outputs.apk_filename }}
+        - **File Size**: ${{ steps.apk_info.outputs.apk_size }} bytes
+        - **Version**: $(grep '^version: ' pubspec.yaml | cut -d ' ' -f 2)
+        
+        ## Download Options
+        
+        ### 1. GitHub Actions Artifact (Recommended)
+        - Go to Actions Tab in your GitHub repository
+        - Find this workflow run
+        - Click on Artifacts section
+        - Download: lPortfolio-${{ steps.env.outputs.environment }}-apk
+        
+        ### 2. Direct Download Link (Temporary)
+        The artifact will be available for download from the Actions page for 30 days.
+        
+        ## Installation Instructions
+        
+        1. Download the APK file from the GitHub Actions artifacts
+        2. Enable "Install from unknown sources" on your Android device
+        3. Install the APK file
+        
+        **Note**: This is a ${{ steps.env.outputs.environment }} build. Do not use for production unless explicitly built for production.
+        EOF
+        
+    - name: Upload download info
+      uses: actions/upload-artifact@v4
+      with:
+        name: download-info-${{ steps.env.outputs.environment }}
+        path: download_info.md
+        retention-days: 30
+        
+    - name: Comment PR with download link
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const downloadInfo = fs.readFileSync('download_info.md', 'utf8');
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: `## 📱 APK Ready for Download\n\n${downloadInfo}\n\n---\n🤖 This comment was automatically generated by the build workflow.`
+          });
+          
+    - name: Create Release (for main branch pushes)
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: build-${{ github.run_number }}
+        release_name: Build ${{ github.run_number }} - ${{ steps.env.outputs.environment }}
+        body: |
+          ## 📱 APK Build Available
+          
+          **Environment**: ${{ steps.env.outputs.environment }}
+          **Version**: $(grep '^version: ' pubspec.yaml | cut -d ' ' -f 2)
+          **Commit**: ${{ github.sha }}
+          **Commit Message**: ${{ github.event.head_commit.message }}
+          
+          ### Download
+          - APK file is available in the artifacts section below
+          - File: ${{ steps.apk_info.outputs.apk_filename }}
+          - Size: ${{ steps.apk_info.outputs.apk_size }} bytes
+          
+          ### Installation
+          1. Download the APK from the artifacts
+          2. Install on your Android device
+          
+          ---
+          🤖 This release was automatically created.
+        draft: false
+        prerelease: true
+        
+  skip-apk-build:
+    needs: check-build-conditions
+    if: needs.check-build-conditions.outputs.should_build_apk == 'false'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Skip APK build notification
+      run: |
+        echo "🔄 APK build skipped"
+        echo "Reason: Build conditions not met"
+        echo "Time since last build: < 2 hours"
+        echo "No build trigger found in commit message"
+        echo "Commit: ${{ github.sha }}"
+        echo ""
+        echo "To force APK build, use one of these methods:"
+        echo "1. Add [build-apk], [apk], or [deploy] to commit message"
+        echo "2. Wait 2+ hours since last build"
+        echo "3. Use manual workflow dispatch"
