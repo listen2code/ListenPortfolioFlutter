@@ -1,4 +1,4 @@
-name: Dependency Check and APK Build
+name: CI and APK Build
 
 on:
   push:
@@ -24,7 +24,7 @@ on:
         type: boolean
 
 jobs:
-  check-build-conditions:
+  check-conditions:
     runs-on: ubuntu-latest
     outputs:
       should_build_apk: ${{ steps.check.outputs.should_build_apk }}
@@ -33,55 +33,54 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
-        fetch-depth: 0  # 获取完整历史以检查时间间隔
+        fetch-depth: 0
         
-    - name: Check APK build conditions
+    - name: Check build conditions
       id: check
       run: |
+        # Initialize variables
         SHOULD_BUILD_APK="false"
         ENVIRONMENT="dev"
         
-        # 检查是否强制构建
-        if [ "${{ github.event.inputs.force_build_apk }}" == "true" ]; then
+        # Check if force build
+        if [[ "${{ github.event.inputs.force_build_apk }}" == "true" ]]; then
           SHOULD_BUILD_APK="true"
           ENVIRONMENT="${{ github.event.inputs.environment }}"
-          echo "Force APK build requested"
+          echo "Force build requested"
         fi
         
-        # 检查 commit message 是否包含特殊标记
-        if [ "$SHOULD_BUILD_APK" == "false" ]; then
+        # Check commit message for build triggers
+        if [[ "$SHOULD_BUILD_APK" == "false" ]]; then
           COMMIT_MSG="${{ github.event.head_commit.message }}"
-          # 安全地检查 commit message，避免特殊字符问题
-          if echo "$COMMIT_MSG" | grep -q "\[build-apk\]" || echo "$COMMIT_MSG" | grep -q "\[apk\]" || echo "$COMMIT_MSG" | grep -q "\[deploy\]"; then
+          if [[ "$COMMIT_MSG" == *"[build-apk]"* ]] || [[ "$COMMIT_MSG" == *"[apk]"* ]] || [[ "$COMMIT_MSG" == *"[deploy]"* ]]; then
             SHOULD_BUILD_APK="true"
-            echo "Found build trigger in commit message"
+            echo "Build trigger found in commit message"
           fi
         fi
         
-        # 检查是否是手动触发
-        if [ "${{ github.event_name }}" == "workflow_dispatch" ] && [ "$SHOULD_BUILD_APK" == "false" ]; then
+        # Check if manual trigger
+        if [[ "${{ github.event_name }}" == "workflow_dispatch" ]] && [[ "$SHOULD_BUILD_APK" == "false" ]]; then
           SHOULD_BUILD_APK="true"
           ENVIRONMENT="${{ github.event.inputs.environment }}"
-          echo "Manual workflow dispatch with environment: $ENVIRONMENT"
+          echo "Manual workflow dispatch"
         fi
         
-        # 检查是否是 PR
-        if [ "${{ github.event_name }}" == "pull_request" ] && [ "$SHOULD_BUILD_APK" == "false" ]; then
+        # Check if PR
+        if [[ "${{ github.event_name }}" == "pull_request" ]] && [[ "$SHOULD_BUILD_APK" == "false" ]]; then
           SHOULD_BUILD_APK="true"
           echo "Pull request trigger"
         fi
         
-        # 检查上次构建时间（仅对 push 事件）
-        if [ "${{ github.event_name }}" == "push" ] && [ "$SHOULD_BUILD_APK" == "false" ]; then
+        # Check time interval for push events
+        if [[ "${{ github.event_name }}" == "push" ]] && [[ "$SHOULD_BUILD_APK" == "false" ]]; then
           echo "Checking last build time..."
           
-          # 获取最近一次成功构建的时间
+          # Get last successful build time
           LAST_BUILD=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             "https://api.github.com/repos/${{ github.repository }}/actions/runs?event=push&status=success&per_page=1" | \
             jq -r '.workflow_runs[0].created_at // ""')
           
-          if [ -n "$LAST_BUILD" ] && [ "$LAST_BUILD" != "null" ]; then
-            # 计算时间差（小时）
+          if [[ -n "$LAST_BUILD" ]] && [[ "$LAST_BUILD" != "null" ]]; then
             CURRENT_TIME=$(date -u +%s)
             LAST_BUILD_TIME=$(date -d "$LAST_BUILD" -u +%s 2>/dev/null || echo 0)
             TIME_DIFF=$(( (CURRENT_TIME - LAST_BUILD_TIME) / 3600 ))
@@ -89,21 +88,19 @@ jobs:
             echo "Last build: $LAST_BUILD"
             echo "Time difference: $TIME_DIFF hours"
             
-            # 如果距离上次构建超过 2 小时，则构建
-            if [ $TIME_DIFF -ge 2 ]; then
+            if [[ $TIME_DIFF -ge 2 ]]; then
               SHOULD_BUILD_APK="true"
-              echo "Building APK due to time interval (2+ hours since last build)"
+              echo "Building due to time interval"
             fi
           else
-            # 如果没有找到之前的构建，则构建
             SHOULD_BUILD_APK="true"
-            echo "No previous build found, building APK now"
+            echo "No previous build found"
           fi
         fi
         
         echo "should_build_apk=$SHOULD_BUILD_APK" >> $GITHUB_OUTPUT
         echo "environment=$ENVIRONMENT" >> $GITHUB_OUTPUT
-        echo "APK build condition result: $SHOULD_BUILD_APK"
+        echo "Build condition result: $SHOULD_BUILD_APK"
 
   dependency-analysis:
     runs-on: ubuntu-latest
@@ -129,10 +126,6 @@ jobs:
     - name: Run dependency boundary check
       run: |
         echo "🔍 Starting dependency boundary analysis..."
-        echo "📁 Current directory: $(pwd)"
-        echo "📋 Files in tools directory:"
-        ls -la tools/ || echo "Tools directory not found"
-        echo "🔍 Checking if dependency_rules.dart exists:"
         if [ -f "tools/dependency_rules.dart" ]; then
           echo "✅ dependency_rules.dart found"
           dart tools/dependency_rules.dart
@@ -164,52 +157,10 @@ jobs:
         echo "🔍 Running Flutter analyze..."
         flutter analyze --no-fatal-infos --no-fatal-warnings
         echo "✅ Flutter analyze completed successfully"
-        
-    - name: Check for circular dependencies
-      run: |
-        echo "🔍 Checking circular dependencies..."
-        dart tools/dependency_rules.dart --check-circular
-        
-    - name: Check dependency layers
-      run: |
-        echo "🔍 Checking dependency layers..."
-        dart tools/dependency_rules.dart --check-layers
-        
-    - name: Generate dependency report
-      run: |
-        echo "📝 Generating dependency report..."
-        cat > dependency_report.md << EOF
-        # Dependency Boundary Check Report
-        
-        ## Check Time
-        $(date)
-        
-        ## Check Results
-        - ✅ Dependency layer check passed
-        - ✅ No circular dependencies
-        - ✅ No cross-module violation dependencies
-        
-        ## Dependency Statistics
-        $(find lib -name "*.dart" | wc -l) Dart files
-        
-        ## Module Distribution
-        - Core: $(find lib/core -name "*.dart" 2>/dev/null | wc -l) files
-        - Shared: $(find lib/shared -name "*.dart" 2>/dev/null | wc -l) files  
-        - Features: $(find lib/features -name "*.dart" 2>/dev/null | wc -l) files
-        
-        EOF
-        
-    - name: Upload dependency report
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: dependency-report
-        path: dependency_report.md
-        retention-days: 30
 
   build-apk:
-    needs: [check-build-conditions, dependency-analysis]
-    if: needs.check-build-conditions.outputs.should_build_apk == 'true' && needs.dependency-analysis.result == 'success'
+    needs: [check-conditions, dependency-analysis]
+    if: needs.check-conditions.outputs.should_build_apk == 'true' && needs.dependency-analysis.result == 'success'
     runs-on: ubuntu-latest
     
     steps:
@@ -234,10 +185,10 @@ jobs:
     - name: Determine environment
       id: env
       run: |
-        if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+        if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
           ENV="${{ github.event.inputs.environment }}"
         else
-          ENV="${{ needs.check-build-conditions.outputs.environment }}"
+          ENV="${{ needs.check-conditions.outputs.environment }}"
         fi
         echo "environment=$ENV" >> $GITHUB_OUTPUT
         
@@ -271,7 +222,7 @@ jobs:
       id: apk_info
       run: |
         APK_FILE=$(find apkOutput -name "*.apk" | head -n 1)
-        if [ -n "$APK_FILE" ]; then
+        if [[ -n "$APK_FILE" ]]; then
           FILENAME=$(basename "$APK_FILE")
           SIZE=$(stat -c%s "$APK_FILE")
           echo "apk_file=$APK_FILE" >> $GITHUB_OUTPUT
@@ -300,7 +251,6 @@ jobs:
         - **Commit**: ${{ github.sha }}
         - **Build Time**: $(date)
         - **Trigger**: ${{ github.event_name }}
-        - **Commit Message**: ${{ github.event.head_commit.message }}
         
         ## APK Information
         - **File Name**: ${{ steps.apk_info.outputs.apk_filename }}
@@ -363,7 +313,6 @@ jobs:
           **Environment**: ${{ steps.env.outputs.environment }}
           **Version**: $(grep '^version: ' pubspec.yaml | cut -d ' ' -f 2)
           **Commit**: ${{ github.sha }}
-          **Commit Message**: ${{ github.event.head_commit.message }}
           
           ### Download
           - APK file is available in the artifacts section below
@@ -379,9 +328,9 @@ jobs:
         draft: false
         prerelease: true
         
-  skip-apk-build:
-    needs: check-build-conditions
-    if: needs.check-build-conditions.outputs.should_build_apk == 'false'
+  skip-build:
+    needs: check-conditions
+    if: needs.check-conditions.outputs.should_build_apk == 'false'
     runs-on: ubuntu-latest
     steps:
     - name: Skip APK build notification
