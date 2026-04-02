@@ -10,7 +10,7 @@ on:
       environment:
         description: 'Build environment'
         required: true
-        default: 'dev'
+        default: 'mock'
         type: choice
         options:
         - mock
@@ -211,6 +211,40 @@ jobs:
         
     - name: Make build script executable
       run: chmod +x buildAndroid.sh
+      
+    - name: Setup Android signing
+      run: |
+        echo "Setting up Android signing for CI..."
+        
+        # Create keystore directory
+        mkdir -p android/keystore
+        
+        # Create keystore.properties from template and secrets
+        if [ -f "android/keystore/keystore.properties.template" ]; then
+          echo "Creating keystore.properties from template..."
+          cp android/keystore/keystore.properties.template android/keystore/keystore.properties
+          
+          # Replace placeholders with actual secrets
+          sed -i "s/\${SIGNING_STORE_PASSWORD}/${SIGNING_STORE_PASSWORD}/g" android/keystore/keystore.properties
+          sed -i "s/\${SIGNING_KEY_PASSWORD}/${SIGNING_KEY_PASSWORD}/g" android/keystore/keystore.properties
+          sed -i "s/\${SIGNING_KEY_ALIAS}/${SIGNING_KEY_ALIAS}/g" android/keystore/keystore.properties
+          sed -i "s/\${SIGNING_STORE_FILE}/${SIGNING_STORE_FILE}/g" android/keystore/keystore.properties
+          
+          echo "keystore.properties created successfully"
+          cat android/keystore/keystore.properties
+        else
+          echo "Warning: keystore.properties.template not found"
+        fi
+        
+        # Decode keystore file from base64
+        if [ -n "$SIGNING_KEYSTORE_BASE64" ]; then
+          echo "Decoding keystore file..."
+          echo "$SIGNING_KEYSTORE_BASE64" | base64 -d > android/keystore/${SIGNING_STORE_FILE}
+          echo "Keystore file decoded successfully"
+          ls -la android/keystore/
+        else
+          echo "Warning: SIGNING_KEYSTORE_BASE64 not found"
+        fi
       
     - name: Build APK
       run: |
