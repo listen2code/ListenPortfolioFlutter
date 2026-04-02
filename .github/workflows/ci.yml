@@ -49,9 +49,12 @@ jobs:
           echo "Force build requested"
         fi
         
-        # Check commit message for build triggers
+        # Check commit message for build triggers using a safer approach
         if [[ "$SHOULD_BUILD_APK" == "false" ]]; then
-          COMMIT_MSG="${{ github.event.head_commit.message }}"
+          # Get commit message safely
+          COMMIT_MSG=$(git log -1 --pretty=format:"%s")
+          
+          # Check for build triggers using simple string operations
           if [[ "$COMMIT_MSG" == *"[build-apk]"* ]] || [[ "$COMMIT_MSG" == *"[apk]"* ]] || [[ "$COMMIT_MSG" == *"[deploy]"* ]]; then
             SHOULD_BUILD_APK="true"
             echo "Build trigger found in commit message"
@@ -125,23 +128,23 @@ jobs:
       
     - name: Run dependency boundary check
       run: |
-        echo "🔍 Starting dependency boundary analysis..."
+        echo "Starting dependency boundary analysis..."
         if [ -f "tools/dependency_rules.dart" ]; then
-          echo "✅ dependency_rules.dart found"
+          echo "dependency_rules.dart found"
           dart tools/dependency_rules.dart
           if [ $? -ne 0 ]; then
-            echo "❌ Dependency boundary check failed"
+            echo "Dependency boundary check failed"
             exit 1
           fi
-          echo "✅ Dependency boundary check passed"
+          echo "Dependency boundary check passed"
         else
-          echo "❌ dependency_rules.dart not found"
+          echo "dependency_rules.dart not found"
           exit 1
         fi
         
     - name: Generate dependency graph
       run: |
-        echo "📈 Generating dependency graph..."
+        echo "Generating dependency graph..."
         dart tools/dependency_rules.dart --graph
         
     - name: Upload dependency graph
@@ -154,9 +157,9 @@ jobs:
         
     - name: Run Flutter analyze
       run: |
-        echo "🔍 Running Flutter analyze..."
+        echo "Running Flutter analyze..."
         flutter analyze --no-fatal-infos --no-fatal-warnings
-        echo "✅ Flutter analyze completed successfully"
+        echo "Flutter analyze completed successfully"
 
   build-apk:
     needs: [check-conditions, dependency-analysis]
@@ -197,7 +200,7 @@ jobs:
       
     - name: Build APK
       run: |
-        echo ">>> Building APK for ${{ steps.env.outputs.environment }} environment"
+        echo "Building APK for ${{ steps.env.outputs.environment }} environment"
         
         # Set environment variables for GitHub Actions
         export JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
@@ -206,14 +209,14 @@ jobs:
         
         # Build with error handling
         if ! ./buildAndroid.sh apk ${{ steps.env.outputs.environment }}; then
-          echo ">>> Build failed, collecting debug information..."
-          echo ">>> Flutter version:"
+          echo "Build failed, collecting debug information..."
+          echo "Flutter version:"
           flutter --version
-          echo ">>> Java version:"
+          echo "Java version:"
           java -version
-          echo ">>> Android SDK path:"
+          echo "Android SDK path:"
           echo $ANDROID_HOME
-          echo ">>> Build directory contents:"
+          echo "Build directory contents:"
           find build -name "*.apk" -o -name "*.aab" 2>/dev/null || echo "No build files found"
           exit 1
         fi
@@ -242,20 +245,20 @@ jobs:
         
     - name: Generate download info
       run: |
-        cat > download_info.md << 'EOF'
+        cat > download_info.md << EOF
         # APK Download Information
         
         ## Build Details
-        - **Environment**: ${{ steps.env.outputs.environment }}
-        - **Branch**: ${{ github.ref_name }}
-        - **Commit**: ${{ github.sha }}
-        - **Build Time**: $(date)
-        - **Trigger**: ${{ github.event_name }}
+        - Environment: ${{ steps.env.outputs.environment }}
+        - Branch: ${{ github.ref_name }}
+        - Commit: ${{ github.sha }}
+        - Build Time: $(date)
+        - Trigger: ${{ github.event_name }}
         
         ## APK Information
-        - **File Name**: ${{ steps.apk_info.outputs.apk_filename }}
-        - **File Size**: ${{ steps.apk_info.outputs.apk_size }} bytes
-        - **Version**: $(grep '^version: ' pubspec.yaml | cut -d ' ' -f 2)
+        - File Name: ${{ steps.apk_info.outputs.apk_filename }}
+        - File Size: ${{ steps.apk_info.outputs.apk_size }} bytes
+        - Version: $(grep '^version: ' pubspec.yaml | cut -d ' ' -f 2)
         
         ## Download Options
         
@@ -274,7 +277,7 @@ jobs:
         2. Enable "Install from unknown sources" on your Android device
         3. Install the APK file
         
-        **Note**: This is a ${{ steps.env.outputs.environment }} build. Do not use for production unless explicitly built for production.
+        Note: This is a ${{ steps.env.outputs.environment }} build. Do not use for production unless explicitly built for production.
         EOF
         
     - name: Upload download info
@@ -335,7 +338,7 @@ jobs:
     steps:
     - name: Skip APK build notification
       run: |
-        echo "🔄 APK build skipped"
+        echo "APK build skipped"
         echo "Reason: Build conditions not met"
         echo "Time since last build: < 2 hours"
         echo "No build trigger found in commit message"
