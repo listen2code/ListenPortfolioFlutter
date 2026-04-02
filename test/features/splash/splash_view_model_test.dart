@@ -1,6 +1,6 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:listen_core/core.dart' as core;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/features/splash/presentation/pages/splash_intent.dart';
 import 'package:listen_portfolio_flutter/features/splash/presentation/pages/splash_state.dart';
 import 'package:listen_portfolio_flutter/features/splash/presentation/pages/splash_view_model.dart';
@@ -14,7 +14,7 @@ void main() {
     late ProviderContainer container;
     late SplashViewModel viewModel;
     late ProviderSubscription<SplashState> subscription;
-    final List<core.BaseEffect> emittedEffects = [];
+    final List<BaseEffect> emittedEffects = [];
 
     setUp(() async {
       SharedPreferences.setMockInitialValues({});
@@ -49,7 +49,7 @@ void main() {
         await Future.delayed(Duration.zero);
 
         // Assert — NavigationEffect must have been emitted after the delay
-        final navEffects = emittedEffects.whereType<core.NavigationEffect>().toList();
+        final navEffects = emittedEffects.whereType<NavigationEffect>().toList();
         expect(navEffects, isNotEmpty);
         expect(navEffects.last.target, equals(Routes.home));
         expect(navEffects.last.isReplace, isTrue);
@@ -61,7 +61,7 @@ void main() {
         await Future.delayed(Duration.zero);
 
         // Assert — isReplace must be true so the splash screen is removed from stack
-        final navEffects = emittedEffects.whereType<core.NavigationEffect>().toList();
+        final navEffects = emittedEffects.whereType<NavigationEffect>().toList();
         expect(navEffects, isNotEmpty);
         expect(navEffects.last.isReplace, isTrue);
       });
@@ -72,7 +72,7 @@ void main() {
         await Future.delayed(Duration.zero);
 
         // Assert
-        final navEffects = emittedEffects.whereType<core.NavigationEffect>().toList();
+        final navEffects = emittedEffects.whereType<NavigationEffect>().toList();
         expect(navEffects, isNotEmpty);
         expect(navEffects.last.target, equals(Routes.home));
       });
