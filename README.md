@@ -11,12 +11,16 @@
 ListenPortfolioFlutter is a production-ready personal portfolio application built with Flutter, designed to showcase professional technical skills and resume content. It demonstrates enterprise-level mobile development practices through a clean, scalable architecture suitable for real-world projects.
 
 **Key capabilities:**
-- **Modular structure**: `core/` (publishable, no business code) · `shared/` · `uikit/` · `features/`
+- **Modular structure**: `core/` (publishable, no business code) · `shared/` · `uikit/` (design system) · `features/`
 - **Complete auth flow**: login, signup, forgot/change password, account deletion, guest mode
 - **Portfolio showcase**: overview, about me *(login-gated)*, projects, architecture demo page
 - **Developer tooling**: local mock server, runtime env switching, crash safe mode, log overlay, Zone-based tracing
 - **Full i18n**: English / Chinese / Japanese with runtime switching (no restart)
 - **Theming**: light / dark / system, accent color picker, font size — all runtime-switchable
+
+**Publishable packages:**
+- **listen_core**: Core utilities and base classes - https://pub.dev/packages/listen_core
+- **listen_uikit**: Design system and reusable widgets - https://pub.dev/packages/listen_uikit
 
 ## 🎯 Core Technical Highlights
 
@@ -26,7 +30,7 @@ ListenPortfolioFlutter is a production-ready personal portfolio application buil
 | **401 Auto-Refresh + Queue** | `AuthInterceptor` queues concurrent requests during token refresh and retries them all automatically — zero user-visible interruption |
 | **Safe Mode Crash Protection** | `CrashManager` detects ≥3 crashes within 30s and triggers an automatic settings reset to prevent boot loops |
 | **Local Mock Server** | Built-in HTTP server (port 9999) serves JSON/image assets, enabling full offline development without any backend |
-| **Publishable Core** | `core/` has zero business-layer coupling and can be extracted as a standalone pub package |
+| **Publishable Core** | `core/` has zero business-layer coupling and can be extracted as a standalone pub package. Available at: https://pub.dev/packages/listen_core |
 
 ## 🏗️ Architecture Design
 
@@ -392,12 +396,16 @@ dart tools/dependency_rules.dart --graph
 ListenPortfolioFlutter 是一款基于 Flutter 构建的生产级个人技术作品集应用，用于展示专业技术能力与简历内容。项目以 Clean Architecture + MVI 为架构核心，代码结构清晰、可扩展性强，适用于真实生产场景。
 
 **主要能力一览：**
-- **模块化结构**：`core/`（可发布，无业务代码）· `shared/` · `uikit/` · `features/`
+- **模块化结构**：`core/`（可发布，无业务代码）· `shared/` · `uikit/`（设计系统）· `features/`
 - **完整认证流程**：登录、注册、忘记/修改密码、账号注销、游客模式
 - **作品集展示**：概览、关于我（登录可见）、项目展示、架构演示页
 - **开发者工具链**：本地 MockServer、运行时环境切换、崩溃 Safe Mode、日志浮窗、Zone 分布式追踪
-- **完整 i18n**：中文 / 英文 / 日文，运行时切换无需重启
-- **主题系统**：浅色 / 深色 / 跟随系统、强调色选择、字号调节 — 全部运行时可切换
+- **完整国际化**：英文/中文/日文，运行时切换（无需重启）
+- **主题系统**：亮色/暗色/系统、主题色选择器、字体大小 — 全部运行时可切换
+
+**可发布包：**
+- **listen_core**：核心工具和基础类 - https://pub.dev/packages/listen_core
+- **listen_uikit**：设计系统和可复用组件 - https://pub.dev/packages/listen_uikit
 
 ## 🎯 核心技术亮点
 
