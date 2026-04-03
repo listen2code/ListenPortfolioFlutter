@@ -85,14 +85,10 @@
 - [ ] Tech stack：依赖列表与选型理由（包含替代方案与取舍）
 - [ ] CONTRIBUTING.md：贡献指南（分支策略、PR 模板、代码规范）
 - [ ] ADR（Architecture Decision Records）：记录关键架构决策（Zone tracing、SafeMode、MockServer 设计背景）
-- [ ] dartdoc：公开 API 文档生成（尤其是 core/ 模块，为 pub 发布准备）
+- [x] dartdoc：公开 API 文档生成（尤其是 core/ 模块，为 pub 发布准备）
 
 ### 🔧 开发体验（DX）
 
-- [x] 标准化开发工作流文档：`build_runner watch` 常驻代码生成、`APP_ENV=mock` 为默认调试环境、Log Overlay 使用说明
-- [ ] VSCode/Android Studio launch 配置：预置 `--dart-define=APP_ENV=mock` 的 launch.json，方便一键启动
-- [ ] Mock 数据维护规范：`assets/mock/v1/` 目录结构说明、新增接口时 mock 文件命名规则
-- [ ] 错误码速查表：将 `AppException` 子类与业务错误码整理为文档，方便排查线上问题
 
 ### 其他
 * base
