@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the dispatch method from the AboutMeViewModel class, for the Dart programming language.">
+  <title>dispatch method - AboutMeViewModel class - about_me_view_model library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">listen_portfolio_flutter</a></li>
+    <li><a href="../../features_home_presentation_pages_about_me_about_me_view_model/">features\home\presentation\pages\about_me\about_me_view_model.dart</a></li>
+    <li><a href="../../features_home_presentation_pages_about_me_about_me_view_model/AboutMeViewModel-class.html">AboutMeViewModel</a></li>
+    <li class="self-crumb">dispatch method</li>
+  </ol>
+  <div class="self-name">dispatch</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+<div
+    id="dartdoc-main-content"
+    class="main-content"
+    data-above-sidebar="features_home_presentation_pages_about_me_about_me_view_model&#47;AboutMeViewModel-class-sidebar.html"
+    data-below-sidebar="">
+    <div>
+<h1><span class="kind-method">dispatch</span> method 
+</h1></div>
+
+    <section class="multi-line-signature">
+      
+  <div>
+    <ol class="annotation-list">
+        <li>@<a href="https://api.flutter.dev/flutter/material/protected-constant.html">protected</a></li>
+    </ol>
+  </div>
+<span class="returntype"><a href="https://api.flutter.dev/flutter/flutter_test/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span>
+<span class="name ">dispatch</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="dispatch-param-intent"><span class="type-annotation">dynamic</span> <span class="parameter-name">intent</span>, </span></li>
+<li><span class="parameter" id="dispatch-param-handler"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/riverpod_annotation/FutureOr-class.html">FutureOr</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span> <span class="parameter-name">handler</span>(), {</span></li>
+<li><span class="parameter" id="dispatch-param-useZone"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">useZone</span> = <span class="default-value">true</span>, </span></li>
+</ol>})
+
+      <div class="features"><span class="feature">inherited</span></div>
+
+    </section>
+    
+<section class="desc markdown">
+  <p>Low-level dispatcher that standardizes intent handling with Zone and logging.</p>
+<p>This method provides the core intent processing infrastructure,
+including Zone management, performance tracking, and error handling.</p>
+<p><code>intent</code> is the intent being processed.
+<code>handler</code> is the function that contains the actual intent logic.
+<code>useZone</code> controls whether to execute within a Zone.</p>
+<p>Returns a Future that completes when the intent processing is done.</p>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">@protected
+Future&lt;void&gt; dispatch(dynamic intent, FutureOr&lt;void&gt; Function() handler, {bool useZone = true}) {
+  final tag = runtimeType.toString();
+
+  &#47;&#47;&#47; Called when intent processing starts.
+  &#47;&#47;&#47;
+  &#47;&#47;&#47; Logs the intent and marks the start time for performance tracking.
+  void onStart() {
+    appLogger.d(&#39;$tag: [INTENT] -&gt; $intent&#39;);
+    ZoneManager.mark(&#39;Intent [$intent] Started&#39;);
+  }
+
+  &#47;&#47;&#47; Called when intent processing completes.
+  &#47;&#47;&#47;
+  &#47;&#47;&#47; Logs the final state and marks the completion time for performance tracking.
+  &#47;&#47;&#47; Also checks for injected crashes for testing purposes.
+  void onComplete() {
+    appLogger.d(&#39;$tag: [STATE] &lt;- $state&#39;);
+    CrashManager.checkAndTriggerInjectedCrash();
+    ZoneManager.mark(&#39;Intent Finished&#39;);
+  }
+
+  &#47;&#47;&#47; Executes the intent handler with proper error handling.
+  &#47;&#47;&#47;
+  &#47;&#47;&#47; This function wraps the handler execution with error handling
+  &#47;&#47;&#47; and completion callbacks.
+  Future&lt;void&gt; execute() {
+    try {
+      final result = handler();
+      if (result is Future) {
+        return result.then((_) =&gt; onComplete(), onError: (e, s) =&gt; throw e);
+      } else {
+        onComplete();
+        return Future.value();
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  &#47;&#47;&#47; Execute without Zone if useZone is false.
+  &#47;&#47;&#47;
+  &#47;&#47;&#47; This path is used for high-frequency intents where Zone overhead
+  &#47;&#47;&#47; might be undesirable. Still performs logging and tracking.
+  if (!useZone) {
+    onStart();
+    return execute();
+  }
+
+  &#47;&#47;&#47; Execute within Zone for proper error handling and tracking.
+  &#47;&#47;&#47;
+  &#47;&#47;&#47; This is the default path that provides comprehensive error handling,
+  &#47;&#47;&#47; performance tracking, and crash detection.
+  return ZoneManager.run(() {
+    onStart();
+    return execute();
+  }, cancelToken: cancelToken);
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../../index.html">listen_portfolio_flutter</a></li>
+    <li><a href="../../features_home_presentation_pages_about_me_about_me_view_model/">about_me_view_model</a></li>
+    <li><a href="../../features_home_presentation_pages_about_me_about_me_view_model/AboutMeViewModel-class.html">AboutMeViewModel</a></li>
+    <li class="self-crumb">dispatch method</li>
+</ol>
+
+    <h5>AboutMeViewModel class</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+</div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    listen_portfolio_flutter
+      1.0.10
+  </span>
+  
+</footer>
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

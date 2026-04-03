@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the BaseRefreshPage class from the base_refresh_page library, for the Dart programming language.">
+  <title>BaseRefreshPage class - base_refresh_page library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">listen_portfolio_flutter</a></li>
+    <li><a href="../shared_base_base_refresh_page/">shared\base\base_refresh_page.dart</a></li>
+    <li class="self-crumb">BaseRefreshPage<span class="signature">&lt;<wbr><span class="type-parameter">V extends BaseViewModel</span>, <span class="type-parameter">S extends BaseState</span>&gt;</span> class</li>
+  </ol>
+  <div class="self-name">BaseRefreshPage</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+<div
+    id="dartdoc-main-content"
+    class="main-content"
+    data-above-sidebar="shared_base_base_refresh_page&#47;shared_base_base_refresh_page-library-sidebar.html"
+    data-below-sidebar="shared_base_base_refresh_page&#47;BaseRefreshPage-class-sidebar.html">
+    <div>
+<h1><span class="kind-class">BaseRefreshPage&lt;<wbr><span class="type-parameter">V extends BaseViewModel</span>, <span class="type-parameter">S extends BaseState</span>&gt;</span> class 
+ 
+</h1></div>
+
+    
+<section class="desc markdown">
+  <p>A shared-layer wrapper for the core <code>BaseLifeCyclePage</code>.
+This widget acts as a bridge between business-specific Riverpod providers
+and the pure core architecture, keeping <code>BaseLifeCyclePage</code> independent.</p>
+</section>
+
+
+    <section>
+      <dl class="dl-horizontal">
+        
+  <dt>Inheritance</dt>
+  <dd>
+    <ul class="gt-separated dark clazz-relationships">
+      <li><a href="https://api.flutter.dev/flutter/dart-core/Object-class.html">Object</a></li>
+        <li><a href="https://api.flutter.dev/flutter/foundation/DiagnosticableTree-class.html">DiagnosticableTree</a></li>
+        <li><a href="https://api.flutter.dev/flutter/widgets/Widget-class.html">Widget</a></li>
+        <li><a href="https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html">StatefulWidget</a></li>
+        <li><a href="https://pub.dev/documentation/flutter_riverpod/3.1.0/flutter_riverpod/ConsumerStatefulWidget-class.html">ConsumerStatefulWidget</a></li>
+        <li><a href="https://pub.dev/documentation/flutter_riverpod/3.1.0/flutter_riverpod/ConsumerWidget-class.html">ConsumerWidget</a></li>
+      <li>BaseRefreshPage</li>
+    </ul>
+  </dd>
+
+        
+        
+
+
+        
+        
+
+
+      </dl>
+    </section>
+
+    
+  <section class="summary offset-anchor" id="constructors">
+    <h2>Constructors</h2>
+    <dl class="constructor-summary-list">
+        <dt id="BaseRefreshPage.new" class="callable">
+          <span class="name"><a href="../shared_base_base_refresh_page/BaseRefreshPage/BaseRefreshPage.html">BaseRefreshPage</a></span><span class="signature">({<span class="parameter" id="-param-key"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/foundation/Key-class.html">Key</a>?</span> <span class="parameter-name">key</span>, </span><span class="parameter" id="-param-body"><span class="type-annotation"><a href="../shared_base_base_refresh_page/BasePageBodyBuilder.html">BasePageBodyBuilder</a><span class="signature">&lt;<wbr><span class="type-parameter">V</span>, <span class="type-parameter">S</span>&gt;</span>?</span> <span class="parameter-name">body</span>, </span><span class="parameter" id="-param-title"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">title</span>, </span><span class="parameter" id="-param-drawer"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/widgets/Widget-class.html">Widget</a>?</span> <span class="parameter-name">drawer</span>, </span><span class="parameter" id="-param-canPop"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a>?</span> <span class="parameter-name">canPop</span>, </span><span class="parameter" id="-param-onInterceptBack"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/VoidCallback.html">VoidCallback</a>?</span> <span class="parameter-name">onInterceptBack</span>, </span><span class="parameter" id="-param-actions"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/widgets/Widget-class.html">Widget</a></span>&gt;</span>?</span> <span class="parameter-name">actions</span>, </span><span class="parameter" id="-param-appBar"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/widgets/PreferredSizeWidget-class.html">PreferredSizeWidget</a>?</span> <span class="parameter-name">appBar</span>, </span><span class="parameter" id="-param-floatingActionButton"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/widgets/Widget-class.html">Widget</a>?</span> <span class="parameter-name">floatingActionButton</span>, </span><span class="parameter" id="-param-useSafeArea"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">useSafeArea</span> = <span class="default-value">true</span>, </span><span class="parameter" id="-param-padding"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/EdgeInsetsGeometry-class.html">EdgeInsetsGeometry</a>?</span> <span class="parameter-name">padding</span>, </span><span class="parameter" id="-param-resizeToAvoidBottomInset"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">resizeToAvoidBottomInset</span> = <span class="default-value">true</span>, </span><span class="parameter" id="-param-extendBodyBehindAppBar"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">extendBodyBehindAppBar</span> = <span class="default-value">true</span>, </span><span class="parameter" id="-param-useStatusBar"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">useStatusBar</span> = <span class="default-value">false</span>, </span><span class="parameter" id="-param-useBottomBar"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">useBottomBar</span> = <span class="default-value">false</span>, </span><span class="parameter" id="-param-isEmptyTitle"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">isEmptyTitle</span> = <span class="default-value">false</span>, </span><span class="parameter" id="-param-statusBarColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a></span> <span class="parameter-name">statusBarColor</span> = <span class="default-value">Colors.transparent</span>, </span><span class="parameter" id="-param-bottomBarColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a></span> <span class="parameter-name">bottomBarColor</span> = <span class="default-value">Colors.transparent</span>, </span><span class="parameter" id="-param-useGradientBackground"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">useGradientBackground</span> = <span class="default-value">true</span>, </span><span class="parameter" id="-param-active"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">active</span> = <span class="default-value">true</span>, </span><span class="parameter" id="-param-useScaffold"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">useScaffold</span> = <span class="default-value">true</span>, </span><span class="parameter" id="-param-provider"><span class="type-annotation"><a href="https://pub.dev/documentation/riverpod/3.1.0/riverpod_annotation/ProviderListenable-class.html">ProviderListenable</a><span class="signature">&lt;<wbr><span class="type-parameter">S</span>&gt;</span>?</span> <span class="parameter-name">provider</span>, </span><span class="parameter" id="-param-viewModel"><span class="type-annotation">V?</span> <span class="parameter-name">viewModel</span>, </span><span class="parameter" id="-param-onEffect"><span class="type-annotation">void</span> <span class="parameter-name">onEffect</span>(<span class="parameter" id="param-effect"><span class="type-annotation">BaseEffect</span> <span class="parameter-name">effect</span></span>)?, </span><span class="parameter" id="-param-onLoading"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/widgets/Widget-class.html">Widget</a>?</span> <span class="parameter-name">onLoading</span>, </span><span class="parameter" id="-param-onEmpty"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/widgets/Widget-class.html">Widget</a>?</span> <span class="parameter-name">onEmpty</span>, </span><span class="parameter" id="-param-onRefresh"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/flutter_test/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span> <span class="parameter-name">onRefresh</span>(<span class="parameter" id="param-viewModel"><span class="type-annotation">V?</span> <span class="parameter-name">viewModel</span>, </span><span class="parameter" id="param-state"><span class="type-annotation">S?</span> <span class="parameter-name">state</span></span>)?, </span><span class="parameter" id="-param-items"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a>?</span> <span class="parameter-name">items</span>, </span><span class="parameter" id="-param-itemSource"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a></span> <span class="parameter-name">itemSource</span>(<span class="parameter" id="param-state"><span class="type-annotation">S</span> <span class="parameter-name">state</span></span>)?, </span><span class="parameter" id="-param-itemBuilder"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/widgets/Widget-class.html">Widget</a></span> <span class="parameter-name">itemBuilder</span>(<span class="parameter" id="param-context"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/widgets/BuildContext-class.html">BuildContext</a></span> <span class="parameter-name">context</span>, </span><span class="parameter" id="param-item"><span class="type-annotation">dynamic</span> <span class="parameter-name">item</span>, </span><span class="parameter" id="param-index"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">index</span></span>)?, </span><span class="parameter" id="-param-lifecycle"><span class="type-annotation">PageLifecycle?</span> <span class="parameter-name">lifecycle</span></span>})</span>
+        </dt>
+        <dd>
+          
+            <div class="constructor-modifier features">const</div>
+        </dd>
+    </dl>
+  </section>
+    
+  <section
+      class="summary offset-anchor"
+      id="instance-properties">
+    <h2>Properties</h2>
+    <dl class="properties">
+        <dt id="actions" class="property">
+  <span class="name"><a href="../shared_base_base_refresh_page/BaseRefreshPage/actions.html">actions</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/widgets/Widget-class.html">Widget</a></span>&gt;</span>?</span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="active" class="property">
+  <span class="name"><a href="../shared_base_base_refresh_page/BaseRefreshPage/active.html">active</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="appBar" class="property">
+  <span class="name"><a href="../shared_base_base_refresh_page/BaseRefreshPage/appBar.html">appBar</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/widgets/PreferredSizeWidget-class.html">PreferredSizeWidget</a>?</span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="body" class="property">
+  <span class="name"><a href="../shared_base_base_refresh_page/BaseRefreshPage/body.html">body</a></span>
+  <span class="signature">&#8594; <a href="../shared_base_base_refresh_page/BasePageBodyBuilder.html">BasePageBodyBuilder</a><span class="signature">&lt;<wbr><span class="type-parameter">V</span>, <span class="type-parameter">S</span>&gt;</span>?</span>
+  
+
+</dt>
+<dd>
+  The builder for the page content.
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="bottomBarColor" class="property">
+  <span class="name"><a href="../shared_base_base_refresh_page/BaseRefreshPage/bottomBarColor.html">bottomBarColor</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a></span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="canPop" class="property">
+  <span class="name"><a href="../shared_base_base_refresh_page/BaseRefreshPage/canPop.html">canPop</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a>?</span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="drawer" class="property">
+  <span class="name"><a href="../shared_base_base_refresh_page/BaseRefreshPage/drawer.html">drawer</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/widgets/Widget-class.html">Widget</a>?</span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="extendBodyBehindAppBar" class="property">
+  <span class="name"><a href="../shared_base_base_refresh_page/BaseRefreshPage/extendBodyBehindAppBar.html">extendBodyBehindAppBar</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="floatingActionButton" class="property">
+  <span class="name"><a href="../shared_base_base_refresh_page/BaseRefreshPage/floatingActionButton.html">floatingActionButton</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/widgets/Widget-class.html">Widget</a>?</span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="hashCode" class="property inherited">
+  <span class="name"><a href="https://api.flutter.dev/flutter/widgets/Widget/hashCode.html">hashCode</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>
+  
+
+</dt>
+<dd class="inherited">
+  The hash code for this object.
+  <div class="features"><span class="feature">no setter</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="isEmptyTitle" class="property">
+  <span class="name"><a href="../shared_base_base_refresh_page/BaseRefreshPage/isEmptyTitle.html">isEmptyTitle</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="itemBuilder" class="property">
+  <span class="name"><a href="../shared_base_base_refresh_page/BaseRefreshPage/itemBuilder.html">itemBuilder</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/widgets/Widget-class.html">Widget</a> Function<span class="signature">(<span class="parameter" id="param-context"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/widgets/BuildContext-class.html">BuildContext</a></span> <span class="parameter-name">context</span>, </span><span class="parameter" id="param-item"><span class="type-annotation">dynamic</span> <span class="parameter-name">item</span>, </span><span class="parameter" id="param-index"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">index</span></span>)</span>?</span>
+  
+
+</dt>
+<dd>
+  Builder for list items. Required if <a href="../shared_base_base_refresh_page/BaseRefreshPage/items.html">items</a> or <a href="../shared_base_base_refresh_page/BaseRefreshPage/itemSource.html">itemSource</a> is provided.
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="items" class="property">
+  <span class="name"><a href="../shared_base_base_refresh_page/BaseRefreshPage/items.html">items</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a>?</span>
+  
+
+</dt>
+<dd>
+  Optional list of items. If provided, renders as a ListView.
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="itemSource" class="property">
+  <span class="name"><a href="../shared_base_base_refresh_page/BaseRefreshPage/itemSource.html">itemSource</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a> Function<span class="signature">(<span class="parameter" id="param-state"><span class="type-annotation">S</span> <span class="parameter-name">state</span></span>)</span>?</span>
+  
+
+</dt>
+<dd>
+  A function to extract the list of items from the <code>state</code>.
+Use this to avoid watching the state manually in the parent widget.
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="key" class="property inherited">
+  <span class="name"><a href="https://api.flutter.dev/flutter/widgets/Widget/key.html">key</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/foundation/Key-class.html">Key</a>?</span>
+  
+
+</dt>
+<dd class="inherited">
+  Controls how one widget replaces another widget in the tree.
+  <div class="features"><span class="feature">final</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="lifecycle" class="property">
+  <span class="name"><a href="../shared_base_base_refresh_page/BaseRefreshPage/lifecycle.html">lifecycle</a></span>
+  <span class="signature">&#8594; PageLifecycle?</span>
+  
+
+</dt>
+<dd>
+  Optional UI-layer lifecycle listener.
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="onEffect" class="property">
+  <span class="name"><a href="../shared_base_base_refresh_page/BaseRefreshPage/onEffect.html">onEffect</a></span>
+  <span class="signature">&#8594; void Function<span class="signature">(<span class="parameter" id="param-effect"><span class="type-annotation">BaseEffect</span> <span class="parameter-name">effect</span></span>)</span>?</span>
+  
+
+</dt>
+<dd>
+  Callback for handling custom business side effects.
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="onEmpty" class="property">
+  <span class="name"><a href="../shared_base_base_refresh_page/BaseRefreshPage/onEmpty.html">onEmpty</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/widgets/Widget-class.html">Widget</a>?</span>
+  
+
+</dt>
+<dd>
+  A widget to display when the page is in an empty state.
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="onInterceptBack" class="property">
+  <span class="name"><a href="../shared_base_base_refresh_page/BaseRefreshPage/onInterceptBack.html">onInterceptBack</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-ui/VoidCallback.html">VoidCallback</a>?</span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="onLoading" class="property">
+  <span class="name"><a href="../shared_base_base_refresh_page/BaseRefreshPage/onLoading.html">onLoading</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/widgets/Widget-class.html">Widget</a>?</span>
+  
+
+</dt>
+<dd>
+  A widget to display when the page is in a loading state.
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="onRefresh" class="property">
+  <span class="name"><a href="../shared_base_base_refresh_page/BaseRefreshPage/onRefresh.html">onRefresh</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/flutter_test/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span> Function<span class="signature">(<span class="parameter" id="param-viewModel"><span class="type-annotation">V?</span> <span class="parameter-name">viewModel</span>, </span><span class="parameter" id="param-state"><span class="type-annotation">S?</span> <span class="parameter-name">state</span></span>)</span>?</span>
+  
+
+</dt>
+<dd>
+  If provided, the page content will be wrapped in a <a href="https://api.flutter.dev/flutter/material/RefreshIndicator-class.html">RefreshIndicator</a>.
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="padding" class="property">
+  <span class="name"><a href="../shared_base_base_refresh_page/BaseRefreshPage/padding.html">padding</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/painting/EdgeInsetsGeometry-class.html">EdgeInsetsGeometry</a>?</span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="provider" class="property">
+  <span class="name"><a href="../shared_base_base_refresh_page/BaseRefreshPage/provider.html">provider</a></span>
+  <span class="signature">&#8594; <a href="https://pub.dev/documentation/riverpod/3.1.0/riverpod_annotation/ProviderListenable-class.html">ProviderListenable</a><span class="signature">&lt;<wbr><span class="type-parameter">S</span>&gt;</span>?</span>
+  
+
+</dt>
+<dd>
+  The Riverpod Provider used to automatically resolve the <code>BaseViewModel</code> and <code>BaseState</code>.
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="resizeToAvoidBottomInset" class="property">
+  <span class="name"><a href="../shared_base_base_refresh_page/BaseRefreshPage/resizeToAvoidBottomInset.html">resizeToAvoidBottomInset</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="runtimeType" class="property inherited">
+  <span class="name"><a href="https://api.flutter.dev/flutter/dart-core/Object/runtimeType.html">runtimeType</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Type-class.html">Type</a></span>
+  
+
+</dt>
+<dd class="inherited">
+  A representation of the runtime type of the object.
+  <div class="features"><span class="feature">no setter</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="statusBarColor" class="property">
+  <span class="name"><a href="../shared_base_base_refresh_page/BaseRefreshPage/statusBarColor.html">statusBarColor</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a></span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="title" class="property">
+  <span class="name"><a href="../shared_base_base_refresh_page/BaseRefreshPage/title.html">title</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="useBottomBar" class="property">
+  <span class="name"><a href="../shared_base_base_refresh_page/BaseRefreshPage/useBottomBar.html">useBottomBar</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="useGradientBackground" class="property">
+  <span class="name"><a href="../shared_base_base_refresh_page/BaseRefreshPage/useGradientBackground.html">useGradientBackground</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="useSafeArea" class="property">
+  <span class="name"><a href="../shared_base_base_refresh_page/BaseRefreshPage/useSafeArea.html">useSafeArea</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="useScaffold" class="property">
+  <span class="name"><a href="../shared_base_base_refresh_page/BaseRefreshPage/useScaffold.html">useScaffold</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>
+  
+
+</dt>
+<dd>
+  Whether to wrap the content in a Scaffold.
+Defaults to true for root pages, false for embedded sub-pages.
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="useStatusBar" class="property">
+  <span class="name"><a href="../shared_base_base_refresh_page/BaseRefreshPage/useStatusBar.html">useStatusBar</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="viewModel" class="property">
+  <span class="name"><a href="../shared_base_base_refresh_page/BaseRefreshPage/viewModel.html">viewModel</a></span>
+  <span class="signature">&#8594; V?</span>
+  
+
+</dt>
+<dd>
+  An explicitly provided <code>BaseViewModel</code> instance.
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+    </dl>
+  </section>
+
+    
+  <section
+      class="summary offset-anchor"
+      id="instance-methods">
+    <h2>Methods</h2>
+    <dl class="callables">
+        <dt id="build" class="callable">
+  <span class="name"><a href="../shared_base_base_refresh_page/BaseRefreshPage/build.html">build</a></span><span class="signature">(<wbr><span class="parameter" id="build-param-context"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/widgets/BuildContext-class.html">BuildContext</a></span> <span class="parameter-name">context</span>, </span><span class="parameter" id="build-param-ref"><span class="type-annotation"><a href="https://pub.dev/documentation/flutter_riverpod/3.1.0/flutter_riverpod/WidgetRef-class.html">WidgetRef</a></span> <span class="parameter-name">ref</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/widgets/Widget-class.html">Widget</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Describes the part of the user interface represented by this widget.
+  <div class="features"><span class="feature">override</span></div>
+
+</dd>
+
+        <dt id="createElement" class="callable inherited">
+  <span class="name"><a href="https://pub.dev/documentation/flutter_riverpod/3.1.0/flutter_riverpod/ConsumerStatefulWidget/createElement.html">createElement</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; ConsumerStatefulElement</span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Creates a <a href="https://api.flutter.dev/flutter/widgets/StatefulElement-class.html">StatefulElement</a> to manage this widget's location in the tree.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="createState" class="callable inherited">
+  <span class="name"><a href="https://pub.dev/documentation/flutter_riverpod/3.1.0/flutter_riverpod/ConsumerWidget/createState.html">createState</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; _ConsumerState</span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Creates the mutable state for this widget at a given location in the tree.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="debugDescribeChildren" class="callable inherited">
+  <span class="name"><a href="https://api.flutter.dev/flutter/foundation/DiagnosticableTree/debugDescribeChildren.html">debugDescribeChildren</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/foundation/DiagnosticsNode-class.html">DiagnosticsNode</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Returns a list of <a href="https://api.flutter.dev/flutter/foundation/DiagnosticsNode-class.html">DiagnosticsNode</a> objects describing this node's
+children.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="debugFillProperties" class="callable inherited">
+  <span class="name"><a href="https://api.flutter.dev/flutter/widgets/Widget/debugFillProperties.html">debugFillProperties</a></span><span class="signature">(<wbr><span class="parameter" id="debugFillProperties-param-properties"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/foundation/DiagnosticPropertiesBuilder-class.html">DiagnosticPropertiesBuilder</a></span> <span class="parameter-name">properties</span></span>)
+    <span class="returntype parameter">&#8594; void</span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Add additional properties associated with the node.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="noSuchMethod" class="callable inherited">
+  <span class="name"><a href="https://api.flutter.dev/flutter/dart-core/Object/noSuchMethod.html">noSuchMethod</a></span><span class="signature">(<wbr><span class="parameter" id="noSuchMethod-param-invocation"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Invocation-class.html">Invocation</a></span> <span class="parameter-name">invocation</span></span>)
+    <span class="returntype parameter">&#8594; dynamic</span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Invoked when a nonexistent method or property is accessed.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="toDiagnosticsNode" class="callable inherited">
+  <span class="name"><a href="https://api.flutter.dev/flutter/foundation/DiagnosticableTree/toDiagnosticsNode.html">toDiagnosticsNode</a></span><span class="signature">(<wbr>{<span class="parameter" id="toDiagnosticsNode-param-name"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">name</span>, </span><span class="parameter" id="toDiagnosticsNode-param-style"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/foundation/DiagnosticsTreeStyle.html">DiagnosticsTreeStyle</a>?</span> <span class="parameter-name">style</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/foundation/DiagnosticsNode-class.html">DiagnosticsNode</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Returns a debug representation of the object that is used by debugging
+tools and by <a href="https://api.flutter.dev/flutter/foundation/DiagnosticsNode/toStringDeep.html">DiagnosticsNode.toStringDeep</a>.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="toString" class="callable inherited">
+  <span class="name"><a href="https://api.flutter.dev/flutter/foundation/Diagnosticable/toString.html">toString</a></span><span class="signature">(<wbr>{<span class="parameter" id="toString-param-minLevel"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/foundation/DiagnosticLevel.html">DiagnosticLevel</a></span> <span class="parameter-name">minLevel</span> = <span class="default-value">DiagnosticLevel.info</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  A string representation of this object.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="toStringDeep" class="callable inherited">
+  <span class="name"><a href="https://api.flutter.dev/flutter/foundation/DiagnosticableTree/toStringDeep.html">toStringDeep</a></span><span class="signature">(<wbr>{<span class="parameter" id="toStringDeep-param-prefixLineOne"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">prefixLineOne</span> = <span class="default-value">&#39;&#39;</span>, </span><span class="parameter" id="toStringDeep-param-prefixOtherLines"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">prefixOtherLines</span>, </span><span class="parameter" id="toStringDeep-param-minLevel"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/foundation/DiagnosticLevel.html">DiagnosticLevel</a></span> <span class="parameter-name">minLevel</span> = <span class="default-value">DiagnosticLevel.debug</span>, </span><span class="parameter" id="toStringDeep-param-wrapWidth"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">wrapWidth</span> = <span class="default-value">65</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Returns a string representation of this node and its descendants.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="toStringShallow" class="callable inherited">
+  <span class="name"><a href="https://api.flutter.dev/flutter/foundation/DiagnosticableTree/toStringShallow.html">toStringShallow</a></span><span class="signature">(<wbr>{<span class="parameter" id="toStringShallow-param-joiner"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">joiner</span> = <span class="default-value">&#39;, &#39;</span>, </span><span class="parameter" id="toStringShallow-param-minLevel"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/foundation/DiagnosticLevel.html">DiagnosticLevel</a></span> <span class="parameter-name">minLevel</span> = <span class="default-value">DiagnosticLevel.debug</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Returns a one-line detailed description of the object.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="toStringShort" class="callable inherited">
+  <span class="name"><a href="https://api.flutter.dev/flutter/widgets/Widget/toStringShort.html">toStringShort</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  A short, textual description of this widget.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+    </dl>
+  </section>
+    
+  <section
+      class="summary offset-anchor inherited"
+      id="operators">
+    <h2>Operators</h2>
+    <dl class="callables">
+        <dt id="operator ==" class="callable inherited">
+  <span class="name"><a href="https://api.flutter.dev/flutter/widgets/Widget/operator_equals.html">operator ==</a></span><span class="signature">(<wbr><span class="parameter" id="==-param-other"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Object-class.html">Object</a></span> <span class="parameter-name">other</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  The equality operator.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+    </dl>
+  </section>
+    
+    
+    
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../index.html">listen_portfolio_flutter</a></li>
+    <li><a href="../shared_base_base_refresh_page/">base_refresh_page</a></li>
+    <li class="self-crumb">BaseRefreshPage<span class="signature">&lt;<wbr><span class="type-parameter">V extends BaseViewModel</span>, <span class="type-parameter">S extends BaseState</span>&gt;</span> class</li>
+</ol>
+
+    <h5>base_refresh_page library</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div>
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    listen_portfolio_flutter
+      1.0.10
+  </span>
+  
+</footer>
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+
