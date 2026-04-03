@@ -60,12 +60,12 @@
         .package-card a:hover {
             background: #1565c0;
         }
-        .package-card.disabled {
-            opacity: 0.6;
+        .package-card.limited {
+            opacity: 0.8;
         }
-        .package-card.disabled a {
-            background: #999;
-            cursor: not-allowed;
+        .package-card.limited p {
+            font-size: 0.9em;
+            font-style: italic;
         }
         .footer {
             text-align: center;
@@ -83,9 +83,10 @@
     </div>
     
     <div class="package-grid">
-        <div class="package-card">
+        <div class="package-card limited">
             <h3>Main Application</h3>
             <p>Complete API documentation for the Listen Portfolio Flutter application, including all features and components.</p>
+            <p><strong>Note:</strong> Limited documentation due to file system constraints. Main index and static assets available.</p>
             <a href="listen_portfolio_flutter/">View Documentation</a>
         </div>
         
