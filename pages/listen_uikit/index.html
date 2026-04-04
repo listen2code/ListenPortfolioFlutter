@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="listen_uikit API docs, for the Dart programming language.">
+  <title>listen_uikit - Dart API docs</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="static-assets/github.css?v1">
+  <link rel="stylesheet" href="static-assets/styles.css?v1">
+  <link rel="icon" href="static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li class="self-crumb">listen_uikit package</li>
+  </ol>
+  <div class="self-name">listen_uikit</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+  <div id="dartdoc-main-content" class="main-content">
+      
+<section class="desc markdown">
+  <h1 id="listen-ui-kit">Listen UI Kit</h1>
+<p>A professional, consistent, and highly customizable UI component library for Flutter. Designed to accelerate development by providing a set of standardized widgets that follow Material Design 3 specifications with built-in support for internationalization and themes.</p>
+<hr>
+<h2 id="-design-philosophy">🎨 Design Philosophy</h2>
+<h3 id="core-principles">Core Principles</h3>
+<ul>
+<li><strong>Consistency</strong>: Unified visual style and interaction patterns across all components.</li>
+<li><strong>Customizability</strong>: Flexible theming and style configurations for every widget.</li>
+<li><strong>Internationalization (i18n)</strong>: Built-in support for dynamic text management.</li>
+<li><strong>Modern Design</strong>: Adheres to Material Design 3.0 guidelines.</li>
+<li><strong>Developer Friendly</strong>: Clean APIs with comprehensive configuration options.</li>
+</ul>
+<hr>
+<h2 id="-component-categories">🧩 Component Categories</h2>
+<h3 id="1-basic-components">1. Basic Components</h3>
+<ul>
+<li><strong>CommonText</strong>: Standardized text with auto-scaling (<code>FittedBox</code>) and theme-aware coloring.</li>
+<li><strong>CommonImage</strong>: Unified image handling for Assets, Network (cached), Local files, SVG, and GIF.</li>
+<li><strong>CommonButton</strong>: Versatile buttons (Filled, Outlined, Text) with built-in loading states and icon support.</li>
+</ul>
+<h3 id="2-input-components">2. Input Components</h3>
+<ul>
+<li><strong>CommonTextField</strong>: Form input with labels, validation, and custom styling.</li>
+<li><strong>CommonSwitch</strong>: Clean, labeled toggle switches with haptic feedback.</li>
+</ul>
+<h3 id="3-container--presentation">3. Container &amp; Presentation</h3>
+<ul>
+<li><strong>CommonCard</strong>: Standardized containers with shadow, border, and gesture support.</li>
+<li><strong>CommonBadge</strong>: Notification badges for counts or status indicators.</li>
+<li><strong>CommonChip</strong>: Selectable and deletable tags for filters or labels.</li>
+<li><strong>CommonListItem</strong>: Standardized row layouts for settings or data lists.</li>
+</ul>
+<h3 id="4-feedback--loading">4. Feedback &amp; Loading</h3>
+<ul>
+<li><strong>CommonToast</strong>: Global message alerts (Success, Error, Info) with smooth animations.</li>
+<li><strong>CommonLoading</strong>: Global and inline loading indicators with custom messaging.</li>
+<li><strong>CommonDialog</strong>: Centralized dialog utility for confirmations, selections, and custom content.</li>
+<li><strong>CommonSkeleton</strong>: Placeholder animations for content loading states.</li>
+<li><strong>CommonEmptyView</strong>: Standardized views for "No Data", "Network Error", or "No Results".</li>
+</ul>
+<hr>
+<h2 id="-installation">📦 Installation</h2>
+<p>Add the dependency to your <code>pubspec.yaml</code>:</p>
+<pre class="language-yaml"><code class="language-yaml">dependencies:
+  listen_uikit:
+    path: ../ListenUiKit
+  listen_core:
+    path: ../ListenCore
+</code></pre>
+<hr>
+<h2 id="-getting-started">🚀 Getting Started</h2>
+<h3 id="1-initialization--internationalization">1. Initialization &amp; Internationalization</h3>
+<p>Set up the global configuration and inject your translation logic via <code>UIKitConfig</code>.</p>
+<pre class="language-dart"><code class="language-dart">void main() {
+  UIKitConfig.init(
+    stringProvider: (key) {
+      final map = {
+        UIKitConfig.kOk: 'OK',
+        UIKitConfig.kCancel: 'Cancel',
+        UIKitConfig.kRetry: 'Retry',
+      };
+      return map[key] ?? key;
+    },
+  );
+  runApp(const MyApp());
+}
+</code></pre>
+<h3 id="2-basic-usage">2. Basic Usage</h3>
+<h4 id="button--toast">Button &amp; Toast</h4>
+<pre class="language-dart"><code class="language-dart">CommonButton.filled(
+  text: 'Submit',
+  onPressed: () =&gt; CommonToast.success('Action Completed'),
+  isLoading: false,
+)
+</code></pre>
+<h4 id="dialogs">Dialogs</h4>
+<pre class="language-dart"><code class="language-dart">final confirmed = await CommonDialog.showConfirm(
+  title: 'Delete Item',
+  message: 'Are you sure you want to proceed?',
+);
+</code></pre>
+<h4 id="images">Images</h4>
+<pre class="language-dart"><code class="language-dart">CommonImage.url(
+  'https://example.com/image.jpg',
+  borderRadius: 8.0,
+  fit: BoxFit.cover,
+)
+</code></pre>
+<hr>
+<h2 id="-component-statistics">📊 Component Statistics</h2>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Count</th>
+<th>Primary Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Basic</td>
+<td>3</td>
+<td>Text, Image, Button</td>
+</tr>
+<tr>
+<td>Input</td>
+<td>2</td>
+<td>Forms, Toggles</td>
+</tr>
+<tr>
+<td>Container</td>
+<td>4</td>
+<td>Layout, Cards, Lists</td>
+</tr>
+<tr>
+<td>Feedback</td>
+<td>6</td>
+<td>Dialogs, Loading, Toasts</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td><strong>15</strong></td>
+<td><strong>Complete UI Solution</strong></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="-roadmap">🔮 Roadmap</h2>
+<ul>
+<li><code> </code> Support for advanced charts and data tables.</li>
+<li><code> </code> Enhanced animation library for transitions.</li>
+<li><code> </code> Theme preset templates (Dark, Light, High Contrast).</li>
+<li><code> </code> Visual documentation and component gallery app.</li>
+</ul>
+<h2 id="-license">📄 License</h2>
+<p>This project is licensed under the MIT License - see the <a href="LICENSE">LICENSE</a> file for details.</p>
+</section>
+
+
+      <section class="summary">
+          <h2>Libraries</h2>
+        <dl>
+          <dt id="uikit">
+  <span class="name"><a href="file-___c-_users_liste_appdata_local_pub_cache_hosted_pub.dev_listen_uikit-0.0.2_lib_uikit/">uikit</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="uikit_config">
+  <span class="name"><a href="file-___c-_users_liste_appdata_local_pub_cache_hosted_pub.dev_listen_uikit-0.0.2_lib_uikit_config/">uikit_config</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="common_badge">
+  <span class="name"><a href="file-___c-_users_liste_appdata_local_pub_cache_hosted_pub.dev_listen_uikit-0.0.2_lib_widgets_common_badge/">widgets\common_badge</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="common_button">
+  <span class="name"><a href="file-___c-_users_liste_appdata_local_pub_cache_hosted_pub.dev_listen_uikit-0.0.2_lib_widgets_common_button/">widgets\common_button</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="common_card">
+  <span class="name"><a href="file-___c-_users_liste_appdata_local_pub_cache_hosted_pub.dev_listen_uikit-0.0.2_lib_widgets_common_card/">widgets\common_card</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="common_chip">
+  <span class="name"><a href="file-___c-_users_liste_appdata_local_pub_cache_hosted_pub.dev_listen_uikit-0.0.2_lib_widgets_common_chip/">widgets\common_chip</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="common_dialog">
+  <span class="name"><a href="file-___c-_users_liste_appdata_local_pub_cache_hosted_pub.dev_listen_uikit-0.0.2_lib_widgets_common_dialog/">widgets\common_dialog</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="common_divider">
+  <span class="name"><a href="file-___c-_users_liste_appdata_local_pub_cache_hosted_pub.dev_listen_uikit-0.0.2_lib_widgets_common_divider/">widgets\common_divider</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="common_empty_view">
+  <span class="name"><a href="file-___c-_users_liste_appdata_local_pub_cache_hosted_pub.dev_listen_uikit-0.0.2_lib_widgets_common_empty_view/">widgets\common_empty_view</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="common_image">
+  <span class="name"><a href="file-___c-_users_liste_appdata_local_pub_cache_hosted_pub.dev_listen_uikit-0.0.2_lib_widgets_common_image/">widgets\common_image</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="common_ink_well">
+  <span class="name"><a href="file-___c-_users_liste_appdata_local_pub_cache_hosted_pub.dev_listen_uikit-0.0.2_lib_widgets_common_ink_well/">widgets\common_ink_well</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="common_list_item">
+  <span class="name"><a href="file-___c-_users_liste_appdata_local_pub_cache_hosted_pub.dev_listen_uikit-0.0.2_lib_widgets_common_list_item/">widgets\common_list_item</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="common_loading">
+  <span class="name"><a href="file-___c-_users_liste_appdata_local_pub_cache_hosted_pub.dev_listen_uikit-0.0.2_lib_widgets_common_loading/">widgets\common_loading</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="common_refresh_list">
+  <span class="name"><a href="file-___c-_users_liste_appdata_local_pub_cache_hosted_pub.dev_listen_uikit-0.0.2_lib_widgets_common_refresh_list/">widgets\common_refresh_list</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="common_skeleton">
+  <span class="name"><a href="file-___c-_users_liste_appdata_local_pub_cache_hosted_pub.dev_listen_uikit-0.0.2_lib_widgets_common_skeleton/">widgets\common_skeleton</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="common_switch">
+  <span class="name"><a href="file-___c-_users_liste_appdata_local_pub_cache_hosted_pub.dev_listen_uikit-0.0.2_lib_widgets_common_switch/">widgets\common_switch</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="common_text">
+  <span class="name"><a href="file-___c-_users_liste_appdata_local_pub_cache_hosted_pub.dev_listen_uikit-0.0.2_lib_widgets_common_text/">widgets\common_text</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="common_text_field">
+  <span class="name"><a href="file-___c-_users_liste_appdata_local_pub_cache_hosted_pub.dev_listen_uikit-0.0.2_lib_widgets_common_text_field/">widgets\common_text_field</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="common_toast">
+  <span class="name"><a href="file-___c-_users_liste_appdata_local_pub_cache_hosted_pub.dev_listen_uikit-0.0.2_lib_widgets_common_toast/">widgets\common_toast</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+        </dl>
+      </section>
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li class="self-crumb">listen_uikit package</li>
+</ol>
+
+    <h5 class="hidden-xs"><span class="package-name">listen_uikit</span> <span class="package-kind">package</span></h5>
+    <ol>
+      <li class="section-title">Libraries</li>
+      <li><a href="file-___c-_users_liste_appdata_local_pub_cache_hosted_pub.dev_listen_uikit-0.0.2_lib_uikit/">uikit</a></li>
+      <li><a href="file-___c-_users_liste_appdata_local_pub_cache_hosted_pub.dev_listen_uikit-0.0.2_lib_uikit_config/">uikit_config</a></li>
+      <li><a href="file-___c-_users_liste_appdata_local_pub_cache_hosted_pub.dev_listen_uikit-0.0.2_lib_widgets_common_badge/">widgets\common_badge</a></li>
+      <li><a href="file-___c-_users_liste_appdata_local_pub_cache_hosted_pub.dev_listen_uikit-0.0.2_lib_widgets_common_button/">widgets\common_button</a></li>
+      <li><a href="file-___c-_users_liste_appdata_local_pub_cache_hosted_pub.dev_listen_uikit-0.0.2_lib_widgets_common_card/">widgets\common_card</a></li>
+      <li><a href="file-___c-_users_liste_appdata_local_pub_cache_hosted_pub.dev_listen_uikit-0.0.2_lib_widgets_common_chip/">widgets\common_chip</a></li>
+      <li><a href="file-___c-_users_liste_appdata_local_pub_cache_hosted_pub.dev_listen_uikit-0.0.2_lib_widgets_common_dialog/">widgets\common_dialog</a></li>
+      <li><a href="file-___c-_users_liste_appdata_local_pub_cache_hosted_pub.dev_listen_uikit-0.0.2_lib_widgets_common_divider/">widgets\common_divider</a></li>
+      <li><a href="file-___c-_users_liste_appdata_local_pub_cache_hosted_pub.dev_listen_uikit-0.0.2_lib_widgets_common_empty_view/">widgets\common_empty_view</a></li>
+      <li><a href="file-___c-_users_liste_appdata_local_pub_cache_hosted_pub.dev_listen_uikit-0.0.2_lib_widgets_common_image/">widgets\common_image</a></li>
+      <li><a href="file-___c-_users_liste_appdata_local_pub_cache_hosted_pub.dev_listen_uikit-0.0.2_lib_widgets_common_ink_well/">widgets\common_ink_well</a></li>
+      <li><a href="file-___c-_users_liste_appdata_local_pub_cache_hosted_pub.dev_listen_uikit-0.0.2_lib_widgets_common_list_item/">widgets\common_list_item</a></li>
+      <li><a href="file-___c-_users_liste_appdata_local_pub_cache_hosted_pub.dev_listen_uikit-0.0.2_lib_widgets_common_loading/">widgets\common_loading</a></li>
+      <li><a href="file-___c-_users_liste_appdata_local_pub_cache_hosted_pub.dev_listen_uikit-0.0.2_lib_widgets_common_refresh_list/">widgets\common_refresh_list</a></li>
+      <li><a href="file-___c-_users_liste_appdata_local_pub_cache_hosted_pub.dev_listen_uikit-0.0.2_lib_widgets_common_skeleton/">widgets\common_skeleton</a></li>
+      <li><a href="file-___c-_users_liste_appdata_local_pub_cache_hosted_pub.dev_listen_uikit-0.0.2_lib_widgets_common_switch/">widgets\common_switch</a></li>
+      <li><a href="file-___c-_users_liste_appdata_local_pub_cache_hosted_pub.dev_listen_uikit-0.0.2_lib_widgets_common_text/">widgets\common_text</a></li>
+      <li><a href="file-___c-_users_liste_appdata_local_pub_cache_hosted_pub.dev_listen_uikit-0.0.2_lib_widgets_common_text_field/">widgets\common_text_field</a></li>
+      <li><a href="file-___c-_users_liste_appdata_local_pub_cache_hosted_pub.dev_listen_uikit-0.0.2_lib_widgets_common_toast/">widgets\common_toast</a></li>
+</ol>
+
+  </div>
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div>
+</main>
+<footer>
+  <span class="no-break">
+    listen_uikit
+      0.0.2
+  </span>
+  
+</footer>
+
+
+<script src="static-assets/highlight.pack.js?v1"></script>
+<script src="static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+
