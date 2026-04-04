@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the init method from the Core class, for the Dart programming language.">
+  <title>init method - Core class - core_initializer library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">listen_core</a></li>
+    <li><a href="../../core_initializer/">core_initializer.dart</a></li>
+    <li><a href="../../core_initializer/Core-class.html">Core</a></li>
+    <li class="self-crumb">init static method</li>
+  </ol>
+  <div class="self-name">init</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+<div
+    id="dartdoc-main-content"
+    class="main-content"
+    data-above-sidebar="core_initializer&#47;Core-class-sidebar.html"
+    data-below-sidebar="">
+    <div>
+<h1><span class="kind-method">init</span> static method 
+</h1></div>
+
+    <section class="multi-line-signature">
+      
+<span class="returntype"><a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span>
+<span class="name ">init</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="init-param-config"><span class="type-annotation"><a href="../../core_initializer/CoreConfig-class.html">CoreConfig</a></span> <span class="parameter-name">config</span></span></li>
+</ol>)
+
+      
+
+    </section>
+    
+<section class="desc markdown">
+  <p>Initializes all core utilities in the correct order.</p>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">static Future&lt;void&gt; init(CoreConfig config) async {
+  &#47;&#47; 1. Setup Error Handlers (Infrastructure level)
+  _setupGlobalErrorHooks();
+
+  &#47;&#47; 2. Setup System Information
+  deviceInfo = await DeviceInfoImpl.create();
+  packageInfo = await PackageImpl.create();
+
+  &#47;&#47; 3. Setup Storage
+  final storagePrefix = config.storagePrefix ?? config.storageConfig?.defaultStoragePrefix;
+  if (storagePrefix != null) {
+    await SpUtil.init(prefix: storagePrefix);
+    await SecureStorageUtil.init(prefix: storagePrefix);
+  }
+
+  &#47;&#47; 4. Setup Event Bus
+  eventBus.init(onEventFired: config.onEventFired ?? (event) =&gt; appLogger.d(&#39;EventBus: [FIRE] -&gt; $event&#39;));
+
+  &#47;&#47; 5. Setup Provider Registry
+  if (config.initialProviders != null) {
+    ProviderRegistry.init(config.initialProviders!);
+  }
+
+  &#47;&#47; 6. Setup Network Client
+  if (config.apiDelegate != null) {
+    ApiClient.init(config.apiDelegate!);
+  }
+  if (config.networkConfig != null) {
+    ApiClient.initNetworkConfig(config.networkConfig!);
+  }
+  if (config.responseConfig != null) {
+    BaseResponseModel.initConfig(config.responseConfig!);
+  }
+
+  &#47;&#47; 7. Setup Crash Protection
+  if (config.safeModeConfig != null) {
+    CrashManager.init(config.safeModeConfig!);
+  }
+  if (config.storageConfig != null) {
+    CrashManager.initStorageConfig(config.storageConfig!);
+  }
+
+  &#47;&#47; 8. Setup Environment
+  if (config.envConfigs != null) {
+    await AppEnv.init(config.envConfigs!);
+  }
+
+  &#47;&#47; 9. Setup Localization
+  if (config.i18nData != null &amp;&amp; config.languageCodeProvider != null) {
+    Translations.register(data: config.i18nData!, languageCodeProvider: config.languageCodeProvider!);
+  }
+
+  &#47;&#47; 10. Setup Navigation Config
+  if (config.isGuestCheck != null &amp;&amp; config.onLoginRedirect != null) {
+    AppNavConfig.register(
+      routes: config.routes,
+      isGuest: config.isGuestCheck!,
+      onLogin: config.onLoginRedirect!,
+      onLoginSuccess: config.onLoginSuccessCallback,
+      onShowLoginDialog: config.onShowLoginDialogCallback,
+    );
+  }
+
+  &#47;&#47; 12. Setup Mock Server Config
+  if (config.mockServerConfig != null) {
+    LocalMockServer.initConfig(config.mockServerConfig!);
+  }
+
+  &#47;&#47; 13. Setup Log Config
+  if (config.logConfig != null) {
+    LogManager.initConfig(config.logConfig!);
+  }
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../../index.html">listen_core</a></li>
+    <li><a href="../../core_initializer/">core_initializer</a></li>
+    <li><a href="../../core_initializer/Core-class.html">Core</a></li>
+    <li class="self-crumb">init static method</li>
+</ol>
+
+    <h5>Core class</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+</div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    listen_core
+      0.0.4
+  </span>
+  
+</footer>
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+
