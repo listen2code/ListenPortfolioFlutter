@@ -65,6 +65,9 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   flutter_launcher_icons: ^0.14.4
   
+  # Documentation
+  dartdoc: ^9.0.0
+  
   # Custom Lint Rules
   custom_lint: 0.8.1
 
