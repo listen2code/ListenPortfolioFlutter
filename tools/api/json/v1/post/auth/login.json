@@ -1,10 +1,10 @@
 {
   "result": "0",
-  "messageId": "messageId",
-  "message": "message",
+  "messageId": "",
+  "message": "",
   "body": {
-    "userId": "1001",
-    "token": "token1",
-    "refreshToken": "refreshToken1"
+    "userId": 1,
+    "token": "eyJhbGciOiJIUzI1NiJ9.mock-access-token",
+    "refreshToken": "eyJhbGciOiJIUzI1NiJ9.mock-refresh-token"
   }
 }

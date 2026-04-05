@@ -1,10 +1,11 @@
 {
   "result": "0",
+  "messageId": "",
   "message": "success",
   "body": {
     "status": "available",
-    "jobTitle": "Full Stack Mobile Architect",
-    "bio": "A seasoned mobile developer with over 10 years of experience in Android and 2+ years in Flutter. Specialized in high-performance application development, clean architecture, and reactive programming. Proven track record of leading cross-functional teams and delivering complex enterprise solutions.",
+    "jobTitle": "Senior Android / Flutter Engineer",
+    "bio": "Senior Android Engineer with 11+ years of mobile development experience and 3+ years in Flutter. Expertise in client architecture (componentization, plugin systems), performance optimization, and APM infrastructure. Key achievements include reducing Feed timeout rates from 1.5% to 0.3%, building full-stack APM monitoring platforms, and leading Flutter app development for securities trading at Rakuten. JLPT N1, BJT J2 certified, currently based in Tokyo, Japan.",
     "graduationYear": "2013",
     "github": "https://github.com/listen2code",
     "major": "softwareEngineering",
@@ -15,56 +16,90 @@
     "stats": [
       {
         "id": "android",
-        "year": "10",
+        "year": "11",
         "label": "androidExp",
         "tags": [
           "archDesign",
-          "perfOptimization"
+          "perfOptimization",
+          "componentization"
         ]
       },
       {
         "id": "flutter",
-        "year": "2",
-        "label": "flutterExp"
+        "year": "3",
+        "label": "flutterExp",
+        "tags": [
+          "cleanArchitecture",
+          "stateManagement",
+          "riverpod"
+        ]
       },
       {
         "id": "java_web",
         "year": "1",
-        "label": "javaWeb"
+        "label": "javaWeb",
+        "tags": [
+          "springBoot",
+          "restApi"
+        ]
       }
     ],
     "experiences": [
       {
-        "title": "Senior Mobile Architect",
-        "company": "Global Tech Solutions",
-        "period": "2021 - Present",
-        "description": "Leading the migration of core native apps to Flutter, optimizing CI/CD pipelines, and establishing mobile engineering best practices."
+        "title": "Android / Flutter Engineer",
+        "company": "LYC Corp. (Rakuten Securities Project)",
+        "period": "2023.02 - Present",
+        "description": "Lead developer for new securities Flutter app: architecture design, framework development, FIDO2 authentication integration, and Flutter version upgrades. Maintaining Android stock trading app and conducting code reviews for team members."
       },
       {
-        "title": "Lead Android Developer",
-        "company": "Innovation Hub",
-        "period": "2015 - 2021",
-        "description": "Designed and developed large-scale financial applications with millions of active users. Implemented robust security protocols."
+        "title": "Android Engineer — Mobile Infrastructure",
+        "company": "Youzan Technology",
+        "period": "2021.10 - 2022.07",
+        "description": "Built mobile APM stutter/ANR detection SDK with optimized data reporting and aggregation. Created full-stack monitoring dashboards (React/AntDesign frontend + Spring Boot backend with RESTful APIs). Participated in Commerce SDK Redux-pattern refactoring."
       },
       {
-        "title": "Junior Developer",
-        "company": "Start-up Inc.",
-        "period": "2013 - 2015",
-        "description": "Focusing on UI/UX implementation and RESTful API integration for Android platform."
+        "title": "Android Engineer",
+        "company": "Duolu (Yin'ai Network Technology)",
+        "period": "2019.11 - 2021.10",
+        "description": "Established Feed monitoring system, reducing timeout rate from 1.5% to 0.3% and latency by 40%+. Led componentization (module + module_api + module_run) and plugin architecture (Shadow framework). Built dev-stage performance monitoring tools and automated testing (44 Feed cases via AirTest)."
+      },
+      {
+        "title": "Android Engineer",
+        "company": "Qibei Technology (Bike-sharing)",
+        "period": "2016.09 - 2019.08",
+        "description": "Developed bike-sharing apps (Qibei Bike, Dingda Transit) across 4+ major versions. Implemented hot-fix (Tinker), online performance monitoring (Matrix), and reduced build time by 30%+ via Gradle optimization. Set up Jenkins CI pipeline with wireless ADB deployment."
+      },
+      {
+        "title": "Android Engineer",
+        "company": "Baidu (Waimai Delivery)",
+        "period": "2014.12 - 2016.06",
+        "description": "Independently maintained delivery rider app (Xiaodu Knight v1.4-2.9). Designed dynamic GPS tracking strategy reducing redundant uploads by 10%+. Developed PassSDK for unified B-side authentication with AES/JNI encryption. Built logistics development framework for multi-app scaffolding."
+      },
+      {
+        "title": "Java Developer",
+        "company": "NewLand Software Engineering",
+        "period": "2013.05 - 2014.09",
+        "description": "Developed business management and analytics modules for China Mobile support system using J2EE, S2SH framework, and Oracle database."
       }
     ],
     "education": [
       {
-        "degree": "Bachelor of Computer Science",
-        "school": "Tech University",
-        "period": "2009 - 2013",
-        "description": "Specialized in Software Engineering and Mobile Systems."
+        "degree": "Bachelor of Software Engineering",
+        "school": "Fujian University of Technology",
+        "period": "2011.09 - 2013.06",
+        "description": "Outstanding Graduation Thesis: 'Design and Implementation of CRM System Based on Intelligent Evaluation System'"
+      },
+      {
+        "degree": "Associate in Computer Applications",
+        "school": "Fujian Normal University (IT College)",
+        "period": "2008.09 - 2011.06",
+        "description": "Provincial Outstanding Student, First-class Scholarship, Outstanding Student Cadre"
       }
     ],
     "languages": [
-      { "name": "English", "level": "CET4" },
-      { "name": "Japanese", "level": "N1" },
-      { "name": "Chinese", "level": "Native" }
+      { "name": "Japanese", "level": "JLPT N1 (131), BJT J2 (512)" },
+      { "name": "Chinese", "level": "Native" },
+      { "name": "English", "level": "CET-4" }
     ],
     "skills": [
       {
@@ -81,16 +116,29 @@
         "category": "Architecture",
         "items": [
           "Clean Architecture",
+          "Componentization",
+          "Plugin Architecture",
           "MVI",
           "MVVM",
           "SOLID"
         ]
       },
       {
+        "category": "Performance & APM",
+        "items": [
+          "Profiling",
+          "Memory Optimization",
+          "Feed Monitoring",
+          "Systrace",
+          "LeakCanary"
+        ]
+      },
+      {
         "category": "Backend & DevOps",
         "items": [
           "Spring Boot",
-          "SQL",
+          "MySQL",
+          "Redis",
           "Docker",
           "CI/CD"
         ]
