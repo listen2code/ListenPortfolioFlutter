@@ -61,8 +61,9 @@ void main() async {
       viewModel.onBindEffect((effect) => emittedEffects.add(effect));
     });
 
-    tearDown(() {
+    tearDown(() async {
       subscription.close();
+      await Future.delayed(Duration(milliseconds: 100));
       container.dispose();
     });
 

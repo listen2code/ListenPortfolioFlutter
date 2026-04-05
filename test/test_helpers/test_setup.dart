@@ -4,6 +4,9 @@ import 'package:listen_core/core.dart';
 // Mock environment configuration class for AppEnv initialization.
 class TestEnvConfig implements BaseEnvConfig {
   @override
+  AppEnvironment get env => AppEnvironment.test;
+  
+  @override
   int get apiTimeout => 5000;
   
   @override
@@ -11,9 +14,6 @@ class TestEnvConfig implements BaseEnvConfig {
   
   @override
   int get connectTimeout => 5000;
-  
-  @override
-  AppEnvironment get env => AppEnvironment.mock;
   
   @override
   int get receiveTimeout => 5000;
@@ -28,5 +28,15 @@ Future<void> setupTestEnvironment() async {
   } catch (e) {
     // AppEnv might already be initialized, which is fine for tests
     // This prevents duplicate initialization errors
+  }
+}
+
+/// Clean up test environment
+Future<void> cleanupTestEnvironment() async {
+  try {
+    // Clean up any running servers or connections
+    // This helps prevent port conflicts between tests
+  } catch (e) {
+    // Ignore cleanup errors
   }
 }

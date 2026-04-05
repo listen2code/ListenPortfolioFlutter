@@ -27,7 +27,9 @@ void main() {
       viewModel.onBindEffect((BaseEffect effect) => emittedEffects.add(effect));
     });
 
-    tearDown(() {
+    tearDown(() async {
+      // Wait for any pending async operations before disposing
+      await Future.delayed(Duration(milliseconds: 100));
       subscription.close();
       container.dispose();
     });

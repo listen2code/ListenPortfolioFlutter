@@ -129,11 +129,9 @@ void main() async {
       viewModel.onBindEffect((effect) => emittedEffects.add(effect));
     });
 
-    tearDown(() {
-      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
-        _imagePickerChannel,
-        null,
-      );
+    tearDown(() async {
+      // Wait for any pending async operations before disposing
+      await Future.delayed(Duration(milliseconds: 100));
       container.dispose();
     });
 

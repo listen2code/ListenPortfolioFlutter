@@ -250,7 +250,7 @@ function Main {
         New-CoverageReport
     }
     
-    Write-Success "All tests completed successfully! 🎉"
+    Write-Success "All tests completed successfully!"
 }
 
 # Run main function

@@ -168,6 +168,46 @@ jobs:
    - APK 构建依赖测试通过
    - 如果测试失败，APK 构建被跳过
 
+#### **测试失败定义**
+
+##### **1. 硬性失败 (会导致 APK 构建跳过)**
+- ✅ **任何单元测试失败**: `flutter test` 命令返回非零退出码
+- ✅ **任何 Widget 测试失败**: 测试用例断言失败或异常
+- ✅ **任何集成测试失败**: 端到端测试失败
+- ✅ **依赖分析失败**: `dependency-analysis` 作业失败
+
+##### **2. 软性失败 (仅警告，不阻止构建)**
+- ⚠️ **覆盖率不足**: 低于 60% 但测试全部通过
+- ⚠️ **覆盖率生成失败**: lcov 工具问题但不影响测试执行
+
+##### **3. 具体失败场景**
+```bash
+# 场景1: 单个测试用例失败
+flutter test --coverage --reporter=expanded
+# 输出: 00:01 +2: Some test failed
+# 结果: 整个 flutter-test 作业失败 → APK 构建跳过
+
+# 场景2: 编译错误
+flutter test test/features/auth/login/login_view_model_test.dart
+# 输出: Compilation error
+# 结果: flutter-test 作业失败 → APK 构建跳过
+
+# 场景3: 覆盖率不足
+# 测试全部通过，但覆盖率只有 45%
+# 输出: Coverage check failed: 45% < 60%
+# 结果: flutter-test 作业成功 → APK 构建继续
+```
+
+##### **4. GitHub Actions 状态判断**
+```yaml
+# build-apk 作业的条件
+if: needs.check-conditions.outputs.should_build_apk == 'true' 
+    && needs.flutter-test.result == 'success' 
+    && needs.dependency-analysis.result == 'success'
+```
+
+**说明**: `needs.flutter-test.result == 'success'` 要求整个 flutter-test 作业成功完成
+
 #### **触发条件**
 ```yaml
 on:
@@ -204,6 +244,102 @@ on:
 - **HTML 报告**: 从 Actions 产物下载 `coverage-reports`
 - **Codecov**: https://app.codecov.io/gh/listen2code/ListenPortfolioFlutter
 - **本地查看**: `coverage/html/index.html`
+
+### 🚨 测试失败处理
+
+#### **失败类型分析**
+
+##### **1. 测试用例失败 (最常见)**
+```bash
+# 示例输出
+00:01 +2: LoginViewModel should handle login with valid credentials
+00:01 +2: LoginViewModel should show error for invalid credentials
+00:01 +0: LoginViewModel should handle network error
+00:01 +0: Some test(s) failed.
+00:01 +0: Failed to load "test/features/auth/login/login_view_model_test.dart": 
+Test failed. See exception logs for details.
+```
+
+**影响**: 🔴 **APK 构建跳过**  
+**原因**: 任何测试用例的 `expect()` 断言失败或异常
+
+##### **2. 编译错误**
+```bash
+# 示例输出
+Error: Could not resolve the package 'listen_core' in 'test/features/auth/login/login_view_model_test.dart'.
+```
+
+**影响**: 🔴 **APK 构建跳过**  
+**原因**: 依赖问题、导入错误、语法错误
+
+##### **3. 超时错误**
+```bash
+# 示例输出
+00:30 +1: Test timeout. The test took longer than 30 seconds to complete.
+```
+
+**影响**: 🔴 **APK 构建跳过**  
+**原因**: 测试执行时间超过默认 30 秒超时
+
+##### **4. 覆盖率不足**
+```bash
+# 示例输出
+Coverage check failed: 45.2% < 60%
+Consider adding more tests to meet the minimum coverage requirement
+```
+
+**影响**: 🟡 **仅警告，APK 构建继续**  
+**原因**: 当前配置为软性检查，不阻止构建
+
+#### **失败调试步骤**
+
+##### **1. 查看 GitHub Actions 日志**
+1. 进入失败的 workflow run
+2. 点击 "flutter-test" 作业
+3. 查看详细的错误输出
+4. 定位具体的失败测试文件
+
+##### **2. 本地重现失败**
+```bash
+# 复制失败的测试命令
+flutter test --reporter=expanded test/features/auth/login/login_view_model_test.dart
+
+# 或运行所有测试查看详细输出
+flutter test --reporter=expanded
+```
+
+##### **3. 修复和验证**
+```bash
+# 修复代码后，本地验证
+flutter test test/features/auth/login/login_view_model_test.dart
+
+# 确保所有测试通过
+flutter test
+
+# 检查覆盖率
+flutter test --coverage
+lcov --summary coverage/lcov.info
+```
+
+#### **失败恢复策略**
+
+##### **1. 紧急修复 (Production 需求)**
+如果必须立即发布，可以：
+1. 临时跳过失败的测试 (不推荐)
+2. 修复关键测试，标记其他测试为待修复
+3. 使用 `[skip-build]` 跳过 APK 构建
+
+##### **2. 根本修复 (推荐)**
+1. 分析失败原因
+2. 修复测试代码或业务逻辑
+3. 增加测试覆盖率
+4. 确保所有测试通过
+
+##### **3. 预防措施**
+1. 本地运行完整测试再提交
+2. 使用 pre-commit hooks
+3. 定期检查覆盖率趋势
+4. 监控测试执行时间
 
 ## 🎯 关键测试场景
 

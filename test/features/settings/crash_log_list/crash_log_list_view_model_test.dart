@@ -42,7 +42,9 @@ void main() {
       });
     });
 
-    tearDown(() {
+    tearDown(() async {
+      // Wait for any pending async operations before disposing
+      await Future.delayed(Duration(milliseconds: 100));
       subscription.close();
       container.dispose();
     });

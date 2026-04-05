@@ -28,7 +28,11 @@ void main() {
       viewModel.onBindEffect((effect) => emittedEffects.add(effect));
     });
 
-    tearDown(() => container.dispose());
+    tearDown(() async {
+      // Wait for any pending async operations before disposing
+      await Future.delayed(Duration(milliseconds: 100));
+      container.dispose();
+    });
 
     test('Initial state should have empty passwords', () {
       final state = viewModel.state;

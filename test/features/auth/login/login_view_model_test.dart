@@ -27,8 +27,9 @@ void main() {
       viewModel = container.read(loginViewModelProvider.notifier);
     });
 
-    tearDown(() {
-      // 5. Dispose the container
+    tearDown(() async {
+      // Wait for any pending async operations before disposing
+      await Future.delayed(Duration(milliseconds: 100));
       container.dispose();
     });
 
@@ -45,19 +46,30 @@ void main() {
 
       test('should load saved credentials when rememberMe is true', () async {
         // Arrange - Set up SharedPreferences with saved credentials
+        // Use the same prefix as SpUtil.init() to ensure keys match
         SharedPreferences.setMockInitialValues({
-          AppConstants.loginUsernameKey: 'saved_user',
-          AppConstants.loginRememberMeKey: true,
+          'test_${AppConstants.loginUsernameKey}': 'saved_user',
+          'test_${AppConstants.loginRememberMeKey}': true,
         });
 
-        // Create new container and viewModel
+        // Initialize SpUtil with same prefix as main setup
+        await SpUtil.init(prefix: 'test_');
+
+        // Create new container and keep provider alive
         final testContainer = ProviderContainer();
+        final subscription = testContainer.listen(loginViewModelProvider, (_, __) {}, fireImmediately: false);
         final testViewModel = testContainer.read(loginViewModelProvider.notifier);
+
+        // Wait for async initialization
+        await Future.delayed(Duration(milliseconds: 100));
 
         // Assert
         expect(testViewModel.state.username, 'saved_user');
         expect(testViewModel.state.rememberMe, isTrue);
 
+        // Clean up
+        subscription.close();
+        await Future.delayed(Duration(milliseconds: 100));
         testContainer.dispose();
       });
     });

@@ -35,8 +35,8 @@ void main() async {
     });
 
     tearDown(() async {
-      // Wait for all async operations to complete before disposing
-      await Future.delayed(const Duration(milliseconds: 500));
+      // Wait for any pending async operations before disposing
+      await Future.delayed(Duration(milliseconds: 100));
       container.dispose();
     });
 
