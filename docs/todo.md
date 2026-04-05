@@ -96,8 +96,6 @@
 - [ ] CONTRIBUTING.md：贡献指南（分支策略、PR 模板、代码规范）
 - [ ] ADR（Architecture Decision Records）：记录关键架构决策（Zone tracing、SafeMode、MockServer 设计背景）
 
-### 🔧 开发体验（DX）
-
 ### 其他
 * base
     * BaseResponseModel serverError
