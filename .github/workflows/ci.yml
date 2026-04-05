@@ -105,6 +105,99 @@ jobs:
         echo "environment=$ENVIRONMENT" >> $GITHUB_OUTPUT
         echo "Build condition result: $SHOULD_BUILD_APK"
 
+  flutter-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Dart SDK
+      uses: dart-lang/setup-dart@v1
+      with:
+        sdk: stable
+        
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.38.3'
+        cache: true
+        
+    - name: Install dependencies
+      run: flutter pub get
+      
+    - name: Setup test environment
+      run: |
+        echo "Setting up test environment..."
+        # Ensure test assets are available
+        mkdir -p assets/mock/v1/get
+        mkdir -p assets/mock/v1/post
+        echo "Test environment setup completed"
+        
+    - name: Run unit tests with coverage
+      run: |
+        echo "Running Flutter unit tests..."
+        flutter test --coverage --reporter=expanded
+        
+        echo "Generating coverage report..."
+        genhtml coverage/lcov.info -o coverage/html --quiet --ignore-errors source
+        
+        echo "Test coverage summary:"
+        lcov --summary coverage/lcov.info
+        
+    - name: Run widget tests
+      run: |
+        echo "Running Flutter widget tests..."
+        flutter test --reporter=expanded test/features/home/projects/projects_widget_test.dart
+        
+    - name: Run integration tests (if any)
+      run: |
+        echo "Checking for integration tests..."
+        if [ -d "integration_test" ]; then
+          echo "Found integration tests, running..."
+          flutter test integration_test/ --reporter=expanded
+        else
+          echo "No integration tests found, skipping..."
+        fi
+        
+    - name: Analyze test coverage
+      run: |
+        echo "Analyzing test coverage..."
+        
+        # Extract coverage percentage
+        COVERAGE_PERCENT=$(lcov --summary coverage/lcov.info 2>&1 | grep "lines......:" | awk '{print $2}' | sed 's/%//')
+        
+        echo "Current coverage: ${COVERAGE_PERCENT}%"
+        
+        # Check if coverage meets minimum threshold (60% as mentioned in TODO)
+        MIN_COVERAGE=60
+        if (( $(echo "$COVERAGE_PERCENT >= $MIN_COVERAGE" | bc -l) )); then
+          echo "Coverage check passed: ${COVERAGE_PERCENT}% >= ${MIN_COVERAGE}%"
+        else
+          echo "Coverage check failed: ${COVERAGE_PERCENT}% < ${MIN_COVERAGE}%"
+          echo "Consider adding more tests to meet the minimum coverage requirement"
+          # Note: Don't fail the build for now, just warn
+        fi
+        
+    - name: Upload coverage reports
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: coverage-reports
+        path: |
+          coverage/lcov.info
+          coverage/html/
+        retention-days: 30
+        
+    - name: Upload coverage to Codecov (optional)
+      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+      uses: codecov/codecov-action@v4
+      with:
+        file: coverage/lcov.info
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: false
+
   dependency-analysis:
     runs-on: ubuntu-latest
     
@@ -162,8 +255,8 @@ jobs:
         echo "Flutter analyze completed successfully"
 
   build-apk:
-    needs: [check-conditions, dependency-analysis]
-    if: needs.check-conditions.outputs.should_build_apk == 'true' && needs.dependency-analysis.result == 'success'
+    needs: [check-conditions, flutter-test, dependency-analysis]
+    if: needs.check-conditions.outputs.should_build_apk == 'true' && needs.flutter-test.result == 'success' && needs.dependency-analysis.result == 'success'
     runs-on: ubuntu-latest
     
     steps:
