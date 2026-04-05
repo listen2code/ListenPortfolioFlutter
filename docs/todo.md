@@ -88,8 +88,8 @@
 
 - [x] README 多语言版本（中文/英文/日文单文件，含架构图/代码示例/技术亮点）
 - [ ] ⭐ Screen capture：主要页面截图/GIF（Overview、Login、Settings、CrashLogs）— Portfolio 最重要的视觉展示
-- [ ] ⭐ aboutMe.json 数据更新：当前使用虚构公司名（Global Tech Solutions 等），应替换为真实履历数据
-- [ ] ⭐ projects.json 后端技术栈更新：当前写的是 Node.js/Express，应更新为 Spring Boot 以匹配实际后端项目
+- [x] ⭐ aboutMe.json 数据更新：当前使用虚构公司名（Global Tech Solutions 等），应替换为真实履历数据
+- [x] ⭐ projects.json 后端技术栈更新：当前写的是 Node.js/Express，应更新为 Spring Boot 以匹配实际后端项目
 - [ ] user.json (GET) 缺少 messageId 字段，应补全以符合标准响应格式
 - [ ] Architecture：模块图、数据流/状态流、网络/错误/日志链路图（可用 Mermaid）
 - [ ] Tech stack：依赖列表与选型理由（包含替代方案与取舍）
@@ -97,19 +97,15 @@
 - [ ] ADR（Architecture Decision Records）：记录关键架构决策（Zone tracing、SafeMode、MockServer 设计背景）
 
 ### 其他
-* base
-    * BaseResponseModel serverError
 * function
-    * switch env: input url; mock api; config each api; separate mock
-    * apm: layout check; lag check; app launch; apk size; net inspector; FPS; Cpu usage; memory;
-    * AuthInterceptor: token, refreshToken, session timeout; auto login;
-    * if (!widget.useScaffold); onBackInvoked
-    * 切换账户的时候，清除上个账户的缓存，和留在画面的数据
+  * switch env: input url; mock api; config each api; separate mock
+  * apm: layout check; lag check; app launch; apk size; net inspector; FPS; Cpu usage; memory;
+  * AuthInterceptor: token, refreshToken, session timeout; auto login;
+  * if (!widget.useScaffold); onBackInvoked
+  * 切换账户的时候，清除上个账户的缓存，和留在画面的数据
 * 开发IDE的plugin
-    * json模型转换
-    * asset资源生成到R.dart
-* 文档
-    * 画面截图
+  * json模型转换
+  * asset资源生成到R.dart
 * 问题
-    * NDK bundle 相关问题（Android 构建时 ndk bundle 报错，需明确 NDK 版本或 abiFilters 配置）
-    * Pixel icon cache 相关问题（部分 Pixel 设备 launcher icon 缓存不刷新，需调查 adaptive icon 配置）
+  * NDK bundle 相关问题（Android 构建时 ndk bundle 报错，需明确 NDK 版本或 abiFilters 配置）
+  * Pixel icon cache 相关问题（部分 Pixel 设备 launcher icon 缓存不刷新，需调查 adaptive icon 配置）
