@@ -96,16 +96,17 @@
 - [ ] CONTRIBUTING.md：贡献指南（分支策略、PR 模板、代码规范）
 - [ ] ADR（Architecture Decision Records）：记录关键架构决策（Zone tracing、SafeMode、MockServer 设计背景）
 
-### 其他
-* function
-  * switch env: input url; mock api; config each api; separate mock
-  * apm: layout check; lag check; app launch; apk size; net inspector; FPS; Cpu usage; memory;
-  * AuthInterceptor: token, refreshToken, session timeout; auto login;
-  * if (!widget.useScaffold); onBackInvoked
-  * 切换账户的时候，清除上个账户的缓存，和留在画面的数据
-* 开发IDE的plugin
-  * json模型转换
-  * asset资源生成到R.dart
-* 问题
-  * NDK bundle 相关问题（Android 构建时 ndk bundle 报错，需明确 NDK 版本或 abiFilters 配置）
-  * Pixel icon cache 相关问题（部分 Pixel 设备 launcher icon 缓存不刷新，需调查 adaptive icon 配置）
+### 功能
+- [ ] switch env: input url; mock api; config each api; separate mock
+- [ ] apm: layout check; lag check; app launch; apk size; net inspector; FPS; Cpu usage; memory;
+- [ ] AuthInterceptor: token, refreshToken, session timeout; auto login;
+- [ ] if (!widget.useScaffold); onBackInvoked
+- [ ] 切换账户的时候，清除上个账户的缓存，和留在画面的数据
+
+### 开发IDE的plugin
+- [ ] json模型转换
+- [ ] asset资源生成到R.dart
+
+### 问题
+- [ ] NDK bundle 相关问题（Android 构建时 ndk bundle 报错，需明确 NDK 版本或 abiFilters 配置）
+- [ ] Pixel icon cache 相关问题（部分 Pixel 设备 launcher icon 缓存不刷新，需调查 adaptive icon 配置）
