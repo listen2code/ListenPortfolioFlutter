@@ -492,8 +492,8 @@ String _getUserFriendlyMessage(Failure failure) {
 
 - [标准化开发工作流](development-workflow.md)
 - [Mock 数据维护规范](mock-data-specification.md)
-- [API 设计规范](api-design.md)
-- [测试策略](testing-strategy.md)
+- [项目开发指南](project-development-guide.md)
+- [文档生成指南](documentation-generation.md)
 
 ---
 

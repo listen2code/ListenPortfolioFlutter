@@ -54,8 +54,8 @@ assets/mock/v1/post/
 │   ├── refresh.json       # 刷新令牌接口
 │   └── forgot-password.json # 忘记密码接口
 ├── user/                  # 用户相关接口
-│   ├── update.json        # 更新用户信息
-│   └── delete.json        # 删除用户账户
+│   ├── change-password.json # 修改密码
+│   └── logout.json        # 用户登出
 └── {feature}/             # 其他功能模块
     └── {endpoint}.json
 ```
@@ -64,18 +64,15 @@ assets/mock/v1/post/
 
 ```
 assets/mock/v1/put/
-├── user.json              # 更新用户信息
-├── settings.json          # 更新设置
-└── {endpoint}.json        # 其他 PUT 接口
+└── (待添加)               # 目前暂无 PUT 接口 Mock 数据
 ```
 
 ### 🗑️ DELETE 请求 (`delete/`)
 
 ```
 assets/mock/v1/delete/
-├── user.json              # 删除用户账户
-├── cache.json             # 清除缓存
-└── {endpoint}.json        # 其他 DELETE 接口
+└── user/
+    └── delete-account.json # 删除用户账户
 ```
 
 ---
@@ -92,49 +89,43 @@ assets/mock/v1/delete/
 ```
 
 #### **命名约定**
-- ✅ **小写字母**：全小写命名
-- ✅ **连字符分隔**：使用 `-` 连接多个单词
 - ✅ **语义化**：文件名要能清楚表达接口用途
+- ✅ **连字符分隔**：多单词场景优先使用 `-` 连接（如 `forgot-password.json`、`change-password.json`）
+- ✅ **单词命名**：单个单词的端点可使用 camelCase（如 `signUp.json`、`aboutMe.json`）
 - ❌ **避免缩写**：使用完整单词，避免歧义
 
 ### 📋 具体示例
 
-#### **认证模块 (`auth/`)**
+#### **认证模块 (`post/auth/`)**
 ```
 ✅ login.json              ← 登录接口
-✅ sign-up.json            ← 注册接口（使用连字符）
-✅ refresh-token.json      ← 刷新令牌接口
+✅ signUp.json             ← 注册接口
+✅ refresh.json            ← 刷新令牌接口
 ✅ forgot-password.json    ← 忘记密码接口
 
-❌ login.json              ← 正确
 ❌ Login.json              ← 错误：大写字母
 ❌ login_api.json          ← 错误：使用下划线
-❌ loginAPI.json           ← 错误：驼峰命名
 ```
 
-#### **用户模块 (`user/`)**
+#### **用户模块 (`post/user/`)**
 ```
-✅ profile.json            ← 用户资料
-✅ update-profile.json     ← 更新资料
 ✅ change-password.json    ← 修改密码
-✅ delete-account.json     ← 删除账户
+✅ logout.json             ← 用户登出
 
- userInfo.json            ← 错误：驼峰命名
-❌ user_info.json          ← 错误：下划线
+❌ user_info.json          ← 错误：使用下划线
 ❌ UserInfo.json           ← 错误：大写字母
 ```
 
-#### **项目模块 (`projects/`)**
+#### **删除账户模块 (`delete/user/`)**
 ```
-✅ projects.json           ← 项目列表
-✅ project-detail.json     ← 项目详情
-✅ create-project.json     ← 创建项目
-✅ update-project.json     ← 更新项目
-✅ delete-project.json     ← 删除项目
+✅ delete-account.json     ← 删除账户
+```
 
-❌ projects.json            ← 正确
-❌ Projects.json           ← 错误：大写字母
-❌ projectDetail.json      ← 错误：驼峰命名
+#### **GET 模块 (`get/`)**
+```
+✅ user.json               ← 用户信息
+✅ aboutMe.json            ← 关于我信息
+✅ projects.json           ← 项目列表
 ```
 
 ---
@@ -434,7 +425,7 @@ find assets/mock/v1 -name "*.json" -exec sed -i 's/"updatedAt": "[^"]*"/"updated
 
 ### ✅ 新增 Mock 数据检查清单
 
-- [ ] **文件命名**：符合命名规范（小写、连字符分隔）
+- [ ] **文件命名**：符合命名规范（多单词用连字符，单词可 camelCase）
 - [ ] **目录结构**：放在正确的 HTTP 方法目录中
 - [ ] **数据格式**：符合标准响应格式
 - [ ] **字段命名**：使用 camelCase，语义化命名
@@ -507,9 +498,9 @@ find assets/mock/v1 -name "*.json" -exec sed -i 's/"updatedAt": "[^"]*"/"updated
 ## 📚 相关文档
 
 - [标准化开发工作流](development-workflow.md)
-- [API 设计规范](api-design.md)
-- [错误处理指南](error-handling.md)
-- [测试策略](testing-strategy.md)
+- [错误码参考](error-codes-reference.md)
+- [项目开发指南](project-development-guide.md)
+- [文档生成指南](documentation-generation.md)
 
 ---
 

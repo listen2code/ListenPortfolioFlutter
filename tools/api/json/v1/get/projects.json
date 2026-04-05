@@ -36,7 +36,7 @@
       "desc": "The server-side implementation for this portfolio, managing user data, projects, and dynamic configurations.",
       "imageUrl": "localhost/images/project4.jpg",
       "githubUrl": "https://github.com/listen2code/ListenPortfolioBackend",
-      "techStack": ["Node.js", "Express", "AWS", "DynamoDB"]
+      "techStack": ["Spring Boot", "MySQL", "Redis", "Docker"]
     },
     {
       "id": "5",

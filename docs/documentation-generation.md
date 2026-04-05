@@ -173,13 +173,10 @@ dartdoc:
 ```
 ListenPortfolioFlutter/
 ├── dartdoc_options.yaml          # 主项目配置
-├── packages/
-│   ├── listen_core/
-│   │   └── dartdoc_options.yaml  # listen_core 配置
-│   └── listen_uikit/
-│       └── dartdoc_options.yaml  # listen_uikit 配置
-└── scripts/
-    └── generate_docs.ps1         # 生成脚本
+├── scripts/
+│   └── generate_docs.ps1         # 生成脚本
+└── (注意: listen_core / listen_uikit 为 pub.dev 远程依赖，
+     其 dartdoc 配置在各自的 GitHub 仓库中维护)
 ```
 
 #### 📊 **配置优先级**

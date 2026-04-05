@@ -20,9 +20,13 @@
 - [x] README 多语言版本（中文/英文/日文单文件，含架构图/代码示例/技术亮点）
 - [x] 依赖清理或落地：明确 listen_core/listen_uikit 本地依赖路径与状态（pubspec.yaml 中的路径依赖是否仍有效）；
 - [x] 明确依赖边界与治理：core/shared/uikit/features 的依赖方向检查（可用 lint/自定义脚本）
+- [x] dartdoc：公开 API 文档生成（尤其是 core/ 模块，为 pub 发布准备）
 
 ### 🧱 架构与基础设施优化
 
+- [ ] ⭐ 错误码体系落地：实现 `error-codes-reference.md` 中描述的统一错误码（NET_0001/SRV_0100/AUTH_0300/VAL_0400/BIZ_0500），当前代码仅使用字符串消息
+- [ ] ⭐ I18nErrorKeys 实现：messageId -> i18n 文案映射（文档已设计，代码未实现）
+- [ ] ⭐ ErrorMetrics / ErrorInjector 实现：错误监控与测试注入工具（文档已设计，代码未实现）
 - [ ] "state roaming" 定义与实现：跨 tab/跨 page 状态共享策略（EventBus？Riverpod provider？） 支持状态漫游，并可以在开发模式下通过示例展示
 - [ ] merge _effectController 和 eventBus 的设计评估与落地（统一一次性事件/全局事件的语义与生命周期）
 - [ ] BaseResponseModel / Failure 体系补全：messageId -> i18n 文案映射、统一错误码表、链路 traceId 关联（客户端/服务端）
@@ -63,32 +67,36 @@
 
 ### 🤖 工程化 / CI-CD
 
-- [ ] CI：Flutter analyze + test + build（多环境、分渠道）
+- [ ] ⭐ CI 添加 `flutter test` 步骤：当前 CI 只做 analyze + dependency check，缺少自动测试
+- [ ] ⭐ Release APK 构建 + 签名配置：当前 CI 只构建 debug APK，需添加 release 构建流程
+- [ ] ⭐ Google Play 发布流程自动化：集成 fastlane 或 Gradle Play Publisher，自动上传到 Internal Testing Track
 - [ ] CD：产物上传到 S3（含 mapping/符号表）+ Release notes 自动化
-- [ ] CI CD：upload to S3
+- [ ] 隐私政策页面：Google Play 审核必需，需要真实可访问的隐私政策 URL
 
 ### 🧩 插件/底层探索
 
 - [ ] Channel plugin（平台通道封装示例）
 - [ ] JNI/NDK（底层能力接入样例）
 
-### 🗄️ 服务端（如计划自建）
+### 🗄️ 服务端（Spring Boot - ListenPortfolioBackend）
 
+- [ ] ⭐ Flutter 对接后端真实 API：将 mock 数据切换为 dev/prod 环境下调用真实 Spring Boot 后端
 - [ ] 服务端文案i18n
 - [ ] 直接将目前项目打包成web模块并部署
 
 ### 📚 文档
 
 - [x] README 多语言版本（中文/英文/日文单文件，含架构图/代码示例/技术亮点）
-- [ ] Screen capture：主要页面截图/GIF（Overview、Login、Settings、CrashLogs）
+- [ ] ⭐ Screen capture：主要页面截图/GIF（Overview、Login、Settings、CrashLogs）— Portfolio 最重要的视觉展示
+- [ ] ⭐ aboutMe.json 数据更新：当前使用虚构公司名（Global Tech Solutions 等），应替换为真实履历数据
+- [ ] ⭐ projects.json 后端技术栈更新：当前写的是 Node.js/Express，应更新为 Spring Boot 以匹配实际后端项目
+- [ ] user.json (GET) 缺少 messageId 字段，应补全以符合标准响应格式
 - [ ] Architecture：模块图、数据流/状态流、网络/错误/日志链路图（可用 Mermaid）
 - [ ] Tech stack：依赖列表与选型理由（包含替代方案与取舍）
 - [ ] CONTRIBUTING.md：贡献指南（分支策略、PR 模板、代码规范）
 - [ ] ADR（Architecture Decision Records）：记录关键架构决策（Zone tracing、SafeMode、MockServer 设计背景）
-- [x] dartdoc：公开 API 文档生成（尤其是 core/ 模块，为 pub 发布准备）
 
 ### 🔧 开发体验（DX）
-
 
 ### 其他
 * base

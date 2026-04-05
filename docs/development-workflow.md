@@ -135,30 +135,40 @@ Log Overlay 是一个浮窗调试工具，在应用界面上实时显示日志�
 ### 功能特性
 
 - 📱 **实时显示**：应用日志实时浮窗显示
-- 🎯 **级别过滤**：支持 Debug/Info/Warning/Error 级别
-- 🔍 **关键字搜索**：快速定位特定日志
-- 💾 **日志导出**：支持导出日志文件
-- 🎨 **自定义样式**：可调整浮窗大小、透明度
+- 🎯 **源类型过滤**：支持 All / Server / App / Perf 分类过滤
+- 🔍 **Trace ID 过滤**：点击日志中的 Trace ID 自动过滤关联请求链路
+- � **日志复制**：一键复制所有日志到剪贴板
+- 🎨 **可调整窗口**：支持拖拽移动、四角及底边缩放
 
 ### 启用 Log Overlay
 
-#### 1. 代码方式（开发时）
+#### 1. 自动初始化（SplashPage）
 ```dart
-// 在 main.dart 中启用（仅 debug 模式）
-if (kDebugMode) {
-  LogOverlayManager.instance.enable();
+// LogOverlayManager 在 SplashPage 的 onReady 生命周期中自动初始化
+// 参见 lib/features/splash/presentation/pages/splash_page.dart
+class _SplashLifecycle extends PageLifecycle {
+  @override
+  void onReady() {
+    LogOverlayManager.init(context); // 读取持久化偏好，自动显示/隐藏
+  }
 }
 ```
 
 #### 2. 设置页面启用
 - 打开 **Settings** 页面
-- 找到 **Developer Options**
-- 启用 **Log Overlay** 开关
+- 找到 **View Logs** 开关
+- 切换开关即可调用 `LogOverlayManager.show(context)` / `LogOverlayManager.hide()`
 
-#### 3. 手势触发（开发快捷方式）
+#### 3. 代码方式
 ```dart
-// 在调试模式下，连续点击标题栏 5 次触发
-// 具体实现可参考 LogOverlayManager
+// 显示浮窗
+LogOverlayManager.show(context);
+
+// 直接以展开窗口模式显示
+LogOverlayManager.show(context, startExpanded: true);
+
+// 隐藏浮窗
+LogOverlayManager.hide();
 ```
 
 ### 使用技巧
@@ -178,10 +188,14 @@ if (kDebugMode) {
 - **性能监控**: `Performance`, `Zone`, `Trace`
 
 #### 浮窗操作
-- **拖拽移动**: 长按拖拽浮窗位置
-- **调整大小**: 双指缩放调整浮窗大小
-- **快速清除**: 向右滑动清除所有日志
-- **导出日志**: 长按浮窗 3 秒导出日志文件
+- **拖拽移动**：拖拽浮球按钮或展开窗口的标题栏移动位置
+- **展开/收起**：点击浮球按钮展开日志窗口，点击收起按钮缩回浮球
+- **调整大小**：拖拽窗口四角或底边调整窗口尺寸
+- **过滤日志**：点击 Filter 图标展开过滤栏，选择 All/Server/App/Perf
+- **Trace ID 搜索**：点击日志中绿色的 Trace ID 自动填入搜索栏
+- **复制日志**：点击 Copy 图标复制所有日志到剪贴板
+- **清除日志**：点击 Clear 图标清除所有日志
+- **关闭浮窗**：点击红色电源图标完全关闭 Log Overlay
 
 ### 最佳实践
 
@@ -205,10 +219,9 @@ if (shouldUseZone(intent)) {
 
 #### 3. 生产环境
 ```dart
-// 生产环境禁用 Log Overlay
-if (!kReleaseMode) {
-  LogOverlayManager.instance.enable();
-}
+// LogOverlayManager.init() 使用 SpUtil 持久化开关状态
+// 生产环境可通过 Settings 页面禁用，无需代码层面控制
+// 状态通过 SpUtil.getBool('log_overlay_key') 读取
 ```
 
 ## 🛠️ 开发工具链
@@ -302,10 +315,9 @@ flutter run --dart-define=APP_ENV=mock
 
 #### 3. Log Overlay 不显示
 ```dart
-// 确认在 debug 模式下启用
-if (kDebugMode) {
-  LogOverlayManager.instance.enable();
-}
+// 确认 SplashPage 中 LogOverlayManager.init(context) 已执行
+// 确认 SpUtil 中 'log_overlay_key' 值为 true
+// 或手动调用：LogOverlayManager.show(context);
 ```
 
 #### 4. Mock 数据不加载
@@ -331,9 +343,10 @@ if (kDebugMode) {
 ## 📚 相关文档
 
 - [项目架构](../README.md)
-- [API 设计规范](api-design.md)
-- [错误处理指南](error-handling.md)
-- [测试策略](testing-strategy.md)
+- [错误码参考](error-codes-reference.md)
+- [Mock 数据维护规范](mock-data-specification.md)
+- [项目开发指南](project-development-guide.md)
+- [文档生成指南](documentation-generation.md)
 
 ---
 
