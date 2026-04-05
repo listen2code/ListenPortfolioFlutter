@@ -19,12 +19,29 @@ class TestEnvConfig implements BaseEnvConfig {
   int get receiveTimeout => 5000;
 }
 
+class MockEnvConfig implements BaseEnvConfig {
+  @override
+  AppEnvironment get env => AppEnvironment.mock;
+  
+  @override
+  int get apiTimeout => 5000;
+  
+  @override
+  String get baseUrl => 'http://localhost:9999';
+  
+  @override
+  int get connectTimeout => 5000;
+  
+  @override
+  int get receiveTimeout => 5000;
+}
+
 /// Initialize test environment for all tests that require network access
 Future<void> setupTestEnvironment() async {
   TestWidgetsFlutterBinding.ensureInitialized();
   try {
     // Initialize global AppEnv to prevent exceptions when ApiClient is accessed.
-    await AppEnv.init([TestEnvConfig()]);
+    await AppEnv.init([TestEnvConfig(), MockEnvConfig()]);
   } catch (e) {
     // AppEnv might already be initialized, which is fine for tests
     // This prevents duplicate initialization errors

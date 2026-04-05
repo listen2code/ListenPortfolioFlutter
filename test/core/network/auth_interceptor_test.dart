@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http_mock_adapter/http_mock_adapter.dart';
@@ -20,6 +23,44 @@ class TestEnvConfig implements BaseEnvConfig {
 
 // Mock interceptor delegate to control token injection and refresh in tests.
 class MockApiInterceptorDelegate extends Mock implements IApiInterceptorDelegate {}
+
+// Custom HttpClientAdapter that returns queued responses per path.
+// Needed because DioAdapter's FullHttpRequestMatcher can't match
+// headers that are dynamically injected by interceptors.
+class _SequentialMockAdapter implements HttpClientAdapter {
+  final Map<String, List<(int, dynamic)>> _queue = {};
+
+  void enqueue(String path, int statusCode, dynamic data) {
+    _queue.putIfAbsent(path, () => []).add((statusCode, data));
+  }
+
+  @override
+  Future<ResponseBody> fetch(
+    RequestOptions options,
+    Stream<Uint8List>? requestStream,
+    Future<void>? cancelFuture,
+  ) async {
+    final queue = _queue[options.path];
+    if (queue == null || queue.isEmpty) {
+      throw DioException(
+        requestOptions: options,
+        message: 'No queued mock response for \${options.path}',
+        type: DioExceptionType.unknown,
+      );
+    }
+    final (statusCode, data) = queue.removeAt(0);
+    return ResponseBody.fromString(
+      jsonEncode(data),
+      statusCode,
+      headers: {
+        Headers.contentTypeHeader: [Headers.jsonContentType],
+      },
+    );
+  }
+
+  @override
+  void close({bool force = false}) {}
+}
 
 void main() {
   late Dio dio;
@@ -83,20 +124,12 @@ void main() {
         return true;
       });
 
-      // Configure Mock response sequence:
-      // 1. Server returns 401 for old_token.
-      dioAdapter.onGet(
-        path,
-        (server) => server.reply(401, mock401Response),
-        headers: {'Authorization': 'Bearer old_token'},
-      );
-
-      // 2. Server returns 200 for new_token after retry.
-      dioAdapter.onGet(
-        path,
-        (server) => server.reply(200, mockSuccessResponse),
-        headers: {'Authorization': 'Bearer new_token'},
-      );
+      // Use a sequential mock adapter instead of DioAdapter header matching,
+      // because FullHttpRequestMatcher can't see dynamically injected headers.
+      final mockAdapter = _SequentialMockAdapter()
+        ..enqueue(path, 401, mock401Response)
+        ..enqueue(path, 200, mockSuccessResponse);
+      dio.httpClientAdapter = mockAdapter;
 
       final response = await dio.get(path);
 
@@ -148,20 +181,14 @@ void main() {
         return true;
       });
 
-      // Mock responses for concurrent requests: 401 then 200.
-      dioAdapter.onGet(p1, (s) => s.reply(401, mock401Response), headers: {'Authorization': 'Bearer old'});
-      dioAdapter.onGet(
-        p1,
-        (s) => s.reply(200, mockSuccessResponse),
-        headers: {'Authorization': 'Bearer new'},
-      );
-
-      dioAdapter.onGet(p2, (s) => s.reply(401, mock401Response), headers: {'Authorization': 'Bearer old'});
-      dioAdapter.onGet(
-        p2,
-        (s) => s.reply(200, mockSuccessResponse),
-        headers: {'Authorization': 'Bearer new'},
-      );
+      // Use a sequential mock adapter instead of DioAdapter header matching,
+      // because FullHttpRequestMatcher can't see dynamically injected headers.
+      final mockAdapter = _SequentialMockAdapter()
+        ..enqueue(p1, 401, mock401Response)
+        ..enqueue(p1, 200, mockSuccessResponse)
+        ..enqueue(p2, 401, mock401Response)
+        ..enqueue(p2, 200, mockSuccessResponse);
+      dio.httpClientAdapter = mockAdapter;
 
       // Fire concurrent requests simultaneously.
       final results = await Future.wait([dio.get(p1), dio.get(p2)]);

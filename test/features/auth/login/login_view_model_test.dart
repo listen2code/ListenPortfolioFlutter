@@ -17,8 +17,9 @@ void main() {
     late LoginViewModel viewModel;
 
     setUp(() async {
-      // 2. Mock SharedPreferences initial values
+      // 2. Mock SharedPreferences initial values and re-init SpUtil
       SharedPreferences.setMockInitialValues({});
+      await SpUtil.init(prefix: 'test_');
 
       // 3. Create a ProviderContainer for testing
       container = ProviderContainer();

@@ -1,5 +1,7 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:listen_core/core.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/datasources/auth_local_data_source.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/get_current_user_request_model.dart';
@@ -17,11 +19,21 @@ class MockAuthLocalDataSource extends Mock implements AuthLocalDataSource {}
 class MockNetworkInfo extends Mock implements NetworkInfo {}
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   late AuthRepositoryImpl repository;
   late MockAuthRemoteDataSource mockRemoteDataSource;
   late MockAuthLocalDataSource mockLocalDataSource;
 
-  setUp(() {
+  setUp(() async {
+    SharedPreferences.setMockInitialValues({});
+
+    // Mock the connectivity_plus platform channel to simulate wifi connection
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+      const MethodChannel('dev.fluttercommunity.plus/connectivity'),
+      (MethodCall call) async => ['wifi'],
+    );
+
     mockRemoteDataSource = MockAuthRemoteDataSource();
     mockLocalDataSource = MockAuthLocalDataSource();
 
@@ -69,6 +81,10 @@ void main() {
     const testUserId = 'user_123';
     final testUserModel = UserModel(id: testUserId, name: 'Test', email: 'test@example.com');
     final testApiResponse = BaseResponseModel<UserModel>(result: ApiResult.success, body: testUserModel);
+    final failureResponse = BaseResponseModel<UserModel>(
+      result: ApiResult.serverError,
+      message: 'Internal server error',
+    );
 
     test('should return remote user and update cache when API call is successful', () async {
       // Arrange
@@ -85,7 +101,8 @@ void main() {
     });
 
     test('should return cached user when API call fails and cache is available', () async {
-      // Arrange
+      // Arrange - return a failure BaseResponseModel to trigger safeCall cache fallback
+      when(() => mockRemoteDataSource.getUserById(any())).thenAnswer((_) async => failureResponse);
       when(() => mockLocalDataSource.getCachedUser()).thenAnswer((_) async => testUserModel);
 
       // Act
@@ -97,8 +114,8 @@ void main() {
     });
 
     test('should return failure when both API and cache are unavailable', () async {
-      // Arrange
-      when(() => mockRemoteDataSource.getUserById(any())).thenThrow(ServerException('API Error', 500));
+      // Arrange - return a failure BaseResponseModel; cache returns null
+      when(() => mockRemoteDataSource.getUserById(any())).thenAnswer((_) async => failureResponse);
       when(() => mockLocalDataSource.getCachedUser()).thenAnswer((_) async => null);
 
       // Act
