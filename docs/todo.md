@@ -22,6 +22,29 @@
 - [x] 明确依赖边界与治理：core/shared/uikit/features 的依赖方向检查（可用 lint/自定义脚本）
 - [x] dartdoc：公开 API 文档生成（尤其是 core/ 模块，为 pub 发布准备）
 
+### 🔴 P0 — 切真实 API 前必须完成
+
+- [ ] ⭐ 端到端联调：Flutter dev 环境 → Backend localhost:8080，验证所有接口
+
+### 🟡 P1 — Portfolio 展示价值（面试/求职关键）
+
+- [ ] ⭐ Screen capture：主要页面截图/GIF（Overview、Login、Settings、CrashLogs）— Portfolio 最重要的视觉展示
+- [ ] ⭐ Architecture 文档：Mermaid 模块图、数据流/状态流、网络/错误/日志链路图（已在 todo 中）
+
+### 🟢 P2 — 功能增强（锦上添花）
+
+- [ ] ⭐ 错误码体系落地：I18nErrorKeys + messageId 映射（error-codes-reference.md 中描述的统一错误码）
+- [ ] ⭐ Skills 图表：CustomPainter/Canvas 绘制技能图谱
+- [ ] ⭐ Markdown 简历 + PDF 导出/下载（移动端 & Web）
+- [ ] 服务端文案 i18n：配合后端多语言支持，根据 Accept-Language 头显示对应语言
+
+### 🔵 P3 — 长期规划
+
+- [ ] Golden Tests（UIKit 组件快照）
+- [ ] Google Play 发布流程（fastlane）
+- [ ] AI intro assistant（离线提示词/在线 LLM 接入、隐私合规、可观测性）
+- [ ] 生物识别 / 第三方登录（local_auth，Google OAuth）
+
 ### 🧱 架构与基础设施优化
 
 - [ ] ⭐ 错误码体系落地：实现 `error-codes-reference.md` 中描述的统一错误码（NET_0001/SRV_0100/AUTH_0300/VAL_0400/BIZ_0500），当前代码仅使用字符串消息
