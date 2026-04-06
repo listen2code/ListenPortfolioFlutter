@@ -1,13 +1,13 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:listen_core/core.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/change_password_request_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/delete_account_request_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/forgot_password_request_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/get_current_user_request_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/login_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/login_request_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/signup_request_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
+import '../../data/models/change_password_request_model.dart';
+import '../../data/models/delete_account_request_model.dart';
+import '../../data/models/forgot_password_request_model.dart';
+import '../../data/models/get_current_user_request_model.dart';
+import '../../data/models/login_model.dart';
+import '../../data/models/login_request_model.dart';
+import '../../data/models/signup_request_model.dart';
+import '../../data/models/user_model.dart';
 
 /// Repository interface for authentication operations.
 /// This defines the contract that the data layer must implement.

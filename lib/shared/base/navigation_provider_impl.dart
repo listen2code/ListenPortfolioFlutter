@@ -22,7 +22,7 @@ class NavigationEffect extends BaseEffect {
 
   @override
   String toString() {
-    return "NavigationEffect(target: $target, isReplace: $isReplace, isBack: $isBack, needLogin: $needLogin, arguments: $arguments";
+    return 'NavigationEffect(target: $target, isReplace: $isReplace, isBack: $isBack, needLogin: $needLogin, arguments: $arguments';
   }
 }
 

@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:listen_core/core.dart';
-import 'package:listen_portfolio_flutter/features/home/data/models/project_model.dart';
-import 'package:listen_portfolio_flutter/shared/shared.dart';
+import '../models/project_model.dart';
+import '../../../../shared/shared.dart';
 
 class ProjectsLocalDataSource {
   Future<void> cacheProjects(List<ProjectModel> projects) async {

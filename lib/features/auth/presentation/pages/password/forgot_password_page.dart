@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_core/core.dart';
-import 'package:listen_portfolio_flutter/features/auth/presentation/pages/password/forgot_password_intent.dart';
-import 'package:listen_portfolio_flutter/features/auth/presentation/pages/password/forgot_password_state.dart';
-import 'package:listen_portfolio_flutter/features/auth/presentation/pages/password/forgot_password_view_model.dart';
-import 'package:listen_portfolio_flutter/shared/shared.dart';
+import 'forgot_password_intent.dart';
+import 'forgot_password_state.dart';
+import 'forgot_password_view_model.dart';
+import '../../../../../shared/shared.dart';
 import 'package:listen_uikit/uikit.dart';
 
 class ForgotPasswordPage extends ConsumerStatefulWidget {

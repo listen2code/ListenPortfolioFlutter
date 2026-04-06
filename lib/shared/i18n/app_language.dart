@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:listen_core/core.dart';
-import 'package:listen_portfolio_flutter/shared/shared.dart';
+import '../shared.dart';
 
 enum AppLanguage {
-  system("System", null),
+  system('System', null),
   english('English', Locale('en')),
   chinese('中文', Locale('zh')),
   japanese('日本語', Locale('ja'));

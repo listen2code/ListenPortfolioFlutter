@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:listen_core/core.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/forgot_password_request_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/presentation/pages/password/forgot_password_intent.dart';
-import 'package:listen_portfolio_flutter/features/auth/presentation/pages/password/forgot_password_state.dart';
-import 'package:listen_portfolio_flutter/features/auth/presentation/provider/auth_provider.dart';
-import 'package:listen_portfolio_flutter/shared/shared.dart';
+import '../../../data/models/forgot_password_request_model.dart';
+import 'forgot_password_intent.dart';
+import 'forgot_password_state.dart';
+import '../../provider/auth_provider.dart';
+import '../../../../../shared/shared.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'forgot_password_view_model.g.dart';

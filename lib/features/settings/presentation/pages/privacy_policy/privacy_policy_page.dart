@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_core/core.dart';
-import 'package:listen_portfolio_flutter/features/settings/presentation/pages/privacy_policy/privacy_policy_state.dart';
-import 'package:listen_portfolio_flutter/features/settings/presentation/pages/privacy_policy/privacy_policy_view_model.dart';
-import 'package:listen_portfolio_flutter/shared/shared.dart';
+import 'privacy_policy_state.dart';
+import 'privacy_policy_view_model.dart';
+import '../../../../../shared/shared.dart';
 import 'package:listen_uikit/uikit.dart';
 
 class PrivacyPolicyPage extends ConsumerWidget {

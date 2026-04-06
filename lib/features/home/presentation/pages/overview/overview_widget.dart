@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:listen_core/core.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
-import 'package:listen_portfolio_flutter/features/home/data/models/about_me_model.dart';
-import 'package:listen_portfolio_flutter/features/home/data/models/project_model.dart';
-import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_intent.dart';
-import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_state.dart';
-import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_view_model.dart';
-import 'package:listen_portfolio_flutter/features/home/presentation/pages/overview/overview_intent.dart';
-import 'package:listen_portfolio_flutter/features/home/presentation/pages/overview/overview_state.dart';
-import 'package:listen_portfolio_flutter/features/home/presentation/pages/overview/overview_view_model.dart';
-import 'package:listen_portfolio_flutter/shared/shared.dart';
+import '../../../../auth/data/models/user_model.dart';
+import '../../../data/models/about_me_model.dart';
+import '../../../data/models/project_model.dart';
+import '../home_intent.dart';
+import '../home_state.dart';
+import '../home_view_model.dart';
+import 'overview_intent.dart';
+import 'overview_state.dart';
+import 'overview_view_model.dart';
+import '../../../../../shared/shared.dart';
 import 'package:listen_uikit/uikit.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -22,7 +22,7 @@ class OverviewWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Get user data from AuthManager
-    UserModel? userModel = authManager.state.user;
+    final UserModel? userModel = authManager.state.user;
 
     return BaseRefreshPage<OverviewViewModel, OverviewState>(
       provider: overviewViewModelProvider,
@@ -137,8 +137,8 @@ class OverviewWidget extends StatelessWidget {
   Widget _buildWelcomeHeader(BuildContext context, UserModel? userModel, OverviewState? state) {
     final accentColor = context.accentColor;
     final String name = userModel?.name ?? AppConstants.author;
-    final String jobTitle = state?.aboutMe?.jobTitle ?? "Full Stack Mobile Architect";
-    final String graduationYear = state?.aboutMe?.graduationYear ?? "2013";
+    final String jobTitle = state?.aboutMe?.jobTitle ?? 'Full Stack Mobile Architect';
+    final String graduationYear = state?.aboutMe?.graduationYear ?? '2013';
     final String major = state?.aboutMe?.major?.tr ?? I18nKeys.softwareEngineering.tr;
 
     return Column(
@@ -246,7 +246,7 @@ class OverviewWidget extends StatelessWidget {
         _buildHighlightStatCard(
           context,
           '${mainExp.year}${I18nKeys.yearsShort.tr}+',
-          mainExp.label?.tr ?? "",
+          mainExp.label?.tr ?? '',
           _getExperienceIcon(mainExp.id),
           _getExperienceColor(mainExp.id),
           tags: mainExp.tags,
@@ -260,7 +260,7 @@ class OverviewWidget extends StatelessWidget {
                 _buildStatCard(
                   context,
                   '${otherExps[i].year}${I18nKeys.yearsShort.tr}+',
-                  otherExps[i].label?.tr ?? "",
+                  otherExps[i].label?.tr ?? '',
                   _getExperienceIcon(otherExps[i].id),
                   _getExperienceColor(otherExps[i].id),
                   flex: 1,

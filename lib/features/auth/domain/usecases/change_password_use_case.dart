@@ -1,7 +1,7 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:listen_core/core.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/change_password_request_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/domain/repositories/auth_repository.dart';
+import '../../data/models/change_password_request_model.dart';
+import '../repositories/auth_repository.dart';
 
 /// Use case for updating the user password
 class ChangePasswordUseCase implements UseCase<void, ChangePasswordRequestModel> {

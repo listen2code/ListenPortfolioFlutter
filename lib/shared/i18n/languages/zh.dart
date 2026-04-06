@@ -1,4 +1,4 @@
-import 'package:listen_portfolio_flutter/shared/shared.dart';
+import '../../shared.dart';
 
 final Map<String, String> zh = {
   I18nKeys.settings: '设置',
@@ -51,7 +51,7 @@ final Map<String, String> zh = {
   I18nKeys.forgotPassword: '忘记密码？',
   I18nKeys.login: '登录',
   I18nKeys.skipForNow: '暂时跳过',
-  I18nKeys.noAccount: "还没有账号？",
+  I18nKeys.noAccount: '还没有账号？',
   I18nKeys.signUp: '立即注册',
   I18nKeys.rememberMe: '记住我',
   I18nKeys.minLengthMsg: '长度至少为 %s 位',
@@ -85,7 +85,7 @@ final Map<String, String> zh = {
   I18nKeys.architecture: '架构设计',
   I18nKeys.logout: '退出登录',
   I18nKeys.logoutTips: '您确定要退出登录吗？',
-  I18nKeys.hello: "你好，我是 %s",
+  I18nKeys.hello: '你好，我是 %s',
   I18nKeys.availableStatus: '随时待命，迎接挑战',
   I18nKeys.androidExp: 'Android 经验',
   I18nKeys.flutterExp: 'Flutter 经验',

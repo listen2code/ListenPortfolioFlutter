@@ -1,8 +1,8 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:listen_core/core.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/get_current_user_request_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/domain/repositories/auth_repository.dart';
+import '../../data/models/get_current_user_request_model.dart';
+import '../../data/models/user_model.dart';
+import '../repositories/auth_repository.dart';
 
 /// Use case for getting current logged in user
 class GetCurrentUserUseCase implements UseCase<UserModel?, GetCurrentUserRequestModel> {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_core/core.dart';
-import 'package:listen_portfolio_flutter/shared/shared.dart';
+import '../../../../../shared/shared.dart';
 import 'package:listen_uikit/uikit.dart';
 
 import 'delete_account_intent.dart';

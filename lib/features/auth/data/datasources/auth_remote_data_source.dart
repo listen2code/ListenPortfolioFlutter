@@ -1,12 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:listen_core/core.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/change_password_request_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/delete_account_request_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/forgot_password_request_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/login_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/login_request_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/signup_request_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
+import '../models/change_password_request_model.dart';
+import '../models/delete_account_request_model.dart';
+import '../models/forgot_password_request_model.dart';
+import '../models/login_model.dart';
+import '../models/login_request_model.dart';
+import '../models/signup_request_model.dart';
+import '../models/user_model.dart';
 import 'package:retrofit/retrofit.dart';
 
 part 'auth_remote_data_source.g.dart';

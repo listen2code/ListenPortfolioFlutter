@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:listen_core/core.dart';
-import 'package:listen_portfolio_flutter/shared/constants/app_constants.dart';
-import 'package:listen_portfolio_flutter/shared/i18n/translations_key.dart';
+import '../../../../../shared/constants/app_constants.dart';
+import '../../../../../shared/i18n/translations_key.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'architecture_intent.dart';

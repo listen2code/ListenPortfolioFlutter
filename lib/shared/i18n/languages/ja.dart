@@ -1,4 +1,4 @@
-import 'package:listen_portfolio_flutter/shared/shared.dart';
+import '../../shared.dart';
 
 final Map<String, String> ja = {
   I18nKeys.settings: '設定',
@@ -51,7 +51,7 @@ final Map<String, String> ja = {
   I18nKeys.forgotPassword: 'パス忘れた方',
   I18nKeys.login: 'ログイン',
   I18nKeys.skipForNow: 'スキップ',
-  I18nKeys.noAccount: "未登録の方",
+  I18nKeys.noAccount: '未登録の方',
   I18nKeys.signUp: '新規登録',
   I18nKeys.rememberMe: 'ログイン保持',
   I18nKeys.minLengthMsg: '%s文字以上で入力してください',
@@ -85,7 +85,7 @@ final Map<String, String> ja = {
   I18nKeys.architecture: 'アーキテクチャ',
   I18nKeys.logout: 'ログアウト',
   I18nKeys.logoutTips: 'ログアウトしてもよろしいですか？',
-  I18nKeys.hello: "こんにちは、%sです",
+  I18nKeys.hello: 'こんにちは、%sです',
   I18nKeys.availableStatus: 'プロジェクトに参加可能です',
   I18nKeys.androidExp: 'Android 開発歴',
   I18nKeys.flutterExp: 'Flutter 開発歴',

@@ -1,9 +1,9 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:listen_core/core.dart';
-import 'package:listen_portfolio_flutter/features/home/data/datasources/about_me_local_data_source.dart';
-import 'package:listen_portfolio_flutter/features/home/data/datasources/about_me_remote_data_source.dart';
-import 'package:listen_portfolio_flutter/features/home/data/models/about_me_model.dart';
-import 'package:listen_portfolio_flutter/features/home/domain/repositories/about_me_repository.dart';
+import '../datasources/about_me_local_data_source.dart';
+import '../datasources/about_me_remote_data_source.dart';
+import '../models/about_me_model.dart';
+import '../../domain/repositories/about_me_repository.dart';
 
 class AboutMeRepositoryImpl with BaseRepository implements AboutMeRepository {
   final AboutMeRemoteDataSource remoteDataSource;

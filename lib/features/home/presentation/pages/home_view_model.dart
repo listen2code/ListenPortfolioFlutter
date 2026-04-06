@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:listen_core/core.dart';
-import 'package:listen_portfolio_flutter/features/auth/presentation/provider/auth_provider.dart';
-import 'package:listen_portfolio_flutter/shared/shared.dart';
+import '../../../auth/presentation/provider/auth_provider.dart';
+import '../../../../shared/shared.dart';
 import 'package:listen_uikit/uikit.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -57,7 +57,7 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
           if (state.currentTab == HomeTab.aboutMe) {
             updateState(state.copyWith(currentTab: HomeTab.overview));
           }
-          emitEffect(LogoutEffect(to: Routes.login, message: "Logout Success!"));
+          emitEffect(LogoutEffect(to: Routes.login, message: 'Logout Success!'));
         },
       );
     }

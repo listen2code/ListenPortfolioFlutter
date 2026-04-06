@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:listen_core/core.dart';
-import 'package:listen_portfolio_flutter/shared/shared.dart';
+import '../../../../shared/shared.dart';
 
 part 'home_state.freezed.dart';
 

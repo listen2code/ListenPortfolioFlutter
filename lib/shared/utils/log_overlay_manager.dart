@@ -134,15 +134,15 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
       if (isExpanded) {
         windowOffset += delta;
         // Clamp window within screen boundaries
-        double newX = windowOffset.dx.clamp(0, screenSize.width - windowSize.width);
-        double newY = windowOffset.dy.clamp(0, screenSize.height - windowSize.height);
+        final double newX = windowOffset.dx.clamp(0, screenSize.width - windowSize.width);
+        final double newY = windowOffset.dy.clamp(0, screenSize.height - windowSize.height);
         windowOffset = Offset(newX, newY);
         widget.onWindowChanged(windowOffset, windowSize);
       } else {
         buttonOffset += delta;
         // Clamp button
-        double newX = buttonOffset.dx.clamp(0, screenSize.width - widgetSize.width);
-        double newY = buttonOffset.dy.clamp(0, screenSize.height - widgetSize.height);
+        final double newX = buttonOffset.dx.clamp(0, screenSize.width - widgetSize.width);
+        final double newY = buttonOffset.dy.clamp(0, screenSize.height - widgetSize.height);
         buttonOffset = Offset(newX, newY);
         widget.onPositionChanged(buttonOffset);
       }

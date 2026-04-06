@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:listen_core/core.dart';
-import 'package:listen_portfolio_flutter/features/home/data/models/project_model.dart';
+import '../models/project_model.dart';
 import 'package:retrofit/retrofit.dart';
 
 part 'projects_remote_data_source.g.dart';

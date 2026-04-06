@@ -1,15 +1,15 @@
 import 'package:listen_core/core.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/datasources/auth_local_data_source.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/datasources/auth_remote_data_source.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/repositories/auth_repository_impl.dart';
-import 'package:listen_portfolio_flutter/features/auth/domain/repositories/auth_repository.dart';
-import 'package:listen_portfolio_flutter/features/auth/domain/usecases/change_password_use_case.dart';
-import 'package:listen_portfolio_flutter/features/auth/domain/usecases/delete_account_use_case.dart';
-import 'package:listen_portfolio_flutter/features/auth/domain/usecases/forgot_password_use_case.dart';
-import 'package:listen_portfolio_flutter/features/auth/domain/usecases/get_current_user_use_case.dart';
-import 'package:listen_portfolio_flutter/features/auth/domain/usecases/login_use_case.dart';
-import 'package:listen_portfolio_flutter/features/auth/domain/usecases/logout_use_case.dart';
-import 'package:listen_portfolio_flutter/features/auth/domain/usecases/signup_use_case.dart';
+import '../../data/datasources/auth_local_data_source.dart';
+import '../../data/datasources/auth_remote_data_source.dart';
+import '../../data/repositories/auth_repository_impl.dart';
+import '../../domain/repositories/auth_repository.dart';
+import '../../domain/usecases/change_password_use_case.dart';
+import '../../domain/usecases/delete_account_use_case.dart';
+import '../../domain/usecases/forgot_password_use_case.dart';
+import '../../domain/usecases/get_current_user_use_case.dart';
+import '../../domain/usecases/login_use_case.dart';
+import '../../domain/usecases/logout_use_case.dart';
+import '../../domain/usecases/signup_use_case.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'auth_provider.g.dart';

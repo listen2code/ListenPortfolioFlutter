@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_core/core.dart';
-import 'package:listen_portfolio_flutter/features/home/presentation/pages/about_me/about_me_widget.dart';
-import 'package:listen_portfolio_flutter/features/home/presentation/pages/architecture/architecture_widget.dart';
-import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_intent.dart';
-import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_state.dart';
-import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_view_model.dart';
-import 'package:listen_portfolio_flutter/features/home/presentation/pages/overview/overview_widget.dart';
-import 'package:listen_portfolio_flutter/features/home/presentation/pages/projects/projects_widget.dart';
-import 'package:listen_portfolio_flutter/shared/shared.dart';
+import 'about_me/about_me_widget.dart';
+import 'architecture/architecture_widget.dart';
+import 'home_intent.dart';
+import 'home_state.dart';
+import 'home_view_model.dart';
+import 'overview/overview_widget.dart';
+import 'projects/projects_widget.dart';
+import '../../../../shared/shared.dart';
 import 'package:listen_uikit/uikit.dart';
 
 class HomePage extends ConsumerWidget {
@@ -163,7 +163,7 @@ class HomePage extends ConsumerWidget {
                 ),
                 child: isLoggedIn
                     ? CommonImage.url(
-                        authManager.state.user?.avatarUrl ?? "",
+                        authManager.state.user?.avatarUrl ?? '',
                         width: 70.f,
                         height: 70.f,
                         borderRadius: 35.f,
