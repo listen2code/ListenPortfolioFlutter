@@ -182,7 +182,7 @@ class AboutMeWidget extends StatelessWidget {
             style: context.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
           ),
           CommonText(
-            state.data?.jobTitle ?? 'Full Stack Mobile Architect',
+            state.data?.jobTitle ?? 'Senior Android / Flutter Engineer',
             style: TextStyle(color: accentColor, fontSize: 16.f),
           ),
           SizedBox(height: 8.f),
@@ -191,7 +191,7 @@ class AboutMeWidget extends StatelessWidget {
             children: [
               Icon(Icons.location_on_outlined, size: 14.f, color: Colors.grey),
               SizedBox(width: 4.f),
-              CommonText('Global / Remote', style: context.textTheme.bodySmall?.copyWith(color: Colors.grey)),
+              CommonText('Japan / Tokyo', style: context.textTheme.bodySmall?.copyWith(color: Colors.grey)),
             ],
           ),
         ],

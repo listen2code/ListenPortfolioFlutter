@@ -138,7 +138,7 @@ class OverviewWidget extends StatelessWidget {
   Widget _buildWelcomeHeader(BuildContext context, UserModel? userModel, OverviewState? state) {
     final accentColor = context.accentColor;
     final String name = userModel?.name ?? AppConstants.author;
-    final String jobTitle = state?.aboutMe?.jobTitle ?? 'Full Stack Mobile Architect';
+    final String jobTitle = state?.aboutMe?.jobTitle ?? "Senior Android / Flutter Engineer";
     final String graduationYear = state?.aboutMe?.graduationYear ?? '2013';
     final String major = state?.aboutMe?.major?.tr ?? I18nKeys.softwareEngineering.tr;
 
@@ -229,11 +229,11 @@ class OverviewWidget extends StatelessWidget {
         const [
           AboutMeStatModel(
             id: 'android',
-            year: '10',
+            year: '11',
             label: I18nKeys.androidExp,
             tags: [I18nKeys.archDesign, I18nKeys.perfOptimization],
           ),
-          AboutMeStatModel(id: 'flutter', year: '2', label: I18nKeys.flutterExp),
+          AboutMeStatModel(id: 'flutter', year: '3', label: I18nKeys.flutterExp),
           AboutMeStatModel(id: 'java_web', year: '1', label: I18nKeys.javaWeb),
         ];
 
