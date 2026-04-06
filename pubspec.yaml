@@ -99,5 +99,4 @@ flutter:
     - assets/mock/v1/post/
     - assets/mock/v1/post/auth/
     - assets/mock/v1/post/user/
-    - assets/mock/v1/put/
     - assets/mock/images/

@@ -129,6 +129,9 @@ jobs:
     - name: Setup test environment
       run: |
         echo "Setting up test environment..."
+        # Install required packages for coverage analysis
+        sudo apt-get update
+        sudo apt-get install -y lcov bc
         # Ensure test assets are available
         mkdir -p assets/mock/v1/get
         mkdir -p assets/mock/v1/post
