@@ -8,6 +8,7 @@ part 'project_model.g.dart';
 abstract class ProjectModel with _$ProjectModel {
   const factory ProjectModel({
     @ToStringConverter() String? id,
+    String? businessId,
     String? title,
     String? subtitle,
     String? desc,

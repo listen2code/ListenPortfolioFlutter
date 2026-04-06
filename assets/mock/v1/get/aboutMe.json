@@ -15,7 +15,8 @@
     ],
     "stats": [
       {
-        "id": "android",
+        "id": "1",
+        "businessId": "android",
         "year": "11",
         "label": "androidExp",
         "tags": [
@@ -25,7 +26,8 @@
         ]
       },
       {
-        "id": "flutter",
+        "id": "2",
+        "businessId": "flutter",
         "year": "3",
         "label": "flutterExp",
         "tags": [
@@ -35,7 +37,8 @@
         ]
       },
       {
-        "id": "java_web",
+        "id": "3",
+        "businessId": "java_web",
         "year": "1",
         "label": "javaWeb",
         "tags": [

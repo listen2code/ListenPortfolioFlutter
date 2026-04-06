@@ -785,18 +785,18 @@ packages:
     dependency: "direct main"
     description:
       name: listen_core
-      sha256: "873c298424ef4e515818af4826ce18b79db0964394a9b02c1c112fa9b9656a64"
+      sha256: "06fc8de5519fc291ea2cf6319154b15c1f53060e90c598e39971b1a853e2844a"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.3"
+    version: "0.0.4"
   listen_uikit:
     dependency: "direct main"
     description:
       name: listen_uikit
-      sha256: "5d53ab6475193d354810f61d31ac81408a14a1dacc333be0bccbd38afaf341e6"
+      sha256: "7f2a28ea46f7eb87a3ad91683fcca073c871f0b128a16fccdd9b639809ff75e3"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.2"
+    version: "0.0.3"
   logger:
     dependency: "direct main"
     description:

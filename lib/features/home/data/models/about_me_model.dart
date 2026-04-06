@@ -28,6 +28,7 @@ abstract class AboutMeModel with _$AboutMeModel {
 abstract class AboutMeStatModel with _$AboutMeStatModel {
   const factory AboutMeStatModel({
     @ToStringConverter() String? id,
+    String? businessId,
     String? year,
     String? label,
     @Default([]) List<String> tags,

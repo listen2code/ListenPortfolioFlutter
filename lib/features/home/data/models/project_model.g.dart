@@ -12,6 +12,7 @@ _ProjectModel _$ProjectModelFromJson(Map json) => $checkedCreate(
   ($checkedConvert) {
     final val = _ProjectModel(
       id: $checkedConvert('id', (v) => const ToStringConverter().fromJson(v)),
+      businessId: $checkedConvert('businessId', (v) => v as String?),
       title: $checkedConvert('title', (v) => v as String?),
       subtitle: $checkedConvert('subtitle', (v) => v as String?),
       desc: $checkedConvert('desc', (v) => v as String?),
@@ -30,6 +31,7 @@ _ProjectModel _$ProjectModelFromJson(Map json) => $checkedCreate(
 Map<String, dynamic> _$ProjectModelToJson(_ProjectModel instance) =>
     <String, dynamic>{
       'id': const ToStringConverter().toJson(instance.id),
+      'businessId': instance.businessId,
       'title': instance.title,
       'subtitle': instance.subtitle,
       'desc': instance.desc,

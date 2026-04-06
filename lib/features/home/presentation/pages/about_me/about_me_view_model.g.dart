@@ -8,12 +8,24 @@ part of 'about_me_view_model.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
+/// ViewModel for the About Me page
+///
+/// Manages the state and business logic for displaying and editing user profile information.
+/// Handles data fetching, image selection, and state updates following the MVI pattern.
 
 @ProviderFor(AboutMeViewModel)
 final aboutMeViewModelProvider = AboutMeViewModelProvider._();
 
+/// ViewModel for the About Me page
+///
+/// Manages the state and business logic for displaying and editing user profile information.
+/// Handles data fetching, image selection, and state updates following the MVI pattern.
 final class AboutMeViewModelProvider
     extends $NotifierProvider<AboutMeViewModel, AboutMeState> {
+  /// ViewModel for the About Me page
+  ///
+  /// Manages the state and business logic for displaying and editing user profile information.
+  /// Handles data fetching, image selection, and state updates following the MVI pattern.
   AboutMeViewModelProvider._()
     : super(
         from: null,
@@ -41,7 +53,12 @@ final class AboutMeViewModelProvider
   }
 }
 
-String _$aboutMeViewModelHash() => r'1e0e6804cd3f46d2bd76941b2482e78523b684f4';
+String _$aboutMeViewModelHash() => r'7962046177e8a1e2c874eee35d8806f9c5d8cf26';
+
+/// ViewModel for the About Me page
+///
+/// Manages the state and business logic for displaying and editing user profile information.
+/// Handles data fetching, image selection, and state updates following the MVI pattern.
 
 abstract class _$AboutMeViewModel extends $Notifier<AboutMeState> {
   AboutMeState build();

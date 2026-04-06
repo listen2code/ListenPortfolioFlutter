@@ -347,7 +347,7 @@ as List<LanguageItemModel>,
 /// @nodoc
 mixin _$AboutMeStatModel {
 
-@ToStringConverter() String? get id; String? get year; String? get label; List<String> get tags;
+@ToStringConverter() String? get id; String? get businessId; String? get year; String? get label; List<String> get tags;
 /// Create a copy of AboutMeStatModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -360,16 +360,16 @@ $AboutMeStatModelCopyWith<AboutMeStatModel> get copyWith => _$AboutMeStatModelCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AboutMeStatModel&&(identical(other.id, id) || other.id == id)&&(identical(other.year, year) || other.year == year)&&(identical(other.label, label) || other.label == label)&&const DeepCollectionEquality().equals(other.tags, tags));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AboutMeStatModel&&(identical(other.id, id) || other.id == id)&&(identical(other.businessId, businessId) || other.businessId == businessId)&&(identical(other.year, year) || other.year == year)&&(identical(other.label, label) || other.label == label)&&const DeepCollectionEquality().equals(other.tags, tags));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,year,label,const DeepCollectionEquality().hash(tags));
+int get hashCode => Object.hash(runtimeType,id,businessId,year,label,const DeepCollectionEquality().hash(tags));
 
 @override
 String toString() {
-  return 'AboutMeStatModel(id: $id, year: $year, label: $label, tags: $tags)';
+  return 'AboutMeStatModel(id: $id, businessId: $businessId, year: $year, label: $label, tags: $tags)';
 }
 
 
@@ -380,7 +380,7 @@ abstract mixin class $AboutMeStatModelCopyWith<$Res>  {
   factory $AboutMeStatModelCopyWith(AboutMeStatModel value, $Res Function(AboutMeStatModel) _then) = _$AboutMeStatModelCopyWithImpl;
 @useResult
 $Res call({
-@ToStringConverter() String? id, String? year, String? label, List<String> tags
+@ToStringConverter() String? id, String? businessId, String? year, String? label, List<String> tags
 });
 
 
@@ -397,9 +397,10 @@ class _$AboutMeStatModelCopyWithImpl<$Res>
 
 /// Create a copy of AboutMeStatModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? year = freezed,Object? label = freezed,Object? tags = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? businessId = freezed,Object? year = freezed,Object? label = freezed,Object? tags = null,}) {
   return _then(_self.copyWith(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,businessId: freezed == businessId ? _self.businessId : businessId // ignore: cast_nullable_to_non_nullable
 as String?,year: freezed == year ? _self.year : year // ignore: cast_nullable_to_non_nullable
 as String?,label: freezed == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
 as String?,tags: null == tags ? _self.tags : tags // ignore: cast_nullable_to_non_nullable
@@ -488,10 +489,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@ToStringConverter()  String? id,  String? year,  String? label,  List<String> tags)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@ToStringConverter()  String? id,  String? businessId,  String? year,  String? label,  List<String> tags)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AboutMeStatModel() when $default != null:
-return $default(_that.id,_that.year,_that.label,_that.tags);case _:
+return $default(_that.id,_that.businessId,_that.year,_that.label,_that.tags);case _:
   return orElse();
 
 }
@@ -509,10 +510,10 @@ return $default(_that.id,_that.year,_that.label,_that.tags);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@ToStringConverter()  String? id,  String? year,  String? label,  List<String> tags)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@ToStringConverter()  String? id,  String? businessId,  String? year,  String? label,  List<String> tags)  $default,) {final _that = this;
 switch (_that) {
 case _AboutMeStatModel():
-return $default(_that.id,_that.year,_that.label,_that.tags);case _:
+return $default(_that.id,_that.businessId,_that.year,_that.label,_that.tags);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -529,10 +530,10 @@ return $default(_that.id,_that.year,_that.label,_that.tags);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@ToStringConverter()  String? id,  String? year,  String? label,  List<String> tags)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@ToStringConverter()  String? id,  String? businessId,  String? year,  String? label,  List<String> tags)?  $default,) {final _that = this;
 switch (_that) {
 case _AboutMeStatModel() when $default != null:
-return $default(_that.id,_that.year,_that.label,_that.tags);case _:
+return $default(_that.id,_that.businessId,_that.year,_that.label,_that.tags);case _:
   return null;
 
 }
@@ -544,10 +545,11 @@ return $default(_that.id,_that.year,_that.label,_that.tags);case _:
 @JsonSerializable()
 
 class _AboutMeStatModel implements AboutMeStatModel {
-  const _AboutMeStatModel({@ToStringConverter() this.id, this.year, this.label, final  List<String> tags = const []}): _tags = tags;
+  const _AboutMeStatModel({@ToStringConverter() this.id, this.businessId, this.year, this.label, final  List<String> tags = const []}): _tags = tags;
   factory _AboutMeStatModel.fromJson(Map<String, dynamic> json) => _$AboutMeStatModelFromJson(json);
 
 @override@ToStringConverter() final  String? id;
+@override final  String? businessId;
 @override final  String? year;
 @override final  String? label;
  final  List<String> _tags;
@@ -571,16 +573,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AboutMeStatModel&&(identical(other.id, id) || other.id == id)&&(identical(other.year, year) || other.year == year)&&(identical(other.label, label) || other.label == label)&&const DeepCollectionEquality().equals(other._tags, _tags));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AboutMeStatModel&&(identical(other.id, id) || other.id == id)&&(identical(other.businessId, businessId) || other.businessId == businessId)&&(identical(other.year, year) || other.year == year)&&(identical(other.label, label) || other.label == label)&&const DeepCollectionEquality().equals(other._tags, _tags));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,year,label,const DeepCollectionEquality().hash(_tags));
+int get hashCode => Object.hash(runtimeType,id,businessId,year,label,const DeepCollectionEquality().hash(_tags));
 
 @override
 String toString() {
-  return 'AboutMeStatModel(id: $id, year: $year, label: $label, tags: $tags)';
+  return 'AboutMeStatModel(id: $id, businessId: $businessId, year: $year, label: $label, tags: $tags)';
 }
 
 
@@ -591,7 +593,7 @@ abstract mixin class _$AboutMeStatModelCopyWith<$Res> implements $AboutMeStatMod
   factory _$AboutMeStatModelCopyWith(_AboutMeStatModel value, $Res Function(_AboutMeStatModel) _then) = __$AboutMeStatModelCopyWithImpl;
 @override @useResult
 $Res call({
-@ToStringConverter() String? id, String? year, String? label, List<String> tags
+@ToStringConverter() String? id, String? businessId, String? year, String? label, List<String> tags
 });
 
 
@@ -608,9 +610,10 @@ class __$AboutMeStatModelCopyWithImpl<$Res>
 
 /// Create a copy of AboutMeStatModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? year = freezed,Object? label = freezed,Object? tags = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? businessId = freezed,Object? year = freezed,Object? label = freezed,Object? tags = null,}) {
   return _then(_AboutMeStatModel(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,businessId: freezed == businessId ? _self.businessId : businessId // ignore: cast_nullable_to_non_nullable
 as String?,year: freezed == year ? _self.year : year // ignore: cast_nullable_to_non_nullable
 as String?,label: freezed == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
 as String?,tags: null == tags ? _self._tags : tags // ignore: cast_nullable_to_non_nullable

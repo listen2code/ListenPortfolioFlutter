@@ -228,13 +228,14 @@ class OverviewWidget extends StatelessWidget {
         state?.aboutMe?.stats ??
         const [
           AboutMeStatModel(
-            id: 'android',
+            id: '1',
+            businessId: 'android',
             year: '11',
             label: I18nKeys.androidExp,
             tags: [I18nKeys.archDesign, I18nKeys.perfOptimization],
           ),
-          AboutMeStatModel(id: 'flutter', year: '3', label: I18nKeys.flutterExp),
-          AboutMeStatModel(id: 'java_web', year: '1', label: I18nKeys.javaWeb),
+          AboutMeStatModel(id: '2', businessId: 'flutter', year: '3', label: I18nKeys.flutterExp),
+          AboutMeStatModel(id: '3', businessId: 'java_web', year: '1', label: I18nKeys.javaWeb),
         ];
 
     if (stats.isEmpty) return const SizedBox.shrink();
@@ -248,8 +249,8 @@ class OverviewWidget extends StatelessWidget {
           context,
           '${mainExp.year}${I18nKeys.yearsShort.tr}+',
           mainExp.label?.tr ?? '',
-          _getExperienceIcon(mainExp.id),
-          _getExperienceColor(mainExp.id),
+          _getExperienceIcon(mainExp.businessId),
+          _getExperienceColor(mainExp.businessId),
           tags: mainExp.tags,
         ),
         if (otherExps.isNotEmpty) ...[
@@ -262,8 +263,8 @@ class OverviewWidget extends StatelessWidget {
                   context,
                   '${otherExps[i].year}${I18nKeys.yearsShort.tr}+',
                   otherExps[i].label?.tr ?? '',
-                  _getExperienceIcon(otherExps[i].id),
-                  _getExperienceColor(otherExps[i].id),
+                  _getExperienceIcon(otherExps[i].businessId),
+                  _getExperienceColor(otherExps[i].businessId),
                   flex: 1,
                 ),
               ],
@@ -274,8 +275,8 @@ class OverviewWidget extends StatelessWidget {
     );
   }
 
-  IconData _getExperienceIcon(String? id) {
-    switch (id) {
+  IconData _getExperienceIcon(String? businessId) {
+    switch (businessId) {
       case 'android':
         return Icons.android_rounded;
       case 'flutter':
@@ -287,8 +288,8 @@ class OverviewWidget extends StatelessWidget {
     }
   }
 
-  Color _getExperienceColor(String? id) {
-    switch (id) {
+  Color _getExperienceColor(String? businessId) {
+    switch (businessId) {
       case 'android':
         return Colors.green;
       case 'flutter':
