@@ -1,9 +1,9 @@
 import 'package:listen_core/core.dart';
-import 'package:listen_portfolio_flutter/features/home/data/datasources/projects_local_data_source.dart';
-import 'package:listen_portfolio_flutter/features/home/data/datasources/projects_remote_data_source.dart';
-import 'package:listen_portfolio_flutter/features/home/data/repositories/projects_repository_impl.dart';
-import 'package:listen_portfolio_flutter/features/home/domain/repositories/projects_repository.dart';
-import 'package:listen_portfolio_flutter/features/home/domain/usecases/get_projects_use_case.dart';
+import '../../data/datasources/projects_local_data_source.dart';
+import '../../data/datasources/projects_remote_data_source.dart';
+import '../../data/repositories/projects_repository_impl.dart';
+import '../../domain/repositories/projects_repository.dart';
+import '../../domain/usecases/get_projects_use_case.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'projects_provider.g.dart';

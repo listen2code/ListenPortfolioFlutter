@@ -5,8 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:listen_core/core.dart';
-import 'package:listen_portfolio_flutter/features/settings/presentation/pages/crash_log_list/view_log_effect.dart';
-import 'package:listen_portfolio_flutter/shared/shared.dart';
+import 'view_log_effect.dart';
+import '../../../../../shared/shared.dart';
 import 'package:listen_uikit/uikit.dart';
 
 import 'crash_log_list_intent.dart';

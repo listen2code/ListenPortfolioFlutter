@@ -10,6 +10,6 @@ class ViewLogEffect extends BaseEffect {
 
   @override
   String toString() {
-    return "ViewLogEffect(file: ${file.path})";
+    return 'ViewLogEffect(file: ${file.path})';
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:listen_portfolio_flutter/shared/shared.dart';
+import '../shared.dart';
 
 /// A base widget that listens to theme changes and provides a consistent
 /// background gradient and system UI overlay style.

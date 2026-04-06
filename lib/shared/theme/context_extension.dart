@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:listen_portfolio_flutter/shared/shared.dart';
+import '../shared.dart';
 
 /// Extension to provide shorthand access to common theme, layout, and setting properties.
 extension BuildContextX on BuildContext {

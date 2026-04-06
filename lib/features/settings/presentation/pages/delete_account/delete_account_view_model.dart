@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:listen_core/core.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/delete_account_request_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/presentation/provider/auth_provider.dart';
-import 'package:listen_portfolio_flutter/shared/shared.dart';
+import '../../../../auth/data/models/delete_account_request_model.dart';
+import '../../../../auth/presentation/provider/auth_provider.dart';
+import '../../../../../shared/shared.dart';
 import 'package:listen_uikit/uikit.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -42,7 +42,7 @@ class DeleteAccountViewModel extends _$DeleteAccountViewModel
       await call<void>(
         ref.execute(
           deleteAccountUseCaseProvider,
-          param: DeleteAccountRequestModel(userId: authManager.state.user?.id ?? ""),
+          param: DeleteAccountRequestModel(userId: authManager.state.user?.id ?? ''),
         ),
         showLoading: true,
         onSuccess: (_) async {

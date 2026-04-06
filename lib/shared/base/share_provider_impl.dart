@@ -11,7 +11,7 @@ class ShareEffect extends BaseEffect {
 
   @override
   String toString() {
-    return "ShareEffect(files: $files, text: $text, subject: $subject)";
+    return 'ShareEffect(files: $files, text: $text, subject: $subject)';
   }
 }
 

@@ -1,5 +1,5 @@
 import 'package:listen_core/core.dart';
-import 'package:listen_portfolio_flutter/shared/shared.dart';
+import '../shared.dart';
 import 'package:listen_uikit/uikit.dart';
 
 /// Concrete implementation for handling [LogoutEffect].
@@ -10,7 +10,7 @@ class LogoutProviderImpl extends BaseProvider<LogoutEffect> {
   @override
   void handleEffect(LogoutEffect effect) async {
     // 1. Show an alert if a message is provided (e.g., "Session Expired")
-    CommonToast.show(effect.message ?? "Session expired", type: ToastType.error);
+    CommonToast.show(effect.message ?? 'Session expired', type: ToastType.error);
 
     // 2. Perform global logout logic via AuthManager
     // Await ensures credentials are cleared before the next navigation occurs

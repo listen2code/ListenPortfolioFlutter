@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_core/core.dart';
-import 'package:listen_portfolio_flutter/generated/r.dart';
-import 'package:listen_portfolio_flutter/shared/shared.dart';
+import '../../../../generated/r.dart';
+import '../../../../shared/shared.dart';
 
 import 'splash_state.dart';
 import 'splash_view_model.dart';

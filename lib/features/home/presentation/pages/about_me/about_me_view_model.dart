@@ -3,9 +3,9 @@ import 'dart:io';
 
 import 'package:image_picker/image_picker.dart';
 import 'package:listen_core/core.dart';
-import 'package:listen_portfolio_flutter/features/home/data/models/about_me_model.dart';
-import 'package:listen_portfolio_flutter/features/home/presentation/provider/about_me_provider.dart';
-import 'package:listen_portfolio_flutter/shared/shared.dart';
+import '../../../data/models/about_me_model.dart';
+import '../../provider/about_me_provider.dart';
+import '../../../../../shared/shared.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'about_me_intent.dart';

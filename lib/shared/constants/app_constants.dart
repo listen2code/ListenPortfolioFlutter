@@ -16,7 +16,7 @@ class AppConstants {
   // Data keys
   static const String userDataKey = 'user_data';
   static const String authTokenKey = 'auth_token';
-  static const String refreshTokenKey = "refresh_token";
+  static const String refreshTokenKey = 'refresh_token';
   static const String loginUsernameKey = 'login_username';
   static const String loginPasswordKey = 'login_password';
   static const String loginRememberMeKey = 'login_remember_me';

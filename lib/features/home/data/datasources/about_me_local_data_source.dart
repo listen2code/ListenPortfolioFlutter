@@ -1,8 +1,9 @@
 import 'dart:convert';
 
 import 'package:listen_core/core.dart';
-import 'package:listen_portfolio_flutter/features/home/data/models/about_me_model.dart';
-import 'package:listen_portfolio_flutter/shared/shared.dart';
+
+import '../../../../shared/shared.dart';
+import '../models/about_me_model.dart';
 
 class AboutMeLocalDataSource {
   Future<void> cacheAboutMe(AboutMeModel data) async {

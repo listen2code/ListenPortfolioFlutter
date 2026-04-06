@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:listen_core/core.dart';
-import 'package:listen_portfolio_flutter/features/home/data/models/project_model.dart';
+import '../../../data/models/project_model.dart';
 
 part 'projects_state.freezed.dart';
 

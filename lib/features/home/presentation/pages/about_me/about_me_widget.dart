@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:listen_core/core.dart';
-import 'package:listen_portfolio_flutter/features/home/data/models/about_me_model.dart';
-import 'package:listen_portfolio_flutter/features/home/presentation/pages/about_me/about_me_intent.dart';
-import 'package:listen_portfolio_flutter/features/home/presentation/pages/about_me/about_me_state.dart';
-import 'package:listen_portfolio_flutter/features/home/presentation/pages/about_me/about_me_view_model.dart';
-import 'package:listen_portfolio_flutter/shared/shared.dart';
+import '../../../data/models/about_me_model.dart';
+import 'about_me_intent.dart';
+import 'about_me_state.dart';
+import 'about_me_view_model.dart';
+import '../../../../../shared/shared.dart';
 import 'package:listen_uikit/uikit.dart';
 
 class AboutMeWidget extends StatelessWidget {
@@ -150,7 +150,7 @@ class AboutMeWidget extends StatelessWidget {
                 child: state.imageFile != null
                     ? CommonImage.file(state.imageFile!, width: 120.f, height: 120.f, borderRadius: 60.f)
                     : CommonImage.url(
-                        authManager.state.user?.avatarUrl ?? "",
+                        authManager.state.user?.avatarUrl ?? '',
                         width: 120.f,
                         height: 120.f,
                         borderRadius: 60.f,
@@ -260,10 +260,10 @@ class AboutMeWidget extends StatelessWidget {
           final item = entry.value;
           return _buildTimelineItem(
             context,
-            item.title ?? "",
-            item.company ?? "",
-            item.period ?? "",
-            item.description ?? "",
+            item.title ?? '',
+            item.company ?? '',
+            item.period ?? '',
+            item.description ?? '',
             isLast: isLast,
           );
         }),
@@ -282,10 +282,10 @@ class AboutMeWidget extends StatelessWidget {
           final item = entry.value;
           return _buildTimelineItem(
             context,
-            item.degree ?? "",
-            item.school ?? "",
-            item.period ?? "",
-            item.description ?? "",
+            item.degree ?? '',
+            item.school ?? '',
+            item.period ?? '',
+            item.description ?? '',
             isLast: isLast,
           );
         }),
@@ -302,7 +302,7 @@ class AboutMeWidget extends StatelessWidget {
         ...skills.map(
           (s) => Padding(
             padding: EdgeInsets.only(bottom: 10.f),
-            child: _buildSkillCategory(context, s.category ?? "", s.items),
+            child: _buildSkillCategory(context, s.category ?? '', s.items),
           ),
         ),
       ],

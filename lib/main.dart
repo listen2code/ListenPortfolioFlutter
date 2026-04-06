@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_core/core.dart';
-import 'package:listen_portfolio_flutter/shared/shared.dart';
+import 'shared/shared.dart';
 import 'package:listen_uikit/uikit.dart';
 
 void main() {
   // Use Core.run to manage the app lifecycle, automatic crash logging, and global error handling.
   Core.run(
     () async {
-      ProviderContainer container = ProviderContainer();
+      final ProviderContainer container = ProviderContainer();
       await AppInitializer.init(container);
       runApp(UncontrolledProviderScope(container: container, child: const MyApp()));
     },
@@ -18,7 +18,7 @@ void main() {
       if (logPath != null) {
         // CommonDialog now automatically retrieves context via AppNavConfig.
         final confirmed = await CommonDialog.showConfirm(
-          tag: "globalErrorDialog",
+          tag: 'globalErrorDialog',
           title: I18nKeys.appCrashed.tr,
           message: I18nKeys.crashDetectedMsg.tr,
           okText: I18nKeys.viewReport.tr,

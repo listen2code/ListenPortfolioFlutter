@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:listen_core/core.dart';
-import 'package:listen_portfolio_flutter/features/home/data/models/project_model.dart';
-import 'package:listen_portfolio_flutter/features/home/presentation/pages/projects/projects_intent.dart';
-import 'package:listen_portfolio_flutter/features/home/presentation/pages/projects/projects_state.dart';
-import 'package:listen_portfolio_flutter/features/home/presentation/pages/projects/projects_view_model.dart';
-import 'package:listen_portfolio_flutter/shared/extensions/string_extension.dart';
-import 'package:listen_portfolio_flutter/shared/shared.dart';
+import '../../../data/models/project_model.dart';
+import 'projects_intent.dart';
+import 'projects_state.dart';
+import 'projects_view_model.dart';
+import '../../../../../shared/shared.dart';
 import 'package:listen_uikit/uikit.dart';
 import 'package:url_launcher/url_launcher.dart';
 

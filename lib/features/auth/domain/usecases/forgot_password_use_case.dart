@@ -1,7 +1,7 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:listen_core/core.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/forgot_password_request_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/domain/repositories/auth_repository.dart';
+import '../../data/models/forgot_password_request_model.dart';
+import '../repositories/auth_repository.dart';
 
 /// Use case for password reset.
 /// Orchestrates the forgot password flow through the repository.

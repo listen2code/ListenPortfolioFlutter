@@ -1,9 +1,9 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:listen_core/core.dart';
-import 'package:listen_portfolio_flutter/features/home/data/datasources/projects_local_data_source.dart';
-import 'package:listen_portfolio_flutter/features/home/data/datasources/projects_remote_data_source.dart';
-import 'package:listen_portfolio_flutter/features/home/data/models/project_model.dart';
-import 'package:listen_portfolio_flutter/features/home/domain/repositories/projects_repository.dart';
+import '../datasources/projects_local_data_source.dart';
+import '../datasources/projects_remote_data_source.dart';
+import '../models/project_model.dart';
+import '../../domain/repositories/projects_repository.dart';
 
 class ProjectsRepositoryImpl with BaseRepository implements ProjectsRepository {
   final ProjectsRemoteDataSource remoteDataSource;

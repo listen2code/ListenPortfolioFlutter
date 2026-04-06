@@ -1,16 +1,16 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:listen_core/core.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/datasources/auth_local_data_source.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/datasources/auth_remote_data_source.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/change_password_request_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/delete_account_request_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/forgot_password_request_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/get_current_user_request_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/login_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/login_request_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/signup_request_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
-import 'package:listen_portfolio_flutter/features/auth/domain/repositories/auth_repository.dart';
+import '../datasources/auth_local_data_source.dart';
+import '../datasources/auth_remote_data_source.dart';
+import '../models/change_password_request_model.dart';
+import '../models/delete_account_request_model.dart';
+import '../models/forgot_password_request_model.dart';
+import '../models/get_current_user_request_model.dart';
+import '../models/login_model.dart';
+import '../models/login_request_model.dart';
+import '../models/signup_request_model.dart';
+import '../models/user_model.dart';
+import '../../domain/repositories/auth_repository.dart';
 
 class AuthRepositoryImpl with BaseRepository implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
@@ -58,7 +58,7 @@ class AuthRepositoryImpl with BaseRepository implements AuthRepository {
   @override
   Future<Either<Failure, UserModel?>> getCurrentUser({required GetCurrentUserRequestModel? param}) async {
     return await safeCall<UserModel>(
-      call: () => remoteDataSource.getUserById(param?.userId ?? ""),
+      call: () => remoteDataSource.getUserById(param?.userId ?? ''),
       saveCache: (user) => localDataSource.cacheUser(user),
       getCached: () => localDataSource.getCachedUser(),
     );
