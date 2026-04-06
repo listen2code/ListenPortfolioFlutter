@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:listen_core/core.dart';
+import 'package:listen_uikit/uikit.dart';
+
+import '../../../../../shared/shared.dart';
 import '../../../data/models/about_me_model.dart';
 import 'about_me_intent.dart';
 import 'about_me_state.dart';
 import 'about_me_view_model.dart';
-import '../../../../../shared/shared.dart';
-import 'package:listen_uikit/uikit.dart';
 
 class AboutMeWidget extends StatelessWidget {
   final bool active;

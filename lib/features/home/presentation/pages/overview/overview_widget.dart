@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:listen_core/core.dart';
+import 'package:listen_uikit/uikit.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import '../../../../../shared/shared.dart';
 import '../../../../auth/data/models/user_model.dart';
 import '../../../data/models/about_me_model.dart';
 import '../../../data/models/project_model.dart';
@@ -9,9 +13,6 @@ import '../home_view_model.dart';
 import 'overview_intent.dart';
 import 'overview_state.dart';
 import 'overview_view_model.dart';
-import '../../../../../shared/shared.dart';
-import 'package:listen_uikit/uikit.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class OverviewWidget extends StatelessWidget {
   final bool active;
