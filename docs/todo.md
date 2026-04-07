@@ -22,10 +22,6 @@
 - [x] 明确依赖边界与治理：core/shared/uikit/features 的依赖方向检查（可用 lint/自定义脚本）
 - [x] dartdoc：公开 API 文档生成（尤其是 core/ 模块，为 pub 发布准备）
 
-### 🔴 P0 — 切真实 API 前必须完成
-
-- [ ] ⭐ 端到端联调：Flutter dev 环境 → Backend localhost:8080，验证所有接口
-
 ### 🟡 P1 — Portfolio 展示价值（面试/求职关键）
 
 - [ ] ⭐ Screen capture：主要页面截图/GIF（Overview、Login、Settings、CrashLogs）— Portfolio 最重要的视觉展示
