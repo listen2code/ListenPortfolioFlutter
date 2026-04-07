@@ -31,7 +31,6 @@
 
 ### 🔵 P3 — 长期规划
 
-- [ ] Golden Tests（UIKit 组件快照）
 - [ ] 指纹/生物识别登录（local_auth，结合 token/refreshToken 安全策略）
 - [ ] 第三方登录：Google（OAuth、账号绑定/解绑、隐私政策与合规）
 
@@ -64,7 +63,7 @@
 - [ ] i18n key 完整性测试：遍历 `I18nKeys` 的所有 key，断言 zh/ja 两个语言文件均有对应翻译
 - [ ] Widget tests：核心页面渲染与交互（登录流程、Settings 切换、Crash log 列表）
 - [ ] Integration tests：端到端主流程（mock env 下稳定执行）
-- [ ] Golden tests：UIKit 组件与关键页面（主题/语言/字号）
+- [ ] Golden tests：UIKit 组件与关键页面（主题/语言/字号）（UIKit 组件快照）
 
 ### 📈 APM / DevTools（监控与诊断）
 
@@ -88,7 +87,6 @@
 
 ### 🗄️ 服务端（Spring Boot - ListenPortfolioBackend）
 
-- [x] ⭐ Flutter 对接后端真实 API：将 mock 数据切换为 dev/prod 环境下调用真实 Spring Boot 后端
 - [ ] 直接将目前项目打包成web模块并部署
 
 ### 📚 文档
