@@ -24,7 +24,6 @@
 
 ### 🟢 P2 — 功能增强（锦上添花）
 
-- [ ] ⭐ 错误码体系落地：I18nErrorKeys + messageId 映射（error-codes-reference.md 中描述的统一错误码）
 - [ ] ⭐ Skills 图表：CustomPainter/Canvas 绘制技能图谱
 - [ ] ⭐ Markdown 简历 + PDF 导出/下载（移动端 & Web）
 - [ ] 服务端文案 i18n：配合后端多语言支持，根据 Accept-Language 头显示对应语言
@@ -74,7 +73,6 @@
 
 ### 🤖 工程化 / CI-CD
 
-- [x] ⭐ CI 添加 `flutter test` 步骤：当前 CI 只做 analyze + dependency check，缺少自动测试
 - [ ] ⭐ Release APK 构建 + 签名配置：当前 CI 只构建 debug APK，需添加 release 构建流程
 - [ ] ⭐ Google Play 发布流程自动化：集成 fastlane 或 Gradle Play Publisher，自动上传到 Internal Testing Track
 - [ ] CD：产物上传到 S3（含 mapping/符号表）+ Release notes 自动化
@@ -91,7 +89,7 @@
 
 ### 📚 文档
 
-- [x] README 多语言版本（中文/英文/日文单文件，含架构图/代码示例/技术亮点）
+- [ ] README 多语言版本（中文/英文/日文单文件，含架构图/代码示例/技术亮点）
 - [ ] ⭐ Screen capture：主要页面截图/GIF（Overview、Login、Settings、CrashLogs）— Portfolio 最重要的视觉展示
 - [x] ⭐ aboutMe.json 数据更新：当前使用虚构公司名（Global Tech Solutions 等），应替换为真实履历数据
 - [x] ⭐ projects.json 后端技术栈更新：当前写的是 Node.js/Express，应更新为 Spring Boot 以匹配实际后端项目
