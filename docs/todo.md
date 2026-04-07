@@ -57,7 +57,6 @@
 ### 🚀 功能补充（业务侧）
 
 - [ ] Skills 图表：CustomPainter/Canvas 绘制技能图谱
-- [ ] Markdown 展示 + PDF 简历导出/下载（移动端 & Web）
 - [ ] AI intro assistant（离线提示词/在线 LLM 接入、隐私合规、可观测性）
 - [ ] Profile 头像上传（image_picker + permission_handler 已引入，补齐业务流程/存储/CDN），头像上传并保存（Spring项目，或AWS的S3）
 - [ ] 指纹/生物识别登录（local_auth，结合 token/refreshToken 安全策略）
