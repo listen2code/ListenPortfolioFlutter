@@ -22,11 +22,6 @@
 - [x] 明确依赖边界与治理：core/shared/uikit/features 的依赖方向检查（可用 lint/自定义脚本）
 - [x] dartdoc：公开 API 文档生成（尤其是 core/ 模块，为 pub 发布准备）
 
-### 🟡 P1 — Portfolio 展示价值（面试/求职关键）
-
-- [ ] ⭐ Screen capture：主要页面截图/GIF（Overview、Login、Settings、CrashLogs）— Portfolio 最重要的视觉展示
-- [ ] ⭐ Architecture 文档：Mermaid 模块图、数据流/状态流、网络/错误/日志链路图（已在 todo 中）
-
 ### 🟢 P2 — 功能增强（锦上添花）
 
 - [ ] ⭐ 错误码体系落地：I18nErrorKeys + messageId 映射（error-codes-reference.md 中描述的统一错误码）
@@ -37,9 +32,8 @@
 ### 🔵 P3 — 长期规划
 
 - [ ] Golden Tests（UIKit 组件快照）
-- [ ] Google Play 发布流程（fastlane）
-- [ ] AI intro assistant（离线提示词/在线 LLM 接入、隐私合规、可观测性）
-- [ ] 生物识别 / 第三方登录（local_auth，Google OAuth）
+- [ ] 指纹/生物识别登录（local_auth，结合 token/refreshToken 安全策略）
+- [ ] 第三方登录：Google（OAuth、账号绑定/解绑、隐私政策与合规）
 
 ### 🧱 架构与基础设施优化
 
@@ -56,11 +50,8 @@
 
 ### 🚀 功能补充（业务侧）
 
-- [ ] Skills 图表：CustomPainter/Canvas 绘制技能图谱
-- [ ] AI intro assistant（离线提示词/在线 LLM 接入、隐私合规、可观测性）
+- [-] AI intro assistant（离线提示词/在线 LLM 接入、隐私合规、可观测性）
 - [ ] Profile 头像上传（image_picker + permission_handler 已引入，补齐业务流程/存储/CDN），头像上传并保存（Spring项目，或AWS的S3）
-- [ ] 指纹/生物识别登录（local_auth，结合 token/refreshToken 安全策略）
-- [ ] 第三方登录：Google（OAuth、账号绑定/解绑、隐私政策与合规）
 - [ ] App Review 引导（平台能力封装 + 策略）
 - [ ] Accessibility（a11y）：语义标签、可访问性测试、动态字体/对比度
 - [ ] Material You 动态取色（Android 12+，与现有主题系统融合）
@@ -78,8 +69,7 @@
 ### 📈 APM / DevTools（监控与诊断）
 
 - [ ] Net inspector：请求列表、耗时、payload、重试链、traceId 对齐（可作为 Settings 内开发者面板的子页）
-- [ ] 性能指标面板：FPS/jank、CPU/内存、首屏/启动耗时（与 ZoneManager 的 `mark()` 输出串联，展示在 Log Overlay 或专用页面）
-- [ ] ZoneManager `runPage()` 数据持久化：将首帧耗时写入本地，支持历史对比与回归检测
+- [-] 性能指标面板：FPS/jank、CPU/内存、首屏/启动耗时（与 ZoneManager 的 `mark()` 输出串联，展示在 Log Overlay 或专用页面）
 - [ ] 布局检查：repaint boundary、layout boundary、overdraw 等（DevTools 集成策略）
 - [ ] APK/AAB size 监控与拆包分析（CI 中自动化输出，建立 size budget）
 
@@ -99,7 +89,6 @@
 ### 🗄️ 服务端（Spring Boot - ListenPortfolioBackend）
 
 - [x] ⭐ Flutter 对接后端真实 API：将 mock 数据切换为 dev/prod 环境下调用真实 Spring Boot 后端
-- [ ] 服务端文案i18n
 - [ ] 直接将目前项目打包成web模块并部署
 
 ### 📚 文档
@@ -108,7 +97,7 @@
 - [ ] ⭐ Screen capture：主要页面截图/GIF（Overview、Login、Settings、CrashLogs）— Portfolio 最重要的视觉展示
 - [x] ⭐ aboutMe.json 数据更新：当前使用虚构公司名（Global Tech Solutions 等），应替换为真实履历数据
 - [x] ⭐ projects.json 后端技术栈更新：当前写的是 Node.js/Express，应更新为 Spring Boot 以匹配实际后端项目
-- [ ] Architecture：模块图、数据流/状态流、网络/错误/日志链路图（可用 Mermaid）
+- [ ] ⭐ Architecture 文档：Mermaid 模块图、数据流/状态流、网络/错误/日志链路图（可用 Mermaid）
 - [ ] Tech stack：依赖列表与选型理由（包含替代方案与取舍）
 - [ ] CONTRIBUTING.md：贡献指南（分支策略、PR 模板、代码规范）
 - [ ] ADR（Architecture Decision Records）：记录关键架构决策（Zone tracing、SafeMode、MockServer 设计背景）
