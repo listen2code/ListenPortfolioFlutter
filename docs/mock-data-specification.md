@@ -1,6 +1,11 @@
 # Mock 数据维护规范
-
-本文档定义了 Listen Portfolio Flutter 项目中 Mock 数据的目录结构、命名规则和维护规范，确保团队协作时 Mock 数据的一致性和可维护性。
+  
+  **Status**: `Implemented with Partial Spec Examples`
+  
+  > 本文档的目录结构、资源声明与示例应优先对齐 `assets/mock/**`、`pubspec.yaml` 与当前实际 JSON 文件。
+  > 其中“分页数据”“生成脚本”等片段更适合作为扩展示例，不代表仓库当前已经存在对应 mock 文件。
+  
+  本文档定义了 Listen Portfolio Flutter 项目中 Mock 数据的目录结构、命名规则和维护规范，确保团队协作时 Mock 数据的一致性和可维护性。
 
 ## 📁 目录结构
 
@@ -11,9 +16,7 @@ assets/mock/
 ├── v1/                    # API 版本号目录
 │   ├── get/              # GET 请求响应数据
 │   ├── post/             # POST 请求响应数据
-│   ├── put/              # PUT 请求响应数据
-│   ├── delete/           # DELETE 请求响应数据
-│   └── images/           # Mock 图片资源
+│   └── delete/           # DELETE 请求响应数据
 └── images/               # 通用 Mock 图片资源
 ```
 
@@ -63,8 +66,8 @@ assets/mock/v1/post/
 ### 📝 PUT 请求 (`put/`)
 
 ```
-assets/mock/v1/put/
-└── (待添加)               # 目前暂无 PUT 接口 Mock 数据
+当前仓库中暂无 `assets/mock/v1/put/` 目录。
+如后续新增 PUT 接口 mock，可按 `assets/mock/v1/put/` 结构扩展。
 ```
 
 ### 🗑️ DELETE 请求 (`delete/`)
@@ -138,8 +141,8 @@ assets/mock/v1/delete/
 ```json
 {
   "result": "0",
-  "message": "success",
-  "messageId": "unique_message_id",
+  "messageId": "",
+  "message": "",
   "body": {
     // 具体数据内容
   }
@@ -164,8 +167,8 @@ assets/mock/v1/delete/
 | 字段 | 类型 | 说明 | 示例 |
 |------|------|------|------|
 | `result` | string | 响应结果码 | "0"=成功, "1"=失败 |
-| `message` | string | 响应消息 | "success", "error" |
-| `messageId` | string | 消息标识符 | "LOGIN_SUCCESS", "USER_NOT_FOUND" |
+| `message` | string | 响应消息 | 当前 mock 中常见为 `""` 或 `"success"` |
+| `messageId` | string | 消息标识符 | 当前 mock 中多数为 `""` |
 | `body` | object | 响应数据体 | 具体业务数据 |
 
 #### **业务数据字段**
@@ -216,18 +219,12 @@ touch assets/mock/v1/post/auth/login.json
 ```json
 {
   "result": "0",
-  "message": "Login successful",
-  "messageId": "LOGIN_SUCCESS",
+  "messageId": "",
+  "message": "",
   "body": {
-    "userId": "1001",
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    "expiresIn": 3600,
-    "user": {
-      "id": "1001",
-      "email": "user@example.com",
-      "name": "Test User"
-    }
+    "userId": 1,
+    "token": "eyJhbGciOiJIUzI1NiJ9.mock-access-token",
+    "refreshToken": "eyJhbGciOiJIUzI1NiJ9.mock-refresh-token"
   }
 }
 ```
@@ -238,13 +235,12 @@ touch assets/mock/v1/post/auth/login.json
 ```yaml
 flutter:
   assets:
-    - assets/mock/v1/
+    - assets/mock/v1/delete/user/
     - assets/mock/v1/get/
     - assets/mock/v1/post/
     - assets/mock/v1/post/auth/
     - assets/mock/v1/post/user/
-    - assets/mock/v1/put/
-    - assets/mock/v1/delete/
+    - assets/mock/images/
 ```
 
 ### 5️⃣ **测试验证**
@@ -278,27 +274,27 @@ flutter:
 #### **项目数据**
 ```json
 {
-  "body": {
-    "projects": [
-      {
-        "id": "proj_001",
-        "title": "E-commerce App",
-        "description": "A full-featured e-commerce mobile application",
-        "technologies": ["Flutter", "Firebase", "Stripe"],
-        "imageUrl": "https://via.placeholder.com/300x200",
-        "projectUrl": "https://github.com/user/ecommerce-app",
-        "startDate": "2023-01-15",
-        "endDate": "2023-06-30",
-        "status": "completed"
-      }
-    ]
-  }
+  "body": [
+    {
+      "id": "1",
+      "title": "lPortfolio Flutter",
+      "subtitle": "Current Project",
+      "desc": "My personal portfolio app (this one!). Demonstrating Clean Architecture, MVI pattern, and advanced Riverpod state management in Flutter.",
+      "imageUrl": "localhost/images/project1.jpg",
+      "githubUrl": "https://github.com/listen2code/ListenPortfolioFlutter",
+      "techStack": ["Flutter", "Riverpod", "Clean Architecture", "MVI"]
+    }
+  ]
 }
 ```
+
+> 当前 `projects.json` 中的项目条目未包含 `businessId`，如需补充字段，应先与实际模型和消费端一起校准。
 
 ### 🔄 数据变化场景
 
 #### **分页数据**
+> **Spec Only**：当前仓库中的 `projects.json` 仍是简单数组响应，以下分页结构仅可作为未来扩展示例。
+
 ```json
 {
   "result": "0",
@@ -393,7 +389,7 @@ class MockUserGenerator {
     return {
       "result": "0",
       "message": "success",
-      "messageId": "USER_FETCHED",
+      "messageId": "",
       "body": {
         "id": id ?? "1001",
         "name": name ?? "Test User",

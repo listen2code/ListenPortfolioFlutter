@@ -1,8 +1,13 @@
 # Listen Portfolio Flutter 项目开发指南
 
+**Status**: `Implemented with Mixed Governance Maturity`
+
+> 本文档同时包含“推荐架构原则”和“当前仓库中的真实工具接入状态”。
+> 如与 `tools/dependency_rules.dart`、`analysis_options.yaml`、`.github/workflows/ci.yml` 冲突，应以代码和工作流配置为准。
+
 ## 📋 概述
 
-本文档是 Listen Portfolio Flutter 项目的完整开发指南，包含了依赖治理、APK构建工作流和项目架构规范。旨在为团队开发提供统一的技术标准和最佳实践。
+本文档是 Listen Portfolio Flutter 项目开发指南，包含了依赖治理、APK构建工作流和项目架构规范。旨在为团队开发提供统一的技术标准和最佳实践。
 
 ---
 
@@ -57,7 +62,9 @@ import 'package:listen_portfolio_flutter/shared/models/user_model.dart';
 
 #### 2. 向上依赖
 
-**允许 features 和 shared 互相引用**：
+**推荐原则**：优先保持 `features -> shared -> uikit -> core` 的单向依赖。
+
+**当前工具实现**：`tools/dependency_rules.dart` 已移除 `shared -> features` 的统一阻断规则，因此当前仓库在工具层面允许 `features` 与 `shared` 互相引用；这更接近“现实约束下的宽松检查”，不应自动理解为首选设计。
 ```dart
 // ✅ 允许 - features 可以依赖 shared
 import 'package:listen_portfolio_flutter/shared/utils/auth_helper.dart';
@@ -87,7 +94,7 @@ import 'package:listen_portfolio_flutter/features/auth/domain/repositories/auth_
 **🔧 例外情况 - Provider 文件**：
 ```dart
 // ✅ 允许 - Provider 文件负责依赖注入
-// 文件路径: features/*/data/providers/*_provider.dart
+// 文件路径应以当前 `dependency_rules.dart` 的放行条件为准
 import 'package:listen_portfolio_flutter/features/auth/data/repositories/auth_repository_impl.dart';
 
 class AuthProvider {
@@ -98,9 +105,9 @@ class AuthProvider {
 ```
 
 **允许的条件**:
-- 文件路径包含 `/providers/` 或 `\providers\`
-- 文件位于 `features/*/data/providers/` 目录下
-- 用途是依赖注入（创建实现类实例）
+- 路径包含 `/provider/` 或 `\provider\` 时，`dependency_rules.dart` 会直接放行
+- `features` 模块下位于 `/data/` 的文件，如导入 **同一 feature** 的实现类，也会被放行
+- 因此，当前“实现类导入例外”是脚本规则结果，不等同于对所有 provider / repository 结构的长期推荐
 
 ### 推荐的依赖模式
 
@@ -140,7 +147,7 @@ import 'package:listen_portfolio_flutter/shared/constants/app_constants.dart';
 
 ### 1. 依赖分析工具 (dependency_rules.dart)
 
-**位置**: `tools/dependency_rules.dart` (262 行)
+**位置**: `tools/dependency_rules.dart`
 
 **核心特性**:
 - ✅ **上下文感知检测**: 基于文件路径智能判断违规
@@ -168,34 +175,35 @@ dart tools/dependency_rules.dart --check-layers
 # 5. 显示帮助
 dart tools/dependency_rules.dart --help
 
-# 6. 运行 Flutter 分析 (触发 lint 规则)
+# 6. 运行 Flutter 分析
 flutter analyze
 
 # 7. 查看依赖图内容
-cat dependency_graph.json | jq '.statistics'
+cat dependency_graph.json
 ```
 
 **检测规则**:
 1. **跨 Features 模块依赖**: `features/auth` 不应依赖 `features/home`
-2. **Shared 依赖 Features**: shared 模块不应依赖任何 features (已修改为允许特殊情况)
-3. **Core 依赖上层**: core 模块不应依赖 shared/features
-4. **私有实现导入**: 禁止导入 `_impl.dart`, `_mock.dart` 等私有文件 (Provider 文件例外)
+2. **Core 依赖上层**: core 模块不应依赖 shared/features
+3. **私有实现导入**: 默认禁止导入 `_impl.dart`, `_mock.dart` 等私有文件
+4. **例外放行**: `/provider/` 路径与同 feature 的 `/data/` 导入场景会被特殊放行
 
 ### 2. 自定义 Lint 规则 (IDE 实时检查)
 
-**位置**: `tools/lint_rules/lib/src/dependency_boundary_lint.dart` (235 行)
+**位置**: `tools/lint_rules/lib/src/dependency_boundary_lint.dart`
 
 **规则类型**:
 - `dependency_boundary`: 依赖边界违规检查
 - `circular_dependency`: 循环依赖检测  
 - `implementation_import`: 私有实现导入检查
 
-**触发时机**:
-- IDE 中保存文件时自动触发
-- 运行 `flutter analyze` 时执行
-- CI/CD 流程中的分析阶段
+**当前接入状态**:
+- 仓库内存在 `tools/lint_rules` 自定义 lint 包
+- 但主工程 `analysis_options.yaml` 当前 **未** `include: package:dependency_lint_rules/...`
+- 同时 `analysis_options.yaml` 还排除了 `tools/lint_rules/**`
+- 因此这些自定义 lint 规则目前更接近“已实现但未接入主工程默认分析流程”
 
-**配置文件**:
+**如果未来要启用，可参考如下配置方向**:
 ```yaml
 # analysis_options.yaml
 include: package:dependency_lint_rules/dependency_lint_rules.yaml
@@ -206,6 +214,8 @@ custom_lint:
     - circular_dependency
     - implementation_import
 ```
+
+> 当前仓库真实启用的是标准 analyzer / flutter lints 规则，以及 CI 中额外运行的 `dart tools/dependency_rules.dart`。
 
 **技术架构**:
 ```
@@ -223,11 +233,11 @@ tools/lint_rules/
 **位置**: `.github/workflows/ci.yml`
 
 **检查流程**:
-1. **Flutter Analyze**: 触发 IDE lint 规则检查
+1. **Flutter Analyze**: 运行主工程当前启用的 analyzer / flutter lints 规则
 2. **依赖边界检查**: 运行 `dependency_rules.dart`
 3. **依赖图生成**: 创建可视化依赖关系图
-4. **APK 构建**: 满足条件时自动构建
-5. **报告上传**: 保存检查结果和构建产物
+4. **测试与覆盖率**: 运行测试并上传 coverage artifacts
+5. **APK 构建**: 条件满足时构建 Debug APK 并上传 artifact
 
 **触发条件**:
 - Push 到 `main`/`develop` 分支
@@ -236,8 +246,9 @@ tools/lint_rules/
 
 **输出产物**:
 - `dependency_graph.json`: 依赖关系图
-- `dependency_report.md`: 检查报告
+- `coverage/lcov.info` 与 `coverage/html/`: 覆盖率产物
 - APK 文件 (满足构建条件时)
+- `download_info.md`: APK 下载说明（工作流运行时生成并上传为 artifact）
 - 工作流日志和统计信息
 
 ---
@@ -246,10 +257,10 @@ tools/lint_rules/
 
 ### 当前项目依赖状况
 
-- **总文件数**: 156 Dart 文件 (lib/ 目录)
-- **发现违规**: 0 个 ✅ (已全部修复)
-- **架构合规**: 100% ✅
-- **CI/CD 状态**: 正常运行 ✅
+- **总文件数 / 违规数量**: 应通过重新运行 `dart tools/dependency_rules.dart` 实时确认
+- **分析规则来源**: 当前主工程默认是 `flutter analyze` + CI 中的 `dependency_rules.dart`
+- **自定义 lint 包**: 已存在，但未接入主工程默认分析入口
+- **CI 运行状态**: 应以最近一次 GitHub Actions 工作流结果为准
 
 ### 修复历史
 
@@ -282,13 +293,13 @@ tools/lint_rules/
 
 📊 Dependency Boundary Check Report
 ==================================================
-✅ All dependencies comply with the rules!
+... 此处仅为历史示例，当前结果应以重新运行脚本后的输出为准 ...
 ```
 
 ### 关键修复内容
 
 1. **跨平台路径兼容**: 修复 Windows/Linux 路径检测问题
-2. **Provider 文件例外**: 允许 `features/*/data/providers/` 导入实现类用于依赖注入
+2. **实现类导入例外**: `/provider/` 路径与同 feature 的 `/data/` 导入场景会被脚本特殊放行
 3. **架构规则调整**: 允许 Features 和 Shared 互相引用（实际开发需求）
 4. **CI/CD 修复**: 更新 artifact 版本和 Flutter 版本
 5. **命令行扩展**: 新增 `--check-circular`, `--check-layers`, `--help` 选项
@@ -467,15 +478,14 @@ fi
 
 #### 方法 3：Release 页面
 
-推送到 `main` 分支时，会自动创建一个 Pre-release，包含 APK 文件。
+推送到 `main` 分支时，会自动创建一个 Pre-release 条目；APK 仍以上传到 Actions Artifacts 的产物为准。
 
 ### 文件说明
 
 #### 输出文件
 
-- **APK 文件**：`apkOutput/lPortfolio-{environment}-release.apk`
-- **下载信息**：`download_info.md`（包含详细的下载和安装说明）
-- **依赖报告**：`dependency_report.md`（仅合并工作流）
+- **APK 文件**：`apkOutput/lPortfolio-{environment}-debug-arm64.apk`
+- **下载信息**：`download_info.md`（由工作流运行时生成并上传为 artifact）
 
 #### 保留时间
 
@@ -484,7 +494,7 @@ fi
 
 ### 构建脚本
 
-工作流使用项目根目录的 `buildAndroid.sh` 脚本：
+项目根目录存在 `buildAndroid.sh`，但当前 GitHub Actions 工作流中的 APK 构建步骤是直接执行 `flutter build apk --debug --target-platform android-arm64 ...`，并不是通过该脚本调用。
 
 ```bash
 ./buildAndroid.sh apk {environment}
@@ -509,7 +519,7 @@ git push origin develop
 #### 示例 2：手动构建
 
 1. 进入 Actions 页面
-2. 选择 "Dependency Check and APK Build" 工作流
+2. 选择 "CI and APK Build" 工作流
 3. 点击 "Run workflow"
 4. 选择环境：`prod`
 5. 勾选 "Force build APK"
@@ -818,8 +828,8 @@ context.registry.addImportDirective((node) {
 - [Dart Analyzer API](https://pub.dev/packages/analyzer) - 静态分析工具
 
 ### 工具文件
-- `tools/dependency_rules.dart` - 主要分析工具 (262行)
-- `tools/lint_rules/lib/src/dependency_boundary_lint.dart` - Lint规则实现 (235行)
+- `tools/dependency_rules.dart` - 主要依赖边界分析工具
+- `tools/lint_rules/lib/src/dependency_boundary_lint.dart` - 自定义 Lint 规则实现（当前未接入主工程默认分析配置）
 - `tools/lint_rules/pubspec.yaml` - Lint包配置
 - `buildAndroid.sh` - APK构建脚本
 - `.github/workflows/ci.yml` - 统一CI/CD工作流
@@ -829,11 +839,10 @@ context.registry.addImportDirective((node) {
 ## 🎉 总结
 
 ### 🎯 **最终状态**
-- **依赖违规**: 0 个 ✅ (从 13 个违规修复到 0 个)
-- **架构合规**: 100% ✅  
-- **CI/CD 状态**: 简化统一 ✅
-- **工具完整性**: 功能齐全 ✅
-- **文档完整性**: 统一维护 ✅
+- **依赖治理工具**: 已具备 `dependency_rules.dart` 与自定义 lint 包两个层次
+- **主工程默认检查**: 当前以 `flutter analyze` + CI 工作流为主
+- **自定义 lint 集成度**: 工具已存在，但仍需显式接入 `analysis_options.yaml`
+- **APK 自动化**: 已实现条件触发的 Debug APK 构建与 artifact 上传
 
 ### 🔧 **关键改进**
 1. **工作流简化**: 从多个工作流合并为统一的 `ci.yml`
@@ -844,18 +853,16 @@ context.registry.addImportDirective((node) {
 
 ### 🎉 **使用效果**
 ```bash
-# 当前运行结果
+# 建议在本地重新执行确认当前状态
 $ dart tools/dependency_rules.dart
 🔍 Starting dependency boundary analysis...
 
 📊 Dependency Boundary Check Report
 ==================================================
-✅ All dependencies comply with the rules!
+... 以本次运行输出为准 ...
 
 # CI/CD 工作流状态
-✅ Dependency check passed
-✅ APK built successfully (when conditions met)
-✅ Artifacts uploaded
+... 以 GitHub Actions 最近一次运行结果为准 ...
 ```
 
 ### 📈 **项目价值**
