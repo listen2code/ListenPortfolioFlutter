@@ -1,5 +1,9 @@
 # 错误码速查表
 
+**Status**: `Partially Implemented`
+
+> 本文档同时包含当前代码中已经存在的错误处理机制，以及仍在规划中的统一错误码 / `messageId` / i18n 映射方案。阅读时请以代码实现为准，不要默认本文所有条目都已落地。
+
 本文档整理了 Listen Portfolio Flutter 项目中的错误码体系，包括 `AppException` 子类、业务错误码和对应的处理方式，方便快速排查线上问题。
 
 ## 🏗️ 错误处理架构
