@@ -28,6 +28,7 @@
   ```
 
   当前仓库中可检索到 **31 个** `_test.dart` 文件，覆盖 `core`、`auth`、`home`、`settings`、`splash` 等模块。
+  当前仓库**没有** `integration_test/` 目录，因此 CI 中对应步骤通常会直接跳过。
 
   > 当前不存在 `test/test_config.toml` 这类外部测试配置文件；测试配置主要体现在测试代码、mock 资源，以及 `scripts/run_tests.ps1` / `scripts/run_tests.sh` 中。
 
@@ -112,7 +113,7 @@ flutter test --reporter=expanded
 
   ### 覆盖率目标
   - **当前最低目标**: 60%
-  - **来源**: `docs/todo.md` 与 `.github/workflows/ci.yml` 中的覆盖率检查逻辑
+  - **来源**: `.github/workflows/ci.yml` 中 `Analyze test coverage` 步骤的最低阈值
   - **当前执行方式**: CI 会输出低于 60% 的警告，但 **不会因此直接 fail job**
   - **分层覆盖率目标**: ViewModel / Repository / UseCase / Widget / Infrastructure 的细分目标更适合作为团队目标，而不是当前受 CI 强制约束的规则
 
@@ -155,7 +156,7 @@ lcov --summary coverage/lcov.info
     - 执行 `flutter test --coverage --reporter=expanded`
     - 生成 `coverage/lcov.info` 和 HTML 报告
     - 单独再次运行 `test/features/home/projects/projects_widget_test.dart`
-    - 若存在 `integration_test/` 目录，则运行集成测试
+    - 若存在 `integration_test/` 目录，则运行集成测试；当前仓库中该目录不存在，因此通常会跳过
     - 上传 `coverage-reports` artifact
     - 在 `main` / `develop` 分支尝试上传 Codecov
  
@@ -180,111 +181,43 @@ lcov --summary coverage/lcov.info
  - ⚠️ **覆盖率生成失败**: lcov / genhtml 问题但不影响 `flutter test` 成功
  
  ##### **3. 具体失败场景**
- ```bash
- # 场景1: 单个测试用例失败
- flutter test --coverage --reporter=expanded
- # 输出: 00:01 +2: Some test failed
- # 结果: 整个 flutter-test 作业失败 → APK 构建不会继续
  
- # 场景2: 编译错误
- flutter test test/features/auth/login/login_view_model_test.dart
- # 输出: Compilation error
- # 结果: flutter-test 作业失败 → APK 构建不会继续
- 
- # 场景3: 覆盖率不足
- # 测试全部通过，但覆盖率只有 45%
- # 输出: Coverage check failed: 45% < 60%
- # 结果: 当前只警告，作业仍可能成功
- ```
- 
- ##### **4. GitHub Actions 状态判断**
- ```yaml
- # build-apk 作业的条件
- if: needs.check-conditions.outputs.should_build_apk == 'true' 
-     && needs.flutter-test.result == 'success' 
-     && needs.dependency-analysis.result == 'success'
- ```
- 
- **说明**: `needs.flutter-test.result == 'success'` 仍然要求整个 `flutter-test` 作业成功完成；但当前 workflow 中“覆盖率低于 60%”不会主动 `exit 1`。
- 
- #### **触发条件**
- ```yaml
- on:
-   push:
-     branches: [ main, develop ]
-   pull_request:
-     branches: [ main, develop ]
-   workflow_dispatch:  # 手动触发
-     inputs:
-       environment: mock/dev/test/prod
-       force_build_apk: true/false
- ```
- 
- #### **手动触发测试**
- 在 GitHub Actions 页面：
- 1. 选择 `CI and APK Build` 工作流
- 2. 点击 `Run workflow`
- 3. 选择环境和是否强制构建 APK
- 
- ### 测试结果查看
- 
- #### **1. GitHub Actions 页面**
- - 查看 `flutter-test` 与 `dependency-analysis` 作业日志
- - 下载 `coverage-reports` artifact
- - 如在 `main` / `develop` 分支，可额外查看 Codecov 上传结果
- 
- #### **2. 覆盖率报告**
- - **HTML 报告**: 从 Actions 产物下载 `coverage-reports`
- - **Codecov**: https://app.codecov.io/gh/listen2code/ListenPortfolioFlutter
- - **本地查看**: `coverage/html/index.html`
- 
- ### 🚨 测试失败处理
- 
- #### **失败类型分析**
- 
- ##### **1. 测试用例失败 (最常见)**
- ```bash
- # 示例输出
- 00:01 +2: LoginViewModel should handle login with valid credentials
- 00:01 +2: LoginViewModel should show error for invalid credentials
- 00:01 +0: LoginViewModel should handle network error
- 00:01 +0: Some test(s) failed.
- 00:01 +0: Failed to load "test/features/auth/login/login_view_model_test.dart": 
- Test failed. See exception logs for details.
- ```
- 
- **影响**: 🔴 **APK 构建不会继续**  
- **原因**: 任何测试用例的 `expect()` 断言失败或异常
- 
- ##### **2. 编译错误**
+ - **测试用例失败**
+   - **影响**: 🔴 **APK 构建不会继续**
+   - **原因**: `expect()` 断言失败、未捕获异常、测试逻辑不满足预期
+
+ - **编译错误**
+   - **影响**: 🔴 **APK 构建不会继续**
+   - **原因**: 依赖问题、导入错误、语法错误
+
+ - **超时错误**
+   - **影响**: 🔴 **APK 构建不会继续**
+   - **原因**: 测试执行时间超过默认超时
+
+ - **覆盖率不足**
+   - **影响**: 🟡 **当前仅警告**
+   - **原因**: workflow 中覆盖率检查目前为软性提醒，不阻止构建
+
+ ##### **编译错误示例**
  ```bash
  # 示例输出
  Error: Could not resolve the package 'listen_core' in 'test/features/auth/login/login_view_model_test.dart'.
  ```
- 
- **影响**: 🔴 **APK 构建不会继续**  
- **原因**: 依赖问题、导入错误、语法错误
- 
- ##### **3. 超时错误**
+
+ ##### **超时错误示例**
  ```bash
  # 示例输出
  00:30 +1: Test timeout. The test took longer than 30 seconds to complete.
  ```
- 
- **影响**: 🔴 **APK 构建不会继续**  
- **原因**: 测试执行时间超过默认 30 秒超时
- 
- ##### **4. 覆盖率不足**
+
+ ##### **覆盖率不足示例**
  ```bash
  # 示例输出
  Coverage check failed: 45.2% < 60%
  Consider adding more tests to meet the minimum coverage requirement
  ```
  
- **影响**: 🟡 **当前仅警告**  
- **原因**: 当前 workflow 中覆盖率检查为软性提醒，不阻止构建
- 
- #### **失败调试步骤**
+  #### **失败调试步骤**
  
  ##### **1. 优先本地复现**
  1. 先运行对应测试文件或目录
@@ -333,7 +266,10 @@ lcov --summary coverage/lcov.info
  3. 定期检查覆盖率趋势
  4. 监控测试执行时间
   
-  ## 🎯 关键测试场景
+  ## 🎯 优先补强的关键测试场景
+
+  > 本节主要对应 `docs/todo.md` 中“测试补强”的待办项。
+  > 以下示例用于说明**建议新增**的测试方向，不代表这些测试当前已经存在于仓库中。
 
 ### 1. AuthInterceptor 401 并发测试
 ```dart
@@ -367,10 +303,27 @@ test('should have translations for all keys in zh and ja', () async {
 ```dart
 class TestEnvConfig implements BaseEnvConfig {
   @override
+  AppEnvironment get env => AppEnvironment.test;
+
+  @override
   String get baseUrl => 'http://api.test.com';
+}
+
+class MockEnvConfig implements BaseEnvConfig {
   @override
   AppEnvironment get env => AppEnvironment.mock;
-  // ... 其他配置
+
+  @override
+  String get baseUrl => 'http://localhost:9999';
+}
+
+Future<void> setupTestEnvironment() async {
+  TestWidgetsFlutterBinding.ensureInitialized();
+  try {
+    await AppEnv.init([TestEnvConfig(), MockEnvConfig()]);
+  } catch (_) {
+    // AppEnv may already be initialized in some test runs.
+  }
 }
 ```
 
@@ -381,13 +334,13 @@ class TestEnvConfig implements BaseEnvConfig {
 #### **默认设置**
 - **超时时间**: 30 秒
 - **覆盖率最低要求**: 60%
-- **测试环境**: mock
+- **测试环境**: 由测试代码决定；`test_setup.dart` 当前会注册 `test` 与 `mock` 两套环境配置
 - **失败策略**: 覆盖率不足时当前仅警告（不阻止构建）
 
 #### **路径配置**
 - **单元测试路径**: `test/core/`, `test/features/`
 - **Widget 测试路径**: `test/features/home/projects/projects_widget_test.dart`
-- **集成测试路径**: `integration_test/` (如果存在)
+- **集成测试路径**: `integration_test/`（如果未来新增；当前仓库中暂无该目录）
 
 #### **脚本行为说明**
 - `run_tests.ps1` / `run_tests.sh` 会先执行 `flutter pub get`
@@ -514,4 +467,4 @@ flutter test --debug
 
 **最后更新**: 2026年4月5日  
 **维护者**: Flutter 开发团队  
-**文件说明**: 本文档整合了原有的 `test/README.md`，为项目的唯一测试指南
+**文件说明**: 本文档是当前仓库中的集中测试指南；如与测试代码或 CI workflow 冲突，以实际实现为准
