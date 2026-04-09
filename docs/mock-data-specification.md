@@ -277,6 +277,7 @@ flutter:
   "body": [
     {
       "id": "1",
+      "businessId": "lportfolio-flutter",
       "title": "lPortfolio Flutter",
       "subtitle": "Current Project",
       "desc": "My personal portfolio app (this one!). Demonstrating Clean Architecture, MVI pattern, and advanced Riverpod state management in Flutter.",
@@ -287,8 +288,6 @@ flutter:
   ]
 }
 ```
-
-> 当前 `projects.json` 中的项目条目未包含 `businessId`，如需补充字段，应先与实际模型和消费端一起校准。
 
 ### 🔄 数据变化场景
 

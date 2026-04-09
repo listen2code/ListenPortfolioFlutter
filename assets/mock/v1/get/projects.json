@@ -1,10 +1,11 @@
 {
   "result": "0",
   "messageId": "",
-  "message": "success",
+  "message": "",
   "body": [
     {
       "id": "1",
+      "businessId": "lportfolio-flutter",
       "title": "lPortfolio Flutter",
       "subtitle": "Current Project",
       "desc": "My personal portfolio app (this one!). Demonstrating Clean Architecture, MVI pattern, and advanced Riverpod state management in Flutter.",
@@ -14,6 +15,7 @@
     },
     {
       "id": "2",
+      "businessId": "listen-core-flutter",
       "title": "Listen Core Flutter",
       "subtitle": "Framework",
       "desc": "A foundational framework for Flutter projects providing base classes for MVI, standardized network wrappers, and lifecycle management.",
@@ -23,6 +25,7 @@
     },
     {
       "id": "3",
+      "businessId": "listen-ui-kit",
       "title": "Listen UI Kit",
       "subtitle": "Common Library",
       "desc": "A comprehensive UI component library for consistent branding and rapid development across multiple Flutter applications.",
@@ -32,6 +35,7 @@
     },
     {
       "id": "4",
+      "businessId": "portfolio-backend",
       "title": "Portfolio Backend",
       "subtitle": "Cloud Infrastructure",
       "desc": "The server-side implementation for this portfolio, managing user data, projects, and dynamic configurations.",
@@ -41,6 +45,7 @@
     },
     {
       "id": "5",
+      "businessId": "tech-knowledge-base",
       "title": "Tech Knowledge Base",
       "subtitle": "Articles & Docs",
       "desc": "A curated collection of my technical articles, architecture notes, and development experiences over the past 10 years.",

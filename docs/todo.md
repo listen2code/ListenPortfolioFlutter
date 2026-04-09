@@ -9,13 +9,22 @@
 
 ### 1. 文档与实现继续对齐
 
-**现状**：README 已开始按“现状 / 目标态”分离，但其他文档仍存在历史表述偏理想化的问题。  
+**状态**：✅ 已完成（2026-04-09）  
+**现状**：README 已开始按"现状 / 目标态"分离，但其他文档仍存在历史表述偏理想化的问题。  
 **目标**：确保 README、`docs/`、代码实现三者不再互相打架。  
 **为什么现在做**：这是当前最影响项目可信度的问题。  
 **验收标准**：主文只描述已落地能力；设计性内容下沉到 `docs/`；过时表述放入待删除备份区。
 
+**已完成项**：
+- Backend: `security_features.md`, `development_setup.md` 已修订
+- Flutter: `testing-guide.md`, `mock-data-specification.md` 已修订
+- README.md 已遵循"主文只描述已落地能力"原则
+
+**注意**：后续如有新增文档或代码变更导致不一致，需重新激活此任务。
+
 ### 2. Flutter / Backend API 契约收口
 
+**状态**：✅ 已完成（2026-04-09）  
 **现状**：主流程已可联调，但仍有字段与模型边界未彻底收口。  
 **目标**：完成 Flutter mock、真实后端响应、客户端 model 的最终一致性。  
 **为什么现在做**：真实 App 优先，前后端契约必须先稳定。  
@@ -26,6 +35,15 @@
 - `ProjectDto.businessId` 的客户端适配
 - `StatDto.id` 与 `businessId` 的最终映射策略
 - `messageId` 的真实落地边界
+
+**已完成项**：
+- `auth_remote_data_source.dart`: `refreshToken` 从 `@Field` 改为 `@Query`，对齐 Backend `@RequestParam`
+- `auth_remote_data_source.g.dart`: 手动更新生成代码，通过 query parameter 发送
+- `projects.json`: 添加 5 个项目的 `businessId` 字段，与 Backend migration 种子数据一致
+- `user.json`, `projects.json`, `aboutMe.json`: `message` 字段从 `"success"` 改为 `""`，对齐 Backend `ApiResponse.success()`
+- Flutter 模型（`ProjectModel`, `AboutMeStatModel`）与 Backend DTO 字段已一致
+
+**注意**：后续如有新增 API 或字段变更导致不一致，需重新激活此任务。
 
 ### 3. 错误契约落地
 

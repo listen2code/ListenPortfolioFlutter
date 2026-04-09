@@ -25,7 +25,7 @@ abstract class AuthRemoteDataSource {
   Future<BaseResponseModel<void>> forgotPassword(@Body() ForgotPasswordRequestModel? request);
 
   @POST('/v1/auth/refresh')
-  Future<BaseResponseModel<LoginModel>> refreshToken(@Field('refreshToken') String refreshToken);
+  Future<BaseResponseModel<LoginModel>> refreshToken(@Query('refreshToken') String refreshToken);
 
   @POST('/v1/user/logout')
   Future<BaseResponseModel<void>> logout();

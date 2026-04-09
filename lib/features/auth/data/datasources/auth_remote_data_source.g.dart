@@ -121,9 +121,9 @@ class _AuthRemoteDataSource implements AuthRemoteDataSource {
     String refreshToken,
   ) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'refreshToken': refreshToken};
     final _headers = <String, dynamic>{};
-    final _data = {'refreshToken': refreshToken};
+    const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<BaseResponseModel<LoginModel>>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
