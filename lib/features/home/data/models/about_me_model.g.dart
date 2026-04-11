@@ -175,6 +175,7 @@ _SkillCategoryModel _$SkillCategoryModelFromJson(Map json) => $checkedCreate(
   json,
   ($checkedConvert) {
     final val = _SkillCategoryModel(
+      id: $checkedConvert('id', (v) => const ToStringConverter().fromJson(v)),
       category: $checkedConvert('category', (v) => v as String?),
       items: $checkedConvert(
         'items',
@@ -187,7 +188,11 @@ _SkillCategoryModel _$SkillCategoryModelFromJson(Map json) => $checkedCreate(
 );
 
 Map<String, dynamic> _$SkillCategoryModelToJson(_SkillCategoryModel instance) =>
-    <String, dynamic>{'category': instance.category, 'items': instance.items};
+    <String, dynamic>{
+      'id': const ToStringConverter().toJson(instance.id),
+      'category': instance.category,
+      'items': instance.items,
+    };
 
 _LanguageItemModel _$LanguageItemModelFromJson(Map json) =>
     $checkedCreate('_LanguageItemModel', json, ($checkedConvert) {

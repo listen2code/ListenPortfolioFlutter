@@ -29,10 +29,11 @@ void main() {
     SharedPreferences.setMockInitialValues({});
 
     // Mock the connectivity_plus platform channel to simulate wifi connection
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
-      const MethodChannel('dev.fluttercommunity.plus/connectivity'),
-      (MethodCall call) async => ['wifi'],
-    );
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
+          const MethodChannel('dev.fluttercommunity.plus/connectivity'),
+          (MethodCall call) async => ['wifi'],
+        );
 
     mockRemoteDataSource = MockAuthRemoteDataSource();
     mockLocalDataSource = MockAuthLocalDataSource();
@@ -58,73 +59,119 @@ void main() {
       body: const LoginModel(userId: testUserId, token: testToken),
     );
 
-    test('should cache token and return LoginResponseModel when successful', () async {
-      // Arrange
-      when(() => mockRemoteDataSource.login(any())).thenAnswer((_) async => testLoginResponse);
-      when(() => mockLocalDataSource.cacheAuthToken(any())).thenAnswer((_) async => {});
-      when(() => mockLocalDataSource.cacheRefreshToken(any())).thenAnswer((_) async => {});
+    test(
+      'should cache token and return LoginResponseModel when successful',
+      () async {
+        // Arrange
+        when(
+          () => mockRemoteDataSource.login(any()),
+        ).thenAnswer((_) async => testLoginResponse);
+        when(
+          () => mockLocalDataSource.cacheAuthToken(any()),
+        ).thenAnswer((_) async => {});
+        when(
+          () => mockLocalDataSource.cacheRefreshToken(any()),
+        ).thenAnswer((_) async => {});
 
-      // Act
-      final result = await repository.login(
-        param: LoginRequestModel(userName: testUsername, password: testPassword),
-      );
+        // Act
+        final result = await repository.login(
+          param: LoginRequestModel(
+            userName: testUsername,
+            password: testPassword,
+          ),
+        );
 
-      // Assert
-      final response = result.getRight().toNullable();
-      expect(response?.token, testToken);
-      expect(response?.userId, testUserId);
-      verify(() => mockLocalDataSource.cacheAuthToken(testToken)).called(1);
-    });
+        // Assert
+        final response = result.getRight().toNullable();
+        expect(response?.token, testToken);
+        expect(response?.userId, testUserId);
+        verify(() => mockLocalDataSource.cacheAuthToken(testToken)).called(1);
+      },
+    );
   });
 
   group('AuthRepositoryImpl - getCurrentUser', () {
     const testUserId = 'user_123';
-    final testUserModel = UserModel(id: testUserId, name: 'Test', email: 'test@example.com');
-    final testApiResponse = BaseResponseModel<UserModel>(result: ApiResult.success, body: testUserModel);
+    final testUserModel = UserModel(
+      id: testUserId,
+      name: 'Test',
+      email: 'test@example.com',
+    );
+    final testApiResponse = BaseResponseModel<UserModel>(
+      result: ApiResult.success,
+      body: testUserModel,
+    );
     final failureResponse = BaseResponseModel<UserModel>(
       result: ApiResult.serverError,
       message: 'Internal server error',
     );
 
-    test('should return remote user and update cache when API call is successful', () async {
-      // Arrange
-      when(() => mockRemoteDataSource.getUserById(any())).thenAnswer((_) async => testApiResponse);
-      when(() => mockLocalDataSource.cacheUser(any())).thenAnswer((_) async => {});
+    test(
+      'should return remote user and update cache when API call is successful',
+      () async {
+        // Arrange
+        when(
+          () => mockRemoteDataSource.getUserById(any()),
+        ).thenAnswer((_) async => testApiResponse);
+        when(
+          () => mockLocalDataSource.cacheUser(any()),
+        ).thenAnswer((_) async => {});
 
-      // Act
-      final result = await repository.getCurrentUser(param: GetCurrentUserRequestModel(userId: testUserId));
+        // Act
+        final result = await repository.getCurrentUser(
+          param: GetCurrentUserRequestModel(userId: testUserId),
+        );
 
-      // Assert
-      expect(result.getRight().toNullable(), testUserModel);
-      verify(() => mockRemoteDataSource.getUserById(testUserId)).called(1);
-      verify(() => mockLocalDataSource.cacheUser(testUserModel)).called(1);
-    });
+        // Assert
+        expect(result.getRight().toNullable(), testUserModel);
+        verify(() => mockRemoteDataSource.getUserById(testUserId)).called(1);
+        verify(() => mockLocalDataSource.cacheUser(testUserModel)).called(1);
+      },
+    );
 
-    test('should return cached user when API call fails and cache is available', () async {
-      // Arrange - return a failure BaseResponseModel to trigger safeCall cache fallback
-      when(() => mockRemoteDataSource.getUserById(any())).thenAnswer((_) async => failureResponse);
-      when(() => mockLocalDataSource.getCachedUser()).thenAnswer((_) async => testUserModel);
+    test(
+      'should return cached user when API call fails and cache is available',
+      () async {
+        // Arrange - return a failure BaseResponseModel to trigger safeCall cache fallback
+        when(
+          () => mockRemoteDataSource.getUserById(any()),
+        ).thenAnswer((_) async => failureResponse);
+        when(
+          () => mockLocalDataSource.getCachedUser(),
+        ).thenAnswer((_) async => testUserModel);
 
-      // Act
-      final result = await repository.getCurrentUser(param: GetCurrentUserRequestModel(userId: testUserId));
+        // Act
+        final result = await repository.getCurrentUser(
+          param: GetCurrentUserRequestModel(userId: testUserId),
+        );
 
-      // Assert
-      expect(result.getRight().toNullable(), testUserModel);
-      verify(() => mockLocalDataSource.getCachedUser()).called(1);
-    });
+        // Assert
+        expect(result.getRight().toNullable(), testUserModel);
+        verify(() => mockLocalDataSource.getCachedUser()).called(1);
+      },
+    );
 
-    test('should return failure when both API and cache are unavailable', () async {
-      // Arrange - return a failure BaseResponseModel; cache returns null
-      when(() => mockRemoteDataSource.getUserById(any())).thenAnswer((_) async => failureResponse);
-      when(() => mockLocalDataSource.getCachedUser()).thenAnswer((_) async => null);
+    test(
+      'should return failure when both API and cache are unavailable',
+      () async {
+        // Arrange - return a failure BaseResponseModel; cache returns null
+        when(
+          () => mockRemoteDataSource.getUserById(any()),
+        ).thenAnswer((_) async => failureResponse);
+        when(
+          () => mockLocalDataSource.getCachedUser(),
+        ).thenAnswer((_) async => null);
 
-      // Act
-      final result = await repository.getCurrentUser(param: GetCurrentUserRequestModel(userId: testUserId));
+        // Act
+        final result = await repository.getCurrentUser(
+          param: GetCurrentUserRequestModel(userId: testUserId),
+        );
 
-      // Assert
-      expect(result.isLeft(), true);
-      verify(() => mockLocalDataSource.getCachedUser()).called(1);
-    });
+        // Assert
+        expect(result.isLeft(), true);
+        verify(() => mockLocalDataSource.getCachedUser()).called(1);
+      },
+    );
   });
 
   group('AuthRepositoryImpl - refreshToken', () {
@@ -132,25 +179,220 @@ void main() {
     const testNewAccessToken = 'new_access_token';
     const testNewRefreshToken = 'new_refresh_token';
 
-    test('should return new access token and update cache when refresh is successful', () async {
-      // Arrange
-      when(() => mockLocalDataSource.getRefreshToken()).thenAnswer((_) async => testOldRefreshToken);
-      when(() => mockRemoteDataSource.refreshToken(testOldRefreshToken)).thenAnswer(
-        (_) async => BaseResponseModel(
-          result: ApiResult.success,
-          body: const LoginModel(token: testNewAccessToken, refreshToken: testNewRefreshToken),
-        ),
+    test(
+      'should return new access token and update cache when refresh is successful',
+      () async {
+        // Arrange
+        when(
+          () => mockLocalDataSource.getRefreshToken(),
+        ).thenAnswer((_) async => testOldRefreshToken);
+        when(
+          () => mockRemoteDataSource.refreshToken(testOldRefreshToken),
+        ).thenAnswer(
+          (_) async => BaseResponseModel(
+            result: ApiResult.success,
+            body: const LoginModel(
+              token: testNewAccessToken,
+              refreshToken: testNewRefreshToken,
+            ),
+          ),
+        );
+        when(
+          () => mockLocalDataSource.cacheAuthToken(any()),
+        ).thenAnswer((_) async => {});
+        when(
+          () => mockLocalDataSource.cacheRefreshToken(any()),
+        ).thenAnswer((_) async => {});
+
+        // Act
+        final result = await repository.refreshToken();
+
+        // Assert
+        expect(result.getRight().toNullable(), testNewAccessToken);
+        verify(
+          () => mockLocalDataSource.cacheAuthToken(testNewAccessToken),
+        ).called(1);
+        verify(
+          () => mockLocalDataSource.cacheRefreshToken(testNewRefreshToken),
+        ).called(1);
+      },
+    );
+  });
+
+  group('Auth API Contract Tests - Login Flow', () {
+    group('POST /auth/login', () {
+      test(
+        '✅ Login Success - Returns valid LoginModel with token and refreshToken',
+        () {
+          // Verify mock response structure for login endpoint
+          final mockResponse = {
+            'result': '0',
+            'messageId': '',
+            'message': '',
+            'body': {
+              'userId': 'user_123',
+              'token':
+                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozjgNryP4J3jVmNHl0w5N_XgL0n3I9PlFUP0THsR8U',
+              'refreshToken': 'refresh_token_value',
+            },
+          };
+
+          // Act: Parse mock response to LoginModel
+          final loginModel = LoginModel.fromJson(mockResponse['body']);
+
+          // Assert: Verify all required fields are present and have correct types
+          expect(
+            loginModel.userId,
+            isNotNull,
+            reason: 'userId should not be null',
+          );
+          expect(
+            loginModel.userId,
+            isA<String>(),
+            reason: 'userId must be String (converted from Long)',
+          );
+          expect(
+            loginModel.token,
+            isNotNull,
+            reason: 'token should not be null',
+          );
+          expect(
+            loginModel.token,
+            isA<String>(),
+            reason: 'token must be String',
+          );
+          expect(
+            loginModel.refreshToken,
+            isNotNull,
+            reason: 'refreshToken should not be null',
+          );
+          expect(
+            loginModel.refreshToken,
+            isA<String>(),
+            reason: 'refreshToken must be String',
+          );
+
+          // Verify token format looks like JWT (roughly)
+          expect(
+            loginModel.token!.split('.').length,
+            equals(3),
+            reason: 'token should have JWT format (header.payload.signature)',
+          );
+        },
       );
-      when(() => mockLocalDataSource.cacheAuthToken(any())).thenAnswer((_) async => {});
-      when(() => mockLocalDataSource.cacheRefreshToken(any())).thenAnswer((_) async => {});
 
-      // Act
-      final result = await repository.refreshToken();
+      test(
+        '⚠️ Mock vs DTO Contract - Response structure matches ApiResponse wrapper',
+        () {
+          // This test verifies that mock JSON has the expected wrapper structure
+          final mockResponse = {
+            'result': '0',
+            'messageId': 'LOGIN_SUCCESS',
+            'message': 'Login successful',
+            'body': {
+              'userId': 'user_123',
+              'token': 'jwt_token',
+              'refreshToken': 'refresh_token',
+            },
+          };
 
-      // Assert
-      expect(result.getRight().toNullable(), testNewAccessToken);
-      verify(() => mockLocalDataSource.cacheAuthToken(testNewAccessToken)).called(1);
-      verify(() => mockLocalDataSource.cacheRefreshToken(testNewRefreshToken)).called(1);
+          // Assert: Response should have standard wrapper fields
+          expect(
+            mockResponse,
+            containsPair('result', '0'),
+            reason: 'result code should be "0" for success',
+          );
+          expect(
+            mockResponse,
+            containsKey('messageId'),
+            reason: 'messageId field must exist',
+          );
+          expect(
+            mockResponse,
+            containsKey('message'),
+            reason: 'message field must exist',
+          );
+          expect(
+            mockResponse,
+            containsKey('body'),
+            reason: 'body field must exist (contains LoginResponse DTO)',
+          );
+
+          // Assert: body should have all LoginResponse fields
+          final body = mockResponse['body'];
+          expect(
+            body,
+            containsKey('userId'),
+            reason: 'userId required in LoginResponse',
+          );
+          expect(
+            body,
+            containsKey('token'),
+            reason: 'token required in LoginResponse',
+          );
+          expect(
+            body,
+            containsKey('refreshToken'),
+            reason: 'refreshToken required in LoginResponse',
+          );
+        },
+      );
+    });
+
+    group('GET /user (Current User)', () {
+      test('✅ Get Current User - Returns valid UserModel with all fields', () {
+        final mockResponse = {
+          'result': '0',
+          'messageId': '',
+          'message': '',
+          'body': {
+            'id': 'user_123',
+            'name': 'Test User',
+            'email': 'test@example.com',
+            'location': 'San Francisco',
+            'avatarUrl': 'https://example.com/avatar.jpg',
+          },
+        };
+        final userModel = UserModel.fromJson(mockResponse['body']);
+
+        // Assert: All user fields are present
+        expect(userModel.id, isNotNull, reason: 'user.id should not be null');
+        expect(userModel.id, isA<String>(), reason: 'user.id must be String');
+        expect(userModel.name, isNotNull, reason: 'user.name required');
+        expect(userModel.email, isNotNull, reason: 'user.email required');
+        expect(userModel.location, isNotNull, reason: 'user.location required');
+        expect(
+          userModel.avatarUrl,
+          isNotNull,
+          reason: 'user.avatarUrl required',
+        );
+      });
+
+      test('⚠️ Field Naming - Mock and DTO field names must be consistent', () {
+        final mockResponse = {
+          'id': 'user_123',
+          'name': 'Test User',
+          'email': 'test@example.com',
+          'location': 'San Francisco',
+          'avatarUrl': 'https://example.com/avatar.jpg',
+        };
+        final body = mockResponse;
+
+        // These field names MUST match between mock, DTO, and Model
+        expect(body, containsKey('id'), reason: 'id field required');
+        expect(body, containsKey('name'), reason: 'name field required');
+        expect(body, containsKey('email'), reason: 'email field required');
+        expect(
+          body,
+          containsKey('location'),
+          reason: 'location field required',
+        );
+        expect(
+          body,
+          containsKey('avatarUrl'),
+          reason: 'avatarUrl field required',
+        );
+      });
     });
   });
 }

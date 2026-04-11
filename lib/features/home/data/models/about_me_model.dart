@@ -21,7 +21,8 @@ abstract class AboutMeModel with _$AboutMeModel {
     @Default([]) List<LanguageItemModel> languages,
   }) = _AboutMeModel;
 
-  factory AboutMeModel.fromJson(Map<String, Object?> json) => _$AboutMeModelFromJson(json);
+  factory AboutMeModel.fromJson(Map<String, Object?> json) =>
+      _$AboutMeModelFromJson(json);
 }
 
 @freezed
@@ -34,35 +35,53 @@ abstract class AboutMeStatModel with _$AboutMeStatModel {
     @Default([]) List<String> tags,
   }) = _AboutMeStatModel;
 
-  factory AboutMeStatModel.fromJson(Map<String, Object?> json) => _$AboutMeStatModelFromJson(json);
+  factory AboutMeStatModel.fromJson(Map<String, Object?> json) =>
+      _$AboutMeStatModelFromJson(json);
 }
 
 @freezed
 abstract class ExperienceItemModel with _$ExperienceItemModel {
-  const factory ExperienceItemModel({String? title, String? company, String? period, String? description}) =
-      _ExperienceItemModel;
+  const factory ExperienceItemModel({
+    String? title,
+    String? company,
+    String? period,
+    String? description,
+  }) = _ExperienceItemModel;
 
-  factory ExperienceItemModel.fromJson(Map<String, Object?> json) => _$ExperienceItemModelFromJson(json);
+  factory ExperienceItemModel.fromJson(Map<String, Object?> json) =>
+      _$ExperienceItemModelFromJson(json);
 }
 
 @freezed
 abstract class EducationItemModel with _$EducationItemModel {
-  const factory EducationItemModel({String? degree, String? school, String? period, String? description}) =
-      _EducationItemModel;
+  const factory EducationItemModel({
+    String? degree,
+    String? school,
+    String? period,
+    String? description,
+  }) = _EducationItemModel;
 
-  factory EducationItemModel.fromJson(Map<String, Object?> json) => _$EducationItemModelFromJson(json);
+  factory EducationItemModel.fromJson(Map<String, Object?> json) =>
+      _$EducationItemModelFromJson(json);
 }
 
 @freezed
 abstract class SkillCategoryModel with _$SkillCategoryModel {
-  const factory SkillCategoryModel({String? category, @Default([]) List<String> items}) = _SkillCategoryModel;
+  const factory SkillCategoryModel({
+    @ToStringConverter() String? id,
+    String? category,
+    @Default([]) List<String> items,
+  }) = _SkillCategoryModel;
 
-  factory SkillCategoryModel.fromJson(Map<String, Object?> json) => _$SkillCategoryModelFromJson(json);
+  factory SkillCategoryModel.fromJson(Map<String, Object?> json) =>
+      _$SkillCategoryModelFromJson(json);
 }
 
 @freezed
 abstract class LanguageItemModel with _$LanguageItemModel {
-  const factory LanguageItemModel({String? name, String? level}) = _LanguageItemModel;
+  const factory LanguageItemModel({String? name, String? level}) =
+      _LanguageItemModel;
 
-  factory LanguageItemModel.fromJson(Map<String, Object?> json) => _$LanguageItemModelFromJson(json);
+  factory LanguageItemModel.fromJson(Map<String, Object?> json) =>
+      _$LanguageItemModelFromJson(json);
 }
