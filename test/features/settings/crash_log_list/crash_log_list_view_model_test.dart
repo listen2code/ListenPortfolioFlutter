@@ -14,6 +14,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class MockFile extends Mock implements File {}
 
+/// [CrashLogListViewModel.onReady] 内部调用 [handleIntent] 但不 await，测试中需额外等待异步结束。
+Future<void> waitForAsyncInit() async {
+  await Future<void>.delayed(const Duration(milliseconds: 300));
+}
+
 void main() {
   // 1. Initialize test binding to support platform channels and plugins in tests
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -115,24 +120,36 @@ void main() {
     });
 
     test('Should handle triggerCrash intent gracefully', () async {
-      // Skip this test due to complex provider lifecycle issues
-      // The triggerCrash intent performs async operations that conflict with provider disposal
-      // This is a known limitation in the current test setup
-      // TODO: Fix this test when provider lifecycle management is improved
-    }, skip: true);
+      // 无 Navigator 时 CommonDialog.showConfirm 立即返回 null，不会调度 CrashManager.scheduleRandomCrash
+      emittedEffects.clear();
+      await viewModel.handleIntent(const CrashLogListIntent.triggerCrash());
+      await Future<void>.delayed(Duration.zero);
+
+      expect(viewModel.state, isNotNull);
+      // 未确认对话框时不应发出“已调度崩溃”等信息类 effect
+      expect(emittedEffects.whereType<MessageEffect>(), isEmpty);
+    });
 
     test('Should trigger init process automatically via onReady lifecycle', () async {
-      // Skip this test due to complex provider lifecycle issues
-      // The onReady lifecycle triggers async operations that conflict with provider disposal
-      // This is a known limitation in the current test setup
-      // TODO: Fix this test when provider lifecycle management is improved
-    }, skip: true);
+      emittedEffects.clear();
+      viewModel.onReady();
+      await waitForAsyncInit();
+
+      final loadingEffects = emittedEffects.whereType<LoadingEffect>().toList();
+      expect(loadingEffects.any((e) => e.show == true), isTrue);
+      expect(loadingEffects.last.show, isFalse);
+      expect(container.read(crashLogListViewModelProvider).logs, isA<List<File>>());
+    });
 
     test('Should handle init intent and manage loading state sequence', () async {
-      // Skip this test due to complex provider lifecycle issues
-      // The init intent performs async operations that conflict with provider disposal
-      // This is a known limitation in the current test setup
-      // TODO: Fix this test when provider lifecycle management is improved
-    }, skip: true);
+      emittedEffects.clear();
+      await viewModel.handleIntent(const CrashLogListIntent.init());
+      await Future<void>.delayed(Duration.zero);
+
+      final loadingEffects = emittedEffects.whereType<LoadingEffect>().toList();
+      expect(loadingEffects.any((e) => e.show == true), isTrue);
+      expect(loadingEffects.last.show, isFalse);
+      expect(container.read(crashLogListViewModelProvider).logs, isA<List<File>>());
+    });
   });
 }
