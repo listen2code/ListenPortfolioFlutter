@@ -238,7 +238,7 @@ void main() {
           };
 
           // Act: Parse mock response to LoginModel
-          final loginModel = LoginModel.fromJson(mockResponse['body']);
+          final loginModel = LoginModel.fromJson(mockResponse['body'] as Map<String, dynamic>);
 
           // Assert: Verify all required fields are present and have correct types
           expect(
@@ -304,17 +304,17 @@ void main() {
           );
           expect(
             mockResponse,
-            containsKey('messageId'),
+            contains('messageId'),
             reason: 'messageId field must exist',
           );
           expect(
             mockResponse,
-            containsKey('message'),
+            contains('message'),
             reason: 'message field must exist',
           );
           expect(
             mockResponse,
-            containsKey('body'),
+            contains('body'),
             reason: 'body field must exist (contains LoginResponse DTO)',
           );
 
@@ -322,17 +322,17 @@ void main() {
           final body = mockResponse['body'];
           expect(
             body,
-            containsKey('userId'),
+            contains('userId'),
             reason: 'userId required in LoginResponse',
           );
           expect(
             body,
-            containsKey('token'),
+            contains('token'),
             reason: 'token required in LoginResponse',
           );
           expect(
             body,
-            containsKey('refreshToken'),
+            contains('refreshToken'),
             reason: 'refreshToken required in LoginResponse',
           );
         },
@@ -353,7 +353,7 @@ void main() {
             'avatarUrl': 'https://example.com/avatar.jpg',
           },
         };
-        final userModel = UserModel.fromJson(mockResponse['body']);
+        final userModel = UserModel.fromJson(mockResponse['body'] as Map<String, dynamic>);
 
         // Assert: All user fields are present
         expect(userModel.id, isNotNull, reason: 'user.id should not be null');
@@ -379,17 +379,17 @@ void main() {
         final body = mockResponse;
 
         // These field names MUST match between mock, DTO, and Model
-        expect(body, containsKey('id'), reason: 'id field required');
-        expect(body, containsKey('name'), reason: 'name field required');
-        expect(body, containsKey('email'), reason: 'email field required');
+        expect(body, contains('id'), reason: 'id field required');
+        expect(body, contains('name'), reason: 'name field required');
+        expect(body, contains('email'), reason: 'email field required');
         expect(
           body,
-          containsKey('location'),
+          contains('location'),
           reason: 'location field required',
         );
         expect(
           body,
-          containsKey('avatarUrl'),
+          contains('avatarUrl'),
           reason: 'avatarUrl field required',
         );
       });

@@ -383,7 +383,7 @@ void main() {
             reason: 'projects endpoint returns array in body',
           );
           expect(
-            mockResponseWrapper['body'].length,
+            (mockResponseWrapper['body'] as List).length,
             greaterThan(0),
             reason: 'mock should have at least one project',
           );
