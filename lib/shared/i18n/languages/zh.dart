@@ -138,6 +138,7 @@ final Map<String, String> zh = {
   I18nKeys.deleteAccountWarningIrreversible: '账号注销后将无法找回。',
   I18nKeys.deleteAccountWarningSubscriptions: '所有正在生效的订阅都将被取消。',
   I18nKeys.deleteAccountIUnderstand: '我已了解相关后果。',
+  I18nKeys.deleteAccountFailed: '注销账号失败，请重试。',
   I18nKeys.crashReports: '崩溃报告',
   I18nKeys.crashReportsSubtitle: '查看和管理本地崩溃日志',
   I18nKeys.noCrashReports: '未发现崩溃报告',
