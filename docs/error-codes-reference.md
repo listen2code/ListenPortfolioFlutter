@@ -209,7 +209,12 @@ const Map<String, String> authErrorMessages = {
 ### 🌍 **国际化支持**
 
 #### **错误消息键名**
+
+> [!WARNING]
+> 以下代码为设计草稿，当前代码库中尚未实现，仅供开发参考。
+
 ```dart
+// DESIGN ONLY - NOT YET IMPLEMENTED
 class I18nErrorKeys {
   // Network Errors
   static const String networkError = 'error.network';
@@ -229,7 +234,12 @@ class I18nErrorKeys {
 ```
 
 #### **多语言配置示例**
+
+> [!WARNING]
+> 以下多语言 JSON 配置项为设计草稿，当前实际语言包文件（如 `.tr` 或 `.json` 文件）中尚未完整添加这些 key，仅供开发参考。
+
 ```json
+// DESIGN ONLY - NOT YET IMPLEMENTED
 // en.json
 {
   "error": {
@@ -324,7 +334,12 @@ class CrashManager {
 ### 📊 **错误监控指标**
 
 #### **关键指标**
+
+> [!WARNING]
+> 以下代码为设计草稿，当前代码库中尚未实现，仅供开发参考。
+
 ```dart
+// DESIGN ONLY - NOT YET IMPLEMENTED
 class ErrorMetrics {
   // 错误率统计
   static double getErrorRate(String errorCode) {
@@ -361,7 +376,12 @@ class ErrorMetrics {
 ### 🐛 **本地调试**
 
 #### **错误注入测试**
+
+> [!WARNING]
+> 以下代码为设计草稿，当前代码库中尚未实现，仅供开发参考.
+
 ```dart
+// DESIGN ONLY - NOT YET IMPLEMENTED
 class ErrorInjector {
   static void injectError(String errorCode) {
     switch (errorCode) {
