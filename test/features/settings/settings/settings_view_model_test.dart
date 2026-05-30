@@ -6,6 +6,7 @@ import 'package:listen_portfolio_flutter/features/settings/presentation/pages/se
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/settings_view_model.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../test_helpers/test_setup.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -19,6 +20,7 @@ void main() {
     setUp(() async {
       SharedPreferences.setMockInitialValues({});
       await SpUtil.init(prefix: 'test_');
+      await setupTestEnvironment();
 
       container = ProviderContainer();
       subscription = container.listen(settingsViewModelProvider, (_, __) {}, fireImmediately: false);
@@ -179,6 +181,24 @@ void main() {
         final messageEffects = emittedEffects.whereType<MessageEffect>().toList();
         expect(messageEffects, isNotEmpty);
         expect(messageEffects.last.message, I18nKeys.settingsResetSuccess.tr);
+      });
+    });
+
+    group('Switch Env Intent', () {
+      test('should update currentEnv and verify AppEnv changes', () async {
+        // Act
+        await viewModel.handleIntent(const SettingsIntent.switchEnv(AppEnvironment.test));
+        await Future.delayed(const Duration(milliseconds: 100));
+
+        // Assert
+        expect(container.read(settingsViewModelProvider).currentEnv, AppEnvironment.test);
+        expect(AppEnv.currentEnv, AppEnvironment.test);
+
+        // Switch back to mock environment
+        await viewModel.handleIntent(const SettingsIntent.switchEnv(AppEnvironment.mock));
+        await Future.delayed(const Duration(milliseconds: 100));
+        expect(container.read(settingsViewModelProvider).currentEnv, AppEnvironment.mock);
+        expect(AppEnv.currentEnv, AppEnvironment.mock);
       });
     });
   });

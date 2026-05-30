@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_core/core.dart';
@@ -7,8 +9,8 @@ import 'package:listen_portfolio_flutter/features/settings/presentation/pages/cr
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/crash_log_list/crash_log_list_state.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/crash_log_list/crash_log_list_view_model.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/crash_log_list/view_log_effect.dart';
-import 'package:listen_portfolio_flutter/shared/base/navigation_provider_impl.dart';
-import 'package:listen_portfolio_flutter/shared/base/share_provider_impl.dart';
+import 'package:listen_portfolio_flutter/shared/shared.dart';
+import 'package:listen_uikit/uikit.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -22,6 +24,20 @@ Future<void> waitForAsyncInit() async {
 void main() {
   // 1. Initialize test binding to support platform channels and plugins in tests
   TestWidgetsFlutterBinding.ensureInitialized();
+
+  setUpAll(() {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
+      const MethodChannel('plugins.flutter.io/path_provider'),
+      (MethodCall methodCall) async {
+        if (methodCall.method == 'getApplicationDocumentsDirectory' ||
+            methodCall.method == 'getTemporaryDirectory') {
+          return 'temp_docs';
+        }
+        return null;
+      },
+    );
+  });
 
   group('CrashLogListViewModel Tests', () {
     late ProviderContainer container;
@@ -97,37 +113,193 @@ void main() {
       expect(shareEffect.files, contains(mockFile.path));
     });
 
-    test('Should handle deleteLog intent and verify stability', () async {
-      // Given - A mock log file instance
+    testWidgets('Should delete log on confirmation', (WidgetTester tester) async {
       final mockFile = MockFile();
+      when(() => mockFile.path).thenReturn('/path/to/crash_1.log');
+      when(() => mockFile.exists()).thenAnswer((_) async => true);
+      when(() => mockFile.delete()).thenAnswer((_) async => mockFile);
 
-      // When - Delete log (CommonDialog returns null in test context, so it should cancel gracefully)
-      await viewModel.handleIntent(CrashLogListIntent.deleteLog(mockFile));
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp(
+            navigatorKey: AppNavConfig.navigatorKey,
+            home: const Scaffold(body: SizedBox()),
+          ),
+        ),
+      );
 
-      // Then - ViewModel handles the cancellation/null result gracefully
-      expect(viewModel.state, isNotNull);
-      if (emittedEffects.isNotEmpty) {
-        expect(emittedEffects.last.toString(), contains('show: false'));
-      }
-    });
-
-    test('Should handle deleteAll intent gracefully without crashing', () async {
-      // When - Trigger delete all crash reports intent
-      await viewModel.handleIntent(const CrashLogListIntent.deleteAll());
-
-      // Then - ViewModel handles the interaction flow gracefully
-      expect(viewModel.state, isNotNull);
-    });
-
-    test('Should handle triggerCrash intent gracefully', () async {
-      // 无 Navigator 时 CommonDialog.showConfirm 立即返回 null，不会调度 CrashManager.scheduleRandomCrash
+      // Clear earlier loading/init effects
       emittedEffects.clear();
-      await viewModel.handleIntent(const CrashLogListIntent.triggerCrash());
-      await Future<void>.delayed(Duration.zero);
 
-      expect(viewModel.state, isNotNull);
-      // 未确认对话框时不应发出“已调度崩溃”等信息类 effect
-      expect(emittedEffects.whereType<MessageEffect>(), isEmpty);
+      final future = viewModel.handleIntent(CrashLogListIntent.deleteLog(mockFile));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AlertDialog), findsOneWidget);
+
+      final okButton = find.text(I18nKeys.delete.tr);
+      expect(okButton, findsOneWidget);
+      await tester.tap(okButton);
+      await tester.pumpAndSettle();
+
+      await future;
+
+      verify(() => mockFile.exists()).called(1);
+      verify(() => mockFile.delete()).called(1);
+
+      final loadingEffects = emittedEffects.whereType<LoadingEffect>().toList();
+      expect(loadingEffects.any((e) => e.show == true), isTrue);
+    });
+
+    testWidgets('Should not delete log if cancelled', (WidgetTester tester) async {
+      final mockFile = MockFile();
+      when(() => mockFile.path).thenReturn('/path/to/crash_1.log');
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp(
+            navigatorKey: AppNavConfig.navigatorKey,
+            home: const Scaffold(body: SizedBox()),
+          ),
+        ),
+      );
+
+      emittedEffects.clear();
+
+      final future = viewModel.handleIntent(CrashLogListIntent.deleteLog(mockFile));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AlertDialog), findsOneWidget);
+
+      final cancelButton = find.text(UIKitConfig.getString(UIKitConfig.kCancel));
+      expect(cancelButton, findsOneWidget);
+      await tester.tap(cancelButton);
+      await tester.pumpAndSettle();
+
+      await future;
+
+      verifyNever(() => mockFile.exists());
+    });
+
+    testWidgets('Should delete all logs on confirmation', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp(
+            navigatorKey: AppNavConfig.navigatorKey,
+            home: const Scaffold(body: SizedBox()),
+          ),
+        ),
+      );
+
+      emittedEffects.clear();
+
+      final future = viewModel.handleIntent(const CrashLogListIntent.deleteAll());
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AlertDialog), findsOneWidget);
+
+      final okButton = find.text(I18nKeys.delete.tr);
+      expect(okButton, findsOneWidget);
+      await tester.tap(okButton);
+      await tester.pumpAndSettle();
+
+      await future;
+
+      final loadingEffects = emittedEffects.whereType<LoadingEffect>().toList();
+      expect(loadingEffects.any((e) => e.show == true), isTrue);
+
+      final infoEffects = emittedEffects.whereType<MessageEffect>().toList();
+      expect(infoEffects.any((e) => e.message == I18nKeys.cacheCleared.tr), isTrue);
+    });
+
+    testWidgets('Should not delete all logs if cancelled', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp(
+            navigatorKey: AppNavConfig.navigatorKey,
+            home: const Scaffold(body: SizedBox()),
+          ),
+        ),
+      );
+
+      emittedEffects.clear();
+
+      final future = viewModel.handleIntent(const CrashLogListIntent.deleteAll());
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AlertDialog), findsOneWidget);
+
+      final cancelButton = find.text(UIKitConfig.getString(UIKitConfig.kCancel));
+      expect(cancelButton, findsOneWidget);
+      await tester.tap(cancelButton);
+      await tester.pumpAndSettle();
+
+      await future;
+
+      final loadingEffects = emittedEffects.whereType<LoadingEffect>().toList();
+      expect(loadingEffects.any((e) => e.show == true), isFalse);
+    });
+
+    testWidgets('Should schedule random crash on confirmation', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp(
+            navigatorKey: AppNavConfig.navigatorKey,
+            home: const Scaffold(body: SizedBox()),
+          ),
+        ),
+      );
+
+      emittedEffects.clear();
+
+      final future = viewModel.handleIntent(const CrashLogListIntent.triggerCrash());
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AlertDialog), findsOneWidget);
+
+      final okButton = find.text(I18nKeys.startTimer.tr);
+      expect(okButton, findsOneWidget);
+      await tester.tap(okButton);
+      await tester.pumpAndSettle();
+
+      await future;
+
+      final messageEffects = emittedEffects.whereType<MessageEffect>().toList();
+      expect(messageEffects, isNotEmpty);
+      expect(messageEffects.last.message, I18nKeys.crashScheduled.tr);
+    });
+
+    testWidgets('Should not schedule random crash if cancelled', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp(
+            navigatorKey: AppNavConfig.navigatorKey,
+            home: const Scaffold(body: SizedBox()),
+          ),
+        ),
+      );
+
+      emittedEffects.clear();
+
+      final future = viewModel.handleIntent(const CrashLogListIntent.triggerCrash());
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AlertDialog), findsOneWidget);
+
+      final cancelButton = find.text(UIKitConfig.getString(UIKitConfig.kCancel));
+      expect(cancelButton, findsOneWidget);
+      await tester.tap(cancelButton);
+      await tester.pumpAndSettle();
+
+      await future;
+
+      final messageEffects = emittedEffects.whereType<MessageEffect>().toList();
+      expect(messageEffects, isEmpty);
     });
 
     test('Should trigger init process automatically via onReady lifecycle', () async {

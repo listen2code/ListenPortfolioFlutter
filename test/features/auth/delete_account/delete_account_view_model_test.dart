@@ -1,17 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/delete_account_request_model.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
+import 'package:listen_portfolio_flutter/features/auth/domain/usecases/delete_account_use_case.dart';
+import 'package:listen_portfolio_flutter/features/auth/presentation/provider/auth_provider.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/delete_account/delete_account_intent.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/delete_account/delete_account_view_model.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
+import 'package:listen_uikit/uikit.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+class MockDeleteAccountUseCase extends Mock implements DeleteAccountUseCase {}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  
+
+  late MockDeleteAccountUseCase mockUseCase;
+
+  setUpAll(() {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
+      const MethodChannel('plugins.flutter.io/path_provider'),
+      (MethodCall methodCall) async {
+        if (methodCall.method == 'getApplicationDocumentsDirectory' ||
+            methodCall.method == 'getTemporaryDirectory') {
+          return 'temp_docs';
+        }
+        return null;
+      },
+    );
+    registerFallbackValue(const DeleteAccountRequestModel(userId: ''));
+  });
+
+  setUp(() {
+    mockUseCase = MockDeleteAccountUseCase();
+  });
+
   group('DeleteAccountViewModel Tests', () {
     late ProviderContainer container;
     late DeleteAccountViewModel viewModel;
@@ -22,13 +51,17 @@ void main() {
       await SpUtil.init(prefix: 'test_');
 
       // Create ProviderContainer and get ViewModel
-      container = ProviderContainer();
+      container = ProviderContainer(
+        overrides: [
+          deleteAccountUseCaseProvider.overrideWith((ref) => mockUseCase),
+        ],
+      );
       viewModel = container.read(deleteAccountViewModelProvider.notifier);
     });
 
     tearDown(() async {
       // Wait for any pending async operations before disposing
-      await Future.delayed(Duration(milliseconds: 100));
+      await Future.delayed(const Duration(milliseconds: 100));
       container.dispose();
     });
 
@@ -60,22 +93,7 @@ void main() {
 
       // Then - State should remain unchanged
       expect(viewModel.state.isConfirmed, isFalse);
-    });
-
-    test('Should handle deleteAccount intent gracefully when confirmed', () async {
-      // Given - State is confirmed: true
-      await viewModel.onIntent(const DeleteAccountIntent.toggleConfirm());
-
-      // When - Trigger deleteAccount (will fail due to no BuildContext, but should handle gracefully)
-      try {
-        await viewModel.onIntent(const DeleteAccountIntent.deleteAccount());
-      } catch (e) {
-        // Expected to fail in test environment due to no BuildContext
-        // This is normal - the important thing is that it doesn't crash
-      }
-
-      // Then - State should remain confirmed
-      expect(viewModel.state.isConfirmed, isTrue);
+      verifyNever(() => mockUseCase.call(param: any(named: 'param')));
     });
 
     test('Should maintain state consistency across multiple operations', () async {
@@ -94,6 +112,153 @@ void main() {
 
       // Then - State should be consistent
       expect(viewModel.state.isConfirmed, isTrue);
+    });
+
+    testWidgets('Should delete account on confirmation and success', (WidgetTester tester) async {
+      // Setup user logged in
+      authManager.login(const UserModel(id: 'test-user-id', name: 'Test User'));
+      expect(authManager.state.isGuest, isFalse);
+
+      // Define mock usecase success behavior
+      when(() => mockUseCase.call(param: any(named: 'param')))
+          .thenAnswer((_) async => const Right(null));
+
+      // Bind effect collection to verify effects
+      final List<BaseEffect> emittedEffects = [];
+      viewModel.onBindEffect((effect) => emittedEffects.add(effect));
+
+      // Build MaterialApp with AppNavConfig.navigatorKey
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp(
+            navigatorKey: AppNavConfig.navigatorKey,
+            home: const Scaffold(body: SizedBox()),
+          ),
+        ),
+      );
+
+      // Set view model state to confirmed: true
+      await viewModel.onIntent(const DeleteAccountIntent.toggleConfirm());
+
+      // Trigger delete account without awaiting it (so we don't hang)
+      final future = viewModel.onIntent(const DeleteAccountIntent.deleteAccount());
+
+      // Pump to render the dialog
+      await tester.pumpAndSettle();
+
+      // Verify dialog is shown
+      expect(find.byType(AlertDialog), findsOneWidget);
+
+      // Find and tap the OK/confirm button
+      final okButton = find.text(I18nKeys.deleteAccount.tr);
+      expect(okButton, findsOneWidget);
+      await tester.tap(okButton);
+
+      // Pump and settle to let dialog close and UseCase execute
+      await tester.pumpAndSettle();
+
+      // Await the future to ensure it completed
+      await future;
+
+      // Verify UseCase was called with correct parameters
+      verify(() => mockUseCase.call(
+            param: any(
+              named: 'param',
+              that: isA<DeleteAccountRequestModel>().having((m) => m.userId, 'userId', 'test-user-id'),
+            ),
+          )).called(1);
+
+      // Verify authManager logout was called (status is loggedOut)
+      expect(authManager.state.isGuest, isTrue);
+
+      // Verify success effects
+      final messageEffects = emittedEffects.whereType<MessageEffect>().toList();
+      expect(messageEffects, isNotEmpty);
+      expect(messageEffects.last.message, I18nKeys.deleteAccountSuccess.tr);
+
+      final navEffects = emittedEffects.whereType<NavigationEffect>().toList();
+      expect(navEffects, isNotEmpty);
+      expect(navEffects.last.target, equals(Routes.login));
+      expect(navEffects.last.isReplace, isTrue);
+    });
+
+    testWidgets('Should not delete account if dialog is cancelled', (WidgetTester tester) async {
+      authManager.login(const UserModel(id: 'test-user-id', name: 'Test User'));
+      expect(authManager.state.isGuest, isFalse);
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp(
+            navigatorKey: AppNavConfig.navigatorKey,
+            home: const Scaffold(body: SizedBox()),
+          ),
+        ),
+      );
+
+      await viewModel.onIntent(const DeleteAccountIntent.toggleConfirm());
+
+      final future = viewModel.onIntent(const DeleteAccountIntent.deleteAccount());
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AlertDialog), findsOneWidget);
+
+      // Cancel button
+      final cancelButton = find.text(UIKitConfig.getString(UIKitConfig.kCancel));
+      expect(cancelButton, findsOneWidget);
+      await tester.tap(cancelButton);
+      await tester.pumpAndSettle();
+
+      await future;
+
+      // Verify UseCase was NOT called
+      verifyNever(() => mockUseCase.call(param: any(named: 'param')));
+      // Still logged in
+      expect(authManager.state.isGuest, isFalse);
+    });
+
+    testWidgets('Should handle failure on delete account', (WidgetTester tester) async {
+      authManager.login(const UserModel(id: 'test-user-id', name: 'Test User'));
+      expect(authManager.state.isGuest, isFalse);
+
+      // Mock failure
+      when(() => mockUseCase.call(param: any(named: 'param')))
+          .thenAnswer((_) async => Left(ServerApiFailure('Failed to delete')));
+
+      final List<BaseEffect> emittedEffects = [];
+      viewModel.onBindEffect((effect) => emittedEffects.add(effect));
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp(
+            navigatorKey: AppNavConfig.navigatorKey,
+            home: const Scaffold(body: SizedBox()),
+          ),
+        ),
+      );
+
+      await viewModel.onIntent(const DeleteAccountIntent.toggleConfirm());
+
+      final future = viewModel.onIntent(const DeleteAccountIntent.deleteAccount());
+      await tester.pumpAndSettle();
+
+      final okButton = find.text(I18nKeys.deleteAccount.tr);
+      await tester.tap(okButton);
+      await tester.pumpAndSettle();
+
+      await future;
+
+      // Verify UseCase was called
+      verify(() => mockUseCase.call(param: any(named: 'param'))).called(1);
+      // Still logged in
+      expect(authManager.state.isGuest, isFalse);
+
+      // Verify error effect
+      final messageEffects = emittedEffects.whereType<MessageEffect>().toList();
+      expect(messageEffects, isNotEmpty);
+      expect(messageEffects.last.message, I18nKeys.deleteAccountFailed.tr);
     });
   });
 }
