@@ -9,7 +9,7 @@ ENV=${2:-"dev"}         # Second argument: mock, dev, test, prod
 
 # Validate environment
 if [[ ! "$ENV" =~ ^(mock|dev|test|prod)$ ]]; then
-    echo ">>> Error: Invalid environment '$ENV'. Must be one of: dev, test, prod"
+    echo ">>> Error: Invalid environment '$ENV'. Must be one of: mock, dev, test, prod"
     exit 1
 fi
 
