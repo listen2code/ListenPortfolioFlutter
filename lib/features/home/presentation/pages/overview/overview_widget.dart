@@ -138,7 +138,7 @@ class OverviewWidget extends StatelessWidget {
   Widget _buildWelcomeHeader(BuildContext context, UserModel? userModel, OverviewState? state) {
     final accentColor = context.accentColor;
     final String name = userModel?.name ?? AppConstants.author;
-    final String jobTitle = state?.aboutMe?.jobTitle ?? "Senior Android / Flutter Engineer";
+    final String jobTitle = state?.aboutMe?.jobTitle ?? 'Senior Android / Flutter Engineer';
     final String graduationYear = state?.aboutMe?.graduationYear ?? '2013';
     final String major = state?.aboutMe?.major?.tr ?? I18nKeys.softwareEngineering.tr;
 

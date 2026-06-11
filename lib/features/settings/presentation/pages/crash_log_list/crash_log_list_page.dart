@@ -62,7 +62,7 @@ class CrashLogListPage extends ConsumerWidget {
         return ListView.separated(
           padding: EdgeInsets.all(16.f),
           itemCount: state.logs.length,
-          separatorBuilder: (_, __) => SizedBox(height: 12.f),
+          separatorBuilder: (_, _) => SizedBox(height: 12.f),
           itemBuilder: (context, index) {
             final file = state.logs[index];
             final fileName = file.path.split('/').last;

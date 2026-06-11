@@ -174,7 +174,7 @@ class AppearancePage extends ConsumerWidget {
   }
 
   Widget _buildColorOption(AppearanceViewModel? viewModel, Color color, Color currentAccentColor) {
-    final isSelected = currentAccentColor.value == color.value;
+    final isSelected = currentAccentColor.toARGB32() == color.toARGB32();
     return Center(
       child: GestureDetector(
         onTap: () => viewModel?.handleIntent(AppearanceIntent.setAccentColor(color)),
@@ -200,7 +200,7 @@ class AppearancePage extends ConsumerWidget {
     AppearanceViewModel? viewModel,
     Color currentAccentColor,
   ) {
-    final isPreset = SettingManager.accentColors.any((c) => c.value == currentAccentColor.value);
+    final isPreset = SettingManager.accentColors.any((c) => c.toARGB32() == currentAccentColor.toARGB32());
     final isSelected = !isPreset;
 
     return Center(
