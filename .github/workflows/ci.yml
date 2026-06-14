@@ -305,41 +305,27 @@ jobs:
         fi
         echo "environment=$ENV" >> $GITHUB_OUTPUT
         
-    - name: Build Debug APK
+    - name: Create Keystore Directory
+      run: mkdir -p android/keystore
+      
+    - name: Decode Keystore
       run: |
-        echo "Building debug APK for ${{ steps.env.outputs.environment }} environment"
+        echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android/keystore/key.jks
         
-        # Find the correct Java home directory
-        JAVA_HOME_DIR=$(dirname $(dirname $(readlink -f $(which java))))
-        echo "Found Java home: $JAVA_HOME_DIR"
-        
-        # Set environment variables for GitHub Actions
-        export JAVA_HOME="$JAVA_HOME_DIR"
-        export ANDROID_HOME="/usr/local/lib/android/sdk"
-        export PATH="$JAVA_HOME/bin:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$PATH"
-        
-        # Create output directory
-        mkdir -p apkOutput
-        
-        # Build debug APK with single architecture (arm64-v8a) for faster build and smaller size
-        echo "Building debug APK with arm64-v8a architecture only..."
-        flutter build apk --debug \
-          --target-platform android-arm64 \
-          --dart-define=APP_ENV=${{ steps.env.outputs.environment }} \
-          --dart-define=APP_VERSION=$(grep '^version: ' pubspec.yaml | cut -d ' ' -f 2 | cut -d '+' -f 1)
-        
-        # Find and copy the built APK
-        APK_FILE=$(find build/app/outputs/flutter-apk -name "app-debug.apk" | head -n 1)
-        if [[ -n "$APK_FILE" ]]; then
-          cp "$APK_FILE" "apkOutput/lPortfolio-${{ steps.env.outputs.environment }}-debug-arm64.apk"
-          echo ">>> Build successful. Output: apkOutput/lPortfolio-${{ steps.env.outputs.environment }}-debug-arm64.apk"
-          echo ">>> File size: $(du -h apkOutput/lPortfolio-${{ steps.env.outputs.environment }}-debug-arm64.apk | cut -f1)"
-        else
-          echo ">>> Error: APK file not found"
-          echo ">>> Build directory contents:"
-          find build -name "*.apk" 2>/dev/null || echo "No APK files found"
-          exit 1
-        fi
+    - name: Create keystore.properties
+      run: |
+        cat > android/keystore/keystore.properties << EOF
+        storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}
+        keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}
+        storeFile=key.jks
+        EOF
+
+    - name: Build APK via script
+      run: |
+        sed -i 's/\r$//' buildAndroid.sh
+        chmod +x buildAndroid.sh
+        ./buildAndroid.sh apk ${{ steps.env.outputs.environment }}
         
     - name: Get APK info
       id: apk_info
@@ -539,11 +525,12 @@ jobs:
           echo "should_deploy=true" >> $GITHUB_OUTPUT
         fi
         
-    - name: Build Release AAB
+    - name: Build Release AAB via script
       if: steps.check_version.outputs.should_deploy == 'true'
       run: |
-        flutter build appbundle --release \
-          --dart-define=APP_ENV=prod
+        sed -i 's/\r$//' buildAndroid.sh
+        chmod +x buildAndroid.sh
+        ./buildAndroid.sh bundle prod
           
     - name: Upload to Google Play Internal
       if: steps.check_version.outputs.should_deploy == 'true'
@@ -551,8 +538,8 @@ jobs:
       with:
         serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_KEY }}
         packageName: com.listen.portfolio.listen_portfolio_flutter
-        releaseFiles: build/app/outputs/bundle/release/app-release.aab
-        track: internal
+        releaseFiles: apkOutput/lPortfolio-prod-release.aab
+        tracks: internal
         status: completed
         
   skip-build:
