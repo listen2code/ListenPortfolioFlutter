@@ -113,6 +113,7 @@
 - Material You 动态取色
 - 指纹 / 生物识别登录
 - Google 第三方登录
+- Firebase Push 推送通知（INotificationService 核心抽象与 FCM/APNs 接入）
 
 ### 2. 体验与平台能力
 
