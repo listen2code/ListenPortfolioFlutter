@@ -512,7 +512,7 @@ jobs:
 
     - name: Get Next Version Code from Google Play
       id: gp_version
-      uses: mmachado53/google-play-next-version-code@v1.0.0
+      uses: mmachado53/google-play-next-version-code@v0.0.4
       with:
         serviceAccountJsonFile: service_account.json
         packageName: com.listen.portfolio.listen_portfolio_flutter
