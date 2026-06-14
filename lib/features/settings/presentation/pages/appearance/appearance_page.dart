@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_core/core.dart';
-import '../../../../../shared/shared.dart';
 import 'package:listen_uikit/uikit.dart';
 
+import '../../../../../shared/shared.dart';
 import 'appearance_intent.dart';
 import 'appearance_state.dart';
 import 'appearance_view_model.dart';
@@ -234,7 +234,7 @@ class AppearancePage extends ConsumerWidget {
   void _showColorPickerDialog(BuildContext context, AppearanceViewModel? viewModel, Color initialColor) {
     Color selectedColor = initialColor;
 
-    CommonDialog.showCustom(
+    CommonDialog.showCustom<void>(
       title: I18nKeys.selectColor.tr,
       body: StatefulBuilder(
         builder: (context, setDialogState) {
@@ -251,13 +251,13 @@ class AppearancePage extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              _buildRGBBSlider('R', selectedColor.red, (val) {
+              _buildRGBBSlider('R', (selectedColor.r * 255.0).round().clamp(0, 255), (val) {
                 setDialogState(() => selectedColor = selectedColor.withRed(val.toInt()));
               }),
-              _buildRGBBSlider('G', selectedColor.green, (val) {
+              _buildRGBBSlider('G', (selectedColor.g * 255.0).round().clamp(0, 255), (val) {
                 setDialogState(() => selectedColor = selectedColor.withGreen(val.toInt()));
               }),
-              _buildRGBBSlider('B', selectedColor.blue, (val) {
+              _buildRGBBSlider('B', (selectedColor.b * 255.0).round().clamp(0, 255), (val) {
                 setDialogState(() => selectedColor = selectedColor.withBlue(val.toInt()));
               }),
             ],
@@ -266,13 +266,13 @@ class AppearancePage extends ConsumerWidget {
       ),
       actions: [
         TextButton(
-          onPressed: () => AppNav.back(),
+          onPressed: () => AppNav.back<void>(),
           child: Text(I18nKeys.cancel.tr, style: const TextStyle(color: Colors.grey)),
         ),
         TextButton(
           onPressed: () {
             viewModel?.handleIntent(AppearanceIntent.setAccentColor(selectedColor));
-            AppNav.back();
+            AppNav.back<void>();
           },
           child: Text(I18nKeys.ok.tr, style: const TextStyle(fontWeight: FontWeight.bold)),
         ),

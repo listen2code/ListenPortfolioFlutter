@@ -5,7 +5,7 @@ publish_to: 'none'
 version: 1.0.10
 
 environment:
-  sdk: ^3.10.1
+  sdk: ^3.12.1
 
 dependencies:
   flutter:
@@ -13,8 +13,8 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  listen_core: ^0.0.4
-  listen_uikit: ^0.0.3
+  listen_core: ^0.0.5
+  listen_uikit: ^0.0.4
 
   # UI
   cupertino_icons: ^1.0.8
@@ -44,8 +44,8 @@ dependencies:
   connectivity_plus: ^7.0.0
   intl: ^0.20.2
   quick_actions: ^1.0.10
-  device_info_plus: ^12.3.0
-  package_info_plus: ^9.0.0
+  device_info_plus: ^13.1.0
+  package_info_plus: ^10.1.0
 
   # Routing
   path_provider: ^2.1.5
@@ -56,7 +56,7 @@ dependencies:
   cached_network_image: ^3.4.1
   flutter_svg: ^2.2.3
   uuid: ^4.5.3
-  share_plus: ^12.0.1
+  share_plus: ^13.1.0
   visibility_detector: ^0.4.0+2
 
 dev_dependencies:
