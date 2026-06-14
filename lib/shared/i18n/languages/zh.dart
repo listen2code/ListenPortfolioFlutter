@@ -157,4 +157,22 @@ final Map<String, String> zh = {
   I18nKeys.viewReport: '查看报告',
   I18nKeys.dismiss: '忽略',
   I18nKeys.safetyResetMsg: '正在触发安全重置...',
+
+  // Error Codes
+  I18nKeys.errNetwork: '网络连接失败，请检查您的网络设置',
+  I18nKeys.errTimeout: '网络请求超时，请稍后重试',
+  I18nKeys.errServerError: '服务器内部错误，请稍后再试',
+  I18nKeys.errTooManyRequests: '您的操作过于频繁，请稍后再试',
+  I18nKeys.errInvalidCredentials: '用户名或密码错误',
+  I18nKeys.errAccountNotFound: '未找到该账户',
+  I18nKeys.errAccountLocked: '账户已被锁定，请联系管理员',
+  I18nKeys.errSessionExpired: '登录已失效，请重新登录',
+  I18nKeys.errAccessDenied: '无权访问此资源',
+  I18nKeys.errEmailInvalid: '请输入有效的邮箱地址',
+  I18nKeys.errPasswordTooShort: '密码长度必须至少为 8 位',
+  I18nKeys.errPasswordsNotMatch: '两次输入的密码不一致',
+  I18nKeys.errUsernameExists: '该用户名已被使用',
+  I18nKeys.errEmailRegistered: '该邮箱已被注册',
+  I18nKeys.errCurrentPasswordIncorrect: '原密码输入错误',
+  I18nKeys.errDeleteAccountFailed: '账户注销失败，请稍后重试',
 };

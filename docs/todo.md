@@ -47,22 +47,25 @@
 
 ### 3. 错误契约落地
 
-**现状**：`error-codes-reference.md`、`messageId -> i18n`、`ErrorMetrics / ErrorInjector` 还主要停留在设计阶段。  
+**状态**：✅ 已完成（2026-06-14）  
+**现状**：已打通从“网络数据层错误码（`messageId`）”到“用户层友好文案（`tr`）”的翻译与阻断通道。  
 **目标**：先把最核心的错误码与错误文案映射能力做成真实代码能力。  
 **为什么现在做**：这直接影响跨端一致性、可维护性与后续框架沉淀。  
-**验收标准**：至少完成一条从后端 `messageId` 到 Flutter 展示文案的真实闭环。
+**验收标准**：在宿主 App 中拦截并映射 `Failure` 变体，支持多语言动态翻译与回退机制，并在 ViewModels 中统一引入，且通过了完整的测试校验。
+
 
 ### 4. 测试补强
 
-**现状**：测试策略有方向，但覆盖度与关键链路验证仍不足。  
+**状态**：✅ 已完成（2026-06-14）  
+**现状**：已补齐并加固了最容易出错的核心链路，完成了单元测试和端到端测试闭环。  
 **目标**：优先补强最容易出错的核心链路。  
 **为什么现在做**：没有测试，很多“框架优势”都只是口头优势。  
-**验收标准**：新增并稳定运行以下测试：
+**验收标准**：已新增并稳定运行以下测试：
 
-- `_AuthInterceptor` 401 并发队列测试
-- `CrashManager` Safe Mode 管道测试
-- i18n key 完整性测试
-- 至少一条 mock env 下的集成主流程测试
+- `_AuthInterceptor` 401 并发队列测试 (在 `auth_interceptor_test.dart` 中完全覆盖并跑通)
+- `CrashManager` Safe Mode 管道测试 (在 `crash_manager_test.dart` 中完全覆盖并跑通)
+- i18n key 完整性测试 (在 `i18n_test.dart` 中实现 Key 与 Translation-Map 比对并完全跑通)
+- mock env 下的集成主流程测试 (已新增并在 `integration_flow_test.dart` 中跑通 E2E 完整生命周期)
 
 ### 5. 可观测性闭环 MVP
 

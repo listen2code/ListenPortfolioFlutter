@@ -157,4 +157,22 @@ final Map<String, String> ja = {
   I18nKeys.viewReport: 'レポート表示',
   I18nKeys.dismiss: '閉じる',
   I18nKeys.safetyResetMsg: '安全リセットを実行しています...',
+
+  // Error Codes
+  I18nKeys.errNetwork: 'ネットワーク接続に失敗しました。接続設定を確認してください。',
+  I18nKeys.errTimeout: 'タイムアウトしました。しばらくしてからもう一度お試しください。',
+  I18nKeys.errServerError: 'サーバー内部エラーが発生しました。しばらくしてからもう一度お試しください。',
+  I18nKeys.errTooManyRequests: 'リクエストが多すぎます。しばらくしてからもう一度お試しください。',
+  I18nKeys.errInvalidCredentials: 'ユーザー名またはパスワードが正しくありません。',
+  I18nKeys.errAccountNotFound: 'アカウントが見つかりません。',
+  I18nKeys.errAccountLocked: 'アカウントがロックされています。管理者にお問い合わせください。',
+  I18nKeys.errSessionExpired: 'セッションの期限が切れました。再度ログインしてください。',
+  I18nKeys.errAccessDenied: 'このリソースへのアクセス権限がありません。',
+  I18nKeys.errEmailInvalid: '有効なメールアドレスを入力してください。',
+  I18nKeys.errPasswordTooShort: 'パスワードは8文字以上で入力してください。',
+  I18nKeys.errPasswordsNotMatch: 'パスワードが一致しません。',
+  I18nKeys.errUsernameExists: 'このユーザー名はすでに使用されています。',
+  I18nKeys.errEmailRegistered: 'このメールアドレスはすでに登録されています。',
+  I18nKeys.errCurrentPasswordIncorrect: '現在のパスワードが正しくありません。',
+  I18nKeys.errDeleteAccountFailed: 'アカウントの削除に失敗しました。しばらくしてからもう一度お試しください。',
 };

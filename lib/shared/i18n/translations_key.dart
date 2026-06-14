@@ -190,4 +190,25 @@ class I18nKeys {
 
   // General terms
   static const String account = 'Account';
+
+  // Error Codes
+  static const String errNetwork = 'NET_0001';
+  static const String errTimeout = 'NET_0002';
+  static const String errServerError = 'SRV_0100';
+  static const String errTooManyRequests = 'SRV_0104';
+  
+  static const String errInvalidCredentials = 'AUTH_0300';
+  static const String errAccountNotFound = 'AUTH_0301';
+  static const String errAccountLocked = 'AUTH_0302';
+  static const String errSessionExpired = 'AUTH_0303';
+  static const String errAccessDenied = 'AUTH_0305';
+  
+  static const String errEmailInvalid = 'VAL_0400';
+  static const String errPasswordTooShort = 'VAL_0401';
+  static const String errPasswordsNotMatch = 'VAL_0402';
+  
+  static const String errUsernameExists = 'BIZ_0500';
+  static const String errEmailRegistered = 'BIZ_0501';
+  static const String errCurrentPasswordIncorrect = 'BIZ_0502';
+  static const String errDeleteAccountFailed = 'BIZ_0503';
 }

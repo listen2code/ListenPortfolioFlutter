@@ -13,7 +13,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  listen_core: ^0.0.5
+  listen_core: ^0.0.6
   listen_uikit: ^0.0.4
 
   # UI
@@ -100,3 +100,10 @@ flutter:
     - assets/mock/v1/post/auth/
     - assets/mock/v1/post/user/
     - assets/mock/images/
+
+dependency_overrides:
+  listen_core:
+    path: ../ListenCore
+  listen_uikit:
+    path: ../ListenUiKit
+
