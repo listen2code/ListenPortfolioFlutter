@@ -73,7 +73,7 @@ ListenCore/lib/
 
 ### 2.1 🔴 `DeviceInfoImpl.create()` 不支持 Web/Desktop
 
-```dart
+```text
 // device_info.dart:22-28
 static Future<IDeviceInfo> create() async {
   final plugin = DeviceInfoPlugin();
@@ -135,7 +135,7 @@ String trArgs(List<dynamic> args) {
 }
 ```
 
-**问题**：只有 `%s` 占位符替换，没有 ICU MessageFormat 支持。对于 "You have {count, plural, one {1 item} other {{count} items}}" 无法处理。
+**问题**：只有 `%s` 占位符替换，没有 ICU MessageFormat 支持。对于 {% raw %}"You have {count, plural, one {1 item} other {{count} items}}"{% endraw %} 无法处理。
 **影响**：对于简单 App 够用，但多语言复杂场景（日语的计数词、阿拉伯语的复数规则）会碰壁。
 **建议**：短期不改（够用），但在文档中声明限制，标记为 future enhancement。
 
@@ -265,7 +265,7 @@ test/ 目录下：0 个测试文件
 
 ### 3.7 🟡 P2 — 路由系统缺少类型安全参数
 
-```dart
+```text
 // app_nav.dart:56-59
 static T? getParam<T>(String key) {
   if (_currentArgs is Map<String, dynamic>) {

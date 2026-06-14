@@ -42,7 +42,7 @@ final class DeleteAccountViewModelProvider
 }
 
 String _$deleteAccountViewModelHash() =>
-    r'eee1c587f8a2adef7795a282d66e4584d9a711d9';
+    r'ddc37ef90b97b7048fda08c70698c385475a8475';
 
 abstract class _$DeleteAccountViewModel extends $Notifier<DeleteAccountState> {
   DeleteAccountState build();

@@ -42,7 +42,7 @@ final class ChangePasswordViewModelProvider
 }
 
 String _$changePasswordViewModelHash() =>
-    r'7b81e3e8c4608fb5fc585b6bc634e7f7fde9331d';
+    r'4ec5c692ba23927ab162f74b6a0dc9cae5c51a3f';
 
 abstract class _$ChangePasswordViewModel
     extends $Notifier<ChangePasswordState> {

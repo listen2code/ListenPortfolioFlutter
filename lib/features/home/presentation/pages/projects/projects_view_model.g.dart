@@ -41,7 +41,7 @@ final class ProjectsViewModelProvider
   }
 }
 
-String _$projectsViewModelHash() => r'a3490e29a298395d3a1a064b73014a4ae85edd16';
+String _$projectsViewModelHash() => r'af3808c2c12e4d9b2ed35bb672b14b43a9f0a0b8';
 
 abstract class _$ProjectsViewModel extends $Notifier<ProjectsState> {
   ProjectsState build();

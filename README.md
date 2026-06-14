@@ -98,7 +98,7 @@ lib/
 ## 🚀 快速开始
 
 ```bash
-# 环境要求：Flutter 3.38.3+，Dart 3.10.1+
+# 环境要求：Flutter 3.44.1+，Dart 3.12.1+
 flutter pub get
 
 # 生成代码
