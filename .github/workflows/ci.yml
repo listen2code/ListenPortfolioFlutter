@@ -515,7 +515,7 @@ jobs:
     - name: Upload to Google Play Internal
       uses: r0adkll/upload-google-play@v1
       with:
-        serviceAccountJson: ${{ secrets.PLAY_SERVICE_ACCOUNT_KEY }}
+        serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_KEY }}
         packageName: com.listen.portfolio.listen_portfolio_flutter
         releaseFiles: build/app/outputs/bundle/release/app-release.aab
         track: internal
