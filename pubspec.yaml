@@ -101,9 +101,3 @@ flutter:
     - assets/mock/v1/post/user/
     - assets/mock/images/
 
-dependency_overrides:
-  listen_core:
-    path: ../ListenCore
-  listen_uikit:
-    path: ../ListenUiKit
-
