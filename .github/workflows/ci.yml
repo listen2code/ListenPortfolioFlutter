@@ -507,25 +507,22 @@ jobs:
         storeFile=key.jks
         EOF
         
-    - name: Create service account JSON file
-      run: echo '${{ secrets.PLAY_SERVICE_ACCOUNT_KEY }}' > service_account.json
-
-    - name: Get Next Version Code from Google Play
-      id: gp_version
-      uses: mmachado53/google-play-next-version-code@v0.0.4
-      with:
-        serviceAccountJsonFile: service_account.json
-        packageName: com.listen.portfolio.listen_portfolio_flutter
-
-    - name: Remove service account JSON file
-      run: rm service_account.json
-
     - name: Check if Version Already Uploaded
       id: check_version
+      env:
+        PLAY_SERVICE_ACCOUNT_KEY: ${{ secrets.PLAY_SERVICE_ACCOUNT_KEY }}
       run: |
+        # Get latest version code from Google Play
+        LATEST_VERSION_CODE=$(node tools/get_play_version.js)
+        echo "Latest version code on Google Play: $LATEST_VERSION_CODE"
+        NEXT_VERSION_CODE=$(( LATEST_VERSION_CODE + 1 ))
+        echo "Next Version Code required by Google Play: $NEXT_VERSION_CODE"
+        
+        # Get version name from pubspec.yaml
         VNAME=$(grep '^version: ' pubspec.yaml | cut -d ' ' -f 2 | cut -d '+' -f 1)
         echo "Version name in pubspec.yaml: $VNAME"
         
+        # Calculate project version code (major*10000 + minor*100 + patch)
         IFS='.' read -r -a parts <<< "$VNAME"
         major=${parts[0]:-0}
         minor=${parts[1]:-0}
@@ -533,11 +530,8 @@ jobs:
         PROJECT_VERSION_CODE=$(( major * 10000 + minor * 100 + patch ))
         echo "Calculated Project Version Code: $PROJECT_VERSION_CODE"
         
-        NEXT_VERSION_CODE=${{ steps.gp_version.outputs.nextVersionCode }}
-        echo "Next Version Code required by Google Play: $NEXT_VERSION_CODE"
-        
         if [ $PROJECT_VERSION_CODE -lt $NEXT_VERSION_CODE ]; then
-          echo "Current version code $PROJECT_VERSION_CODE has already been used on Google Play."
+          echo "Current version code $PROJECT_VERSION_CODE has already been used on Google Play (latest is $LATEST_VERSION_CODE)."
           echo "Skipping deployment..."
           echo "should_deploy=false" >> $GITHUB_OUTPUT
         else
