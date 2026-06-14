@@ -39,7 +39,7 @@ jobs:
       id: check
       run: |
         # Initialize variables
-        SHOULD_BUILD_APK="false"
+        SHOULD_BUILD_APK="true"
         ENVIRONMENT="mock"
         
         # Check if force build
@@ -465,6 +465,61 @@ jobs:
           🤖 This release was automatically created.
         draft: false
         prerelease: true
+
+  deploy-to-google-play:
+    needs: [flutter-test, dependency-analysis]
+    if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop') && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'zulu'
+        java-version: '17'
+        cache: 'gradle'
+        
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.44.1'
+        cache: 'true'
+        
+    - name: Install dependencies
+      run: flutter pub get
+      
+    - name: Create Keystore Directory
+      run: mkdir -p android/keystore
+      
+    - name: Decode Keystore
+      run: |
+        echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android/keystore/key.jks
+        
+    - name: Create keystore.properties
+      run: |
+        cat > android/keystore/keystore.properties << EOF
+        storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}
+        keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}
+        storeFile=key.jks
+        EOF
+        
+    - name: Build Release AAB
+      run: |
+        flutter build appbundle --release \
+          --dart-define=APP_ENV=prod
+          
+    - name: Upload to Google Play Internal
+      uses: r0adkll/upload-google-play@v1
+      with:
+        serviceAccountJson: ${{ secrets.PLAY_SERVICE_ACCOUNT_KEY }}
+        packageName: com.listen.portfolio.listen_portfolio_flutter
+        releaseFiles: build/app/outputs/bundle/release/app-release.aab
+        track: internal
+        status: completed
         
   skip-build:
     needs: check-conditions
