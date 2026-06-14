@@ -39,7 +39,7 @@ jobs:
       id: check
       run: |
         # Initialize variables
-        SHOULD_BUILD_APK="true"
+        SHOULD_BUILD_APK="false"
         ENVIRONMENT="mock"
         
         # Check if force build
