@@ -29,7 +29,7 @@
 | P0 | **Mock 数据真实化** | 3h | [aboutMe.json](cci:7://file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/assets/mock/v1/get/aboutMe.json:0:0-0:0) 替换为真实履历（公司可脱敏）；[projects.json](cci:7://file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/assets/mock/v1/get/projects.json:0:0-0:0) 后端技术栈改为 Spring Boot；[user.json](cci:7://file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/assets/mock/v1/get/user.json:0:0-0:0) 补 `messageId` |
 | P0 | **README 精简优化** | 4h | 当前 692 行太长。顶部加截图 → 一句话定位 → 技术亮点（5 条）→ 架构图 → Quick Start → 详细说明折叠 |
 | P1 | **CI 加 flutter test** | 2h | 当前 CI 缺少测试步骤，31 个测试文件是你的优势，必须跑起来并显示 badge |
-| P1 | **Release APK 签名** | 3h | 配置 keystore + CI release 构建，为 Google Play 正式发布做准备 |
+| P1 | ~~**Release APK 签名**~~ | 3h | ✅ 已在 CI 流程中配置 keystore 解密，成功实现 Release 签名构建 |
 
 **Phase 1 交付物：**
 - GitHub 首页有截图、有 CI badge（analyze ✅ test ✅ build ✅）

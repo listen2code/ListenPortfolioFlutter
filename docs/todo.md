@@ -100,7 +100,6 @@
 
 - Widget tests：登录流程、Settings、Crash logs
 - Golden tests：UIKit 组件与关键页面
-- Release APK 构建与签名配置
 - 隐私政策页面
 
 ## Later
@@ -135,7 +134,6 @@
 
 ### 5. 工程化扩展
 
-- Google Play 发布流程自动化
 - CD：产物上传到 S3 + Release notes 自动化
 - Channel plugin 示例
 - JNI/NDK 底层能力样例
@@ -157,6 +155,8 @@
 - Log overlay
 - Settings 的语言 / 环境 / 清缓存能力
 - 依赖边界治理与 dartdoc 生成
+- Release APK 构建与签名配置（CI 流程已跑通，支持自动解密签名）
+- Google Play 发布流程自动化（CI 自动比对商店版本、编译 AAB 并发布至 Internal 通道）
 
 ### 暂时降级的想法池条目
 
