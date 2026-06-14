@@ -507,12 +507,52 @@ jobs:
         storeFile=key.jks
         EOF
         
+    - name: Create service account JSON file
+      run: echo '${{ secrets.PLAY_SERVICE_ACCOUNT_KEY }}' > service_account.json
+
+    - name: Get Next Version Code from Google Play
+      id: gp_version
+      uses: mmachado53/google-play-next-version-code@v1.0.0
+      with:
+        serviceAccountJsonFile: service_account.json
+        packageName: com.listen.portfolio.listen_portfolio_flutter
+
+    - name: Remove service account JSON file
+      run: rm service_account.json
+
+    - name: Check if Version Already Uploaded
+      id: check_version
+      run: |
+        VNAME=$(grep '^version: ' pubspec.yaml | cut -d ' ' -f 2 | cut -d '+' -f 1)
+        echo "Version name in pubspec.yaml: $VNAME"
+        
+        IFS='.' read -r -a parts <<< "$VNAME"
+        major=${parts[0]:-0}
+        minor=${parts[1]:-0}
+        patch=$(echo "${parts[2]:-0}" | tr -cd '0-9')
+        PROJECT_VERSION_CODE=$(( major * 10000 + minor * 100 + patch ))
+        echo "Calculated Project Version Code: $PROJECT_VERSION_CODE"
+        
+        NEXT_VERSION_CODE=${{ steps.gp_version.outputs.nextVersionCode }}
+        echo "Next Version Code required by Google Play: $NEXT_VERSION_CODE"
+        
+        if [ $PROJECT_VERSION_CODE -lt $NEXT_VERSION_CODE ]; then
+          echo "Current version code $PROJECT_VERSION_CODE has already been used on Google Play."
+          echo "Skipping deployment..."
+          echo "should_deploy=false" >> $GITHUB_OUTPUT
+        else
+          echo "Current version code $PROJECT_VERSION_CODE is valid."
+          echo "should_deploy=true" >> $GITHUB_OUTPUT
+        fi
+        
     - name: Build Release AAB
+      if: steps.check_version.outputs.should_deploy == 'true'
       run: |
         flutter build appbundle --release \
           --dart-define=APP_ENV=prod
           
     - name: Upload to Google Play Internal
+      if: steps.check_version.outputs.should_deploy == 'true'
       uses: r0adkll/upload-google-play@v1
       with:
         serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_KEY }}
