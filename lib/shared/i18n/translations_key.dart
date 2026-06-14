@@ -191,6 +191,13 @@ class I18nKeys {
   // General terms
   static const String account = 'Account';
 
+  // Extracted UI Terms
+  static const String detailedCv = 'Detailed CV';
+  static const String appDesign = 'App Design';
+  static const String sourceCode = 'Source Code';
+  static const String errCouldNotLaunch = 'Could not launch %s';
+  static const String locationJapanTokyo = 'Japan / Tokyo';
+
   // Error Codes
   static const String errNetwork = 'NET_0001';
   static const String errTimeout = 'NET_0002';

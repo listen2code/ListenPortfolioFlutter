@@ -466,7 +466,7 @@ class OverviewWidget extends StatelessWidget {
                   onSuccess: () => homeViewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.aboutMe)),
                 );
               },
-              subtitle: 'Detailed CV',
+              subtitle: I18nKeys.detailedCv.tr,
               blurLevel: AuthBlurLevel.low,
             ),
             SizedBox(width: 12.f),
@@ -476,7 +476,7 @@ class OverviewWidget extends StatelessWidget {
               Icons.account_tree_outlined,
               Colors.orange,
               () => homeViewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.architecture)),
-              subtitle: 'App Design',
+              subtitle: I18nKeys.appDesign.tr,
             ),
           ],
         ),

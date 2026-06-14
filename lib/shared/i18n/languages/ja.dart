@@ -175,4 +175,11 @@ final Map<String, String> ja = {
   I18nKeys.errEmailRegistered: 'このメールアドレスはすでに登録されています。',
   I18nKeys.errCurrentPasswordIncorrect: '現在のパスワードが正しくありません。',
   I18nKeys.errDeleteAccountFailed: 'アカウントの削除に失敗しました。しばらくしてからもう一度お試しください。',
+
+  // Extracted UI Terms
+  I18nKeys.detailedCv: '詳細な履歴書',
+  I18nKeys.appDesign: 'アプリ設計',
+  I18nKeys.sourceCode: 'ソースコード',
+  I18nKeys.errCouldNotLaunch: '%s を起動できませんでした',
+  I18nKeys.locationJapanTokyo: '日本 / 東京',
 };

@@ -175,4 +175,11 @@ final Map<String, String> zh = {
   I18nKeys.errEmailRegistered: '该邮箱已被注册',
   I18nKeys.errCurrentPasswordIncorrect: '原密码输入错误',
   I18nKeys.errDeleteAccountFailed: '账户注销失败，请稍后重试',
+
+  // Extracted UI Terms
+  I18nKeys.detailedCv: '详细简历',
+  I18nKeys.appDesign: '应用设计',
+  I18nKeys.sourceCode: '源码',
+  I18nKeys.errCouldNotLaunch: '无法启动 %s',
+  I18nKeys.locationJapanTokyo: '日本 / 东京',
 };

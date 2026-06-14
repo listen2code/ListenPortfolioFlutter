@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:listen_core/core.dart';
 import '../../../data/models/project_model.dart';
 import 'projects_intent.dart';
 import 'projects_state.dart';
@@ -206,7 +207,7 @@ class ProjectsWidget extends StatelessWidget {
                         child: _buildActionChip(
                           context,
                           Icons.code,
-                          'Source Code',
+                          I18nKeys.sourceCode.tr,
                           baseColor,
                           onPressed: () => _launchURL(context, project.githubUrl!),
                         ),
@@ -273,7 +274,7 @@ class ProjectsWidget extends StatelessWidget {
     final Uri url = Uri.parse(urlString);
     if (!await launchUrl(url)) {
       if (context.mounted) {
-        CommonToast.show('Could not launch $urlString');
+        CommonToast.show(I18nKeys.errCouldNotLaunch.trArgs([urlString]));
       }
     }
   }
