@@ -31,11 +31,11 @@ class ProjectsViewModel extends _$ProjectsViewModel with ViewModelMixin<Projects
 
   Future<void> _onRefresh() async {
     await call(
-      ref.execute(getProjectsUseCaseProvider),
+      ref.execute<List<ProjectModel>, BaseParam>(getProjectsUseCaseProvider),
       showLoading: true,
       loadingType: LoadingType.page,
       onSuccess: (projects) {
-        updateState(state.copyWith(projects: projects as List<ProjectModel>, isInitialLoaded: true));
+        updateState(state.copyWith(projects: projects, isInitialLoaded: true));
       },
     );
   }

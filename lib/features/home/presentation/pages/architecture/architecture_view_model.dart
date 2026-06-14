@@ -34,25 +34,23 @@ class ArchitectureViewModel extends _$ArchitectureViewModel
     emitEffect(LoadingEffect(true, type: LoadingType.page));
 
     // Simulate loading delay
-    await Future.delayed(const Duration(milliseconds: 800));
+    await Future<void>.delayed(const Duration(milliseconds: 800));
 
     final sections = [
       ArchitectureSection(
         title: I18nKeys.cleanMVITitle.tr,
         icon: Icons.layers_outlined,
-        content:
-            'The app follows Clean Architecture principles to separate concerns into Data, Domain, and Presentation layers. '
-            'On the Presentation layer, the MVI (Model-View-Intent) pattern ensures unidirectional data flow.',
+        content: I18nKeys.cleanMviDesc.tr,
       ),
       ArchitectureSection(
         title: I18nKeys.coreLibrariesTitle.tr,
         icon: Icons.library_books_outlined,
         content: '', // Container for libs
-        libs: const [
-          ArchitectureLibItem(name: 'Riverpod', desc: 'State management & DI'),
-          ArchitectureLibItem(name: 'Freezed', desc: 'Code generation for immutable states'),
-          ArchitectureLibItem(name: 'Dio & Retrofit', desc: 'Type-safe networking'),
-          ArchitectureLibItem(name: 'Fpdart', desc: 'Functional programming (Either/Option)'),
+        libs: [
+          ArchitectureLibItem(name: 'Riverpod', desc: I18nKeys.descRiverpod.tr),
+          ArchitectureLibItem(name: 'Freezed', desc: I18nKeys.descFreezed.tr),
+          ArchitectureLibItem(name: 'Dio & Retrofit', desc: I18nKeys.descDioRetrofit.tr),
+          ArchitectureLibItem(name: 'Fpdart', desc: I18nKeys.descFpdart.tr),
         ],
       ),
       ArchitectureSection(
@@ -65,8 +63,7 @@ class ArchitectureViewModel extends _$ArchitectureViewModel
       ArchitectureSection(
         title: I18nKeys.backendDevOpsTitle.tr,
         icon: Icons.cloud_done_outlined,
-        content:
-            'The backend services are deployed on AWS using a serverless approach. Key services include Lambda, API Gateway, and DynamoDB.',
+        content: I18nKeys.backendDevOpsDesc.tr,
       ),
     ];
 

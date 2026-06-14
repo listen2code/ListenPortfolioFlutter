@@ -171,7 +171,7 @@ class CrashLogListPage extends ConsumerWidget {
   void _viewLog(BuildContext context, File file) async {
     final content = await file.readAsString();
     if (!context.mounted) return;
-    showModalBottomSheet(
+    showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,

@@ -176,10 +176,19 @@ final Map<String, String> ja = {
   I18nKeys.errCurrentPasswordIncorrect: '現在のパスワードが正しくありません。',
   I18nKeys.errDeleteAccountFailed: 'アカウントの削除に失敗しました。しばらくしてからもう一度お試しください。',
 
-  // Extracted UI Terms
   I18nKeys.detailedCv: '詳細な履歴書',
   I18nKeys.appDesign: 'アプリ設計',
   I18nKeys.sourceCode: 'ソースコード',
   I18nKeys.errCouldNotLaunch: '%s を起動できませんでした',
   I18nKeys.locationJapanTokyo: '日本 / 東京',
+
+  I18nKeys.cleanMviDesc: 'このアプリは、クリーンアーキテクチャの原則に従い、データ層、ドメイン層、プレゼンテーション層に関心を分離しています。プレゼンテーション層では、MVI（Model-View-Intent）パターンにより単方向データフローを保証します。',
+  I18nKeys.descRiverpod: '状態管理と依存性注入',
+  I18nKeys.descFreezed: '不変状態のためのコード生成',
+  I18nKeys.descDioRetrofit: '型安全なネットワーク',
+  I18nKeys.descFpdart: '関数型プログラミング (Either/Option)',
+  I18nKeys.backendDevOpsDesc: 'バックエンドサービスは、サーバーレスアプローチを使用してAWS上にデプロイされています。主なサービスには、Lambda、API Gateway、DynamoDBなどがあります。',
+  I18nKeys.logoutSuccess: 'ログアウト成功！',
+  I18nKeys.sessionExpired: 'セッションの期限が切れました',
+  I18nKeys.appLogs: 'アプリログ',
 };

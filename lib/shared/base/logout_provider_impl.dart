@@ -10,7 +10,7 @@ class LogoutProviderImpl extends BaseProvider<LogoutEffect> {
   @override
   void handleEffect(LogoutEffect effect) async {
     // 1. Show an alert if a message is provided (e.g., "Session Expired")
-    CommonToast.show(effect.message ?? 'Session expired', type: ToastType.error);
+    CommonToast.show(effect.message ?? I18nKeys.sessionExpired.tr, type: ToastType.error);
 
     // 2. Perform global logout logic via AuthManager
     // Await ensures credentials are cleared before the next navigation occurs
@@ -25,7 +25,7 @@ class LogoutProviderImpl extends BaseProvider<LogoutEffect> {
       await AppNav.offAll(Routes.home, isReplace: false);
 
       // 4. Fire event to notify HomeViewModel to reset to overview tab
-      eventBus.fire(const CommonEvent(AppConstants.resetOverview));
+      eventBus.fire(const CommonEvent<String>(AppConstants.resetOverview));
     }
   }
 }

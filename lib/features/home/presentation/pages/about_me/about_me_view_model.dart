@@ -60,7 +60,7 @@ class AboutMeViewModel extends _$AboutMeViewModel with ViewModelMixin<AboutMeSta
   /// Updates state with fetched data on success
   Future<void> _onRefresh() async {
     await call(
-      ref.execute(getAboutMeUseCaseProvider),
+      ref.execute<AboutMeModel, BaseParam>(getAboutMeUseCaseProvider),
       showLoading: true,
       loadingType: LoadingType.page,
       onSuccess: (aboutMe) {

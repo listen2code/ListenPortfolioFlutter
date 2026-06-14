@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:listen_core/core.dart';
 import 'package:listen_uikit/uikit.dart';
+import '../i18n/translations_key.dart';
 
 enum LogFilter { all, server, app, perf }
 
 class LogOverlayManager {
+  LogOverlayManager._();
+
   static const String logOverlayKey = 'log_overlay_key';
   static OverlayEntry? _overlayEntry;
   static Offset? _offset;
@@ -79,8 +82,8 @@ class _LogOverlayWidget extends StatefulWidget {
   final Offset? initialWindowOffset;
   final Size? initialWindowSize;
   final bool startExpanded;
-  final Function(Offset) onPositionChanged;
-  final Function(Offset, Size) onWindowChanged;
+  final void Function(Offset) onPositionChanged;
+  final void Function(Offset, Size) onWindowChanged;
   final VoidCallback onClose;
 
   const _LogOverlayWidget({
@@ -304,10 +307,10 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
                 children: [
                   const Icon(Icons.terminal_rounded, color: Colors.greenAccent, size: 18),
                   const SizedBox(width: 10),
-                  const Expanded(
+                  Expanded(
                     child: CommonText(
-                      'App Logs',
-                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                      I18nKeys.appLogs.tr,
+                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
                     ),
                   ),
                   _buildHeaderAction(
@@ -322,7 +325,7 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
                   }),
                   _buildHeaderAction(Icons.copy_rounded, () {
                     Clipboard.setData(ClipboardData(text: LogManager.getAllLogsAsText()));
-                    CommonToast.show('Logs copied');
+                    CommonToast.show(I18nKeys.copiedToClipboard.tr);
                   }),
                   _buildHeaderAction(Icons.delete_sweep_outlined, () => LogManager.clear()),
                   _buildHeaderAction(Icons.close_fullscreen_rounded, () {

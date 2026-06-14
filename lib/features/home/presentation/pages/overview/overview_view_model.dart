@@ -35,7 +35,10 @@ class OverviewViewModel extends _$OverviewViewModel with ViewModelMixin<Overview
     if (authManager.state.isGuest) return;
 
     await callAll(
-      [ref.execute(getProjectsUseCaseProvider), ref.execute(getAboutMeUseCaseProvider)],
+      [
+        ref.execute<List<ProjectModel>, BaseParam>(getProjectsUseCaseProvider),
+        ref.execute<AboutMeModel, BaseParam>(getAboutMeUseCaseProvider),
+      ],
       showLoading: true,
       loadingType: LoadingType.page,
       onSuccess: (results) {

@@ -200,7 +200,7 @@ class AboutMeWidget extends StatelessWidget {
   }
 
   void _showPickerMenu(BuildContext context, AboutMeViewModel viewModel, AboutMeState state) {
-    showModalBottomSheet(
+    showModalBottomSheet<void>(
       context: context,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20.f))),
       builder: (context) {

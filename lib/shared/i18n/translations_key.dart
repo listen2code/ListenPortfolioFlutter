@@ -198,6 +198,16 @@ class I18nKeys {
   static const String errCouldNotLaunch = 'Could not launch %s';
   static const String locationJapanTokyo = 'Japan / Tokyo';
 
+  static const String cleanMviDesc = 'The app follows Clean Architecture principles to separate concerns into Data, Domain, and Presentation layers. On the Presentation layer, the MVI (Model-View-Intent) pattern ensures unidirectional data flow.';
+  static const String descRiverpod = 'State management & DI';
+  static const String descFreezed = 'Code generation for immutable states';
+  static const String descDioRetrofit = 'Type-safe networking';
+  static const String descFpdart = 'Functional programming (Either/Option)';
+  static const String backendDevOpsDesc = 'The backend services are deployed on AWS using a serverless approach. Key services include Lambda, API Gateway, and DynamoDB.';
+  static const String logoutSuccess = 'Logout Success!';
+  static const String sessionExpired = 'Session expired';
+  static const String appLogs = 'App Logs';
+
   // Error Codes
   static const String errNetwork = 'NET_0001';
   static const String errTimeout = 'NET_0002';

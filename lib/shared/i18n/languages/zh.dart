@@ -176,10 +176,19 @@ final Map<String, String> zh = {
   I18nKeys.errCurrentPasswordIncorrect: '原密码输入错误',
   I18nKeys.errDeleteAccountFailed: '账户注销失败，请稍后重试',
 
-  // Extracted UI Terms
   I18nKeys.detailedCv: '详细简历',
   I18nKeys.appDesign: '应用设计',
   I18nKeys.sourceCode: '源码',
   I18nKeys.errCouldNotLaunch: '无法启动 %s',
   I18nKeys.locationJapanTokyo: '日本 / 东京',
+
+  I18nKeys.cleanMviDesc: '该应用遵循整洁架构原则，将关注点分离为数据层、领域层和表示层。在表示层，MVI（Model-View-Intent）模式确保了单向数据流。',
+  I18nKeys.descRiverpod: '状态管理与依赖注入',
+  I18nKeys.descFreezed: '用于不可变状态的代码生成',
+  I18nKeys.descDioRetrofit: '类型安全的网络请求',
+  I18nKeys.descFpdart: '函数式编程 (Either/Option)',
+  I18nKeys.backendDevOpsDesc: '后端服务使用无服务器方案部署在 AWS 上。关键服务包括 Lambda、API Gateway 和 DynamoDB。',
+  I18nKeys.logoutSuccess: '登出成功！',
+  I18nKeys.sessionExpired: '会话已过期',
+  I18nKeys.appLogs: '应用日志',
 };

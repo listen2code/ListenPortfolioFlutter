@@ -26,7 +26,7 @@ class SplashViewModel extends _$SplashViewModel with ViewModelMixin<SplashState,
 
   Future<void> _onInit() async {
     // Artificial delay for splash screen branding
-    await Future.delayed(const Duration(seconds: 2));
+    await Future<void>.delayed(const Duration(seconds: 2));
     emitEffect(NavigationEffect(target: Routes.home, isReplace: true));
   }
 }

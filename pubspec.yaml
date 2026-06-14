@@ -13,8 +13,8 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  listen_core: ^0.0.6
-  listen_uikit: ^0.0.4
+  listen_core: ^0.0.7
+  listen_uikit: ^0.0.5
 
   # UI
   cupertino_icons: ^1.0.8

@@ -16,7 +16,7 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
   @override
   HomeState build() {
     // Subscribe to logout event to reset to overview tab
-    subscribeEvent<CommonEvent>((event) {
+    subscribeEvent<CommonEvent<dynamic>>((event) {
       if (state.currentTab != HomeTab.overview) {
         updateState(state.copyWith(currentTab: HomeTab.overview));
       }
@@ -37,7 +37,7 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
   Future<void> _onRefresh() async {
     emitEffect(LoadingEffect(true));
     // Simulate data loading
-    await Future.delayed(const Duration(milliseconds: 1500));
+    await Future<void>.delayed(const Duration(milliseconds: 1500));
     emitEffect(LoadingEffect(false));
   }
 
@@ -51,13 +51,13 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
 
     if (confirmed == true) {
       await call<void>(
-        ref.execute(logoutUseCaseProvider),
+        ref.execute<void, BaseParam>(logoutUseCaseProvider),
         showLoading: true,
         onSuccess: (_) async {
           if (state.currentTab == HomeTab.aboutMe) {
             updateState(state.copyWith(currentTab: HomeTab.overview));
           }
-          emitEffect(LogoutEffect(to: Routes.login, message: 'Logout Success!'));
+          emitEffect(LogoutEffect(to: Routes.login, message: I18nKeys.logoutSuccess.tr));
         },
       );
     }
