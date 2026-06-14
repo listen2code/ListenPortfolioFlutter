@@ -40,7 +40,7 @@ jobs:
       run: |
         # Initialize variables
         SHOULD_BUILD_APK="false"
-        ENVIRONMENT="dev"
+        ENVIRONMENT="mock"
         
         # Check if force build
         if [[ "${{ github.event.inputs.force_build_apk }}" == "true" ]]; then
