@@ -149,12 +149,19 @@ class AboutMeWidget extends StatelessWidget {
                   border: Border.all(color: accentColor, width: 2.f),
                 ),
                 child: state.imageFile != null
-                    ? CommonImage.file(state.imageFile!, width: 120.f, height: 120.f, borderRadius: 60.f)
+                    ? CommonImage.file(
+                        state.imageFile!,
+                        width: 120.f,
+                        height: 120.f,
+                        borderRadius: 60.f,
+                        semanticLabel: I18nKeys.profilePhotoSemanticLabel.tr,
+                      )
                     : CommonImage.url(
                         authManager.state.user?.avatarUrl ?? '',
                         width: 120.f,
                         height: 120.f,
                         borderRadius: 60.f,
+                        semanticLabel: I18nKeys.profilePhotoSemanticLabel.tr,
                       ),
               ),
               Positioned(
@@ -164,9 +171,10 @@ class AboutMeWidget extends StatelessWidget {
                   color: accentColor,
                   shape: const CircleBorder(),
                   elevation: 4.f,
-                  child: InkWell(
+                  child: CommonClickable(
                     onTap: () => _showPickerMenu(context, viewModel, state),
-                    customBorder: const CircleBorder(),
+                    borderRadius: BorderRadius.circular(20.f),
+                    semanticLabel: I18nKeys.changeProfilePhoto.tr,
                     child: Padding(
                       padding: EdgeInsets.all(8.f),
                       child: Icon(Icons.camera_alt, color: Colors.white, size: 20.f),

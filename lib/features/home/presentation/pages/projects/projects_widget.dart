@@ -128,6 +128,7 @@ class ProjectsWidget extends StatelessWidget {
               width: double.infinity,
               height: 140.f,
               fit: BoxFit.cover,
+              semanticLabel: I18nKeys.projectCoverSemanticLabel.tr,
             )
           else
             Container(
@@ -244,9 +245,10 @@ class ProjectsWidget extends StatelessWidget {
     Color color, {
     required VoidCallback onPressed,
   }) {
-    return InkWell(
+    return CommonClickable(
       onTap: onPressed,
       borderRadius: BorderRadius.circular(10.f),
+      semanticLabel: label,
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 12.f, vertical: 8.f),
         decoration: BoxDecoration(

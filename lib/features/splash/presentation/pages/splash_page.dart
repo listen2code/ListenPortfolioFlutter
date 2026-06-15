@@ -43,6 +43,7 @@ class SplashPage extends ConsumerWidget {
                       height: 120,
                       color: accentColor,
                       colorBlendMode: BlendMode.srcIn,
+                      semanticLabel: I18nKeys.appLogoSemanticLabel.tr,
                     ),
                   ),
                   const SizedBox(height: 24),

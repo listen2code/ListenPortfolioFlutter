@@ -112,11 +112,13 @@ class CrashLogListPage extends ConsumerWidget {
             SizedBox(height: 4.f),
             Text(date, style: const TextStyle(fontSize: 12, color: Colors.grey)),
             SizedBox(height: 4.f),
-            GestureDetector(
+            CommonClickable(
+              ripple: false,
               onTap: () {
                 Clipboard.setData(ClipboardData(text: file.path));
                 CommonToast.show(I18nKeys.copiedToClipboard.tr);
               },
+              semanticLabel: I18nKeys.copiedToClipboard.tr,
               child: Text(
                 file.path,
                 style: TextStyle(
@@ -222,6 +224,7 @@ class _LogDetailsSheet extends StatelessWidget {
                     Clipboard.setData(ClipboardData(text: content));
                     CommonToast.show(I18nKeys.copiedToClipboard.tr);
                   },
+                  tooltip: I18nKeys.copyLogsSemanticLabel.tr,
                 ),
               ],
             ),

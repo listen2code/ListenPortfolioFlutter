@@ -210,6 +210,15 @@ class I18nKeys {
   static const String dynamicColor = 'Dynamic Color';
   static const String dynamicColorSubtitle = 'Use system wallpaper colors (Material You)';
 
+  // Accessibility Semantics
+  static const String appLogoSemanticLabel = 'App Logo';
+  static const String profilePhotoSemanticLabel = 'Profile Photo';
+  static const String projectCoverSemanticLabel = 'Project Cover Image';
+  static const String themeToggleSemanticLabel = 'Toggle theme settings';
+  static const String copyLogsSemanticLabel = 'Copy crash log to clipboard';
+  static const String accentColorOption = 'Accent Color Option';
+  static const String customColorOption = 'Custom Color Option';
+
   // Error Codes
   static const String errNetwork = 'NET_0001';
   static const String errTimeout = 'NET_0002';

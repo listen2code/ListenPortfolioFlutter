@@ -166,6 +166,7 @@ class SettingsPage extends ConsumerWidget {
                         height: 48.f,
                         color: context.accentColor,
                         colorBlendMode: BlendMode.srcIn,
+                        semanticLabel: I18nKeys.appLogoSemanticLabel.tr,
                       ),
                     ),
                     applicationLegalese: '© ${AppConstants.date} ${AppConstants.author}',

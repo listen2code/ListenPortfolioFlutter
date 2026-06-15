@@ -84,6 +84,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       width: 60,
                       height: 60,
                       color: accentColor,
+                      semanticLabel: I18nKeys.appLogoSemanticLabel.tr,
                     ),
                   ),
                 ),

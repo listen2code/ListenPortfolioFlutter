@@ -518,9 +518,10 @@ class OverviewWidget extends StatelessWidget {
       child: Material(
         color: context.theme.cardColor,
         borderRadius: BorderRadius.circular(20.f),
-        child: InkWell(
+        child: CommonClickable(
           onTap: onTap,
           borderRadius: BorderRadius.circular(20.f),
+          semanticLabel: title,
           child: Container(
             padding: EdgeInsets.all(16.f),
             decoration: BoxDecoration(

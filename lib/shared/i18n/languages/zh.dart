@@ -193,4 +193,13 @@ final Map<String, String> zh = {
   I18nKeys.appLogs: '应用日志',
   I18nKeys.dynamicColor: '动态取色',
   I18nKeys.dynamicColorSubtitle: '使用系统壁纸颜色 (Material You)',
+
+  // Accessibility Semantics
+  I18nKeys.appLogoSemanticLabel: '应用图标',
+  I18nKeys.profilePhotoSemanticLabel: '个人头像',
+  I18nKeys.projectCoverSemanticLabel: '项目封面图',
+  I18nKeys.themeToggleSemanticLabel: '切换外观主题设置',
+  I18nKeys.copyLogsSemanticLabel: '复制崩溃日志到剪贴板',
+  I18nKeys.accentColorOption: '强调色选项',
+  I18nKeys.customColorOption: '自定义颜色选项',
 };

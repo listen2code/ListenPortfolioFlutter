@@ -193,4 +193,13 @@ final Map<String, String> ja = {
   I18nKeys.appLogs: 'アプリログ',
   I18nKeys.dynamicColor: '壁紙の色を使用',
   I18nKeys.dynamicColorSubtitle: 'システムの壁紙の色を使用します (Material You)',
+
+  // Accessibility Semantics
+  I18nKeys.appLogoSemanticLabel: 'アプリロゴ',
+  I18nKeys.profilePhotoSemanticLabel: 'プロフィール写真',
+  I18nKeys.projectCoverSemanticLabel: 'プロジェクトのカバー画像',
+  I18nKeys.themeToggleSemanticLabel: 'テーマ設定の切り替え',
+  I18nKeys.copyLogsSemanticLabel: 'クラッシュログをクリップボードにコピー',
+  I18nKeys.accentColorOption: 'アクセントカラーの選択肢',
+  I18nKeys.customColorOption: 'カスタムカラーの選択肢',
 };

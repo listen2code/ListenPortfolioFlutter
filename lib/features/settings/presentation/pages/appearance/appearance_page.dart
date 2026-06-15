@@ -206,7 +206,10 @@ class AppearancePage extends ConsumerWidget {
   Widget _buildColorOption(AppearanceViewModel? viewModel, Color color, Color currentAccentColor) {
     final isSelected = currentAccentColor.toARGB32() == color.toARGB32();
     return Center(
-      child: GestureDetector(
+      child: CommonClickable(
+        ripple: false,
+        selected: isSelected,
+        semanticLabel: I18nKeys.accentColorOption.tr,
         onTap: () => viewModel?.handleIntent(AppearanceIntent.setAccentColor(color)),
         child: Container(
           width: 48,
@@ -234,7 +237,10 @@ class AppearancePage extends ConsumerWidget {
     final isSelected = !isPreset;
 
     return Center(
-      child: GestureDetector(
+      child: CommonClickable(
+        ripple: false,
+        selected: isSelected,
+        semanticLabel: I18nKeys.customColorOption.tr,
         onTap: () => _showColorPickerDialog(context, viewModel, currentAccentColor),
         child: Container(
           width: 48,

@@ -70,9 +70,10 @@ class CommonAuthText extends CommonText {
             ? () => AppNav.tryLogin(onSuccess: () => onTap?.call())
             : onTap;
 
-        return GestureDetector(
+        return CommonClickable(
+          ripple: false,
           onTap: finalTap,
-          behavior: shouldBlur ? HitTestBehavior.opaque : HitTestBehavior.deferToChild,
+          excludeFromSemantics: finalTap == null,
           child: content,
         );
       },

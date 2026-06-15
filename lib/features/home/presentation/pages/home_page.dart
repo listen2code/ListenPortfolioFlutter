@@ -156,24 +156,29 @@ class HomePage extends ConsumerWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white, width: 2.f),
+              Semantics(
+                label: I18nKeys.profilePhotoSemanticLabel.tr,
+                image: true,
+                child: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 2.f),
+                  ),
+                  child: isLoggedIn
+                      ? CommonImage.url(
+                          authManager.state.user?.avatarUrl ?? '',
+                          width: 70.f,
+                          height: 70.f,
+                          borderRadius: 35.f,
+                          excludeFromSemantics: true,
+                        )
+                      : Container(
+                          width: 70.f,
+                          height: 70.f,
+                          decoration: const BoxDecoration(color: Colors.white24, shape: BoxShape.circle),
+                          child: Icon(Icons.person, size: 35.f, color: Colors.white70),
+                        ),
                 ),
-                child: isLoggedIn
-                    ? CommonImage.url(
-                        authManager.state.user?.avatarUrl ?? '',
-                        width: 70.f,
-                        height: 70.f,
-                        borderRadius: 35.f,
-                      )
-                    : Container(
-                        width: 70.f,
-                        height: 70.f,
-                        decoration: const BoxDecoration(color: Colors.white24, shape: BoxShape.circle),
-                        child: Icon(Icons.person, size: 35.f, color: Colors.white70),
-                      ),
               ),
               SizedBox(height: 15.f),
               CommonAuthText(
@@ -197,6 +202,7 @@ class HomePage extends ConsumerWidget {
             child: IconButton(
               icon: Icon(getModeIcon(), color: Colors.white, size: 24.f),
               onPressed: () => AppNav.to(Routes.appearance),
+              tooltip: I18nKeys.themeToggleSemanticLabel.tr,
             ),
           ),
         ],
