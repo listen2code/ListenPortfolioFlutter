@@ -19,6 +19,7 @@ class AppearanceViewModel extends _$AppearanceViewModel
       themeMode: settingManager.themeMode,
       accentColor: settingManager.accentColor,
       fontSize: settingManager.fontSize,
+      useDynamicColor: settingManager.useDynamicColor,
     );
   }
 
@@ -28,6 +29,7 @@ class AppearanceViewModel extends _$AppearanceViewModel
       setThemeMode: _onSetThemeMode,
       setAccentColor: _onSetAccentColor,
       setFontSize: _onSetFontSize,
+      setUseDynamicColor: _onSetUseDynamicColor,
     );
   }
 
@@ -44,5 +46,10 @@ class AppearanceViewModel extends _$AppearanceViewModel
   Future<void> _onSetFontSize(AppFontSize size) async {
     updateState(state.copyWith(fontSize: size));
     await settingManager.setFontSize(size);
+  }
+
+  Future<void> _onSetUseDynamicColor(bool use) async {
+    updateState(state.copyWith(useDynamicColor: use));
+    await settingManager.setUseDynamicColor(use);
   }
 }

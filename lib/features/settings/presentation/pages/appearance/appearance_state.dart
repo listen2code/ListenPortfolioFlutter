@@ -11,6 +11,7 @@ abstract class AppearanceState extends BaseState with _$AppearanceState {
     required ThemeMode themeMode,
     required Color accentColor,
     required AppFontSize fontSize,
+    required bool useDynamicColor,
   }) = _AppearanceState;
   const AppearanceState._();
 }

@@ -19,7 +19,7 @@ class SplashPage extends ConsumerWidget {
       // Handle UI-related lifecycle logic via the new parameter
       lifecycle: _SplashLifecycle(context),
       body: (context, child, viewModel, state) {
-        final accentColor = settingManager.accentColor;
+        final accentColor = context.accentColor;
 
         return Scaffold(
           backgroundColor: context.theme.scaffoldBackgroundColor,

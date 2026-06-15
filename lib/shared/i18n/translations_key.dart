@@ -207,6 +207,8 @@ class I18nKeys {
   static const String logoutSuccess = 'Logout Success!';
   static const String sessionExpired = 'Session expired';
   static const String appLogs = 'App Logs';
+  static const String dynamicColor = 'Dynamic Color';
+  static const String dynamicColorSubtitle = 'Use system wallpaper colors (Material You)';
 
   // Error Codes
   static const String errNetwork = 'NET_0001';

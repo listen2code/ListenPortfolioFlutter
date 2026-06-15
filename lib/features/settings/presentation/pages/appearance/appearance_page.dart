@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_core/core.dart';
@@ -20,70 +21,96 @@ class AppearancePage extends ConsumerWidget {
       body: (context, child, viewModel, state) {
         if (state == null) return const SizedBox.shrink();
 
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildSectionTitle(I18nKeys.themeMode.tr),
-            _buildSettingsCard(context, [
-              _buildThemeOption(
-                context,
-                viewModel,
-                I18nKeys.system.tr,
-                Icons.settings_brightness_outlined,
-                ThemeMode.system,
-                state,
-              ),
-              _buildThemeOption(
-                context,
-                viewModel,
-                I18nKeys.light.tr,
-                Icons.light_mode_outlined,
-                ThemeMode.light,
-                state,
-              ),
-              _buildThemeOption(
-                context,
-                viewModel,
-                I18nKeys.dark.tr,
-                Icons.dark_mode_outlined,
-                ThemeMode.dark,
-                state,
-              ),
-            ]),
-            const SizedBox(height: 25),
-            _buildSectionTitle(I18nKeys.accentColor.tr),
-            _buildSettingsCard(context, [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
-                child: GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: 8,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 4,
-                    mainAxisSpacing: 10,
-                    crossAxisSpacing: 20,
-                    childAspectRatio: 1.0,
-                  ),
-                  itemBuilder: (context, index) {
-                    if (index < 7) {
-                      final color = SettingManager.accentColors[index];
-                      return _buildColorOption(viewModel, color, state.accentColor);
-                    } else {
-                      return _buildCustomColorOption(context, viewModel, state.accentColor);
-                    }
-                  },
+        return SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildSectionTitle(I18nKeys.themeMode.tr),
+              _buildSettingsCard(context, [
+                _buildThemeOption(
+                  context,
+                  viewModel,
+                  I18nKeys.system.tr,
+                  Icons.settings_brightness_outlined,
+                  ThemeMode.system,
+                  state,
                 ),
-              ),
-            ]),
-            const SizedBox(height: 25),
-            _buildSectionTitle(I18nKeys.fontSize.tr),
-            _buildSettingsCard(context, [
-              _buildFontSizeOption(viewModel, I18nKeys.standard.tr, AppFontSize.standard, state),
-              _buildFontSizeOption(viewModel, I18nKeys.large.tr, AppFontSize.large, state),
-            ]),
-            const SizedBox(height: 40),
-          ],
+                _buildThemeOption(
+                  context,
+                  viewModel,
+                  I18nKeys.light.tr,
+                  Icons.light_mode_outlined,
+                  ThemeMode.light,
+                  state,
+                ),
+                _buildThemeOption(
+                  context,
+                  viewModel,
+                  I18nKeys.dark.tr,
+                  Icons.dark_mode_outlined,
+                  ThemeMode.dark,
+                  state,
+                ),
+              ]),
+              const SizedBox(height: 25),
+              _buildSectionTitle(I18nKeys.accentColor.tr),
+              _buildSettingsCard(context, [
+                if (defaultTargetPlatform == TargetPlatform.android)
+                  SwitchListTile(
+                    value: state.useDynamicColor,
+                    onChanged: (value) {
+                      viewModel?.handleIntent(AppearanceIntent.setUseDynamicColor(value));
+                    },
+                    title: Text(I18nKeys.dynamicColor.tr),
+                    subtitle: Text(I18nKeys.dynamicColorSubtitle.tr),
+                    secondary: SizedBox(
+                      width: 20,
+                      child: Icon(
+                        Icons.color_lens_outlined,
+                        color: state.useDynamicColor ? context.accentColor : Colors.grey,
+                      ),
+                    ),
+                    activeThumbColor: context.accentColor,
+                  ),
+                AnimatedOpacity(
+                  opacity: state.useDynamicColor ? 0.5 : 1.0,
+                  duration: const Duration(milliseconds: 200),
+                  child: IgnorePointer(
+                    ignoring: state.useDynamicColor,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
+                      child: GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: 8,
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 4,
+                          mainAxisSpacing: 10,
+                          crossAxisSpacing: 20,
+                          childAspectRatio: 1.0,
+                        ),
+                        itemBuilder: (context, index) {
+                          if (index < 7) {
+                            final color = SettingManager.accentColors[index];
+                            return _buildColorOption(viewModel, color, state.accentColor);
+                          } else {
+                            return _buildCustomColorOption(context, viewModel, state.accentColor);
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ]),
+              const SizedBox(height: 25),
+              _buildSectionTitle(I18nKeys.fontSize.tr),
+              _buildSettingsCard(context, [
+                _buildFontSizeOption(context, viewModel, I18nKeys.standard.tr, AppFontSize.standard, state),
+                _buildFontSizeOption(context, viewModel, I18nKeys.large.tr, AppFontSize.large, state),
+              ]),
+              const SizedBox(height: 40),
+            ],
+          ),
         );
       },
     );
@@ -143,32 +170,35 @@ class AppearancePage extends ConsumerWidget {
     AppearanceState state,
   ) {
     final isSelected = mode == state.themeMode;
+    final accentColor = context.accentColor;
     return ListTile(
-      leading: SizedBox(width: 20, child: Icon(icon, color: isSelected ? state.accentColor : Colors.grey)),
+      leading: SizedBox(width: 20, child: Icon(icon, color: isSelected ? accentColor : Colors.grey)),
       title: Text(label),
-      trailing: isSelected ? Icon(Icons.check_circle, color: state.accentColor) : null,
+      trailing: isSelected ? Icon(Icons.check_circle, color: accentColor) : null,
       onTap: () => viewModel?.handleIntent(AppearanceIntent.setThemeMode(mode)),
     );
   }
 
   Widget _buildFontSizeOption(
+    BuildContext context,
     AppearanceViewModel? viewModel,
     String label,
     AppFontSize fontSize,
     AppearanceState state,
   ) {
     final isSelected = state.fontSize == fontSize;
+    final accentColor = context.accentColor;
     return ListTile(
       leading: SizedBox(
         width: 20,
         child: Icon(
           Icons.text_fields,
           size: fontSize.iconSize,
-          color: isSelected ? state.accentColor : Colors.grey,
+          color: isSelected ? accentColor : Colors.grey,
         ),
       ),
       title: Text(label),
-      trailing: isSelected ? Icon(Icons.check_circle, color: state.accentColor) : null,
+      trailing: isSelected ? Icon(Icons.check_circle, color: accentColor) : null,
       onTap: () => viewModel?.handleIntent(AppearanceIntent.setFontSize(fontSize)),
     );
   }

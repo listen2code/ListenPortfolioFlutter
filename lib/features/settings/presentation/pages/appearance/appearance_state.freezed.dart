@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AppearanceState {
 
- ThemeMode get themeMode; Color get accentColor; AppFontSize get fontSize;
+ ThemeMode get themeMode; Color get accentColor; AppFontSize get fontSize; bool get useDynamicColor;
 /// Create a copy of AppearanceState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $AppearanceStateCopyWith<AppearanceState> get copyWith => _$AppearanceStateCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppearanceState&&(identical(other.themeMode, themeMode) || other.themeMode == themeMode)&&(identical(other.accentColor, accentColor) || other.accentColor == accentColor)&&(identical(other.fontSize, fontSize) || other.fontSize == fontSize));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppearanceState&&(identical(other.themeMode, themeMode) || other.themeMode == themeMode)&&(identical(other.accentColor, accentColor) || other.accentColor == accentColor)&&(identical(other.fontSize, fontSize) || other.fontSize == fontSize)&&(identical(other.useDynamicColor, useDynamicColor) || other.useDynamicColor == useDynamicColor));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,themeMode,accentColor,fontSize);
+int get hashCode => Object.hash(runtimeType,themeMode,accentColor,fontSize,useDynamicColor);
 
 @override
 String toString() {
-  return 'AppearanceState(themeMode: $themeMode, accentColor: $accentColor, fontSize: $fontSize)';
+  return 'AppearanceState(themeMode: $themeMode, accentColor: $accentColor, fontSize: $fontSize, useDynamicColor: $useDynamicColor)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $AppearanceStateCopyWith<$Res>  {
   factory $AppearanceStateCopyWith(AppearanceState value, $Res Function(AppearanceState) _then) = _$AppearanceStateCopyWithImpl;
 @useResult
 $Res call({
- ThemeMode themeMode, Color accentColor, AppFontSize fontSize
+ ThemeMode themeMode, Color accentColor, AppFontSize fontSize, bool useDynamicColor
 });
 
 
@@ -62,12 +62,13 @@ class _$AppearanceStateCopyWithImpl<$Res>
 
 /// Create a copy of AppearanceState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? themeMode = null,Object? accentColor = null,Object? fontSize = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? themeMode = null,Object? accentColor = null,Object? fontSize = null,Object? useDynamicColor = null,}) {
   return _then(_self.copyWith(
 themeMode: null == themeMode ? _self.themeMode : themeMode // ignore: cast_nullable_to_non_nullable
 as ThemeMode,accentColor: null == accentColor ? _self.accentColor : accentColor // ignore: cast_nullable_to_non_nullable
 as Color,fontSize: null == fontSize ? _self.fontSize : fontSize // ignore: cast_nullable_to_non_nullable
-as AppFontSize,
+as AppFontSize,useDynamicColor: null == useDynamicColor ? _self.useDynamicColor : useDynamicColor // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
@@ -152,10 +153,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( ThemeMode themeMode,  Color accentColor,  AppFontSize fontSize)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( ThemeMode themeMode,  Color accentColor,  AppFontSize fontSize,  bool useDynamicColor)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AppearanceState() when $default != null:
-return $default(_that.themeMode,_that.accentColor,_that.fontSize);case _:
+return $default(_that.themeMode,_that.accentColor,_that.fontSize,_that.useDynamicColor);case _:
   return orElse();
 
 }
@@ -173,10 +174,10 @@ return $default(_that.themeMode,_that.accentColor,_that.fontSize);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( ThemeMode themeMode,  Color accentColor,  AppFontSize fontSize)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( ThemeMode themeMode,  Color accentColor,  AppFontSize fontSize,  bool useDynamicColor)  $default,) {final _that = this;
 switch (_that) {
 case _AppearanceState():
-return $default(_that.themeMode,_that.accentColor,_that.fontSize);case _:
+return $default(_that.themeMode,_that.accentColor,_that.fontSize,_that.useDynamicColor);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -193,10 +194,10 @@ return $default(_that.themeMode,_that.accentColor,_that.fontSize);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( ThemeMode themeMode,  Color accentColor,  AppFontSize fontSize)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( ThemeMode themeMode,  Color accentColor,  AppFontSize fontSize,  bool useDynamicColor)?  $default,) {final _that = this;
 switch (_that) {
 case _AppearanceState() when $default != null:
-return $default(_that.themeMode,_that.accentColor,_that.fontSize);case _:
+return $default(_that.themeMode,_that.accentColor,_that.fontSize,_that.useDynamicColor);case _:
   return null;
 
 }
@@ -208,12 +209,13 @@ return $default(_that.themeMode,_that.accentColor,_that.fontSize);case _:
 
 
 class _AppearanceState extends AppearanceState {
-  const _AppearanceState({required this.themeMode, required this.accentColor, required this.fontSize}): super._();
+  const _AppearanceState({required this.themeMode, required this.accentColor, required this.fontSize, required this.useDynamicColor}): super._();
   
 
 @override final  ThemeMode themeMode;
 @override final  Color accentColor;
 @override final  AppFontSize fontSize;
+@override final  bool useDynamicColor;
 
 /// Create a copy of AppearanceState
 /// with the given fields replaced by the non-null parameter values.
@@ -225,16 +227,16 @@ _$AppearanceStateCopyWith<_AppearanceState> get copyWith => __$AppearanceStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppearanceState&&(identical(other.themeMode, themeMode) || other.themeMode == themeMode)&&(identical(other.accentColor, accentColor) || other.accentColor == accentColor)&&(identical(other.fontSize, fontSize) || other.fontSize == fontSize));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppearanceState&&(identical(other.themeMode, themeMode) || other.themeMode == themeMode)&&(identical(other.accentColor, accentColor) || other.accentColor == accentColor)&&(identical(other.fontSize, fontSize) || other.fontSize == fontSize)&&(identical(other.useDynamicColor, useDynamicColor) || other.useDynamicColor == useDynamicColor));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,themeMode,accentColor,fontSize);
+int get hashCode => Object.hash(runtimeType,themeMode,accentColor,fontSize,useDynamicColor);
 
 @override
 String toString() {
-  return 'AppearanceState(themeMode: $themeMode, accentColor: $accentColor, fontSize: $fontSize)';
+  return 'AppearanceState(themeMode: $themeMode, accentColor: $accentColor, fontSize: $fontSize, useDynamicColor: $useDynamicColor)';
 }
 
 
@@ -245,7 +247,7 @@ abstract mixin class _$AppearanceStateCopyWith<$Res> implements $AppearanceState
   factory _$AppearanceStateCopyWith(_AppearanceState value, $Res Function(_AppearanceState) _then) = __$AppearanceStateCopyWithImpl;
 @override @useResult
 $Res call({
- ThemeMode themeMode, Color accentColor, AppFontSize fontSize
+ ThemeMode themeMode, Color accentColor, AppFontSize fontSize, bool useDynamicColor
 });
 
 
@@ -262,12 +264,13 @@ class __$AppearanceStateCopyWithImpl<$Res>
 
 /// Create a copy of AppearanceState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? themeMode = null,Object? accentColor = null,Object? fontSize = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? themeMode = null,Object? accentColor = null,Object? fontSize = null,Object? useDynamicColor = null,}) {
   return _then(_AppearanceState(
 themeMode: null == themeMode ? _self.themeMode : themeMode // ignore: cast_nullable_to_non_nullable
 as ThemeMode,accentColor: null == accentColor ? _self.accentColor : accentColor // ignore: cast_nullable_to_non_nullable
 as Color,fontSize: null == fontSize ? _self.fontSize : fontSize // ignore: cast_nullable_to_non_nullable
-as AppFontSize,
+as AppFontSize,useDynamicColor: null == useDynamicColor ? _self.useDynamicColor : useDynamicColor // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

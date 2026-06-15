@@ -9,9 +9,10 @@ class AppConstants {
   // Setting keys
   static const String themeKey = 'theme_mode';
   static const String accentColorKey = 'accent_color';
-  static const String fontSizeKey = 'font_size_factor';
+  static const String fontSizeKey = 'font_size';
   static const String languageKey = 'language';
-  static const String notificationsKey = 'notifications_enabled';
+  static const String useDynamicColorKey = 'use_dynamic_color';
+  static const String notificationsKey = 'notifications';
 
   // Data keys
   static const String userDataKey = 'user_data';
@@ -20,8 +21,8 @@ class AppConstants {
   static const String loginUsernameKey = 'login_username';
   static const String loginPasswordKey = 'login_password';
   static const String loginRememberMeKey = 'login_remember_me';
-  static const String projectsDataKey = 'projects_data_key';
-  static const String aboutMeDataKey = 'about_me_key';
+  static const String projectsDataKey = 'projects_data';
+  static const String aboutMeDataKey = 'about_me';
 
   // Common keys
   static const String appName = 'lPortfolio';

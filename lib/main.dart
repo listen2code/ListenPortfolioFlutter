@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_core/core.dart';
+import 'package:dynamic_color/dynamic_color.dart';
 import 'shared/shared.dart';
 import 'package:listen_uikit/uikit.dart';
 
@@ -39,26 +40,37 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return BaseSettingPage(
       builder: (context, child) {
-        return BaseMaterialApp(
-          title: AppConstants.appName,
-          debugShowCheckedModeBanner: kDebugMode,
-          theme: AppTheme.getLightTheme(settingManager),
-          darkTheme: AppTheme.getDarkTheme(settingManager),
-          themeMode: settingManager.themeMode,
-          locale: settingManager.locale,
-          supportedLocales: [
-            AppLanguage.english.locale,
-            AppLanguage.chinese.locale,
-            AppLanguage.japanese.locale,
-          ],
-          localizationsDelegates: const [
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          // Use initialRoute instead of home to ensure the first page (SplashPage)
-          // also passes through AppNav.onGenerateRoute and ZoneManager.runPage.
-          initialRoute: Routes.root,
+        return DynamicColorBuilder(
+          builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
+            final useDynamic = settingManager.useDynamicColor;
+            return BaseMaterialApp(
+              title: AppConstants.appName,
+              debugShowCheckedModeBanner: kDebugMode,
+              theme: AppTheme.getLightTheme(
+                settingManager,
+                dynamicColorScheme: useDynamic ? lightDynamic : null,
+              ),
+              darkTheme: AppTheme.getDarkTheme(
+                settingManager,
+                dynamicColorScheme: useDynamic ? darkDynamic : null,
+              ),
+              themeMode: settingManager.themeMode,
+              locale: settingManager.locale,
+              supportedLocales: [
+                AppLanguage.english.locale,
+                AppLanguage.chinese.locale,
+                AppLanguage.japanese.locale,
+              ],
+              localizationsDelegates: const [
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              // Use initialRoute instead of home to ensure the first page (SplashPage)
+              // also passes through AppNav.onGenerateRoute and ZoneManager.runPage.
+              initialRoute: Routes.root,
+            );
+          },
         );
       },
     );

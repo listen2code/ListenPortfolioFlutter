@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
@@ -38,6 +39,7 @@ class SettingManager extends ChangeNotifier {
   Color _accentColor = Colors.blueAccent;
   AppFontSize _fontSize = AppFontSize.standard;
   AppLanguage _language = AppLanguage.system;
+  bool _useDynamicColor = defaultTargetPlatform == TargetPlatform.android;
 
   ThemeMode get themeMode => _themeMode;
 
@@ -48,6 +50,8 @@ class SettingManager extends ChangeNotifier {
   AppLanguage get language => _language;
 
   Locale get locale => _language.locale;
+
+  bool get useDynamicColor => _useDynamicColor;
 
   /// Load settings from SharedPreferences.
   /// Should be called once at app startup.
@@ -67,6 +71,13 @@ class SettingManager extends ChangeNotifier {
     // Load Language
     final langLabel = SpUtil.getString(AppConstants.languageKey);
     _language = AppLanguage.fromLabel(langLabel);
+
+    // Load Dynamic Color
+    final defaultVal = defaultTargetPlatform == TargetPlatform.android;
+    _useDynamicColor = SpUtil.getBool(AppConstants.useDynamicColorKey, defaultValue: defaultVal);
+    if (defaultTargetPlatform != TargetPlatform.android) {
+      _useDynamicColor = false;
+    }
 
     notifyListeners();
   }
@@ -99,11 +110,20 @@ class SettingManager extends ChangeNotifier {
     await SpUtil.put(AppConstants.languageKey, lang.label);
   }
 
+  Future<void> setUseDynamicColor(bool use) async {
+    if (defaultTargetPlatform != TargetPlatform.android) return;
+    if (_useDynamicColor == use) return;
+    _useDynamicColor = use;
+    notifyListeners();
+    await SpUtil.put(AppConstants.useDynamicColorKey, use);
+  }
+
   Future<void> resetSettings() async {
     _themeMode = ThemeMode.system;
     _accentColor = accentColors.first;
     _fontSize = AppFontSize.standard;
     _language = AppLanguage.system;
+    _useDynamicColor = defaultTargetPlatform == TargetPlatform.android;
     notifyListeners();
 
     // This clears everything, so be cautious.
@@ -118,6 +138,7 @@ class SettingManager extends ChangeNotifier {
     await setAccentColor(_accentColor);
     await setFontSize(_fontSize);
     await setLanguage(_language);
+    await setUseDynamicColor(_useDynamicColor);
   }
 }
 

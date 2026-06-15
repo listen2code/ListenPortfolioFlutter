@@ -6,33 +6,34 @@ class AppTheme {
   AppTheme._();
 
   /// Generates Light theme based on accent color and font size factor
-  static ThemeData getLightTheme(SettingManager themeManager) {
+  static ThemeData getLightTheme(SettingManager themeManager, {ColorScheme? dynamicColorScheme}) {
     final accentColor = themeManager.accentColor;
     final fontSizeFactor = themeManager.fontSize.factor;
+    final effectiveAccentColor = dynamicColorScheme?.primary ?? accentColor;
 
     final theme = ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
-      colorScheme: ColorScheme.fromSeed(seedColor: accentColor, brightness: Brightness.light),
-      iconTheme: IconThemeData(color: accentColor),
-      primaryIconTheme: IconThemeData(color: accentColor),
-      listTileTheme: ListTileThemeData(iconColor: accentColor),
+      colorScheme: dynamicColorScheme ?? ColorScheme.fromSeed(seedColor: accentColor, brightness: Brightness.light),
+      iconTheme: IconThemeData(color: effectiveAccentColor),
+      primaryIconTheme: IconThemeData(color: effectiveAccentColor),
+      listTileTheme: ListTileThemeData(iconColor: effectiveAccentColor),
       appBarTheme: const AppBarTheme(centerTitle: true, elevation: 0),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: Colors.white,
-        prefixIconColor: accentColor,
-        suffixIconColor: accentColor,
+        prefixIconColor: effectiveAccentColor,
+        suffixIconColor: effectiveAccentColor,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(15), borderSide: BorderSide.none),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
-          borderSide: BorderSide(color: accentColor, width: 2),
+          borderSide: BorderSide(color: effectiveAccentColor, width: 2),
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: accentColor,
+          backgroundColor: effectiveAccentColor,
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(vertical: 18),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
@@ -48,32 +49,33 @@ class AppTheme {
   }
 
   /// Generates Dark theme based on accent color and font size factor
-  static ThemeData getDarkTheme(SettingManager themeManager) {
+  static ThemeData getDarkTheme(SettingManager themeManager, {ColorScheme? dynamicColorScheme}) {
     final accentColor = themeManager.accentColor;
     final fontSizeFactor = themeManager.fontSize.factor;
+    final effectiveAccentColor = dynamicColorScheme?.primary ?? accentColor;
 
     final theme = ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
-      colorScheme: ColorScheme.fromSeed(seedColor: accentColor, brightness: Brightness.dark),
-      iconTheme: IconThemeData(color: accentColor),
-      primaryIconTheme: IconThemeData(color: accentColor),
-      listTileTheme: ListTileThemeData(iconColor: accentColor),
+      colorScheme: dynamicColorScheme ?? ColorScheme.fromSeed(seedColor: accentColor, brightness: Brightness.dark),
+      iconTheme: IconThemeData(color: effectiveAccentColor),
+      primaryIconTheme: IconThemeData(color: effectiveAccentColor),
+      listTileTheme: ListTileThemeData(iconColor: effectiveAccentColor),
       appBarTheme: const AppBarTheme(centerTitle: true, elevation: 0),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        prefixIconColor: accentColor,
-        suffixIconColor: accentColor,
+        prefixIconColor: effectiveAccentColor,
+        suffixIconColor: effectiveAccentColor,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(15), borderSide: BorderSide.none),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
-          borderSide: BorderSide(color: accentColor, width: 2),
+          borderSide: BorderSide(color: effectiveAccentColor, width: 2),
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: accentColor,
+          backgroundColor: effectiveAccentColor,
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(vertical: 18),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),

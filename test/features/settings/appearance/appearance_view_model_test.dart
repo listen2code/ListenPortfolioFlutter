@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -37,6 +38,7 @@ void main() {
       expect(state.themeMode, ThemeMode.system);
       expect(state.accentColor, isNotNull);
       expect(state.fontSize, isNotNull);
+      expect(state.useDynamicColor, defaultTargetPlatform == TargetPlatform.android);
     });
 
     test('Should update theme mode when setThemeMode intent is handled', () {
@@ -69,6 +71,15 @@ void main() {
       expect(state.fontSize, newFontSize);
     });
 
+    test('Should update useDynamicColor when setUseDynamicColor intent is handled', () {
+      const intent = AppearanceIntent.setUseDynamicColor(true);
+
+      viewModel.handleIntent(intent);
+
+      final state = container.read(appearanceViewModelProvider);
+      expect(state.useDynamicColor, true);
+    });
+
     test('Should handle multiple appearance changes correctly', () {
       final state0 = container.read(appearanceViewModelProvider);
       // Accept the current initial state (could be system or dark based on defaults)
@@ -77,11 +88,13 @@ void main() {
       viewModel.handleIntent(const AppearanceIntent.setThemeMode(ThemeMode.dark));
       viewModel.handleIntent(const AppearanceIntent.setAccentColor(Colors.red));
       viewModel.handleIntent(const AppearanceIntent.setFontSize(AppFontSize.large));
+      viewModel.handleIntent(const AppearanceIntent.setUseDynamicColor(true));
 
       final state = container.read(appearanceViewModelProvider);
       expect(state.themeMode, ThemeMode.dark);
       expect(state.accentColor, Colors.red);
       expect(state.fontSize, AppFontSize.large);
+      expect(state.useDynamicColor, true);
     });
   });
 }

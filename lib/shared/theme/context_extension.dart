@@ -12,8 +12,8 @@ extension BuildContextX on BuildContext {
   /// Shorthand for Theme.of(context).colorScheme
   ColorScheme get colorScheme => theme.colorScheme;
 
-  /// Shorthand for the app's global accent color from settingManager
-  Color get accentColor => settingManager.accentColor;
+  /// Shorthand for the app's global accent color (with dynamic color support)
+  Color get accentColor => theme.colorScheme.primary;
 
   /// Quick check for dark mode
   bool get isDark => theme.brightness == Brightness.dark;

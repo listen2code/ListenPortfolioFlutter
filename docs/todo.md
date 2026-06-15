@@ -110,7 +110,6 @@
 ### 1. 可展示增强项
 
 - Accessibility（a11y）
-- Material You 动态取色
 - 指纹 / 生物识别登录
 - Google 第三方登录
 - Firebase Push 推送通知（INotificationService 核心抽象与 FCM/APNs 接入）
@@ -158,6 +157,7 @@
 - Zone tracing / performance mark
 - Log overlay
 - Settings 的语言 / 环境 / 清缓存能力
+- Material You 动态取色（集成 dynamic_color，支持主题根据系统壁纸自动着色与回退）
 - 依赖边界治理与 dartdoc 生成
 - Release APK 构建与签名配置（CI 流程已跑通，支持自动解密签名）
 - Google Play 发布流程自动化（CI 自动比对商店版本、编译 AAB 并发布至 Internal 通道）

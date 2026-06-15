@@ -191,4 +191,6 @@ final Map<String, String> zh = {
   I18nKeys.logoutSuccess: '登出成功！',
   I18nKeys.sessionExpired: '会话已过期',
   I18nKeys.appLogs: '应用日志',
+  I18nKeys.dynamicColor: '动态取色',
+  I18nKeys.dynamicColorSubtitle: '使用系统壁纸颜色 (Material You)',
 };

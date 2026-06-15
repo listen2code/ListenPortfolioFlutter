@@ -191,4 +191,6 @@ final Map<String, String> ja = {
   I18nKeys.logoutSuccess: 'ログアウト成功！',
   I18nKeys.sessionExpired: 'セッションの期限が切れました',
   I18nKeys.appLogs: 'アプリログ',
+  I18nKeys.dynamicColor: '壁紙の色を使用',
+  I18nKeys.dynamicColorSubtitle: 'システムの壁紙の色を使用します (Material You)',
 };
