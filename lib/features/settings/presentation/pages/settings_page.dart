@@ -152,6 +152,12 @@ class SettingsPage extends ConsumerWidget {
                 ),
                 _buildListTile(
                   context,
+                  icon: Icons.system_update_outlined,
+                  title: I18nKeys.checkUpdates.tr,
+                  onTap: () => viewModel?.handleIntent(const SettingsIntent.checkUpdates()),
+                ),
+                _buildListTile(
+                  context,
                   icon: Icons.info_outline_rounded,
                   title: I18nKeys.licenses.tr,
                   onTap: () => showLicensePage(

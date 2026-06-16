@@ -3,6 +3,9 @@ description: "Portfolio of Listen"
 publish_to: 'none'
 
 version: 1.0.13
+desc: "Add checkUpdate in setting page"
+desc_zh: "新增了检查更新功能"
+desc_ja: "アップデート機能を追加しました"
 
 environment:
   sdk: ^3.12.1

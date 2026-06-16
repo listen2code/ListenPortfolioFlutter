@@ -1,12 +1,19 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/settings_intent.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/settings_state.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/settings_view_model.dart';
+import 'package:listen_portfolio_flutter/features/settings/domain/repositories/settings_repository.dart';
+import 'package:listen_portfolio_flutter/features/settings/presentation/provider/settings_provider.dart';
+import 'package:listen_portfolio_flutter/features/settings/data/models/version_model.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:mocktail/mocktail.dart';
 import '../../../test_helpers/test_setup.dart';
+
+class MockSettingsRepository extends Mock implements SettingsRepository {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -15,6 +22,7 @@ void main() {
     late ProviderContainer container;
     late SettingsViewModel viewModel;
     late ProviderSubscription<SettingsState> subscription;
+    late MockSettingsRepository mockSettingsRepository;
     final List<BaseEffect> emittedEffects = [];
 
     setUp(() async {
@@ -22,7 +30,13 @@ void main() {
       await SpUtil.init(prefix: 'test_');
       await setupTestEnvironment();
 
-      container = ProviderContainer();
+      mockSettingsRepository = MockSettingsRepository();
+
+      container = ProviderContainer(
+        overrides: [
+          settingsRepositoryProvider.overrideWithValue(mockSettingsRepository),
+        ],
+      );
       subscription = container.listen(settingsViewModelProvider, (_, __) {}, fireImmediately: false);
       viewModel = container.read(settingsViewModelProvider.notifier);
       emittedEffects.clear();
@@ -201,5 +215,61 @@ void main() {
         expect(AppEnv.currentEnv, AppEnvironment.mock);
       });
     });
+
+    group('Check Updates Intent', () {
+      setUp(() {
+        Core.packageInfo = DummyPackageInfo('1.0.0');
+      });
+
+      test('should emit LoadingEffect(true) then LoadingEffect(false)', () async {
+        // Arrange
+        when(() => mockSettingsRepository.getLatestVersion()).thenAnswer(
+          (_) async => const Right(
+            VersionModel(
+              version: '1.1.0',
+              buildNumber: 2,
+              url: 'https://example.com',
+              changelog: {'en': 'Test update'},
+            ),
+          ),
+        );
+
+        // Act
+        await viewModel.handleIntent(const SettingsIntent.checkUpdates());
+
+        // Wait for async operations to complete
+        await Future.delayed(const Duration(milliseconds: 150));
+
+        // Assert
+        final loadingEffects = emittedEffects.whereType<LoadingEffect>().toList();
+        expect(loadingEffects.length, greaterThanOrEqualTo(2));
+        expect(loadingEffects.first.show, isTrue);
+        expect(loadingEffects.first.message, I18nKeys.checkingUpdates.tr);
+        expect(loadingEffects.last.show, isFalse);
+      });
+    });
   });
+}
+
+class DummyPackageInfo implements IPackageInfo {
+  final String _version;
+  DummyPackageInfo([this._version = '1.0.0']);
+
+  @override
+  String get appName => 'dummy_app';
+
+  @override
+  String get packageName => 'com.dummy.app';
+
+  @override
+  String get version => _version;
+
+  @override
+  String get buildNumber => '1';
+
+  @override
+  String get fullVersion => '$_version+1';
+
+  @override
+  Map<String, String> toHeaderMap() => {};
 }

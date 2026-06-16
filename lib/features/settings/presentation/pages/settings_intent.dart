@@ -13,5 +13,6 @@ class SettingsIntent extends BaseIntent with _$SettingsIntent {
   const factory SettingsIntent.switchLanguage(AppLanguage language) = _SwitchLanguage;
   const factory SettingsIntent.switchEnv(AppEnvironment env) = _SwitchEnv;
   const factory SettingsIntent.toggleLogOverlay(bool enabled) = _ToggleLogOverlay;
+  const factory SettingsIntent.checkUpdates() = _CheckUpdates;
   const SettingsIntent._();
 }

@@ -202,4 +202,12 @@ final Map<String, String> ja = {
   I18nKeys.copyLogsSemanticLabel: 'クラッシュログをクリップボードにコピー',
   I18nKeys.accentColorOption: 'アクセントカラーの選択肢',
   I18nKeys.customColorOption: 'カスタムカラーの選択肢',
+
+  // Update Check
+  I18nKeys.checkUpdates: 'アップデートを確認',
+  I18nKeys.checkingUpdates: 'アップデートを確認中...',
+  I18nKeys.latestVersion: '最新バージョンです',
+  I18nKeys.updateAvailable: '新しいバージョン %s が利用可能です。アップデートしますか？',
+  I18nKeys.update: 'アップデート',
+  I18nKeys.updateCheckFailed: 'アップデートの確認に失敗しました。後でもう一度お試しください。',
 };

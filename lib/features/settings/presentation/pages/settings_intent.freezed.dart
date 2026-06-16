@@ -55,7 +55,7 @@ extension SettingsIntentPatterns on SettingsIntent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Init value)?  init,TResult Function( _ToggleNotifications value)?  toggleNotifications,TResult Function( _ClearCache value)?  clearCache,TResult Function( _ResetSettings value)?  resetSettings,TResult Function( _SwitchLanguage value)?  switchLanguage,TResult Function( _SwitchEnv value)?  switchEnv,TResult Function( _ToggleLogOverlay value)?  toggleLogOverlay,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Init value)?  init,TResult Function( _ToggleNotifications value)?  toggleNotifications,TResult Function( _ClearCache value)?  clearCache,TResult Function( _ResetSettings value)?  resetSettings,TResult Function( _SwitchLanguage value)?  switchLanguage,TResult Function( _SwitchEnv value)?  switchEnv,TResult Function( _ToggleLogOverlay value)?  toggleLogOverlay,TResult Function( _CheckUpdates value)?  checkUpdates,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Init() when init != null:
@@ -65,7 +65,8 @@ return clearCache(_that);case _ResetSettings() when resetSettings != null:
 return resetSettings(_that);case _SwitchLanguage() when switchLanguage != null:
 return switchLanguage(_that);case _SwitchEnv() when switchEnv != null:
 return switchEnv(_that);case _ToggleLogOverlay() when toggleLogOverlay != null:
-return toggleLogOverlay(_that);case _:
+return toggleLogOverlay(_that);case _CheckUpdates() when checkUpdates != null:
+return checkUpdates(_that);case _:
   return orElse();
 
 }
@@ -83,7 +84,7 @@ return toggleLogOverlay(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Init value)  init,required TResult Function( _ToggleNotifications value)  toggleNotifications,required TResult Function( _ClearCache value)  clearCache,required TResult Function( _ResetSettings value)  resetSettings,required TResult Function( _SwitchLanguage value)  switchLanguage,required TResult Function( _SwitchEnv value)  switchEnv,required TResult Function( _ToggleLogOverlay value)  toggleLogOverlay,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Init value)  init,required TResult Function( _ToggleNotifications value)  toggleNotifications,required TResult Function( _ClearCache value)  clearCache,required TResult Function( _ResetSettings value)  resetSettings,required TResult Function( _SwitchLanguage value)  switchLanguage,required TResult Function( _SwitchEnv value)  switchEnv,required TResult Function( _ToggleLogOverlay value)  toggleLogOverlay,required TResult Function( _CheckUpdates value)  checkUpdates,}){
 final _that = this;
 switch (_that) {
 case _Init():
@@ -93,7 +94,8 @@ return clearCache(_that);case _ResetSettings():
 return resetSettings(_that);case _SwitchLanguage():
 return switchLanguage(_that);case _SwitchEnv():
 return switchEnv(_that);case _ToggleLogOverlay():
-return toggleLogOverlay(_that);case _:
+return toggleLogOverlay(_that);case _CheckUpdates():
+return checkUpdates(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -110,7 +112,7 @@ return toggleLogOverlay(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Init value)?  init,TResult? Function( _ToggleNotifications value)?  toggleNotifications,TResult? Function( _ClearCache value)?  clearCache,TResult? Function( _ResetSettings value)?  resetSettings,TResult? Function( _SwitchLanguage value)?  switchLanguage,TResult? Function( _SwitchEnv value)?  switchEnv,TResult? Function( _ToggleLogOverlay value)?  toggleLogOverlay,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Init value)?  init,TResult? Function( _ToggleNotifications value)?  toggleNotifications,TResult? Function( _ClearCache value)?  clearCache,TResult? Function( _ResetSettings value)?  resetSettings,TResult? Function( _SwitchLanguage value)?  switchLanguage,TResult? Function( _SwitchEnv value)?  switchEnv,TResult? Function( _ToggleLogOverlay value)?  toggleLogOverlay,TResult? Function( _CheckUpdates value)?  checkUpdates,}){
 final _that = this;
 switch (_that) {
 case _Init() when init != null:
@@ -120,7 +122,8 @@ return clearCache(_that);case _ResetSettings() when resetSettings != null:
 return resetSettings(_that);case _SwitchLanguage() when switchLanguage != null:
 return switchLanguage(_that);case _SwitchEnv() when switchEnv != null:
 return switchEnv(_that);case _ToggleLogOverlay() when toggleLogOverlay != null:
-return toggleLogOverlay(_that);case _:
+return toggleLogOverlay(_that);case _CheckUpdates() when checkUpdates != null:
+return checkUpdates(_that);case _:
   return null;
 
 }
@@ -137,7 +140,7 @@ return toggleLogOverlay(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  init,TResult Function( bool enabled)?  toggleNotifications,TResult Function()?  clearCache,TResult Function()?  resetSettings,TResult Function( AppLanguage language)?  switchLanguage,TResult Function( AppEnvironment env)?  switchEnv,TResult Function( bool enabled)?  toggleLogOverlay,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  init,TResult Function( bool enabled)?  toggleNotifications,TResult Function()?  clearCache,TResult Function()?  resetSettings,TResult Function( AppLanguage language)?  switchLanguage,TResult Function( AppEnvironment env)?  switchEnv,TResult Function( bool enabled)?  toggleLogOverlay,TResult Function()?  checkUpdates,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Init() when init != null:
 return init();case _ToggleNotifications() when toggleNotifications != null:
@@ -146,7 +149,8 @@ return clearCache();case _ResetSettings() when resetSettings != null:
 return resetSettings();case _SwitchLanguage() when switchLanguage != null:
 return switchLanguage(_that.language);case _SwitchEnv() when switchEnv != null:
 return switchEnv(_that.env);case _ToggleLogOverlay() when toggleLogOverlay != null:
-return toggleLogOverlay(_that.enabled);case _:
+return toggleLogOverlay(_that.enabled);case _CheckUpdates() when checkUpdates != null:
+return checkUpdates();case _:
   return orElse();
 
 }
@@ -164,7 +168,7 @@ return toggleLogOverlay(_that.enabled);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  init,required TResult Function( bool enabled)  toggleNotifications,required TResult Function()  clearCache,required TResult Function()  resetSettings,required TResult Function( AppLanguage language)  switchLanguage,required TResult Function( AppEnvironment env)  switchEnv,required TResult Function( bool enabled)  toggleLogOverlay,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  init,required TResult Function( bool enabled)  toggleNotifications,required TResult Function()  clearCache,required TResult Function()  resetSettings,required TResult Function( AppLanguage language)  switchLanguage,required TResult Function( AppEnvironment env)  switchEnv,required TResult Function( bool enabled)  toggleLogOverlay,required TResult Function()  checkUpdates,}) {final _that = this;
 switch (_that) {
 case _Init():
 return init();case _ToggleNotifications():
@@ -173,7 +177,8 @@ return clearCache();case _ResetSettings():
 return resetSettings();case _SwitchLanguage():
 return switchLanguage(_that.language);case _SwitchEnv():
 return switchEnv(_that.env);case _ToggleLogOverlay():
-return toggleLogOverlay(_that.enabled);case _:
+return toggleLogOverlay(_that.enabled);case _CheckUpdates():
+return checkUpdates();case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -190,7 +195,7 @@ return toggleLogOverlay(_that.enabled);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  init,TResult? Function( bool enabled)?  toggleNotifications,TResult? Function()?  clearCache,TResult? Function()?  resetSettings,TResult? Function( AppLanguage language)?  switchLanguage,TResult? Function( AppEnvironment env)?  switchEnv,TResult? Function( bool enabled)?  toggleLogOverlay,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  init,TResult? Function( bool enabled)?  toggleNotifications,TResult? Function()?  clearCache,TResult? Function()?  resetSettings,TResult? Function( AppLanguage language)?  switchLanguage,TResult? Function( AppEnvironment env)?  switchEnv,TResult? Function( bool enabled)?  toggleLogOverlay,TResult? Function()?  checkUpdates,}) {final _that = this;
 switch (_that) {
 case _Init() when init != null:
 return init();case _ToggleNotifications() when toggleNotifications != null:
@@ -199,7 +204,8 @@ return clearCache();case _ResetSettings() when resetSettings != null:
 return resetSettings();case _SwitchLanguage() when switchLanguage != null:
 return switchLanguage(_that.language);case _SwitchEnv() when switchEnv != null:
 return switchEnv(_that.env);case _ToggleLogOverlay() when toggleLogOverlay != null:
-return toggleLogOverlay(_that.enabled);case _:
+return toggleLogOverlay(_that.enabled);case _CheckUpdates() when checkUpdates != null:
+return checkUpdates();case _:
   return null;
 
 }
@@ -566,5 +572,37 @@ as bool,
 
 
 }
+
+/// @nodoc
+
+
+class _CheckUpdates extends SettingsIntent {
+  const _CheckUpdates(): super._();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CheckUpdates);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'SettingsIntent.checkUpdates()';
+}
+
+
+}
+
+
+
 
 // dart format on

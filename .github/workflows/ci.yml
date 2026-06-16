@@ -24,6 +24,30 @@ on:
         type: boolean
 
 jobs:
+  update-version-json:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        
+    - name: Setup Dart SDK
+      uses: dart-lang/setup-dart@v1
+      with:
+        sdk: stable
+        
+    - name: Generate version.json
+      run: dart run tool/generate_version_json.dart
+      
+    - name: Commit and Push version.json
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git add version.json
+        git diff-index --quiet HEAD || (git commit -m "Auto-generate version.json [skip ci]" && git push)
+
   check-conditions:
     runs-on: ubuntu-latest
     outputs:
@@ -281,7 +305,10 @@ jobs:
         
     - name: Install dependencies
       run: flutter pub get
-      
+
+    - name: Generate version.json
+      run: dart run tool/generate_version_json.dart
+
     - name: Verify Java installation
       run: |
         echo "=== Java Verification ==="

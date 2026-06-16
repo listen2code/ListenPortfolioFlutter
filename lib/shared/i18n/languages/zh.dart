@@ -202,4 +202,12 @@ final Map<String, String> zh = {
   I18nKeys.copyLogsSemanticLabel: '复制崩溃日志到剪贴板',
   I18nKeys.accentColorOption: '强调色选项',
   I18nKeys.customColorOption: '自定义颜色选项',
+
+  // Update Check
+  I18nKeys.checkUpdates: '检查更新',
+  I18nKeys.checkingUpdates: '正在检查更新...',
+  I18nKeys.latestVersion: '已是最新版本',
+  I18nKeys.updateAvailable: '检测到新版本 %s，是否更新？',
+  I18nKeys.update: '更新',
+  I18nKeys.updateCheckFailed: '检查更新失败，请稍后重试。',
 };

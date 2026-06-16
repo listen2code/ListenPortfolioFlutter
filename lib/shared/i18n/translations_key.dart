@@ -239,4 +239,12 @@ class I18nKeys {
   static const String errEmailRegistered = 'BIZ_0501';
   static const String errCurrentPasswordIncorrect = 'BIZ_0502';
   static const String errDeleteAccountFailed = 'BIZ_0503';
+
+  // Update Check
+  static const String checkUpdates = 'Check for Updates';
+  static const String checkingUpdates = 'Checking for updates...';
+  static const String latestVersion = 'You are on the latest version.';
+  static const String updateAvailable = 'A new version %s is available. Would you like to update?';
+  static const String update = 'Update';
+  static const String updateCheckFailed = 'Failed to check for updates. Please try again later.';
 }

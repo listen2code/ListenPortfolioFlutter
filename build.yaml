@@ -3,12 +3,15 @@ targets:
     builders:
       freezed:
         enabled: true
+        generate_for:
+          - lib/**
         options:
-          # Generate copyWith, ==, hashCode, toString
           union: true
           map: true
       json_serializable:
         enabled: true
+        generate_for:
+          - lib/**
         options:
           any_map: true
           checked: true
@@ -17,5 +20,9 @@ targets:
           explicit_to_json: true
       riverpod_generator:
         enabled: true
+        generate_for:
+          - lib/**
       retrofit_generator:
         enabled: true
+        generate_for:
+          - lib/**
