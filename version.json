@@ -1,10 +1,10 @@
 {
-  "version": "1.0.14",
+  "version": "1.0.15",
   "buildNumber": 1,
   "url": "https://play.google.com/store/apps/details?id=com.listen.portfolio.listen_portfolio_flutter",
   "changelog": {
-    "zh": "新增了检查更新功能",
-    "en": "Add checkUpdate in setting page",
-    "ja": "アップデート機能を追加しました"
+    "zh": "优化通知权限请求时机，统一冷启动与后台点击的路由跳转逻辑",
+    "en": "Improve notification permission timing and unify cold-start/background click routing",
+    "ja": "通知権限リクエストのタイミングを最適化し、コールドスタートとバックグラウンドクリックのルーティングを統一"
   }
 }
