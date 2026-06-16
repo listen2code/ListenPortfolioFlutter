@@ -327,4 +327,4 @@ class FirebaseNotificationServiceImpl implements INotificationService {
   }
 }
 
-final notificationService = FirebaseNotificationServiceImpl();
+INotificationService notificationService = FirebaseNotificationServiceImpl();

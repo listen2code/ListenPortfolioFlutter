@@ -237,9 +237,12 @@ class SettingsPage extends ConsumerWidget {
     // Request permission first to ensure notification banner can display
     await notificationService.requestPermission();
 
-    notificationService.simulateMessageReceived(
-      const NotificationPayload(title: '前台测试通知', body: '这是一个在前台接收的推送通知横幅模拟。', data: {'type': 'test'}),
-    );
+    final service = notificationService;
+    if (service is FirebaseNotificationServiceImpl) {
+      service.simulateMessageReceived(
+        const NotificationPayload(title: '前台测试通知', body: '这是一个在前台接收的推送通知横幅模拟。', data: {'type': 'test'}),
+      );
+    }
   }
 
   String _getEnvLabel(AppEnvironment env) {

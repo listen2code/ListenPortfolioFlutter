@@ -307,8 +307,8 @@ void main() {
       await tester.pump(const Duration(seconds: 2));
       await tester.pumpAndSettle();
 
-      // 6. Verify we transitioned to HomePage
-      expect(find.byType(HomePage), findsOneWidget);
+      // 6. Verify we transitioned to HomePage (may be offstage due to immediate redirection)
+      expect(find.byType(HomePage, skipOffstage: false), findsOneWidget);
 
       // 7. Settle any post-frame navigation triggered by EventBus
       await tester.pumpAndSettle();

@@ -14,6 +14,7 @@ import 'package:mocktail/mocktail.dart';
 import '../../../test_helpers/test_setup.dart';
 
 class MockSettingsRepository extends Mock implements SettingsRepository {}
+class MockNotificationService extends Mock implements INotificationService {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -23,7 +24,17 @@ void main() {
     late SettingsViewModel viewModel;
     late ProviderSubscription<SettingsState> subscription;
     late MockSettingsRepository mockSettingsRepository;
+    late MockNotificationService mockNotificationService;
+    late INotificationService originalNotificationService;
     final List<BaseEffect> emittedEffects = [];
+
+    setUpAll(() {
+      originalNotificationService = notificationService;
+    });
+
+    tearDownAll(() {
+      notificationService = originalNotificationService;
+    });
 
     setUp(() async {
       SharedPreferences.setMockInitialValues({});
@@ -31,6 +42,14 @@ void main() {
       await setupTestEnvironment();
 
       mockSettingsRepository = MockSettingsRepository();
+      mockNotificationService = MockNotificationService();
+
+      // Stub default notification service behaviors
+      when(() => mockNotificationService.requestPermission()).thenAnswer((_) async => true);
+      when(() => mockNotificationService.subscribeToTopic(any())).thenAnswer((_) async {});
+      when(() => mockNotificationService.unsubscribeFromTopic(any())).thenAnswer((_) async {});
+
+      notificationService = mockNotificationService;
 
       container = ProviderContainer(
         overrides: [
