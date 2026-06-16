@@ -74,6 +74,8 @@ dev_dependencies:
   
   # Custom Lint Rules
   custom_lint: 0.8.1
+  dependency_lint_rules:
+    path: tools/lint_rules
 
   # Code Generation
   build_runner: ^2.4.13
