@@ -23,12 +23,12 @@ class _SettingsRemoteDataSource implements SettingsRemoteDataSource {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<VersionModel> getLatestVersion() async {
-    final _extra = <String, dynamic>{};
+  Future<String> getLatestVersion() async {
+    final _extra = <String, dynamic>{'no_auth': true};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<VersionModel>(
+    final _options = _setStreamType<String>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -38,10 +38,10 @@ class _SettingsRemoteDataSource implements SettingsRemoteDataSource {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late VersionModel _value;
+    final _result = await _dio.fetch<String>(_options);
+    late String _value;
     try {
-      _value = VersionModel.fromJson(_result.data!);
+      _value = _result.data!;
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;

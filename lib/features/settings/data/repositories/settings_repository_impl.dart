@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:fpdart/fpdart.dart';
 import 'package:listen_core/core.dart';
 import '../datasources/settings_remote_data_source.dart';
@@ -13,7 +14,9 @@ class SettingsRepositoryImpl with BaseRepository implements SettingsRepository {
   Future<Either<Failure, VersionModel>> getLatestVersion() async {
     return await safeCall<VersionModel>(
       call: () async {
-        final versionModel = await remoteDataSource.getLatestVersion();
+        final versionJson = await remoteDataSource.getLatestVersion();
+        final Map<String, dynamic> jsonMap = jsonDecode(versionJson) as Map<String, dynamic>;
+        final versionModel = VersionModel.fromJson(jsonMap);
         return BaseResponseModel<VersionModel>(
           result: ApiResult.success,
           body: versionModel,

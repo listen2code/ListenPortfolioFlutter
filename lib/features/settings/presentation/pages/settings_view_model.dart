@@ -111,6 +111,7 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
     final currentVersion = Core.packageInfo.version;
     final hasUpdate = _isNewerVersion(currentVersion, versionModel.version);
 
+    emitEffect(LoadingEffect(false));
     if (hasUpdate) {
       final localeCode = settingManager.language.locale.languageCode;
       final changelogText = versionModel.changelog[localeCode] ?? versionModel.changelog['en'] ?? '';
@@ -127,10 +128,7 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
         }
       }
     } else {
-      await CommonDialog.showMessage(
-        title: I18nKeys.checkUpdates.tr,
-        message: I18nKeys.latestVersion.tr,
-      );
+      await CommonDialog.showMessage(title: I18nKeys.checkUpdates.tr, message: I18nKeys.latestVersion.tr);
     }
   }
 

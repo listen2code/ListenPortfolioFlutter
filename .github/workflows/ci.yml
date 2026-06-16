@@ -39,7 +39,7 @@ jobs:
         sdk: stable
         
     - name: Generate version.json
-      run: dart run tool/generate_version_json.dart
+      run: dart run tools/generate_version_json.dart
       
     - name: Commit and Push version.json
       run: |
@@ -307,7 +307,7 @@ jobs:
       run: flutter pub get
 
     - name: Generate version.json
-      run: dart run tool/generate_version_json.dart
+      run: dart run tools/generate_version_json.dart
 
     - name: Verify Java installation
       run: |
