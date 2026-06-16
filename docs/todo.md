@@ -161,6 +161,7 @@
 - 依赖边界治理与 dartdoc 生成
 - Release APK 构建与签名配置（CI 流程已跑通，支持自动解密签名）
 - Google Play 发布流程自动化（CI 自动比对商店版本、编译 AAB 并发布至 Internal 通道）
+- 自动检查更新流程（CI 提取 pubspec.yaml 自动生成/托管 version.json，App 端安全免签解析，已全量覆盖单元测试）
 
 ### 暂时降级的想法池条目
 

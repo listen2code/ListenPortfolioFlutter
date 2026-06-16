@@ -29,7 +29,7 @@ ListenPortfolioFlutter 是一个基于 Flutter 构建的个人技术作品集应
 
 - **认证流程**：登录、注册、忘记密码、修改密码、账号注销、游客模式
 - **作品集展示**：Overview、AboutMe、Projects、Architecture 页面
-- **设置中心**：主题、语言、环境切换、缓存清理、崩溃日志入口
+- **设置中心**：主题、语言、环境切换、缓存清理、崩溃日志入口、检查更新（显示多语言日志并引导至下载或应用商店）
 - **多语言切换**：中 / 英 / 日运行时切换，无需重启
 - **主题切换**：浅色 / 深色 / 跟随系统 + 强调色 / 字号持久化 + **Material You 动态取色** (Android 12+ 平台下支持跟随系统壁纸色调自动变色)
 
@@ -37,6 +37,7 @@ ListenPortfolioFlutter 是一个基于 Flutter 构建的个人技术作品集应
 
 - **MVI 基础骨架**：`BaseViewModel`、`BaseState`、`BaseEffect`、`BaseLifecyclePage`
 - **网络层**：`ApiClient` + `BaseRepository.safeCall()` + `Either<Failure, T>`
+- **版本更新自动流**：基于 `pubspec.yaml` 的描述在 CI 构建时自动提取多语言描述生成并托管 `version.json`；App 端在所有环境下均通过 Retrofit 免签拉取静态配置文件并在 repository 层手工解码（规避 GitHub 静态资源的 Content-Type 匹配与认证 Token 冲突问题）
 - **401 自动刷新**：刷新期间并发请求排队，刷新成功后自动重试
 - **环境切换**：支持 `mock / dev / test / prod`
 - **本地 MockServer**：`APP_ENV=mock` 时提供本地 JSON / 图片资源
