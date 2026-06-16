@@ -30,6 +30,7 @@ ListenPortfolioFlutter 是一个基于 Flutter 构建的个人技术作品集应
 - **认证流程**：登录、注册、忘记密码、修改密码、账号注销、游客模式
 - **作品集展示**：Overview、AboutMe、Projects、Architecture 页面
 - **设置中心**：主题、语言、环境切换、缓存清理、崩溃日志入口、检查更新（显示多语言日志并引导至下载或应用商店）
+- **推送通知**：基于 FCM 的推送通知接入，支持前台横幅、后台唤醒、冷启动深度跳转；Settings 中可开关通知并联动系统权限引导
 - **多语言切换**：中 / 英 / 日运行时切换，无需重启
 - **主题切换**：浅色 / 深色 / 跟随系统 + 强调色 / 字号持久化 + **Material You 动态取色** (Android 12+ 平台下支持跟随系统壁纸色调自动变色)
 
@@ -139,6 +140,7 @@ dart tools/dependency_rules.dart --graph
 - `docs/performance_panel_spec.md`：性能面板规格说明（未完全落地）
 - `docs/ai_intro_assistant_spec.md`：AI 助手规格说明（规划中）
 - `docs/listencore_audit.md`：`listen_core` 架构审计报告
+- `docs/push-notification-specification.md`：推送通知设计与集成规格
 - `docs/todo.md`：后续执行路线图
 
 ## 🎯 目标态（明确未全部实现）

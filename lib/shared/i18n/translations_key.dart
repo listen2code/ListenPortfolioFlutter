@@ -247,4 +247,10 @@ class I18nKeys {
   static const String updateAvailable = 'A new version %s is available. Would you like to update?';
   static const String update = 'Update';
   static const String updateCheckFailed = 'Failed to check for updates. Please try again later.';
+
+  // Notification Permission
+  static const String notificationPermissionTitle = 'Notification Permission Required';
+  static const String notificationPermissionMessage =
+      'Notification permission was denied. Please enable it in system settings to receive push notifications.';
+  static const String openSettings = 'Open Settings';
 }

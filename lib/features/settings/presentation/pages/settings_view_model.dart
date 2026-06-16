@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:listen_core/core.dart';
 import 'package:listen_uikit/uikit.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -17,10 +18,13 @@ part 'settings_view_model.g.dart';
 class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<SettingsState, SettingsIntent> {
   @override
   SettingsState build() {
+    // Load persisted notifications setting
+    final enabled = SpUtil.getBool(AppConstants.notificationsKey, defaultValue: true);
+
     return SettingsState(
       currentLanguage: settingManager.language,
       currentEnv: AppEnv.currentEnv,
-      notificationsEnabled: true,
+      notificationsEnabled: enabled,
       isLogOverlayShowing: LogOverlayManager.isShowing,
     );
   }
@@ -53,8 +57,38 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
     updateState(state.copyWith(cacheSize: size));
   }
 
-  void _onToggleNotifications(bool enabled) {
+  void _onToggleNotifications(bool enabled) async {
     updateState(state.copyWith(notificationsEnabled: enabled));
+    // Persist the notifications toggle setting
+    await SpUtil.put(AppConstants.notificationsKey, enabled);
+
+    // Sync FCM topic subscription state
+    if (enabled) {
+      // Request system-level notification permission
+      final granted = await notificationService.requestPermission();
+      if (!granted) {
+        // Permission denied: revert toggle and prompt user to open system settings
+        updateState(state.copyWith(notificationsEnabled: false));
+        await SpUtil.put(AppConstants.notificationsKey, false);
+        _showPermissionDeniedDialog();
+        return;
+      }
+      await notificationService.subscribeToTopic(AppConstants.versionUpdatesTopic);
+    } else {
+      await notificationService.unsubscribeFromTopic(AppConstants.versionUpdatesTopic);
+    }
+  }
+
+  /// Shows a dialog prompting the user to enable notification permission in system settings.
+  void _showPermissionDeniedDialog() async {
+    final confirmed = await CommonDialog.showConfirm(
+      title: I18nKeys.notificationPermissionTitle.tr,
+      message: I18nKeys.notificationPermissionMessage.tr,
+      okText: I18nKeys.openSettings.tr,
+    );
+    if (confirmed == true) {
+      await openAppSettings();
+    }
   }
 
   Future<void> _onClearCache() async {

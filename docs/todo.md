@@ -74,6 +74,19 @@
 **为什么现在做**：这是项目的核心竞争力所在。  
 **验收标准**：完成性能指标面板、`traceId` 钻取能力、Crash / error / trace 关联与轻量 Net Inspector。
 
+### 6. 推送通知集成
+
+**状态**：✅ 已完成（2026-06-16）  
+**现状**：已完成 FCM 推送通知的全链路接入，覆盖前台/后台/冷启动三种状态。  
+**目标**：实现跨平台推送通知，支持消息接收与点击跳转路由。  
+**为什么现在做**：推送通知是 App 端的核心交互能力，也是作品集中展示 FCM 集成与架构抽象的重要一环。  
+**验收标准**：
+- INotificationService 抽象接口在 ListenCore 中定义，FirebaseNotificationServiceImpl 在宿主 App 中实现
+- 支持前台横幅展示、后台唤醒跳转、冷启动 DeepLink 路由（tab/settings/projectId）
+- Settings 中通知开关联动 FCM Topic 订阅与系统权限请求
+- 权限被拒时弹出引导 Dialog 跳转系统设置
+- 统一 `_handleNotificationNavigation` 方法处理冷启动和后台两种场景
+
 ## Next
 
 ### 1. 路由与状态治理增强
@@ -111,7 +124,6 @@
 
 - 指纹 / 生物识别登录
 - Google 第三方登录
-- Firebase Push 推送通知（INotificationService 核心抽象与 FCM/APNs 接入）
 
 ### 2. 体验与平台能力
 
@@ -162,6 +174,7 @@
 - Release APK 构建与签名配置（CI 流程已跑通，支持自动解密签名）
 - Google Play 发布流程自动化（CI 自动比对商店版本、编译 AAB 并发布至 Internal 通道）
 - 自动检查更新流程（CI 提取 pubspec.yaml 自动生成/托管 version.json，App 端安全免签解析，已全量覆盖单元测试）
+- 推送通知集成（INotificationService 抽象 + FCM 实现，支持前台横幅/后台唤醒/冷启动路由，通知开关联动系统权限引导）
 
 ### 暂时降级的想法池条目
 

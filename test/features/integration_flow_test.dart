@@ -106,9 +106,12 @@ class TestAppInitializer {
   static Future<void> init(ProviderContainer container) async {
     WidgetsFlutterBinding.ensureInitialized();
 
-    // 1. Manually inject Mock/Dummy system info to bypass platform channels and errors
-    Core.deviceInfo = DummyDeviceInfo();
-    Core.packageInfo = DummyPackageInfo();
+    try {
+      Core.deviceInfo = DummyDeviceInfo();
+    } catch (_) {}
+    try {
+      Core.packageInfo = DummyPackageInfo();
+    } catch (_) {}
 
     // 2. Setup Storage
     final String storagePrefix = "${AppConstants.appName}_";
@@ -271,6 +274,47 @@ void main() {
 
       // 12. Verify we returned successfully to the HomePage
       expect(find.byType(HomePage), findsOneWidget);
+    });
+
+    testWidgets('Should successfully boot into SplashPage, process initial message and navigate to SettingsPage', (WidgetTester tester) async {
+      // 1. Initialize Composition Root dependencies
+      final container = ProviderContainer();
+      await TestAppInitializer.init(container);
+
+      // 2. Pre-populate sticky route changed event (simulates click on launch)
+      eventBus.fire(
+        const CommonEvent<String>(
+          AppConstants.routeChangedEvent,
+          data: Routes.settings,
+          sticky: true,
+          autoClear: true,
+        ),
+      );
+
+      // 3. Boot the App widget tree
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const MyApp(),
+        ),
+      );
+
+      // 4. Verify SplashPage is shown first
+      await tester.pump();
+      expect(find.byType(SplashPage), findsOneWidget);
+
+      // 5. Pump delay to allow transition to HomePage
+      await tester.pump(const Duration(seconds: 2));
+      await tester.pumpAndSettle();
+
+      // 6. Verify we transitioned to HomePage
+      expect(find.byType(HomePage), findsOneWidget);
+
+      // 7. Settle any post-frame navigation triggered by EventBus
+      await tester.pumpAndSettle();
+
+      // 8. Verify we are navigated to SettingsPage automatically
+      expect(find.byType(SettingsPage), findsOneWidget);
     });
   });
 }

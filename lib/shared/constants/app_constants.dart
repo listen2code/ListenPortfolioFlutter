@@ -5,6 +5,8 @@ class AppConstants {
 
   // EventBus keys
   static const String resetOverview = 'reset_to_overview';
+  static const String tabChangedEvent = 'tab_changed';
+  static const String routeChangedEvent = 'route_changed';
 
   // Setting keys
   static const String themeKey = 'theme_mode';
@@ -13,6 +15,10 @@ class AppConstants {
   static const String languageKey = 'language';
   static const String useDynamicColorKey = 'use_dynamic_color';
   static const String notificationsKey = 'notifications';
+  static const String notificationChannelId = 'portfolio_push_channel';
+  static const String notificationChannelName = 'Portfolio Notifications';
+  static const String notificationChannelDescription = 'Used for portfolio updates and interactive messages.';
+  static const String versionUpdatesTopic = 'version_updates';
 
   // Data keys
   static const String userDataKey = 'user_data';

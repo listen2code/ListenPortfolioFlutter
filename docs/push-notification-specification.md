@@ -70,23 +70,18 @@ class NotificationPayload {
 import 'notification_payload.dart';
 
 abstract class INotificationService {
-  /// 初始化推送服务配置（通道、证书等）
   Future<void> initialize();
-
-  /// 动态申请通知权限（建议在合适的业务场景调用，避免启动强弹）
   Future<bool> requestPermission();
-
-  /// 获取当前设备的推送 Token（用于发送单推）
   Future<String?> getToken();
-
-  /// 监听推送 Token 更新流
   Stream<String> get onTokenRefresh;
-
-  /// 前台收到消息监听器
   Stream<NotificationPayload> get onMessageReceived;
-
-  /// 用户点击推送消息唤醒 App 的监听器（包含后台与冷启动状态）
   Stream<NotificationPayload> get onMessageOpenedApp;
+
+  /// Subscribe to a notification topic
+  Future<void> subscribeToTopic(String topic);
+
+  /// Unsubscribe from a notification topic
+  Future<void> unsubscribeFromTopic(String topic);
 }
 ```
 
@@ -102,12 +97,13 @@ abstract class INotificationService {
 
 ```dart
 import 'dart:async';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:listen_core/core.dart'; // 引入接口定义
+import 'package:listen_core/core.dart';
 
 class FirebaseNotificationServiceImpl implements INotificationService {
-  final FirebaseMessaging _fcm = FirebaseMessaging.instance;
+  FirebaseMessaging get _fcm => FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin _localNotifications = FlutterLocalNotificationsPlugin();
 
   final StreamController<NotificationPayload> _messageReceivedController = StreamController.broadcast();
@@ -115,6 +111,109 @@ class FirebaseNotificationServiceImpl implements INotificationService {
 
   @override
   Future<void> initialize() async {
+    // 1. Initialize Firebase Core
+    if (Firebase.apps.isEmpty) {
+      await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+    }
+
+    // 2. Configure Android notification channel
+    const AndroidNotificationChannel channel = AndroidNotificationChannel(
+      AppConstants.notificationChannelId,
+      AppConstants.notificationChannelName,
+      description: AppConstants.notificationChannelDescription,
+      importance: Importance.high,
+    );
+    await _localNotifications
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(channel);
+
+    // 3. Configure iOS foreground presentation
+    await _fcm.setForegroundNotificationPresentationOptions(alert: true, badge: true, sound: true);
+
+    // 4. Listen to foreground FCM messages (gated by notificationsKey toggle)
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      if (!SpUtil.getBool(AppConstants.notificationsKey, defaultValue: true)) return;
+      final payload = _convertMessage(message);
+      _messageReceivedController.add(payload);
+      if (message.notification != null) {
+        _showLocalNotification(message, channel);
+      }
+    });
+
+    // 5. Listen to background click wakeup -> unified routing
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      if (!SpUtil.getBool(AppConstants.notificationsKey, defaultValue: true)) return;
+      final payload = _convertMessage(message);
+      _messageOpenedController.add(payload);
+      _handleNotificationNavigation(payload);
+    });
+
+    // 6. Handle terminated startup click -> unified routing
+    final initialMessage = await _fcm.getInitialMessage();
+    if (initialMessage != null) {
+      if (SpUtil.getBool(AppConstants.notificationsKey, defaultValue: true)) {
+        final payload = _convertMessage(initialMessage);
+        _messageOpenedController.add(payload);
+        _handleNotificationNavigation(payload);
+      }
+    }
+
+    // 7. Request notification permission (required for APNs token on iOS before topic subscription)
+    await requestPermission();
+
+    // 8. Sync topic subscription based on local settings
+    final isEnabled = SpUtil.getBool(AppConstants.notificationsKey, defaultValue: true);
+    if (isEnabled) {
+      await subscribeToTopic(AppConstants.versionUpdatesTopic);
+    } else {
+      await unsubscribeFromTopic(AppConstants.versionUpdatesTopic);
+    }
+  }
+
+  /// Unified handler for notification click navigation routing.
+  /// Called from both terminated launch (getInitialMessage) and background wakeup (onMessageOpenedApp).
+  void _handleNotificationNavigation(NotificationPayload payload) {
+    final data = payload.data;
+
+    AppNavConfig.navigatorKey.currentState?.popUntil((route) {
+      return route.settings.name == Routes.home || route.isFirst;
+    });
+
+    if (data.containsKey('tab')) {
+      final tabStr = data['tab'] as String;
+      if (tabStr == 'settings') {
+        eventBus.fire(const CommonEvent<String>(
+          AppConstants.routeChangedEvent,
+          data: Routes.settings,
+          sticky: true,
+          autoClear: true,
+        ));
+      } else {
+        HomeTab? targetTab;
+        switch (tabStr) {
+          case 'overview': targetTab = HomeTab.overview; break;
+          case 'aboutMe': targetTab = HomeTab.aboutMe; break;
+          case 'projects': targetTab = HomeTab.projects; break;
+          case 'architecture': targetTab = HomeTab.architecture; break;
+        }
+        if (targetTab != null) {
+          eventBus.fire(CommonEvent<HomeTab>(AppConstants.tabChangedEvent, data: targetTab));
+        }
+      }
+    }
+
+    if (data.containsKey('projectId')) {
+      final projectId = data['projectId'] as String;
+      eventBus.fire(const CommonEvent<HomeTab>(AppConstants.tabChangedEvent, data: HomeTab.projects));
+      CommonToast.show('Deep Link Triggered: Project ID $projectId');
+    }
+  }
+
+  // ... requestPermission / getToken / subscribeToTopic / _convertMessage / _showLocalNotification
+}
+```
+
+---
     // 1. 初始化 Android 通知渠道（主要针对前台通知展示）
     const AndroidNotificationChannel channel = AndroidNotificationChannel(
       'portfolio_push_channel',
@@ -296,6 +395,29 @@ void setupNotificationNavigation(INotificationService notificationService) {
 1. 在 Apple Developer 平台为 App ID 开启 **Push Notifications** 功能。
 2. 配置并在 App Store Connect 中生成并上传 APNs 证书，或者使用 APNs 授权密钥 (p8) 关联至 Firebase Console。
 3. 在 Xcode 的 Capabilities 中开启 **Push Notifications** 和 **Background Modes** (Remote notifications)。
+
+### 6.3 Firebase CLI 自动初始化配置步骤 (FlutterFire)
+为方便跨平台（Android、iOS、Web）统一自动管理 Firebase 配置文件和选项代码，推荐采用 FlutterFire CLI 自动化生成方案，具体步骤如下：
+1. **控制台项目注册**：登录 [Firebase Console](https://console.firebase.google.com/)，手动创建一个 Firebase 项目。
+2. **下载 Android 凭证**：注册 Android 应用并将下载的 `google-services.json` 放置在 `android/app/` 目录下（作为 Native 的首选配置，FlutterFire 会在此基础上同步）。
+3. **本地全局安装 CLI 工具**：在开发机器上执行以下命令安装 Firebase 官方命令行工具：
+   ```bash
+   npm install -g firebase-tools
+   ```
+4. **命令行登录验证**：通过浏览器授权，登录您的 Google / Firebase 账号：
+   ```bash
+   firebase login
+   ```
+5. **激活 FlutterFire 辅助 CLI**：激活 Dart 环境下的官方 Flutter 扩展脚手架：
+   ```bash
+   dart pub global activate flutterfire_cli
+   ```
+6. **自动化配置项目**：在 Flutter 项目的根目录下执行：
+   ```bash
+   flutterfire configure
+   ```
+   *该命令会列出您账号下的所有 Firebase 项目。选择刚才创建的项目后，工具会自动在 `lib/shared/services/`（或者您指定的路径）生成包含真实平台证书的 `firebase_options.dart` 文件，并自动为 Android 端同步对齐 `google-services.json` 配置文件。*
+
 
 ---
 

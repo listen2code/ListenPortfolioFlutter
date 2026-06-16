@@ -1,11 +1,12 @@
 import 'dart:async';
 
+import 'package:flutter/widgets.dart';
 import 'package:listen_core/core.dart';
-import '../../../auth/presentation/provider/auth_provider.dart';
-import '../../../../shared/shared.dart';
 import 'package:listen_uikit/uikit.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../shared/shared.dart';
+import '../../../auth/presentation/provider/auth_provider.dart';
 import 'home_intent.dart';
 import 'home_state.dart';
 
@@ -21,6 +22,33 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
         updateState(state.copyWith(currentTab: HomeTab.overview));
       }
     }, key: AppConstants.resetOverview);
+
+    // Subscribe to tab change event (e.g. from push notifications)
+    subscribeEvent<CommonEvent<HomeTab>>((event) {
+      if (event.key == AppConstants.tabChangedEvent) {
+        final targetTab = event.data;
+        if (targetTab != null && state.currentTab != targetTab) {
+          updateState(state.copyWith(currentTab: targetTab));
+        }
+      }
+    }, key: AppConstants.tabChangedEvent);
+
+    // Subscribe to route change event (e.g. from push notifications)
+    subscribeEvent<CommonEvent<String>>(
+      (event) {
+        if (event.key == AppConstants.routeChangedEvent) {
+          final targetRoute = event.data;
+          if (targetRoute != null && targetRoute.isNotEmpty) {
+            // Navigate to target route safely on the next frame to avoid build collision
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              AppNav.to(targetRoute);
+            });
+          }
+        }
+      },
+      key: AppConstants.routeChangedEvent,
+      sticky: true,
+    );
 
     return const HomeState();
   }

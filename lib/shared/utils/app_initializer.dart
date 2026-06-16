@@ -83,6 +83,17 @@ class AppInitializer {
     QuickActionsManager.init();
     settingManager.loadSettings();
     UIKitConfig.init(stringProvider: (key) => key.tr);
+
+    // 3. Initialize push notification service & configure deep link routing listeners
+    try {
+      await notificationService.initialize().timeout(const Duration(seconds: 5));
+    } catch (e, stackTrace) {
+      appLogger.e(
+        'AppInitializer: Push notification initialization timed out or failed.',
+        error: e,
+        stackTrace: stackTrace,
+      );
+    }
   }
 }
 

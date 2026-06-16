@@ -210,4 +210,9 @@ final Map<String, String> zh = {
   I18nKeys.updateAvailable: '检测到新版本 %s，是否更新？',
   I18nKeys.update: '更新',
   I18nKeys.updateCheckFailed: '检查更新失败，请稍后重试。',
+
+  // Notification Permission
+  I18nKeys.notificationPermissionTitle: '需要通知权限',
+  I18nKeys.notificationPermissionMessage: '通知权限已被拒绝，请在系统设置中开启通知权限以接收推送通知。',
+  I18nKeys.openSettings: '前往设置',
 };

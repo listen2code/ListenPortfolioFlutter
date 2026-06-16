@@ -569,6 +569,13 @@ jobs:
         tracks: internal
         status: completed
         
+    - name: Send Version Update Push Notification
+      if: steps.check_version.outputs.should_deploy == 'true'
+      env:
+        FIREBASE_SERVICE_ACCOUNT_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
+      run: |
+        node tools/send_push_notification.js
+        
   skip-build:
     needs: check-conditions
     if: needs.check-conditions.outputs.should_build_apk == 'false'

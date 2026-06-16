@@ -50,3 +50,6 @@ app.*.map.json
 
 # Local package overrides
 pubspec_overrides.yaml
+
+# Firebase service account private key
+firebase-service-account.json

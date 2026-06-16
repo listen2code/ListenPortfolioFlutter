@@ -131,6 +131,13 @@ class SettingsPage extends ConsumerWidget {
                   subtitle: '${I18nKeys.currentlyActive.tr}: ${state.currentEnv.name}',
                   onTap: () => _showEnvSwitchDialog(context, viewModel, state),
                 ),
+                _buildListTile(
+                  context,
+                  icon: Icons.notification_important_outlined,
+                  title: '推送通知模拟 (Push Test)',
+                  subtitle: '触发前台推送通知横幅模拟',
+                  onTap: _simulateForegroundNotification,
+                ),
               ]),
 
               SizedBox(height: 25.f),
@@ -166,12 +173,11 @@ class SettingsPage extends ConsumerWidget {
                     applicationVersion: AppConstants.appVersion,
                     applicationIcon: Padding(
                       padding: EdgeInsets.all(8.f),
-                      child: Image.asset(
+                      child: CommonImage.asset(
                         R.imagesIcLauncherAdaptiveFore,
                         width: 48.f,
                         height: 48.f,
                         color: context.accentColor,
-                        colorBlendMode: BlendMode.srcIn,
                         semanticLabel: I18nKeys.appLogoSemanticLabel.tr,
                       ),
                     ),
@@ -224,6 +230,15 @@ class SettingsPage extends ConsumerWidget {
           },
         );
       }).toList(),
+    );
+  }
+
+  void _simulateForegroundNotification() async {
+    // Request permission first to ensure notification banner can display
+    await notificationService.requestPermission();
+
+    notificationService.simulateMessageReceived(
+      const NotificationPayload(title: '前台测试通知', body: '这是一个在前台接收的推送通知横幅模拟。', data: {'type': 'test'}),
     );
   }
 

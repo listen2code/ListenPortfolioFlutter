@@ -1,6 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Required for web access in both Debug and Release modes -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Required for showing local notifications on Android 13+ (API 33+) -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
 
     <application
         android:label="lPortfolio"

@@ -210,4 +210,9 @@ final Map<String, String> ja = {
   I18nKeys.updateAvailable: '新しいバージョン %s が利用可能です。アップデートしますか？',
   I18nKeys.update: 'アップデート',
   I18nKeys.updateCheckFailed: 'アップデートの確認に失敗しました。後でもう一度お試しください。',
+
+  // Notification Permission
+  I18nKeys.notificationPermissionTitle: '通知の許可が必要です',
+  I18nKeys.notificationPermissionMessage: '通知の許可が拒否されています。プッシュ通知を受信するには、システム設定で通知を有効にしてください。',
+  I18nKeys.openSettings: '設定を開く',
 };
