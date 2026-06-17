@@ -503,3 +503,59 @@ void setupNotificationNavigation(INotificationService notificationService) {
 > 1. **首次打开禁强弹**：App 首次启动进入首页或登录页时，禁止在无引导的前提下强行弹出系统通知权限请求。本 App 的 `initialize()` 默认不发起任何权限申请弹窗。
 > 2. **延迟与上下文式授权 (Scheme C)**：虽然本地设置中的推送开关默认开启，但当用户首次进入“设置页面” (`SettingsPage`) 时，系统才会主动检测并触发 `requestPermission()` 申请系统推送权限。若用户此时选择拒绝授权，App 会自动将推送开关校准更新为关闭状态，以保持 UI 显示与 OS 实际状态的完全一致，避免产生逻辑不一致的问题。
 > 3. **隐私协议声明**：在下个版本的 `privacy_policy_page` 中，需明确增加一栏声明：说明本 App 使用 Firebase 服务在匿名（或用户授权绑定）前提下收集设备 Token 以用于传送个人作品集更新消息。
+
+---
+
+## 8. 推送测试与自动化部署脚本 (send_push_notification.js)
+
+为了便于在本地或 CI/CD 流水线中进行消息推送测试，我们在 [tools/send_push_notification.js](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/tools/send_push_notification.js) 中提供了一个便捷的 Node.js 脚本。
+
+### 8.1 环境准备
+在运行该脚本前，需具备以下条件：
+1. **安装 Node.js**（支持 TLS/HTTPS 等模块）。
+2. **下载 Firebase 服务账号密钥**：
+   - 登录 [Firebase 控制台](https://console.firebase.google.com/) -> 选择项目 -> 项目设置 -> 服务账号。
+   - 点击 **生成新的私钥**，下载 JSON 文件。
+   - 将密钥内容配置到环境变量中，或保存在项目根目录下，命名为 `firebase-service-account.json`。
+     - **环境变量**：`FIREBASE_SERVICE_ACCOUNT_KEY`（其值为服务账号 JSON 的完整字符串内容）。
+     - **本地文件**：`firebase-service-account.json`（脚本会自动识别并读取）。
+
+### 8.2 命令格式与选项
+```bash
+node tools/send_push_notification.js [options]
+```
+
+#### 可用选项：
+- `--type <type>`：推送消息的类型。可选值为：
+  - `update`：默认类型，表示新版本升级推送。
+  - `tab`：跳转特定 Tab 页推送。
+  - `project`：项目深层链接 Deep-Link 推送。
+- `--tab <tab>`：目标 Tab 页名称。仅当 `--type` 为 `tab` 时生效，支持以下 Tab：
+  - `overview`（概览）
+  - `aboutMe`（关于我）
+  - `projects`（项目列表）
+  - `architecture`（架构）
+  - `settings`（设置）
+- `--projectId <id>`：目标项目 ID。仅当 `--type` 为 `project` 时生效。
+- `--token <token>`：特定设备的 FCM Token（单点目标投递）。
+  - **提示**：如果省略该参数，推送会默认发往 `'version_updates'` 广播主题，使所有已安装并订阅该主题的设备都收到推送。建议在本地测试时指定 `--token` 以免干扰其他测试设备。
+- `--title <title>`：自定义推送标题。默认优先采用英文标题。
+- `--body <body>`：自定义推送正文。默认优先采用英文文案。
+- `-h, --help`：打印脚本的使用帮助信息。
+
+### 8.3 典型测试命令示例
+
+1. **测试 A：向全局发送默认的新版本更新推送**
+   ```bash
+   node tools/send_push_notification.js
+   ```
+
+2. **测试 B：测试发送特定 Tab（例如项目 Tab）的切换通知**
+   ```bash
+   node tools/send_push_notification.js --type tab --tab projects --title "test title" --body "test body"
+   ```
+
+3. **测试 D：向您本人的开发设备发送单点推送（不干扰全局）**
+   ```bash
+   node tools/send_push_notification.js --type tab --tab settings --token "YOUR_FCM_REGISTRATION_TOKEN"
+   ```
