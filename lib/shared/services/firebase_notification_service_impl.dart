@@ -138,7 +138,6 @@ class FirebaseNotificationServiceImpl implements INotificationService {
         );
       } else {
         final targetTab = HomeTab.values.firstWhereOrNull((tab) => tab.name == tabStr);
-
         if (targetTab != null) {
           eventBus.fire(
             CommonEvent<HomeTab>(
