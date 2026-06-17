@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -136,21 +137,7 @@ class FirebaseNotificationServiceImpl implements INotificationService {
           ),
         );
       } else {
-        HomeTab? targetTab;
-        switch (tabStr) {
-          case AppConstants.notificationTabOverview:
-            targetTab = HomeTab.overview;
-            break;
-          case AppConstants.notificationTabAboutMe:
-            targetTab = HomeTab.aboutMe;
-            break;
-          case AppConstants.notificationTabProjects:
-            targetTab = HomeTab.projects;
-            break;
-          case AppConstants.notificationTabArchitecture:
-            targetTab = HomeTab.architecture;
-            break;
-        }
+        final targetTab = HomeTab.values.firstWhereOrNull((tab) => tab.name == tabStr);
 
         if (targetTab != null) {
           eventBus.fire(

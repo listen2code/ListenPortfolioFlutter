@@ -233,21 +233,7 @@ class FirebaseNotificationServiceImpl implements INotificationService {
           ),
         );
       } else {
-        HomeTab? targetTab;
-        switch (tabStr) {
-          case AppConstants.notificationTabOverview:
-            targetTab = HomeTab.overview;
-            break;
-          case AppConstants.notificationTabAboutMe:
-            targetTab = HomeTab.aboutMe;
-            break;
-          case AppConstants.notificationTabProjects:
-            targetTab = HomeTab.projects;
-            break;
-          case AppConstants.notificationTabArchitecture:
-            targetTab = HomeTab.architecture;
-            break;
-        }
+        final targetTab = HomeTab.values.firstWhereOrNull((tab) => tab.name == tabStr);
 
         if (targetTab != null) {
           eventBus.fire(
@@ -433,14 +419,7 @@ void setupNotificationNavigation(INotificationService notificationService) {
     // 1. 判断是否需要切换 Home 选项卡
     if (data.containsKey(AppConstants.notificationParamTab)) {
       final tabStr = data[AppConstants.notificationParamTab] as String;
-      HomeTab? targetTab;
-      
-      switch (tabStr) {
-        case AppConstants.notificationTabOverview: targetTab = HomeTab.overview; break;
-        case AppConstants.notificationTabAboutMe: targetTab = HomeTab.aboutMe; break;
-        case AppConstants.notificationTabProjects: targetTab = HomeTab.projects; break;
-        case AppConstants.notificationTabArchitecture: targetTab = HomeTab.architecture; break;
-      }
+      final targetTab = HomeTab.values.firstWhereOrNull((tab) => tab.name == tabStr);
       
       if (targetTab != null) {
         // 利用全局 EventBus 发送 Tab 切换通知，由 HomeViewModel 进行拦截与更新
@@ -529,14 +508,12 @@ node tools/send_push_notification.js [options]
 - `--type <type>`：推送消息的类型。可选值为：
   - `update`：默认类型，表示新版本升级推送。
   - `tab`：跳转特定 Tab 页推送。
-  - `project`：项目深层链接 Deep-Link 推送。
 - `--tab <tab>`：目标 Tab 页名称。仅当 `--type` 为 `tab` 时生效，支持以下 Tab：
   - `overview`（概览）
   - `aboutMe`（关于我）
   - `projects`（项目列表）
   - `architecture`（架构）
   - `settings`（设置）
-- `--projectId <id>`：目标项目 ID。仅当 `--type` 为 `project` 时生效。
 - `--token <token>`：特定设备的 FCM Token（单点目标投递）。
   - **提示**：如果省略该参数，推送会默认发往 `'version_updates'` 广播主题，使所有已安装并订阅该主题的设备都收到推送。建议在本地测试时指定 `--token` 以免干扰其他测试设备。
 - `--title <title>`：自定义推送标题。默认优先采用英文标题。
