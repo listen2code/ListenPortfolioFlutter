@@ -117,7 +117,6 @@ const args = process.argv.slice(2);
 const options = {
   type: '',
   tab: '',
-  projectId: '',
   token: '',
   title: '',
   body: ''
@@ -128,9 +127,8 @@ for (let i = 0; i < args.length; i++) {
     console.log(`Usage: node tools/send_push_notification.js [options]
 
 Options:
-  --type <type>        Type of notification: "update", "tab", "project" (default: "update")
+  --type <type>        Type of notification: "update", "tab"(default: "update")
   --tab <tab>          HomeTab name: "settings", "overview", "aboutMe", "projects", "architecture"
-  --projectId <id>     Project ID deep link target
   --token <token>      Send to specific FCM registration token instead of version_updates topic
   --title <title>      Custom notification title
   --body <body>        Custom notification body
@@ -142,9 +140,6 @@ Options:
     i++;
   } else if (args[i] === '--tab' && args[i + 1]) {
     options.tab = args[i + 1];
-    i++;
-  } else if (args[i] === '--projectId' && args[i + 1]) {
-    options.projectId = args[i + 1];
     i++;
   } else if (args[i] === '--token' && args[i + 1]) {
     options.token = args[i + 1];
@@ -160,9 +155,7 @@ Options:
 
 // Infer type if not explicitly set
 if (!options.type) {
-  if (options.projectId) {
-    options.type = 'project';
-  } else if (options.tab) {
+  if (options.tab) {
     options.type = 'tab';
   } else {
     options.type = 'update';
@@ -213,13 +206,6 @@ async function main() {
         body: options.body || `Tap to open the ${targetTab} view directly.`
       };
       message.data.tab = targetTab;
-    } else if (options.type === 'project') {
-      const targetProjectId = options.projectId || 'example-project-id';
-      message.notification = {
-        title: options.title || `New Portfolio Project!`,
-        body: options.body || `Tap to check out project: ${targetProjectId}`
-      };
-      message.data.projectId = targetProjectId;
     } else {
       // Freeform custom type
       message.notification = {
@@ -227,7 +213,6 @@ async function main() {
         body: options.body || "Open App to see what's new"
       };
       if (options.tab) message.data.tab = options.tab;
-      if (options.projectId) message.data.projectId = options.projectId;
     }
 
     const payload = JSON.stringify({ message });
