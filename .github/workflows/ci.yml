@@ -348,6 +348,17 @@ jobs:
         storeFile=key.jks
         EOF
 
+    - name: Set up google-services.json
+      env:
+        GOOGLE_SERVICES_JSON_BASE64: ${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}
+      run: |
+        if [ -z "$GOOGLE_SERVICES_JSON_BASE64" ]; then
+          echo "Error: GOOGLE_SERVICES_JSON_BASE64 secret is not configured!"
+          exit 1
+        fi
+        echo "Decoding real google-services.json from secret..."
+        echo "$GOOGLE_SERVICES_JSON_BASE64" | base64 --decode > android/app/google-services.json
+
     - name: Build APK via script
       run: |
         sed -i 's/\r$//' buildAndroid.sh
@@ -519,6 +530,17 @@ jobs:
         keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}
         storeFile=key.jks
         EOF
+
+    - name: Set up google-services.json
+      env:
+        GOOGLE_SERVICES_JSON_BASE64: ${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}
+      run: |
+        if [ -z "$GOOGLE_SERVICES_JSON_BASE64" ]; then
+          echo "Error: GOOGLE_SERVICES_JSON_BASE64 secret is not configured!"
+          exit 1
+        fi
+        echo "Decoding real google-services.json from secret..."
+        echo "$GOOGLE_SERVICES_JSON_BASE64" | base64 --decode > android/app/google-services.json
         
     - name: Check if Version Already Uploaded
       id: check_version
