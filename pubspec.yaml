@@ -2,7 +2,7 @@ name: listen_portfolio_flutter
 description: "Portfolio of Listen"
 publish_to: 'none'
 
-version: 1.0.15
+version: 1.0.16
 desc: "Improve notification permission timing and unify cold-start/background click routing"
 desc_zh: "优化通知权限请求时机，统一冷启动与后台点击的路由跳转逻辑"
 desc_ja: "通知権限リクエストのタイミングを最適化し、コールドスタートとバックグラウンドクリックのルーティングを統一"

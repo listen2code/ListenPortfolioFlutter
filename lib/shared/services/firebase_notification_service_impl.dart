@@ -1,10 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:listen_core/core.dart';
-import 'package:listen_uikit/uikit.dart';
 
 import '../../features/home/presentation/pages/home_state.dart';
 import '../shared.dart';
@@ -28,15 +28,13 @@ class FirebaseNotificationServiceImpl implements INotificationService {
     try {
       // 1. Initialize Firebase Core
       if (Firebase.apps.isEmpty) {
-        await Firebase.initializeApp(
-          options: DefaultFirebaseOptions.currentPlatform,
-        ).timeout(const Duration(seconds: 3));
+        await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
       }
       _isFirebaseInitialized = true;
       appLogger.i('FirebaseNotificationService: Firebase initialized successfully.');
     } catch (e) {
       appLogger.w(
-        'FirebaseNotificationService: Firebase initialization failed or timed out. '
+        'FirebaseNotificationService: Firebase initialization failed. '
         'Push notifications will fall back to mock/disabled mode. Error: $e',
       );
       _isFirebaseInitialized = false;
@@ -44,11 +42,9 @@ class FirebaseNotificationServiceImpl implements INotificationService {
 
     // Initialize Local Notifications regardless of Firebase state
     try {
-      await _initLocalNotifications().timeout(const Duration(seconds: 2));
+      await _initLocalNotifications();
     } catch (e) {
-      appLogger.w(
-        'FirebaseNotificationService: Local notification initialization failed or timed out. Error: $e',
-      );
+      appLogger.w('FirebaseNotificationService: Local notification initialization failed. Error: $e');
     }
 
     if (!_isFirebaseInitialized) return;
@@ -67,9 +63,7 @@ class FirebaseNotificationServiceImpl implements INotificationService {
           ?.createNotificationChannel(channel);
 
       // 3. Configure iOS foreground presentation settings
-      await _fcm
-          .setForegroundNotificationPresentationOptions(alert: true, badge: true, sound: true)
-          .timeout(const Duration(seconds: 2));
+      await _fcm.setForegroundNotificationPresentationOptions(alert: true, badge: true, sound: true);
 
       // 4. Listen to foreground FCM messages
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
@@ -96,13 +90,7 @@ class FirebaseNotificationServiceImpl implements INotificationService {
       });
 
       // 6. Handle terminated startup click
-      final initialMessage = await _fcm.getInitialMessage().timeout(
-        const Duration(seconds: 2),
-        onTimeout: () {
-          appLogger.w('FirebaseNotificationService: getInitialMessage timed out.');
-          return null;
-        },
-      );
+      final initialMessage = await _fcm.getInitialMessage();
       if (initialMessage != null) {
         // Discard if notifications are disabled in settings
         if (SpUtil.getBool(AppConstants.notificationsKey, defaultValue: true)) {
@@ -112,10 +100,7 @@ class FirebaseNotificationServiceImpl implements INotificationService {
         }
       }
 
-      // 7. Request notification permission (required for APNs token on iOS before topic subscription)
-      await requestPermission();
-
-      // 8. Sync subscription to the version updates topic based on settings
+      // 7. Sync subscription to the version updates topic based on settings
       final isEnabled = SpUtil.getBool(AppConstants.notificationsKey, defaultValue: true);
       if (isEnabled) {
         await subscribeToTopic(AppConstants.versionUpdatesTopic);
@@ -138,9 +123,9 @@ class FirebaseNotificationServiceImpl implements INotificationService {
     });
 
     // Check for tab redirection
-    if (data.containsKey('tab')) {
-      final tabStr = data['tab'] as String;
-      if (tabStr == 'settings') {
+    if (data.containsKey(AppConstants.notificationParamTab)) {
+      final tabStr = data[AppConstants.notificationParamTab] as String;
+      if (tabStr == AppConstants.notificationTabSettings) {
         // Dispatch a sticky event to handle Settings page navigation inside HomeViewModel
         eventBus.fire(
           const CommonEvent<String>(
@@ -153,37 +138,37 @@ class FirebaseNotificationServiceImpl implements INotificationService {
       } else {
         HomeTab? targetTab;
         switch (tabStr) {
-          case 'overview':
+          case AppConstants.notificationTabOverview:
             targetTab = HomeTab.overview;
             break;
-          case 'aboutMe':
+          case AppConstants.notificationTabAboutMe:
             targetTab = HomeTab.aboutMe;
             break;
-          case 'projects':
+          case AppConstants.notificationTabProjects:
             targetTab = HomeTab.projects;
             break;
-          case 'architecture':
+          case AppConstants.notificationTabArchitecture:
             targetTab = HomeTab.architecture;
             break;
         }
 
         if (targetTab != null) {
-          eventBus.fire(CommonEvent<HomeTab>(AppConstants.tabChangedEvent, data: targetTab));
+          eventBus.fire(
+            CommonEvent<HomeTab>(
+              AppConstants.tabChangedEvent,
+              data: targetTab,
+              sticky: true,
+              autoClear: true,
+            ),
+          );
         }
       }
-    }
-
-    // Check for project deep link
-    if (data.containsKey('projectId')) {
-      final projectId = data['projectId'] as String;
-      eventBus.fire(const CommonEvent<HomeTab>(AppConstants.tabChangedEvent, data: HomeTab.projects));
-      CommonToast.show('Deep Link Triggered: Project ID $projectId');
     }
   }
 
   Future<void> _initLocalNotifications() async {
     const AndroidInitializationSettings androidSettings = AndroidInitializationSettings(
-      '@mipmap/ic_launcher',
+      AppConstants.defaultNotificationIcon,
     );
     const DarwinInitializationSettings iosSettings = DarwinInitializationSettings();
 
@@ -193,8 +178,18 @@ class FirebaseNotificationServiceImpl implements INotificationService {
         // Handle local notification click
         final payloadData = response.payload;
         if (payloadData != null) {
-          // Typically we would parse json from payload string
-          appLogger.i('FirebaseNotificationService: Local notification click payload: $payloadData');
+          try {
+            final decoded = jsonDecode(payloadData) as Map<String, dynamic>;
+            final title = decoded['title'] as String? ?? '';
+            final body = decoded['body'] as String? ?? '';
+            final data = Map<String, String>.from((decoded['data'] as Map?) ?? {});
+            final payload = NotificationPayload(title: title, body: body, data: data);
+
+            _messageOpenedController.add(payload);
+            _handleNotificationNavigation(payload);
+          } catch (e) {
+            appLogger.e('FirebaseNotificationService: Failed to parse local notification click payload: $e');
+          }
         }
       },
     );
@@ -239,14 +234,7 @@ class FirebaseNotificationServiceImpl implements INotificationService {
   Future<void> subscribeToTopic(String topic) async {
     if (!_isFirebaseInitialized) return;
     try {
-      await _fcm
-          .subscribeToTopic(topic)
-          .timeout(
-            const Duration(seconds: 2),
-            onTimeout: () {
-              appLogger.w('FirebaseNotificationService: subscribeToTopic($topic) timed out.');
-            },
-          );
+      await _fcm.subscribeToTopic(topic);
       appLogger.i('FirebaseNotificationService: Subscribed to topic "$topic".');
     } catch (e) {
       appLogger.e('FirebaseNotificationService: Failed to subscribe to topic "$topic": $e');
@@ -257,14 +245,7 @@ class FirebaseNotificationServiceImpl implements INotificationService {
   Future<void> unsubscribeFromTopic(String topic) async {
     if (!_isFirebaseInitialized) return;
     try {
-      await _fcm
-          .unsubscribeFromTopic(topic)
-          .timeout(
-            const Duration(seconds: 2),
-            onTimeout: () {
-              appLogger.w('FirebaseNotificationService: unsubscribeFromTopic($topic) timed out.');
-            },
-          );
+      await _fcm.unsubscribeFromTopic(topic);
       appLogger.i('FirebaseNotificationService: Unsubscribed from topic "$topic".');
     } catch (e) {
       appLogger.e('FirebaseNotificationService: Failed to unsubscribe from topic "$topic": $e');
@@ -294,10 +275,14 @@ class FirebaseNotificationServiceImpl implements INotificationService {
           channel.id,
           channel.name,
           channelDescription: channel.description,
-          icon: '@mipmap/ic_launcher',
+          icon: AppConstants.defaultNotificationIcon,
         ),
       ),
-      payload: message.data.toString(),
+      payload: jsonEncode({
+        'title': notification.title ?? '',
+        'body': notification.body ?? '',
+        'data': message.data,
+      }),
     );
   }
 
@@ -319,10 +304,10 @@ class FirebaseNotificationServiceImpl implements INotificationService {
           AppConstants.notificationChannelId,
           AppConstants.notificationChannelName,
           channelDescription: AppConstants.notificationChannelDescription,
-          icon: '@mipmap/ic_launcher',
+          icon: AppConstants.defaultNotificationIcon,
         ),
       ),
-      payload: payload.data.toString(),
+      payload: jsonEncode({'title': payload.title, 'body': payload.body, 'data': payload.data}),
     );
   }
 }

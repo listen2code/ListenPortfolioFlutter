@@ -5,7 +5,7 @@ const fs = require('fs');
 
 let serviceAccountJson = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
 let appVersion = process.env.APP_VERSION;
-let appDesc = '新版本现已发布，点击查看最新更新日志！';
+let appDesc = 'A new version has been released! ';
 
 // Try to read version.json first
 try {
@@ -15,7 +15,7 @@ try {
       appVersion = versionData.version;
     }
     if (versionData.changelog) {
-      appDesc = versionData.changelog.en || versionData.changelog.zh || versionData.changelog.ja || appDesc;
+      appDesc = versionData.changelog.en || versionData.changelog.ja || versionData.changelog.zh || appDesc;
     }
   }
 } catch (e) {
@@ -112,39 +112,131 @@ async function getAccessToken() {
   return response.access_token;
 }
 
-// Send FCM v1 Topic Message
+// Parse command-line arguments
+const args = process.argv.slice(2);
+const options = {
+  type: '',
+  tab: '',
+  projectId: '',
+  token: '',
+  title: '',
+  body: ''
+};
+
+for (let i = 0; i < args.length; i++) {
+  if (args[i] === '-h' || args[i] === '--help') {
+    console.log(`Usage: node tools/send_push_notification.js [options]
+
+Options:
+  --type <type>        Type of notification: "update", "tab", "project" (default: "update")
+  --tab <tab>          HomeTab name: "settings", "overview", "aboutMe", "projects", "architecture"
+  --projectId <id>     Project ID deep link target
+  --token <token>      Send to specific FCM registration token instead of version_updates topic
+  --title <title>      Custom notification title
+  --body <body>        Custom notification body
+  -h, --help           Show this help message`);
+    process.exit(0);
+  }
+  if (args[i] === '--type' && args[i + 1]) {
+    options.type = args[i + 1];
+    i++;
+  } else if (args[i] === '--tab' && args[i + 1]) {
+    options.tab = args[i + 1];
+    i++;
+  } else if (args[i] === '--projectId' && args[i + 1]) {
+    options.projectId = args[i + 1];
+    i++;
+  } else if (args[i] === '--token' && args[i + 1]) {
+    options.token = args[i + 1];
+    i++;
+  } else if (args[i] === '--title' && args[i + 1]) {
+    options.title = args[i + 1];
+    i++;
+  } else if (args[i] === '--body' && args[i + 1]) {
+    options.body = args[i + 1];
+    i++;
+  }
+}
+
+// Infer type if not explicitly set
+if (!options.type) {
+  if (options.projectId) {
+    options.type = 'project';
+  } else if (options.tab) {
+    options.type = 'tab';
+  } else {
+    options.type = 'update';
+  }
+}
+
+// Send FCM v1 Message
 async function main() {
   try {
     console.log("FCM: Generating access token...");
     const token = await getAccessToken();
     console.log("FCM: Access token generated successfully.");
 
-    const projectId = serviceAccount.project_id;
-    if (!projectId) {
+    const fcmProjectId = serviceAccount.project_id;
+    if (!fcmProjectId) {
       throw new Error("project_id is missing from service account credentials");
     }
 
-    const payload = JSON.stringify({
-      message: {
-        topic: 'version_updates',
-        notification: {
-          title: `新版本 v${appVersion} 已发布！`,
-          body: appDesc
-        },
-        data: {
-          tab: 'settings',
-          version: appVersion,
-          desc: appDesc,
-          click_action: 'FLUTTER_NOTIFICATION_CLICK'
-        }
+    // Construct FCM v1 message structure
+    const message = {
+      data: {
+        click_action: 'FLUTTER_NOTIFICATION_CLICK'
       }
-    });
+    };
 
-    console.log(`FCM: Sending notification for version ${appVersion} to topic 'version_updates'...`);
+    // Set recipient (Token or Topic)
+    if (options.token) {
+      message.token = options.token;
+      console.log(`FCM: Direct delivery target -> token: ${options.token.substring(0, 20)}...`);
+    } else {
+      message.topic = 'version_updates';
+      console.log("FCM: Broadcast delivery target -> topic: 'version_updates'");
+    }
+
+    // Populate title, body, and data fields based on message type
+    if (options.type === 'update') {
+      message.notification = {
+        title: options.title || `New version v${appVersion} has been released!`,
+        body: options.body || appDesc
+      };
+      message.data.tab = 'settings';
+      message.data.version = appVersion;
+      message.data.desc = appDesc;
+    } else if (options.type === 'tab') {
+      const targetTab = options.tab || 'overview';
+      message.notification = {
+        title: options.title || `Featured Section Available`,
+        body: options.body || `Tap to open the ${targetTab} view directly.`
+      };
+      message.data.tab = targetTab;
+    } else if (options.type === 'project') {
+      const targetProjectId = options.projectId || 'example-project-id';
+      message.notification = {
+        title: options.title || `New Portfolio Project!`,
+        body: options.body || `Tap to check out project: ${targetProjectId}`
+      };
+      message.data.projectId = targetProjectId;
+    } else {
+      // Freeform custom type
+      message.notification = {
+        title: options.title || "Listen Portfolio Update",
+        body: options.body || "Open App to see what's new"
+      };
+      if (options.tab) message.data.tab = options.tab;
+      if (options.projectId) message.data.projectId = options.projectId;
+    }
+
+    const payload = JSON.stringify({ message });
+
+    console.log(`FCM: Dispatching payload (Type: ${options.type})...`);
 
     const response = await request({
       hostname: 'fcm.googleapis.com',
-      path: `/v1/projects/${projectId}/messages:send`,
+      path: `/v1/projects/${fcmProjectId}/messages:send`,
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -153,7 +245,7 @@ async function main() {
       }
     }, payload);
 
-    console.log("FCM: Notification sent successfully! Message ID:", response.name);
+    console.log("FCM: Notification sent successfully! Response Message Name:", response.name);
   } catch (error) {
     console.error("Error sending FCM notification:", error);
     process.exit(1);

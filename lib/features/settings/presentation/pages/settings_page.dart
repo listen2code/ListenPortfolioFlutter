@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_core/core.dart';
@@ -131,13 +132,14 @@ class SettingsPage extends ConsumerWidget {
                   subtitle: '${I18nKeys.currentlyActive.tr}: ${state.currentEnv.name}',
                   onTap: () => _showEnvSwitchDialog(context, viewModel, state),
                 ),
-                _buildListTile(
-                  context,
-                  icon: Icons.notification_important_outlined,
-                  title: '推送通知模拟 (Push Test)',
-                  subtitle: '触发前台推送通知横幅模拟',
-                  onTap: _simulateForegroundNotification,
-                ),
+                if (kDebugMode)
+                  _buildListTile(
+                    context,
+                    icon: Icons.notification_important_outlined,
+                    title: '推送通知模拟 (Push Test)',
+                    subtitle: '触发前台推送通知横幅模拟',
+                    onTap: _simulateForegroundNotification,
+                  ),
               ]),
 
               SizedBox(height: 25.f),

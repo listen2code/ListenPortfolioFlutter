@@ -24,14 +24,18 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
     }, key: AppConstants.resetOverview);
 
     // Subscribe to tab change event (e.g. from push notifications)
-    subscribeEvent<CommonEvent<HomeTab>>((event) {
-      if (event.key == AppConstants.tabChangedEvent) {
-        final targetTab = event.data;
-        if (targetTab != null && state.currentTab != targetTab) {
-          updateState(state.copyWith(currentTab: targetTab));
+    subscribeEvent<CommonEvent<HomeTab>>(
+      (event) {
+        if (event.key == AppConstants.tabChangedEvent) {
+          final targetTab = event.data;
+          if (targetTab != null && state.currentTab != targetTab) {
+            updateState(state.copyWith(currentTab: targetTab));
+          }
         }
-      }
-    }, key: AppConstants.tabChangedEvent);
+      },
+      key: AppConstants.tabChangedEvent,
+      sticky: true,
+    );
 
     // Subscribe to route change event (e.g. from push notifications)
     subscribeEvent<CommonEvent<String>>(

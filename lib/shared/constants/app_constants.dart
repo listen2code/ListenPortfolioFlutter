@@ -19,6 +19,13 @@ class AppConstants {
   static const String notificationChannelName = 'Portfolio Notifications';
   static const String notificationChannelDescription = 'Used for portfolio updates and interactive messages.';
   static const String versionUpdatesTopic = 'version_updates';
+  static const String defaultNotificationIcon = '@mipmap/ic_launcher';
+  static const String notificationParamTab = 'tab';
+  static const String notificationTabSettings = 'settings';
+  static const String notificationTabOverview = 'overview';
+  static const String notificationTabAboutMe = 'aboutMe';
+  static const String notificationTabProjects = 'projects';
+  static const String notificationTabArchitecture = 'architecture';
 
   // Data keys
   static const String userDataKey = 'user_data';

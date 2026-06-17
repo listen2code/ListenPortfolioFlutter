@@ -50,6 +50,19 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
 
   Future<void> _onInit() async {
     await _updateCacheSize();
+
+    // Scheme C: If notifications are enabled in settings (defaulting to true),
+    // request/verify system-level permission when user enters the Settings page.
+    if (state.notificationsEnabled) {
+      final granted = await notificationService.requestPermission();
+      if (!granted) {
+        updateState(state.copyWith(notificationsEnabled: false));
+        await SpUtil.put(AppConstants.notificationsKey, false);
+        await notificationService.unsubscribeFromTopic(AppConstants.versionUpdatesTopic);
+      } else {
+        await notificationService.subscribeToTopic(AppConstants.versionUpdatesTopic);
+      }
+    }
   }
 
   Future<void> _updateCacheSize() async {
