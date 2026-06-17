@@ -68,6 +68,7 @@ dependencies:
   share_plus: ^13.1.0
   visibility_detector: ^0.4.0+2
 
+  collection: any
 dev_dependencies:
   flutter_test:
     sdk: flutter

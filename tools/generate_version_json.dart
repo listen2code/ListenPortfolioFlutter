@@ -36,7 +36,7 @@ void main() {
   final descJa = descJaMatch?.group(1) ?? defaultDesc;
 
   final versionJsonFile = File('version.json');
-  Map<String, dynamic> data = {
+  final Map<String, dynamic> data = {
     'version': version,
     'buildNumber': buildNumber,
     'url': 'https://play.google.com/store/apps/details?id=com.listen.portfolio.listen_portfolio_flutter',
@@ -55,6 +55,6 @@ void main() {
     } catch (_) {}
   }
 
-  versionJsonFile.writeAsStringSync(const JsonEncoder.withIndent('  ').convert(data) + '\n');
+  versionJsonFile.writeAsStringSync('${const JsonEncoder.withIndent('  ').convert(data)}\n');
   print('Successfully generated version.json at the project root with version: $version ($buildNumber) and desc: $defaultDesc');
 }
