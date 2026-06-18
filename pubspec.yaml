@@ -2,7 +2,7 @@ name: listen_portfolio_flutter
 description: "Portfolio of Listen"
 publish_to: 'none'
 
-version: 1.0.18
+version: 1.0.19
 desc: "Integrate Buy me a Coffee feature using official in_app_purchase package with decoupled service layer"
 desc_zh: "使用官方 in_app_purchase 插件集成请喝咖啡打赏功能，对内购服务层进行解耦重构"
 desc_ja: "公式in_app_purchaseプラグインを使用してコーヒーをおごる機能を統合し、課金サービス層をリファクタリング"
