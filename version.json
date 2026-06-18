@@ -1,10 +1,10 @@
 {
-  "version": "1.0.16",
+  "version": "1.0.17",
   "buildNumber": 1,
   "url": "https://play.google.com/store/apps/details?id=com.listen.portfolio.listen_portfolio_flutter",
   "changelog": {
-    "zh": "优化通知权限请求时机，统一冷启动与后台点击的路由跳转逻辑",
-    "en": "Improve notification permission timing and unify cold-start/background click routing",
-    "ja": "通知権限リクエストのタイミングを最適化し、コールドスタートとバックグラウンドクリックのルーティングを統一"
+    "zh": "使用官方 in_app_purchase 插件集成请喝咖啡打赏功能，对内购服务层进行解耦重构",
+    "en": "Integrate Buy me a Coffee feature using official in_app_purchase package with decoupled service layer",
+    "ja": "公式in_app_purchaseプラグインを使用してコーヒーをおごる機能を統合し、課金サービス層をリファクタリング"
   }
 }
