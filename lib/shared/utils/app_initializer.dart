@@ -88,15 +88,30 @@ class AppInitializer {
     UIKitConfig.init(stringProvider: (key) => key.tr);
 
     // 3. Initialize push notification service & configure deep link routing listeners
-    try {
-      await notificationService.initialize().timeout(const Duration(seconds: 5));
-    } catch (e, stackTrace) {
-      appLogger.e(
-        'AppInitializer: Push notification initialization timed out or failed.',
-        error: e,
-        stackTrace: stackTrace,
-      );
-    }
+    // Run push notification initialization asynchronously so slow/blocked
+    // network or platform behaviors in release (Play signing, network latency,
+    // permission dialogs) won't delay or clutter app startup. Errors and
+    // timing will still be logged for diagnosis.
+    Future<void>.microtask(() async {
+      final start = DateTime.now();
+      try {
+        await notificationService.initialize().timeout(const Duration(seconds: 30));
+        final dur = DateTime.now().difference(start);
+        appLogger.i('AppInitializer: notificationService.initialize completed in ${dur.inMilliseconds}ms');
+      } on TimeoutException catch (e, stackTrace) {
+        appLogger.e(
+          'AppInitializer: Push notification initialization timed out after 30s.',
+          error: e,
+          stackTrace: stackTrace,
+        );
+      } catch (e, stackTrace) {
+        appLogger.e(
+          'AppInitializer: Push notification initialization failed.',
+          error: e,
+          stackTrace: stackTrace,
+        );
+      }
+    });
 
     // 4. Initialize in-app purchase service
     try {
