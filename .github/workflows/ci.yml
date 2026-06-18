@@ -24,30 +24,6 @@ on:
         type: boolean
 
 jobs:
-  update-version-json:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-        
-    - name: Setup Dart SDK
-      uses: dart-lang/setup-dart@v1
-      with:
-        sdk: stable
-        
-    - name: Generate version.json
-      run: dart run tools/generate_version_json.dart
-      
-    - name: Commit and Push version.json
-      run: |
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git add version.json
-        git diff-index --quiet HEAD || (git commit -m "Auto-generate version.json [skip ci]" && git push)
-
   check-conditions:
     runs-on: ubuntu-latest
     outputs:
@@ -281,9 +257,51 @@ jobs:
         flutter analyze --no-fatal-infos --no-fatal-warnings
         echo "Flutter analyze completed successfully"
 
+  check-version-upgrade:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+    outputs:
+      version_upgraded: ${{ steps.check_version.outputs.version_upgraded }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Check if Version Upgraded
+      id: check_version
+      env:
+        PLAY_SERVICE_ACCOUNT_KEY: ${{ secrets.PLAY_SERVICE_ACCOUNT_KEY }}
+      run: |
+        LATEST_VERSION_CODE=$(node tools/get_play_version.js)
+        echo "Latest version code on Google Play: $LATEST_VERSION_CODE"
+        NEXT_VERSION_CODE=$(( LATEST_VERSION_CODE + 1 ))
+        echo "Next Version Code required by Google Play: $NEXT_VERSION_CODE"
+
+        VNAME=$(grep '^version: ' pubspec.yaml | cut -d ' ' -f 2 | cut -d '+' -f 1)
+        echo "Version name in pubspec.yaml: $VNAME"
+
+        IFS='.' read -r -a parts <<< "$VNAME"
+        major=${parts[0]:-0}
+        minor=${parts[1]:-0}
+        patch=$(echo "${parts[2]:-0}" | tr -cd '0-9')
+        PROJECT_VERSION_CODE=$(( major * 10000 + minor * 100 + patch ))
+        echo "Calculated Project Version Code: $PROJECT_VERSION_CODE"
+
+        if [ $PROJECT_VERSION_CODE -ge $NEXT_VERSION_CODE ]; then
+          echo "Version upgraded: $PROJECT_VERSION_CODE >= $NEXT_VERSION_CODE"
+          echo "version_upgraded=true" >> $GITHUB_OUTPUT
+        else
+          echo "Version not upgraded: $PROJECT_VERSION_CODE < $NEXT_VERSION_CODE"
+          echo "version_upgraded=false" >> $GITHUB_OUTPUT
+        fi
+
   build-apk:
-    needs: [check-conditions, flutter-test, dependency-analysis]
-    if: needs.check-conditions.outputs.should_build_apk == 'true' && needs.flutter-test.result == 'success' && needs.dependency-analysis.result == 'success'
+    needs: [check-conditions, check-version-upgrade, flutter-test, dependency-analysis]
+    if: >-
+      always() &&
+      (needs.check-conditions.outputs.should_build_apk == 'true' || needs.check-version-upgrade.outputs.version_upgraded == 'true') &&
+      needs.flutter-test.result == 'success' &&
+      needs.dependency-analysis.result == 'success' &&
+      (needs.check-version-upgrade.result == 'success' || needs.check-version-upgrade.result == 'skipped')
     runs-on: ubuntu-latest
     
     steps:
@@ -491,8 +509,10 @@ jobs:
         prerelease: true
 
   deploy-to-google-play:
-    needs: [flutter-test, dependency-analysis]
-    if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop') && github.event_name == 'push'
+    needs: [build-apk, check-version-upgrade]
+    if: >-
+      needs.build-apk.result == 'success' &&
+      needs.check-version-upgrade.outputs.version_upgraded == 'true'
     runs-on: ubuntu-latest
     
     steps:
@@ -542,47 +562,13 @@ jobs:
         echo "Decoding real google-services.json from secret..."
         echo "$GOOGLE_SERVICES_JSON_BASE64" | base64 --decode > android/app/google-services.json
         
-    - name: Check if Version Already Uploaded
-      id: check_version
-      env:
-        PLAY_SERVICE_ACCOUNT_KEY: ${{ secrets.PLAY_SERVICE_ACCOUNT_KEY }}
-      run: |
-        # Get latest version code from Google Play
-        LATEST_VERSION_CODE=$(node tools/get_play_version.js)
-        echo "Latest version code on Google Play: $LATEST_VERSION_CODE"
-        NEXT_VERSION_CODE=$(( LATEST_VERSION_CODE + 1 ))
-        echo "Next Version Code required by Google Play: $NEXT_VERSION_CODE"
-        
-        # Get version name from pubspec.yaml
-        VNAME=$(grep '^version: ' pubspec.yaml | cut -d ' ' -f 2 | cut -d '+' -f 1)
-        echo "Version name in pubspec.yaml: $VNAME"
-        
-        # Calculate project version code (major*10000 + minor*100 + patch)
-        IFS='.' read -r -a parts <<< "$VNAME"
-        major=${parts[0]:-0}
-        minor=${parts[1]:-0}
-        patch=$(echo "${parts[2]:-0}" | tr -cd '0-9')
-        PROJECT_VERSION_CODE=$(( major * 10000 + minor * 100 + patch ))
-        echo "Calculated Project Version Code: $PROJECT_VERSION_CODE"
-        
-        if [ $PROJECT_VERSION_CODE -lt $NEXT_VERSION_CODE ]; then
-          echo "Current version code $PROJECT_VERSION_CODE has already been used on Google Play (latest is $LATEST_VERSION_CODE)."
-          echo "Skipping deployment..."
-          echo "should_deploy=false" >> $GITHUB_OUTPUT
-        else
-          echo "Current version code $PROJECT_VERSION_CODE is valid."
-          echo "should_deploy=true" >> $GITHUB_OUTPUT
-        fi
-        
     - name: Build Release AAB via script
-      if: steps.check_version.outputs.should_deploy == 'true'
       run: |
         sed -i 's/\r$//' buildAndroid.sh
         chmod +x buildAndroid.sh
         ./buildAndroid.sh bundle prod
           
     - name: Upload to Google Play Internal
-      if: steps.check_version.outputs.should_deploy == 'true'
       uses: r0adkll/upload-google-play@v1
       with:
         serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_KEY }}
@@ -592,26 +578,52 @@ jobs:
         status: completed
         
     - name: Send Version Update Push Notification
-      if: steps.check_version.outputs.should_deploy == 'true'
       env:
         FIREBASE_SERVICE_ACCOUNT_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
       run: |
         node tools/send_push_notification.js
         
+  update-version-json:
+    needs: [deploy-to-google-play]
+    if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup Dart SDK
+      uses: dart-lang/setup-dart@v1
+      with:
+        sdk: stable
+
+    - name: Generate version.json
+      run: dart run tools/generate_version_json.dart
+
+    - name: Commit and Push version.json
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git add version.json
+        git diff-index --quiet HEAD || (git commit -m "Auto-generate version.json [skip ci]" && git push)
+
   skip-build:
-    needs: check-conditions
-    if: needs.check-conditions.outputs.should_build_apk == 'false'
+    needs: [check-conditions, check-version-upgrade]
+    if: >-
+      always() &&
+      needs.check-conditions.outputs.should_build_apk != 'true' &&
+      needs.check-version-upgrade.outputs.version_upgraded != 'true'
     runs-on: ubuntu-latest
     steps:
     - name: Skip APK build notification
       run: |
         echo "APK build skipped"
-        echo "Reason: Build conditions not met"
-        echo "Time since last build: < 2 hours"
-        echo "No build trigger found in commit message"
+        echo "Reason: Build conditions not met and no version upgrade detected"
         echo "Commit: ${{ github.sha }}"
         echo ""
         echo "To force APK build, use one of these methods:"
         echo "1. Add [build-apk], [apk], or [deploy] to commit message"
         echo "2. Wait 2+ hours since last build"
         echo "3. Use manual workflow dispatch"
+        echo "4. Upgrade the version in pubspec.yaml"
