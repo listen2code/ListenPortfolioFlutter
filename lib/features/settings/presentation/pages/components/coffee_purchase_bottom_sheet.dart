@@ -12,7 +12,7 @@ class CoffeePurchaseBottomSheet extends StatefulWidget {
   State<CoffeePurchaseBottomSheet> createState() => _CoffeePurchaseBottomSheetState();
 }
 
-class _CoffeePurchaseBottomSheetState extends State<CoffeePurchaseBottomSheet> {
+class _CoffeePurchaseBottomSheetState extends State<CoffeePurchaseBottomSheet> with WidgetsBindingObserver {
   List<ProductDetails> _products = [];
   bool _isLoading = true;
   bool _isPurchasing = false;
@@ -22,6 +22,7 @@ class _CoffeePurchaseBottomSheetState extends State<CoffeePurchaseBottomSheet> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _loadProducts();
     _subscription = iapService.purchaseStream.listen(
       _onPurchaseUpdate,
@@ -33,8 +34,27 @@ class _CoffeePurchaseBottomSheetState extends State<CoffeePurchaseBottomSheet> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _subscription?.cancel();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      // If the app resumes and we are still in purchasing state,
+      // it means the native payment dialog was closed.
+      // We add a slight delay to allow the purchaseStream to fire and process.
+      // If no success event pops the sheet, we restore the button state.
+      Future.delayed(const Duration(milliseconds: 1000), () {
+        if (mounted && _isPurchasing) {
+          setState(() {
+            _isPurchasing = false;
+            _purchasingProductId = null;
+          });
+        }
+      });
+    }
   }
 
   Future<void> _loadProducts() async {
@@ -113,10 +133,7 @@ class _CoffeePurchaseBottomSheetState extends State<CoffeePurchaseBottomSheet> {
   Widget _buildBody(BuildContext context) {
     if (_isLoading) {
       return const Center(
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 40),
-          child: CircularProgressIndicator(),
-        ),
+        child: Padding(padding: EdgeInsets.symmetric(vertical: 40), child: CircularProgressIndicator()),
       );
     }
 
@@ -132,9 +149,7 @@ class _CoffeePurchaseBottomSheetState extends State<CoffeePurchaseBottomSheet> {
       );
     }
 
-    return Column(
-      children: _products.map((product) => _buildProductCard(context, product)).toList(),
-    );
+    return Column(children: _products.map((product) => _buildProductCard(context, product)).toList());
   }
 
   Widget _buildProductCard(BuildContext context, ProductDetails product) {
@@ -154,14 +169,11 @@ class _CoffeePurchaseBottomSheetState extends State<CoffeePurchaseBottomSheet> {
         contentPadding: EdgeInsets.symmetric(horizontal: 16.f, vertical: 8.f),
         leading: Container(
           padding: EdgeInsets.all(10.f),
-          decoration: BoxDecoration(
-            color: accentColor.withValues(alpha: 0.08),
-            shape: BoxShape.circle,
-          ),
+          decoration: BoxDecoration(color: accentColor.withValues(alpha: 0.08), shape: BoxShape.circle),
           child: Icon(icon, color: accentColor, size: 24.f),
         ),
         title: Text(
-          product.title,
+          _cleanTitle(product.title),
           style: context.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
         ),
         subtitle: Text(
@@ -180,6 +192,11 @@ class _CoffeePurchaseBottomSheetState extends State<CoffeePurchaseBottomSheet> {
         ),
       ),
     );
+  }
+
+  String _cleanTitle(String title) {
+    final match = RegExp(r'\s*\([^)]*\)$');
+    return title.replaceAll(match, '').trim();
   }
 
   @override

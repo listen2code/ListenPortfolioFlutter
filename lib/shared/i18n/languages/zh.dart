@@ -223,5 +223,5 @@ final Map<String, String> zh = {
   I18nKeys.buyCoffeeFailed: '购买失败，请重试。',
   I18nKeys.iapNotAvailable: '应用内购买商店不可用。',
   I18nKeys.fetchingProducts: '正在获取商品列表...',
-  I18nKeys.selectAmount: '选择打赏金额',
+  I18nKeys.selectAmount: '请作者喝杯咖啡吧',
 };

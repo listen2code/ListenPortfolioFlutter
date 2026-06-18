@@ -261,5 +261,5 @@ class I18nKeys {
   static const String buyCoffeeFailed = 'Purchase failed. Please try again.';
   static const String iapNotAvailable = 'In-app purchase store is not available.';
   static const String fetchingProducts = 'Fetching coffee products...';
-  static const String selectAmount = 'Select Support Amount';
+  static const String selectAmount = 'Support the Author';
 }
