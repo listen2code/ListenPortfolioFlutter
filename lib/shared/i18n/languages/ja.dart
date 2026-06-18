@@ -215,4 +215,13 @@ final Map<String, String> ja = {
   I18nKeys.notificationPermissionTitle: '通知の許可が必要です',
   I18nKeys.notificationPermissionMessage: '通知の許可が拒否されています。プッシュ通知を受信するには、システム設定で通知を有効にしてください。',
   I18nKeys.openSettings: '設定を開く',
+
+  // In-App Purchase
+  I18nKeys.buyMeCoffee: 'コーヒーをおごる',
+  I18nKeys.supportProject: '作者をサポートし、このプロジェクトを支援する',
+  I18nKeys.buyCoffeeSuccess: 'ご支援いただき、心から感謝いたします！',
+  I18nKeys.buyCoffeeFailed: '購入に失敗しました。もう一度お試しください。',
+  I18nKeys.iapNotAvailable: 'アプリ内課金ストアは利用できません。',
+  I18nKeys.fetchingProducts: '商品情報を取得中...',
+  I18nKeys.selectAmount: 'サポート金額を選択',
 };

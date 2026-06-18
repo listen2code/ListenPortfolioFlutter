@@ -45,6 +45,7 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
       switchEnv: _onSwitchEnv,
       toggleLogOverlay: _onToggleLogOverlay,
       checkUpdates: _onCheckUpdates,
+      buyMeCoffee: _onBuyMeCoffee,
     );
   }
 
@@ -196,5 +197,9 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
       return remote.compareTo(current) > 0;
     }
     return false;
+  }
+
+  void _onBuyMeCoffee() {
+    emitEffect(CoffeePurchaseEffect());
   }
 }

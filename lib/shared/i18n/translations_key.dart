@@ -253,4 +253,13 @@ class I18nKeys {
   static const String notificationPermissionMessage =
       'Notification permission was denied. Please enable it in system settings to receive push notifications.';
   static const String openSettings = 'Open Settings';
+
+  // In-App Purchase
+  static const String buyMeCoffee = 'Buy me a Coffee';
+  static const String supportProject = 'Support this project';
+  static const String buyCoffeeSuccess = 'Thank you so much for your support!';
+  static const String buyCoffeeFailed = 'Purchase failed. Please try again.';
+  static const String iapNotAvailable = 'In-app purchase store is not available.';
+  static const String fetchingProducts = 'Fetching coffee products...';
+  static const String selectAmount = 'Select Support Amount';
 }

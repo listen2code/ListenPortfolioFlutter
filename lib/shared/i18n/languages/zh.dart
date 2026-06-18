@@ -215,4 +215,13 @@ final Map<String, String> zh = {
   I18nKeys.notificationPermissionTitle: '需要通知权限',
   I18nKeys.notificationPermissionMessage: '通知权限已被拒绝，请在系统设置中开启通知权限以接收推送通知。',
   I18nKeys.openSettings: '前往设置',
+
+  // In-App Purchase
+  I18nKeys.buyMeCoffee: '请喝咖啡',
+  I18nKeys.supportProject: '打赏作者，支持这个项目',
+  I18nKeys.buyCoffeeSuccess: '非常感谢您的支持！您的鼓励是作者持续维护的动力。',
+  I18nKeys.buyCoffeeFailed: '购买失败，请重试。',
+  I18nKeys.iapNotAvailable: '应用内购买商店不可用。',
+  I18nKeys.fetchingProducts: '正在获取商品列表...',
+  I18nKeys.selectAmount: '选择打赏金额',
 };

@@ -13,7 +13,7 @@ part of 'settings_remote_data_source.dart';
 class _SettingsRemoteDataSource implements SettingsRemoteDataSource {
   _SettingsRemoteDataSource(this._dio, {this.baseUrl, this.errorLogger}) {
     baseUrl ??=
-        'https://raw.githubusercontent.com/listen2code/ListenPortfolioFlutter/main/';
+        'https://raw.githubusercontent.com/listen2code/ListenPortfolioFlutter/';
   }
 
   final Dio _dio;
@@ -32,7 +32,7 @@ class _SettingsRemoteDataSource implements SettingsRemoteDataSource {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            'version.json',
+            'main/version.json',
             queryParameters: queryParameters,
             data: _data,
           )

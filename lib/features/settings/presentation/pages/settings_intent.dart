@@ -14,5 +14,6 @@ class SettingsIntent extends BaseIntent with _$SettingsIntent {
   const factory SettingsIntent.switchEnv(AppEnvironment env) = _SwitchEnv;
   const factory SettingsIntent.toggleLogOverlay(bool enabled) = _ToggleLogOverlay;
   const factory SettingsIntent.checkUpdates() = _CheckUpdates;
+  const factory SettingsIntent.buyMeCoffee() = _BuyMeCoffee;
   const SettingsIntent._();
 }

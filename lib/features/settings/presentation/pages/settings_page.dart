@@ -144,6 +144,20 @@ class SettingsPage extends ConsumerWidget {
 
               SizedBox(height: 25.f),
 
+              // 4.5 SUPPORT
+              _buildSectionTitle(context, I18nKeys.buyMeCoffee.tr),
+              _buildSettingsCard(context, [
+                _buildListTile(
+                  context,
+                  icon: Icons.coffee_outlined,
+                  title: I18nKeys.buyMeCoffee.tr,
+                  subtitle: I18nKeys.supportProject.tr,
+                  onTap: () => viewModel?.handleIntent(const SettingsIntent.buyMeCoffee()),
+                ),
+              ]),
+
+              SizedBox(height: 25.f),
+
               // 5. LEGAL & ABOUT
               _buildSectionTitle(context, I18nKeys.about.tr),
               _buildSettingsCard(context, [
@@ -205,6 +219,7 @@ class SettingsPage extends ConsumerWidget {
   }
 
   // --- Logic Handlers ---
+
 
   void _showResetConfirmation(SettingsViewModel? viewModel) {
     CommonDialog.showConfirm(
@@ -396,3 +411,4 @@ class SettingsPage extends ConsumerWidget {
     );
   }
 }
+

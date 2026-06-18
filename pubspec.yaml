@@ -2,10 +2,10 @@ name: listen_portfolio_flutter
 description: "Portfolio of Listen"
 publish_to: 'none'
 
-version: 1.0.16
-desc: "Improve notification permission timing and unify cold-start/background click routing"
-desc_zh: "优化通知权限请求时机，统一冷启动与后台点击的路由跳转逻辑"
-desc_ja: "通知権限リクエストのタイミングを最適化し、コールドスタートとバックグラウンドクリックのルーティングを統一"
+version: 1.0.17
+desc: "Integrate Buy me a Coffee feature using official in_app_purchase package with decoupled service layer"
+desc_zh: "使用官方 in_app_purchase 插件集成请喝咖啡打赏功能，对内购服务层进行解耦重构"
+desc_ja: "公式in_app_purchaseプラグインを使用してコーヒーをおごる機能を統合し、課金サービス層をリファクタリング"
 
 environment:
   sdk: ^3.12.1
@@ -24,6 +24,10 @@ dependencies:
   firebase_core: ^4.10.0
   firebase_messaging: ^16.3.0
   flutter_local_notifications: ^22.0.1
+
+  # In-App Purchase
+  in_app_purchase: ^3.2.0
+  in_app_purchase_android: ^0.5.1
 
   # UI
   cupertino_icons: ^1.0.8

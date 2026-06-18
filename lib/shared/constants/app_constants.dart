@@ -43,4 +43,11 @@ class AppConstants {
   static const String date = '2026';
   static const String mail = 'listen2code@gmail.com';
   static const String github = 'https://github.com/listen2code';
+
+  // IAP Product IDs
+  static const String coffeeTier1 = 'coffee1';
+  static const String coffeeTier2 = 'coffee2';
+  static const String coffeeTier3 = 'coffee3';
+
+  static const Set<String> coffeeProductIds = {coffeeTier1, coffeeTier2, coffeeTier3};
 }

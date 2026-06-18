@@ -8,6 +8,8 @@ import 'package:listen_portfolio_flutter/features/auth/presentation/provider/aut
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_uikit/uikit.dart';
 
+import '../services/iap/iap_service_impl.dart';
+
 /// A central class to handle all application-wide initializations.
 /// This acts as the 'Composition Root' where core interfaces are tied to shared implementations.
 class AppInitializer {
@@ -36,6 +38,7 @@ class AppInitializer {
           const NavigationProviderImpl(),
           const LogoutProviderImpl(),
           const ShareProviderImpl(),
+          const CoffeePurchaseProviderImpl(),
         ],
         // Link Core Network to Shared Auth Logic with injected container
         apiDelegate: _ApiAuthHandlerImpl(container),
@@ -93,6 +96,14 @@ class AppInitializer {
         error: e,
         stackTrace: stackTrace,
       );
+    }
+
+    // 4. Initialize in-app purchase service
+    try {
+      iapService = IapServiceImpl();
+      await iapService.initialize();
+    } catch (e, stackTrace) {
+      appLogger.e('AppInitializer: In-App Purchase initialization failed.', error: e, stackTrace: stackTrace);
     }
   }
 }
