@@ -195,8 +195,7 @@ class _CoffeePurchaseBottomSheetState extends State<CoffeePurchaseBottomSheet> w
   }
 
   String _cleanTitle(String title) {
-    final match = RegExp(r'\s*\([^)]*\)$');
-    return title.replaceAll(match, '').trim();
+    return title.substring(0, title.indexOf('('));
   }
 
   @override
