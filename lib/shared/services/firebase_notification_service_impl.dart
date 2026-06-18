@@ -90,6 +90,7 @@ class FirebaseNotificationServiceImpl implements INotificationService {
         _handleNotificationNavigation(payload);
       });
 
+      await requestPermission();
       // 6. Handle terminated startup click
       final initialMessage = await _fcm.getInitialMessage();
       if (initialMessage != null) {
