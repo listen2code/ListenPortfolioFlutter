@@ -32,6 +32,10 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
   @override
   void onInit() {
     handleIntent(const SettingsIntent.init());
+    final bool? checkUpdate = AppNav.getParam<bool>(Routes.argCheckUpdate);
+    if (checkUpdate == true) {
+      handleIntent(const SettingsIntent.checkUpdates());
+    }
   }
 
   @override

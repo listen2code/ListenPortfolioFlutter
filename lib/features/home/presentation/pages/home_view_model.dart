@@ -45,7 +45,7 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
           if (targetRoute != null && targetRoute.isNotEmpty) {
             // Navigate to target route safely on the next frame to avoid build collision
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              AppNav.to(targetRoute);
+              AppNav.to(targetRoute, arguments: {Routes.argCheckUpdate: true});
             });
           }
         }

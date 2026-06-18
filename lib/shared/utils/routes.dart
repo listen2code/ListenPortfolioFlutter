@@ -33,6 +33,7 @@ class Routes {
   // Argument Keys - Enforce consistency between caller and receiver
   static const String argName = 'name';
   static const String argFilePath = 'file_path';
+  static const String argCheckUpdate = 'check_update';
 
   /// The complete route map linking paths to their respective widget builders.
   static Map<String, RoutePageBuilder> get routes => {
