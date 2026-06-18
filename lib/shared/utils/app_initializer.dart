@@ -89,7 +89,7 @@ class AppInitializer {
 
     // 3. Initialize push notification service & configure deep link routing listeners
     try {
-      await notificationService.initialize();
+      await notificationService.initialize().timeout(const Duration(seconds: 5));
     } catch (e, stackTrace) {
       appLogger.e(
         'AppInitializer: Push notification initialization timed out or failed. $e',
