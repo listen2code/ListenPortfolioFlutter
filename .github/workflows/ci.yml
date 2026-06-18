@@ -24,30 +24,6 @@ on:
         type: boolean
 
 jobs:
-  update-version-json:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Setup Dart SDK
-        uses: dart-lang/setup-dart@v1
-        with:
-          sdk: stable
-
-      - name: Generate version.json
-        run: dart run tools/generate_version_json.dart
-
-      - name: Commit and Push version.json
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add version.json
-          git diff-index --quiet HEAD || (git commit -m "Auto-generate version.json [skip ci]" && git push)
-
   check-conditions:
     runs-on: ubuntu-latest
     outputs:
@@ -131,7 +107,7 @@ jobs:
 
   flutter-test:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -227,7 +203,7 @@ jobs:
 
   dependency-analysis:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -285,7 +261,7 @@ jobs:
     needs: [check-conditions, flutter-test, dependency-analysis]
     if: needs.check-conditions.outputs.should_build_apk == 'true' && needs.flutter-test.result == 'success' && needs.dependency-analysis.result == 'success'
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -494,7 +470,7 @@ jobs:
     needs: [flutter-test, dependency-analysis]
     if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop') && github.event_name == 'push'
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -597,6 +573,31 @@ jobs:
           FIREBASE_SERVICE_ACCOUNT_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
         run: |
           node tools/send_push_notification.js
+
+  update-version-json:
+    needs: [deploy-to-google-play]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Dart SDK
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+
+      - name: Generate version.json
+        run: dart run tools/generate_version_json.dart
+
+      - name: Commit and Push version.json
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add version.json
+          git diff-index --quiet HEAD || (git commit -m "Auto-generate version.json [skip ci]" && git push)
 
   skip-build:
     needs: check-conditions
