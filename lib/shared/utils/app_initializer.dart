@@ -92,7 +92,7 @@ class AppInitializer {
       await notificationService.initialize().timeout(const Duration(seconds: 5));
     } catch (e, stackTrace) {
       appLogger.e(
-        'AppInitializer: Push notification initialization timed out or failed. $e',
+        'AppInitializer: Push notification initialization timed out or failed.',
         error: e,
         stackTrace: stackTrace,
       );
