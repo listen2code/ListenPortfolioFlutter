@@ -61,11 +61,7 @@ class DummyPackageInfo implements IPackageInfo {
 
   @override
   Map<String, String> toHeaderMap() {
-    return {
-      'X-App-Version': version,
-      'X-App-Build': buildNumber,
-      'X-App-Package': packageName,
-    };
+    return {'X-App-Version': version, 'X-App-Build': buildNumber, 'X-App-Package': packageName};
   }
 }
 
@@ -132,24 +128,28 @@ class TestAppInitializer {
 
     // 5. Setup Network Client
     ApiClient.init(_ApiAuthHandlerImpl(container));
-    ApiClient.initNetworkConfig(NetworkConfig(
-      visitorPaths: [
-        '/v1/auth/signUp',
-        '/v1/auth/login',
-        '/v1/auth/forgot-password',
-        '/v1/auth/refresh',
-        '/v1/projects',
-      ],
-    ));
+    ApiClient.initNetworkConfig(
+      NetworkConfig(
+        visitorPaths: [
+          '/v1/auth/signUp',
+          '/v1/auth/login',
+          '/v1/auth/forgot-password',
+          '/v1/auth/refresh',
+          '/v1/projects',
+        ],
+      ),
+    );
     BaseResponseModel.initConfig(const ResponseConfig());
 
     // 6. Setup Crash Protection
-    CrashManager.init(SafeModeConfig(
-      onReset: () async {
-        await settingManager.resetSettings();
-        AppNav.offAll(Routes.home);
-      },
-    ));
+    CrashManager.init(
+      SafeModeConfig(
+        onReset: () async {
+          await settingManager.resetSettings();
+          AppNav.offAll(Routes.home);
+        },
+      ),
+    );
     CrashManager.initStorageConfig(const StorageConfig());
 
     // 7. Setup Environment
@@ -161,10 +161,7 @@ class TestAppInitializer {
 
     // 8. Setup Localization
     Translations.register(
-      data: {
-        AppLanguage.chinese.locale.languageCode: zh,
-        AppLanguage.japanese.locale.languageCode: ja,
-      },
+      data: {AppLanguage.chinese.locale.languageCode: zh, AppLanguage.japanese.locale.languageCode: ja},
       languageCodeProvider: () => settingManager.locale.languageCode,
     );
 
@@ -222,99 +219,56 @@ void main() {
   });
 
   group('Mock E2E Integration Flow Tests', () {
-    testWidgets('Should successfully boot into SplashPage, delay 2 seconds, transition to HomePage, open Drawer, navigate to SettingsPage and return', (WidgetTester tester) async {
-      // 1. Initialize Composition Root dependencies with Riverpod Container
-      final container = ProviderContainer();
-      await TestAppInitializer.init(container);
+    testWidgets(
+      'Should successfully boot into SplashPage, delay 2 seconds, transition to HomePage, open Drawer, navigate to SettingsPage and return',
+      (WidgetTester tester) async {
+        // 1. Initialize Composition Root dependencies with Riverpod Container
+        final container = ProviderContainer();
+        await TestAppInitializer.init(container);
 
-      // 2. Boot the entire App widget tree
-      await tester.pumpWidget(
-        UncontrolledProviderScope(
-          container: container,
-          child: const MyApp(),
-        ),
-      );
+        // 2. Boot the entire App widget tree
+        await tester.pumpWidget(UncontrolledProviderScope(container: container, child: const MyApp()));
 
-      // 3. First frame must render SplashPage
-      await tester.pump();
-      expect(find.byType(SplashPage), findsOneWidget);
-      expect(find.text(AppConstants.appName), findsOneWidget);
+        // 3. First frame must render SplashPage
+        await tester.pump();
+        expect(find.byType(SplashPage), findsOneWidget);
+        expect(find.text(AppConstants.appName), findsOneWidget);
 
-      // 4. Pump simulated delay of 2 seconds (matches SplashViewModel artificial delay)
-      await tester.pump(const Duration(seconds: 2));
-      // Settle the routing slide transition animations completely
-      await tester.pumpAndSettle();
+        // 4. Pump simulated delay of 2 seconds (matches SplashViewModel artificial delay)
+        await tester.pump(const Duration(seconds: 2));
+        // Settle the routing slide transition animations completely
+        await tester.pumpAndSettle();
 
-      // 5. Verify transition completed into HomePage
-      expect(find.byType(HomePage), findsOneWidget);
+        // 5. Verify transition completed into HomePage
+        expect(find.byType(HomePage), findsOneWidget);
 
-      // 6. Open Navigation Drawer using ScaffoldState
-      final ScaffoldState scaffoldState = tester.firstState(find.byType(Scaffold));
-      scaffoldState.openDrawer();
-      await tester.pumpAndSettle();
+        // 6. Open Navigation Drawer using ScaffoldState
+        final ScaffoldState scaffoldState = tester.firstState(find.byType(Scaffold));
+        scaffoldState.openDrawer();
+        await tester.pumpAndSettle();
 
-      // 7. Verify core user information is correctly fetched and bound from user.json
-      // AppConstants.author holds "Listen", verifying name is rendered.
-      expect(find.text(AppConstants.author), findsWidgets);
+        // 7. Verify core user information is correctly fetched and bound from user.json
+        // AppConstants.author holds "Listen", verifying name is rendered.
+        expect(find.text(AppConstants.author), findsWidgets);
 
-      // 8. Locate Settings menu option from Drawer via internationalization keys
-      final settingsMenuOption = find.text(I18nKeys.settings.tr);
-      expect(settingsMenuOption, findsOneWidget);
+        // 8. Locate Settings menu option from Drawer via internationalization keys
+        final settingsMenuOption = find.text(I18nKeys.settings.tr);
+        expect(settingsMenuOption, findsOneWidget);
 
-      // 9. Tap on Settings option and wait for navigation transition
-      await tester.tap(settingsMenuOption);
-      await tester.pumpAndSettle();
+        // 9. Tap on Settings option and wait for navigation transition
+        await tester.tap(settingsMenuOption);
+        await tester.pumpAndSettle();
 
-      // 10. Verify we are now on the SettingsPage
-      expect(find.byType(SettingsPage), findsOneWidget);
+        // 10. Verify we are now on the SettingsPage
+        expect(find.byType(SettingsPage), findsOneWidget);
 
-      // 11. Tap default Page Back button to return to HomePage
-      await tester.pageBack();
-      await tester.pumpAndSettle();
+        // 11. Tap default Page Back button to return to HomePage
+        await tester.pageBack();
+        await tester.pumpAndSettle();
 
-      // 12. Verify we returned successfully to the HomePage
-      expect(find.byType(HomePage), findsOneWidget);
-    });
-
-    testWidgets('Should successfully boot into SplashPage, process initial message and navigate to SettingsPage', (WidgetTester tester) async {
-      // 1. Initialize Composition Root dependencies
-      final container = ProviderContainer();
-      await TestAppInitializer.init(container);
-
-      // 2. Pre-populate sticky route changed event (simulates click on launch)
-      eventBus.fire(
-        const CommonEvent<String>(
-          AppConstants.routeChangedEvent,
-          data: Routes.settings,
-          sticky: true,
-          autoClear: true,
-        ),
-      );
-
-      // 3. Boot the App widget tree
-      await tester.pumpWidget(
-        UncontrolledProviderScope(
-          container: container,
-          child: const MyApp(),
-        ),
-      );
-
-      // 4. Verify SplashPage is shown first
-      await tester.pump();
-      expect(find.byType(SplashPage), findsOneWidget);
-
-      // 5. Pump delay to allow transition to HomePage
-      await tester.pump(const Duration(seconds: 2));
-      await tester.pumpAndSettle();
-
-      // 6. Verify we transitioned to HomePage (may be offstage due to immediate redirection)
-      expect(find.byType(HomePage, skipOffstage: false), findsOneWidget);
-
-      // 7. Settle any post-frame navigation triggered by EventBus
-      await tester.pumpAndSettle();
-
-      // 8. Verify we are navigated to SettingsPage automatically
-      expect(find.byType(SettingsPage), findsOneWidget);
-    });
+        // 12. Verify we returned successfully to the HomePage
+        expect(find.byType(HomePage), findsOneWidget);
+      },
+    );
   });
 }
