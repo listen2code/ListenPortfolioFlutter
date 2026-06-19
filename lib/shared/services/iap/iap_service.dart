@@ -1,3 +1,5 @@
+import 'package:in_app_purchase/in_app_purchase.dart';
+
 abstract class IIapService {
   /// Initializes the In-App Purchase service, e.g. listening to streams or connection.
   Future<void> initialize();
