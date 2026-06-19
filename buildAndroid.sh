@@ -39,7 +39,7 @@ echo ">>> Extracting version from pubspec.yaml"
 APP_VERSION=$(grep '^version: ' pubspec.yaml | cut -d ' ' -f 2 | cut -d '+' -f 1)
 
 echo ">>> build $TARGET_TYPE [$ENV] version [$APP_VERSION]"
-flutter build $build_cmd --release --no-pub \
+flutter build $build_cmd --no-shrink --release --no-pub \
     --obfuscate --split-debug-info=apkOutput \
     --extra-gen-snapshot-options=--save-obfuscation-map=apkOutput/mapping.json \
     --dart-define=APP_ENV=$ENV \
