@@ -112,14 +112,6 @@ class AppInitializer {
         );
       }
     });
-
-    // 4. Initialize in-app purchase service
-    try {
-      iapService = IapServiceImpl();
-      await iapService.initialize();
-    } catch (e, stackTrace) {
-      appLogger.e('AppInitializer: In-App Purchase initialization failed.', error: e, stackTrace: stackTrace);
-    }
   }
 }
 

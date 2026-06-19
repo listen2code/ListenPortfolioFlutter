@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:listen_core/core.dart';
-import '../../features/settings/presentation/pages/components/coffee_purchase_bottom_sheet.dart';
 
 class CoffeePurchaseEffect extends BaseEffect {
   CoffeePurchaseEffect();
@@ -17,7 +16,7 @@ class CoffeePurchaseProviderImpl extends BaseProvider<CoffeePurchaseEffect> {
         context: context,
         isScrollControlled: true,
         backgroundColor: Colors.transparent,
-        builder: (context) => const CoffeePurchaseBottomSheet(),
+        builder: (context) => Container(),
       );
     }
   }
