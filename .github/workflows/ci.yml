@@ -182,7 +182,7 @@ jobs:
             exit 1
           fi
           echo "Decoding real google-services.json from secret..."
-          echo "$GOOGLE_SERVICES_JSON_BASE64" | base64 --decode > android/app/google-services.json
+          echo "$GOOGLE_SERVICES_JSON_BASE64" | tr -d '\n\r' | base64 --decode > android/app/google-services.json
 
       - name: Build APK via script
         run: |
