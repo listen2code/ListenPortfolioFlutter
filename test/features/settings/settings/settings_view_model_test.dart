@@ -157,6 +157,26 @@ void main() {
         // Assert
         expect(container.read(settingsViewModelProvider).isLogOverlayShowing, isFalse);
       });
+
+      test('should sync state when LogOverlayManager.isShowingNotifier value changes', () async {
+        // Arrange
+        LogOverlayManager.isShowingNotifier.value = false;
+        await Future.delayed(const Duration(milliseconds: 50));
+
+        // Act: simulate opening overlay
+        LogOverlayManager.isShowingNotifier.value = true;
+        await Future.delayed(const Duration(milliseconds: 50));
+
+        // Assert
+        expect(container.read(settingsViewModelProvider).isLogOverlayShowing, isTrue);
+
+        // Act: simulate closing overlay
+        LogOverlayManager.isShowingNotifier.value = false;
+        await Future.delayed(const Duration(milliseconds: 50));
+
+        // Assert
+        expect(container.read(settingsViewModelProvider).isLogOverlayShowing, isFalse);
+      });
     });
 
     group('Clear Cache Intent', () {

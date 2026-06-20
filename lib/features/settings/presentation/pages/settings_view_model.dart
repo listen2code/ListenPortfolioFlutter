@@ -25,13 +25,20 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
       currentLanguage: settingManager.language,
       currentEnv: AppEnv.currentEnv,
       notificationsEnabled: enabled,
-      isLogOverlayShowing: LogOverlayManager.isShowing,
+      isLogOverlayShowing: LogOverlayManager.isShowingNotifier.value,
     );
   }
 
   @override
   void onInit() {
     handleIntent(const SettingsIntent.init());
+    LogOverlayManager.isShowingNotifier.addListener(_onLogOverlayShowingChanged);
+  }
+
+  @override
+  void onDispose() {
+    LogOverlayManager.isShowingNotifier.removeListener(_onLogOverlayShowingChanged);
+    super.onDispose();
   }
 
   @override
@@ -204,5 +211,9 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
 
   void _onBuyMeCoffee() {
     emitEffect(CoffeePurchaseEffect());
+  }
+
+  void _onLogOverlayShowingChanged() {
+    handleIntent(SettingsIntent.toggleLogOverlay(LogOverlayManager.isShowingNotifier.value));
   }
 }

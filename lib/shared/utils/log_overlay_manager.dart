@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:listen_core/core.dart';
 import 'package:listen_uikit/uikit.dart';
+
 import '../i18n/translations_key.dart';
 
 enum LogFilter { all, server, app, perf }
@@ -17,10 +18,11 @@ class LogOverlayManager {
   static Size? _windowSize;
 
   /// Notifier to let external widgets listen to the visibility state
-  static final ValueNotifier<bool> isShowingNotifier = ValueNotifier(true);
+  static final ValueNotifier<bool> isShowingNotifier = ValueNotifier(false);
 
   static Future<void> init(BuildContext context) async {
     final isEnabled = SpUtil.getBool(logOverlayKey, defaultValue: true);
+    isShowingNotifier.value = isEnabled;
 
     if (isEnabled && context.mounted) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -489,7 +491,7 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
                   ),
                 ),
                 if (_traceController.text.isNotEmpty)
-                  GestureDetector(
+                  CommonClickable(
                     onTap: () => _traceController.clear(),
                     child: const Icon(Icons.close_rounded, size: 14, color: Colors.white24),
                   ),
@@ -503,7 +505,7 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
 
   Widget _filterChip(String label, LogFilter filter, {Color? color}) {
     final bool isSelected = currentFilter == filter;
-    return GestureDetector(
+    return CommonClickable(
       onTap: () => setState(() => currentFilter = filter),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -528,10 +530,10 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
   }
 
   Widget _buildHeaderAction(IconData icon, VoidCallback onTap, {Color color = Colors.white70}) {
-    return GestureDetector(
+    return CommonClickable(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.only(left: 12),
+        padding: const EdgeInsets.only(left: 12, right: 5, top: 5, bottom: 5),
         child: Icon(icon, color: color, size: 18),
       ),
     );

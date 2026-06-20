@@ -2,10 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_core/core.dart';
-import '../../../../generated/r.dart';
-import '../../../../shared/shared.dart';
 import 'package:listen_uikit/uikit.dart';
 
+import '../../../../generated/r.dart';
+import '../../../../shared/shared.dart';
 import 'settings_intent.dart';
 import 'settings_state.dart';
 import 'settings_view_model.dart';
@@ -138,7 +138,20 @@ class SettingsPage extends ConsumerWidget {
                     icon: Icons.notification_important_outlined,
                     title: '推送通知模拟 (Push Test)',
                     subtitle: '触发前台推送通知横幅模拟',
-                    onTap: _simulateForegroundNotification,
+                    onTap: () async {
+                      // Request permission first to ensure notification banner can display
+                      await notificationService.requestPermission();
+                      final service = notificationService;
+                      if (service is FirebaseNotificationServiceImpl) {
+                        service.simulateMessageReceived(
+                          const NotificationPayload(
+                            title: '前台测试通知',
+                            body: '这是一个在前台接收的推送通知横幅模拟。',
+                            data: {'type': 'test'},
+                          ),
+                        );
+                      }
+                    },
                   ),
               ]),
 
@@ -220,7 +233,6 @@ class SettingsPage extends ConsumerWidget {
 
   // --- Logic Handlers ---
 
-
   void _showResetConfirmation(SettingsViewModel? viewModel) {
     CommonDialog.showConfirm(
       title: I18nKeys.resetConfirmTitle.tr,
@@ -243,23 +255,10 @@ class SettingsPage extends ConsumerWidget {
           value: state.currentEnv == config.env,
           onChanged: (_) {
             viewModel?.handleIntent(SettingsIntent.switchEnv(config.env));
-            AppNav.back();
           },
         );
       }).toList(),
     );
-  }
-
-  void _simulateForegroundNotification() async {
-    // Request permission first to ensure notification banner can display
-    await notificationService.requestPermission();
-
-    final service = notificationService;
-    if (service is FirebaseNotificationServiceImpl) {
-      service.simulateMessageReceived(
-        const NotificationPayload(title: '前台测试通知', body: '这是一个在前台接收的推送通知横幅模拟。', data: {'type': 'test'}),
-      );
-    }
   }
 
   String _getEnvLabel(AppEnvironment env) {
@@ -284,7 +283,6 @@ class SettingsPage extends ConsumerWidget {
           value: state.currentLanguage == lang,
           onChanged: (_) {
             viewModel?.handleIntent(SettingsIntent.switchLanguage(lang));
-            AppNav.back();
           },
         );
       }).toList(),
@@ -411,4 +409,3 @@ class SettingsPage extends ConsumerWidget {
     );
   }
 }
-
