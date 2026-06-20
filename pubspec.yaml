@@ -2,8 +2,8 @@ name: listen_portfolio_flutter
 description: "Portfolio of Listen"
 publish_to: 'none'
 
-version: 1.0.38
-desc: "Fix Push Failed"
+version: 1.0.39
+desc: "Upgrade listen_core listen_uikit"
 desc_zh: ""
 desc_ja: ""
 
@@ -16,8 +16,8 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  listen_core: ^0.0.9
-  listen_uikit: ^0.0.8
+  listen_core: ^0.0.10
+  listen_uikit: ^0.0.9
   dynamic_color: ^1.8.1
 
   # Firebase & Notifications

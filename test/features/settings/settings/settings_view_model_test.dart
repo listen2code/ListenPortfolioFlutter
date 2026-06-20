@@ -267,6 +267,52 @@ void main() {
         expect(loadingEffects.last.show, isFalse);
       });
     });
+
+    group('onInit and argCheckUpdate', () {
+      setUp(() {
+        try {
+          Core.packageInfo = DummyPackageInfo('1.0.0');
+        } catch (_) {}
+      });
+
+      tearDown(() {
+        AppNav.currentArgs = null;
+      });
+
+      test('should NOT trigger checkUpdates when argCheckUpdate is not present or false', () async {
+        // Arrange
+        AppNav.currentArgs = null;
+
+        // Act
+        viewModel.onInit();
+        await Future.delayed(const Duration(milliseconds: 100));
+
+        // Assert: settingsRepository.getLatestVersion shouldn't be called
+        verifyNever(() => mockSettingsRepository.getLatestVersion());
+      });
+
+      test('should trigger checkUpdates when argCheckUpdate is true', () async {
+        // Arrange
+        AppNav.currentArgs = {Routes.argCheckUpdate: true};
+        when(() => mockSettingsRepository.getLatestVersion()).thenAnswer(
+          (_) async => const Right(
+            VersionModel(
+              version: '1.1.0',
+              buildNumber: 2,
+              url: 'https://example.com',
+              changelog: {'en': 'Test update'},
+            ),
+          ),
+        );
+
+        // Act
+        viewModel.onInit();
+        await Future.delayed(const Duration(milliseconds: 200));
+
+        // Assert: settingsRepository.getLatestVersion should be called
+        verify(() => mockSettingsRepository.getLatestVersion()).called(1);
+      });
+    });
   });
 }
 
