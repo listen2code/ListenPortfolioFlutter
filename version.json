@@ -1,10 +1,10 @@
 {
-  "version": "1.0.39",
+  "version": "1.0.40",
   "buildNumber": 1,
   "url": "https://play.google.com/store/apps/details?id=com.listen.portfolio.listen_portfolio_flutter",
   "changelog": {
     "zh": "",
-    "en": "Upgrade listen_core listen_uikit",
+    "en": "Refactor dialog handling to an effect-based architecture and update dependencies",
     "ja": ""
   }
 }
