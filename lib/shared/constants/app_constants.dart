@@ -45,9 +45,11 @@ class AppConstants {
   static const String github = 'https://github.com/listen2code';
   static const String githubProjectName = 'ListenPortfolioFlutter';
   static const String githubShare = '$github/$githubProjectName';
-  static const String githubPageRoot = 'https://listen2code.github.io/$githubProjectName/pages/';
-  static const String githubPageTermsOfService = '$githubPageRoot/terms_of_service.html';
-  static const String githubPagePrivacyPolicy = '$githubPageRoot/privacy_policy.html';
+  static const String storeShare =
+      'https://play.google.com/store/apps/details?id=com.listen.portfolio.listen_portfolio_flutter';
+  static const String githubPageRoot = 'https://listen2code.github.io/ListenPortfolioFlutter/pages/';
+  static const String githubPageTermsOfService = '${githubPageRoot}terms_of_service.html';
+  static const String githubPagePrivacyPolicy = '${githubPageRoot}privacy_policy.html';
 
   // IAP Product IDs
   static const String coffeeTier1 = 'coffee1';

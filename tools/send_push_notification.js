@@ -7,10 +7,10 @@ let serviceAccountJson = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
 let appVersion = process.env.APP_VERSION;
 let appDesc = 'A new version has been released! ';
 
-// Try to read version.json first
+// Try to read version.json from pages/ folder
 try {
-  if (fs.existsSync('version.json')) {
-    const versionData = JSON.parse(fs.readFileSync('version.json', 'utf8'));
+  if (fs.existsSync('pages/version.json')) {
+    const versionData = JSON.parse(fs.readFileSync('pages/version.json', 'utf8'));
     if (!appVersion && versionData.version) {
       appVersion = versionData.version;
     }

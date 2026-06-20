@@ -3,11 +3,11 @@ import 'dart:io';
 
 import 'package:image_picker/image_picker.dart';
 import 'package:listen_core/core.dart';
-import '../../../data/models/about_me_model.dart';
-import '../../provider/about_me_provider.dart';
-import '../../../../../shared/shared.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../../shared/shared.dart';
+import '../../../data/models/about_me_model.dart';
+import '../../provider/about_me_provider.dart';
 import 'about_me_intent.dart';
 import 'about_me_state.dart';
 
@@ -72,7 +72,7 @@ class AboutMeViewModel extends _$AboutMeViewModel with ViewModelMixin<AboutMeSta
 
   void _onShareApp() {
     emitEffect(
-      ShareEffect(text: '${AppConstants.appName} - ${I18nKeys.shareApp.tr}: ${AppConstants.githubShare}'),
+      ShareEffect(text: '${AppConstants.appName} - ${I18nKeys.shareApp.tr}: ${AppConstants.storeShare}'),
     );
   }
 }

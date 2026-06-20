@@ -2,13 +2,15 @@ import 'package:dio/dio.dart';
 import 'package:listen_core/core.dart';
 import 'package:retrofit/retrofit.dart';
 
+import '../../../../shared/shared.dart';
+
 part 'settings_remote_data_source.g.dart';
 
-@RestApi(baseUrl: 'https://raw.githubusercontent.com/listen2code/ListenPortfolioFlutter/')
+@RestApi(baseUrl: AppConstants.githubPageRoot)
 abstract class SettingsRemoteDataSource {
   factory SettingsRemoteDataSource(Dio dio, {String baseUrl}) = _SettingsRemoteDataSource;
 
-  @GET('main/version.json')
+  @GET('version.json')
   @Extra({ApiClient.kNoAuthKey: true})
   Future<String> getLatestVersion();
 }

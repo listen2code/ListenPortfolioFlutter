@@ -295,7 +295,7 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
 
   void _onShareApp() {
     emitEffect(
-      ShareEffect(text: '${AppConstants.appName} - ${I18nKeys.shareApp.tr}: ${AppConstants.githubShare}'),
+      ShareEffect(text: '${AppConstants.appName} - ${I18nKeys.shareApp.tr}: ${AppConstants.storeShare}'),
     );
   }
 

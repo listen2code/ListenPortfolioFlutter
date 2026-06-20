@@ -35,7 +35,7 @@ void main() {
   final descEn = descEnMatch?.group(1) ?? defaultDesc;
   final descJa = descJaMatch?.group(1) ?? defaultDesc;
 
-  final versionJsonFile = File('version.json');
+  final pagesVersionJsonFile = File('pages/version.json');
   final Map<String, dynamic> data = {
     'version': version,
     'buildNumber': buildNumber,
@@ -47,14 +47,15 @@ void main() {
     }
   };
 
-  // Preserve existing url if version.json exists
-  if (versionJsonFile.existsSync()) {
+  // Preserve existing url if version.json exists in pages/
+  if (pagesVersionJsonFile.existsSync()) {
     try {
-      final existingData = json.decode(versionJsonFile.readAsStringSync()) as Map<String, dynamic>;
+      final existingData = json.decode(pagesVersionJsonFile.readAsStringSync()) as Map<String, dynamic>;
       data['url'] = existingData['url'] ?? data['url'];
     } catch (_) {}
   }
 
-  versionJsonFile.writeAsStringSync('${const JsonEncoder.withIndent('  ').convert(data)}\n');
-  print('Successfully generated version.json at the project root with version: $version ($buildNumber) and desc: $defaultDesc');
+  final jsonContent = '${const JsonEncoder.withIndent('  ').convert(data)}\n';
+  pagesVersionJsonFile.writeAsStringSync(jsonContent);
+  print('Successfully generated version.json at pages/ with version: $version ($buildNumber)');
 }
