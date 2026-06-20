@@ -12,6 +12,7 @@ abstract class SettingsState extends BaseState with _$SettingsState {
     @Default(AppLanguage.chinese) AppLanguage currentLanguage,
     @Default(AppEnvironment.prod) AppEnvironment currentEnv,
     @Default(false) bool isLogOverlayShowing,
+    @Default(false) bool isDeveloperMode,
   }) = _SettingsState;
   const SettingsState._();
 }

@@ -132,7 +132,7 @@ class SettingsPage extends ConsumerWidget {
                   subtitle: '${I18nKeys.currentlyActive.tr}: ${state.currentEnv.name}',
                   onTap: () => viewModel?.handleIntent(const SettingsIntent.showEnvDialog()),
                 ),
-                if (kDebugMode)
+                if (kDebugMode || state.isDeveloperMode)
                   _buildListTile(
                     context,
                     icon: Icons.notification_important_outlined,
@@ -152,7 +152,7 @@ class SettingsPage extends ConsumerWidget {
                       }
                     },
                   ),
-                if (kDebugMode)
+                if (kDebugMode || state.isDeveloperMode)
                   _buildListTile(
                     context,
                     icon: Icons.html,
@@ -238,14 +238,8 @@ class SettingsPage extends ConsumerWidget {
                     applicationLegalese: '© ${AppConstants.date} ${AppConstants.author}',
                   ),
                 ),
-                ListTile(
-                  dense: true,
-                  title: Center(
-                    child: Text(
-                      '${I18nKeys.appVersion.tr} ${AppConstants.appVersion}',
-                      style: context.textTheme.labelSmall?.copyWith(color: Colors.grey),
-                    ),
-                  ),
+                _VersionTile(
+                  onTrigger: () => viewModel?.handleIntent(const SettingsIntent.enableDeveloperMode()),
                 ),
               ]),
               SizedBox(height: 40.f),
@@ -375,6 +369,47 @@ class SettingsPage extends ConsumerWidget {
       ),
       trailing: CommonSwitch(value: value, onChanged: onChanged),
       onTap: () => onChanged(!value),
+    );
+  }
+}
+
+class _VersionTile extends StatefulWidget {
+  final VoidCallback onTrigger;
+
+  const _VersionTile({required this.onTrigger});
+
+  @override
+  State<_VersionTile> createState() => _VersionTileState();
+}
+
+class _VersionTileState extends State<_VersionTile> {
+  int _clickCount = 0;
+  DateTime? _lastClickTime;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      dense: true,
+      title: Center(
+        child: Text(
+          '${I18nKeys.appVersion.tr} ${AppConstants.appVersion}',
+          style: context.textTheme.labelSmall?.copyWith(color: Colors.grey),
+        ),
+      ),
+      onTap: () {
+        final now = DateTime.now();
+        if (_lastClickTime == null || now.difference(_lastClickTime!) > const Duration(seconds: 2)) {
+          _clickCount = 1;
+        } else {
+          _clickCount++;
+        }
+        _lastClickTime = now;
+
+        if (_clickCount >= 7) {
+          _clickCount = 0;
+          widget.onTrigger();
+        }
+      },
     );
   }
 }

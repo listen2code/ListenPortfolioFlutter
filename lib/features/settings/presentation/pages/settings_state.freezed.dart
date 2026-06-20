@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SettingsState {
 
- String get cacheSize; bool get notificationsEnabled; AppLanguage get currentLanguage; AppEnvironment get currentEnv; bool get isLogOverlayShowing;
+ String get cacheSize; bool get notificationsEnabled; AppLanguage get currentLanguage; AppEnvironment get currentEnv; bool get isLogOverlayShowing; bool get isDeveloperMode;
 /// Create a copy of SettingsState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $SettingsStateCopyWith<SettingsState> get copyWith => _$SettingsStateCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SettingsState&&(identical(other.cacheSize, cacheSize) || other.cacheSize == cacheSize)&&(identical(other.notificationsEnabled, notificationsEnabled) || other.notificationsEnabled == notificationsEnabled)&&(identical(other.currentLanguage, currentLanguage) || other.currentLanguage == currentLanguage)&&(identical(other.currentEnv, currentEnv) || other.currentEnv == currentEnv)&&(identical(other.isLogOverlayShowing, isLogOverlayShowing) || other.isLogOverlayShowing == isLogOverlayShowing));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SettingsState&&(identical(other.cacheSize, cacheSize) || other.cacheSize == cacheSize)&&(identical(other.notificationsEnabled, notificationsEnabled) || other.notificationsEnabled == notificationsEnabled)&&(identical(other.currentLanguage, currentLanguage) || other.currentLanguage == currentLanguage)&&(identical(other.currentEnv, currentEnv) || other.currentEnv == currentEnv)&&(identical(other.isLogOverlayShowing, isLogOverlayShowing) || other.isLogOverlayShowing == isLogOverlayShowing)&&(identical(other.isDeveloperMode, isDeveloperMode) || other.isDeveloperMode == isDeveloperMode));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,cacheSize,notificationsEnabled,currentLanguage,currentEnv,isLogOverlayShowing);
+int get hashCode => Object.hash(runtimeType,cacheSize,notificationsEnabled,currentLanguage,currentEnv,isLogOverlayShowing,isDeveloperMode);
 
 @override
 String toString() {
-  return 'SettingsState(cacheSize: $cacheSize, notificationsEnabled: $notificationsEnabled, currentLanguage: $currentLanguage, currentEnv: $currentEnv, isLogOverlayShowing: $isLogOverlayShowing)';
+  return 'SettingsState(cacheSize: $cacheSize, notificationsEnabled: $notificationsEnabled, currentLanguage: $currentLanguage, currentEnv: $currentEnv, isLogOverlayShowing: $isLogOverlayShowing, isDeveloperMode: $isDeveloperMode)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $SettingsStateCopyWith<$Res>  {
   factory $SettingsStateCopyWith(SettingsState value, $Res Function(SettingsState) _then) = _$SettingsStateCopyWithImpl;
 @useResult
 $Res call({
- String cacheSize, bool notificationsEnabled, AppLanguage currentLanguage, AppEnvironment currentEnv, bool isLogOverlayShowing
+ String cacheSize, bool notificationsEnabled, AppLanguage currentLanguage, AppEnvironment currentEnv, bool isLogOverlayShowing, bool isDeveloperMode
 });
 
 
@@ -62,13 +62,14 @@ class _$SettingsStateCopyWithImpl<$Res>
 
 /// Create a copy of SettingsState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? cacheSize = null,Object? notificationsEnabled = null,Object? currentLanguage = null,Object? currentEnv = null,Object? isLogOverlayShowing = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? cacheSize = null,Object? notificationsEnabled = null,Object? currentLanguage = null,Object? currentEnv = null,Object? isLogOverlayShowing = null,Object? isDeveloperMode = null,}) {
   return _then(_self.copyWith(
 cacheSize: null == cacheSize ? _self.cacheSize : cacheSize // ignore: cast_nullable_to_non_nullable
 as String,notificationsEnabled: null == notificationsEnabled ? _self.notificationsEnabled : notificationsEnabled // ignore: cast_nullable_to_non_nullable
 as bool,currentLanguage: null == currentLanguage ? _self.currentLanguage : currentLanguage // ignore: cast_nullable_to_non_nullable
 as AppLanguage,currentEnv: null == currentEnv ? _self.currentEnv : currentEnv // ignore: cast_nullable_to_non_nullable
 as AppEnvironment,isLogOverlayShowing: null == isLogOverlayShowing ? _self.isLogOverlayShowing : isLogOverlayShowing // ignore: cast_nullable_to_non_nullable
+as bool,isDeveloperMode: null == isDeveloperMode ? _self.isDeveloperMode : isDeveloperMode // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -154,10 +155,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String cacheSize,  bool notificationsEnabled,  AppLanguage currentLanguage,  AppEnvironment currentEnv,  bool isLogOverlayShowing)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String cacheSize,  bool notificationsEnabled,  AppLanguage currentLanguage,  AppEnvironment currentEnv,  bool isLogOverlayShowing,  bool isDeveloperMode)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SettingsState() when $default != null:
-return $default(_that.cacheSize,_that.notificationsEnabled,_that.currentLanguage,_that.currentEnv,_that.isLogOverlayShowing);case _:
+return $default(_that.cacheSize,_that.notificationsEnabled,_that.currentLanguage,_that.currentEnv,_that.isLogOverlayShowing,_that.isDeveloperMode);case _:
   return orElse();
 
 }
@@ -175,10 +176,10 @@ return $default(_that.cacheSize,_that.notificationsEnabled,_that.currentLanguage
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String cacheSize,  bool notificationsEnabled,  AppLanguage currentLanguage,  AppEnvironment currentEnv,  bool isLogOverlayShowing)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String cacheSize,  bool notificationsEnabled,  AppLanguage currentLanguage,  AppEnvironment currentEnv,  bool isLogOverlayShowing,  bool isDeveloperMode)  $default,) {final _that = this;
 switch (_that) {
 case _SettingsState():
-return $default(_that.cacheSize,_that.notificationsEnabled,_that.currentLanguage,_that.currentEnv,_that.isLogOverlayShowing);case _:
+return $default(_that.cacheSize,_that.notificationsEnabled,_that.currentLanguage,_that.currentEnv,_that.isLogOverlayShowing,_that.isDeveloperMode);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -195,10 +196,10 @@ return $default(_that.cacheSize,_that.notificationsEnabled,_that.currentLanguage
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String cacheSize,  bool notificationsEnabled,  AppLanguage currentLanguage,  AppEnvironment currentEnv,  bool isLogOverlayShowing)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String cacheSize,  bool notificationsEnabled,  AppLanguage currentLanguage,  AppEnvironment currentEnv,  bool isLogOverlayShowing,  bool isDeveloperMode)?  $default,) {final _that = this;
 switch (_that) {
 case _SettingsState() when $default != null:
-return $default(_that.cacheSize,_that.notificationsEnabled,_that.currentLanguage,_that.currentEnv,_that.isLogOverlayShowing);case _:
+return $default(_that.cacheSize,_that.notificationsEnabled,_that.currentLanguage,_that.currentEnv,_that.isLogOverlayShowing,_that.isDeveloperMode);case _:
   return null;
 
 }
@@ -210,7 +211,7 @@ return $default(_that.cacheSize,_that.notificationsEnabled,_that.currentLanguage
 
 
 class _SettingsState extends SettingsState {
-  const _SettingsState({this.cacheSize = '0 B', this.notificationsEnabled = true, this.currentLanguage = AppLanguage.chinese, this.currentEnv = AppEnvironment.prod, this.isLogOverlayShowing = false}): super._();
+  const _SettingsState({this.cacheSize = '0 B', this.notificationsEnabled = true, this.currentLanguage = AppLanguage.chinese, this.currentEnv = AppEnvironment.prod, this.isLogOverlayShowing = false, this.isDeveloperMode = false}): super._();
   
 
 @override@JsonKey() final  String cacheSize;
@@ -218,6 +219,7 @@ class _SettingsState extends SettingsState {
 @override@JsonKey() final  AppLanguage currentLanguage;
 @override@JsonKey() final  AppEnvironment currentEnv;
 @override@JsonKey() final  bool isLogOverlayShowing;
+@override@JsonKey() final  bool isDeveloperMode;
 
 /// Create a copy of SettingsState
 /// with the given fields replaced by the non-null parameter values.
@@ -229,16 +231,16 @@ _$SettingsStateCopyWith<_SettingsState> get copyWith => __$SettingsStateCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SettingsState&&(identical(other.cacheSize, cacheSize) || other.cacheSize == cacheSize)&&(identical(other.notificationsEnabled, notificationsEnabled) || other.notificationsEnabled == notificationsEnabled)&&(identical(other.currentLanguage, currentLanguage) || other.currentLanguage == currentLanguage)&&(identical(other.currentEnv, currentEnv) || other.currentEnv == currentEnv)&&(identical(other.isLogOverlayShowing, isLogOverlayShowing) || other.isLogOverlayShowing == isLogOverlayShowing));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SettingsState&&(identical(other.cacheSize, cacheSize) || other.cacheSize == cacheSize)&&(identical(other.notificationsEnabled, notificationsEnabled) || other.notificationsEnabled == notificationsEnabled)&&(identical(other.currentLanguage, currentLanguage) || other.currentLanguage == currentLanguage)&&(identical(other.currentEnv, currentEnv) || other.currentEnv == currentEnv)&&(identical(other.isLogOverlayShowing, isLogOverlayShowing) || other.isLogOverlayShowing == isLogOverlayShowing)&&(identical(other.isDeveloperMode, isDeveloperMode) || other.isDeveloperMode == isDeveloperMode));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,cacheSize,notificationsEnabled,currentLanguage,currentEnv,isLogOverlayShowing);
+int get hashCode => Object.hash(runtimeType,cacheSize,notificationsEnabled,currentLanguage,currentEnv,isLogOverlayShowing,isDeveloperMode);
 
 @override
 String toString() {
-  return 'SettingsState(cacheSize: $cacheSize, notificationsEnabled: $notificationsEnabled, currentLanguage: $currentLanguage, currentEnv: $currentEnv, isLogOverlayShowing: $isLogOverlayShowing)';
+  return 'SettingsState(cacheSize: $cacheSize, notificationsEnabled: $notificationsEnabled, currentLanguage: $currentLanguage, currentEnv: $currentEnv, isLogOverlayShowing: $isLogOverlayShowing, isDeveloperMode: $isDeveloperMode)';
 }
 
 
@@ -249,7 +251,7 @@ abstract mixin class _$SettingsStateCopyWith<$Res> implements $SettingsStateCopy
   factory _$SettingsStateCopyWith(_SettingsState value, $Res Function(_SettingsState) _then) = __$SettingsStateCopyWithImpl;
 @override @useResult
 $Res call({
- String cacheSize, bool notificationsEnabled, AppLanguage currentLanguage, AppEnvironment currentEnv, bool isLogOverlayShowing
+ String cacheSize, bool notificationsEnabled, AppLanguage currentLanguage, AppEnvironment currentEnv, bool isLogOverlayShowing, bool isDeveloperMode
 });
 
 
@@ -266,13 +268,14 @@ class __$SettingsStateCopyWithImpl<$Res>
 
 /// Create a copy of SettingsState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? cacheSize = null,Object? notificationsEnabled = null,Object? currentLanguage = null,Object? currentEnv = null,Object? isLogOverlayShowing = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? cacheSize = null,Object? notificationsEnabled = null,Object? currentLanguage = null,Object? currentEnv = null,Object? isLogOverlayShowing = null,Object? isDeveloperMode = null,}) {
   return _then(_SettingsState(
 cacheSize: null == cacheSize ? _self.cacheSize : cacheSize // ignore: cast_nullable_to_non_nullable
 as String,notificationsEnabled: null == notificationsEnabled ? _self.notificationsEnabled : notificationsEnabled // ignore: cast_nullable_to_non_nullable
 as bool,currentLanguage: null == currentLanguage ? _self.currentLanguage : currentLanguage // ignore: cast_nullable_to_non_nullable
 as AppLanguage,currentEnv: null == currentEnv ? _self.currentEnv : currentEnv // ignore: cast_nullable_to_non_nullable
 as AppEnvironment,isLogOverlayShowing: null == isLogOverlayShowing ? _self.isLogOverlayShowing : isLogOverlayShowing // ignore: cast_nullable_to_non_nullable
+as bool,isDeveloperMode: null == isDeveloperMode ? _self.isDeveloperMode : isDeveloperMode // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }

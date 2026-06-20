@@ -21,12 +21,14 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
   SettingsState build() {
     // Load persisted notifications setting
     final enabled = SpUtil.getBool(AppConstants.notificationsKey, defaultValue: true);
+    final isDevMode = SpUtil.getBool('developer_mode', defaultValue: false);
 
     return SettingsState(
       currentLanguage: settingManager.language,
       currentEnv: AppEnv.currentEnv,
       notificationsEnabled: enabled,
       isLogOverlayShowing: LogOverlayManager.isShowingNotifier.value,
+      isDeveloperMode: isDevMode,
     );
   }
 
@@ -57,6 +59,7 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
       showEnvDialog: _onShowEnvDialog,
       showLanguageDialog: _onShowLanguageDialog,
       shareApp: _onShareApp,
+      enableDeveloperMode: _onEnableDeveloperMode,
     );
   }
 
@@ -301,5 +304,12 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
 
   void _onLogOverlayShowingChanged() {
     handleIntent(SettingsIntent.toggleLogOverlay(LogOverlayManager.isShowingNotifier.value));
+  }
+
+  Future<void> _onEnableDeveloperMode() async {
+    if (state.isDeveloperMode) return;
+    updateState(state.copyWith(isDeveloperMode: true));
+    await SpUtil.put('developer_mode', true);
+    emitEffect(MessageEffect.info('开发者模式已开启'));
   }
 }

@@ -419,6 +419,27 @@ void main() {
         verify(() => mockSettingsRepository.getLatestVersion()).called(1);
       });
     });
+
+    group('Developer Mode Tests', () {
+      test('should initialize developer mode to false', () {
+        expect(container.read(settingsViewModelProvider).isDeveloperMode, isFalse);
+      });
+
+      test('should enable developer mode when enableDeveloperMode intent is received', () async {
+        // Act
+        await viewModel.onIntent(const SettingsIntent.enableDeveloperMode());
+
+        // Assert
+        expect(container.read(settingsViewModelProvider).isDeveloperMode, isTrue);
+        expect(SpUtil.getBool('developer_mode'), isTrue);
+        expect(
+          emittedEffects.any(
+            (effect) => effect is MessageEffect && effect.message == '开发者模式已开启',
+          ),
+          isTrue,
+        );
+      });
+    });
   });
 }
 
