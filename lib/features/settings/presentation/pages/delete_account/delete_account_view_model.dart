@@ -5,7 +5,6 @@ import 'package:listen_core/core.dart';
 import '../../../../auth/data/models/delete_account_request_model.dart';
 import '../../../../auth/presentation/provider/auth_provider.dart';
 import '../../../../../shared/shared.dart';
-import 'package:listen_uikit/uikit.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'delete_account_intent.dart';
@@ -31,36 +30,37 @@ class DeleteAccountViewModel extends _$DeleteAccountViewModel
   Future<void> _onDeleteAccount() async {
     if (!state.isConfirmed) return;
 
-    final confirmed = await CommonDialog.showConfirm(
+    emitEffect(ConfirmEffect(
       title: I18nKeys.deleteAccountConfirmTitle.tr,
       message: I18nKeys.deleteAccountConfirmContent.tr,
       okText: I18nKeys.deleteAccount.tr,
       okColor: Colors.red,
-    );
+      onResult: (confirmed) async {
+        if (confirmed) {
+          await call<void>(
+            ref.execute(
+              deleteAccountUseCaseProvider,
+              param: DeleteAccountRequestModel(userId: authManager.state.user?.id ?? ''),
+            ),
+            showLoading: true,
+            onSuccess: (_) async {
+              // 1. First reset settings
+              await settingManager.resetSettings();
 
-    if (confirmed == true) {
-      await call<void>(
-        ref.execute(
-          deleteAccountUseCaseProvider,
-          param: DeleteAccountRequestModel(userId: authManager.state.user?.id ?? ''),
-        ),
-        showLoading: true,
-        onSuccess: (_) async {
-          // 1. First reset settings
-          await settingManager.resetSettings();
+              // 2. Then clear session
+              authManager.logout();
 
-          // 2. Then clear session
-          authManager.logout();
-
-          // 3. Show success message and redirect to login
-          emitEffect(MessageEffect.info(I18nKeys.deleteAccountSuccess.tr));
-          emitEffect(NavigationEffect(target: Routes.login, isReplace: true));
-        },
-        onFailure: (failure) async {
-          // Handle deletion error - user stays logged in
-          emitEffect(MessageEffect.error(I18nKeys.deleteAccountFailed.tr));
-        },
-      );
-    }
+              // 3. Show success message and redirect to login
+              emitEffect(MessageEffect.info(I18nKeys.deleteAccountSuccess.tr));
+              emitEffect(NavigationEffect(target: Routes.login, isReplace: true));
+            },
+            onFailure: (failure) async {
+              // Handle deletion error - user stays logged in
+              emitEffect(MessageEffect.error(I18nKeys.deleteAccountFailed.tr));
+            },
+          );
+        }
+      },
+    ));
   }
 }

@@ -114,7 +114,7 @@ void main() {
       expect(viewModel.state.isConfirmed, isTrue);
     });
 
-    testWidgets('Should delete account on confirmation and success', (WidgetTester tester) async {
+    test('Should delete account on confirmation and success', () async {
       // Setup user logged in
       authManager.login(const UserModel(id: 'test-user-id', name: 'Test User'));
       expect(authManager.state.isGuest, isFalse);
@@ -127,39 +127,21 @@ void main() {
       final List<BaseEffect> emittedEffects = [];
       viewModel.onBindEffect((effect) => emittedEffects.add(effect));
 
-      // Build MaterialApp with AppNavConfig.navigatorKey
-      await tester.pumpWidget(
-        UncontrolledProviderScope(
-          container: container,
-          child: MaterialApp(
-            navigatorKey: AppNavConfig.navigatorKey,
-            home: const Scaffold(body: SizedBox()),
-          ),
-        ),
-      );
-
       // Set view model state to confirmed: true
       await viewModel.onIntent(const DeleteAccountIntent.toggleConfirm());
 
-      // Trigger delete account without awaiting it (so we don't hang)
-      final future = viewModel.onIntent(const DeleteAccountIntent.deleteAccount());
+      // Trigger delete account
+      await viewModel.onIntent(const DeleteAccountIntent.deleteAccount());
 
-      // Pump to render the dialog
-      await tester.pumpAndSettle();
+      // Verify ConfirmEffect is emitted
+      final confirmEffects = emittedEffects.whereType<ConfirmEffect>().toList();
+      expect(confirmEffects, isNotEmpty);
+      final confirmEffect = confirmEffects.last;
+      expect(confirmEffect.okText, I18nKeys.deleteAccount.tr);
 
-      // Verify dialog is shown
-      expect(find.byType(AlertDialog), findsOneWidget);
-
-      // Find and tap the OK/confirm button
-      final okButton = find.text(I18nKeys.deleteAccount.tr);
-      expect(okButton, findsOneWidget);
-      await tester.tap(okButton);
-
-      // Pump and settle to let dialog close and UseCase execute
-      await tester.pumpAndSettle();
-
-      // Await the future to ensure it completed
-      await future;
+      // Simulate confirmation (result: true)
+      confirmEffect.onResult(true);
+      await Future.delayed(const Duration(milliseconds: 100));
 
       // Verify UseCase was called with correct parameters
       verify(() => mockUseCase.call(
@@ -183,34 +165,23 @@ void main() {
       expect(navEffects.last.isReplace, isTrue);
     });
 
-    testWidgets('Should not delete account if dialog is cancelled', (WidgetTester tester) async {
+    test('Should not delete account if dialog is cancelled', () async {
       authManager.login(const UserModel(id: 'test-user-id', name: 'Test User'));
       expect(authManager.state.isGuest, isFalse);
 
-      await tester.pumpWidget(
-        UncontrolledProviderScope(
-          container: container,
-          child: MaterialApp(
-            navigatorKey: AppNavConfig.navigatorKey,
-            home: const Scaffold(body: SizedBox()),
-          ),
-        ),
-      );
+      final List<BaseEffect> emittedEffects = [];
+      viewModel.onBindEffect((effect) => emittedEffects.add(effect));
 
       await viewModel.onIntent(const DeleteAccountIntent.toggleConfirm());
 
-      final future = viewModel.onIntent(const DeleteAccountIntent.deleteAccount());
-      await tester.pumpAndSettle();
+      await viewModel.onIntent(const DeleteAccountIntent.deleteAccount());
 
-      expect(find.byType(AlertDialog), findsOneWidget);
+      final confirmEffects = emittedEffects.whereType<ConfirmEffect>().toList();
+      expect(confirmEffects, isNotEmpty);
 
-      // Cancel button
-      final cancelButton = find.text(UIKitConfig.getString(UIKitConfig.kCancel));
-      expect(cancelButton, findsOneWidget);
-      await tester.tap(cancelButton);
-      await tester.pumpAndSettle();
-
-      await future;
+      // Simulate cancellation (result: false)
+      confirmEffects.last.onResult(false);
+      await Future.delayed(const Duration(milliseconds: 100));
 
       // Verify UseCase was NOT called
       verifyNever(() => mockUseCase.call(param: any(named: 'param')));
@@ -218,7 +189,7 @@ void main() {
       expect(authManager.state.isGuest, isFalse);
     });
 
-    testWidgets('Should handle failure on delete account', (WidgetTester tester) async {
+    test('Should handle failure on delete account', () async {
       authManager.login(const UserModel(id: 'test-user-id', name: 'Test User'));
       expect(authManager.state.isGuest, isFalse);
 
@@ -229,26 +200,16 @@ void main() {
       final List<BaseEffect> emittedEffects = [];
       viewModel.onBindEffect((effect) => emittedEffects.add(effect));
 
-      await tester.pumpWidget(
-        UncontrolledProviderScope(
-          container: container,
-          child: MaterialApp(
-            navigatorKey: AppNavConfig.navigatorKey,
-            home: const Scaffold(body: SizedBox()),
-          ),
-        ),
-      );
-
       await viewModel.onIntent(const DeleteAccountIntent.toggleConfirm());
 
-      final future = viewModel.onIntent(const DeleteAccountIntent.deleteAccount());
-      await tester.pumpAndSettle();
+      await viewModel.onIntent(const DeleteAccountIntent.deleteAccount());
 
-      final okButton = find.text(I18nKeys.deleteAccount.tr);
-      await tester.tap(okButton);
-      await tester.pumpAndSettle();
+      final confirmEffects = emittedEffects.whereType<ConfirmEffect>().toList();
+      expect(confirmEffects, isNotEmpty);
 
-      await future;
+      // Simulate confirmation (result: true)
+      confirmEffects.last.onResult(true);
+      await Future.delayed(const Duration(milliseconds: 100));
 
       // Verify UseCase was called
       verify(() => mockUseCase.call(param: any(named: 'param'))).called(1);

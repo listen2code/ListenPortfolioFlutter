@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:listen_core/core.dart';
 import 'view_log_effect.dart';
 import '../../../../../shared/shared.dart';
-import 'package:listen_uikit/uikit.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'crash_log_list_intent.dart';
@@ -68,55 +67,58 @@ class CrashLogListViewModel extends _$CrashLogListViewModel
   }
 
   Future<void> _onTriggerCrash() async {
-    final confirmed = await CommonDialog.showConfirm(
+    emitEffect(ConfirmEffect(
       title: I18nKeys.triggerCrash.tr,
       message: I18nKeys.triggerCrashDesc.tr,
       okText: I18nKeys.startTimer.tr,
-    );
-
-    if (confirmed == true) {
-      CrashManager.scheduleRandomCrash();
-      emitEffect(MessageEffect.info(I18nKeys.crashScheduled.tr));
-    }
+      onResult: (confirmed) {
+        if (confirmed) {
+          CrashManager.scheduleRandomCrash();
+          emitEffect(MessageEffect.info(I18nKeys.crashScheduled.tr));
+        }
+      },
+    ));
   }
 
   Future<void> _onDeleteAll() async {
-    final confirmed = await CommonDialog.showConfirm(
+    emitEffect(ConfirmEffect(
       title: I18nKeys.deleteReport.tr,
       message: '${I18nKeys.deleteReportConfirm.tr} (ALL)',
       okText: I18nKeys.delete.tr,
       okColor: Colors.red,
-    );
-
-    if (confirmed == true) {
-      emitEffect(LoadingEffect(true));
-      try {
-        await CrashManager.deleteAllCrashLogs();
-        await _loadLogs();
-        emitEffect(MessageEffect.info(I18nKeys.cacheCleared.tr));
-      } finally {
-        emitEffect(LoadingEffect(false));
-      }
-    }
+      onResult: (confirmed) async {
+        if (confirmed) {
+          emitEffect(LoadingEffect(true));
+          try {
+            await CrashManager.deleteAllCrashLogs();
+            await _loadLogs();
+            emitEffect(MessageEffect.info(I18nKeys.cacheCleared.tr));
+          } finally {
+            emitEffect(LoadingEffect(false));
+          }
+        }
+      },
+    ));
   }
 
   Future<void> _onDeleteLog(File file) async {
-    final confirmed = await CommonDialog.showConfirm(
+    emitEffect(ConfirmEffect(
       title: I18nKeys.deleteReport.tr,
       message: I18nKeys.deleteReportConfirm.tr,
       okText: I18nKeys.delete.tr,
       okColor: Colors.red,
-    );
-
-    if (confirmed == true) {
-      emitEffect(LoadingEffect(true));
-      try {
-        await CrashManager.deleteCrashLog(file);
-        await _loadLogs();
-      } finally {
-        emitEffect(LoadingEffect(false));
-      }
-    }
+      onResult: (confirmed) async {
+        if (confirmed) {
+          emitEffect(LoadingEffect(true));
+          try {
+            await CrashManager.deleteCrashLog(file);
+            await _loadLogs();
+          } finally {
+            emitEffect(LoadingEffect(false));
+          }
+        }
+      },
+    ));
   }
 
   Future<void> _onShareLog(File file) async {

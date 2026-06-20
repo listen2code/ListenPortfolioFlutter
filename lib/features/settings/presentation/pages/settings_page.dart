@@ -44,7 +44,7 @@ class SettingsPage extends ConsumerWidget {
                     state.currentLanguage.label,
                     style: context.textTheme.bodySmall?.copyWith(color: Colors.grey),
                   ),
-                  onTap: () => _showLanguageDialog(context, viewModel, state),
+                  onTap: () => viewModel?.handleIntent(const SettingsIntent.showLanguageDialog()),
                 ),
               ]),
 
@@ -95,7 +95,7 @@ class SettingsPage extends ConsumerWidget {
                   context,
                   icon: Icons.restart_alt_rounded,
                   title: I18nKeys.resetSettings.tr,
-                  onTap: () => _showResetConfirmation(viewModel),
+                  onTap: () => viewModel?.handleIntent(const SettingsIntent.resetSettings()),
                 ),
               ]),
 
@@ -130,7 +130,7 @@ class SettingsPage extends ConsumerWidget {
                   icon: Icons.settings_input_antenna_rounded,
                   title: I18nKeys.switchEnv.tr,
                   subtitle: '${I18nKeys.currentlyActive.tr}: ${state.currentEnv.name}',
-                  onTap: () => _showEnvSwitchDialog(context, viewModel, state),
+                  onTap: () => viewModel?.handleIntent(const SettingsIntent.showEnvDialog()),
                 ),
                 if (kDebugMode)
                   _buildListTile(
@@ -233,61 +233,7 @@ class SettingsPage extends ConsumerWidget {
 
   // --- Logic Handlers ---
 
-  void _showResetConfirmation(SettingsViewModel? viewModel) {
-    CommonDialog.showConfirm(
-      title: I18nKeys.resetConfirmTitle.tr,
-      message: I18nKeys.resetConfirmContent.tr,
-      okText: I18nKeys.reset.tr,
-      okColor: Colors.red,
-    ).then((confirmed) async {
-      if (confirmed == true) {
-        viewModel?.handleIntent(const SettingsIntent.resetSettings());
-      }
-    });
-  }
 
-  void _showEnvSwitchDialog(BuildContext context, SettingsViewModel? viewModel, SettingsState state) {
-    CommonDialog.showSwitchDialog(
-      title: I18nKeys.switchEnv.tr,
-      items: EnvConfigs.values.map((config) {
-        return DialogSwitchItem(
-          label: _getEnvLabel(config.env),
-          value: state.currentEnv == config.env,
-          onChanged: (_) {
-            viewModel?.handleIntent(SettingsIntent.switchEnv(config.env));
-          },
-        );
-      }).toList(),
-    );
-  }
-
-  String _getEnvLabel(AppEnvironment env) {
-    switch (env) {
-      case AppEnvironment.mock:
-        return I18nKeys.envMock.tr;
-      case AppEnvironment.dev:
-        return I18nKeys.envDev.tr;
-      case AppEnvironment.test:
-        return I18nKeys.envTest.tr;
-      case AppEnvironment.prod:
-        return I18nKeys.envProd.tr;
-    }
-  }
-
-  void _showLanguageDialog(BuildContext context, SettingsViewModel? viewModel, SettingsState state) {
-    CommonDialog.showSwitchDialog(
-      title: I18nKeys.selectLanguage.tr,
-      items: AppLanguage.values.map((lang) {
-        return DialogSwitchItem(
-          label: lang.label,
-          value: state.currentLanguage == lang,
-          onChanged: (_) {
-            viewModel?.handleIntent(SettingsIntent.switchLanguage(lang));
-          },
-        );
-      }).toList(),
-    );
-  }
 
   // --- UI Builders ---
 

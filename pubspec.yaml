@@ -2,8 +2,8 @@ name: listen_portfolio_flutter
 description: "Portfolio of Listen"
 publish_to: 'none'
 
-version: 1.0.39
-desc: "Upgrade listen_core listen_uikit"
+version: 1.0.40
+desc: "Refactor dialog handling to an effect-based architecture and update dependencies"
 desc_zh: ""
 desc_ja: ""
 
@@ -17,7 +17,7 @@ dependencies:
     sdk: flutter
 
   listen_core: ^0.0.10
-  listen_uikit: ^0.0.9
+  listen_uikit: ^0.0.10
   dynamic_color: ^1.8.1
 
   # Firebase & Notifications

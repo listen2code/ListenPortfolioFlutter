@@ -55,7 +55,7 @@ extension SettingsIntentPatterns on SettingsIntent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Init value)?  init,TResult Function( _ToggleNotifications value)?  toggleNotifications,TResult Function( _ClearCache value)?  clearCache,TResult Function( _ResetSettings value)?  resetSettings,TResult Function( _SwitchLanguage value)?  switchLanguage,TResult Function( _SwitchEnv value)?  switchEnv,TResult Function( _ToggleLogOverlay value)?  toggleLogOverlay,TResult Function( _CheckUpdates value)?  checkUpdates,TResult Function( _BuyMeCoffee value)?  buyMeCoffee,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Init value)?  init,TResult Function( _ToggleNotifications value)?  toggleNotifications,TResult Function( _ClearCache value)?  clearCache,TResult Function( _ResetSettings value)?  resetSettings,TResult Function( _SwitchLanguage value)?  switchLanguage,TResult Function( _SwitchEnv value)?  switchEnv,TResult Function( _ToggleLogOverlay value)?  toggleLogOverlay,TResult Function( _CheckUpdates value)?  checkUpdates,TResult Function( _BuyMeCoffee value)?  buyMeCoffee,TResult Function( _ShowEnvDialog value)?  showEnvDialog,TResult Function( _ShowLanguageDialog value)?  showLanguageDialog,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Init() when init != null:
@@ -67,7 +67,9 @@ return switchLanguage(_that);case _SwitchEnv() when switchEnv != null:
 return switchEnv(_that);case _ToggleLogOverlay() when toggleLogOverlay != null:
 return toggleLogOverlay(_that);case _CheckUpdates() when checkUpdates != null:
 return checkUpdates(_that);case _BuyMeCoffee() when buyMeCoffee != null:
-return buyMeCoffee(_that);case _:
+return buyMeCoffee(_that);case _ShowEnvDialog() when showEnvDialog != null:
+return showEnvDialog(_that);case _ShowLanguageDialog() when showLanguageDialog != null:
+return showLanguageDialog(_that);case _:
   return orElse();
 
 }
@@ -85,7 +87,7 @@ return buyMeCoffee(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Init value)  init,required TResult Function( _ToggleNotifications value)  toggleNotifications,required TResult Function( _ClearCache value)  clearCache,required TResult Function( _ResetSettings value)  resetSettings,required TResult Function( _SwitchLanguage value)  switchLanguage,required TResult Function( _SwitchEnv value)  switchEnv,required TResult Function( _ToggleLogOverlay value)  toggleLogOverlay,required TResult Function( _CheckUpdates value)  checkUpdates,required TResult Function( _BuyMeCoffee value)  buyMeCoffee,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Init value)  init,required TResult Function( _ToggleNotifications value)  toggleNotifications,required TResult Function( _ClearCache value)  clearCache,required TResult Function( _ResetSettings value)  resetSettings,required TResult Function( _SwitchLanguage value)  switchLanguage,required TResult Function( _SwitchEnv value)  switchEnv,required TResult Function( _ToggleLogOverlay value)  toggleLogOverlay,required TResult Function( _CheckUpdates value)  checkUpdates,required TResult Function( _BuyMeCoffee value)  buyMeCoffee,required TResult Function( _ShowEnvDialog value)  showEnvDialog,required TResult Function( _ShowLanguageDialog value)  showLanguageDialog,}){
 final _that = this;
 switch (_that) {
 case _Init():
@@ -97,7 +99,9 @@ return switchLanguage(_that);case _SwitchEnv():
 return switchEnv(_that);case _ToggleLogOverlay():
 return toggleLogOverlay(_that);case _CheckUpdates():
 return checkUpdates(_that);case _BuyMeCoffee():
-return buyMeCoffee(_that);case _:
+return buyMeCoffee(_that);case _ShowEnvDialog():
+return showEnvDialog(_that);case _ShowLanguageDialog():
+return showLanguageDialog(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -114,7 +118,7 @@ return buyMeCoffee(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Init value)?  init,TResult? Function( _ToggleNotifications value)?  toggleNotifications,TResult? Function( _ClearCache value)?  clearCache,TResult? Function( _ResetSettings value)?  resetSettings,TResult? Function( _SwitchLanguage value)?  switchLanguage,TResult? Function( _SwitchEnv value)?  switchEnv,TResult? Function( _ToggleLogOverlay value)?  toggleLogOverlay,TResult? Function( _CheckUpdates value)?  checkUpdates,TResult? Function( _BuyMeCoffee value)?  buyMeCoffee,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Init value)?  init,TResult? Function( _ToggleNotifications value)?  toggleNotifications,TResult? Function( _ClearCache value)?  clearCache,TResult? Function( _ResetSettings value)?  resetSettings,TResult? Function( _SwitchLanguage value)?  switchLanguage,TResult? Function( _SwitchEnv value)?  switchEnv,TResult? Function( _ToggleLogOverlay value)?  toggleLogOverlay,TResult? Function( _CheckUpdates value)?  checkUpdates,TResult? Function( _BuyMeCoffee value)?  buyMeCoffee,TResult? Function( _ShowEnvDialog value)?  showEnvDialog,TResult? Function( _ShowLanguageDialog value)?  showLanguageDialog,}){
 final _that = this;
 switch (_that) {
 case _Init() when init != null:
@@ -126,7 +130,9 @@ return switchLanguage(_that);case _SwitchEnv() when switchEnv != null:
 return switchEnv(_that);case _ToggleLogOverlay() when toggleLogOverlay != null:
 return toggleLogOverlay(_that);case _CheckUpdates() when checkUpdates != null:
 return checkUpdates(_that);case _BuyMeCoffee() when buyMeCoffee != null:
-return buyMeCoffee(_that);case _:
+return buyMeCoffee(_that);case _ShowEnvDialog() when showEnvDialog != null:
+return showEnvDialog(_that);case _ShowLanguageDialog() when showLanguageDialog != null:
+return showLanguageDialog(_that);case _:
   return null;
 
 }
@@ -143,7 +149,7 @@ return buyMeCoffee(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  init,TResult Function( bool enabled)?  toggleNotifications,TResult Function()?  clearCache,TResult Function()?  resetSettings,TResult Function( AppLanguage language)?  switchLanguage,TResult Function( AppEnvironment env)?  switchEnv,TResult Function( bool enabled)?  toggleLogOverlay,TResult Function()?  checkUpdates,TResult Function()?  buyMeCoffee,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  init,TResult Function( bool enabled)?  toggleNotifications,TResult Function()?  clearCache,TResult Function()?  resetSettings,TResult Function( AppLanguage language)?  switchLanguage,TResult Function( AppEnvironment env)?  switchEnv,TResult Function( bool enabled)?  toggleLogOverlay,TResult Function()?  checkUpdates,TResult Function()?  buyMeCoffee,TResult Function()?  showEnvDialog,TResult Function()?  showLanguageDialog,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Init() when init != null:
 return init();case _ToggleNotifications() when toggleNotifications != null:
@@ -154,7 +160,9 @@ return switchLanguage(_that.language);case _SwitchEnv() when switchEnv != null:
 return switchEnv(_that.env);case _ToggleLogOverlay() when toggleLogOverlay != null:
 return toggleLogOverlay(_that.enabled);case _CheckUpdates() when checkUpdates != null:
 return checkUpdates();case _BuyMeCoffee() when buyMeCoffee != null:
-return buyMeCoffee();case _:
+return buyMeCoffee();case _ShowEnvDialog() when showEnvDialog != null:
+return showEnvDialog();case _ShowLanguageDialog() when showLanguageDialog != null:
+return showLanguageDialog();case _:
   return orElse();
 
 }
@@ -172,7 +180,7 @@ return buyMeCoffee();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  init,required TResult Function( bool enabled)  toggleNotifications,required TResult Function()  clearCache,required TResult Function()  resetSettings,required TResult Function( AppLanguage language)  switchLanguage,required TResult Function( AppEnvironment env)  switchEnv,required TResult Function( bool enabled)  toggleLogOverlay,required TResult Function()  checkUpdates,required TResult Function()  buyMeCoffee,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  init,required TResult Function( bool enabled)  toggleNotifications,required TResult Function()  clearCache,required TResult Function()  resetSettings,required TResult Function( AppLanguage language)  switchLanguage,required TResult Function( AppEnvironment env)  switchEnv,required TResult Function( bool enabled)  toggleLogOverlay,required TResult Function()  checkUpdates,required TResult Function()  buyMeCoffee,required TResult Function()  showEnvDialog,required TResult Function()  showLanguageDialog,}) {final _that = this;
 switch (_that) {
 case _Init():
 return init();case _ToggleNotifications():
@@ -183,7 +191,9 @@ return switchLanguage(_that.language);case _SwitchEnv():
 return switchEnv(_that.env);case _ToggleLogOverlay():
 return toggleLogOverlay(_that.enabled);case _CheckUpdates():
 return checkUpdates();case _BuyMeCoffee():
-return buyMeCoffee();case _:
+return buyMeCoffee();case _ShowEnvDialog():
+return showEnvDialog();case _ShowLanguageDialog():
+return showLanguageDialog();case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -200,7 +210,7 @@ return buyMeCoffee();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  init,TResult? Function( bool enabled)?  toggleNotifications,TResult? Function()?  clearCache,TResult? Function()?  resetSettings,TResult? Function( AppLanguage language)?  switchLanguage,TResult? Function( AppEnvironment env)?  switchEnv,TResult? Function( bool enabled)?  toggleLogOverlay,TResult? Function()?  checkUpdates,TResult? Function()?  buyMeCoffee,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  init,TResult? Function( bool enabled)?  toggleNotifications,TResult? Function()?  clearCache,TResult? Function()?  resetSettings,TResult? Function( AppLanguage language)?  switchLanguage,TResult? Function( AppEnvironment env)?  switchEnv,TResult? Function( bool enabled)?  toggleLogOverlay,TResult? Function()?  checkUpdates,TResult? Function()?  buyMeCoffee,TResult? Function()?  showEnvDialog,TResult? Function()?  showLanguageDialog,}) {final _that = this;
 switch (_that) {
 case _Init() when init != null:
 return init();case _ToggleNotifications() when toggleNotifications != null:
@@ -211,7 +221,9 @@ return switchLanguage(_that.language);case _SwitchEnv() when switchEnv != null:
 return switchEnv(_that.env);case _ToggleLogOverlay() when toggleLogOverlay != null:
 return toggleLogOverlay(_that.enabled);case _CheckUpdates() when checkUpdates != null:
 return checkUpdates();case _BuyMeCoffee() when buyMeCoffee != null:
-return buyMeCoffee();case _:
+return buyMeCoffee();case _ShowEnvDialog() when showEnvDialog != null:
+return showEnvDialog();case _ShowLanguageDialog() when showLanguageDialog != null:
+return showLanguageDialog();case _:
   return null;
 
 }
@@ -635,6 +647,70 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'SettingsIntent.buyMeCoffee()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _ShowEnvDialog extends SettingsIntent {
+  const _ShowEnvDialog(): super._();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ShowEnvDialog);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'SettingsIntent.showEnvDialog()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _ShowLanguageDialog extends SettingsIntent {
+  const _ShowLanguageDialog(): super._();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ShowLanguageDialog);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'SettingsIntent.showLanguageDialog()';
 }
 
 

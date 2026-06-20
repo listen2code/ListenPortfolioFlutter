@@ -429,7 +429,7 @@ jobs:
         run: |
           sed -i 's/\r$//' buildAndroid.sh
           chmod +x buildAndroid.sh
-          ./buildAndroid.sh bundle prod
+          ./buildAndroid.sh bundle mock
 
       - name: Upload to Google Play Internal
         if: steps.check_version.outputs.should_deploy == 'true'
@@ -437,7 +437,7 @@ jobs:
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_KEY }}
           packageName: com.listen.portfolio.listen_portfolio_flutter
-          releaseFiles: apkOutput/lPortfolio-prod-release.aab
+          releaseFiles: apkOutput/lPortfolio-mock-release.aab
           tracks: internal
           status: completed
 

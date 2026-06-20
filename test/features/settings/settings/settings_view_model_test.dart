@@ -160,6 +160,7 @@ void main() {
 
       test('should sync state when LogOverlayManager.isShowingNotifier value changes', () async {
         // Arrange
+        viewModel.onInit();
         LogOverlayManager.isShowingNotifier.value = false;
         await Future.delayed(const Duration(milliseconds: 50));
 
@@ -209,31 +210,58 @@ void main() {
     });
 
     group('Reset Settings Intent', () {
-      test('should emit LoadingEffect(true) then LoadingEffect(false)', () async {
+      test('should emit ConfirmEffect first, and emit LoadingEffect(true)/LoadingEffect(false) on confirmation', () async {
         // Act
-        await viewModel.handleIntent(const SettingsIntent.resetSettings());
-        
-        // Wait for async operations to complete
-        await Future.delayed(const Duration(milliseconds: 100));
+        viewModel.handleIntent(const SettingsIntent.resetSettings());
+        await Future.delayed(const Duration(milliseconds: 50));
 
         // Assert
+        final confirmEffects = emittedEffects.whereType<ConfirmEffect>().toList();
+        expect(confirmEffects, isNotEmpty);
+        final confirmEffect = confirmEffects.last;
+        expect(confirmEffect.title, I18nKeys.resetConfirmTitle.tr);
+
+        // Simulate confirmation (result: true)
+        confirmEffect.onResult(true);
+        await Future.delayed(const Duration(milliseconds: 100));
+
         final loadingEffects = emittedEffects.whereType<LoadingEffect>().toList();
         expect(loadingEffects.length, greaterThanOrEqualTo(2));
         expect(loadingEffects.first.show, isTrue);
         expect(loadingEffects.last.show, isFalse);
       });
 
-      test('should emit a MessageEffect after resetting settings', () async {
+      test('should emit a MessageEffect after resetting settings is confirmed', () async {
         // Act
-        await viewModel.handleIntent(const SettingsIntent.resetSettings());
-        
-        // Wait for async operations to complete
-        await Future.delayed(const Duration(milliseconds: 100));
+        viewModel.handleIntent(const SettingsIntent.resetSettings());
+        await Future.delayed(const Duration(milliseconds: 50));
 
         // Assert
+        final confirmEffects = emittedEffects.whereType<ConfirmEffect>().toList();
+        expect(confirmEffects, isNotEmpty);
+        confirmEffects.last.onResult(true);
+        await Future.delayed(const Duration(milliseconds: 100));
+
         final messageEffects = emittedEffects.whereType<MessageEffect>().toList();
         expect(messageEffects, isNotEmpty);
         expect(messageEffects.last.message, I18nKeys.settingsResetSuccess.tr);
+      });
+
+      test('should NOT reset settings or emit loading/success message when cancelled', () async {
+        // Act
+        viewModel.handleIntent(const SettingsIntent.resetSettings());
+        await Future.delayed(const Duration(milliseconds: 50));
+
+        // Assert
+        final confirmEffects = emittedEffects.whereType<ConfirmEffect>().toList();
+        expect(confirmEffects, isNotEmpty);
+        confirmEffects.last.onResult(false);
+        await Future.delayed(const Duration(milliseconds: 100));
+
+        final loadingEffects = emittedEffects.whereType<LoadingEffect>().toList();
+        expect(loadingEffects, isEmpty);
+        final messageEffects = emittedEffects.whereType<MessageEffect>().toList();
+        expect(messageEffects, isEmpty);
       });
     });
 
@@ -252,6 +280,50 @@ void main() {
         await Future.delayed(const Duration(milliseconds: 100));
         expect(container.read(settingsViewModelProvider).currentEnv, AppEnvironment.mock);
         expect(AppEnv.currentEnv, AppEnvironment.mock);
+      });
+    });
+
+    group('Show Env Dialog Intent', () {
+      test('should emit SwitchDialogEffect with environments', () async {
+        // Act
+        viewModel.handleIntent(const SettingsIntent.showEnvDialog());
+        await Future.delayed(const Duration(milliseconds: 100));
+
+        // Assert
+        final switchDialogEffects = emittedEffects.whereType<SwitchDialogEffect>().toList();
+        expect(switchDialogEffects, isNotEmpty);
+        final effect = switchDialogEffects.last;
+        expect(effect.title, I18nKeys.switchEnv.tr);
+        expect(effect.options.length, EnvConfigs.values.length);
+        
+        // Test onChanged callback triggers switchEnv intent
+        final firstOption = effect.options.first;
+        effect.onChanged(firstOption.value);
+        await Future.delayed(const Duration(milliseconds: 100));
+        
+        expect(container.read(settingsViewModelProvider).currentEnv, firstOption.value);
+      });
+    });
+
+    group('Show Language Dialog Intent', () {
+      test('should emit SwitchDialogEffect with languages', () async {
+        // Act
+        viewModel.handleIntent(const SettingsIntent.showLanguageDialog());
+        await Future.delayed(const Duration(milliseconds: 100));
+
+        // Assert
+        final switchDialogEffects = emittedEffects.whereType<SwitchDialogEffect>().toList();
+        expect(switchDialogEffects, isNotEmpty);
+        final effect = switchDialogEffects.last;
+        expect(effect.title, I18nKeys.selectLanguage.tr);
+        expect(effect.options.length, AppLanguage.values.length);
+        
+        // Test onChanged callback triggers switchLanguage intent
+        final langOption = effect.options.firstWhere((opt) => opt.value == AppLanguage.english);
+        effect.onChanged(langOption.value);
+        await Future.delayed(const Duration(milliseconds: 100));
+        
+        expect(container.read(settingsViewModelProvider).currentLanguage, AppLanguage.english);
       });
     });
 

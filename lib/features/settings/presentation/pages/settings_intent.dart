@@ -15,5 +15,7 @@ class SettingsIntent extends BaseIntent with _$SettingsIntent {
   const factory SettingsIntent.toggleLogOverlay(bool enabled) = _ToggleLogOverlay;
   const factory SettingsIntent.checkUpdates() = _CheckUpdates;
   const factory SettingsIntent.buyMeCoffee() = _BuyMeCoffee;
+  const factory SettingsIntent.showEnvDialog() = _ShowEnvDialog;
+  const factory SettingsIntent.showLanguageDialog() = _ShowLanguageDialog;
   const SettingsIntent._();
 }

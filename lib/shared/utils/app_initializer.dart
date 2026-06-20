@@ -39,6 +39,8 @@ class AppInitializer {
           const LogoutProviderImpl(),
           const ShareProviderImpl(),
           const CoffeePurchaseProviderImpl(),
+          const SwitchDialogProviderImpl(),
+          const ConfirmProviderImpl(),
         ],
         // Link Core Network to Shared Auth Logic with injected container
         apiDelegate: _ApiAuthHandlerImpl(container),

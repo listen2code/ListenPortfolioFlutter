@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:listen_core/core.dart';
 import 'package:listen_uikit/uikit.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -53,6 +54,8 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
       toggleLogOverlay: _onToggleLogOverlay,
       checkUpdates: _onCheckUpdates,
       buyMeCoffee: _onBuyMeCoffee,
+      showEnvDialog: _onShowEnvDialog,
+      showLanguageDialog: _onShowLanguageDialog,
     );
   }
 
@@ -104,15 +107,19 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
   }
 
   /// Shows a dialog prompting the user to enable notification permission in system settings.
-  void _showPermissionDeniedDialog() async {
-    final confirmed = await CommonDialog.showConfirm(
-      title: I18nKeys.notificationPermissionTitle.tr,
-      message: I18nKeys.notificationPermissionMessage.tr,
-      okText: I18nKeys.openSettings.tr,
+  void _showPermissionDeniedDialog() {
+    emitEffect(
+      ConfirmEffect(
+        title: I18nKeys.notificationPermissionTitle.tr,
+        message: I18nKeys.notificationPermissionMessage.tr,
+        okText: I18nKeys.openSettings.tr,
+        onResult: (confirmed) async {
+          if (confirmed) {
+            await openAppSettings();
+          }
+        },
+      ),
     );
-    if (confirmed == true) {
-      await openAppSettings();
-    }
   }
 
   Future<void> _onClearCache() async {
@@ -125,16 +132,27 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
   }
 
   Future<void> _onResetSettings() async {
-    // todo exception
-    emitEffect(LoadingEffect(true));
-    try {
-      await settingManager.resetSettings();
-      await _updateCacheSize();
-      // Even if disposed, this will now be handled globally and logged.
-      emitEffect(MessageEffect.info(I18nKeys.settingsResetSuccess.tr));
-    } finally {
-      emitEffect(LoadingEffect(false));
-    }
+    emitEffect(
+      ConfirmEffect(
+        title: I18nKeys.resetConfirmTitle.tr,
+        message: I18nKeys.resetConfirmContent.tr,
+        okText: I18nKeys.reset.tr,
+        okColor: Colors.red,
+        onResult: (confirmed) async {
+          if (confirmed) {
+            emitEffect(LoadingEffect(true));
+            try {
+              await settingManager.resetSettings();
+              await _updateCacheSize();
+              // Even if disposed, this will now be handled globally and logged.
+              emitEffect(MessageEffect.info(I18nKeys.settingsResetSuccess.tr));
+            } finally {
+              emitEffect(LoadingEffect(false));
+            }
+          }
+        },
+      ),
+    );
   }
 
   Future<void> _onSwitchLanguage(AppLanguage language) async {
@@ -174,17 +192,21 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
       final localeCode = settingManager.language.locale.languageCode;
       final changelogText = versionModel.changelog[localeCode] ?? versionModel.changelog['en'] ?? '';
 
-      final confirmed = await CommonDialog.showConfirm(
-        title: I18nKeys.checkUpdates.tr,
-        message: '${I18nKeys.updateAvailable.trArgs([versionModel.version])}\n\n$changelogText',
-        okText: I18nKeys.update.tr,
+      emitEffect(
+        ConfirmEffect(
+          title: I18nKeys.checkUpdates.tr,
+          message: '${I18nKeys.updateAvailable.trArgs([versionModel.version])}\n\n$changelogText',
+          okText: I18nKeys.update.tr,
+          onResult: (confirmed) async {
+            if (confirmed) {
+              final uri = Uri.parse(versionModel.url);
+              if (await canLaunchUrl(uri)) {
+                await launchUrl(uri, mode: LaunchMode.externalApplication);
+              }
+            }
+          },
+        ),
       );
-      if (confirmed == true) {
-        final uri = Uri.parse(versionModel.url);
-        if (await canLaunchUrl(uri)) {
-          await launchUrl(uri, mode: LaunchMode.externalApplication);
-        }
-      }
     } else {
       await CommonDialog.showMessage(title: I18nKeys.checkUpdates.tr, message: I18nKeys.latestVersion.tr);
     }
@@ -211,6 +233,63 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
 
   void _onBuyMeCoffee() {
     emitEffect(CoffeePurchaseEffect());
+  }
+
+  void _onShowEnvDialog() {
+    emitEffect(
+      SwitchDialogEffect(
+        title: I18nKeys.switchEnv.tr,
+        showConfirmButton: false,
+        options: EnvConfigs.values.map((config) {
+          return SwitchDialogOption(
+            label: _getEnvLabel(config.env),
+            value: config.env,
+            isSelected: state.currentEnv == config.env,
+          );
+        }).toList(),
+        onChanged: (val) {
+          if (val is AppEnvironment) {
+            handleIntent(SettingsIntent.switchEnv(val));
+            AppNav.back();
+          }
+        },
+      ),
+    );
+  }
+
+  String _getEnvLabel(AppEnvironment env) {
+    switch (env) {
+      case AppEnvironment.mock:
+        return I18nKeys.envMock.tr;
+      case AppEnvironment.dev:
+        return I18nKeys.envDev.tr;
+      case AppEnvironment.test:
+        return I18nKeys.envTest.tr;
+      case AppEnvironment.prod:
+        return I18nKeys.envProd.tr;
+    }
+  }
+
+  void _onShowLanguageDialog() {
+    emitEffect(
+      SwitchDialogEffect(
+        title: I18nKeys.selectLanguage.tr,
+        showConfirmButton: false,
+        options: AppLanguage.values.map((lang) {
+          return SwitchDialogOption(
+            label: lang.label,
+            value: lang,
+            isSelected: state.currentLanguage == lang,
+          );
+        }).toList(),
+        onChanged: (val) {
+          if (val is AppLanguage) {
+            handleIntent(SettingsIntent.switchLanguage(val));
+            AppNav.back();
+          }
+        },
+      ),
+    );
   }
 
   void _onLogOverlayShowingChanged() {
