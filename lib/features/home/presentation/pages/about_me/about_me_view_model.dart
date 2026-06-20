@@ -41,6 +41,7 @@ class AboutMeViewModel extends _$AboutMeViewModel with ViewModelMixin<AboutMeSta
       pickImage: (source) => _onPickImage(source),
       removeImage: () => updateState(state.copyWith(imageFile: null)),
       refresh: _onRefresh,
+      shareApp: _onShareApp,
     );
   }
 
@@ -66,6 +67,12 @@ class AboutMeViewModel extends _$AboutMeViewModel with ViewModelMixin<AboutMeSta
       onSuccess: (aboutMe) {
         updateState(state.copyWith(data: aboutMe as AboutMeModel?, isInitialLoaded: true));
       },
+    );
+  }
+
+  void _onShareApp() {
+    emitEffect(
+      ShareEffect(text: '${AppConstants.appName} - ${I18nKeys.shareApp.tr}: ${AppConstants.githubShare}'),
     );
   }
 }

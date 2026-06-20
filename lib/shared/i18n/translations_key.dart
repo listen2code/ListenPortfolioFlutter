@@ -45,6 +45,7 @@ class I18nKeys {
 
   // Actions
   static const String share = 'Share';
+  static const String shareApp = 'Share App';
   static const String delete = 'Delete';
   static const String deleteAll = 'Delete All';
   static const String cancel = 'Cancel';

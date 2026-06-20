@@ -55,13 +55,14 @@ extension AboutMeIntentPatterns on AboutMeIntent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _PickImage value)?  pickImage,TResult Function( _RemoveImage value)?  removeImage,TResult Function( _Refresh value)?  refresh,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _PickImage value)?  pickImage,TResult Function( _RemoveImage value)?  removeImage,TResult Function( _Refresh value)?  refresh,TResult Function( _ShareApp value)?  shareApp,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _PickImage() when pickImage != null:
 return pickImage(_that);case _RemoveImage() when removeImage != null:
 return removeImage(_that);case _Refresh() when refresh != null:
-return refresh(_that);case _:
+return refresh(_that);case _ShareApp() when shareApp != null:
+return shareApp(_that);case _:
   return orElse();
 
 }
@@ -79,13 +80,14 @@ return refresh(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _PickImage value)  pickImage,required TResult Function( _RemoveImage value)  removeImage,required TResult Function( _Refresh value)  refresh,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _PickImage value)  pickImage,required TResult Function( _RemoveImage value)  removeImage,required TResult Function( _Refresh value)  refresh,required TResult Function( _ShareApp value)  shareApp,}){
 final _that = this;
 switch (_that) {
 case _PickImage():
 return pickImage(_that);case _RemoveImage():
 return removeImage(_that);case _Refresh():
-return refresh(_that);case _:
+return refresh(_that);case _ShareApp():
+return shareApp(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -102,13 +104,14 @@ return refresh(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _PickImage value)?  pickImage,TResult? Function( _RemoveImage value)?  removeImage,TResult? Function( _Refresh value)?  refresh,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _PickImage value)?  pickImage,TResult? Function( _RemoveImage value)?  removeImage,TResult? Function( _Refresh value)?  refresh,TResult? Function( _ShareApp value)?  shareApp,}){
 final _that = this;
 switch (_that) {
 case _PickImage() when pickImage != null:
 return pickImage(_that);case _RemoveImage() when removeImage != null:
 return removeImage(_that);case _Refresh() when refresh != null:
-return refresh(_that);case _:
+return refresh(_that);case _ShareApp() when shareApp != null:
+return shareApp(_that);case _:
   return null;
 
 }
@@ -125,12 +128,13 @@ return refresh(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( ImageSource source)?  pickImage,TResult Function()?  removeImage,TResult Function()?  refresh,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( ImageSource source)?  pickImage,TResult Function()?  removeImage,TResult Function()?  refresh,TResult Function()?  shareApp,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PickImage() when pickImage != null:
 return pickImage(_that.source);case _RemoveImage() when removeImage != null:
 return removeImage();case _Refresh() when refresh != null:
-return refresh();case _:
+return refresh();case _ShareApp() when shareApp != null:
+return shareApp();case _:
   return orElse();
 
 }
@@ -148,12 +152,13 @@ return refresh();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( ImageSource source)  pickImage,required TResult Function()  removeImage,required TResult Function()  refresh,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( ImageSource source)  pickImage,required TResult Function()  removeImage,required TResult Function()  refresh,required TResult Function()  shareApp,}) {final _that = this;
 switch (_that) {
 case _PickImage():
 return pickImage(_that.source);case _RemoveImage():
 return removeImage();case _Refresh():
-return refresh();case _:
+return refresh();case _ShareApp():
+return shareApp();case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -170,12 +175,13 @@ return refresh();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( ImageSource source)?  pickImage,TResult? Function()?  removeImage,TResult? Function()?  refresh,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( ImageSource source)?  pickImage,TResult? Function()?  removeImage,TResult? Function()?  refresh,TResult? Function()?  shareApp,}) {final _that = this;
 switch (_that) {
 case _PickImage() when pickImage != null:
 return pickImage(_that.source);case _RemoveImage() when removeImage != null:
 return removeImage();case _Refresh() when refresh != null:
-return refresh();case _:
+return refresh();case _ShareApp() when shareApp != null:
+return shareApp();case _:
   return null;
 
 }
@@ -305,6 +311,38 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'AboutMeIntent.refresh()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _ShareApp extends AboutMeIntent {
+  const _ShareApp(): super._();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ShareApp);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'AboutMeIntent.shareApp()';
 }
 
 

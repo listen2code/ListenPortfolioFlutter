@@ -3,11 +3,11 @@ import 'package:share_plus/share_plus.dart';
 
 /// Standard Effect for sharing files or text.
 class ShareEffect extends BaseEffect {
-  final List<String> files;
+  final List<String>? files;
   final String? text;
   final String? subject;
 
-  ShareEffect({required this.files, this.text, this.subject});
+  ShareEffect({this.files, this.text, this.subject});
 
   @override
   String toString() {
@@ -21,10 +21,10 @@ class ShareProviderImpl extends BaseProvider<ShareEffect> {
 
   @override
   void handleEffect(ShareEffect effect) {
-    if (effect.files.isNotEmpty) {
+    if (effect.files?.isNotEmpty == true) {
       SharePlus.instance.share(
         ShareParams(
-          files: effect.files.map((e) => XFile(e)).toList(),
+          files: effect.files?.map((e) => XFile(e)).toList(),
           text: effect.text,
           subject: effect.subject,
         ),

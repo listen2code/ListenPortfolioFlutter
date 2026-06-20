@@ -360,6 +360,20 @@ void main() {
       });
     });
 
+    group('Share App Intent', () {
+      test('should emit ShareEffect with app github link', () async {
+        // Act
+        await viewModel.handleIntent(const SettingsIntent.shareApp());
+
+        // Assert
+        final shareEffects = emittedEffects.whereType<ShareEffect>().toList();
+        expect(shareEffects, isNotEmpty);
+        final effect = shareEffects.last;
+        expect(effect.files, isEmpty);
+        expect(effect.text, contains(AppConstants.github));
+      });
+    });
+
     group('onInit and argCheckUpdate', () {
       setUp(() {
         try {

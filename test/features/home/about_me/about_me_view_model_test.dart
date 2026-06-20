@@ -383,6 +383,20 @@ void main() async {
       });
     });
 
+    group('Share Intent Tests', () {
+      test('should emit ShareEffect with app github link', () async {
+        // Act
+        await viewModel.handleIntent(const AboutMeIntent.shareApp());
+
+        // Assert
+        final shareEffects = emittedEffects.whereType<ShareEffect>().toList();
+        expect(shareEffects, isNotEmpty);
+        final effect = shareEffects.last;
+        expect(effect.files, isEmpty);
+        expect(effect.text, contains(AppConstants.github));
+      });
+    });
+
     group('Error Handling Tests', () {
       test('should handle use case parameter errors', () async {
         // Arrange: Mock use case to throw exception

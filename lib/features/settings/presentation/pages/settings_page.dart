@@ -194,6 +194,12 @@ class SettingsPage extends ConsumerWidget {
                 ),
                 _buildListTile(
                   context,
+                  icon: Icons.share_outlined,
+                  title: I18nKeys.shareApp.tr,
+                  onTap: () => viewModel?.handleIntent(const SettingsIntent.shareApp()),
+                ),
+                _buildListTile(
+                  context,
                   icon: Icons.info_outline_rounded,
                   title: I18nKeys.licenses.tr,
                   onTap: () => showLicensePage(

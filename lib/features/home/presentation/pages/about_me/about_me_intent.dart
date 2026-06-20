@@ -9,5 +9,6 @@ class AboutMeIntent extends BaseIntent with _$AboutMeIntent {
   const factory AboutMeIntent.pickImage(ImageSource source) = _PickImage;
   const factory AboutMeIntent.removeImage() = _RemoveImage;
   const factory AboutMeIntent.refresh() = _Refresh;
+  const factory AboutMeIntent.shareApp() = _ShareApp;
   const AboutMeIntent._();
 }

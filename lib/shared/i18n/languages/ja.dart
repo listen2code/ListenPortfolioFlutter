@@ -39,6 +39,7 @@ final Map<String, String> ja = {
   I18nKeys.customColor: 'カスタムカラー',
   I18nKeys.selectColor: 'カラー選択',
   I18nKeys.share: '共有',
+  I18nKeys.shareApp: 'アプリを共有',
   I18nKeys.delete: '削除',
   I18nKeys.deleteAll: 'すべて削除',
   I18nKeys.cancel: 'キャンセル',

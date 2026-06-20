@@ -56,6 +56,7 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
       buyMeCoffee: _onBuyMeCoffee,
       showEnvDialog: _onShowEnvDialog,
       showLanguageDialog: _onShowLanguageDialog,
+      shareApp: _onShareApp,
     );
   }
 
@@ -289,6 +290,12 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
           }
         },
       ),
+    );
+  }
+
+  void _onShareApp() {
+    emitEffect(
+      ShareEffect(text: '${AppConstants.appName} - ${I18nKeys.shareApp.tr}: ${AppConstants.githubShare}'),
     );
   }
 

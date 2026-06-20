@@ -2,8 +2,8 @@ name: listen_portfolio_flutter
 description: "Portfolio of Listen"
 publish_to: 'none'
 
-version: 1.0.40
-desc: "Refactor dialog handling to an effect-based architecture and update dependencies"
+version: 1.0.41
+desc: "Add Share App"
 desc_zh: ""
 desc_ja: ""
 
