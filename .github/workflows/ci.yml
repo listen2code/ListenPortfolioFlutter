@@ -349,8 +349,10 @@ jobs:
       ENVIRONMENT: ${{ needs.check-conditions.outputs.environment }}
 
     steps:
-      - name: Checkout code
+      - name: Checkout code (with latest version.json)
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
 
       - name: Setup Java
         uses: actions/setup-java@v4

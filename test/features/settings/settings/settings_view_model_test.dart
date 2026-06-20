@@ -64,7 +64,8 @@ void main() {
 
     tearDown(() async {
       // Wait for any pending async operations before disposing
-      await Future.delayed(Duration(milliseconds: 100));
+      // (e.g., checkUpdates use case execution, notification service calls)
+      await Future.delayed(Duration(milliseconds: 300));
       subscription.close();
       container.dispose();
     });
@@ -370,7 +371,7 @@ void main() {
         expect(shareEffects, isNotEmpty);
         final effect = shareEffects.last;
         expect(effect.files, isNull);
-        expect(effect.text, contains(AppConstants.github));
+        expect(effect.text, contains(AppConstants.storeShare));
       });
     });
 
@@ -428,6 +429,8 @@ void main() {
       test('should enable developer mode when enableDeveloperMode intent is received', () async {
         // Act
         await viewModel.onIntent(const SettingsIntent.enableDeveloperMode());
+        // Allow async broadcast stream to deliver effect events
+        await Future.delayed(const Duration(milliseconds: 100));
 
         // Assert
         expect(container.read(settingsViewModelProvider).isDeveloperMode, isTrue);
