@@ -429,7 +429,7 @@ jobs:
         run: |
           sed -i 's/\r$//' buildAndroid.sh
           chmod +x buildAndroid.sh
-          ./buildAndroid.sh bundle mock
+          ./buildAndroid.sh bundle prod
 
       - name: Upload to Google Play Internal
         if: steps.check_version.outputs.should_deploy == 'true'
