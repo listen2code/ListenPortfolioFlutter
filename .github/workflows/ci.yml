@@ -344,6 +344,9 @@ jobs:
     needs: [check-conditions, update-version-json]
     if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop') && github.event_name == 'push'
     runs-on: ubuntu-latest
+    environment: ${{ needs.check-conditions.outputs.environment }}
+    env:
+      ENVIRONMENT: ${{ needs.check-conditions.outputs.environment }}
 
     steps:
       - name: Checkout code
@@ -429,7 +432,7 @@ jobs:
         run: |
           sed -i 's/\r$//' buildAndroid.sh
           chmod +x buildAndroid.sh
-          ./buildAndroid.sh bundle mock
+          ./buildAndroid.sh bundle ${{ env.ENVIRONMENT }}
 
       - name: Upload to Google Play Internal
         if: steps.check_version.outputs.should_deploy == 'true'
@@ -437,7 +440,7 @@ jobs:
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_KEY }}
           packageName: com.listen.portfolio.listen_portfolio_flutter
-          releaseFiles: apkOutput/lPortfolio-mock-release.aab
+          releaseFiles: apkOutput/lPortfolio-${{ env.ENVIRONMENT }}-release.aab
           tracks: internal
           status: completed
 

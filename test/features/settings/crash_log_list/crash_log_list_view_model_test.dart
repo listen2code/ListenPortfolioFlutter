@@ -119,7 +119,7 @@ void main() {
 
       emittedEffects.clear();
 
-      final future = viewModel.handleIntent(CrashLogListIntent.deleteLog(mockFile));
+      await viewModel.handleIntent(CrashLogListIntent.deleteLog(mockFile));
 
       final confirmEffects = emittedEffects.whereType<ConfirmEffect>().toList();
       expect(confirmEffects, isNotEmpty);
@@ -127,8 +127,6 @@ void main() {
       // Simulate confirmation
       confirmEffects.last.onResult(true);
       await Future.delayed(const Duration(milliseconds: 100));
-
-      await future;
 
       verify(() => mockFile.exists()).called(1);
       verify(() => mockFile.delete()).called(1);
@@ -143,7 +141,7 @@ void main() {
 
       emittedEffects.clear();
 
-      final future = viewModel.handleIntent(CrashLogListIntent.deleteLog(mockFile));
+      await viewModel.handleIntent(CrashLogListIntent.deleteLog(mockFile));
 
       final confirmEffects = emittedEffects.whereType<ConfirmEffect>().toList();
       expect(confirmEffects, isNotEmpty);
@@ -152,15 +150,13 @@ void main() {
       confirmEffects.last.onResult(false);
       await Future.delayed(const Duration(milliseconds: 100));
 
-      await future;
-
       verifyNever(() => mockFile.exists());
     });
 
     test('Should delete all logs on confirmation', () async {
       emittedEffects.clear();
 
-      final future = viewModel.handleIntent(const CrashLogListIntent.deleteAll());
+      await viewModel.handleIntent(const CrashLogListIntent.deleteAll());
 
       final confirmEffects = emittedEffects.whereType<ConfirmEffect>().toList();
       expect(confirmEffects, isNotEmpty);
@@ -168,8 +164,6 @@ void main() {
       // Simulate confirmation
       confirmEffects.last.onResult(true);
       await Future.delayed(const Duration(milliseconds: 100));
-
-      await future;
 
       final loadingEffects = emittedEffects.whereType<LoadingEffect>().toList();
       expect(loadingEffects.any((e) => e.show == true), isTrue);
@@ -181,7 +175,7 @@ void main() {
     test('Should not delete all logs if cancelled', () async {
       emittedEffects.clear();
 
-      final future = viewModel.handleIntent(const CrashLogListIntent.deleteAll());
+      await viewModel.handleIntent(const CrashLogListIntent.deleteAll());
 
       final confirmEffects = emittedEffects.whereType<ConfirmEffect>().toList();
       expect(confirmEffects, isNotEmpty);
@@ -190,8 +184,6 @@ void main() {
       confirmEffects.last.onResult(false);
       await Future.delayed(const Duration(milliseconds: 100));
 
-      await future;
-
       final loadingEffects = emittedEffects.whereType<LoadingEffect>().toList();
       expect(loadingEffects.any((e) => e.show == true), isFalse);
     });
@@ -199,7 +191,7 @@ void main() {
     test('Should schedule random crash on confirmation', () async {
       emittedEffects.clear();
 
-      final future = viewModel.handleIntent(const CrashLogListIntent.triggerCrash());
+      await viewModel.handleIntent(const CrashLogListIntent.triggerCrash());
 
       final confirmEffects = emittedEffects.whereType<ConfirmEffect>().toList();
       expect(confirmEffects, isNotEmpty);
@@ -207,8 +199,6 @@ void main() {
       // Simulate confirmation
       confirmEffects.last.onResult(true);
       await Future.delayed(const Duration(milliseconds: 100));
-
-      await future;
 
       final messageEffects = emittedEffects.whereType<MessageEffect>().toList();
       expect(messageEffects, isNotEmpty);
@@ -218,7 +208,7 @@ void main() {
     test('Should not schedule random crash if cancelled', () async {
       emittedEffects.clear();
 
-      final future = viewModel.handleIntent(const CrashLogListIntent.triggerCrash());
+      await viewModel.handleIntent(const CrashLogListIntent.triggerCrash());
 
       final confirmEffects = emittedEffects.whereType<ConfirmEffect>().toList();
       expect(confirmEffects, isNotEmpty);
@@ -226,8 +216,6 @@ void main() {
       // Simulate cancellation
       confirmEffects.last.onResult(false);
       await Future.delayed(const Duration(milliseconds: 100));
-
-      await future;
 
       final messageEffects = emittedEffects.whereType<MessageEffect>().toList();
       expect(messageEffects, isEmpty);
