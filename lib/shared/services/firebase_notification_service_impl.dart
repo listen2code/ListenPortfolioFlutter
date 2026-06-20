@@ -11,8 +11,6 @@ import '../../features/home/presentation/pages/home_state.dart';
 import '../shared.dart';
 import 'firebase_options.dart';
 
-// Removed native log MethodChannel - use appLogger for logging in Dart layer.
-
 /// Concrete implementation of INotificationService using Firebase Cloud Messaging (FCM)
 /// and flutter_local_notifications.
 class FirebaseNotificationServiceImpl implements INotificationService {
@@ -28,50 +26,32 @@ class FirebaseNotificationServiceImpl implements INotificationService {
 
   @override
   Future<void> initialize() async {
-    // 1. Initialize Firebase Core
     try {
-      appLogger.d('FirebaseNotificationService: initialize() - initializing Firebase Core...');
+      // 1. Initialize Firebase Core
       if (Firebase.apps.isEmpty) {
-        appLogger.d(
-          'FirebaseNotificationService: initialize() - Firebase.apps is empty, calling Firebase.initializeApp',
-        );
         await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-      } else {
-        appLogger.d(
-          'FirebaseNotificationService: initialize() - Firebase.apps is not empty, skipping Firebase.initializeApp',
-        );
       }
       _isFirebaseInitialized = true;
       appLogger.i('FirebaseNotificationService: Firebase initialized successfully.');
-    } catch (e, stackTrace) {
+    } catch (e) {
       appLogger.w(
         'FirebaseNotificationService: Firebase initialization failed. '
         'Push notifications will fall back to mock/disabled mode. Error: $e',
-        error: e,
-        stackTrace: stackTrace,
       );
       _isFirebaseInitialized = false;
-      appLogger.e('LISTEN_NATIVE: Firebase initialization FAILED', error: e, stackTrace: stackTrace);
     }
 
     // Initialize Local Notifications regardless of Firebase state
-    appLogger.d('FirebaseNotificationService: initialize() - initializing local notifications...');
     try {
       await _initLocalNotifications();
-      appLogger.i('FirebaseNotificationService: Local notifications initialized successfully.');
+      appLogger.i('FirebaseNotificationService: initLocalNotifications successfully.');
     } catch (e) {
       appLogger.w('FirebaseNotificationService: Local notification initialization failed. Error: $e');
     }
 
-    if (!_isFirebaseInitialized) {
-      appLogger.i(
-        'FirebaseNotificationService: initialize() - Firebase not initialized, skipping FCM setup and returning.',
-      );
-      return;
-    }
+    if (!_isFirebaseInitialized) return;
 
     try {
-      appLogger.d('FirebaseNotificationService: initialize() - configuring Android notification channel...');
       // 2. Configure Android high-importance channel
       const AndroidNotificationChannel channel = AndroidNotificationChannel(
         AppConstants.notificationChannelId,
@@ -83,143 +63,67 @@ class FirebaseNotificationServiceImpl implements INotificationService {
       await _localNotifications
           .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
           ?.createNotificationChannel(channel);
+      appLogger.i('FirebaseNotificationService: createNotificationChannel successfully.');
 
-      appLogger
-        ..i('FirebaseNotificationService: Android notification channel configured.')
-        // 3. Configure iOS foreground presentation settings
-        ..d('FirebaseNotificationService: initialize() - setting iOS foreground presentation options...');
+      // 3. Configure iOS foreground presentation settings
       await _fcm.setForegroundNotificationPresentationOptions(alert: true, badge: true, sound: true);
-      appLogger
-        ..i('FirebaseNotificationService: iOS foreground presentation options set.')
-        // 4. Listen to foreground FCM messages
-        ..d('FirebaseNotificationService: initialize() - attaching onMessage listener...');
+      appLogger.i('FirebaseNotificationService: setForegroundNotificationPresentationOptions successfully.');
+
+      // 4. Listen to foreground FCM messages
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-        appLogger.d('FirebaseNotificationService: onMessage received: ${message.messageId ?? "<no-id>"}');
         // Discard if notifications are disabled in settings
-        if (!SpUtil.getBool(AppConstants.notificationsKey, defaultValue: true)) {
-          appLogger.d(
-            'FirebaseNotificationService: onMessage discarded because notifications are disabled in settings.',
-          );
-          return;
-        }
+        if (!SpUtil.getBool(AppConstants.notificationsKey, defaultValue: true)) return;
 
         final payload = _convertMessage(message);
         _messageReceivedController.add(payload);
-        appLogger.i('FirebaseNotificationService: onMessage -> messageReceivedController.add.');
+        appLogger.i('FirebaseNotificationService: onMessage=$payload');
 
         // Show local banner for Android in foreground
         if (message.notification != null) {
-          appLogger.d(
-            'FirebaseNotificationService: onMessage -> showing local notification for message ${message.messageId ?? "<no-id>"}.',
-          );
           _showLocalNotification(message, channel);
         }
       });
-      appLogger
-        ..i('FirebaseNotificationService: onMessage listener attached.')
-        // 5. Listen to background click wakeup events
-        ..d('FirebaseNotificationService: initialize() - attaching onMessageOpenedApp listener...');
+
+      // 5. Listen to background click wakeup events
       FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-        appLogger.d(
-          'FirebaseNotificationService: onMessageOpenedApp received: ${message.messageId ?? "<no-id>"}',
-        );
         // Discard if notifications are disabled in settings
-        if (!SpUtil.getBool(AppConstants.notificationsKey, defaultValue: true)) {
-          appLogger.d(
-            'FirebaseNotificationService: onMessageOpenedApp discarded because notifications are disabled in settings.',
-          );
-          return;
-        }
+        if (!SpUtil.getBool(AppConstants.notificationsKey, defaultValue: true)) return;
 
         final payload = _convertMessage(message);
         _messageOpenedController.add(payload);
-        appLogger.i('FirebaseNotificationService: onMessageOpenedApp -> messageOpenedController.add.');
+        appLogger.i('FirebaseNotificationService: onMessageOpenedApp=$payload');
         _handleNotificationNavigation(payload);
-        appLogger.d('FirebaseNotificationService: onMessageOpenedApp -> navigation handled.');
       });
-      appLogger
-        ..i('FirebaseNotificationService: onMessageOpenedApp listener attached.')
-        ..d('FirebaseNotificationService: initialize() - requesting permissions...');
-      try {
-        final permStart = DateTime.now();
-        final permResult = await requestPermission();
-        final permDuration = DateTime.now().difference(permStart);
-        appLogger.i(
-          'FirebaseNotificationService: requestPermission completed. result=$permResult duration=${permDuration.inMilliseconds}ms',
-        );
-      } catch (e, stackTrace) {
-        appLogger.e(
-          'FirebaseNotificationService: requestPermission threw an exception: $e',
-          error: e,
-          stackTrace: stackTrace,
-        );
-      }
+
       // 6. Handle terminated startup click
-      appLogger.d(
-        'FirebaseNotificationService: initialize() - checking for initial message (getInitialMessage)...',
-      );
-      try {
-        final initMsgStart = DateTime.now();
-        final initialMessage = await _fcm.getInitialMessage();
-        final initMsgDuration = DateTime.now().difference(initMsgStart);
-        appLogger.d(
-          'FirebaseNotificationService: getInitialMessage duration=${initMsgDuration.inMilliseconds}ms',
-        );
-        if (initialMessage != null) {
-          appLogger.d(
-            'FirebaseNotificationService: getInitialMessage returned a message: ${initialMessage.messageId ?? "<no-id>"}',
-          );
-          // Discard if notifications are disabled in settings
-          if (SpUtil.getBool(AppConstants.notificationsKey, defaultValue: true)) {
-            final payload = _convertMessage(initialMessage);
-            _messageOpenedController.add(payload);
-            appLogger.i('FirebaseNotificationService: initialMessage -> messageOpenedController.add.');
-            _handleNotificationNavigation(payload);
-            appLogger.d('FirebaseNotificationService: initialMessage -> navigation handled.');
-          } else {
-            appLogger.d(
-              'FirebaseNotificationService: initialMessage ignored because notifications are disabled in settings.',
-            );
-          }
-        } else {
-          appLogger.d('FirebaseNotificationService: getInitialMessage returned null.');
+      final initialMessage = await _fcm.getInitialMessage();
+      appLogger.i('FirebaseNotificationService: getInitialMessage=$initialMessage');
+      if (initialMessage != null) {
+        // Discard if notifications are disabled in settings
+        if (SpUtil.getBool(AppConstants.notificationsKey, defaultValue: true)) {
+          final payload = _convertMessage(initialMessage);
+          _messageOpenedController.add(payload);
+          _handleNotificationNavigation(payload);
         }
-      } catch (e, stackTrace) {
-        appLogger.e(
-          'FirebaseNotificationService: getInitialMessage threw: $e',
-          error: e,
-          stackTrace: stackTrace,
-        );
       }
 
       // 7. Sync subscription to the version updates topic based on settings
-      appLogger.d(
-        'FirebaseNotificationService: initialize() - syncing topic subscription based on settings...',
-      );
       final isEnabled = SpUtil.getBool(AppConstants.notificationsKey, defaultValue: true);
+      appLogger.i('FirebaseNotificationService: subscribeToTopic=$isEnabled');
       if (isEnabled) {
-        appLogger.d(
-          'FirebaseNotificationService: Notifications enabled in settings; subscribing to topic ${AppConstants.versionUpdatesTopic}',
-        );
         await subscribeToTopic(AppConstants.versionUpdatesTopic);
-        appLogger.i('FirebaseNotificationService: Subscribed to version updates topic.');
       } else {
-        appLogger.d(
-          'FirebaseNotificationService: Notifications disabled in settings; unsubscribing from topic ${AppConstants.versionUpdatesTopic}',
-        );
         await unsubscribeFromTopic(AppConstants.versionUpdatesTopic);
-        appLogger.i('FirebaseNotificationService: Unsubscribed from version updates topic.');
       }
     } catch (e) {
       appLogger.e('FirebaseNotificationService: Failed to setup FCM handlers: $e');
     }
-
-    appLogger.i('FirebaseNotificationService: initialize() - completed');
   }
 
   /// Unified handler for notification click navigation routing.
   /// Called from both terminated launch (getInitialMessage) and background wakeup (onMessageOpenedApp).
   void _handleNotificationNavigation(NotificationPayload payload) {
+    appLogger.i('FirebaseNotificationService: _handleNotificationNavigation=$payload');
     final data = payload.data;
 
     // Bring HomePage back to the front by popping sub-routes (e.g. SettingsPage)
@@ -257,13 +161,11 @@ class FirebaseNotificationServiceImpl implements INotificationService {
   }
 
   Future<void> _initLocalNotifications() async {
-    const AndroidInitializationSettings androidSettings = AndroidInitializationSettings(
-      AppConstants.defaultNotificationIcon,
-    );
-    const DarwinInitializationSettings iosSettings = DarwinInitializationSettings();
-
     await _localNotifications.initialize(
-      settings: const InitializationSettings(android: androidSettings, iOS: iosSettings),
+      settings: const InitializationSettings(
+        android: AndroidInitializationSettings(AppConstants.defaultNotificationIcon),
+        iOS: DarwinInitializationSettings(),
+      ),
       onDidReceiveNotificationResponse: (NotificationResponse response) {
         // Handle local notification click
         final payloadData = response.payload;
@@ -277,11 +179,8 @@ class FirebaseNotificationServiceImpl implements INotificationService {
 
             _messageOpenedController.add(payload);
             _handleNotificationNavigation(payload);
-            // Native log for local notification click handling
-            appLogger.i('LISTEN_NATIVE: localNotificationClick data=$data');
           } catch (e) {
             appLogger.e('FirebaseNotificationService: Failed to parse local notification click payload: $e');
-            appLogger.e('LISTEN_NATIVE: localNotificationClick parse FAILED: $e');
           }
         }
       },
@@ -296,7 +195,6 @@ class FirebaseNotificationServiceImpl implements INotificationService {
       return settings.authorizationStatus == AuthorizationStatus.authorized;
     } catch (e) {
       appLogger.w('FirebaseNotificationService: Failed to request push permission: $e');
-      appLogger.w('LISTEN_NATIVE: requestPermission FAILED: $e');
       return false;
     }
   }
@@ -305,12 +203,9 @@ class FirebaseNotificationServiceImpl implements INotificationService {
   Future<String?> getToken() async {
     if (!_isFirebaseInitialized) return null;
     try {
-      final token = await _fcm.getToken();
-      appLogger.i('LISTEN_NATIVE: getToken returned:$token');
-      return token;
+      return await _fcm.getToken();
     } catch (e) {
       appLogger.w('FirebaseNotificationService: Failed to get push token: $e');
-      appLogger.w('LISTEN_NATIVE: getToken FAILED: $e');
       return null;
     }
   }
@@ -333,10 +228,8 @@ class FirebaseNotificationServiceImpl implements INotificationService {
     try {
       await _fcm.subscribeToTopic(topic);
       appLogger.i('FirebaseNotificationService: Subscribed to topic "$topic".');
-      appLogger.i('LISTEN_NATIVE: subscribeToTopic:$topic');
     } catch (e) {
       appLogger.e('FirebaseNotificationService: Failed to subscribe to topic "$topic": $e');
-      appLogger.e('LISTEN_NATIVE: subscribeToTopic FAILED:$topic error:$e');
     }
   }
 
@@ -346,10 +239,8 @@ class FirebaseNotificationServiceImpl implements INotificationService {
     try {
       await _fcm.unsubscribeFromTopic(topic);
       appLogger.i('FirebaseNotificationService: Unsubscribed from topic "$topic".');
-      appLogger.i('LISTEN_NATIVE: unsubscribeFromTopic:$topic');
     } catch (e) {
       appLogger.e('FirebaseNotificationService: Failed to unsubscribe from topic "$topic": $e');
-      appLogger.e('LISTEN_NATIVE: unsubscribeFromTopic FAILED:$topic error:$e');
     }
   }
 
