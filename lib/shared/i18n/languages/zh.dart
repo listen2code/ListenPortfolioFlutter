@@ -39,7 +39,7 @@ final Map<String, String> zh = {
   I18nKeys.customColor: '自定义颜色',
   I18nKeys.selectColor: '选择颜色',
   I18nKeys.share: '分享',
-  I18nKeys.shareApp: '分享当前应用',
+  I18nKeys.shareApp: '分享应用',
   I18nKeys.delete: '删除',
   I18nKeys.deleteAll: '全部清除',
   I18nKeys.cancel: '取消',
