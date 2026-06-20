@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebView 高度与跳转测试页</title>
+  <style>
+    :root {
+      --bg-color: #121214;
+      --card-bg: #1e1e24;
+      --text-color: #e4e4e7;
+      --text-muted: #a1a1aa;
+      --primary-color: #6366f1;
+      --primary-hover: #4f46e5;
+      --border-color: #2d2d34;
+    }
+    body {
+      margin: 0;
+      padding: 16px;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      transition: height 0.3s ease;
+    }
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    h2 {
+      margin-top: 0;
+      font-size: 18px;
+      color: #ffffff;
+      border-bottom: 2px solid var(--primary-color);
+      padding-bottom: 6px;
+      display: inline-block;
+    }
+    p {
+      color: var(--text-muted);
+      margin: 8px 0 16px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s ease, transform 0.1s ease;
+      text-decoration: none;
+    }
+    .btn:hover {
+      background-color: var(--primary-hover);
+    }
+    .btn:active {
+      transform: scale(0.98);
+    }
+    .btn-secondary {
+      background-color: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-color);
+      margin-left: 8px;
+    }
+    .btn-secondary:hover {
+      background-color: var(--border-color);
+    }
+    .flex-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .content-box {
+      border-left: 3px solid var(--primary-color);
+      background-color: rgba(99, 102, 241, 0.05);
+      padding: 12px;
+      border-radius: 0 8px 8px 0;
+      margin-top: 12px;
+    }
+    .added-item {
+      padding: 8px 12px;
+      background-color: rgba(255, 255, 255, 0.03);
+      border: 1px dashed var(--border-color);
+      border-radius: 6px;
+      margin-top: 8px;
+      animation: fadeIn 0.3s ease-out forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h2>1. 高度自适应测试</h2>
+    <p>点击下方按钮将动态增加页面内容，测试 WebView 高度是否会随之自适应增加。当总高度超过 Dialog 最大高度时，应该出现滚动条。</p>
+    <div class="flex-row">
+      <button class="btn" id="add-content-btn">增加一行内容</button>
+      <button class="btn btn-secondary" id="clear-content-btn">重置内容</button>
+    </div>
+    <div id="dynamic-content-area"></div>
+  </div>
+
+  <div class="card">
+    <h2>2. 跳转拦截测试</h2>
+    <p>用于测试 shouldOverrideUrlLoading 如何判断用户点击跳转和 JS 自动跳转：</p>
+    <div class="flex-row">
+      <!-- 正常 A 链接跳转，属于用户手势 -->
+      <a href="https://flutter.dev" class="btn" target="_blank">正常链接 (用户点击)</a>
+
+      <!-- JavaScript location.href 重定向跳转 -->
+      <button class="btn btn-secondary" id="js-redirect-btn">JS重定向 (无手势/自动)</button>
+    </div>
+    <div class="content-box">
+      <strong>提示：</strong>
+      <ul>
+        <li>点击“正常链接”会在 <code>hasGesture</code> / <code>LINK_CLICKED</code> 中体现为用户手势。</li>
+        <li>点击“JS重定向”按钮会在 2 秒延迟后使用 <code>window.location.href</code> 进行跳转。在跳转发起瞬间，<code>hasGesture</code> 将显示为 <code>false</code>。</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    // 1. 动态增加/重置内容以测试高度变化
+    const dynamicArea = document.getElementById('dynamic-content-area');
+    const addBtn = document.getElementById('add-content-btn');
+    const clearBtn = document.getElementById('clear-content-btn');
+    let itemCount = 0;
+
+    addBtn.addEventListener('click', () => {
+      itemCount++;
+      const div = document.createElement('div');
+      div.className = 'added-item';
+      div.innerHTML = `<strong>新增测试项 #${itemCount}</strong>：这是一行新注入的文本，页面总高度被撑高。`;
+      dynamicArea.appendChild(div);
+    });
+
+    clearBtn.addEventListener('click', () => {
+      dynamicArea.innerHTML = '';
+      itemCount = 0;
+    });
+
+    // 2. JS 重定向跳转测试
+    const redirectBtn = document.getElementById('js-redirect-btn');
+    redirectBtn.addEventListener('click', () => {
+      redirectBtn.innerText = '2秒后跳转...';
+      redirectBtn.disabled = true;
+      setTimeout(() => {
+        // 使用脚本进行自动跳转
+        window.location.href = 'https://pub.dev';
+      }, 2000);
+    });
+  </script>
+</body>
+</html>

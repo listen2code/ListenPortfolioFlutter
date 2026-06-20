@@ -392,7 +392,7 @@ void main() async {
         final shareEffects = emittedEffects.whereType<ShareEffect>().toList();
         expect(shareEffects, isNotEmpty);
         final effect = shareEffects.last;
-        expect(effect.files, isEmpty);
+        expect(effect.files, isNull);
         expect(effect.text, contains(AppConstants.github));
       });
     });

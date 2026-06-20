@@ -116,7 +116,6 @@
 
 - Widget tests：登录流程、Settings、Crash logs
 - Golden tests：UIKit 组件与关键页面
-- 隐私政策页面
 
 ## Later
 
@@ -176,6 +175,8 @@
 - 自动检查更新流程（CI 提取 pubspec.yaml 自动生成/托管 version.json，App 端安全免签解析，已全量覆盖单元测试）
 - 推送通知集成（INotificationService 抽象 + FCM 实现，支持前台横幅/后台唤醒/冷启动路由，通知开关联动系统权限引导）
 - 分享当前应用（在“关于我”页面右上角及“设置”中心提供分享入口，触发 `ShareEffect` 调用系统原生分享，已完成单元测试覆盖）
+- 商用级 `CommonWebView`（基于 `flutter_inappwebview` 封装，支持弹窗自适应高度模式、基于手势/重定向标识的跳转拦截）
+- 隐私政策与服务条款落地（基于 `CommonWebView` 加载托管 HTML 并进行了整页适配与拦截测试）
 
 ### 暂时降级的想法池条目
 

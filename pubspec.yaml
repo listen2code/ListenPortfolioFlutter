@@ -2,8 +2,8 @@ name: listen_portfolio_flutter
 description: "Portfolio of Listen"
 publish_to: 'none'
 
-version: 1.0.41
-desc: "Add Share App"
+version: 1.0.42
+desc: "Add Common WebView"
 desc_zh: ""
 desc_ja: ""
 
@@ -17,7 +17,7 @@ dependencies:
     sdk: flutter
 
   listen_core: ^0.0.10
-  listen_uikit: ^0.0.10
+  listen_uikit: ^0.0.11
   dynamic_color: ^1.8.1
 
   # Firebase & Notifications
@@ -116,4 +116,6 @@ flutter:
     - assets/mock/v1/post/auth/
     - assets/mock/v1/post/user/
     - assets/mock/images/
+    - assets/html/
+
 

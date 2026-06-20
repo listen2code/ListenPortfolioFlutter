@@ -43,7 +43,11 @@ class AppConstants {
   static const String date = '2026';
   static const String mail = 'listen2code@gmail.com';
   static const String github = 'https://github.com/listen2code';
-  static const String githubShare = '$github/ListenPortfolioFlutter';
+  static const String githubProjectName = 'ListenPortfolioFlutter';
+  static const String githubShare = '$github/$githubProjectName';
+  static const String githubPageRoot = 'https://listen2code.github.io/$githubProjectName/pages/';
+  static const String githubPageTermsOfService = '$githubPageRoot/terms_of_service.html';
+  static const String githubPagePrivacyPolicy = '$githubPageRoot/privacy_policy.html';
 
   // IAP Product IDs
   static const String coffeeTier1 = 'coffee1';

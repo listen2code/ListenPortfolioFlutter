@@ -136,10 +136,9 @@ class SettingsPage extends ConsumerWidget {
                   _buildListTile(
                     context,
                     icon: Icons.notification_important_outlined,
-                    title: '推送通知模拟 (Push Test)',
+                    title: 'Push Test',
                     subtitle: '触发前台推送通知横幅模拟',
                     onTap: () async {
-                      // Request permission first to ensure notification banner can display
                       await notificationService.requestPermission();
                       final service = notificationService;
                       if (service is FirebaseNotificationServiceImpl) {
@@ -151,6 +150,26 @@ class SettingsPage extends ConsumerWidget {
                           ),
                         );
                       }
+                    },
+                  ),
+                if (kDebugMode)
+                  _buildListTile(
+                    context,
+                    icon: Icons.html,
+                    title: 'WebView Test',
+                    subtitle: 'WebView Dialog',
+                    onTap: () async {
+                      CommonDialog.showCustom<void>(
+                        body: FutureBuilder<String>(
+                          future: DefaultAssetBundle.of(context).loadString('assets/html/test.html'),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return const Center(child: CircularProgressIndicator());
+                            }
+                            return CommonWebView(initialHtml: snapshot.data);
+                          },
+                        ),
+                      );
                     },
                   ),
               ]),
@@ -238,8 +257,6 @@ class SettingsPage extends ConsumerWidget {
   }
 
   // --- Logic Handlers ---
-
-
 
   // --- UI Builders ---
 
