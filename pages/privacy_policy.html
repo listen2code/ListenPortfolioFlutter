@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - lPortfolio</title>
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --background: #ffffff;
+            --text: #1f2937;
+            --text-muted: #4b5563;
+            --card-bg: #f9fafb;
+            --border: #e5e7eb;
+            --max-width: 800px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --background: #111827;
+                --text: #f3f4f6;
+                --text-muted: #9ca3af;
+                --card-bg: #1f2937;
+                --border: #374151;
+            }
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: var(--background);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: var(--max-width);
+        }
+
+        header {
+            margin-bottom: 40px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2.25rem;
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+        }
+
+        h3 {
+            font-size: 1.15rem;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: var(--text-muted);
+        }
+
+        ul, ol {
+            margin-top: 0;
+            margin-bottom: 20px;
+            padding-left: 20px;
+            color: var(--text-muted);
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .card h3 {
+            margin-top: 0;
+        }
+
+        .last-updated {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+            color: var(--primary-hover);
+        }
+
+        .contact-info {
+            background-color: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Privacy Policy</h1>
+            <p class="last-updated">Last Updated: June 2026</p>
+        </header>
+
+        <section>
+            <p><strong>lPortfolio</strong> (referred to as "the Application", "the App", "we", "us", or "our") is developed by <strong>Listen</strong>. We are committed to protecting and respecting your privacy. This Privacy Policy describes how we collect, use, and share information when you use our mobile application.</p>
+            <p>By downloading, installing, or using the Application, you agree to the collection and use of information in accordance with this policy.</p>
+        </section>
+
+        <section>
+            <h2>1. Information We Collect</h2>
+            <p>To provide a functional and reliable mobile portfolio experience, we collect and process limited categories of information:</p>
+            
+            <h3>a. Account and Profile Data</h3>
+            <p>If you register or log in to an account within the App, we collect the credentials you provide (such as username, email address, password). This data is used solely to authenticate your identity and synchronize your profile preferences.</p>
+
+            <h3>b. Local Storage and Preferences</h3>
+            <p>We store configuration settings locally on your device (such as your chosen theme mode, accent color, font size, and language settings) using local storage mechanisms (SharedPreferences/NSUserDefaults and Secure Storage). This data remains on your device unless you clear the cache or uninstall the App.</p>
+
+            <h3>c. Technical and Usage Data</h3>
+            <p>We may process transient network data during API requests to our backend servers. This includes trace identifiers (traceId) used purely for debugging, performance logging, and error tracing.</p>
+        </section>
+
+        <section>
+            <h2>2. Third-Party Services and SDKs</h2>
+            <p>The Application integrates specific third-party Software Development Kits (SDKs) and services to enable core app functions. These third parties may collect and process information in accordance with their own privacy policies:</p>
+            
+            <div class="card">
+                <h3>Google Play Services & Google Play Billing</h3>
+                <p>We use Google Play Services for core system functions and the Google Play Billing Library to handle in-app purchases (such as supporting the project through "Buy Me a Coffee"). All payments are processed securely by Google. We do not collect or store your payment details or financial credentials.</p>
+                <p>View: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google Privacy & Terms</a></p>
+            </div>
+
+            <div class="card">
+                <h3>Firebase Cloud Messaging (FCM)</h3>
+                <p>We use Firebase Cloud Messaging to send push notifications regarding app updates, featured projects, or interactive messages. FCM may collect device tokens, identifiers, and general notification payload status to deliver messages to your device.</p>
+                <p>View: <a href="https://firebase.google.com/support/privacy" target="_blank" rel="noopener">Privacy and Security in Firebase</a></p>
+            </div>
+        </section>
+
+        <section>
+            <h2>3. Data Security and Retention</h2>
+            <p>We implement commercially reasonable security measures to protect your account information and local configuration settings. However, please note that no method of transmission over the internet, or method of electronic storage, is 100% secure.</p>
+            <p>Your local configuration settings are retained on your device. Account profile data is stored on our secure backend database and is retained for as long as your account remains active.</p>
+        </section>
+
+        <section>
+            <h2>4. Data Deletion and Account Deletion</h2>
+            <p>We respect your right to control your data. You can manage or delete your data using the following methods:</p>
+            <ul>
+                <li><strong>Clear Cache:</strong> You can clear local app cache at any time through the Settings menu inside the App.</li>
+                <li><strong>Reset Settings:</strong> You can restore local settings to defaults through the Settings menu.</li>
+                <li><strong>Account Deletion:</strong> You can permanently delete your registered account and all associated backend profile data at any time via the "Delete Account" option in the App Settings.</li>
+                <li><strong>Manual Deletion Request:</strong> If you are unable to access the App or wish to request data deletion externally, you can contact us at <a href="mailto:listen2code@gmail.com">listen2code@gmail.com</a>. We will process your deletion request within 30 days.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>5. Children's Privacy</h2>
+            <p>Our Services do not address anyone under the age of 13. We do not knowingly collect personally identifiable information from children under 13. In the case we discover that a child under 13 has provided us with personal information, we immediately delete this from our servers. If you are a parent or guardian and you are aware that your child has provided us with personal information, please contact us so that we can take necessary actions.</p>
+        </section>
+
+        <section>
+            <h2>6. Changes to This Privacy Policy</h2>
+            <p>We may update our Privacy Policy from time to time. You are advised to review this page periodically for any changes. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last Updated" date at the top of this policy.</p>
+        </section>
+
+        <section class="contact-info">
+            <h2>Contact Us</h2>
+            <p>If you have any questions, suggestions, or requests regarding this Privacy Policy or your data, please contact the developer at:</p>
+            <p><strong>Email:</strong> <a href="mailto:listen2code@gmail.com">listen2code@gmail.com</a></p>
+        </section>
+    </div>
+</body>
+</html>
