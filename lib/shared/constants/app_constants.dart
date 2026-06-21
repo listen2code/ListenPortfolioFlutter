@@ -1,3 +1,5 @@
+import 'dart:io';
+
 class AppConstants {
   AppConstants._();
 
@@ -27,6 +29,9 @@ class AppConstants {
   static const String notificationTabAboutMe = 'aboutMe';
   static const String notificationTabProjects = 'projects';
   static const String notificationTabArchitecture = 'architecture';
+  static const String appLaunchCountKey = 'app_launch_count';
+  static const String lastReviewPromptTimeKey = 'last_review_prompt_time';
+  static const String hasReviewKey = 'has_review';
 
   // Data keys
   static const String userDataKey = 'user_data';
@@ -46,11 +51,28 @@ class AppConstants {
   static const String github = 'https://github.com/listen2code';
   static const String githubProjectName = 'ListenPortfolioFlutter';
   static const String githubShare = '$github/$githubProjectName';
-  static const String storeShare =
-      'https://play.google.com/store/apps/details?id=com.listen.portfolio.listen_portfolio_flutter';
   static const String githubPageRoot = 'https://listen2code.github.io/ListenPortfolioFlutter/pages/';
   static const String githubPageTermsOfService = '${githubPageRoot}terms_of_service.html';
   static const String githubPagePrivacyPolicy = '${githubPageRoot}privacy_policy.html';
+
+  static String get storeShare {
+    if (Platform.isAndroid) {
+      return 'https://play.google.com/store/apps/details?id=$appStoreId';
+    } else if (Platform.isIOS) {
+      return 'https://apps.apple.com/app/$appStoreId';
+    }
+    return githubShare;
+  }
+
+  static String get appStoreId {
+    if (Platform.isAndroid) {
+      return 'com.listen.portfolio.listen_portfolio_flutter';
+    } else if (Platform.isIOS) {
+      // todo appStore id
+      return 'xxxxx';
+    }
+    return '';
+  }
 
   // IAP Product IDs
   static const String coffeeTier1 = 'coffee1';

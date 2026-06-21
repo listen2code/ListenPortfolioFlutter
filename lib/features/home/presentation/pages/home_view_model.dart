@@ -54,6 +54,11 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
       sticky: true,
     );
 
+    // Trigger in-app review check on app startup
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ReviewService().checkAndPromptReview();
+    });
+
     return const HomeState();
   }
 

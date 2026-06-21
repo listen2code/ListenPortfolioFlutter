@@ -2,8 +2,8 @@ name: listen_portfolio_flutter
 description: "Portfolio of Listen"
 publish_to: 'none'
 
-version: 1.0.44
-desc: "Fix ci.yml version.json"
+version: 1.0.45
+desc: "Add in_app_review"
 desc_zh: ""
 desc_ja: ""
 
@@ -60,6 +60,7 @@ dependencies:
   device_info_plus: ^13.1.0
   package_info_plus: ^10.1.0
   flutter_inappwebview: ^6.1.5
+  in_app_review: ^2.0.9
 
   # Routing
   path_provider: ^2.1.5
