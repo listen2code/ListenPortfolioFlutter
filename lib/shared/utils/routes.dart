@@ -1,4 +1,5 @@
 import 'package:listen_core/core.dart';
+
 import '../../features/auth/presentation/pages/login/login_page.dart';
 import '../../features/auth/presentation/pages/password/change_password_page.dart';
 import '../../features/auth/presentation/pages/password/forgot_password_page.dart';
@@ -23,9 +24,9 @@ class Routes {
   static const String signUp = '/signUp';
   static const String forgotPassword = '/forgot_password';
   static const String changePassword = '/change_password';
-  static const String deleteAccount = '/delete_account';
   static const String settings = '/settings';
   static const String appearance = '/appearance';
+  static const String deleteAccount = '/delete_account';
   static const String crashLogs = '/crash_logs';
   static const String termsOfService = '/terms_of_service';
   static const String privacyPolicy = '/privacy_policy';
