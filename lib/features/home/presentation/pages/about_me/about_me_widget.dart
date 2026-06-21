@@ -29,42 +29,29 @@ class AboutMeWidget extends StatelessWidget {
         // Returning null triggers the default empty view in BaseRefreshPage
         if (data == null) return null;
 
-        return Stack(
-          children: [
-            SingleChildScrollView(
-              padding: EdgeInsets.all(20.f),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 40.f),
-                  _buildHeader(context, viewModel!, state!),
-                  if (data.bio != null) ...[SizedBox(height: 35.f), _buildBioSection(context, data.bio!)],
-                  if (data.experiences.isNotEmpty) ...[
-                    SizedBox(height: 25.f),
-                    _buildDetailedExperience(context, data.experiences),
-                  ],
-                  if (data.education.isNotEmpty) ...[
-                    SizedBox(height: 25.f),
-                    _buildEducationSection(context, data.education),
-                  ],
-                  if (data.skills.isNotEmpty) ...[
-                    SizedBox(height: 25.f),
-                    _buildComprehensiveSkills(context, data.skills),
-                  ],
-                  SizedBox(height: 40.f),
-                ],
-              ),
-            ),
-            Positioned(
-              top: 10.f,
-              right: 10.f,
-              child: IconButton(
-                icon: const Icon(Icons.share_outlined),
-                tooltip: I18nKeys.shareApp.tr,
-                onPressed: () => viewModel.handleIntent(const AboutMeIntent.shareApp()),
-              ),
-            ),
-          ],
+        return SingleChildScrollView(
+          padding: EdgeInsets.all(20.f),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 40.f),
+              _buildHeader(context, viewModel!, state!),
+              if (data.bio != null) ...[SizedBox(height: 35.f), _buildBioSection(context, data.bio!)],
+              if (data.experiences.isNotEmpty) ...[
+                SizedBox(height: 25.f),
+                _buildDetailedExperience(context, data.experiences),
+              ],
+              if (data.education.isNotEmpty) ...[
+                SizedBox(height: 25.f),
+                _buildEducationSection(context, data.education),
+              ],
+              if (data.skills.isNotEmpty) ...[
+                SizedBox(height: 25.f),
+                _buildComprehensiveSkills(context, data.skills),
+              ],
+              SizedBox(height: 40.f),
+            ],
+          ),
         );
       },
     );

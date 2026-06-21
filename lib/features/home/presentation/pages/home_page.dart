@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_core/core.dart';
 import 'about_me/about_me_widget.dart';
+import 'about_me/about_me_intent.dart';
+import 'about_me/about_me_view_model.dart';
 import 'architecture/architecture_widget.dart';
 import 'home_intent.dart';
 import 'home_state.dart';
@@ -24,6 +26,23 @@ class HomePage extends ConsumerWidget {
       title: state.title,
       drawer: _buildDrawer(context, viewModel, state),
       canPop: state.currentTab == HomeTab.overview,
+      actions: state.currentTab == HomeTab.aboutMe
+          ? [
+              Consumer(
+                builder: (context, ref, child) {
+                  return IconButton(
+                    icon: const Icon(Icons.share_outlined),
+                    tooltip: I18nKeys.shareApp.tr,
+                    onPressed: () {
+                      ref.read(aboutMeViewModelProvider.notifier).handleIntent(
+                            const AboutMeIntent.shareApp(),
+                          );
+                    },
+                  );
+                },
+              ),
+            ]
+          : null,
       onInterceptBack: () {
         if (state.currentTab != HomeTab.overview) {
           viewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.overview));
