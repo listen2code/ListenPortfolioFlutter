@@ -14,6 +14,7 @@ class AppConstants {
   static const String fontSizeKey = 'font_size';
   static const String languageKey = 'language';
   static const String useDynamicColorKey = 'use_dynamic_color';
+  static const String developerModeKey = 'developer_mode';
   static const String notificationsKey = 'notifications';
   static const String notificationChannelId = 'portfolio_push_channel';
   static const String notificationChannelName = 'Portfolio Notifications';

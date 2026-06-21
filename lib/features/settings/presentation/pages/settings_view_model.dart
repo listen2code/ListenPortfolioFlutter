@@ -21,7 +21,7 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
   SettingsState build() {
     // Load persisted notifications setting
     final enabled = SpUtil.getBool(AppConstants.notificationsKey, defaultValue: true);
-    final isDevMode = SpUtil.getBool('developer_mode', defaultValue: false);
+    final isDevMode = SpUtil.getBool(AppConstants.developerModeKey, defaultValue: false);
 
     return SettingsState(
       currentLanguage: settingManager.language,

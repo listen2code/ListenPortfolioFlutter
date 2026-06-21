@@ -3,164 +3,518 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WebView 高度与跳转测试页</title>
+  <title>CommonWebView 测试与调试中心</title>
   <style>
     :root {
-      --bg-color: #121214;
-      --card-bg: #1e1e24;
+      --bg-color: #0b0f19;
+      --card-bg: rgba(20, 26, 46, 0.6);
+      --card-border: rgba(99, 102, 241, 0.15);
       --text-color: #e4e4e7;
-      --text-muted: #a1a1aa;
-      --primary-color: #6366f1;
-      --primary-hover: #4f46e5;
-      --border-color: #2d2d34;
+      --text-muted: #9ca3af;
+      --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+      --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+      --danger-gradient: linear-gradient(135deg, #ef4444 0%, #f43f5e 100%);
+      --success-gradient: linear-gradient(135deg, #10b981 0%, #14b8a6 100%);
+      --button-hover-opacity: 0.9;
     }
+
     body {
       margin: 0;
-      padding: 16px;
+      padding: 20px;
       background-color: var(--bg-color);
       color: var(--text-color);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       font-size: 14px;
       line-height: 1.6;
-      transition: height 0.3s ease;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.12) 0px, transparent 50%);
+      background-attachment: fixed;
     }
-    .card {
-      background-color: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 16px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+
+    /* Header Styling */
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
-    h2 {
-      margin-top: 0;
-      font-size: 18px;
-      color: #ffffff;
-      border-bottom: 2px solid var(--primary-color);
-      padding-bottom: 6px;
-      display: inline-block;
+
+    .header h1 {
+      margin: 0 0 8px 0;
+      font-size: 24px;
+      font-weight: 800;
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
     }
-    p {
+
+    .header p {
+      margin: 0;
       color: var(--text-muted);
-      margin: 8px 0 16px;
+      font-size: 13px;
     }
+
+    /* Grid Layout */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    @media (min-width: 640px) {
+      .grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* Card Styling (Glassmorphism) */
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card:hover {
+      box-shadow: 0 8px 32px 0 rgba(99, 102, 241, 0.1);
+    }
+
+    .card h2 {
+      margin: 0 0 8px 0;
+      font-size: 16px;
+      font-weight: 700;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card h2 span.badge {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .card h2 span.badge.property {
+      background: rgba(99, 102, 241, 0.15);
+      color: #818cf8;
+      border: 1px solid rgba(99, 102, 241, 0.3);
+    }
+
+    .card p.desc {
+      color: var(--text-muted);
+      margin: 0 0 16px 0;
+      font-size: 13px;
+      flex-grow: 1;
+    }
+
+    /* Buttons */
+    .flex-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      background-color: var(--primary-color);
       color: white;
       border: none;
       border-radius: 8px;
-      padding: 10px 16px;
-      font-size: 14px;
-      font-weight: 500;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 600;
       cursor: pointer;
-      transition: background-color 0.2s ease, transform 0.1s ease;
+      transition: all 0.2s ease;
       text-decoration: none;
+      outline: none;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-    .btn:hover {
-      background-color: var(--primary-hover);
-    }
-    .btn:active {
-      transform: scale(0.98);
-    }
-    .btn-secondary {
-      background-color: transparent;
-      border: 1px solid var(--border-color);
+
+    .btn-primary { background: var(--primary-gradient); }
+    .btn-accent { background: var(--accent-gradient); }
+    .btn-danger { background: var(--danger-gradient); }
+    .btn-success { background: var(--success-gradient); }
+    
+    .btn-outline {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.15);
       color: var(--text-color);
-      margin-left: 8px;
     }
-    .btn-secondary:hover {
-      background-color: var(--border-color);
+
+    .btn:hover {
+      opacity: var(--button-hover-opacity);
+      transform: translateY(-1px);
     }
-    .flex-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
+
+    .btn:active {
+      transform: translateY(1px);
     }
-    .content-box {
-      border-left: 3px solid var(--primary-color);
-      background-color: rgba(99, 102, 241, 0.05);
+
+    /* Interactive Box & Logs */
+    .interactive-box {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
       padding: 12px;
-      border-radius: 0 8px 8px 0;
       margin-top: 12px;
+      font-size: 12px;
+      min-height: 40px;
     }
+
+    .logs-panel {
+      grid-column: 1 / -1;
+      background: rgba(5, 5, 10, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      padding: 16px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      margin-top: 16px;
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5);
+    }
+
+    .logs-panel h3 {
+      margin: 0 0 10px 0;
+      font-size: 14px;
+      color: #a855f7;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logs-container {
+      max-height: 150px;
+      overflow-y: auto;
+      font-size: 12px;
+      color: #38bdf8;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .log-line {
+      display: flex;
+      gap: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+      padding-bottom: 2px;
+    }
+
+    .log-time { color: var(--text-muted); }
+    .log-text { color: #f1f5f9; }
+    .log-success { color: #34d399; }
+    .log-warning { color: #fbbf24; }
+    .log-error { color: #f87171; }
+
+    /* Dynamic Content items */
     .added-item {
       padding: 8px 12px;
-      background-color: rgba(255, 255, 255, 0.03);
-      border: 1px dashed var(--border-color);
-      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
       margin-top: 8px;
-      animation: fadeIn 0.3s ease-out forwards;
+      animation: slideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(5px); }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-8px); }
       to { opacity: 1; transform: translateY(0); }
+    }
+
+    .added-item-delete {
+      color: #f87171;
+      cursor: pointer;
+      font-size: 16px;
+      line-height: 1;
+      padding: 2px;
+    }
+
+    .input-control {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 10px;
+      color: white;
+      font-size: 13px;
+      box-sizing: border-box;
+      margin-bottom: 8px;
+    }
+    
+    .input-control:focus {
+      border-color: #6366f1;
+      outline: none;
     }
   </style>
 </head>
 <body>
 
-  <div class="card">
-    <h2>1. 高度自适应测试</h2>
-    <p>点击下方按钮将动态增加页面内容，测试 WebView 高度是否会随之自适应增加。当总高度超过 Dialog 最大高度时，应该出现滚动条。</p>
-    <div class="flex-row">
-      <button class="btn" id="add-content-btn">增加一行内容</button>
-      <button class="btn btn-secondary" id="clear-content-btn">重置内容</button>
-    </div>
-    <div id="dynamic-content-area"></div>
+  <div class="header">
+    <h1>CommonWebView 测试与调试中心</h1>
+    <p>通过操作各个测试卡片，您可以验证并观察 CommonWebView 的各项 API、拦截器及混合桥接机制的触发与表现。</p>
   </div>
 
-  <div class="card">
-    <h2>2. 跳转拦截测试</h2>
-    <p>用于测试 shouldOverrideUrlLoading 如何判断用户点击跳转和 JS 自动跳转：</p>
-    <div class="flex-row">
-      <!-- 正常 A 链接跳转，属于用户手势 -->
-      <a href="https://flutter.dev" class="btn" target="_blank">正常链接 (用户点击)</a>
-
-      <!-- JavaScript location.href 重定向跳转 -->
-      <button class="btn btn-secondary" id="js-redirect-btn">JS重定向 (无手势/自动)</button>
+  <div class="grid">
+    <!-- 1. 高度自适应 -->
+    <div class="card">
+      <h2>高度自适应测试 <span class="badge property">shrinkWrap</span></h2>
+      <p class="desc">动态调整 HTML 文档的高宽。当开启 <code>shrinkWrap</code> 时，H5 高度变化会实时通过 <code>resize</code> 桥接通道回传，自动缩放 Flutter 容器，若高度超出 <code>maxHtmlHeight</code> 限制则会出现原生滚动条。</p>
+      <div class="flex-row">
+        <button class="btn btn-primary" id="btn-add-item">动态增加内容 block</button>
+        <button class="btn btn-outline" id="btn-reset-height">重置内容</button>
+      </div>
+      <div id="height-test-container"></div>
     </div>
-    <div class="content-box">
-      <strong>提示：</strong>
-      <ul>
-        <li>点击“正常链接”会在 <code>hasGesture</code> / <code>LINK_CLICKED</code> 中体现为用户手势。</li>
-        <li>点击“JS重定向”按钮会在 2 秒延迟后使用 <code>window.location.href</code> 进行跳转。在跳转发起瞬间，<code>hasGesture</code> 将显示为 <code>false</code>。</li>
-      </ul>
+
+    <!-- 2. 网页 Title 测试 -->
+    <div class="card">
+      <h2>标题动态修改 <span class="badge property">onTitleChanged</span></h2>
+      <p class="desc">点击下方按钮修改 <code>document.title</code>。在 Flutter 侧如果未显示设置 <code>title</code> 属性，AppBar 标题应该会自动监听并跟随 H5 Title 同步更新。</p>
+      <input type="text" class="input-control" id="title-input" value="⚡ 探索 Flutter InAppWebView 酷炫功能" placeholder="输入新的标题...">
+      <div class="flex-row">
+        <button class="btn btn-accent" id="btn-change-title">设置网页 document.title</button>
+      </div>
+    </div>
+
+    <!-- 3. JS 调用 Flutter -->
+    <div class="card">
+      <h2>JS 调用 Flutter <span class="badge property">javascriptHandlers</span></h2>
+      <p class="desc">通过 InAppWebView 的 <code>callHandler</code> 机制将数据从 H5 传递给 Flutter。可以同步或异步等待 Flutter 侧执行并回传数据，实现双向桥接。</p>
+      <div class="flex-row">
+        <button class="btn btn-success" id="btn-js-toast">H5 唤起 Native 气泡 (Toast)</button>
+        <button class="btn btn-success" id="btn-js-close">请求 Native 关闭当前 WebView</button>
+        <button class="btn btn-accent" id="btn-js-async">调用 Native 获取设备信息并展示</button>
+      </div>
+      <div class="interactive-box" id="device-info-box">
+        点击“获取设备信息”按钮，Native 执行结果将在此回显。
+      </div>
+    </div>
+
+    <!-- 4. Flutter 调用 JS -->
+    <div class="card">
+      <h2>Flutter 调用 JS <span class="badge property">evaluateJavascript</span></h2>
+      <p class="desc">测试 Flutter 脚本评估。Flutter 可以主动调用 H5 的全局方法，并传入 JSON 数据。在下方面板中查看 Native 注入的数据结果。</p>
+      <div class="interactive-box" id="flutter-data-display" style="white-space: pre-wrap; font-family: monospace;">
+        等待 Native 调用 window.sendDataToHtml(data) 或更改背景色...
+      </div>
+    </div>
+
+    <!-- 5. 链接跳转拦截 -->
+    <div class="card">
+      <h2>跳转拦截 <span class="badge property">shouldOverrideUrlLoading</span></h2>
+      <p class="desc">测试页面导航拦截机制。通过区分 <code>hasGesture</code> 与 <code>navigationType</code> 属性，可以识别是用户手动点击还是网页 JS 脚本自动重定向。</p>
+      <div class="flex-row">
+        <a href="https://flutter.dev" class="btn btn-primary" target="_blank">正常外链点击 (有手势)</a>
+        <button class="btn btn-outline" id="btn-js-redirect">自动延迟重定向 (无手势)</button>
+        <a href="myapp://custom-action?action=share&text=HelloWorld" class="btn btn-danger">自定义 Scheme 拦截</a>
+      </div>
+      <div class="interactive-box" id="redirect-box" style="color: var(--text-muted);">
+        提示：点击自动重定向后将在 2 秒延迟后发起 location.href 跳转。
+      </div>
+    </div>
+
+    <!-- 6. 异常状态测试 -->
+    <div class="card">
+      <h2>页面异常与重试 <span class="badge property">onLoadError</span></h2>
+      <p class="desc">触发网络异常或者 HTTP 状态码错误。验证 <code>CommonWebView</code> 内部是否会自动加载预置的空状态重试界面，测试容错表现。</p>
+      <div class="flex-row">
+        <a href="https://this-is-not-a-valid-domain-12345.com" class="btn btn-danger">触发 DNS 域名解析错误</a>
+        <a href="https://httpbin.org/status/500" class="btn btn-danger">触发服务器 500 报错</a>
+      </div>
+    </div>
+
+    <!-- 全局日志面板 -->
+    <div class="logs-panel">
+      <h3>运行日志控制台 <button class="btn btn-outline" style="padding: 4px 8px; font-size: 10px;" id="btn-clear-logs">清空控制台</button></h3>
+      <div class="logs-container" id="logs-container">
+        <div class="log-line">
+          <span class="log-time">[H5 准备就绪]</span>
+          <span class="log-text">点击各个操作，本面板将打印 JavaScript 端日志。</span>
+        </div>
+      </div>
     </div>
   </div>
 
   <script>
-    // 1. 动态增加/重置内容以测试高度变化
-    const dynamicArea = document.getElementById('dynamic-content-area');
-    const addBtn = document.getElementById('add-content-btn');
-    const clearBtn = document.getElementById('clear-content-btn');
-    let itemCount = 0;
+    // --- 运行日志工具 ---
+    const logsContainer = document.getElementById('logs-container');
+    function log(message, type = 'info') {
+      const now = new Date();
+      const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}.${now.getMilliseconds().toString().padStart(3, '0')}`;
+      
+      const logLine = document.createElement('div');
+      logLine.className = 'log-line';
+      
+      let classType = 'log-text';
+      if (type === 'success') classType = 'log-success';
+      if (type === 'warning') classType = 'log-warning';
+      if (type === 'error') classType = 'log-error';
+      
+      logLine.innerHTML = `
+        <span class="log-time">[${timeStr}]</span>
+        <span class="${classType}">${message}</span>
+      `;
+      logsContainer.appendChild(logLine);
+      logsContainer.scrollTop = logsContainer.scrollHeight;
+    }
 
-    addBtn.addEventListener('click', () => {
-      itemCount++;
-      const div = document.createElement('div');
-      div.className = 'added-item';
-      div.innerHTML = `<strong>新增测试项 #${itemCount}</strong>：这是一行新注入的文本，页面总高度被撑高。`;
-      dynamicArea.appendChild(div);
+    document.getElementById('btn-clear-logs').addEventListener('click', () => {
+      logsContainer.innerHTML = '';
+      log('运行日志已清空。');
     });
 
-    clearBtn.addEventListener('click', () => {
-      dynamicArea.innerHTML = '';
-      itemCount = 0;
+    // --- 1. 高度自适应测试 ---
+    const heightContainer = document.getElementById('height-test-container');
+    const btnAddItem = document.getElementById('btn-add-item');
+    const btnResetHeight = document.getElementById('btn-reset-height');
+    let itemIndex = 0;
+
+    btnAddItem.addEventListener('click', () => {
+      itemIndex++;
+      const item = document.createElement('div');
+      item.className = 'added-item';
+      item.id = `height-item-${itemIndex}`;
+      item.innerHTML = `
+        <span>动态追加内容块 #${itemIndex} (增加页面高度)</span>
+        <span class="added-item-delete" onclick="removeItem(${itemIndex})">&times;</span>
+      `;
+      heightContainer.appendChild(item);
+      log(`动态添加内容块 #${itemIndex}，触发布局高度变化观测。`, 'info');
     });
 
-    // 2. JS 重定向跳转测试
-    const redirectBtn = document.getElementById('js-redirect-btn');
-    redirectBtn.addEventListener('click', () => {
-      redirectBtn.innerText = '2秒后跳转...';
-      redirectBtn.disabled = true;
-      setTimeout(() => {
-        // 使用脚本进行自动跳转
-        window.location.href = 'https://pub.dev';
-      }, 2000);
+    btnResetHeight.addEventListener('click', () => {
+      heightContainer.innerHTML = '';
+      itemIndex = 0;
+      log('内容已重置，布局高度应该恢复至最小预设值。', 'warning');
     });
+
+    window.removeItem = function(id) {
+      const element = document.getElementById(`height-item-${id}`);
+      if (element) {
+        element.remove();
+        log(`移除了内容块 #${id}，触发布局高度重新观测。`, 'info');
+      }
+    };
+
+    // --- 2. Title 修改测试 ---
+    const titleInput = document.getElementById('title-input');
+    const btnChangeTitle = document.getElementById('btn-change-title');
+
+    btnChangeTitle.addEventListener('click', () => {
+      const newTitle = titleInput.value.trim();
+      if (newTitle) {
+        document.title = newTitle;
+        log(`成功将网页 Title 修改为: "${newTitle}"，触发 onTitleChanged 回调`, 'success');
+      }
+    });
+
+    // --- 3. JS 调用 Flutter 测试 ---
+    const btnJsToast = document.getElementById('btn-js-toast');
+    const btnJsClose = document.getElementById('btn-js-close');
+    const btnJsAsync = document.getElementById('btn-js-async');
+    const deviceInfoBox = document.getElementById('device-info-box');
+
+    // 检查桥接是否可用
+    function checkBridge() {
+      if (window.flutter_inappwebview && window.flutter_inappwebview.callHandler) {
+        return true;
+      }
+      log('未检测到 flutter_inappwebview 桥接，可能处于普通外部浏览器中。', 'error');
+      return false;
+    }
+
+    btnJsToast.addEventListener('click', () => {
+      if (checkBridge()) {
+        window.flutter_inappwebview.callHandler('showToast', '这是来自 H5 页面的吐司提示消息！')
+          .then(() => log('已触发 showToast handler 并投送消息成功。', 'success'));
+      }
+    });
+
+    btnJsClose.addEventListener('click', () => {
+      if (checkBridge()) {
+        window.flutter_inappwebview.callHandler('closePage')
+          .then(() => log('已发送 closePage 请求关闭页面指令。', 'success'));
+      }
+    });
+
+    btnJsAsync.addEventListener('click', () => {
+      if (checkBridge()) {
+        deviceInfoBox.innerHTML = '<span style="color: var(--text-muted);">正在向 Native 获取信息...</span>';
+        log('开始调用 Native 接口 "getDeviceInfo"...', 'info');
+        window.flutter_inappwebview.callHandler('getDeviceInfo')
+          .then((res) => {
+            log('异步获取 Native 设备信息成功！', 'success');
+            deviceInfoBox.innerHTML = `<span style="color: #34d399;">获取成功:</span> ${JSON.stringify(res)}`;
+          })
+          .catch((err) => {
+            log(`异步调用 Native 发生错误: ${err}`, 'error');
+            deviceInfoBox.innerHTML = `<span style="color: #f87171;">调用失败:</span> ${err}`;
+          });
+      }
+    });
+
+    // --- 4. Flutter 调用 JS (注册全局函数) ---
+    // 供 Flutter 通过 evaluateJavascript 调用改变网页 background
+    window.changeBgColor = function(color) {
+      document.body.style.background = color;
+      log(`Native 评估脚本：成功改变网页背景色为 ${color}`, 'success');
+      return `H5: 背景色已改变为 ${color}`;
+    };
+
+    // 供 Flutter 传入 JSON 格式的数据进行解析渲染
+    window.sendDataToHtml = function(jsonData) {
+      try {
+        const data = typeof jsonData === 'string' ? JSON.parse(jsonData) : jsonData;
+        document.getElementById('flutter-data-display').innerHTML = `
+          <div style="color: #34d399; font-weight: bold; margin-bottom: 4px;">[Native 成功注入数据]</div>
+          ${JSON.stringify(data, null, 2)}
+        `;
+        log('Native 评估脚本：成功投送 JSON 数据并显示。', 'success');
+        return 'H5: 数据接收回显完毕。';
+      } catch (err) {
+        log(`接收 Native 注入数据失败: ${err.message}`, 'error');
+        return `H5 Error: ${err.message}`;
+      }
+    };
+
+    // --- 5. 跳转拦截测试 ---
+    const btnJsRedirect = document.getElementById('btn-js-redirect');
+    const redirectBox = document.getElementById('redirect-box');
+
+    btnJsRedirect.addEventListener('click', () => {
+      let count = 2;
+      btnJsRedirect.disabled = true;
+      log('JS 重定向启动，2秒后将无手势跳转至 https://pub.dev', 'warning');
+      
+      const timer = setInterval(() => {
+        count--;
+        if (count > 0) {
+          redirectBox.innerText = `将在 ${count} 秒后进行自动重定向跳转...`;
+        } else {
+          clearInterval(timer);
+          redirectBox.innerText = '正在执行跳转 (location.href = "https://pub.dev")...';
+          // 脚本直接跳转，无用户手势
+          window.location.href = 'https://pub.dev';
+        }
+      }, 1000);
+    });
+
   </script>
 </body>
 </html>
