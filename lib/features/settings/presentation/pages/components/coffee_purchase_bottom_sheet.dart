@@ -91,6 +91,7 @@ class _CoffeePurchaseBottomSheetState extends State<CoffeePurchaseBottomSheet> w
             });
           }
           CommonToast.show(I18nKeys.buyCoffeeSuccess.tr, type: ToastType.success);
+          ReviewService().checkAndPromptReview(force: true);
           Navigator.of(context).pop();
         } else if (purchase.status == PurchaseStatus.error) {
           if (mounted) {
