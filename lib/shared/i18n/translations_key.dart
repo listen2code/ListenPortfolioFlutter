@@ -263,4 +263,5 @@ class I18nKeys {
   static const String iapNotAvailable = 'In-app purchase store is not available.';
   static const String fetchingProducts = 'Fetching coffee products...';
   static const String selectAmount = 'Support the Author';
+  static const String rateApp = 'Rate App';
 }

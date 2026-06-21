@@ -250,6 +250,12 @@ class SettingsPage extends ConsumerWidget {
                 ),
                 _buildListTile(
                   context,
+                  icon: Icons.star_outline_rounded,
+                  title: I18nKeys.rateApp.tr,
+                  onTap: () => ReviewService().openStoreRating(),
+                ),
+                _buildListTile(
+                  context,
                   icon: Icons.info_outline_rounded,
                   title: I18nKeys.licenses.tr,
                   onTap: () => showLicensePage(

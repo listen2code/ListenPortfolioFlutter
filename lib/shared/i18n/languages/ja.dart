@@ -225,4 +225,5 @@ final Map<String, String> ja = {
   I18nKeys.iapNotAvailable: 'アプリ内課金ストアは利用できません。',
   I18nKeys.fetchingProducts: '商品情報を取得中...',
   I18nKeys.selectAmount: '作者にコーヒーをおごる',
+  I18nKeys.rateApp: 'アプリを評価',
 };

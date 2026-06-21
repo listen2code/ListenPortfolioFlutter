@@ -176,7 +176,9 @@
 - 推送通知集成（INotificationService 抽象 + FCM 实现，支持前台横幅/后台唤醒/冷启动路由，通知开关联动系统权限引导）
 - 分享当前应用（在“关于我”页面右上角及“设置”中心提供分享入口，触发 `ShareEffect` 调用系统原生分享，已完成单元测试覆盖）
 - 商用级 `CommonWebView`（基于 `flutter_inappwebview` 封装，支持弹窗自适应高度模式、基于手势/重定向标识的跳转拦截）
-- 隐私政策与服务条款落地（基于 `CommonWebView` 加载托管 HTML 并进行了整页适配与拦截测试）
+- 隐私政策与服务条款落地（基于 `CommonWebView` 加载并适配了全新的 HSL 暗黑/浅色自适应主题，完善了 FCM 及 Billing 声明）
+- Google Play 合规性网页端数据注销页面落地（提供 `delete_account.html` 交互表单并完美支持邮件客户端唤起与剪贴板复制降级方案）
+- App 内评分引导服务集成（基于 `in_app_review` 封装了 `ReviewService`，支持启动计数与 90 天控流，且在赞助成功后黄金时机强制拉起评价）
 
 ### 暂时降级的想法池条目
 

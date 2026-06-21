@@ -65,7 +65,10 @@ sequenceDiagram
   IapService->>Store: buyConsumable()
   Store-->>IapService: purchaseStream 事件
   IapService-->>BottomSheet: PurchaseStatus
-  BottomSheet->>BottomSheet: 更新 UI / pop
+  BottomSheet->>BottomSheet: 更新 UI / Toast / pop
+  Note over BottomSheet, Store: 黄金满意度时刻触发评分引导
+  BottomSheet->>ReviewService: checkAndPromptReview(force: true)
+  ReviewService->>Store: requestReview() (In-App Review 弹窗)
 ```
 
 ### 2.2 购买状态流转
@@ -185,6 +188,7 @@ BottomSheet 根据 Tier 级别匹配不同图标：
 |---|---|
 | [iap_service.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/shared/services/iap/iap_service.dart) | `IIapService` 抽象接口定义 |
 | [iap_service_impl.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/shared/services/iap/iap_service_impl.dart) | 平台实现（Android consumePurchase + 双端 completePurchase） |
+| [review_service.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/shared/services/review/review_service.dart) | 提供应用内评价及频率控流服务 |
 
 ### MVI 层
 
