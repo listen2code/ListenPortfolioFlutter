@@ -264,4 +264,5 @@ class I18nKeys {
   static const String fetchingProducts = 'Fetching coffee products...';
   static const String selectAmount = 'Support the Author';
   static const String rateApp = 'Rate App';
+  static const String supportAndShare = 'Support & Share';
 }

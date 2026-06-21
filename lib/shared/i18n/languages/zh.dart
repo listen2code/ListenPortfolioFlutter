@@ -226,4 +226,5 @@ final Map<String, String> zh = {
   I18nKeys.fetchingProducts: '正在获取商品列表...',
   I18nKeys.selectAmount: '请作者喝杯咖啡吧',
   I18nKeys.rateApp: '给个好评',
+  I18nKeys.supportAndShare: '推荐与支持',
 };

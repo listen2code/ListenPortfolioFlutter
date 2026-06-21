@@ -201,8 +201,8 @@ class SettingsPage extends ConsumerWidget {
 
               SizedBox(height: 25.f),
 
-              // 4.5 SUPPORT
-              _buildSectionTitle(context, I18nKeys.buyMeCoffee.tr),
+              // 4.5 SUPPORT & SHARE
+              _buildSectionTitle(context, I18nKeys.supportAndShare.tr),
               _buildSettingsCard(context, [
                 _buildListTile(
                   context,
@@ -210,6 +210,18 @@ class SettingsPage extends ConsumerWidget {
                   title: I18nKeys.buyMeCoffee.tr,
                   subtitle: I18nKeys.supportProject.tr,
                   onTap: () => viewModel?.handleIntent(const SettingsIntent.buyMeCoffee()),
+                ),
+                _buildListTile(
+                  context,
+                  icon: Icons.share_outlined,
+                  title: I18nKeys.shareApp.tr,
+                  onTap: () => viewModel?.handleIntent(const SettingsIntent.shareApp()),
+                ),
+                _buildListTile(
+                  context,
+                  icon: Icons.star_outline_rounded,
+                  title: I18nKeys.rateApp.tr,
+                  onTap: () => viewModel?.handleIntent(const SettingsIntent.rateApp()),
                 ),
               ]),
 
@@ -232,27 +244,15 @@ class SettingsPage extends ConsumerWidget {
                 ),
                 _buildListTile(
                   context,
-                  icon: Icons.system_update_outlined,
-                  title: I18nKeys.checkUpdates.tr,
-                  onTap: () => viewModel?.handleIntent(const SettingsIntent.checkUpdates()),
-                ),
-                _buildListTile(
-                  context,
-                  icon: Icons.share_outlined,
-                  title: I18nKeys.shareApp.tr,
-                  onTap: () => viewModel?.handleIntent(const SettingsIntent.shareApp()),
-                ),
-                _buildListTile(
-                  context,
-                  icon: Icons.star_outline_rounded,
-                  title: I18nKeys.rateApp.tr,
-                  onTap: () => viewModel?.handleIntent(const SettingsIntent.rateApp()),
-                ),
-                _buildListTile(
-                  context,
                   icon: Icons.info_outline_rounded,
                   title: I18nKeys.licenses.tr,
                   onTap: () => viewModel?.handleIntent(const SettingsIntent.showLicenses()),
+                ),
+                _buildListTile(
+                  context,
+                  icon: Icons.system_update_outlined,
+                  title: I18nKeys.checkUpdates.tr,
+                  onTap: () => viewModel?.handleIntent(const SettingsIntent.checkUpdates()),
                 ),
                 _VersionTile(
                   onTrigger: () => viewModel?.handleIntent(const SettingsIntent.enableDeveloperMode()),
