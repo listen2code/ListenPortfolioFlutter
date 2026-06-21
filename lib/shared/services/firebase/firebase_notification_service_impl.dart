@@ -7,8 +7,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:listen_core/core.dart';
 
-import '../../features/home/presentation/pages/home_state.dart';
-import '../shared.dart';
+import '../../../features/home/presentation/pages/home_state.dart';
+import '../../shared.dart';
 import 'firebase_options.dart';
 
 /// Concrete implementation of INotificationService using Firebase Cloud Messaging (FCM)

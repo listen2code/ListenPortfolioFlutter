@@ -7,6 +7,8 @@ import '../../constants/app_constants.dart';
 /// Incorporates rate-limiting to comply with Google Play Store guidelines.
 class ReviewService {
   static final ReviewService _instance = ReviewService._internal();
+  static final int limitCount = 5;
+  static final int limitDays = 90;
 
   factory ReviewService() => _instance;
 
@@ -75,7 +77,7 @@ class ReviewService {
     }
 
     final launchCount = SpUtil.getInt(AppConstants.appLaunchCountKey) ?? 0;
-    if (launchCount < 5) {
+    if (launchCount < limitCount) {
       appLogger.d('ReviewService: Launch count ($launchCount) is less than 5. Skipping prompt.');
       return;
     }
@@ -84,7 +86,7 @@ class ReviewService {
     final now = DateTime.now().millisecondsSinceEpoch;
 
     // Minimum interval: 90 days
-    const int ninetyDaysMs = 90 * 24 * 60 * 60 * 1000;
+    final int ninetyDaysMs = limitDays * 24 * 60 * 60 * 1000;
     if (lastPromptTime > 0 && (now - lastPromptTime) < ninetyDaysMs) {
       appLogger.d('ReviewService: Less than 90 days since last prompt. Skipping.');
       return;
