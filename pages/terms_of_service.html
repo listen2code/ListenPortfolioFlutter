@@ -4,35 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Terms of Service - lPortfolio</title>
+    <!-- Premium Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #3b82f6;
-            --primary-hover: #2563eb;
-            --background: #ffffff;
-            --text: #1f2937;
-            --text-muted: #4b5563;
-            --card-bg: #f9fafb;
-            --border: #e5e7eb;
+            --primary: #6366f1; /* Indigo */
+            --primary-hover: #4f46e5;
+            --accent: #06b6d4; /* Cyan */
+            --background: #f8fafc; /* Slate 50 */
+            --text: #0f172a; /* Slate 900 */
+            --text-muted: #475569; /* Slate 600 */
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --card-border: rgba(99, 102, 241, 0.12);
+            --border: #e2e8f0; /* Slate 200 */
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             --max-width: 800px;
         }
 
         @media (prefers-color-scheme: dark) {
             :root {
-                --background: #111827;
-                --text: #f3f4f6;
-                --text-muted: #9ca3af;
-                --card-bg: #1f2937;
-                --border: #374151;
+                --background: #0b0f19; /* Custom deep slate black */
+                --text: #f1f5f9; /* Slate 100 */
+                --text-muted: #94a3b8; /* Slate 400 */
+                --card-bg: rgba(22, 30, 46, 0.75);
+                --card-border: rgba(129, 140, 248, 0.15);
+                --border: #1e293b; /* Slate 800 */
+                --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+                --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.15);
             }
         }
 
+        * {
+            box-sizing: border-box;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            line-height: 1.6;
+            font-family: var(--font-sans);
+            line-height: 1.625;
             color: var(--text);
             background-color: var(--background);
             margin: 0;
-            padding: 40px 20px;
+            padding: 60px 24px;
             display: flex;
             justify-content: center;
         }
@@ -40,82 +57,194 @@
         .container {
             width: 100%;
             max-width: var(--max-width);
+            animation: fadeIn 0.8s ease-out;
         }
 
         header {
-            margin-bottom: 40px;
-            border-bottom: 2px solid var(--border);
-            padding-bottom: 20px;
+            margin-bottom: 50px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 24px;
+            text-align: left;
         }
 
         h1 {
-            font-size: 2.25rem;
+            font-size: 2.5rem;
+            font-weight: 700;
             margin-top: 0;
-            margin-bottom: 10px;
-            color: var(--primary);
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.025em;
         }
 
         h2 {
             font-size: 1.5rem;
-            margin-top: 30px;
-            margin-bottom: 15px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 8px;
+            font-weight: 600;
+            margin-top: 40px;
+            margin-bottom: 16px;
+            color: var(--primary);
+            letter-spacing: -0.015em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         h3 {
             font-size: 1.15rem;
-            margin-top: 20px;
-            margin-bottom: 10px;
+            font-weight: 600;
+            margin-top: 24px;
+            margin-bottom: 12px;
+            color: var(--text);
         }
 
         p {
             margin-top: 0;
-            margin-bottom: 15px;
+            margin-bottom: 16px;
             color: var(--text-muted);
         }
 
         ul, ol {
             margin-top: 0;
-            margin-bottom: 20px;
-            padding-left: 20px;
+            margin-bottom: 24px;
+            padding-left: 24px;
             color: var(--text-muted);
         }
 
         li {
-            margin-bottom: 8px;
+            margin-bottom: 10px;
+        }
+
+        li strong {
+            color: var(--text);
         }
 
         .card {
             background-color: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 25px;
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: var(--primary);
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .last-updated {
-            font-size: 0.875rem;
+            font-size: 0.9rem;
             color: var(--text-muted);
-            font-style: italic;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .last-updated::before {
+            content: "";
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--accent);
         }
 
         a {
             color: var(--primary);
             text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            transition: color 0.2s ease;
         }
 
         a:hover {
-            text-decoration: underline;
             color: var(--primary-hover);
         }
 
+        a::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            transform: scaleX(0);
+            height: 1.5px;
+            bottom: -1px;
+            left: 0;
+            background-color: var(--primary-hover);
+            transform-origin: bottom right;
+            transition: transform 0.25s ease-out;
+        }
+
+        a:hover::after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+
         .contact-info {
-            background-color: rgba(59, 130, 246, 0.1);
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(6, 182, 212, 0.08) 100%);
             border-left: 4px solid var(--primary);
-            padding: 15px;
-            border-radius: 0 8px 8px 0;
-            margin-top: 30px;
+            padding: 24px;
+            border-radius: 0 16px 16px 0;
+            margin-top: 40px;
+            box-shadow: var(--shadow);
+        }
+
+        .contact-info h2 {
+            margin-top: 0;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .badge {
+            background-color: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 30px 16px;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            h2 {
+                font-size: 1.3rem;
+            }
+            .card {
+                padding: 16px;
+            }
         }
     </style>
 </head>
@@ -123,7 +252,7 @@
     <div class="container">
         <header>
             <h1>Terms of Service</h1>
-            <p class="last-updated">Last Updated: June 2026</p>
+            <div class="last-updated">Last Updated: June 2026</div>
         </header>
 
         <section>
@@ -138,7 +267,7 @@
 
         <section>
             <h2>2. User Accounts</h2>
-            <p>When you create an account within the Application, you represent and warrant that the information you provide is accurate, complete, and current at all times. Inaccurate or obsolete information may result in the immediate termination of your account.</p>
+            <p>When you create an account within the Application, you represent and warrant that the information you provide is accurate, complete, and current at all times. Inaccurate, incomplete, or obsolete information may result in the immediate termination or suspension of your account.</p>
             <p>You are responsible for maintaining the confidentiality of your account credentials, including your password. You agree to accept responsibility for any activities or actions that occur under your account.</p>
             <p>You must notify us immediately upon becoming aware of any breach of security or unauthorized use of your account.</p>
         </section>
@@ -162,8 +291,19 @@
         </section>
 
         <section>
-            <h2>5. Application Services and Purchases</h2>
-            <p>The Application may offer digital services or voluntary contribution options (such as "Buy Me a Coffee"). All payments and microtransactions are processed and managed securely through Google Play Billing. By completing any in-app purchase, you agree to comply with Google Play's standard Terms of Service and refund policies.</p>
+            <h2>5. Application Services, Purchases, and Support</h2>
+            <p>The Application offers voluntary contribution options (specifically, "Buy Me a Coffee" tiers) to support the development of this free application. By participating in any in-app purchase, you acknowledge and agree to the following terms:</p>
+            
+            <div class="card">
+                <span class="badge">In-App Purchases</span>
+                <h3>Google Play Billing & Refund Policy</h3>
+                <ul>
+                    <li><strong>Voluntary Donations:</strong> Contributions are made on a voluntary basis. These purchases do not unlock exclusive functional features of the App unless explicitly specified. They serve as support for the developer's work.</li>
+                    <li><strong>Payment Processor:</strong> All transactions are processed securely through the Google Play Billing Library. We do not collect, process, or store any credit card numbers or financial details on our servers.</li>
+                    <li><strong>Refunds:</strong> Since all payments are handled directly by Google Play, refund requests are governed entirely by the Google Play Store standard refund policies. If you wish to request a refund, you must do so through your Google Play account purchase history.</li>
+                    <li><strong>One-Time Payments:</strong> All available "Buy Me a Coffee" options are one-time payments and do not constitute recurring subscriptions.</li>
+                </ul>
+            </div>
         </section>
 
         <section>
@@ -185,7 +325,7 @@
         <section>
             <h2>8. Termination</h2>
             <p>We may terminate or suspend your account and bar access to the Service immediately, without prior notice or liability, under our sole discretion, for any reason whatsoever, including without limitation a breach of these Terms.</p>
-            <p>Upon termination, your right to use the Service will immediately cease. If you wish to terminate your account, you may simply delete your account using the in-app option or contact us for assistance.</p>
+            <p>Upon termination, your right to use the Service will immediately cease. If you wish to terminate your account, you may simply delete your account using the in-app "Delete Account" settings option or contact us for assistance.</p>
         </section>
 
         <section>
