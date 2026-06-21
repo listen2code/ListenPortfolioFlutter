@@ -41,7 +41,7 @@ final class SettingsViewModelProvider
   }
 }
 
-String _$settingsViewModelHash() => r'a0186e1946d5bae99ba84b2b20912380f4602ebb';
+String _$settingsViewModelHash() => r'a44cae532ac3645b85d11dbe2b4c81cbaa59fd67';
 
 abstract class _$SettingsViewModel extends $Notifier<SettingsState> {
   SettingsState build();

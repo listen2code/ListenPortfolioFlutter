@@ -5,7 +5,6 @@ import 'package:listen_core/core.dart';
 import 'package:listen_uikit/uikit.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
-import '../../../../generated/r.dart';
 import '../../../../shared/shared.dart';
 import 'settings_intent.dart';
 import 'settings_state.dart';
@@ -111,11 +110,6 @@ class SettingsPage extends ConsumerWidget {
                   title: I18nKeys.viewLogs.tr,
                   value: state.isLogOverlayShowing,
                   onChanged: (val) {
-                    if (val) {
-                      LogOverlayManager.show(context);
-                    } else {
-                      LogOverlayManager.hide();
-                    }
                     viewModel?.handleIntent(SettingsIntent.toggleLogOverlay(val));
                   },
                 ),
@@ -252,28 +246,13 @@ class SettingsPage extends ConsumerWidget {
                   context,
                   icon: Icons.star_outline_rounded,
                   title: I18nKeys.rateApp.tr,
-                  onTap: () => ReviewService().openStoreRating(),
+                  onTap: () => viewModel?.handleIntent(const SettingsIntent.rateApp()),
                 ),
                 _buildListTile(
                   context,
                   icon: Icons.info_outline_rounded,
                   title: I18nKeys.licenses.tr,
-                  onTap: () => showLicensePage(
-                    context: context,
-                    applicationName: AppConstants.appName,
-                    applicationVersion: AppConstants.appVersion,
-                    applicationIcon: Padding(
-                      padding: EdgeInsets.all(8.f),
-                      child: CommonImage.asset(
-                        R.imagesIcLauncherAdaptiveFore,
-                        width: 48.f,
-                        height: 48.f,
-                        color: context.accentColor,
-                        semanticLabel: I18nKeys.appLogoSemanticLabel.tr,
-                      ),
-                    ),
-                    applicationLegalese: '© ${AppConstants.date} ${AppConstants.author}',
-                  ),
+                  onTap: () => viewModel?.handleIntent(const SettingsIntent.showLicenses()),
                 ),
                 _VersionTile(
                   onTrigger: () => viewModel?.handleIntent(const SettingsIntent.enableDeveloperMode()),

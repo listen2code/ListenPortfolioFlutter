@@ -55,14 +55,15 @@ extension AppearanceIntentPatterns on AppearanceIntent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _SetThemeMode value)?  setThemeMode,TResult Function( _SetAccentColor value)?  setAccentColor,TResult Function( _SetFontSize value)?  setFontSize,TResult Function( _SetUseDynamicColor value)?  setUseDynamicColor,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _SetThemeMode value)?  setThemeMode,TResult Function( _SetAccentColor value)?  setAccentColor,TResult Function( _SetFontSize value)?  setFontSize,TResult Function( _SetUseDynamicColor value)?  setUseDynamicColor,TResult Function( _ShowColorPicker value)?  showColorPicker,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _SetThemeMode() when setThemeMode != null:
 return setThemeMode(_that);case _SetAccentColor() when setAccentColor != null:
 return setAccentColor(_that);case _SetFontSize() when setFontSize != null:
 return setFontSize(_that);case _SetUseDynamicColor() when setUseDynamicColor != null:
-return setUseDynamicColor(_that);case _:
+return setUseDynamicColor(_that);case _ShowColorPicker() when showColorPicker != null:
+return showColorPicker(_that);case _:
   return orElse();
 
 }
@@ -80,14 +81,15 @@ return setUseDynamicColor(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _SetThemeMode value)  setThemeMode,required TResult Function( _SetAccentColor value)  setAccentColor,required TResult Function( _SetFontSize value)  setFontSize,required TResult Function( _SetUseDynamicColor value)  setUseDynamicColor,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _SetThemeMode value)  setThemeMode,required TResult Function( _SetAccentColor value)  setAccentColor,required TResult Function( _SetFontSize value)  setFontSize,required TResult Function( _SetUseDynamicColor value)  setUseDynamicColor,required TResult Function( _ShowColorPicker value)  showColorPicker,}){
 final _that = this;
 switch (_that) {
 case _SetThemeMode():
 return setThemeMode(_that);case _SetAccentColor():
 return setAccentColor(_that);case _SetFontSize():
 return setFontSize(_that);case _SetUseDynamicColor():
-return setUseDynamicColor(_that);case _:
+return setUseDynamicColor(_that);case _ShowColorPicker():
+return showColorPicker(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -104,14 +106,15 @@ return setUseDynamicColor(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _SetThemeMode value)?  setThemeMode,TResult? Function( _SetAccentColor value)?  setAccentColor,TResult? Function( _SetFontSize value)?  setFontSize,TResult? Function( _SetUseDynamicColor value)?  setUseDynamicColor,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _SetThemeMode value)?  setThemeMode,TResult? Function( _SetAccentColor value)?  setAccentColor,TResult? Function( _SetFontSize value)?  setFontSize,TResult? Function( _SetUseDynamicColor value)?  setUseDynamicColor,TResult? Function( _ShowColorPicker value)?  showColorPicker,}){
 final _that = this;
 switch (_that) {
 case _SetThemeMode() when setThemeMode != null:
 return setThemeMode(_that);case _SetAccentColor() when setAccentColor != null:
 return setAccentColor(_that);case _SetFontSize() when setFontSize != null:
 return setFontSize(_that);case _SetUseDynamicColor() when setUseDynamicColor != null:
-return setUseDynamicColor(_that);case _:
+return setUseDynamicColor(_that);case _ShowColorPicker() when showColorPicker != null:
+return showColorPicker(_that);case _:
   return null;
 
 }
@@ -128,13 +131,14 @@ return setUseDynamicColor(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( ThemeMode mode)?  setThemeMode,TResult Function( Color color)?  setAccentColor,TResult Function( AppFontSize size)?  setFontSize,TResult Function( bool use)?  setUseDynamicColor,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( ThemeMode mode)?  setThemeMode,TResult Function( Color color)?  setAccentColor,TResult Function( AppFontSize size)?  setFontSize,TResult Function( bool use)?  setUseDynamicColor,TResult Function( Color initialColor)?  showColorPicker,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SetThemeMode() when setThemeMode != null:
 return setThemeMode(_that.mode);case _SetAccentColor() when setAccentColor != null:
 return setAccentColor(_that.color);case _SetFontSize() when setFontSize != null:
 return setFontSize(_that.size);case _SetUseDynamicColor() when setUseDynamicColor != null:
-return setUseDynamicColor(_that.use);case _:
+return setUseDynamicColor(_that.use);case _ShowColorPicker() when showColorPicker != null:
+return showColorPicker(_that.initialColor);case _:
   return orElse();
 
 }
@@ -152,13 +156,14 @@ return setUseDynamicColor(_that.use);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( ThemeMode mode)  setThemeMode,required TResult Function( Color color)  setAccentColor,required TResult Function( AppFontSize size)  setFontSize,required TResult Function( bool use)  setUseDynamicColor,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( ThemeMode mode)  setThemeMode,required TResult Function( Color color)  setAccentColor,required TResult Function( AppFontSize size)  setFontSize,required TResult Function( bool use)  setUseDynamicColor,required TResult Function( Color initialColor)  showColorPicker,}) {final _that = this;
 switch (_that) {
 case _SetThemeMode():
 return setThemeMode(_that.mode);case _SetAccentColor():
 return setAccentColor(_that.color);case _SetFontSize():
 return setFontSize(_that.size);case _SetUseDynamicColor():
-return setUseDynamicColor(_that.use);case _:
+return setUseDynamicColor(_that.use);case _ShowColorPicker():
+return showColorPicker(_that.initialColor);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -175,13 +180,14 @@ return setUseDynamicColor(_that.use);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( ThemeMode mode)?  setThemeMode,TResult? Function( Color color)?  setAccentColor,TResult? Function( AppFontSize size)?  setFontSize,TResult? Function( bool use)?  setUseDynamicColor,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( ThemeMode mode)?  setThemeMode,TResult? Function( Color color)?  setAccentColor,TResult? Function( AppFontSize size)?  setFontSize,TResult? Function( bool use)?  setUseDynamicColor,TResult? Function( Color initialColor)?  showColorPicker,}) {final _that = this;
 switch (_that) {
 case _SetThemeMode() when setThemeMode != null:
 return setThemeMode(_that.mode);case _SetAccentColor() when setAccentColor != null:
 return setAccentColor(_that.color);case _SetFontSize() when setFontSize != null:
 return setFontSize(_that.size);case _SetUseDynamicColor() when setUseDynamicColor != null:
-return setUseDynamicColor(_that.use);case _:
+return setUseDynamicColor(_that.use);case _ShowColorPicker() when showColorPicker != null:
+return showColorPicker(_that.initialColor);case _:
   return null;
 
 }
@@ -447,6 +453,72 @@ class __$SetUseDynamicColorCopyWithImpl<$Res>
   return _then(_SetUseDynamicColor(
 null == use ? _self.use : use // ignore: cast_nullable_to_non_nullable
 as bool,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _ShowColorPicker extends AppearanceIntent {
+  const _ShowColorPicker(this.initialColor): super._();
+  
+
+ final  Color initialColor;
+
+/// Create a copy of AppearanceIntent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ShowColorPickerCopyWith<_ShowColorPicker> get copyWith => __$ShowColorPickerCopyWithImpl<_ShowColorPicker>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ShowColorPicker&&(identical(other.initialColor, initialColor) || other.initialColor == initialColor));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,initialColor);
+
+@override
+String toString() {
+  return 'AppearanceIntent.showColorPicker(initialColor: $initialColor)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ShowColorPickerCopyWith<$Res> implements $AppearanceIntentCopyWith<$Res> {
+  factory _$ShowColorPickerCopyWith(_ShowColorPicker value, $Res Function(_ShowColorPicker) _then) = __$ShowColorPickerCopyWithImpl;
+@useResult
+$Res call({
+ Color initialColor
+});
+
+
+
+
+}
+/// @nodoc
+class __$ShowColorPickerCopyWithImpl<$Res>
+    implements _$ShowColorPickerCopyWith<$Res> {
+  __$ShowColorPickerCopyWithImpl(this._self, this._then);
+
+  final _ShowColorPicker _self;
+  final $Res Function(_ShowColorPicker) _then;
+
+/// Create a copy of AppearanceIntent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? initialColor = null,}) {
+  return _then(_ShowColorPicker(
+null == initialColor ? _self.initialColor : initialColor // ignore: cast_nullable_to_non_nullable
+as Color,
   ));
 }
 

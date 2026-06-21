@@ -241,7 +241,7 @@ class AppearancePage extends ConsumerWidget {
         ripple: false,
         selected: isSelected,
         semanticLabel: I18nKeys.customColorOption.tr,
-        onTap: () => _showColorPickerDialog(context, viewModel, currentAccentColor),
+        onTap: () => viewModel?.handleIntent(AppearanceIntent.showColorPicker(currentAccentColor)),
         child: Container(
           width: 48,
           height: 48,
@@ -264,76 +264,6 @@ class AppearancePage extends ConsumerWidget {
               : const Icon(Icons.colorize_outlined, color: Colors.grey),
         ),
       ),
-    );
-  }
-
-  void _showColorPickerDialog(BuildContext context, AppearanceViewModel? viewModel, Color initialColor) {
-    Color selectedColor = initialColor;
-
-    CommonDialog.showCustom<void>(
-      title: I18nKeys.selectColor.tr,
-      body: StatefulBuilder(
-        builder: (context, setDialogState) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 100,
-                height: 100,
-                decoration: BoxDecoration(
-                  color: selectedColor,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
-                ),
-              ),
-              const SizedBox(height: 20),
-              _buildRGBBSlider('R', (selectedColor.r * 255.0).round().clamp(0, 255), (val) {
-                setDialogState(() => selectedColor = selectedColor.withRed(val.toInt()));
-              }),
-              _buildRGBBSlider('G', (selectedColor.g * 255.0).round().clamp(0, 255), (val) {
-                setDialogState(() => selectedColor = selectedColor.withGreen(val.toInt()));
-              }),
-              _buildRGBBSlider('B', (selectedColor.b * 255.0).round().clamp(0, 255), (val) {
-                setDialogState(() => selectedColor = selectedColor.withBlue(val.toInt()));
-              }),
-            ],
-          );
-        },
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => AppNav.back<void>(),
-          child: Text(I18nKeys.cancel.tr, style: const TextStyle(color: Colors.grey)),
-        ),
-        TextButton(
-          onPressed: () {
-            viewModel?.handleIntent(AppearanceIntent.setAccentColor(selectedColor));
-            AppNav.back<void>();
-          },
-          child: Text(I18nKeys.ok.tr, style: const TextStyle(fontWeight: FontWeight.bold)),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildRGBBSlider(String label, int value, ValueChanged<double> onChanged) {
-    return Row(
-      children: [
-        SizedBox(
-          width: 20,
-          child: Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
-        ),
-        Expanded(
-          child: Slider(
-            value: value.toDouble(),
-            min: 0,
-            max: 255,
-            activeColor: label == 'R' ? Colors.red : (label == 'G' ? Colors.green : Colors.blue),
-            onChanged: onChanged,
-          ),
-        ),
-        SizedBox(width: 30, child: Text(value.toString())),
-      ],
     );
   }
 }

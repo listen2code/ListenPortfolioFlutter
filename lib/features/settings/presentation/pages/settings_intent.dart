@@ -19,5 +19,7 @@ class SettingsIntent extends BaseIntent with _$SettingsIntent {
   const factory SettingsIntent.showLanguageDialog() = _ShowLanguageDialog;
   const factory SettingsIntent.shareApp() = _ShareApp;
   const factory SettingsIntent.enableDeveloperMode() = _EnableDeveloperMode;
+  const factory SettingsIntent.rateApp() = _RateApp;
+  const factory SettingsIntent.showLicenses() = _ShowLicenses;
   const SettingsIntent._();
 }

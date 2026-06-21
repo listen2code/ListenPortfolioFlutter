@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:listen_core/core.dart';
-import 'package:listen_uikit/uikit.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -60,6 +59,8 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
       showLanguageDialog: _onShowLanguageDialog,
       shareApp: _onShareApp,
       enableDeveloperMode: _onEnableDeveloperMode,
+      rateApp: _onRateApp,
+      showLicenses: _onShowLicenses,
     );
   }
 
@@ -127,7 +128,6 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
   }
 
   Future<void> _onClearCache() async {
-    // todo effect
     emitEffect(LoadingEffect(true));
     await CacheManager.clearAllCache();
     await _updateCacheSize();
@@ -171,6 +171,7 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
 
   void _onToggleLogOverlay(bool enabled) {
     updateState(state.copyWith(isLogOverlayShowing: enabled));
+    emitEffect(LogOverlayEffect(enabled));
   }
 
   Future<void> _onCheckUpdates() async {
@@ -212,7 +213,7 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
         ),
       );
     } else {
-      await CommonDialog.showMessage(title: I18nKeys.checkUpdates.tr, message: I18nKeys.latestVersion.tr);
+      emitEffect(MessageEffect.dialog(I18nKeys.latestVersion.tr, title: I18nKeys.checkUpdates.tr));
     }
   }
 
@@ -311,5 +312,13 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
     updateState(state.copyWith(isDeveloperMode: true));
     await SpUtil.put('developer_mode', true);
     emitEffect(MessageEffect.info('开发者模式已开启'));
+  }
+
+  void _onRateApp() {
+    emitEffect(RateAppEffect());
+  }
+
+  void _onShowLicenses() {
+    emitEffect(ShowLicensesEffect());
   }
 }

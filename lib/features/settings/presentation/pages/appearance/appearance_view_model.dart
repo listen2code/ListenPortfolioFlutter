@@ -30,6 +30,7 @@ class AppearanceViewModel extends _$AppearanceViewModel
       setAccentColor: _onSetAccentColor,
       setFontSize: _onSetFontSize,
       setUseDynamicColor: _onSetUseDynamicColor,
+      showColorPicker: _onShowColorPicker,
     );
   }
 
@@ -51,5 +52,16 @@ class AppearanceViewModel extends _$AppearanceViewModel
   Future<void> _onSetUseDynamicColor(bool use) async {
     updateState(state.copyWith(useDynamicColor: use));
     await settingManager.setUseDynamicColor(use);
+  }
+
+  void _onShowColorPicker(Color initialColor) {
+    emitEffect(
+      ColorPickerEffect(
+        initialColor: initialColor,
+        onColorSelected: (color) {
+          handleIntent(AppearanceIntent.setAccentColor(color));
+        },
+      ),
+    );
   }
 }

@@ -11,5 +11,6 @@ class AppearanceIntent extends BaseIntent with _$AppearanceIntent {
   const factory AppearanceIntent.setAccentColor(Color color) = _SetAccentColor;
   const factory AppearanceIntent.setFontSize(AppFontSize size) = _SetFontSize;
   const factory AppearanceIntent.setUseDynamicColor(bool use) = _SetUseDynamicColor;
+  const factory AppearanceIntent.showColorPicker(Color initialColor) = _ShowColorPicker;
   const AppearanceIntent._();
 }

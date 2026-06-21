@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 import 'package:listen_core/core.dart';
-import 'package:listen_uikit/uikit.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../shared/shared.dart';
@@ -78,25 +77,28 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
     emitEffect(LoadingEffect(false));
   }
 
-  Future<void> _onLogout() async {
-    // 1. First, show the confirmation dialog.
+  void _onLogout() {
+    // 1. First, show the confirmation dialog via ConfirmEffect.
     // At this point, the user is still logged in, so the UI won't flash or redirect.
-    final confirmed = await CommonDialog.showConfirm(
-      title: I18nKeys.logout.tr,
-      message: I18nKeys.logoutTips.tr,
-    );
-
-    if (confirmed == true) {
-      await call<void>(
-        ref.execute<void, BaseParam>(logoutUseCaseProvider),
-        showLoading: true,
-        onSuccess: (_) async {
-          if (state.currentTab == HomeTab.aboutMe) {
-            updateState(state.copyWith(currentTab: HomeTab.overview));
+    emitEffect(
+      ConfirmEffect(
+        title: I18nKeys.logout.tr,
+        message: I18nKeys.logoutTips.tr,
+        onResult: (confirmed) async {
+          if (confirmed) {
+            await call<void>(
+              ref.execute<void, BaseParam>(logoutUseCaseProvider),
+              showLoading: true,
+              onSuccess: (_) async {
+                if (state.currentTab == HomeTab.aboutMe) {
+                  updateState(state.copyWith(currentTab: HomeTab.overview));
+                }
+                emitEffect(LogoutEffect(to: Routes.login, message: I18nKeys.logoutSuccess.tr));
+              },
+            );
           }
-          emitEffect(LogoutEffect(to: Routes.login, message: I18nKeys.logoutSuccess.tr));
         },
-      );
-    }
+      ),
+    );
   }
 }
