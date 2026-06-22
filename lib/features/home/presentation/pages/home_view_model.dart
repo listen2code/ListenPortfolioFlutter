@@ -18,7 +18,7 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
     // Subscribe to logout event to reset to overview tab
     subscribeEvent<CommonEvent<dynamic>>((event) {
       if (state.currentTab != HomeTab.overview) {
-        updateState(state.copyWith(currentTab: HomeTab.overview));
+        handleIntent(const HomeIntent.tabChanged(HomeTab.overview));
       }
     }, key: AppConstants.resetOverview);
 
@@ -28,7 +28,7 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
         if (event.key == AppConstants.tabChangedEvent) {
           final targetTab = event.data;
           if (targetTab != null && state.currentTab != targetTab) {
-            updateState(state.copyWith(currentTab: targetTab));
+            handleIntent(HomeIntent.tabChanged(targetTab));
           }
         }
       },
@@ -44,7 +44,7 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
           if (targetRoute != null && targetRoute.isNotEmpty) {
             // Navigate to target route safely on the next frame to avoid build collision
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              AppNav.to(targetRoute, arguments: {Routes.argCheckUpdate: true});
+              emitEffect(NavigationEffect(target: targetRoute, arguments: {Routes.argCheckUpdate: true}));
             });
           }
         }
@@ -64,10 +64,15 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
   @override
   FutureOr<void> onIntent(HomeIntent intent) {
     return intent.when<FutureOr<void>>(
-      tabChanged: (tab) => updateState(state.copyWith(currentTab: tab)),
+      tabChanged: (tab) => _onTabChanged,
       refresh: _onRefresh,
       logout: _onLogout,
     );
+  }
+
+  Future<void> _onTabChanged(HomeTab tab) async {
+    updateState(state.copyWith(currentTab: tab));
+    emitEffect(NavigationEffect.back());
   }
 
   Future<void> _onRefresh() async {
@@ -78,6 +83,10 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
   }
 
   void _onLogout() {
+    if (authManager.state.isGuest) {
+      emitEffect(NavigationEffect(target: Routes.login));
+      return;
+    }
     // 1. First, show the confirmation dialog via ConfirmEffect.
     // At this point, the user is still logged in, so the UI won't flash or redirect.
     emitEffect(
@@ -91,7 +100,7 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
               showLoading: true,
               onSuccess: (_) async {
                 if (state.currentTab == HomeTab.aboutMe) {
-                  updateState(state.copyWith(currentTab: HomeTab.overview));
+                  handleIntent(const HomeIntent.tabChanged(HomeTab.overview));
                 }
                 emitEffect(LogoutEffect(to: Routes.login, message: I18nKeys.logoutSuccess.tr));
               },

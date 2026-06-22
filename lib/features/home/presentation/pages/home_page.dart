@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_core/core.dart';
-import 'about_me/about_me_widget.dart';
+import 'package:listen_uikit/uikit.dart';
+
+import '../../../../shared/shared.dart';
 import 'about_me/about_me_intent.dart';
 import 'about_me/about_me_view_model.dart';
+import 'about_me/about_me_widget.dart';
 import 'architecture/architecture_widget.dart';
 import 'home_intent.dart';
 import 'home_state.dart';
 import 'home_view_model.dart';
 import 'overview/overview_widget.dart';
 import 'projects/projects_widget.dart';
-import '../../../../shared/shared.dart';
-import 'package:listen_uikit/uikit.dart';
 
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
@@ -34,9 +35,9 @@ class HomePage extends ConsumerWidget {
                     icon: const Icon(Icons.share_outlined),
                     tooltip: I18nKeys.shareApp.tr,
                     onPressed: () {
-                      ref.read(aboutMeViewModelProvider.notifier).handleIntent(
-                            const AboutMeIntent.shareApp(),
-                          );
+                      ref
+                          .read(aboutMeViewModelProvider.notifier)
+                          .handleIntent(const AboutMeIntent.shareApp());
                     },
                   );
                 },
@@ -86,10 +87,7 @@ class HomePage extends ConsumerWidget {
                     icon: Icons.dashboard_customize_outlined,
                     label: I18nKeys.overview.tr,
                     isSelected: state.currentTab == HomeTab.overview,
-                    onTap: () {
-                      viewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.overview));
-                      AppNav.back();
-                    },
+                    onTap: () => viewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.overview)),
                   ),
                   _buildDrawerItem(
                     context,
@@ -97,34 +95,23 @@ class HomePage extends ConsumerWidget {
                     label: I18nKeys.aboutMe.tr,
                     blurLevel: AuthBlurLevel.low,
                     isSelected: state.currentTab == HomeTab.aboutMe,
-                    onTap: () {
-                      AppNav.tryLogin(
-                        onSuccess: () {
-                          viewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.aboutMe));
-                          AppNav.back();
-                        },
-                      );
-                    },
+                    onTap: () => AppNav.tryLogin(
+                      onSuccess: () => viewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.aboutMe)),
+                    ),
                   ),
                   _buildDrawerItem(
                     context,
                     icon: Icons.rocket_launch_outlined,
                     label: I18nKeys.featuredProjects.tr,
                     isSelected: state.currentTab == HomeTab.projects,
-                    onTap: () {
-                      viewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.projects));
-                      AppNav.back();
-                    },
+                    onTap: () => viewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.projects)),
                   ),
                   _buildDrawerItem(
                     context,
                     icon: Icons.account_tree_outlined,
                     label: I18nKeys.architecture.tr,
                     isSelected: state.currentTab == HomeTab.architecture,
-                    onTap: () {
-                      viewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.architecture));
-                      AppNav.back();
-                    },
+                    onTap: () => viewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.architecture)),
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 10.f, horizontal: 10.f),
@@ -288,13 +275,7 @@ class HomePage extends ConsumerWidget {
             ),
             maxLines: 1,
           ),
-          onTap: () {
-            if (isGuest) {
-              AppNav.to(Routes.login);
-            } else {
-              viewModel.handleIntent(const HomeIntent.logout());
-            }
-          },
+          onTap: () => viewModel.handleIntent(const HomeIntent.logout()),
         ),
       ),
     );
