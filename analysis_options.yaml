@@ -33,6 +33,16 @@ custom_lint:
   rules:
     - use_common_image
     - use_common_clickable
+    - use_common_text
+    - use_common_button
+    - use_common_dialog
+    - use_common_switch
+    - use_common_text_field
+    - view_model_context_isolation
+    - cross_feature_relative_import
+    - no_hardcoded_strings
+    - no_raw_color
+    - no_direct_state_assignment
 
 linter:
   # The lint rules applied to this project can be customized in the

@@ -40,7 +40,7 @@ class SettingsPage extends ConsumerWidget {
                   context,
                   icon: Icons.language_outlined,
                   title: I18nKeys.language.tr,
-                  trailing: Text(
+                  trailing: CommonText(
                     state.currentLanguage.label,
                     style: context.textTheme.bodySmall?.copyWith(color: Colors.grey),
                   ),
@@ -85,7 +85,7 @@ class SettingsPage extends ConsumerWidget {
                   context,
                   icon: Icons.cleaning_services_outlined,
                   title: I18nKeys.clearCache.tr,
-                  trailing: Text(
+                  trailing: CommonText(
                     state.cacheSize,
                     style: context.textTheme.bodySmall?.copyWith(color: Colors.grey),
                   ),
@@ -273,7 +273,7 @@ class SettingsPage extends ConsumerWidget {
   Widget _buildSectionTitle(BuildContext context, String title) {
     return Padding(
       padding: EdgeInsets.only(left: 10.f, bottom: 8.f, top: 5.f),
-      child: Text(
+      child: CommonText(
         title.toUpperCase(),
         style: context.textTheme.labelSmall?.copyWith(
           fontWeight: FontWeight.bold,
@@ -345,7 +345,7 @@ class SettingsPage extends ConsumerWidget {
         onTap: onTap,
       ),
       subtitle: subtitle != null
-          ? Text(
+          ? CommonText(
               subtitle,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -407,7 +407,7 @@ class _VersionTileState extends State<_VersionTile> {
     return ListTile(
       dense: true,
       title: Center(
-        child: Text(
+        child: CommonText(
           '${I18nKeys.appVersion.tr} ${AppConstants.appVersion}',
           style: context.textTheme.labelSmall?.copyWith(color: Colors.grey),
         ),

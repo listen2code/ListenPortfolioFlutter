@@ -53,7 +53,7 @@ class CrashLogListPage extends ConsumerWidget {
               children: [
                 Icon(Icons.bug_report_outlined, size: 64.f, color: Colors.grey.withValues(alpha: 0.5)),
                 SizedBox(height: 16.f),
-                Text(I18nKeys.noCrashReports.tr, style: const TextStyle(color: Colors.grey)),
+                CommonText(I18nKeys.noCrashReports.tr, style: const TextStyle(color: Colors.grey)),
               ],
             ),
           );
@@ -100,7 +100,7 @@ class CrashLogListPage extends ConsumerWidget {
           ),
           child: const Icon(Icons.description_outlined, color: Colors.redAccent),
         ),
-        title: Text(
+        title: CommonText(
           name,
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
           maxLines: 1,
@@ -110,7 +110,7 @@ class CrashLogListPage extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 4.f),
-            Text(date, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+            CommonText(date, style: const TextStyle(fontSize: 12, color: Colors.grey)),
             SizedBox(height: 4.f),
             CommonClickable(
               ripple: false,
@@ -119,7 +119,7 @@ class CrashLogListPage extends ConsumerWidget {
                 CommonToast.show(I18nKeys.copiedToClipboard.tr);
               },
               semanticLabel: I18nKeys.copiedToClipboard.tr,
-              child: Text(
+              child: CommonText(
                 file.path,
                 style: TextStyle(
                   fontSize: 10,
@@ -150,7 +150,7 @@ class CrashLogListPage extends ConsumerWidget {
                 children: [
                   const Icon(Icons.share_outlined, size: 20, color: Colors.blueAccent),
                   SizedBox(width: 12.f),
-                  Text(I18nKeys.share.tr),
+                  CommonText(I18nKeys.share.tr),
                 ],
               ),
             ),
@@ -160,7 +160,7 @@ class CrashLogListPage extends ConsumerWidget {
                 children: [
                   const Icon(Icons.delete_outline_rounded, size: 20, color: Colors.redAccent),
                   SizedBox(width: 12.f),
-                  Text(I18nKeys.delete.tr),
+                  CommonText(I18nKeys.delete.tr),
                 ],
               ),
             ),
@@ -212,7 +212,7 @@ class _LogDetailsSheet extends StatelessWidget {
             child: Row(
               children: [
                 Expanded(
-                  child: Text(
+                  child: CommonText(
                     fileName,
                     style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     overflow: TextOverflow.ellipsis,

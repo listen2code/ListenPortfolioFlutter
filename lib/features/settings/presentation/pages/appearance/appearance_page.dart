@@ -61,8 +61,8 @@ class AppearancePage extends ConsumerWidget {
                     onChanged: (value) {
                       viewModel?.handleIntent(AppearanceIntent.setUseDynamicColor(value));
                     },
-                    title: Text(I18nKeys.dynamicColor.tr),
-                    subtitle: Text(I18nKeys.dynamicColorSubtitle.tr),
+                    title: CommonText(I18nKeys.dynamicColor.tr),
+                    subtitle: CommonText(I18nKeys.dynamicColorSubtitle.tr),
                     secondary: SizedBox(
                       width: 20,
                       child: Icon(
@@ -119,7 +119,7 @@ class AppearancePage extends ConsumerWidget {
   Widget _buildSectionTitle(String title) {
     return Padding(
       padding: const EdgeInsets.only(left: 10, bottom: 8),
-      child: Text(
+      child: CommonText(
         title.toUpperCase(),
         style: const TextStyle(
           fontSize: 13,
@@ -173,7 +173,7 @@ class AppearancePage extends ConsumerWidget {
     final accentColor = context.accentColor;
     return ListTile(
       leading: SizedBox(width: 20, child: Icon(icon, color: isSelected ? accentColor : Colors.grey)),
-      title: Text(label),
+      title: CommonText(label),
       trailing: isSelected ? Icon(Icons.check_circle, color: accentColor) : null,
       onTap: () => viewModel?.handleIntent(AppearanceIntent.setThemeMode(mode)),
     );
@@ -197,7 +197,7 @@ class AppearancePage extends ConsumerWidget {
           color: isSelected ? accentColor : Colors.grey,
         ),
       ),
-      title: Text(label),
+      title: CommonText(label),
       trailing: isSelected ? Icon(Icons.check_circle, color: accentColor) : null,
       onTap: () => viewModel?.handleIntent(AppearanceIntent.setFontSize(fontSize)),
     );

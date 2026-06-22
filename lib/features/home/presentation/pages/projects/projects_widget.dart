@@ -231,7 +231,7 @@ class ProjectsWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(6.f),
         border: Border.all(color: color.withValues(alpha: 0.1)),
       ),
-      child: Text(
+      child: CommonText(
         label,
         style: TextStyle(color: color, fontSize: 10.f, fontWeight: FontWeight.w500),
       ),

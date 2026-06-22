@@ -57,16 +57,23 @@ class ColorPickerProviderImpl extends BaseProvider<ColorPickerEffect> {
         },
       ),
       actions: [
-        TextButton(
+        CommonButton(
+          text: I18nKeys.cancel.tr,
           onPressed: () => AppNav.back<void>(),
-          child: Text(I18nKeys.cancel.tr, style: const TextStyle(color: Colors.grey)),
+          type: ButtonType.text,
+          foregroundColor: Colors.grey,
+          isFullWidth: false,
+          height: 36,
         ),
-        TextButton(
+        CommonButton(
+          text: I18nKeys.ok.tr,
           onPressed: () {
             effect.onColorSelected(selectedColor);
             AppNav.back<void>();
           },
-          child: Text(I18nKeys.ok.tr, style: const TextStyle(fontWeight: FontWeight.bold)),
+          type: ButtonType.text,
+          isFullWidth: false,
+          height: 36,
         ),
       ],
     );
@@ -77,7 +84,7 @@ class ColorPickerProviderImpl extends BaseProvider<ColorPickerEffect> {
       children: [
         SizedBox(
           width: 20,
-          child: Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+          child: CommonText(label, style: const TextStyle(fontWeight: FontWeight.bold)),
         ),
         Expanded(
           child: Slider(
@@ -88,7 +95,7 @@ class ColorPickerProviderImpl extends BaseProvider<ColorPickerEffect> {
             onChanged: onChanged,
           ),
         ),
-        SizedBox(width: 30, child: Text(value.toString())),
+        SizedBox(width: 30, child: CommonText(value.toString())),
       ],
     );
   }

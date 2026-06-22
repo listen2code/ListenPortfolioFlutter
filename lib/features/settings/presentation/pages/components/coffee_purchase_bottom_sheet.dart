@@ -144,7 +144,7 @@ class _CoffeePurchaseBottomSheetState extends State<CoffeePurchaseBottomSheet> w
       return Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 40),
-          child: Text(
+          child: CommonText(
             I18nKeys.iapNotAvailable.tr,
             style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey),
           ),
@@ -175,11 +175,11 @@ class _CoffeePurchaseBottomSheetState extends State<CoffeePurchaseBottomSheet> w
           decoration: BoxDecoration(color: accentColor.withValues(alpha: 0.08), shape: BoxShape.circle),
           child: Icon(icon, color: accentColor, size: 24.f),
         ),
-        title: Text(
+        title: CommonText(
           _cleanTitle(product.title),
           style: context.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
         ),
-        subtitle: Text(
+        subtitle: CommonText(
           product.description,
           style: context.textTheme.labelSmall?.copyWith(color: Colors.grey),
         ),
@@ -217,7 +217,7 @@ class _CoffeePurchaseBottomSheetState extends State<CoffeePurchaseBottomSheet> w
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                CommonText(
                   I18nKeys.selectAmount.tr,
                   style: context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                 ),

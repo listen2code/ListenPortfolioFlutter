@@ -199,7 +199,10 @@ class AboutMeWidget extends StatelessWidget {
             children: [
               Icon(Icons.location_on_outlined, size: 14.f, color: Colors.grey),
               SizedBox(width: 4.f),
-              CommonText(I18nKeys.locationJapanTokyo.tr, style: context.textTheme.bodySmall?.copyWith(color: Colors.grey)),
+              CommonText(
+                I18nKeys.locationJapanTokyo.tr,
+                style: context.textTheme.bodySmall?.copyWith(color: Colors.grey),
+              ),
             ],
           ),
         ],

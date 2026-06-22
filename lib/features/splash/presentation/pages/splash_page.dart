@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_core/core.dart';
+import 'package:listen_uikit/uikit.dart';
 import '../../../../generated/r.dart';
 import '../../../../shared/shared.dart';
 
@@ -37,17 +38,16 @@ class SplashPage extends ConsumerWidget {
                 children: [
                   Hero(
                     tag: 'logo',
-                    child: Image.asset(
+                    child: CommonImage.asset(
                       R.imagesIcLauncherAdaptiveFore,
                       width: 120,
                       height: 120,
                       color: accentColor,
-                      colorBlendMode: BlendMode.srcIn,
                       semanticLabel: I18nKeys.appLogoSemanticLabel.tr,
                     ),
                   ),
                   const SizedBox(height: 24),
-                  Text(
+                  CommonText(
                     AppConstants.appName,
                     textAlign: TextAlign.center,
                     style: TextStyle(
