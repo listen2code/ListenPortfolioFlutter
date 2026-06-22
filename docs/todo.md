@@ -187,3 +187,4 @@
 - `if (!widget.useScaffold)` 等零散页面能力想法
 - IDE plugin：json 模型转换、asset 资源生成到 `R.dart`
 - NDK bundle / Pixel icon cache 等平台特定问题，后续按 issue 单独跟踪
+- AppNav.to改成effect
