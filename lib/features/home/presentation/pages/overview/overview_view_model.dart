@@ -28,7 +28,10 @@ class OverviewViewModel extends _$OverviewViewModel with ViewModelMixin<Overview
 
   @override
   FutureOr<void> onIntent(OverviewIntent intent) {
-    return intent.when<FutureOr<void>>(refresh: () => _onRefresh());
+    return intent.when<FutureOr<void>>(
+      refresh: () => _onRefresh(),
+      launchURL: (url) => emitEffect(LaunchUrlEffect(url)),
+    );
   }
 
   Future<void> _onRefresh() async {

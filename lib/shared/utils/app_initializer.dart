@@ -37,6 +37,7 @@ class AppInitializer {
           const LoadingProviderImpl(),
           const MessageProviderImpl(),
           const NavigationProviderImpl(),
+          const LaunchUrlProviderImpl(),
           const LogoutProviderImpl(),
           const ShareProviderImpl(),
           const CoffeePurchaseProviderImpl(),

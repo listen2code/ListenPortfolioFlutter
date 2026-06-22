@@ -5,7 +5,6 @@ import 'architecture_state.dart';
 import 'architecture_view_model.dart';
 import '../../../../../shared/shared.dart';
 import 'package:listen_uikit/uikit.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class ArchitectureWidget extends StatelessWidget {
   final bool active;
@@ -39,7 +38,7 @@ class ArchitectureWidget extends StatelessWidget {
                     useFittedBox: false,
                   ),
                 ),
-              ...state.sections.map((section) => _buildSectionCard(context, section)),
+              ...state.sections.map((section) => _buildSection(context, viewModel, section)),
               SizedBox(height: 30.f),
             ],
           ),
@@ -48,7 +47,7 @@ class ArchitectureWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildSectionCard(BuildContext context, ArchitectureSection section) {
+  Widget _buildSection(BuildContext context, ArchitectureViewModel? viewModel, ArchitectureSection section) {
     return Padding(
       padding: EdgeInsets.only(bottom: 25.f),
       child: _buildCard(
@@ -80,7 +79,7 @@ class ArchitectureWidget extends StatelessWidget {
                   isFullWidth: false,
                   padding: EdgeInsets.zero,
                   icon: Icons.link,
-                  onPressed: () => _launchURL(context, section.linkUrl!),
+                  onPressed: () => viewModel?.handleIntent(ArchitectureIntent.launchURL(section.linkUrl!)),
                 ),
               ),
           ],
@@ -204,14 +203,5 @@ class ArchitectureWidget extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  Future<void> _launchURL(BuildContext context, String urlString) async {
-    final Uri url = Uri.parse(urlString);
-    if (!await launchUrl(url)) {
-      if (context.mounted) {
-        CommonToast.show('${I18nKeys.noEmailApp.tr}: $urlString');
-      }
-    }
   }
 }

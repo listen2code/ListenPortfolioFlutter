@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:listen_core/core.dart';
 import 'package:listen_uikit/uikit.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../../shared/shared.dart';
 import '../../../../auth/data/models/user_model.dart';
@@ -50,7 +49,7 @@ class OverviewWidget extends StatelessWidget {
                   SizedBox(height: 28.f),
                   _buildSectionHeader(context, I18nKeys.quickActions.tr, showSeeAll: false, onPressed: () {}),
                   SizedBox(height: 12.f),
-                  _buildQuickActions(context, userModel, state),
+                  _buildQuickActions(context, userModel, viewModel, state),
                   SizedBox(height: 28.f),
                   _buildSectionHeader(
                     context,
@@ -450,7 +449,12 @@ class OverviewWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildQuickActions(BuildContext context, UserModel? userModel, OverviewState? state) {
+  Widget _buildQuickActions(
+    BuildContext context,
+    UserModel? userModel,
+    OverviewViewModel viewModel,
+    OverviewState? state,
+  ) {
     final accentColor = context.accentColor;
     return Column(
       children: [
@@ -488,7 +492,9 @@ class OverviewWidget extends StatelessWidget {
               I18nKeys.github.tr,
               Icons.code_rounded,
               Colors.grey,
-              () => _launchURL(state?.aboutMe?.github ?? AppConstants.github),
+              () => viewModel.handleIntent(
+                OverviewIntent.launchURL(state?.aboutMe?.github ?? AppConstants.github),
+              ),
             ),
             SizedBox(width: 12.f),
             _buildActionButton(
@@ -496,8 +502,11 @@ class OverviewWidget extends StatelessWidget {
               I18nKeys.contactMe.tr,
               Icons.alternate_email_rounded,
               Colors.grey,
-              () =>
-                  _launchURL('mailto:${userModel?.email ?? AppConstants.mail}?subject=Portfolio%20Feedback'),
+              () => viewModel.handleIntent(
+                OverviewIntent.launchURL(
+                  'mailto:${userModel?.email ?? AppConstants.mail}?subject=Portfolio%20Feedback',
+                ),
+              ),
             ),
           ],
         ),
@@ -649,12 +658,5 @@ class OverviewWidget extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  Future<void> _launchURL(String url) async {
-    final uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri);
-    }
   }
 }

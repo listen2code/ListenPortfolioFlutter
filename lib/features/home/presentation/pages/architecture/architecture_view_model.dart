@@ -2,21 +2,20 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:listen_core/core.dart';
-import '../../../../../shared/constants/app_constants.dart';
-import '../../../../../shared/i18n/translations_key.dart';
+import '../../../../../shared/shared.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
+ 
 import 'architecture_intent.dart';
 import 'architecture_state.dart';
-
+ 
 part 'architecture_view_model.g.dart';
-
+ 
 @riverpod
 class ArchitectureViewModel extends _$ArchitectureViewModel
     with ViewModelMixin<ArchitectureState, ArchitectureIntent> {
   @override
   ArchitectureState build() => const ArchitectureState();
-
+ 
   @override
   void onVisible() {
     super.onVisible();
@@ -24,10 +23,13 @@ class ArchitectureViewModel extends _$ArchitectureViewModel
       handleIntent(const ArchitectureIntent.refresh());
     }
   }
-
+ 
   @override
   FutureOr<void> onIntent(ArchitectureIntent intent) {
-    return intent.when<FutureOr<void>>(refresh: () => _onRefresh());
+    return intent.when<FutureOr<void>>(
+      refresh: () => _onRefresh(),
+      launchURL: (url) => emitEffect(LaunchUrlEffect(url)),
+    );
   }
 
   Future<void> _onRefresh() async {

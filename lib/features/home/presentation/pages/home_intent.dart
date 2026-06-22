@@ -9,6 +9,8 @@ class HomeIntent extends BaseIntent with _$HomeIntent {
   const factory HomeIntent.tabChanged(HomeTab tab) = _TabChanged;
   const factory HomeIntent.refresh() = _Refresh;
   const factory HomeIntent.logout() = _Logout;
+  const factory HomeIntent.toSettings() = _ToSettings;
+  const factory HomeIntent.toAppearance() = _ToAppearance;
 
   const HomeIntent._();
 }

@@ -34,7 +34,7 @@ class SettingsPage extends ConsumerWidget {
                   icon: Icons.palette_outlined,
                   title: I18nKeys.appearance.tr,
                   subtitle: I18nKeys.appearanceSubtitle.tr,
-                  onTap: () => AppNav.to(Routes.appearance),
+                  onTap: () => viewModel?.handleIntent(const SettingsIntent.toAppearance()),
                 ),
                 _buildListTile(
                   context,
@@ -58,7 +58,7 @@ class SettingsPage extends ConsumerWidget {
                   icon: Icons.lock_outline_rounded,
                   title: I18nKeys.changePassword.tr,
                   blurLevel: AuthBlurLevel.low,
-                  onTap: () => AppNav.to(Routes.changePassword, needLogin: true),
+                  onTap: () => viewModel?.handleIntent(const SettingsIntent.toChangePassword()),
                 ),
                 _buildSwitchTile(
                   context,
@@ -72,7 +72,7 @@ class SettingsPage extends ConsumerWidget {
                   icon: Icons.no_accounts_outlined,
                   title: I18nKeys.deleteAccount.tr,
                   blurLevel: AuthBlurLevel.low,
-                  onTap: () => AppNav.to(Routes.deleteAccount, needLogin: true),
+                  onTap: () => viewModel?.handleIntent(const SettingsIntent.toDeleteAccount()),
                 ),
               ]),
 
@@ -118,7 +118,7 @@ class SettingsPage extends ConsumerWidget {
                   icon: Icons.bug_report_outlined,
                   title: I18nKeys.crashReports.tr,
                   subtitle: I18nKeys.crashReportsSubtitle.tr,
-                  onTap: () => AppNav.to(Routes.crashLogs),
+                  onTap: () => viewModel?.handleIntent(const SettingsIntent.toCrashLogs()),
                 ),
                 _buildListTile(
                   context,
@@ -234,13 +234,13 @@ class SettingsPage extends ConsumerWidget {
                   context,
                   icon: Icons.privacy_tip_outlined,
                   title: I18nKeys.privacyPolicy.tr,
-                  onTap: () => AppNav.to(Routes.privacyPolicy),
+                  onTap: () => viewModel?.handleIntent(const SettingsIntent.toPrivacyPolicy()),
                 ),
                 _buildListTile(
                   context,
                   icon: Icons.gavel_outlined,
                   title: I18nKeys.termsOfService.tr,
-                  onTap: () => AppNav.to(Routes.termsOfService),
+                  onTap: () => viewModel?.handleIntent(const SettingsIntent.toTermsOfService()),
                 ),
                 _buildListTile(
                   context,

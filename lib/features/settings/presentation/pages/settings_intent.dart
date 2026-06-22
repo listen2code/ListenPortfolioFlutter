@@ -21,5 +21,11 @@ class SettingsIntent extends BaseIntent with _$SettingsIntent {
   const factory SettingsIntent.enableDeveloperMode() = _EnableDeveloperMode;
   const factory SettingsIntent.rateApp() = _RateApp;
   const factory SettingsIntent.showLicenses() = _ShowLicenses;
+  const factory SettingsIntent.toAppearance() = _ToAppearance;
+  const factory SettingsIntent.toChangePassword() = _ToChangePassword;
+  const factory SettingsIntent.toDeleteAccount() = _ToDeleteAccount;
+  const factory SettingsIntent.toCrashLogs() = _ToCrashLogs;
+  const factory SettingsIntent.toPrivacyPolicy() = _ToPrivacyPolicy;
+  const factory SettingsIntent.toTermsOfService() = _ToTermsOfService;
   const SettingsIntent._();
 }

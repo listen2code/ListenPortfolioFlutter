@@ -55,13 +55,15 @@ extension HomeIntentPatterns on HomeIntent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _TabChanged value)?  tabChanged,TResult Function( _Refresh value)?  refresh,TResult Function( _Logout value)?  logout,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _TabChanged value)?  tabChanged,TResult Function( _Refresh value)?  refresh,TResult Function( _Logout value)?  logout,TResult Function( _ToSettings value)?  toSettings,TResult Function( _ToAppearance value)?  toAppearance,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _TabChanged() when tabChanged != null:
 return tabChanged(_that);case _Refresh() when refresh != null:
 return refresh(_that);case _Logout() when logout != null:
-return logout(_that);case _:
+return logout(_that);case _ToSettings() when toSettings != null:
+return toSettings(_that);case _ToAppearance() when toAppearance != null:
+return toAppearance(_that);case _:
   return orElse();
 
 }
@@ -79,13 +81,15 @@ return logout(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _TabChanged value)  tabChanged,required TResult Function( _Refresh value)  refresh,required TResult Function( _Logout value)  logout,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _TabChanged value)  tabChanged,required TResult Function( _Refresh value)  refresh,required TResult Function( _Logout value)  logout,required TResult Function( _ToSettings value)  toSettings,required TResult Function( _ToAppearance value)  toAppearance,}){
 final _that = this;
 switch (_that) {
 case _TabChanged():
 return tabChanged(_that);case _Refresh():
 return refresh(_that);case _Logout():
-return logout(_that);case _:
+return logout(_that);case _ToSettings():
+return toSettings(_that);case _ToAppearance():
+return toAppearance(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -102,13 +106,15 @@ return logout(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _TabChanged value)?  tabChanged,TResult? Function( _Refresh value)?  refresh,TResult? Function( _Logout value)?  logout,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _TabChanged value)?  tabChanged,TResult? Function( _Refresh value)?  refresh,TResult? Function( _Logout value)?  logout,TResult? Function( _ToSettings value)?  toSettings,TResult? Function( _ToAppearance value)?  toAppearance,}){
 final _that = this;
 switch (_that) {
 case _TabChanged() when tabChanged != null:
 return tabChanged(_that);case _Refresh() when refresh != null:
 return refresh(_that);case _Logout() when logout != null:
-return logout(_that);case _:
+return logout(_that);case _ToSettings() when toSettings != null:
+return toSettings(_that);case _ToAppearance() when toAppearance != null:
+return toAppearance(_that);case _:
   return null;
 
 }
@@ -125,12 +131,14 @@ return logout(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( HomeTab tab)?  tabChanged,TResult Function()?  refresh,TResult Function()?  logout,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( HomeTab tab)?  tabChanged,TResult Function()?  refresh,TResult Function()?  logout,TResult Function()?  toSettings,TResult Function()?  toAppearance,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TabChanged() when tabChanged != null:
 return tabChanged(_that.tab);case _Refresh() when refresh != null:
 return refresh();case _Logout() when logout != null:
-return logout();case _:
+return logout();case _ToSettings() when toSettings != null:
+return toSettings();case _ToAppearance() when toAppearance != null:
+return toAppearance();case _:
   return orElse();
 
 }
@@ -148,12 +156,14 @@ return logout();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( HomeTab tab)  tabChanged,required TResult Function()  refresh,required TResult Function()  logout,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( HomeTab tab)  tabChanged,required TResult Function()  refresh,required TResult Function()  logout,required TResult Function()  toSettings,required TResult Function()  toAppearance,}) {final _that = this;
 switch (_that) {
 case _TabChanged():
 return tabChanged(_that.tab);case _Refresh():
 return refresh();case _Logout():
-return logout();case _:
+return logout();case _ToSettings():
+return toSettings();case _ToAppearance():
+return toAppearance();case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -170,12 +180,14 @@ return logout();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( HomeTab tab)?  tabChanged,TResult? Function()?  refresh,TResult? Function()?  logout,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( HomeTab tab)?  tabChanged,TResult? Function()?  refresh,TResult? Function()?  logout,TResult? Function()?  toSettings,TResult? Function()?  toAppearance,}) {final _that = this;
 switch (_that) {
 case _TabChanged() when tabChanged != null:
 return tabChanged(_that.tab);case _Refresh() when refresh != null:
 return refresh();case _Logout() when logout != null:
-return logout();case _:
+return logout();case _ToSettings() when toSettings != null:
+return toSettings();case _ToAppearance() when toAppearance != null:
+return toAppearance();case _:
   return null;
 
 }
@@ -305,6 +317,70 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'HomeIntent.logout()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _ToSettings extends HomeIntent {
+  const _ToSettings(): super._();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ToSettings);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'HomeIntent.toSettings()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _ToAppearance extends HomeIntent {
+  const _ToAppearance(): super._();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ToAppearance);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'HomeIntent.toAppearance()';
 }
 
 
