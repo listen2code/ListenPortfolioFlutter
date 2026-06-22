@@ -6,6 +6,7 @@ part 'architecture_intent.freezed.dart';
 @freezed
 class ArchitectureIntent extends BaseIntent with _$ArchitectureIntent {
   const factory ArchitectureIntent.refresh() = _Refresh;
+  const factory ArchitectureIntent.launchURL(String url) = _LaunchURL;
 
   const ArchitectureIntent._();
 }

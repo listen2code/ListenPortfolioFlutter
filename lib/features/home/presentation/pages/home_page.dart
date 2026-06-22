@@ -76,7 +76,7 @@ class HomePage extends ConsumerWidget {
       child: BaseAuthPage(
         builder: (context, child) => Column(
           children: [
-            _buildDrawerHeader(context),
+            _buildDrawerHeader(context, viewModel),
             SizedBox(height: 10.f),
             Expanded(
               child: ListView(
@@ -121,7 +121,7 @@ class HomePage extends ConsumerWidget {
                     context,
                     icon: Icons.settings_suggest_outlined,
                     label: I18nKeys.settings.tr,
-                    onTap: () => AppNav.to(Routes.settings),
+                    onTap: () => viewModel.handleIntent(const HomeIntent.toSettings()),
                   ),
                 ],
               ),
@@ -134,7 +134,7 @@ class HomePage extends ConsumerWidget {
     );
   }
 
-  Widget _buildDrawerHeader(BuildContext context) {
+  Widget _buildDrawerHeader(BuildContext context, HomeViewModel viewModel) {
     final themeMode = settingManager.themeMode;
     final bool isLoggedIn = !authManager.state.isGuest;
     final accentColor = context.accentColor;
@@ -207,7 +207,7 @@ class HomePage extends ConsumerWidget {
             top: 0,
             child: IconButton(
               icon: Icon(getModeIcon(), color: Colors.white, size: 24.f),
-              onPressed: () => AppNav.to(Routes.appearance),
+              onPressed: () => viewModel.handleIntent(const HomeIntent.toAppearance()),
               tooltip: I18nKeys.themeToggleSemanticLabel.tr,
             ),
           ),

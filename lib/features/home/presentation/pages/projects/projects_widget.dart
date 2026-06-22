@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_core/core.dart';
 import '../../../data/models/project_model.dart';
 import 'projects_intent.dart';
@@ -6,14 +7,13 @@ import 'projects_state.dart';
 import 'projects_view_model.dart';
 import '../../../../../shared/shared.dart';
 import 'package:listen_uikit/uikit.dart';
-import 'package:url_launcher/url_launcher.dart';
 
-class ProjectsWidget extends StatelessWidget {
+class ProjectsWidget extends ConsumerWidget {
   final bool active;
   const ProjectsWidget({super.key, required this.active});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final accentColor = context.accentColor;
 
     return BaseRefreshPage<ProjectsViewModel, ProjectsState>(
@@ -29,7 +29,7 @@ class ProjectsWidget extends StatelessWidget {
         final project = item as ProjectModel;
         return Padding(
           padding: EdgeInsets.only(top: index == 0 ? 20.f : 0),
-          child: _buildProjectCard(context, project, accentColor),
+          child: _buildProjectCard(context, ref, project, accentColor),
         );
       },
     );
@@ -103,7 +103,7 @@ class ProjectsWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildProjectCard(BuildContext context, ProjectModel project, Color baseColor) {
+  Widget _buildProjectCard(BuildContext context, WidgetRef ref, ProjectModel project, Color baseColor) {
     final bool isTodo = project.subtitle == 'TODO';
     final hasImage = project.imageUrl != null && project.imageUrl!.isNotEmpty;
 
@@ -210,7 +210,7 @@ class ProjectsWidget extends StatelessWidget {
                           Icons.code,
                           I18nKeys.sourceCode.tr,
                           baseColor,
-                          onPressed: () => _launchURL(context, project.githubUrl!),
+                          onPressed: () => ref.read(projectsViewModelProvider.notifier).handleIntent(ProjectsIntent.launchURL(project.githubUrl!)),
                         ),
                       ),
                     ],
@@ -270,14 +270,5 @@ class ProjectsWidget extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Future<void> _launchURL(BuildContext context, String urlString) async {
-    final Uri url = Uri.parse(urlString);
-    if (!await launchUrl(url)) {
-      if (context.mounted) {
-        CommonToast.show(I18nKeys.errCouldNotLaunch.trArgs([urlString]));
-      }
-    }
   }
 }

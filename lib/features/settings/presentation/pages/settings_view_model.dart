@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:listen_core/core.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../shared/shared.dart';
 import '../../data/models/version_model.dart';
@@ -61,6 +60,12 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
       enableDeveloperMode: _onEnableDeveloperMode,
       rateApp: _onRateApp,
       showLicenses: _onShowLicenses,
+      toAppearance: () => emitEffect(NavigationEffect(target: Routes.appearance)),
+      toChangePassword: () => emitEffect(NavigationEffect(target: Routes.changePassword, needLogin: true)),
+      toDeleteAccount: () => emitEffect(NavigationEffect(target: Routes.deleteAccount, needLogin: true)),
+      toCrashLogs: () => emitEffect(NavigationEffect(target: Routes.crashLogs)),
+      toPrivacyPolicy: () => emitEffect(NavigationEffect(target: Routes.privacyPolicy)),
+      toTermsOfService: () => emitEffect(NavigationEffect(target: Routes.termsOfService)),
     );
   }
 
@@ -204,10 +209,7 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
           okText: I18nKeys.update.tr,
           onResult: (confirmed) async {
             if (confirmed) {
-              final uri = Uri.parse(versionModel.url);
-              if (await canLaunchUrl(uri)) {
-                await launchUrl(uri, mode: LaunchMode.externalApplication);
-              }
+              emitEffect(LaunchUrlEffect(versionModel.url));
             }
           },
         ),

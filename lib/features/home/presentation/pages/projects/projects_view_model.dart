@@ -26,7 +26,10 @@ class ProjectsViewModel extends _$ProjectsViewModel with ViewModelMixin<Projects
 
   @override
   FutureOr<void> onIntent(ProjectsIntent intent) {
-    return intent.when<FutureOr<void>>(refresh: () => _onRefresh());
+    return intent.when<FutureOr<void>>(
+      refresh: () => _onRefresh(),
+      launchURL: (url) => emitEffect(LaunchUrlEffect(url)),
+    );
   }
 
   Future<void> _onRefresh() async {

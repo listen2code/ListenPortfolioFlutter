@@ -67,6 +67,8 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
       tabChanged: (tab) => _onTabChanged,
       refresh: _onRefresh,
       logout: _onLogout,
+      toSettings: () => emitEffect(NavigationEffect(target: Routes.settings)),
+      toAppearance: () => emitEffect(NavigationEffect(target: Routes.appearance)),
     );
   }
 

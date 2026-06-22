@@ -55,11 +55,12 @@ extension ProjectsIntentPatterns on ProjectsIntent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Refresh value)?  refresh,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Refresh value)?  refresh,TResult Function( _LaunchURL value)?  launchURL,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Refresh() when refresh != null:
-return refresh(_that);case _:
+return refresh(_that);case _LaunchURL() when launchURL != null:
+return launchURL(_that);case _:
   return orElse();
 
 }
@@ -77,11 +78,12 @@ return refresh(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Refresh value)  refresh,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Refresh value)  refresh,required TResult Function( _LaunchURL value)  launchURL,}){
 final _that = this;
 switch (_that) {
 case _Refresh():
-return refresh(_that);case _:
+return refresh(_that);case _LaunchURL():
+return launchURL(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -98,11 +100,12 @@ return refresh(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Refresh value)?  refresh,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Refresh value)?  refresh,TResult? Function( _LaunchURL value)?  launchURL,}){
 final _that = this;
 switch (_that) {
 case _Refresh() when refresh != null:
-return refresh(_that);case _:
+return refresh(_that);case _LaunchURL() when launchURL != null:
+return launchURL(_that);case _:
   return null;
 
 }
@@ -119,10 +122,11 @@ return refresh(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  refresh,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  refresh,TResult Function( String url)?  launchURL,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Refresh() when refresh != null:
-return refresh();case _:
+return refresh();case _LaunchURL() when launchURL != null:
+return launchURL(_that.url);case _:
   return orElse();
 
 }
@@ -140,10 +144,11 @@ return refresh();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  refresh,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  refresh,required TResult Function( String url)  launchURL,}) {final _that = this;
 switch (_that) {
 case _Refresh():
-return refresh();case _:
+return refresh();case _LaunchURL():
+return launchURL(_that.url);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -160,10 +165,11 @@ return refresh();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  refresh,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  refresh,TResult? Function( String url)?  launchURL,}) {final _that = this;
 switch (_that) {
 case _Refresh() when refresh != null:
-return refresh();case _:
+return refresh();case _LaunchURL() when launchURL != null:
+return launchURL(_that.url);case _:
   return null;
 
 }
@@ -202,5 +208,71 @@ String toString() {
 
 
 
+
+/// @nodoc
+
+
+class _LaunchURL extends ProjectsIntent {
+  const _LaunchURL(this.url): super._();
+  
+
+ final  String url;
+
+/// Create a copy of ProjectsIntent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$LaunchURLCopyWith<_LaunchURL> get copyWith => __$LaunchURLCopyWithImpl<_LaunchURL>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LaunchURL&&(identical(other.url, url) || other.url == url));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,url);
+
+@override
+String toString() {
+  return 'ProjectsIntent.launchURL(url: $url)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$LaunchURLCopyWith<$Res> implements $ProjectsIntentCopyWith<$Res> {
+  factory _$LaunchURLCopyWith(_LaunchURL value, $Res Function(_LaunchURL) _then) = __$LaunchURLCopyWithImpl;
+@useResult
+$Res call({
+ String url
+});
+
+
+
+
+}
+/// @nodoc
+class __$LaunchURLCopyWithImpl<$Res>
+    implements _$LaunchURLCopyWith<$Res> {
+  __$LaunchURLCopyWithImpl(this._self, this._then);
+
+  final _LaunchURL _self;
+  final $Res Function(_LaunchURL) _then;
+
+/// Create a copy of ProjectsIntent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? url = null,}) {
+  return _then(_LaunchURL(
+null == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
 
 // dart format on

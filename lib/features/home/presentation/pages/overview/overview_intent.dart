@@ -6,5 +6,6 @@ part 'overview_intent.freezed.dart';
 @freezed
 class OverviewIntent extends BaseIntent with _$OverviewIntent {
   const factory OverviewIntent.refresh() = _Refresh;
+  const factory OverviewIntent.launchURL(String url) = _LaunchURL;
   const OverviewIntent._();
 }
