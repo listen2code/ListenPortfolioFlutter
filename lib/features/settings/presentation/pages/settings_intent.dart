@@ -27,5 +27,6 @@ class SettingsIntent extends BaseIntent with _$SettingsIntent {
   const factory SettingsIntent.toCrashLogs() = _ToCrashLogs;
   const factory SettingsIntent.toPrivacyPolicy() = _ToPrivacyPolicy;
   const factory SettingsIntent.toTermsOfService() = _ToTermsOfService;
+  const factory SettingsIntent.toWebViewTest() = _ToWebViewTest;
   const SettingsIntent._();
 }

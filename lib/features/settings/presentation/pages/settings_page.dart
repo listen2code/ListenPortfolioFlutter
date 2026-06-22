@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_core/core.dart';
 import 'package:listen_uikit/uikit.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 import '../../../../shared/shared.dart';
 import 'settings_intent.dart';
@@ -153,49 +152,7 @@ class SettingsPage extends ConsumerWidget {
                     icon: Icons.html,
                     title: 'WebView Test',
                     subtitle: 'WebView Dialog',
-                    onTap: () async {
-                      AppNav.to(
-                        FutureBuilder<String>(
-                          future: DefaultAssetBundle.of(context).loadString('assets/html/test.html'),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState == ConnectionState.waiting) {
-                              return const Center(child: CircularProgressIndicator());
-                            }
-                            return CommonWebView(
-                              showAppBar: true,
-                              shrinkWrap: false,
-                              initialHtml: snapshot.data,
-                              javascriptHandlers: {
-                                'showToast': (args) {
-                                  if (args.isNotEmpty) {
-                                    final msg = args[0] as String;
-                                    CommonToast.show(msg);
-                                  }
-                                },
-                                'closePage': (args) {
-                                  Navigator.of(context).pop();
-                                },
-                                'getDeviceInfo': (args) async {
-                                  return {
-                                    'platform': Theme.of(context).platform.name,
-                                    'device': 'Flutter Emulator (SettingsPage Debug)',
-                                    'timestamp': DateTime.now().toLocal().toString(),
-                                  };
-                                },
-                              },
-                              shouldOverrideUrlLoadingWithAction: (controller, action) async {
-                                final url = action.request.url?.toString() ?? '';
-                                if (url.startsWith('myapp://')) {
-                                  CommonToast.show('拦截到 Scheme 动作: $url');
-                                  return NavigationActionPolicy.CANCEL;
-                                }
-                                return NavigationActionPolicy.ALLOW;
-                              },
-                            );
-                          },
-                        ),
-                      );
-                    },
+                    onTap: () => viewModel?.handleIntent(const SettingsIntent.toWebViewTest()),
                   ),
               ]),
 

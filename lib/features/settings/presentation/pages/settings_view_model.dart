@@ -66,6 +66,7 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
       toCrashLogs: () => emitEffect(NavigationEffect(target: Routes.crashLogs)),
       toPrivacyPolicy: () => emitEffect(NavigationEffect(target: Routes.privacyPolicy)),
       toTermsOfService: () => emitEffect(NavigationEffect(target: Routes.termsOfService)),
+      toWebViewTest: () => emitEffect(NavigationEffect(target: Routes.webViewTest)),
     );
   }
 

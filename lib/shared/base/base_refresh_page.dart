@@ -65,7 +65,8 @@ class BaseRefreshPage<V extends BaseViewModel<dynamic>, S extends BaseState> ext
   final List<dynamic> Function(S state)? itemSource;
 
   /// Builder for list items. Required if [items] or [itemSource] is provided.
-  final Widget Function(BuildContext context, dynamic item, int index)? itemBuilder;
+  /// Takes the context, resolved viewModel, current state, item, and index.
+  final Widget Function(BuildContext context, V? viewModel, S? state, dynamic item, int index)? itemBuilder;
 
   /// Optional UI-layer lifecycle listener.
   final PageLifecycle? lifecycle;
@@ -129,7 +130,9 @@ class BaseRefreshPage<V extends BaseViewModel<dynamic>, S extends BaseState> ext
       if (itemBuilder != null && effectiveItems != null) {
         content = CommonRefreshList(
           onRefresh: () => onRefresh!(effectiveViewModel, state),
-          itemBuilder: itemBuilder,
+          itemBuilder: (context, item, index) {
+            return itemBuilder!(context, effectiveViewModel, state, item, index);
+          },
           items: effectiveItems,
         );
       } else {

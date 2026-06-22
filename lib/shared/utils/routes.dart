@@ -1,4 +1,9 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart' hide RoutePageBuilder;
+import 'package:flutter/services.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:listen_core/core.dart';
+import 'package:listen_uikit/uikit.dart';
 
 import '../../features/auth/presentation/pages/login/login_page.dart';
 import '../../features/auth/presentation/pages/password/change_password_page.dart';
@@ -12,6 +17,7 @@ import '../../features/settings/presentation/pages/privacy_policy/privacy_policy
 import '../../features/settings/presentation/pages/settings_page.dart';
 import '../../features/settings/presentation/pages/terms_of_service/terms_of_service_page.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
+import '../../shared/shared.dart';
 
 /// Centralized route definitions and registry for the application.
 class Routes {
@@ -30,6 +36,7 @@ class Routes {
   static const String crashLogs = '/crash_logs';
   static const String termsOfService = '/terms_of_service';
   static const String privacyPolicy = '/privacy_policy';
+  static const String webViewTest = '/webview_test';
 
   // Argument Keys - Enforce consistency between caller and receiver
   static const String argName = 'name';
@@ -54,5 +61,44 @@ class Routes {
     crashLogs: () => const CrashLogListPage(),
     termsOfService: () => const TermsOfServicePage(),
     privacyPolicy: () => const PrivacyPolicyPage(),
+    webViewTest: () => FutureBuilder<String>(
+      future: rootBundle.loadString('assets/html/test.html'),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        return CommonWebView(
+          showAppBar: true,
+          shrinkWrap: false,
+          initialHtml: snapshot.data,
+          javascriptHandlers: {
+            'showToast': (List<dynamic> args) {
+              if (args.isNotEmpty) {
+                final msg = args[0] as String;
+                CommonToast.show(msg);
+              }
+            },
+            'closePage': (List<dynamic> args) {
+              Navigator.of(context).pop();
+            },
+            'getDeviceInfo': (List<dynamic> args) async {
+              return {
+                'platform': defaultTargetPlatform.name,
+                'device': 'Flutter Emulator (SettingsPage Debug)',
+                'timestamp': DateTime.now().toLocal().toString(),
+              };
+            },
+          },
+          shouldOverrideUrlLoadingWithAction: (InAppWebViewController controller, NavigationAction action) async {
+            final url = action.request.url?.toString() ?? '';
+            if (url.startsWith('myapp://')) {
+              CommonToast.show('拦截到 Scheme 动作: $url');
+              return NavigationActionPolicy.CANCEL;
+            }
+            return NavigationActionPolicy.ALLOW;
+          },
+        );
+      },
+    ),
   };
 }

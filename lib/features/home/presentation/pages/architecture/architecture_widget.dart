@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:listen_core/core.dart';
 import 'architecture_intent.dart';
 import 'architecture_state.dart';
 import 'architecture_view_model.dart';

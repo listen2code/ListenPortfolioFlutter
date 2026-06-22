@@ -2,10 +2,10 @@ name: listen_portfolio_flutter
 description: "Portfolio of Listen"
 publish_to: 'none'
 
-version: 1.0.47
-desc: "Fix Effects"
-desc_zh: "修复 Effects"
-desc_ja: ""
+version: 1.0.48
+desc: "Refactor page navigation to MVI pattern and simplify list item builders"
+desc_zh: "重构页面导航为MVI模式，简化列表项构建器"
+desc_ja: "画面遷移のMVIパターンへのリファクタリング、アイテムビルダーの簡素化"
 
 environment:
   sdk: ^3.12.1

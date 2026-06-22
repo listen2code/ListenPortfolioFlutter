@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_core/core.dart';
 import '../../../data/models/project_model.dart';
 import 'projects_intent.dart';
@@ -8,12 +7,12 @@ import 'projects_view_model.dart';
 import '../../../../../shared/shared.dart';
 import 'package:listen_uikit/uikit.dart';
 
-class ProjectsWidget extends ConsumerWidget {
+class ProjectsWidget extends StatelessWidget {
   final bool active;
   const ProjectsWidget({super.key, required this.active});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final accentColor = context.accentColor;
 
     return BaseRefreshPage<ProjectsViewModel, ProjectsState>(
@@ -25,11 +24,11 @@ class ProjectsWidget extends ConsumerWidget {
       onRefresh: (viewModel, state) async {
         viewModel?.handleIntent(const ProjectsIntent.refresh());
       },
-      itemBuilder: (context, item, index) {
+      itemBuilder: (context, viewModel, state, item, index) {
         final project = item as ProjectModel;
         return Padding(
           padding: EdgeInsets.only(top: index == 0 ? 20.f : 0),
-          child: _buildProjectCard(context, ref, project, accentColor),
+          child: _buildProjectCard(context, viewModel, project, accentColor),
         );
       },
     );
@@ -103,7 +102,7 @@ class ProjectsWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildProjectCard(BuildContext context, WidgetRef ref, ProjectModel project, Color baseColor) {
+  Widget _buildProjectCard(BuildContext context, ProjectsViewModel? viewModel, ProjectModel project, Color baseColor) {
     final bool isTodo = project.subtitle == 'TODO';
     final hasImage = project.imageUrl != null && project.imageUrl!.isNotEmpty;
 
@@ -210,7 +209,7 @@ class ProjectsWidget extends ConsumerWidget {
                           Icons.code,
                           I18nKeys.sourceCode.tr,
                           baseColor,
-                          onPressed: () => ref.read(projectsViewModelProvider.notifier).handleIntent(ProjectsIntent.launchURL(project.githubUrl!)),
+                           onPressed: () => viewModel?.handleIntent(ProjectsIntent.launchURL(project.githubUrl!)),
                         ),
                       ),
                     ],
