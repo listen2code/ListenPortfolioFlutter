@@ -1,10 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
+
 void main() {
   final pubspecFile = File('pubspec.yaml');
   if (!pubspecFile.existsSync()) {
-    debugPrint('Error: pubspec.yaml not found.');
+    if (kDebugMode) {
+      print('Error: pubspec.yaml not found.');
+    }
     return;
   }
 
@@ -13,7 +17,9 @@ void main() {
   final match = versionRegExp.firstMatch(content);
 
   if (match == null) {
-    debugPrint('Error: Could not parse version from pubspec.yaml');
+    if (kDebugMode) {
+      print('Error: Could not parse version from pubspec.yaml');
+    }
     return;
   }
 
@@ -40,11 +46,7 @@ void main() {
     'version': version,
     'buildNumber': buildNumber,
     'url': 'https://play.google.com/store/apps/details?id=com.listen.portfolio.listen_portfolio_flutter',
-    'changelog': {
-      'zh': descZh,
-      'en': descEn,
-      'ja': descJa
-    }
+    'changelog': {'zh': descZh, 'en': descEn, 'ja': descJa},
   };
 
   // Preserve existing url if version.json exists in pages/
@@ -57,5 +59,7 @@ void main() {
 
   final jsonContent = '${const JsonEncoder.withIndent('  ').convert(data)}\n';
   pagesVersionJsonFile.writeAsStringSync(jsonContent);
-  debugPrint('Successfully generated version.json at pages/ with version: $version ($buildNumber)');
+  if (kDebugMode) {
+    print('Successfully generated version.json at pages/ with version: $version ($buildNumber)');
+  }
 }
