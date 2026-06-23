@@ -2,10 +2,10 @@ name: listen_portfolio_flutter
 description: "Portfolio of Listen"
 publish_to: 'none'
 
-version: 1.0.48
-desc: "Refactor page navigation to MVI pattern and simplify list item builders"
-desc_zh: "重构页面导航为MVI模式，简化列表项构建器"
-desc_ja: "画面遷移のMVIパターンへのリファクタリング、アイテムビルダーの簡素化"
+version: 1.0.49
+desc: "Add Markdown and Pdf"
+desc_zh: ""
+desc_ja: ""
 
 environment:
   sdk: ^3.12.1
@@ -73,6 +73,9 @@ dependencies:
   uuid: ^4.5.3
   share_plus: ^13.1.0
   visibility_detector: ^0.4.0+2
+  flutter_markdown_plus: ^1.0.1
+  markdown: ^7.3.0
+  printing: ^5.13.0
 
   collection: any
 dev_dependencies:

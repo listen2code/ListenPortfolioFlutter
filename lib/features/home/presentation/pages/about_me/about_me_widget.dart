@@ -36,7 +36,10 @@ class AboutMeWidget extends StatelessWidget {
             children: [
               SizedBox(height: 40.f),
               _buildHeader(context, viewModel!, state!),
-              if (data.bio != null) ...[SizedBox(height: 35.f), _buildBioSection(context, data.bio!)],
+              if (data.bio != null) ...[
+                SizedBox(height: 35.f),
+                _buildBioSection(context, data.bio!, viewModel),
+              ],
               if (data.experiences.isNotEmpty) ...[
                 SizedBox(height: 25.f),
                 _buildDetailedExperience(context, data.experiences),
@@ -250,13 +253,47 @@ class AboutMeWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildBioSection(BuildContext context, String bio) {
+  Widget _buildBioSection(BuildContext context, String bio, AboutMeViewModel viewModel) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildSectionTitle(context, I18nKeys.aboutMe.tr),
         SizedBox(height: 12.f),
         CommonText(bio, style: context.textTheme.bodyMedium?.copyWith(height: 1.6), useFittedBox: false),
+        SizedBox(height: 16.f),
+        Row(
+          children: [
+            Expanded(
+              child: CommonClickable(
+                onTap: () => viewModel.handleIntent(const AboutMeIntent.toResume()),
+                borderRadius: BorderRadius.circular(12.f),
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 16.f, vertical: 12.f),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: context.accentColor.withValues(alpha: 0.3), width: 1.f),
+                    borderRadius: BorderRadius.circular(12.f),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.description_outlined, size: 16.f, color: context.accentColor),
+                      SizedBox(width: 8.f),
+                      Flexible(
+                        child: CommonText(
+                          I18nKeys.viewFullResume.tr,
+                          style: context.textTheme.labelMedium?.copyWith(
+                            color: context.accentColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ],
     );
   }

@@ -265,4 +265,11 @@ class I18nKeys {
   static const String selectAmount = 'Support the Author';
   static const String rateApp = 'Rate App';
   static const String supportAndShare = 'Support & Share';
+
+  // Resume Page
+  static const String resume = 'Resume';
+  static const String exportPDF = 'Export PDF';
+  static const String emptyResume = 'Resume is empty';
+  static const String retry = 'Retry';
+  static const String viewFullResume = 'View Full Resume';
 }

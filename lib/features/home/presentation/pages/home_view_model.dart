@@ -64,7 +64,7 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
   @override
   FutureOr<void> onIntent(HomeIntent intent) {
     return intent.when<FutureOr<void>>(
-      tabChanged: (tab) => _onTabChanged,
+      tabChanged: _onTabChanged,
       refresh: _onRefresh,
       logout: _onLogout,
       toSettings: () => emitEffect(NavigationEffect(target: Routes.settings)),

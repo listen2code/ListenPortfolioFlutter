@@ -42,6 +42,7 @@ class AboutMeViewModel extends _$AboutMeViewModel with ViewModelMixin<AboutMeSta
       removeImage: () => updateState(state.copyWith(imageFile: null)),
       refresh: _onRefresh,
       shareApp: _onShareApp,
+      toResume: () => emitEffect(NavigationEffect(target: Routes.resume)),
     );
   }
 

@@ -47,6 +47,7 @@ class AppInitializer {
           const RateAppProviderImpl(),
           const ShowLicensesProviderImpl(),
           const ColorPickerProviderImpl(),
+          const PrintPdfProviderImpl(),
         ],
         // Link Core Network to Shared Auth Logic with injected container
         apiDelegate: _ApiAuthHandlerImpl(container),

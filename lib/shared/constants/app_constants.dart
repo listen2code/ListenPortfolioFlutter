@@ -42,6 +42,7 @@ class AppConstants {
   static const String loginRememberMeKey = 'login_remember_me';
   static const String projectsDataKey = 'projects_data';
   static const String aboutMeDataKey = 'about_me';
+  static const String resumeKey = 'resume';
 
   // Common keys
   static const String appName = 'lPortfolio';

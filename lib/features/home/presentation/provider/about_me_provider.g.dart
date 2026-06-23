@@ -105,6 +105,102 @@ final class AboutMeLocalDataSourceProvider
 String _$aboutMeLocalDataSourceHash() =>
     r'023b7b56356300df4213f4d9c01c9fe0a92ca1f0';
 
+@ProviderFor(resumeRemoteDataSource)
+final resumeRemoteDataSourceProvider = ResumeRemoteDataSourceProvider._();
+
+final class ResumeRemoteDataSourceProvider
+    extends
+        $FunctionalProvider<
+          ResumeRemoteDataSource,
+          ResumeRemoteDataSource,
+          ResumeRemoteDataSource
+        >
+    with $Provider<ResumeRemoteDataSource> {
+  ResumeRemoteDataSourceProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'resumeRemoteDataSourceProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$resumeRemoteDataSourceHash();
+
+  @$internal
+  @override
+  $ProviderElement<ResumeRemoteDataSource> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  ResumeRemoteDataSource create(Ref ref) {
+    return resumeRemoteDataSource(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(ResumeRemoteDataSource value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<ResumeRemoteDataSource>(value),
+    );
+  }
+}
+
+String _$resumeRemoteDataSourceHash() =>
+    r'5c937df02ac034d3c5cf763dac8b2b7406d59929';
+
+@ProviderFor(resumeLocalDataSource)
+final resumeLocalDataSourceProvider = ResumeLocalDataSourceProvider._();
+
+final class ResumeLocalDataSourceProvider
+    extends
+        $FunctionalProvider<
+          ResumeLocalDataSource,
+          ResumeLocalDataSource,
+          ResumeLocalDataSource
+        >
+    with $Provider<ResumeLocalDataSource> {
+  ResumeLocalDataSourceProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'resumeLocalDataSourceProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$resumeLocalDataSourceHash();
+
+  @$internal
+  @override
+  $ProviderElement<ResumeLocalDataSource> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  ResumeLocalDataSource create(Ref ref) {
+    return resumeLocalDataSource(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(ResumeLocalDataSource value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<ResumeLocalDataSource>(value),
+    );
+  }
+}
+
+String _$resumeLocalDataSourceHash() =>
+    r'34f142b218b677d60c33919f73897c93a7558729';
+
 @ProviderFor(aboutMeRepository)
 final aboutMeRepositoryProvider = AboutMeRepositoryProvider._();
 
@@ -150,7 +246,7 @@ final class AboutMeRepositoryProvider
   }
 }
 
-String _$aboutMeRepositoryHash() => r'a9f225d174267a9806323e620558170ab1ebab8f';
+String _$aboutMeRepositoryHash() => r'24a40a9d1a032a1dfaa8d361db64ec212f52b272';
 
 @ProviderFor(getAboutMeUseCase)
 final getAboutMeUseCaseProvider = GetAboutMeUseCaseProvider._();
@@ -192,3 +288,42 @@ final class GetAboutMeUseCaseProvider
 }
 
 String _$getAboutMeUseCaseHash() => r'c3e1c912c51cf8c8a98cf770db619547861958bb';
+
+@ProviderFor(getResumeUseCase)
+final getResumeUseCaseProvider = GetResumeUseCaseProvider._();
+
+final class GetResumeUseCaseProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<GetResumeUseCase>,
+          GetResumeUseCase,
+          FutureOr<GetResumeUseCase>
+        >
+    with $FutureModifier<GetResumeUseCase>, $FutureProvider<GetResumeUseCase> {
+  GetResumeUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'getResumeUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$getResumeUseCaseHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<GetResumeUseCase> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<GetResumeUseCase> create(Ref ref) {
+    return getResumeUseCase(ref);
+  }
+}
+
+String _$getResumeUseCaseHash() => r'e959e592c40c7b9ac4aef6302dd3f96257a8e2a0';

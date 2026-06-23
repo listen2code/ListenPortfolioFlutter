@@ -17,6 +17,7 @@ import '../../features/settings/presentation/pages/privacy_policy/privacy_policy
 import '../../features/settings/presentation/pages/settings_page.dart';
 import '../../features/settings/presentation/pages/terms_of_service/terms_of_service_page.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
+import '../../features/home/presentation/pages/resume/resume_page.dart';
 
 /// Centralized route definitions and registry for the application.
 class Routes {
@@ -36,6 +37,7 @@ class Routes {
   static const String termsOfService = '/terms_of_service';
   static const String privacyPolicy = '/privacy_policy';
   static const String webViewTest = '/webview_test';
+  static const String resume = '/resume';
 
   // Argument Keys - Enforce consistency between caller and receiver
   static const String argName = 'name';
@@ -60,6 +62,7 @@ class Routes {
     crashLogs: () => const CrashLogListPage(),
     termsOfService: () => const TermsOfServicePage(),
     privacyPolicy: () => const PrivacyPolicyPage(),
+    resume: () => const ResumePage(),
     webViewTest: () => FutureBuilder<String>(
       future: rootBundle.loadString('assets/html/test.html'),
       builder: (context, snapshot) {

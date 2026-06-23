@@ -10,6 +10,7 @@ export 'base/logout_provider_impl.dart';
 export 'base/message_provider_impl.dart';
 export 'base/navigation_provider_impl.dart';
 export 'base/launch_url_provider_impl.dart';
+export 'base/print_pdf_provider_impl.dart';
 export 'base/rate_app_provider_impl.dart';
 export 'base/share_provider_impl.dart';
 export 'base/show_licenses_provider_impl.dart';

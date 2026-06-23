@@ -227,4 +227,9 @@ final Map<String, String> zh = {
   I18nKeys.selectAmount: '请作者喝杯咖啡吧',
   I18nKeys.rateApp: '给个好评',
   I18nKeys.supportAndShare: '推荐与支持',
+  I18nKeys.resume: '完整履历',
+  I18nKeys.exportPDF: '导出 PDF',
+  I18nKeys.emptyResume: '简历内容为空',
+  I18nKeys.retry: '重试',
+  I18nKeys.viewFullResume: '查看完整履历',
 };

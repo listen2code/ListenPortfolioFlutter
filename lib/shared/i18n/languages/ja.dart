@@ -227,4 +227,9 @@ final Map<String, String> ja = {
   I18nKeys.selectAmount: '作者にコーヒーをおごる',
   I18nKeys.rateApp: 'アプリを評価',
   I18nKeys.supportAndShare: 'シェアとサポート',
+  I18nKeys.resume: '履歴書',
+  I18nKeys.exportPDF: 'PDFで保存',
+  I18nKeys.emptyResume: '履歴書の内容が空です',
+  I18nKeys.retry: '再試行',
+  I18nKeys.viewFullResume: '履歴書を表示',
 };
