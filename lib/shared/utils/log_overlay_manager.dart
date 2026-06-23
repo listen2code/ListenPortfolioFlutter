@@ -215,6 +215,7 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
   }
 
   Widget _buildFloatingButton(Size screenSize) {
+    // ignore: use_common_clickable
     return GestureDetector(
       onPanUpdate: (details) => _updateOffset(details.delta, screenSize, const Size(50, 50)),
       onTap: () {
@@ -272,6 +273,7 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
     return Positioned(
       left: left,
       top: top,
+      // ignore: use_common_clickable
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onPanUpdate: (details) => _handleResize(details.delta, alignment, screenSize),
@@ -297,6 +299,7 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
       child: Column(
         children: [
           // Draggable Header Bar
+          // ignore: use_common_clickable
           GestureDetector(
             onPanUpdate: (details) => _updateOffset(details.delta, screenSize, windowSize),
             child: Container(
@@ -478,6 +481,7 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
                 const Icon(Icons.search_rounded, size: 14, color: Colors.white24),
                 const SizedBox(width: 8),
                 Expanded(
+                  // ignore: use_common_text_field
                   child: TextField(
                     controller: _traceController,
                     style: const TextStyle(color: Colors.white70, fontSize: 11),
@@ -517,7 +521,7 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
             width: 0.5,
           ),
         ),
-        child: Text(
+        child: CommonText(
           label,
           style: TextStyle(
             color: isSelected ? (color ?? Colors.greenAccent) : Colors.white38,

@@ -191,10 +191,24 @@ class _ImplementationImportLint extends DartLintRule {
       final uri = node.uri.stringValue;
       if (uri == null) return;
 
+      final filePath = resolver.source.fullName;
+
+      // Allow provider/dependency injection files to import implementations to instantiate them
+      if (filePath.contains('/provider/') || filePath.endsWith('_provider.dart')) {
+        return;
+      }
+
+      // Allow data layer files to import implementations (e.g. repository impl importing datasource impl)
+      if (filePath.contains('/data/')) {
+        return;
+      }
+
       // Check if importing implementation classes (usually in data/impl or implementation directories)
       if (uri.contains('implementation/') || 
           uri.contains('impl/') ||
-          uri.contains('_impl.dart')) {
+          uri.contains('_impl.dart') ||
+          uri.contains('data/repositories/') ||
+          uri.contains('data/datasources/')) {
         reporter.atNode(
           node,
           _code,

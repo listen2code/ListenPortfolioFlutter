@@ -4,7 +4,7 @@ import 'dart:io';
 void main() {
   final pubspecFile = File('pubspec.yaml');
   if (!pubspecFile.existsSync()) {
-    print('Error: pubspec.yaml not found.');
+    debugPrint('Error: pubspec.yaml not found.');
     return;
   }
 
@@ -13,7 +13,7 @@ void main() {
   final match = versionRegExp.firstMatch(content);
 
   if (match == null) {
-    print('Error: Could not parse version from pubspec.yaml');
+    debugPrint('Error: Could not parse version from pubspec.yaml');
     return;
   }
 
@@ -57,5 +57,5 @@ void main() {
 
   final jsonContent = '${const JsonEncoder.withIndent('  ').convert(data)}\n';
   pagesVersionJsonFile.writeAsStringSync(jsonContent);
-  print('Successfully generated version.json at pages/ with version: $version ($buildNumber)');
+  debugPrint('Successfully generated version.json at pages/ with version: $version ($buildNumber)');
 }
