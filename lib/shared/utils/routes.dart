@@ -17,7 +17,6 @@ import '../../features/settings/presentation/pages/privacy_policy/privacy_policy
 import '../../features/settings/presentation/pages/settings_page.dart';
 import '../../features/settings/presentation/pages/terms_of_service/terms_of_service_page.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
-import '../../shared/shared.dart';
 
 /// Centralized route definitions and registry for the application.
 class Routes {
