@@ -1,14 +1,11 @@
+// ignore_for_file: avoid_print
 import 'dart:convert';
 import 'dart:io';
-
-import 'package:flutter/foundation.dart';
 
 void main() {
   final pubspecFile = File('pubspec.yaml');
   if (!pubspecFile.existsSync()) {
-    if (kDebugMode) {
-      print('Error: pubspec.yaml not found.');
-    }
+    print('Error: pubspec.yaml not found.');
     return;
   }
 
@@ -17,9 +14,7 @@ void main() {
   final match = versionRegExp.firstMatch(content);
 
   if (match == null) {
-    if (kDebugMode) {
-      print('Error: Could not parse version from pubspec.yaml');
-    }
+    print('Error: Could not parse version from pubspec.yaml');
     return;
   }
 
@@ -59,7 +54,5 @@ void main() {
 
   final jsonContent = '${const JsonEncoder.withIndent('  ').convert(data)}\n';
   pagesVersionJsonFile.writeAsStringSync(jsonContent);
-  if (kDebugMode) {
-    print('Successfully generated version.json at pages/ with version: $version ($buildNumber)');
-  }
+  print('Successfully generated version.json at pages/ with version: $version ($buildNumber)');
 }
