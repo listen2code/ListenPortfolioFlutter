@@ -18,10 +18,10 @@ class ArchitectureWidget extends StatelessWidget {
       active: active,
       onLoading: _buildSkeleton(context),
       onRefresh: (viewModel, state) async {
-        viewModel?.handleIntent(const ArchitectureIntent.refresh());
+        viewModel.handleIntent(const ArchitectureIntent.refresh());
       },
       body: (context, child, viewModel, state) {
-        if (state == null || state.sections.isEmpty) return null;
+        if (state.sections.isEmpty) return null;
 
         return SingleChildScrollView(
           padding: EdgeInsets.all(20.f),
@@ -46,7 +46,7 @@ class ArchitectureWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildSection(BuildContext context, ArchitectureViewModel? viewModel, ArchitectureSection section) {
+  Widget _buildSection(BuildContext context, ArchitectureViewModel viewModel, ArchitectureSection section) {
     return Padding(
       padding: EdgeInsets.only(bottom: 25.f),
       child: _buildCard(
@@ -78,7 +78,7 @@ class ArchitectureWidget extends StatelessWidget {
                   isFullWidth: false,
                   padding: EdgeInsets.zero,
                   icon: Icons.link,
-                  onPressed: () => viewModel?.handleIntent(ArchitectureIntent.launchURL(section.linkUrl!)),
+                  onPressed: () => viewModel.handleIntent(ArchitectureIntent.launchURL(section.linkUrl!)),
                 ),
               ),
           ],

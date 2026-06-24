@@ -29,11 +29,7 @@ class ResumePage extends ConsumerWidget {
         ),
       ],
       body: (context, child, viewModel, state) {
-        if (state == null) return const SizedBox.shrink();
-
-        if (state.isLoading) {
-          return const Center(child: CircularProgressIndicator());
-        }
+        if (state.markdownContent.isEmpty) return null;
 
         if (state.errorMessage != null) {
           return Center(
@@ -48,17 +44,11 @@ class ResumePage extends ConsumerWidget {
                 CommonButton(
                   text: I18nKeys.retry.tr,
                   onPressed: () {
-                    viewModel?.handleIntent(const ResumeIntent.init());
+                    viewModel.handleIntent(const ResumeIntent.init());
                   },
                 ),
               ],
             ),
-          );
-        }
-
-        if (state.markdownContent.isEmpty) {
-          return Center(
-            child: CommonText(I18nKeys.emptyResume.tr),
           );
         }
 

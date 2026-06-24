@@ -27,7 +27,7 @@ class OverviewWidget extends StatelessWidget {
     return BaseRefreshPage<OverviewViewModel, OverviewState>(
       provider: overviewViewModelProvider,
       onRefresh: (viewModel, state) async {
-        viewModel?.handleIntent(const OverviewIntent.refresh());
+        viewModel.handleIntent(const OverviewIntent.refresh());
       },
       onLoading: _buildSkeleton(context),
       useScaffold: false,
@@ -62,7 +62,7 @@ class OverviewWidget extends StatelessWidget {
                 ],
               ),
             ),
-            _buildFeaturedProjects(context, state?.featuredProjects ?? []),
+            _buildFeaturedProjects(context, state.featuredProjects),
             SizedBox(height: 30.f),
           ],
         );
@@ -134,12 +134,12 @@ class OverviewWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildWelcomeHeader(BuildContext context, UserModel? userModel, OverviewState? state) {
+  Widget _buildWelcomeHeader(BuildContext context, UserModel? userModel, OverviewState state) {
     final accentColor = context.accentColor;
     final String name = userModel?.name ?? AppConstants.author;
-    final String jobTitle = state?.aboutMe?.jobTitle ?? 'Senior Android / Flutter Engineer';
-    final String graduationYear = state?.aboutMe?.graduationYear ?? '2013';
-    final String major = state?.aboutMe?.major?.tr ?? I18nKeys.softwareEngineering.tr;
+    final String jobTitle = state.aboutMe?.jobTitle ?? 'Senior Android / Flutter Engineer';
+    final String graduationYear = state.aboutMe?.graduationYear ?? '2013';
+    final String major = state.aboutMe?.major?.tr ?? I18nKeys.softwareEngineering.tr;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -174,9 +174,9 @@ class OverviewWidget extends StatelessWidget {
         ),
         SizedBox(height: 8.f),
         // Certifications section
-        if (state?.aboutMe?.certifications != null || userModel == null)
+        if (state.aboutMe?.certifications != null || userModel == null)
           Row(
-            children: (state?.aboutMe?.certifications ?? [I18nKeys.jlptN1, I18nKeys.bjtJ2])
+            children: (state.aboutMe?.certifications ?? [I18nKeys.jlptN1, I18nKeys.bjtJ2])
                 .map(
                   (certKey) => Padding(
                     padding: EdgeInsets.only(right: 8.f),
@@ -207,9 +207,9 @@ class OverviewWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusTag(BuildContext context, OverviewState? state) {
+  Widget _buildStatusTag(BuildContext context, OverviewState state) {
     return CommonBadge(
-      text: state?.aboutMe?.status?.tr ?? I18nKeys.availableStatus.tr,
+      text: state.aboutMe?.status?.tr ?? I18nKeys.availableStatus.tr,
       icon: Icons.circle,
       iconSize: 6.f,
       color: Colors.green.withValues(alpha: 0.1),
@@ -221,10 +221,10 @@ class OverviewWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildExperienceGrid(BuildContext context, OverviewState? state) {
+  Widget _buildExperienceGrid(BuildContext context, OverviewState state) {
     // If not logged in, we provide default experience data based on user.json logic
     final List<AboutMeStatModel> stats =
-        state?.aboutMe?.stats ??
+        state.aboutMe?.stats ??
         const [
           AboutMeStatModel(
             id: '1',
@@ -452,8 +452,8 @@ class OverviewWidget extends StatelessWidget {
   Widget _buildQuickActions(
     BuildContext context,
     UserModel? userModel,
-    OverviewViewModel? viewModel,
-    OverviewState? state,
+    OverviewViewModel viewModel,
+    OverviewState state,
   ) {
     final accentColor = context.accentColor;
     return Column(
@@ -492,8 +492,8 @@ class OverviewWidget extends StatelessWidget {
               I18nKeys.github.tr,
               Icons.code_rounded,
               Colors.grey,
-              () => viewModel?.handleIntent(
-                OverviewIntent.launchURL(state?.aboutMe?.github ?? AppConstants.github),
+              () => viewModel.handleIntent(
+                OverviewIntent.launchURL(state.aboutMe?.github ?? AppConstants.github),
               ),
             ),
             SizedBox(width: 12.f),
@@ -502,7 +502,7 @@ class OverviewWidget extends StatelessWidget {
               I18nKeys.contactMe.tr,
               Icons.alternate_email_rounded,
               Colors.grey,
-              () => viewModel?.handleIntent(
+              () => viewModel.handleIntent(
                 OverviewIntent.launchURL(
                   'mailto:${userModel?.email ?? AppConstants.mail}?subject=Portfolio%20Feedback',
                 ),

@@ -52,12 +52,11 @@ class HomePage extends ConsumerWidget {
       onLoading: _buildOverviewSkeleton(context),
       isEmptyTitle: false,
       body: (context, child, viewModel, state) {
-        if (state == null) return const SizedBox.shrink();
         // Use IndexedStack to persist sub-page states while driving lifecycles via active flag
         return IndexedStack(
           index: state.currentTab.index,
           children: [
-            OverviewWidget(active: state.currentTab == HomeTab.overview, homeViewModel: viewModel!),
+            OverviewWidget(active: state.currentTab == HomeTab.overview, homeViewModel: viewModel),
             AboutMeWidget(active: state.currentTab == HomeTab.aboutMe),
             ProjectsWidget(active: state.currentTab == HomeTab.projects),
             ArchitectureWidget(active: state.currentTab == HomeTab.architecture),

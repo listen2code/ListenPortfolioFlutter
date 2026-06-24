@@ -19,8 +19,6 @@ class AppearancePage extends ConsumerWidget {
       provider: appearanceViewModelProvider,
       padding: const EdgeInsets.all(20),
       body: (context, child, viewModel, state) {
-        if (state == null) return const SizedBox.shrink();
-
         return SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,7 +57,7 @@ class AppearancePage extends ConsumerWidget {
                   SwitchListTile(
                     value: state.useDynamicColor,
                     onChanged: (value) {
-                      viewModel?.handleIntent(AppearanceIntent.setUseDynamicColor(value));
+                      viewModel.handleIntent(AppearanceIntent.setUseDynamicColor(value));
                     },
                     title: CommonText(I18nKeys.dynamicColor.tr),
                     subtitle: CommonText(I18nKeys.dynamicColorSubtitle.tr),
@@ -163,7 +161,7 @@ class AppearancePage extends ConsumerWidget {
 
   Widget _buildThemeOption(
     BuildContext context,
-    AppearanceViewModel? viewModel,
+    AppearanceViewModel viewModel,
     String label,
     IconData icon,
     ThemeMode mode,
@@ -175,13 +173,13 @@ class AppearancePage extends ConsumerWidget {
       leading: SizedBox(width: 20, child: Icon(icon, color: isSelected ? accentColor : Colors.grey)),
       title: CommonText(label),
       trailing: isSelected ? Icon(Icons.check_circle, color: accentColor) : null,
-      onTap: () => viewModel?.handleIntent(AppearanceIntent.setThemeMode(mode)),
+      onTap: () => viewModel.handleIntent(AppearanceIntent.setThemeMode(mode)),
     );
   }
 
   Widget _buildFontSizeOption(
     BuildContext context,
-    AppearanceViewModel? viewModel,
+    AppearanceViewModel viewModel,
     String label,
     AppFontSize fontSize,
     AppearanceState state,
@@ -199,18 +197,18 @@ class AppearancePage extends ConsumerWidget {
       ),
       title: CommonText(label),
       trailing: isSelected ? Icon(Icons.check_circle, color: accentColor) : null,
-      onTap: () => viewModel?.handleIntent(AppearanceIntent.setFontSize(fontSize)),
+      onTap: () => viewModel.handleIntent(AppearanceIntent.setFontSize(fontSize)),
     );
   }
 
-  Widget _buildColorOption(AppearanceViewModel? viewModel, Color color, Color currentAccentColor) {
+  Widget _buildColorOption(AppearanceViewModel viewModel, Color color, Color currentAccentColor) {
     final isSelected = currentAccentColor.toARGB32() == color.toARGB32();
     return Center(
       child: CommonClickable(
         ripple: false,
         selected: isSelected,
         semanticLabel: I18nKeys.accentColorOption.tr,
-        onTap: () => viewModel?.handleIntent(AppearanceIntent.setAccentColor(color)),
+        onTap: () => viewModel.handleIntent(AppearanceIntent.setAccentColor(color)),
         child: Container(
           width: 48,
           height: 48,
@@ -230,7 +228,7 @@ class AppearancePage extends ConsumerWidget {
 
   Widget _buildCustomColorOption(
     BuildContext context,
-    AppearanceViewModel? viewModel,
+    AppearanceViewModel viewModel,
     Color currentAccentColor,
   ) {
     final isPreset = SettingManager.accentColors.any((c) => c.toARGB32() == currentAccentColor.toARGB32());
@@ -241,7 +239,7 @@ class AppearancePage extends ConsumerWidget {
         ripple: false,
         selected: isSelected,
         semanticLabel: I18nKeys.customColorOption.tr,
-        onTap: () => viewModel?.handleIntent(AppearanceIntent.showColorPicker(currentAccentColor)),
+        onTap: () => viewModel.handleIntent(AppearanceIntent.showColorPicker(currentAccentColor)),
         child: Container(
           width: 48,
           height: 48,

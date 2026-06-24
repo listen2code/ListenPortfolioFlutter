@@ -6,7 +6,6 @@ part 'resume_state.freezed.dart';
 @freezed
 abstract class ResumeState extends BaseState with _$ResumeState {
   const factory ResumeState({
-    @Default(false) bool isLoading,
     @Default('') String markdownContent,
     @Default(false) bool isExporting,
     String? errorMessage,

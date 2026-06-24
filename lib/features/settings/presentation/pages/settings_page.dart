@@ -18,8 +18,6 @@ class SettingsPage extends ConsumerWidget {
       title: I18nKeys.settings.tr,
       provider: settingsViewModelProvider,
       body: (context, child, viewModel, state) {
-        if (state == null) return const SizedBox.shrink();
-
         return SingleChildScrollView(
           padding: const EdgeInsets.all(20),
           child: Column(
@@ -33,7 +31,7 @@ class SettingsPage extends ConsumerWidget {
                   icon: Icons.palette_outlined,
                   title: I18nKeys.appearance.tr,
                   subtitle: I18nKeys.appearanceSubtitle.tr,
-                  onTap: () => viewModel?.handleIntent(const SettingsIntent.toAppearance()),
+                  onTap: () => viewModel.handleIntent(const SettingsIntent.toAppearance()),
                 ),
                 _buildListTile(
                   context,
@@ -43,7 +41,7 @@ class SettingsPage extends ConsumerWidget {
                     state.currentLanguage.label,
                     style: context.textTheme.bodySmall?.copyWith(color: Colors.grey),
                   ),
-                  onTap: () => viewModel?.handleIntent(const SettingsIntent.showLanguageDialog()),
+                  onTap: () => viewModel.handleIntent(const SettingsIntent.showLanguageDialog()),
                 ),
               ]),
 
@@ -57,21 +55,21 @@ class SettingsPage extends ConsumerWidget {
                   icon: Icons.lock_outline_rounded,
                   title: I18nKeys.changePassword.tr,
                   blurLevel: AuthBlurLevel.low,
-                  onTap: () => viewModel?.handleIntent(const SettingsIntent.toChangePassword()),
+                  onTap: () => viewModel.handleIntent(const SettingsIntent.toChangePassword()),
                 ),
                 _buildSwitchTile(
                   context,
                   icon: Icons.notifications_none_rounded,
                   title: I18nKeys.notifications.tr,
                   value: state.notificationsEnabled,
-                  onChanged: (val) => viewModel?.handleIntent(SettingsIntent.toggleNotifications(val)),
+                  onChanged: (val) => viewModel.handleIntent(SettingsIntent.toggleNotifications(val)),
                 ),
                 _buildListTile(
                   context,
                   icon: Icons.no_accounts_outlined,
                   title: I18nKeys.deleteAccount.tr,
                   blurLevel: AuthBlurLevel.low,
-                  onTap: () => viewModel?.handleIntent(const SettingsIntent.toDeleteAccount()),
+                  onTap: () => viewModel.handleIntent(const SettingsIntent.toDeleteAccount()),
                 ),
               ]),
 
@@ -88,13 +86,13 @@ class SettingsPage extends ConsumerWidget {
                     state.cacheSize,
                     style: context.textTheme.bodySmall?.copyWith(color: Colors.grey),
                   ),
-                  onTap: () => viewModel?.handleIntent(const SettingsIntent.clearCache()),
+                  onTap: () => viewModel.handleIntent(const SettingsIntent.clearCache()),
                 ),
                 _buildListTile(
                   context,
                   icon: Icons.restart_alt_rounded,
                   title: I18nKeys.resetSettings.tr,
-                  onTap: () => viewModel?.handleIntent(const SettingsIntent.resetSettings()),
+                  onTap: () => viewModel.handleIntent(const SettingsIntent.resetSettings()),
                 ),
               ]),
 
@@ -109,7 +107,7 @@ class SettingsPage extends ConsumerWidget {
                   title: I18nKeys.viewLogs.tr,
                   value: state.isLogOverlayShowing,
                   onChanged: (val) {
-                    viewModel?.handleIntent(SettingsIntent.toggleLogOverlay(val));
+                    viewModel.handleIntent(SettingsIntent.toggleLogOverlay(val));
                   },
                 ),
                 _buildListTile(
@@ -117,14 +115,14 @@ class SettingsPage extends ConsumerWidget {
                   icon: Icons.bug_report_outlined,
                   title: I18nKeys.crashReports.tr,
                   subtitle: I18nKeys.crashReportsSubtitle.tr,
-                  onTap: () => viewModel?.handleIntent(const SettingsIntent.toCrashLogs()),
+                  onTap: () => viewModel.handleIntent(const SettingsIntent.toCrashLogs()),
                 ),
                 _buildListTile(
                   context,
                   icon: Icons.settings_input_antenna_rounded,
                   title: I18nKeys.switchEnv.tr,
                   subtitle: '${I18nKeys.currentlyActive.tr}: ${state.currentEnv.name}',
-                  onTap: () => viewModel?.handleIntent(const SettingsIntent.showEnvDialog()),
+                  onTap: () => viewModel.handleIntent(const SettingsIntent.showEnvDialog()),
                 ),
                 if (kDebugMode || state.isDeveloperMode)
                   _buildListTile(
@@ -152,7 +150,7 @@ class SettingsPage extends ConsumerWidget {
                     icon: Icons.html,
                     title: 'WebView Test',
                     subtitle: 'WebView Dialog',
-                    onTap: () => viewModel?.handleIntent(const SettingsIntent.toWebViewTest()),
+                    onTap: () => viewModel.handleIntent(const SettingsIntent.toWebViewTest()),
                   ),
               ]),
 
@@ -166,19 +164,19 @@ class SettingsPage extends ConsumerWidget {
                   icon: Icons.coffee_outlined,
                   title: I18nKeys.buyMeCoffee.tr,
                   subtitle: I18nKeys.supportProject.tr,
-                  onTap: () => viewModel?.handleIntent(const SettingsIntent.buyMeCoffee()),
+                  onTap: () => viewModel.handleIntent(const SettingsIntent.buyMeCoffee()),
                 ),
                 _buildListTile(
                   context,
                   icon: Icons.share_outlined,
                   title: I18nKeys.shareApp.tr,
-                  onTap: () => viewModel?.handleIntent(const SettingsIntent.shareApp()),
+                  onTap: () => viewModel.handleIntent(const SettingsIntent.shareApp()),
                 ),
                 _buildListTile(
                   context,
                   icon: Icons.star_outline_rounded,
                   title: I18nKeys.rateApp.tr,
-                  onTap: () => viewModel?.handleIntent(const SettingsIntent.rateApp()),
+                  onTap: () => viewModel.handleIntent(const SettingsIntent.rateApp()),
                 ),
               ]),
 
@@ -191,28 +189,28 @@ class SettingsPage extends ConsumerWidget {
                   context,
                   icon: Icons.privacy_tip_outlined,
                   title: I18nKeys.privacyPolicy.tr,
-                  onTap: () => viewModel?.handleIntent(const SettingsIntent.toPrivacyPolicy()),
+                  onTap: () => viewModel.handleIntent(const SettingsIntent.toPrivacyPolicy()),
                 ),
                 _buildListTile(
                   context,
                   icon: Icons.gavel_outlined,
                   title: I18nKeys.termsOfService.tr,
-                  onTap: () => viewModel?.handleIntent(const SettingsIntent.toTermsOfService()),
+                  onTap: () => viewModel.handleIntent(const SettingsIntent.toTermsOfService()),
                 ),
                 _buildListTile(
                   context,
                   icon: Icons.info_outline_rounded,
                   title: I18nKeys.licenses.tr,
-                  onTap: () => viewModel?.handleIntent(const SettingsIntent.showLicenses()),
+                  onTap: () => viewModel.handleIntent(const SettingsIntent.showLicenses()),
                 ),
                 _buildListTile(
                   context,
                   icon: Icons.system_update_outlined,
                   title: I18nKeys.checkUpdates.tr,
-                  onTap: () => viewModel?.handleIntent(const SettingsIntent.checkUpdates()),
+                  onTap: () => viewModel.handleIntent(const SettingsIntent.checkUpdates()),
                 ),
                 _VersionTile(
-                  onTrigger: () => viewModel?.handleIntent(const SettingsIntent.enableDeveloperMode()),
+                  onTrigger: () => viewModel.handleIntent(const SettingsIntent.enableDeveloperMode()),
                 ),
               ]),
               SizedBox(height: 40.f),

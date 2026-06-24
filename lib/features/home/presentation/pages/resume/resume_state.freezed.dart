@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ResumeState {
 
- bool get isLoading; String get markdownContent; bool get isExporting; String? get errorMessage;
+ String get markdownContent; bool get isExporting; String? get errorMessage;
 /// Create a copy of ResumeState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $ResumeStateCopyWith<ResumeState> get copyWith => _$ResumeStateCopyWithImpl<Resu
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ResumeState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.markdownContent, markdownContent) || other.markdownContent == markdownContent)&&(identical(other.isExporting, isExporting) || other.isExporting == isExporting)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ResumeState&&(identical(other.markdownContent, markdownContent) || other.markdownContent == markdownContent)&&(identical(other.isExporting, isExporting) || other.isExporting == isExporting)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isLoading,markdownContent,isExporting,errorMessage);
+int get hashCode => Object.hash(runtimeType,markdownContent,isExporting,errorMessage);
 
 @override
 String toString() {
-  return 'ResumeState(isLoading: $isLoading, markdownContent: $markdownContent, isExporting: $isExporting, errorMessage: $errorMessage)';
+  return 'ResumeState(markdownContent: $markdownContent, isExporting: $isExporting, errorMessage: $errorMessage)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $ResumeStateCopyWith<$Res>  {
   factory $ResumeStateCopyWith(ResumeState value, $Res Function(ResumeState) _then) = _$ResumeStateCopyWithImpl;
 @useResult
 $Res call({
- bool isLoading, String markdownContent, bool isExporting, String? errorMessage
+ String markdownContent, bool isExporting, String? errorMessage
 });
 
 
@@ -62,10 +62,9 @@ class _$ResumeStateCopyWithImpl<$Res>
 
 /// Create a copy of ResumeState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? isLoading = null,Object? markdownContent = null,Object? isExporting = null,Object? errorMessage = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? markdownContent = null,Object? isExporting = null,Object? errorMessage = freezed,}) {
   return _then(_self.copyWith(
-isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
-as bool,markdownContent: null == markdownContent ? _self.markdownContent : markdownContent // ignore: cast_nullable_to_non_nullable
+markdownContent: null == markdownContent ? _self.markdownContent : markdownContent // ignore: cast_nullable_to_non_nullable
 as String,isExporting: null == isExporting ? _self.isExporting : isExporting // ignore: cast_nullable_to_non_nullable
 as bool,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,
@@ -153,10 +152,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isLoading,  String markdownContent,  bool isExporting,  String? errorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String markdownContent,  bool isExporting,  String? errorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ResumeState() when $default != null:
-return $default(_that.isLoading,_that.markdownContent,_that.isExporting,_that.errorMessage);case _:
+return $default(_that.markdownContent,_that.isExporting,_that.errorMessage);case _:
   return orElse();
 
 }
@@ -174,10 +173,10 @@ return $default(_that.isLoading,_that.markdownContent,_that.isExporting,_that.er
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isLoading,  String markdownContent,  bool isExporting,  String? errorMessage)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String markdownContent,  bool isExporting,  String? errorMessage)  $default,) {final _that = this;
 switch (_that) {
 case _ResumeState():
-return $default(_that.isLoading,_that.markdownContent,_that.isExporting,_that.errorMessage);case _:
+return $default(_that.markdownContent,_that.isExporting,_that.errorMessage);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -194,10 +193,10 @@ return $default(_that.isLoading,_that.markdownContent,_that.isExporting,_that.er
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isLoading,  String markdownContent,  bool isExporting,  String? errorMessage)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String markdownContent,  bool isExporting,  String? errorMessage)?  $default,) {final _that = this;
 switch (_that) {
 case _ResumeState() when $default != null:
-return $default(_that.isLoading,_that.markdownContent,_that.isExporting,_that.errorMessage);case _:
+return $default(_that.markdownContent,_that.isExporting,_that.errorMessage);case _:
   return null;
 
 }
@@ -209,10 +208,9 @@ return $default(_that.isLoading,_that.markdownContent,_that.isExporting,_that.er
 
 
 class _ResumeState extends ResumeState {
-  const _ResumeState({this.isLoading = false, this.markdownContent = '', this.isExporting = false, this.errorMessage}): super._();
+  const _ResumeState({this.markdownContent = '', this.isExporting = false, this.errorMessage}): super._();
   
 
-@override@JsonKey() final  bool isLoading;
 @override@JsonKey() final  String markdownContent;
 @override@JsonKey() final  bool isExporting;
 @override final  String? errorMessage;
@@ -227,16 +225,16 @@ _$ResumeStateCopyWith<_ResumeState> get copyWith => __$ResumeStateCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ResumeState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.markdownContent, markdownContent) || other.markdownContent == markdownContent)&&(identical(other.isExporting, isExporting) || other.isExporting == isExporting)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ResumeState&&(identical(other.markdownContent, markdownContent) || other.markdownContent == markdownContent)&&(identical(other.isExporting, isExporting) || other.isExporting == isExporting)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isLoading,markdownContent,isExporting,errorMessage);
+int get hashCode => Object.hash(runtimeType,markdownContent,isExporting,errorMessage);
 
 @override
 String toString() {
-  return 'ResumeState(isLoading: $isLoading, markdownContent: $markdownContent, isExporting: $isExporting, errorMessage: $errorMessage)';
+  return 'ResumeState(markdownContent: $markdownContent, isExporting: $isExporting, errorMessage: $errorMessage)';
 }
 
 
@@ -247,7 +245,7 @@ abstract mixin class _$ResumeStateCopyWith<$Res> implements $ResumeStateCopyWith
   factory _$ResumeStateCopyWith(_ResumeState value, $Res Function(_ResumeState) _then) = __$ResumeStateCopyWithImpl;
 @override @useResult
 $Res call({
- bool isLoading, String markdownContent, bool isExporting, String? errorMessage
+ String markdownContent, bool isExporting, String? errorMessage
 });
 
 
@@ -264,10 +262,9 @@ class __$ResumeStateCopyWithImpl<$Res>
 
 /// Create a copy of ResumeState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? isLoading = null,Object? markdownContent = null,Object? isExporting = null,Object? errorMessage = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? markdownContent = null,Object? isExporting = null,Object? errorMessage = freezed,}) {
   return _then(_ResumeState(
-isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
-as bool,markdownContent: null == markdownContent ? _self.markdownContent : markdownContent // ignore: cast_nullable_to_non_nullable
+markdownContent: null == markdownContent ? _self.markdownContent : markdownContent // ignore: cast_nullable_to_non_nullable
 as String,isExporting: null == isExporting ? _self.isExporting : isExporting // ignore: cast_nullable_to_non_nullable
 as bool,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,

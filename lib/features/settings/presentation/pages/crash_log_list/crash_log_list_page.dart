@@ -44,8 +44,6 @@ class CrashLogListPage extends ConsumerWidget {
         ),
       ],
       body: (context, child, viewModel, state) {
-        if (state == null) return const SizedBox.shrink();
-
         if (state.logs.isEmpty) {
           return Center(
             child: Column(
@@ -78,7 +76,7 @@ class CrashLogListPage extends ConsumerWidget {
 
   Widget _buildLogCard(
     BuildContext context,
-    CrashLogListViewModel? viewModel,
+    CrashLogListViewModel viewModel,
     File file,
     String name,
     String date,
@@ -133,14 +131,14 @@ class CrashLogListPage extends ConsumerWidget {
             ),
           ],
         ),
-        onTap: () => viewModel?.handleIntent(CrashLogListIntent.viewLog(file)),
+        onTap: () => viewModel.handleIntent(CrashLogListIntent.viewLog(file)),
         trailing: PopupMenuButton<String>(
           icon: const Icon(Icons.more_vert_rounded, color: Colors.grey),
           onSelected: (value) {
             if (value == 'share') {
-              viewModel?.handleIntent(CrashLogListIntent.shareLog(file));
+              viewModel.handleIntent(CrashLogListIntent.shareLog(file));
             } else if (value == 'delete') {
-              viewModel?.handleIntent(CrashLogListIntent.deleteLog(file));
+              viewModel.handleIntent(CrashLogListIntent.deleteLog(file));
             }
           },
           itemBuilder: (context) => [

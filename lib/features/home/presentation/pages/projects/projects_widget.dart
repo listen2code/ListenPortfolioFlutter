@@ -22,7 +22,7 @@ class ProjectsWidget extends StatelessWidget {
       onLoading: _buildSkeleton(context),
       itemSource: (state) => state.projects,
       onRefresh: (viewModel, state) async {
-        viewModel?.handleIntent(const ProjectsIntent.refresh());
+        viewModel.handleIntent(const ProjectsIntent.refresh());
       },
       itemBuilder: (context, viewModel, state, item, index) {
         final project = item as ProjectModel;
@@ -102,7 +102,7 @@ class ProjectsWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildProjectCard(BuildContext context, ProjectsViewModel? viewModel, ProjectModel project, Color baseColor) {
+  Widget _buildProjectCard(BuildContext context, ProjectsViewModel viewModel, ProjectModel project, Color baseColor) {
     final bool isTodo = project.subtitle == 'TODO';
     final hasImage = project.imageUrl != null && project.imageUrl!.isNotEmpty;
 
@@ -209,7 +209,7 @@ class ProjectsWidget extends StatelessWidget {
                           Icons.code,
                           I18nKeys.sourceCode.tr,
                           baseColor,
-                           onPressed: () => viewModel?.handleIntent(ProjectsIntent.launchURL(project.githubUrl!)),
+                           onPressed: () => viewModel.handleIntent(ProjectsIntent.launchURL(project.githubUrl!)),
                         ),
                       ),
                     ],

@@ -111,8 +111,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 type: TextFieldType.text,
                 labelText: I18nKeys.username.tr,
                 prefixIcon: Icons.person_outline,
-                errorText: state?.usernameError,
-                onChanged: (value) => viewModel?.handleIntent(LoginIntent.usernameChanged(value)),
+                errorText: state.usernameError,
+                onChanged: (value) => viewModel.handleIntent(LoginIntent.usernameChanged(value)),
               ),
               const SizedBox(height: 20),
               // Password
@@ -121,8 +121,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 type: TextFieldType.password,
                 labelText: I18nKeys.password.tr,
                 prefixIcon: Icons.lock_outline,
-                errorText: state?.passwordError,
-                onChanged: (value) => viewModel?.handleIntent(LoginIntent.passwordChanged(value)),
+                errorText: state.passwordError,
+                onChanged: (value) => viewModel.handleIntent(LoginIntent.passwordChanged(value)),
               ),
               // Remember Me & Forgot Password
               Row(
@@ -139,11 +139,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                             width: 24,
                             height: 24,
                             child: Checkbox(
-                              value: state?.rememberMe ?? false,
+                              value: state.rememberMe,
                               activeColor: accentColor,
                               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               onChanged: (value) =>
-                                  viewModel?.handleIntent(const LoginIntent.toggleRememberMe()),
+                                  viewModel.handleIntent(const LoginIntent.toggleRememberMe()),
                             ),
                           ),
                         ),
@@ -157,7 +157,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                             padding: EdgeInsets.zero,
                             foregroundColor: Colors.grey,
                             fontSize: 14.f,
-                            onPressed: () => viewModel?.handleIntent(const LoginIntent.toggleRememberMe()),
+                            onPressed: () => viewModel.handleIntent(const LoginIntent.toggleRememberMe()),
                           ),
                         ),
                       ],
@@ -173,7 +173,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       height: 40,
                       padding: EdgeInsets.zero,
                       fontSize: 14.f,
-                      onPressed: () => viewModel?.handleIntent(const LoginIntent.navigateToForgotPassword()),
+                      onPressed: () => viewModel.handleIntent(const LoginIntent.navigateToForgotPassword()),
                     ),
                   ),
                 ],
@@ -182,7 +182,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               // Buttons
               CommonButton(
                 text: I18nKeys.login.tr,
-                onPressed: () => viewModel?.handleIntent(const LoginIntent.submitLogin()),
+                onPressed: () => viewModel.handleIntent(const LoginIntent.submitLogin()),
                 borderRadius: 15,
                 height: 56,
               ),
@@ -191,7 +191,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 text: I18nKeys.skipForNow.tr,
                 type: ButtonType.text,
                 foregroundColor: Colors.grey,
-                onPressed: () => viewModel?.handleIntent(const LoginIntent.skipLogin()),
+                onPressed: () => viewModel.handleIntent(const LoginIntent.skipLogin()),
               ),
               const SizedBox(height: 10),
               Row(
@@ -208,7 +208,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     text: I18nKeys.signUp.tr,
                     type: ButtonType.text,
                     isFullWidth: false,
-                    onPressed: () => viewModel?.handleIntent(const LoginIntent.navigateToSignup()),
+                    onPressed: () => viewModel.handleIntent(const LoginIntent.navigateToSignup()),
                   ),
                 ],
               ),

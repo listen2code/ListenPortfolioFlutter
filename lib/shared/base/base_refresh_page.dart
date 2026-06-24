@@ -7,7 +7,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 /// A custom builder for [BaseRefreshPage] that provides the resolved [viewModel] and current [state].
 /// Modified to return [Widget?] to allow framework to handle default empty states.
 typedef BasePageBodyBuilder<V extends BaseViewModel<dynamic>, S extends BaseState> =
-    Widget? Function(BuildContext context, Widget? child, V? viewModel, S? state);
+    Widget? Function(BuildContext context, Widget? child, V viewModel, S state);
 
 /// A shared-layer wrapper for the core [BaseLifeCyclePage].
 /// This widget acts as a bridge between business-specific Riverpod providers
@@ -39,7 +39,7 @@ class BaseRefreshPage<V extends BaseViewModel<dynamic>, S extends BaseState> ext
   final bool useScaffold;
 
   /// The Riverpod Provider used to automatically resolve the [BaseViewModel] and [BaseState].
-  final ProviderListenable<S>? provider;
+  final ProviderListenable<S> provider;
 
   /// An explicitly provided [BaseViewModel] instance.
   final V? viewModel;
@@ -55,7 +55,7 @@ class BaseRefreshPage<V extends BaseViewModel<dynamic>, S extends BaseState> ext
 
   // --- Refresh Integration ---
   /// If provided, the page content will be wrapped in a [RefreshIndicator].
-  final Future<void> Function(V? viewModel, S? state)? onRefresh;
+  final Future<void> Function(V viewModel, S state)? onRefresh;
 
   /// Optional list of items. If provided, renders as a ListView.
   final List<dynamic>? items;
@@ -66,7 +66,7 @@ class BaseRefreshPage<V extends BaseViewModel<dynamic>, S extends BaseState> ext
 
   /// Builder for list items. Required if [items] or [itemSource] is provided.
   /// Takes the context, resolved viewModel, current state, item, and index.
-  final Widget Function(BuildContext context, V? viewModel, S? state, dynamic item, int index)? itemBuilder;
+  final Widget Function(BuildContext context, V viewModel, S state, dynamic item, int index)? itemBuilder;
 
   /// Optional UI-layer lifecycle listener.
   final PageLifecycle? lifecycle;
@@ -93,7 +93,7 @@ class BaseRefreshPage<V extends BaseViewModel<dynamic>, S extends BaseState> ext
     this.useGradientBackground = true,
     this.active = true,
     this.useScaffold = true,
-    this.provider,
+    required this.provider,
     this.viewModel,
     this.onEffect,
     this.onLoading,
@@ -110,16 +110,16 @@ class BaseRefreshPage<V extends BaseViewModel<dynamic>, S extends BaseState> ext
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // 1. Resolve the ViewModel instance
+    // 1. Resolve the current State
+    final state = ref.watch(provider);
+
+    // 2. Resolve the ViewModel instance
     final effectiveViewModel =
         viewModel ??
-        (provider != null ? ref.read((provider as dynamic).notifier as ProviderListenable) as V : null);
-
-    // 2. Resolve the current State
-    final state = provider != null ? ref.watch(provider!) as S? : null;
+        (ref.read((provider as dynamic).notifier as ProviderListenable) as V);
 
     // 3. Resolve items from either static [items] or dynamic [itemSource]
-    final effectiveItems = items ?? (state != null ? itemSource?.call(state) : null);
+    final effectiveItems = items ?? itemSource?.call(state);
 
     Widget? content;
     if (body != null) {

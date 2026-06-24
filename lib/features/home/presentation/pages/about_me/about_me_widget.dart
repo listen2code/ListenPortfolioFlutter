@@ -20,12 +20,12 @@ class AboutMeWidget extends StatelessWidget {
       provider: aboutMeViewModelProvider,
       useScaffold: false,
       onRefresh: (viewModel, state) async {
-        viewModel?.handleIntent(const AboutMeIntent.refresh());
+        viewModel.handleIntent(const AboutMeIntent.refresh());
       },
       onLoading: _buildSkeleton(context),
       active: active,
       body: (context, child, viewModel, state) {
-        final data = state?.data;
+        final data = state.data;
         // Returning null triggers the default empty view in BaseRefreshPage
         if (data == null) return null;
 
@@ -35,7 +35,7 @@ class AboutMeWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 40.f),
-              _buildHeader(context, viewModel!, state!),
+              _buildHeader(context, viewModel, state),
               if (data.bio != null) ...[
                 SizedBox(height: 35.f),
                 _buildBioSection(context, data.bio!, viewModel),

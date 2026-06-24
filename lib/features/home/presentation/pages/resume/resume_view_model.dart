@@ -19,7 +19,7 @@ class ResumeViewModel extends _$ResumeViewModel with ViewModelMixin<ResumeState,
   @override
   void onVisible() {
     super.onVisible();
-    if (state.markdownContent.isEmpty && !state.isLoading) {
+    if (state.markdownContent.isEmpty) {
       handleIntent(const ResumeIntent.init());
     }
   }
@@ -33,15 +33,16 @@ class ResumeViewModel extends _$ResumeViewModel with ViewModelMixin<ResumeState,
   }
 
   Future<void> _onInit() async {
-    updateState(state.copyWith(isLoading: true, errorMessage: null));
+    updateState(state.copyWith(errorMessage: null));
     await call<String>(
       ref.execute<String, BaseParam>(getResumeUseCaseProvider),
-      showLoading: false,
+      showLoading: true,
+      loadingType: LoadingType.page,
       onSuccess: (content) {
-        updateState(state.copyWith(isLoading: false, markdownContent: content));
+        updateState(state.copyWith(markdownContent: content));
       },
       onFailure: (failure) {
-        updateState(state.copyWith(isLoading: false, errorMessage: I18nKeys.errNetwork.tr));
+        updateState(state.copyWith(errorMessage: I18nKeys.errNetwork.tr));
       },
     );
   }

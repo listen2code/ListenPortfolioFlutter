@@ -18,8 +18,6 @@ class DeleteAccountPage extends ConsumerWidget {
       provider: deleteAccountViewModelProvider,
       padding: EdgeInsets.all(24.f),
       body: (context, child, viewModel, state) {
-        if (state == null) return const SizedBox.shrink();
-
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -60,7 +58,7 @@ class DeleteAccountPage extends ConsumerWidget {
                     height: 24.f,
                     child: Checkbox(
                       value: state.isConfirmed,
-                      onChanged: (val) => viewModel?.handleIntent(const DeleteAccountIntent.toggleConfirm()),
+                      onChanged: (val) => viewModel.handleIntent(const DeleteAccountIntent.toggleConfirm()),
                       activeColor: Colors.red,
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
@@ -74,7 +72,7 @@ class DeleteAccountPage extends ConsumerWidget {
                   padding: EdgeInsets.zero,
                   foregroundColor: context.isDark ? Colors.white70 : Colors.black87,
                   fontSize: 13.f,
-                  onPressed: () => viewModel?.handleIntent(const DeleteAccountIntent.toggleConfirm()),
+                  onPressed: () => viewModel.handleIntent(const DeleteAccountIntent.toggleConfirm()),
                 ),
               ],
             ),
@@ -82,7 +80,7 @@ class DeleteAccountPage extends ConsumerWidget {
             CommonButton(
               text: I18nKeys.deleteAccount.tr,
               onPressed: state.isConfirmed
-                  ? () => viewModel?.handleIntent(const DeleteAccountIntent.deleteAccount())
+                  ? () => viewModel.handleIntent(const DeleteAccountIntent.deleteAccount())
                   : null,
               backgroundColor: Colors.red,
               borderRadius: 12.f,
