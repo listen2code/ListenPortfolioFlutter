@@ -1,10 +1,10 @@
 {
-  "version": "1.0.49",
+  "version": "1.0.50",
   "buildNumber": 1,
   "url": "https://play.google.com/store/apps/details?id=com.listen.portfolio.listen_portfolio_flutter",
   "changelog": {
     "zh": "",
-    "en": "Add Markdown and Pdf",
+    "en": "Daily build",
     "ja": ""
   }
 }
