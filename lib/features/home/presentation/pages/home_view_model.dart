@@ -65,7 +65,6 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
   FutureOr<void> onIntent(HomeIntent intent) {
     return intent.when<FutureOr<void>>(
       tabChanged: _onTabChanged,
-      refresh: _onRefresh,
       logout: _onLogout,
       toSettings: () => emitEffect(NavigationEffect(target: Routes.settings)),
       toAppearance: () => emitEffect(NavigationEffect(target: Routes.appearance)),
@@ -77,12 +76,7 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
     emitEffect(NavigationEffect.back());
   }
 
-  Future<void> _onRefresh() async {
-    emitEffect(LoadingEffect(true));
-    // Simulate data loading
-    await Future<void>.delayed(const Duration(milliseconds: 1500));
-    emitEffect(LoadingEffect(false));
-  }
+
 
   void _onLogout() {
     if (authManager.state.isGuest) {

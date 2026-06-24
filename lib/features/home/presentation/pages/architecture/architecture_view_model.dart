@@ -4,18 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:listen_core/core.dart';
 import '../../../../../shared/shared.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
- 
+
 import 'architecture_intent.dart';
 import 'architecture_state.dart';
- 
+
 part 'architecture_view_model.g.dart';
- 
+
 @riverpod
 class ArchitectureViewModel extends _$ArchitectureViewModel
     with ViewModelMixin<ArchitectureState, ArchitectureIntent> {
   @override
   ArchitectureState build() => const ArchitectureState();
- 
+
   @override
   void onVisible() {
     super.onVisible();
@@ -23,7 +23,7 @@ class ArchitectureViewModel extends _$ArchitectureViewModel
       handleIntent(const ArchitectureIntent.refresh());
     }
   }
- 
+
   @override
   FutureOr<void> onIntent(ArchitectureIntent intent) {
     return intent.when<FutureOr<void>>(
@@ -59,7 +59,7 @@ class ArchitectureViewModel extends _$ArchitectureViewModel
         title: I18nKeys.openSourceTitle.tr,
         icon: Icons.code_rounded,
         content: I18nKeys.openSourceDesc.tr,
-        linkLabel: 'github.com/listen2code',
+        linkLabel: AppConstants.github,
         linkUrl: AppConstants.github,
       ),
       ArchitectureSection(
