@@ -6,7 +6,7 @@ part 'home_intent.freezed.dart';
 
 @freezed
 class HomeIntent extends BaseIntent with _$HomeIntent {
-  const factory HomeIntent.tabChanged(HomeTab tab) = _TabChanged;
+  const factory HomeIntent.tabChanged(HomeTab tab, {@Default(false) bool closeDrawer}) = _TabChanged;
   const factory HomeIntent.logout() = _Logout;
   const factory HomeIntent.toSettings() = _ToSettings;
   const factory HomeIntent.toAppearance() = _ToAppearance;

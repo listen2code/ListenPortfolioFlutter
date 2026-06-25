@@ -47,7 +47,7 @@ class OverviewWidget extends StatelessWidget {
                   SizedBox(height: 24.f),
                   _buildExperienceGrid(context, state),
                   SizedBox(height: 28.f),
-                  _buildSectionHeader(context, I18nKeys.quickActions.tr, showSeeAll: false, onPressed: () {}),
+                  _buildSectionHeader(context, I18nKeys.quickActions.tr ),
                   SizedBox(height: 12.f),
                   _buildQuickActions(context, userModel, viewModel, state),
                   SizedBox(height: 28.f),
@@ -423,7 +423,7 @@ class OverviewWidget extends StatelessWidget {
     BuildContext context,
     String title, {
     bool showSeeAll = false,
-    required VoidCallback onPressed,
+    VoidCallback? onPressed,
   }) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,

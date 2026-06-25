@@ -41,9 +41,6 @@ class BaseRefreshPage<V extends BaseViewModel<dynamic>, S extends BaseState> ext
   /// The Riverpod Provider used to automatically resolve the [BaseViewModel] and [BaseState].
   final ProviderListenable<S> provider;
 
-  /// An explicitly provided [BaseViewModel] instance.
-  final V? viewModel;
-
   /// Callback for handling custom business side effects.
   final void Function(BaseEffect effect)? onEffect;
 
@@ -94,7 +91,6 @@ class BaseRefreshPage<V extends BaseViewModel<dynamic>, S extends BaseState> ext
     this.active = true,
     this.useScaffold = true,
     required this.provider,
-    this.viewModel,
     this.onEffect,
     this.onLoading,
     this.onEmpty,
@@ -114,11 +110,9 @@ class BaseRefreshPage<V extends BaseViewModel<dynamic>, S extends BaseState> ext
     final state = ref.watch(provider);
 
     // 2. Resolve the ViewModel instance
-    final effectiveViewModel =
-        viewModel ??
-        (ref.read((provider as dynamic).notifier as ProviderListenable) as V);
+    final effectiveViewModel = ref.read((provider as dynamic).notifier as ProviderListenable) as V;
 
-    // 3. Resolve items from either static [items] or dynamic [itemSource]
+    // 3. Resolve items from either static [items]- or dynamic [itemSource]
     final effectiveItems = items ?? itemSource?.call(state);
 
     Widget? content;

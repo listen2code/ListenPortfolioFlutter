@@ -86,7 +86,9 @@ class HomePage extends ConsumerWidget {
                     icon: Icons.dashboard_customize_outlined,
                     label: I18nKeys.overview.tr,
                     isSelected: state.currentTab == HomeTab.overview,
-                    onTap: () => viewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.overview)),
+                    onTap: () => viewModel.handleIntent(
+                      const HomeIntent.tabChanged(HomeTab.overview, closeDrawer: true),
+                    ),
                   ),
                   _buildDrawerItem(
                     context,
@@ -95,7 +97,9 @@ class HomePage extends ConsumerWidget {
                     blurLevel: AuthBlurLevel.low,
                     isSelected: state.currentTab == HomeTab.aboutMe,
                     onTap: () => AppNav.tryLogin(
-                      onSuccess: () => viewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.aboutMe)),
+                      onSuccess: () => viewModel.handleIntent(
+                        const HomeIntent.tabChanged(HomeTab.aboutMe, closeDrawer: true),
+                      ),
                     ),
                   ),
                   _buildDrawerItem(
@@ -103,14 +107,18 @@ class HomePage extends ConsumerWidget {
                     icon: Icons.rocket_launch_outlined,
                     label: I18nKeys.featuredProjects.tr,
                     isSelected: state.currentTab == HomeTab.projects,
-                    onTap: () => viewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.projects)),
+                    onTap: () => viewModel.handleIntent(
+                      const HomeIntent.tabChanged(HomeTab.projects, closeDrawer: true),
+                    ),
                   ),
                   _buildDrawerItem(
                     context,
                     icon: Icons.account_tree_outlined,
                     label: I18nKeys.architecture.tr,
                     isSelected: state.currentTab == HomeTab.architecture,
-                    onTap: () => viewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.architecture)),
+                    onTap: () => viewModel.handleIntent(
+                      const HomeIntent.tabChanged(HomeTab.architecture, closeDrawer: true),
+                    ),
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 10.f, horizontal: 10.f),

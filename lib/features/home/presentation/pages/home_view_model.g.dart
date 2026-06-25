@@ -41,7 +41,7 @@ final class HomeViewModelProvider
   }
 }
 
-String _$homeViewModelHash() => r'b160a4895b3303d5b0bda24077ea016673a452d3';
+String _$homeViewModelHash() => r'84c32f872ad3393bcd46d4a85b2cb3662f3fdc7c';
 
 abstract class _$HomeViewModel extends $Notifier<HomeState> {
   HomeState build();

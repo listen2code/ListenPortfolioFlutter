@@ -71,9 +71,11 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
     );
   }
 
-  Future<void> _onTabChanged(HomeTab tab) async {
+  Future<void> _onTabChanged(HomeTab tab, bool closeDrawer) async {
     updateState(state.copyWith(currentTab: tab));
-    emitEffect(NavigationEffect.back());
+    if (closeDrawer) {
+      emitEffect(NavigationEffect.back());
+    }
   }
 
 
