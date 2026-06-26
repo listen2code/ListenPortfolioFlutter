@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:listen_uikit/uikit.dart';
 
-import '../../../../../../shared/shared.dart';
+import '../../../../../shared/shared.dart';
 
 class CoffeeProductCard extends StatelessWidget {
   final ProductDetails product;

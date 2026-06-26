@@ -6,7 +6,7 @@ import 'package:listen_core/core.dart';
 import 'package:listen_uikit/uikit.dart';
 
 import '../../../../../shared/shared.dart';
-import 'widgets/coffee_product_card.dart';
+import 'coffee_product_card.dart';
 
 class CoffeePurchaseBottomSheet extends StatefulWidget {
   const CoffeePurchaseBottomSheet({super.key});

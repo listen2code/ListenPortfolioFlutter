@@ -2,7 +2,7 @@ name: listen_portfolio_flutter
 description: "Portfolio of Listen"
 publish_to: 'none'
 
-version: 1.0.51
+version: 1.0.52
 desc: "Fix Widgets"
 desc_zh: ""
 desc_ja: ""
@@ -71,7 +71,7 @@ dependencies:
   cached_network_image: ^3.4.1
   flutter_svg: ^2.2.3
   uuid: ^4.5.3
-  share_plus: ^13.1.0
+  share_plus: ^13.2.0
   visibility_detector: ^0.4.0+2
   flutter_markdown_plus: ^1.0.1
   markdown: ^7.3.0

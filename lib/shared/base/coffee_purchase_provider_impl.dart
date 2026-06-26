@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:listen_core/core.dart';
-import '../../features/settings/presentation/pages/components/coffee_purchase_bottom_sheet.dart';
+import '../../features/settings/presentation/pages/widgets/coffee_purchase_bottom_sheet.dart';
 
 class CoffeePurchaseEffect extends BaseEffect {
   CoffeePurchaseEffect();
