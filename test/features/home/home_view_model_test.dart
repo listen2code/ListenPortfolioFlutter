@@ -6,6 +6,8 @@ import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_s
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_view_model.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   group('HomeViewModel Tests', () {
     late ProviderContainer container;
     late HomeViewModel viewModel;

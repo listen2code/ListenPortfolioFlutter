@@ -11,14 +11,14 @@ import '../models/about_me_model.dart';
 class AboutMeRepositoryImpl with BaseRepository implements AboutMeRepository {
   final AboutMeRemoteDataSource remoteDataSource;
   final AboutMeLocalDataSource localDataSource;
-  final ResumeRemoteDataSource resumeRemoteDataSource;
-  final ResumeLocalDataSource resumeLocalDataSource;
+  final ResumeRemoteDataSource? resumeRemoteDataSource;
+  final ResumeLocalDataSource? resumeLocalDataSource;
 
   AboutMeRepositoryImpl({
     required this.remoteDataSource,
     required this.localDataSource,
-    required this.resumeRemoteDataSource,
-    required this.resumeLocalDataSource,
+    this.resumeRemoteDataSource,
+    this.resumeLocalDataSource,
   });
 
   @override
@@ -32,9 +32,12 @@ class AboutMeRepositoryImpl with BaseRepository implements AboutMeRepository {
 
   @override
   Future<Either<Failure, String>> getResumeMarkdown() async {
+    if (resumeRemoteDataSource == null || resumeLocalDataSource == null) {
+      return Left(ServerFailure('Resume data sources not provided'));
+    }
     try {
-      final result = await resumeRemoteDataSource.getResumeMarkdown();
-      await resumeLocalDataSource.cacheResume(result);
+      final result = await resumeRemoteDataSource!.getResumeMarkdown();
+      await resumeLocalDataSource!.cacheResume(result);
       return Right(result);
     } catch (e, stackTrace) {
       appLogger.e(
@@ -43,7 +46,7 @@ class AboutMeRepositoryImpl with BaseRepository implements AboutMeRepository {
         stackTrace: stackTrace,
       );
       try {
-        final cached = await resumeLocalDataSource.getCachedResume();
+        final cached = await resumeLocalDataSource!.getCachedResume();
         if (cached != null && cached.isNotEmpty) {
           return Right(cached);
         }

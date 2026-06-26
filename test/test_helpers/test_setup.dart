@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:listen_core/core.dart';
 
@@ -39,6 +40,14 @@ class MockEnvConfig implements BaseEnvConfig {
 /// Initialize test environment for all tests that require network access
 Future<void> setupTestEnvironment() async {
   TestWidgetsFlutterBinding.ensureInitialized();
+  
+  // Mock the connectivity_plus platform channel to simulate wifi connection
+  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+      .setMockMethodCallHandler(
+        const MethodChannel('dev.fluttercommunity.plus/connectivity'),
+        (MethodCall call) async => ['wifi'],
+      );
+
   try {
     // Initialize global AppEnv to prevent exceptions when ApiClient is accessed.
     await AppEnv.init([TestEnvConfig(), MockEnvConfig()]);

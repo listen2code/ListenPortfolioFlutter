@@ -71,7 +71,7 @@ void main() {
       when(
         () => mockRemote.getAboutMe(),
       ).thenAnswer((_) async => successResponse);
-      when(() => mockLocal.cacheAboutMe(any())).thenAnswer((_) async {});
+      when(() => mockLocal.cacheAboutMe(testAboutMe)).thenAnswer((_) async {});
 
       // Act
       final result = await repository.getAboutMe();
@@ -85,7 +85,7 @@ void main() {
         expect(data.jobTitle, testAboutMe.jobTitle);
       });
       verify(() => mockRemote.getAboutMe()).called(1);
-      verify(() => mockLocal.cacheAboutMe(any())).called(1);
+      verify(() => mockLocal.cacheAboutMe(testAboutMe)).called(1);
     });
 
     test('should cache data after successful remote fetch', () async {
@@ -93,13 +93,13 @@ void main() {
       when(
         () => mockRemote.getAboutMe(),
       ).thenAnswer((_) async => successResponse);
-      when(() => mockLocal.cacheAboutMe(any())).thenAnswer((_) async {});
+      when(() => mockLocal.cacheAboutMe(testAboutMe)).thenAnswer((_) async {});
 
       // Act
       await repository.getAboutMe();
 
       // Assert — cache must be written exactly once
-      verify(() => mockLocal.cacheAboutMe(any())).called(1);
+      verify(() => mockLocal.cacheAboutMe(testAboutMe)).called(1);
     });
 
     test(
