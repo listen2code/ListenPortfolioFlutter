@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:listen_core/core.dart';
-import 'login_intent.dart';
+
+import '../../../../../shared/shared.dart';
 import 'login_state.dart';
 import 'login_view_model.dart';
-import '../../../../../generated/r.dart';
-import '../../../../../shared/shared.dart';
-import 'package:listen_uikit/uikit.dart';
+import 'widgets/login_action_buttons.dart';
+import 'widgets/login_form_fields.dart';
+import 'widgets/login_header.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
@@ -51,8 +51,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       }
     });
 
-    final accentColor = context.accentColor;
-
     return BaseRefreshPage<LoginViewModel, LoginState>(
       provider: loginViewModelProvider,
       body: (context, child, viewModel, state) {
@@ -61,156 +59,17 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 40),
-              // Logo
-              Hero(
-                tag: 'logo',
-                child: Center(
-                  child: Container(
-                    padding: const EdgeInsets.all(15),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: accentColor.withValues(alpha: 0.3),
-                          blurRadius: 20,
-                          offset: const Offset(0, 10),
-                        ),
-                      ],
-                    ),
-                    child: CommonImage.asset(
-                      R.imagesIcLauncherAdaptiveFore,
-                      width: 60,
-                      height: 60,
-                      color: accentColor,
-                      semanticLabel: I18nKeys.appLogoSemanticLabel.tr,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 30),
-              // Header
-              Column(
-                children: [
-                  CommonText(
-                    I18nKeys.welcomeBack.tr,
-                    style: context.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 8),
-                  CommonText(
-                    I18nKeys.signInToContinue.tr,
-                    style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey),
-                  ),
-                ],
-              ),
+              const LoginHeader(),
               const SizedBox(height: 50),
-              // Username
-              CommonTextField(
-                controller: _usernameController,
-                type: TextFieldType.text,
-                labelText: I18nKeys.username.tr,
-                prefixIcon: Icons.person_outline,
-                errorText: state.usernameError,
-                onChanged: (value) => viewModel.handleIntent(LoginIntent.usernameChanged(value)),
-              ),
-              const SizedBox(height: 20),
-              // Password
-              CommonTextField(
-                controller: _passwordController,
-                type: TextFieldType.password,
-                labelText: I18nKeys.password.tr,
-                prefixIcon: Icons.lock_outline,
-                errorText: state.passwordError,
-                onChanged: (value) => viewModel.handleIntent(LoginIntent.passwordChanged(value)),
-              ),
-              // Remember Me & Forgot Password
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    flex: 3,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Transform.translate(
-                          offset: const Offset(0, 1),
-                          child: SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: Checkbox(
-                              value: state.rememberMe,
-                              activeColor: accentColor,
-                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              onChanged: (value) =>
-                                  viewModel.handleIntent(const LoginIntent.toggleRememberMe()),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Flexible(
-                          child: CommonButton(
-                            text: I18nKeys.rememberMe.tr,
-                            type: ButtonType.text,
-                            isFullWidth: false,
-                            height: 40,
-                            padding: EdgeInsets.zero,
-                            foregroundColor: Colors.grey,
-                            fontSize: 14.f,
-                            onPressed: () => viewModel.handleIntent(const LoginIntent.toggleRememberMe()),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Flexible(
-                    flex: 2,
-                    child: CommonButton(
-                      text: I18nKeys.forgotPassword.tr,
-                      type: ButtonType.text,
-                      isFullWidth: false,
-                      height: 40,
-                      padding: EdgeInsets.zero,
-                      fontSize: 14.f,
-                      onPressed: () => viewModel.handleIntent(const LoginIntent.navigateToForgotPassword()),
-                    ),
-                  ),
-                ],
+              LoginFormFields(
+                usernameController: _usernameController,
+                passwordController: _passwordController,
+                viewModel: viewModel,
+                state: state,
               ),
               const SizedBox(height: 30),
-              // Buttons
-              CommonButton(
-                text: I18nKeys.login.tr,
-                onPressed: () => viewModel.handleIntent(const LoginIntent.submitLogin()),
-                borderRadius: 15,
-                height: 56,
-              ),
-              const SizedBox(height: 15),
-              CommonButton(
-                text: I18nKeys.skipForNow.tr,
-                type: ButtonType.text,
-                foregroundColor: Colors.grey,
-                onPressed: () => viewModel.handleIntent(const LoginIntent.skipLogin()),
-              ),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Flexible(
-                    child: CommonText(
-                      I18nKeys.noAccount.tr,
-                      style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  CommonButton(
-                    text: I18nKeys.signUp.tr,
-                    type: ButtonType.text,
-                    isFullWidth: false,
-                    onPressed: () => viewModel.handleIntent(const LoginIntent.navigateToSignup()),
-                  ),
-                ],
+              LoginActionButtons(
+                viewModel: viewModel,
               ),
               const SizedBox(height: 40),
             ],
@@ -220,3 +79,4 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     );
   }
 }
+
