@@ -6,6 +6,7 @@ import 'package:listen_core/core.dart';
 import 'package:listen_uikit/uikit.dart';
 
 import '../../../../../shared/shared.dart';
+import 'widgets/coffee_product_card.dart';
 
 class CoffeePurchaseBottomSheet extends StatefulWidget {
   const CoffeePurchaseBottomSheet({super.key});
@@ -152,53 +153,17 @@ class _CoffeePurchaseBottomSheetState extends State<CoffeePurchaseBottomSheet> w
       );
     }
 
-    return Column(children: _products.map((product) => _buildProductCard(context, product)).toList());
-  }
-
-  Widget _buildProductCard(BuildContext context, ProductDetails product) {
-    final accentColor = context.accentColor;
-    final isTier3 = product.id == AppConstants.coffeeTier3;
-    final isTier2 = product.id == AppConstants.coffeeTier2;
-    final icon = isTier3
-        ? Icons.local_fire_department_rounded
-        : (isTier2 ? Icons.coffee_maker : Icons.coffee);
-
-    return Card(
-      margin: EdgeInsets.only(bottom: 12.f),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.f)),
-      elevation: 0,
-      color: context.theme.cardColor,
-      child: ListTile(
-        contentPadding: EdgeInsets.symmetric(horizontal: 16.f, vertical: 8.f),
-        leading: Container(
-          padding: EdgeInsets.all(10.f),
-          decoration: BoxDecoration(color: accentColor.withValues(alpha: 0.08), shape: BoxShape.circle),
-          child: Icon(icon, color: accentColor, size: 24.f),
-        ),
-        title: CommonText(
-          _cleanTitle(product.title),
-          style: context.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
-        ),
-        subtitle: CommonText(
-          product.description,
-          style: context.textTheme.labelSmall?.copyWith(color: Colors.grey),
-        ),
-        trailing: SizedBox(
-          width: 90.f,
-          child: CommonButton(
-            text: product.price,
-            onPressed: () => _buyProduct(product),
-            isLoading: _isPurchasing && _purchasingProductId == product.id,
-            isFullWidth: false,
-            padding: EdgeInsets.zero,
-          ),
-        ),
-      ),
+    return Column(
+      children: _products
+          .map(
+            (product) => CoffeeProductCard(
+              product: product,
+              isPurchasing: _isPurchasing && _purchasingProductId == product.id,
+              onBuyProduct: _buyProduct,
+            ),
+          )
+          .toList(),
     );
-  }
-
-  String _cleanTitle(String title) {
-    return title.substring(0, title.indexOf('('));
   }
 
   @override

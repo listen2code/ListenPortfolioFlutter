@@ -37,3 +37,8 @@ export 'utils/routes.dart';
 export 'widgets/common_auth_text.dart';
 export 'widgets/common_section_header.dart';
 export 'widgets/common_timeline_item.dart';
+export 'widgets/common_settings_section_title.dart';
+export 'widgets/common_settings_card.dart';
+export 'widgets/common_settings_tile.dart';
+export 'widgets/common_settings_switch_tile.dart';
+

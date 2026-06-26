@@ -8,6 +8,7 @@ import '../../../../shared/shared.dart';
 import 'settings_intent.dart';
 import 'settings_state.dart';
 import 'settings_view_model.dart';
+import 'widgets/settings_version_tile.dart';
 
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
@@ -24,17 +25,15 @@ class SettingsPage extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // 1. PREFERENCES: UI and localization
-              _buildSectionTitle(context, I18nKeys.general.tr),
-              _buildSettingsCard(context, [
-                _buildListTile(
-                  context,
+              CommonSettingsSectionTitle(title: I18nKeys.general.tr),
+              CommonSettingsCard(children: [
+                CommonSettingsTile(
                   icon: Icons.palette_outlined,
                   title: I18nKeys.appearance.tr,
                   subtitle: I18nKeys.appearanceSubtitle.tr,
                   onTap: () => viewModel.handleIntent(const SettingsIntent.toAppearance()),
                 ),
-                _buildListTile(
-                  context,
+                CommonSettingsTile(
                   icon: Icons.language_outlined,
                   title: I18nKeys.language.tr,
                   trailing: CommonText(
@@ -48,24 +47,21 @@ class SettingsPage extends ConsumerWidget {
               SizedBox(height: 25.f),
 
               // 2. ACCOUNT & SECURITY
-              _buildSectionTitle(context, I18nKeys.account.tr),
-              _buildSettingsCard(context, [
-                _buildListTile(
-                  context,
+              CommonSettingsSectionTitle(title: I18nKeys.account.tr),
+              CommonSettingsCard(children: [
+                CommonSettingsTile(
                   icon: Icons.lock_outline_rounded,
                   title: I18nKeys.changePassword.tr,
                   blurLevel: AuthBlurLevel.low,
                   onTap: () => viewModel.handleIntent(const SettingsIntent.toChangePassword()),
                 ),
-                _buildSwitchTile(
-                  context,
+                CommonSettingsSwitchTile(
                   icon: Icons.notifications_none_rounded,
                   title: I18nKeys.notifications.tr,
                   value: state.notificationsEnabled,
                   onChanged: (val) => viewModel.handleIntent(SettingsIntent.toggleNotifications(val)),
                 ),
-                _buildListTile(
-                  context,
+                CommonSettingsTile(
                   icon: Icons.no_accounts_outlined,
                   title: I18nKeys.deleteAccount.tr,
                   blurLevel: AuthBlurLevel.low,
@@ -76,10 +72,9 @@ class SettingsPage extends ConsumerWidget {
               SizedBox(height: 25.f),
 
               // 3. STORAGE & MAINTENANCE
-              _buildSectionTitle(context, I18nKeys.systemStorage.tr),
-              _buildSettingsCard(context, [
-                _buildListTile(
-                  context,
+              CommonSettingsSectionTitle(title: I18nKeys.systemStorage.tr),
+              CommonSettingsCard(children: [
+                CommonSettingsTile(
                   icon: Icons.cleaning_services_outlined,
                   title: I18nKeys.clearCache.tr,
                   trailing: CommonText(
@@ -88,8 +83,7 @@ class SettingsPage extends ConsumerWidget {
                   ),
                   onTap: () => viewModel.handleIntent(const SettingsIntent.clearCache()),
                 ),
-                _buildListTile(
-                  context,
+                CommonSettingsTile(
                   icon: Icons.restart_alt_rounded,
                   title: I18nKeys.resetSettings.tr,
                   onTap: () => viewModel.handleIntent(const SettingsIntent.resetSettings()),
@@ -99,10 +93,9 @@ class SettingsPage extends ConsumerWidget {
               SizedBox(height: 25.f),
 
               // 4. DEVELOPER TOOLS
-              _buildSectionTitle(context, I18nKeys.developer.tr),
-              _buildSettingsCard(context, [
-                _buildSwitchTile(
-                  context,
+              CommonSettingsSectionTitle(title: I18nKeys.developer.tr),
+              CommonSettingsCard(children: [
+                CommonSettingsSwitchTile(
                   icon: Icons.terminal_rounded,
                   title: I18nKeys.viewLogs.tr,
                   value: state.isLogOverlayShowing,
@@ -110,23 +103,20 @@ class SettingsPage extends ConsumerWidget {
                     viewModel.handleIntent(SettingsIntent.toggleLogOverlay(val));
                   },
                 ),
-                _buildListTile(
-                  context,
+                CommonSettingsTile(
                   icon: Icons.bug_report_outlined,
                   title: I18nKeys.crashReports.tr,
                   subtitle: I18nKeys.crashReportsSubtitle.tr,
                   onTap: () => viewModel.handleIntent(const SettingsIntent.toCrashLogs()),
                 ),
-                _buildListTile(
-                  context,
+                CommonSettingsTile(
                   icon: Icons.settings_input_antenna_rounded,
                   title: I18nKeys.switchEnv.tr,
                   subtitle: '${I18nKeys.currentlyActive.tr}: ${state.currentEnv.name}',
                   onTap: () => viewModel.handleIntent(const SettingsIntent.showEnvDialog()),
                 ),
                 if (kDebugMode || state.isDeveloperMode)
-                  _buildListTile(
-                    context,
+                  CommonSettingsTile(
                     icon: Icons.notification_important_outlined,
                     title: 'Push Test',
                     subtitle: '触发前台推送通知横幅模拟',
@@ -145,8 +135,7 @@ class SettingsPage extends ConsumerWidget {
                     },
                   ),
                 if (kDebugMode || state.isDeveloperMode)
-                  _buildListTile(
-                    context,
+                  CommonSettingsTile(
                     icon: Icons.html,
                     title: 'WebView Test',
                     subtitle: 'WebView Dialog',
@@ -157,23 +146,20 @@ class SettingsPage extends ConsumerWidget {
               SizedBox(height: 25.f),
 
               // 4.5 SUPPORT & SHARE
-              _buildSectionTitle(context, I18nKeys.supportAndShare.tr),
-              _buildSettingsCard(context, [
-                _buildListTile(
-                  context,
+              CommonSettingsSectionTitle(title: I18nKeys.supportAndShare.tr),
+              CommonSettingsCard(children: [
+                CommonSettingsTile(
                   icon: Icons.coffee_outlined,
                   title: I18nKeys.buyMeCoffee.tr,
                   subtitle: I18nKeys.supportProject.tr,
                   onTap: () => viewModel.handleIntent(const SettingsIntent.buyMeCoffee()),
                 ),
-                _buildListTile(
-                  context,
+                CommonSettingsTile(
                   icon: Icons.share_outlined,
                   title: I18nKeys.shareApp.tr,
                   onTap: () => viewModel.handleIntent(const SettingsIntent.shareApp()),
                 ),
-                _buildListTile(
-                  context,
+                CommonSettingsTile(
                   icon: Icons.star_outline_rounded,
                   title: I18nKeys.rateApp.tr,
                   onTap: () => viewModel.handleIntent(const SettingsIntent.rateApp()),
@@ -183,33 +169,29 @@ class SettingsPage extends ConsumerWidget {
               SizedBox(height: 25.f),
 
               // 5. LEGAL & ABOUT
-              _buildSectionTitle(context, I18nKeys.about.tr),
-              _buildSettingsCard(context, [
-                _buildListTile(
-                  context,
+              CommonSettingsSectionTitle(title: I18nKeys.about.tr),
+              CommonSettingsCard(children: [
+                CommonSettingsTile(
                   icon: Icons.privacy_tip_outlined,
                   title: I18nKeys.privacyPolicy.tr,
                   onTap: () => viewModel.handleIntent(const SettingsIntent.toPrivacyPolicy()),
                 ),
-                _buildListTile(
-                  context,
+                CommonSettingsTile(
                   icon: Icons.gavel_outlined,
                   title: I18nKeys.termsOfService.tr,
                   onTap: () => viewModel.handleIntent(const SettingsIntent.toTermsOfService()),
                 ),
-                _buildListTile(
-                  context,
+                CommonSettingsTile(
                   icon: Icons.info_outline_rounded,
                   title: I18nKeys.licenses.tr,
                   onTap: () => viewModel.handleIntent(const SettingsIntent.showLicenses()),
                 ),
-                _buildListTile(
-                  context,
+                CommonSettingsTile(
                   icon: Icons.system_update_outlined,
                   title: I18nKeys.checkUpdates.tr,
                   onTap: () => viewModel.handleIntent(const SettingsIntent.checkUpdates()),
                 ),
-                _VersionTile(
+                SettingsVersionTile(
                   onTrigger: () => viewModel.handleIntent(const SettingsIntent.enableDeveloperMode()),
                 ),
               ]),
@@ -217,169 +199,6 @@ class SettingsPage extends ConsumerWidget {
             ],
           ),
         );
-      },
-    );
-  }
-
-  // --- Logic Handlers ---
-
-  // --- UI Builders ---
-
-  Widget _buildSectionTitle(BuildContext context, String title) {
-    return Padding(
-      padding: EdgeInsets.only(left: 10.f, bottom: 8.f, top: 5.f),
-      child: CommonText(
-        title.toUpperCase(),
-        style: context.textTheme.labelSmall?.copyWith(
-          fontWeight: FontWeight.bold,
-          color: Colors.grey,
-          letterSpacing: 1.1,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSettingsCard(BuildContext context, List<Widget> children) {
-    return Container(
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 8.f, offset: const Offset(0, 4)),
-        ],
-      ),
-      child: Material(
-        color: context.theme.cardColor,
-        borderRadius: BorderRadius.circular(20.f),
-        clipBehavior: Clip.antiAlias,
-        child: Column(
-          children: [
-            for (var i = 0; i < children.length; i++) ...[
-              children[i],
-              if (i < children.length - 1)
-                Divider(
-                  height: 1,
-                  thickness: 0.5,
-                  indent: 60.f,
-                  endIndent: 20.f,
-                  color: context.theme.dividerColor.withValues(alpha: 0.05),
-                ),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildListTile(
-    BuildContext context, {
-    required IconData icon,
-    required String title,
-    String? subtitle,
-    Widget? trailing,
-    required VoidCallback onTap,
-    AuthBlurLevel blurLevel = AuthBlurLevel.none,
-  }) {
-    final accentColor = context.accentColor;
-    final iconSize = 20.f * 0.8;
-
-    return ListTile(
-      dense: true,
-      contentPadding: EdgeInsets.symmetric(horizontal: 16.f, vertical: 4.f),
-      leading: Container(
-        padding: EdgeInsets.all(8.f),
-        decoration: BoxDecoration(
-          color: accentColor.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(10.f),
-        ),
-        child: Icon(icon, color: accentColor, size: iconSize),
-      ),
-      title: CommonAuthText(
-        title,
-        style: context.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
-        maxLines: 1,
-        blurLevel: blurLevel,
-        onTap: onTap,
-      ),
-      subtitle: subtitle != null
-          ? CommonText(
-              subtitle,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: context.textTheme.labelSmall?.copyWith(color: Colors.grey),
-            )
-          : null,
-      trailing: trailing ?? Icon(Icons.chevron_right_rounded, size: 20.f, color: Colors.grey),
-      onTap: onTap,
-    );
-  }
-
-  Widget _buildSwitchTile(
-    BuildContext context, {
-    required IconData icon,
-    required String title,
-    required bool value,
-    required ValueChanged<bool> onChanged,
-  }) {
-    final accentColor = context.accentColor;
-    final iconSize = 20.f * 0.8;
-
-    return ListTile(
-      dense: true,
-      contentPadding: EdgeInsets.symmetric(horizontal: 16.f, vertical: 4.f),
-      leading: Container(
-        padding: EdgeInsets.all(8.f),
-        decoration: BoxDecoration(
-          color: accentColor.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(10.f),
-        ),
-        child: Icon(icon, color: accentColor, size: iconSize),
-      ),
-      title: CommonText(
-        title,
-        style: context.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
-        maxLines: 1,
-      ),
-      trailing: CommonSwitch(value: value, onChanged: onChanged),
-      onTap: () => onChanged(!value),
-    );
-  }
-}
-
-class _VersionTile extends StatefulWidget {
-  final VoidCallback onTrigger;
-
-  const _VersionTile({required this.onTrigger});
-
-  @override
-  State<_VersionTile> createState() => _VersionTileState();
-}
-
-class _VersionTileState extends State<_VersionTile> {
-  int _clickCount = 0;
-  DateTime? _lastClickTime;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      dense: true,
-      title: Center(
-        child: CommonText(
-          '${I18nKeys.appVersion.tr} ${AppConstants.appVersion}',
-          style: context.textTheme.labelSmall?.copyWith(color: Colors.grey),
-        ),
-      ),
-      onTap: () {
-        final now = DateTime.now();
-        if (_lastClickTime == null || now.difference(_lastClickTime!) > const Duration(seconds: 2)) {
-          _clickCount = 1;
-        } else {
-          _clickCount++;
-        }
-        _lastClickTime = now;
-
-        if (_clickCount >= 7) {
-          _clickCount = 0;
-          widget.onTrigger();
-        }
       },
     );
   }
