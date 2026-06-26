@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:listen_core/core.dart';
-import 'change_password_intent.dart';
+
+import '../../../../../shared/shared.dart';
 import 'change_password_state.dart';
 import 'change_password_view_model.dart';
-import '../../../../../shared/shared.dart';
-import 'package:listen_uikit/uikit.dart';
+import 'widgets/change_password_form.dart';
+import 'widgets/change_password_header.dart';
 
 class ChangePasswordPage extends ConsumerStatefulWidget {
   const ChangePasswordPage({super.key});
@@ -37,58 +37,14 @@ class _ChangePasswordPageState extends ConsumerState<ChangePasswordPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SizedBox(height: 20.f),
-            CommonText(
-              I18nKeys.changePassword.tr,
-              style: context.textTheme.headlineMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: context.isDark ? Colors.white : Colors.black87,
-              ),
-              maxLines: 1,
-            ),
-            SizedBox(height: 12.f),
-            CommonText(
-              I18nKeys.changePasswordSubtitle.tr,
-              style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey, height: 1.5),
-              maxLines: 2,
-            ),
+            const ChangePasswordHeader(),
             SizedBox(height: 40.f),
-            // Current Password Input
-            CommonTextField(
-              controller: _oldPwdController,
-              type: TextFieldType.password,
-              labelText: I18nKeys.oldPassword.tr,
-              prefixIcon: Icons.lock_outline,
-              errorText: state.oldPasswordError,
-              onChanged: (val) => viewModel.handleIntent(ChangePasswordIntent.oldPasswordChanged(val)),
-            ),
-            SizedBox(height: 20.f),
-            // New Password Input
-            CommonTextField(
-              controller: _newPwdController,
-              type: TextFieldType.password,
-              labelText: I18nKeys.newPassword.tr,
-              prefixIcon: Icons.lock_reset_outlined,
-              errorText: state.newPasswordError,
-              onChanged: (val) => viewModel.handleIntent(ChangePasswordIntent.newPasswordChanged(val)),
-            ),
-            SizedBox(height: 20.f),
-            // Confirm New Password Input
-            CommonTextField(
-              controller: _confirmPwdController,
-              type: TextFieldType.password,
-              labelText: I18nKeys.confirmNewPassword.tr,
-              prefixIcon: Icons.lock_outline,
-              errorText: state.confirmPasswordError,
-              onChanged: (val) => viewModel.handleIntent(ChangePasswordIntent.confirmPasswordChanged(val)),
-            ),
-            SizedBox(height: 40.f),
-            // Update Action
-            CommonButton(
-              text: I18nKeys.updatePassword.tr,
-              onPressed: () => viewModel.handleIntent(const ChangePasswordIntent.submitChange()),
-              borderRadius: 15,
-              height: 56.f,
+            ChangePasswordForm(
+              oldPwdController: _oldPwdController,
+              newPwdController: _newPwdController,
+              confirmPwdController: _confirmPwdController,
+              viewModel: viewModel,
+              state: state,
             ),
           ],
         ),
@@ -96,3 +52,4 @@ class _ChangePasswordPageState extends ConsumerState<ChangePasswordPage> {
     );
   }
 }
+
