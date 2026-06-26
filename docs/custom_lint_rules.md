@@ -8,7 +8,7 @@
 
 ## 1. 自定义规则清单 (Rules List)
 
-所有自定义规则都在工具文件 [dependency_boundary_lint.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/tools/lint_rules/lib/src/dependency_boundary_lint.dart) 中实现，并通过 `PluginBase` 对外暴露。
+所有自定义规则都在工具文件 [dependency_boundary_lint.dart](../tools/lint_rules/lib/src/dependency_boundary_lint.dart) 中实现，并通过 `PluginBase` 对外暴露。
 
 | 规则名称 (Code Name) | 违规场景说明 | 推荐解决方案 / 自动修复行为 | 自动修复支持 |
 |---|---|---|:---:|
@@ -173,6 +173,6 @@ dart run custom_lint --fix
 
 ## 5. 关联配置文件
 
-- **自定义分析规则插件源码**：[dependency_boundary_lint.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/tools/lint_rules/lib/src/dependency_boundary_lint.dart)
-- **分析器开启规则配置**：[analysis_options.yaml](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/analysis_options.yaml)
-- **分析插件依赖声明**：[pubspec.yaml](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/tools/lint_rules/pubspec.yaml)
+- **自定义分析规则插件源码**：[dependency_boundary_lint.dart](../tools/lint_rules/lib/src/dependency_boundary_lint.dart)
+- **分析器开启规则配置**：[analysis_options.yaml](../analysis_options.yaml)
+- **分析插件依赖声明**：[pubspec.yaml](../tools/lint_rules/pubspec.yaml)

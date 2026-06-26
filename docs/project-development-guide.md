@@ -70,7 +70,7 @@ import 'package:listen_portfolio_flutter/shared/models/user_model.dart';
 import 'package:listen_portfolio_flutter/shared/utils/auth_helper.dart';
 
 // ✅ 允许 - shared 可以依赖 features (特殊情况)
-import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login_page.dart';
+import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_page.dart';
 ```
 
 **仍禁止的依赖**：

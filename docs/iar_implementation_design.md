@@ -56,7 +56,7 @@ graph TD
 应用内评分系统由一个服务单例和两个业务拦截器组成。
 
 ### 3.1 评分服务单例 `ReviewService`
-在 [review_service.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/shared/services/review/review_service.dart) 中管理启动计数、时间比较和 API 调用：
+在 [review_service.dart](../lib/shared/services/review/review_service.dart) 中管理启动计数、时间比较和 API 调用：
 ```dart
 class ReviewService {
   static final ReviewService _instance = ReviewService._internal();
@@ -146,11 +146,11 @@ class ReviewService {
 ```
 
 ### 3.2 启动时注册与记录
-- **记录启动**：在 [app_initializer.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/shared/utils/app_initializer.dart) 中：
+- **记录启动**：在 [app_initializer.dart](../lib/shared/utils/app_initializer.dart) 中：
   ```dart
   ReviewService().logAppLaunch();
   ```
-- **首屏静默检测**：在 [home_view_model.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/home/presentation/pages/home_view_model.dart) 的首屏初始化阶段：
+- **首屏静默检测**：在 [home_view_model.dart](../lib/features/home/presentation/pages/home_view_model.dart) 的首屏初始化阶段：
   ```dart
   ReviewService().checkAndPromptReview();
   ```
@@ -159,7 +159,7 @@ class ReviewService {
 
 ## 4. 数据持久化项 (`SpUtil`)
 
-本方案通过本地 Key-Value 存储以下状态项，定义在 [app_constants.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/shared/constants/app_constants.dart)：
+本方案通过本地 Key-Value 存储以下状态项，定义在 [app_constants.dart](../lib/shared/constants/app_constants.dart)：
 - `AppConstants.appLaunchCountKey` (`'app_launch_count'`): 累积启动次数。
 - `AppConstants.hasReviewKey` (`'has_review_rated'`): 是否已经有过评分操作（为 true 则永久不自动打扰）。
 - `AppConstants.lastReviewPromptTimeKey` (`'last_review_prompt_time'`): 上次拉起评分弹窗的毫秒级时间戳。
@@ -185,7 +185,7 @@ class ReviewService {
 
 | 文件 | 作用说明 |
 |---|---|
-| [review_service.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/shared/services/review/review_service.dart) | 核心服务类，包含限流验证及 SDK 调用。 |
-| [rate_app_provider_impl.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/shared/base/rate_app_provider_impl.dart) | 监听 `RateAppEffect` 并跳转商店详情页。 |
-| [settings_view_model.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/settings/presentation/pages/settings_view_model.dart) | 将设置页面评分点击转换为 Effect 抛出。 |
-| [coffee_purchase_bottom_sheet.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/settings/presentation/pages/components/coffee_purchase_bottom_sheet.dart) | 打赏成功后调用 `checkAndPromptReview(force: true)` 强行触发。 |
+| [review_service.dart](../lib/shared/services/review/review_service.dart) | 核心服务类，包含限流验证及 SDK 调用。 |
+| [rate_app_provider_impl.dart](../lib/shared/base/rate_app_provider_impl.dart) | 监听 `RateAppEffect` 并跳转商店详情页。 |
+| [settings_view_model.dart](../lib/features/settings/presentation/pages/settings_view_model.dart) | 将设置页面评分点击转换为 Effect 抛出。 |
+| [coffee_purchase_bottom_sheet.dart](../lib/features/settings/presentation/pages/widgets/coffee_purchase_bottom_sheet.dart) | 打赏成功后调用 `checkAndPromptReview(force: true)` 强行触发。 |

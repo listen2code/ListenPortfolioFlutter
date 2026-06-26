@@ -186,32 +186,32 @@ BottomSheet 根据 Tier 级别匹配不同图标：
 
 | 文件 | 职责 |
 |---|---|
-| [iap_service.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/shared/services/iap/iap_service.dart) | `IIapService` 抽象接口定义 |
-| [iap_service_impl.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/shared/services/iap/iap_service_impl.dart) | 平台实现（Android consumePurchase + 双端 completePurchase） |
-| [review_service.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/shared/services/review/review_service.dart) | 提供应用内评价及频率控流服务 |
+| [iap_service.dart](../lib/shared/services/iap/iap_service.dart) | `IIapService` 抽象接口定义 |
+| [iap_service_impl.dart](../lib/shared/services/iap/iap_service_impl.dart) | 平台实现（Android consumePurchase + 双端 completePurchase） |
+| [review_service.dart](../lib/shared/services/review/review_service.dart) | 提供应用内评价及频率控流服务 |
 
 ### MVI 层
 
 | 文件 | 职责 |
 |---|---|
-| [settings_intent.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/settings/presentation/pages/settings_intent.dart) | `buyMeCoffee` Intent 定义 |
-| [settings_view_model.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/settings/presentation/pages/settings_view_model.dart) | Intent → Effect 映射 |
-| [coffee_purchase_provider_impl.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/shared/base/coffee_purchase_provider_impl.dart) | 全局 Effect 监听 → BottomSheet 弹出 |
+| [settings_intent.dart](../lib/features/settings/presentation/pages/settings_intent.dart) | `buyMeCoffee` Intent 定义 |
+| [settings_view_model.dart](../lib/features/settings/presentation/pages/settings_view_model.dart) | Intent → Effect 映射 |
+| [coffee_purchase_provider_impl.dart](../lib/shared/base/coffee_purchase_provider_impl.dart) | 全局 Effect 监听 → BottomSheet 弹出 |
 
 ### UI 层
 
 | 文件 | 职责 |
 |---|---|
-| [coffee_purchase_bottom_sheet.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/settings/presentation/pages/components/coffee_purchase_bottom_sheet.dart) | BottomSheet UI、购买流程控制、生命周期兜底恢复 |
-| [settings_page.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/settings/presentation/pages/settings_page.dart) | Settings 页面入口 Tile |
+| [coffee_purchase_bottom_sheet.dart](../lib/features/settings/presentation/pages/widgets/coffee_purchase_bottom_sheet.dart) | BottomSheet UI、购买流程控制、生命周期兜底恢复 |
+| [settings_page.dart](../lib/features/settings/presentation/pages/settings_page.dart) | Settings 页面入口 Tile |
 
 ### 配置与国际化
 
 | 文件 | 职责 |
 |---|---|
-| [app_constants.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/shared/constants/app_constants.dart) | 商品 ID 常量 |
-| [translations_key.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/shared/i18n/translations_key.dart) | i18n Key 定义 |
-| [zh.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/shared/i18n/languages/zh.dart) / [ja.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/shared/i18n/languages/ja.dart) | 中文 / 日文翻译 |
+| [app_constants.dart](../lib/shared/constants/app_constants.dart) | 商品 ID 常量 |
+| [translations_key.dart](../lib/shared/i18n/translations_key.dart) | i18n Key 定义 |
+| [zh.dart](../lib/shared/i18n/languages/zh.dart) / [ja.dart](../lib/shared/i18n/languages/ja.dart) | 中文 / 日文翻译 |
 
 ---
 

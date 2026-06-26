@@ -26,7 +26,7 @@
 | 优先级 | 任务 | 预估时间 | 说明 |
 |--------|------|----------|------|
 | P0 | **截图 / GIF 录制** | 4h | Overview、Login、Settings、LogOverlay、CrashLogs、Architecture 页面。放到 README 顶部。**没有截图的 Portfolio = 不存在** |
-| P0 | **Mock 数据真实化** | 3h | [aboutMe.json](cci:7://file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/assets/mock/v1/get/aboutMe.json:0:0-0:0) 替换为真实履历（公司可脱敏）；[projects.json](cci:7://file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/assets/mock/v1/get/projects.json:0:0-0:0) 后端技术栈改为 Spring Boot；[user.json](cci:7://file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/assets/mock/v1/get/user.json:0:0-0:0) 补 `messageId` |
+| P0 | **Mock 数据真实化** | 3h | [aboutMe.json](../assets/mock/v1/get/aboutMe.json) 替换为真实履历（公司可脱敏）；[projects.json](../assets/mock/v1/get/projects.json) 后端技术栈改为 Spring Boot；[user.json](../assets/mock/v1/get/user.json) 补 `messageId` |
 | P0 | **README 精简优化** | 4h | 当前 692 行太长。顶部加截图 → 一句话定位 → 技术亮点（5 条）→ 架构图 → Quick Start → 详细说明折叠 |
 | P1 | ~~**CI 加 flutter test**~~ | 2h | ✅ 已在 CI 工作流中集成测试步骤，全绿跑通 290 项测试用例，包含覆盖率分析 |
 | P1 | ~~**Release APK 签名**~~ | 3h | ✅ 已在 CI 流程中配置 keystore 解密，成功实现 Release 签名构建 |
@@ -47,7 +47,7 @@
 | P0 | **Spring Boot 后端核心 API 完善** | 30h | Auth（login/signup/refresh/logout）+ Portfolio CRUD（aboutMe/projects/user）。确保与 Flutter mock 数据格式一致 |
 | P0 | **Flutter 对接真实 API** | 15h | dev/prod 环境配置指向 Spring Boot 服务器。你已经有完善的环境切换机制，这一步应该很顺 |
 | P0 | **部署后端到 AWS** | 10h | EC2 或 Elastic Beanstalk，最小化部署。配合你 advice2026.md 中的 AWS 方向 |
-| P1 | **错误码体系落地** | 10h | 实现 [error-codes-reference.md](cci:7://file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/docs/error-codes-reference.md:0:0-0:0) 中设计的错误码。让文档和代码完全对齐。后端返回标准错误码，Flutter 端映射到 i18n |
+| P1 | **错误码体系落地** | 10h | 实现 [error-codes-reference.md](error-codes-reference.md) 中设计的错误码。让文档和代码完全对齐。后端返回标准错误码，Flutter 端映射到 i18n |
 | P1 | **隐私政策页面** | 3h | 写一个简单的隐私政策，托管到 GitHub Pages。Google Play 审核必需 |
 
 **Phase 2 交付物：**

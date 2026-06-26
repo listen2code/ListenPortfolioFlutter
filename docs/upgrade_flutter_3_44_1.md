@@ -15,7 +15,7 @@
   - 属性替换：`red` -> `(r * 255.0).round().clamp(0, 255)`，同理适用于 `green` (`g`), `blue` (`b`), `alpha` (`a`)。
   - 透明度设置替换：`color.withOpacity(0.5)` -> `color.withValues(alpha: 0.5)`。
 - **当前项目是否需要改动**: **是**。
-  - **影响位置**: [appearance_page.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/settings/presentation/pages/appearance/appearance_page.dart) 中的 RGB 颜色调节滑动条逻辑。
+  - **影响位置**: [appearance_page.dart](../lib/features/settings/presentation/pages/appearance/appearance_page.dart) 中的 RGB 颜色调节滑动条逻辑。
   - **改造详情**: 已将 `selectedColor.red`、`selectedColor.green`、`selectedColor.blue` 均适配修改为 `(selectedColor.r * 255.0).round().clamp(0, 255)`。
 
 ### 1.2 Android 构建向 Built-in Kotlin 迁移 (Migrate to Built-in Kotlin)
@@ -28,9 +28,9 @@
   ```
 - **改动与解决策略**:
   1. **对于应用主工程 (App Project)**:
-     - 在 [android/app/build.gradle.kts](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/android/app/build.gradle.kts) 的 `plugins` 块中**删除** `id("kotlin-android")` 插件。
-     - 在 [android/settings.gradle.kts](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/android/settings.gradle.kts) 的 `plugins` 块中，**保留并升级** Kotlin 声明，即 `id("org.jetbrains.kotlin.android") version "2.2.20" apply false`，以此作为全局 Kotlin 编译器版本约束，而不在应用子模块中直接应用。
-     - 在 [android/gradle.properties](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/android/gradle.properties) 中开启内置 Kotlin 和新版 DSL 开关：
+     - 在 [android/app/build.gradle.kts](../android/app/build.gradle.kts) 的 `plugins` 块中**删除** `id("kotlin-android")` 插件。
+     - 在 [android/settings.gradle.kts](../android/settings.gradle.kts) 的 `plugins` 块中，**保留并升级** Kotlin 声明，即 `id("org.jetbrains.kotlin.android") version "2.2.20" apply false`，以此作为全局 Kotlin 编译器版本约束，而不在应用子模块中直接应用。
+     - 在 [android/gradle.properties](../android/gradle.properties) 中开启内置 Kotlin 和新版 DSL 开关：
        ```properties
        android.builtInKotlin=true
        android.newDsl=true

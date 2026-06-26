@@ -487,7 +487,7 @@ void setupNotificationNavigation(INotificationService notificationService) {
 
 ## 8. 推送测试与自动化部署脚本 (send_push_notification.js)
 
-为了便于在本地或 CI/CD 流水线中进行消息推送测试，我们在 [tools/send_push_notification.js](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/tools/send_push_notification.js) 中提供了一个便捷的 Node.js 脚本。
+为了便于在本地或 CI/CD 流水线中进行消息推送测试，我们在 [tools/send_push_notification.js](../tools/send_push_notification.js) 中提供了一个便捷的 Node.js 脚本。
 
 ### 8.1 环境准备
 在运行该脚本前，需具备以下条件：
