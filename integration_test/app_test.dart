@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:integration_test/integration_test.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:integration_test/integration_test.dart';
 import 'package:listen_core/core.dart';
-import 'package:listen_portfolio_flutter/main.dart' as app;
-import 'package:listen_portfolio_flutter/shared/shared.dart';
-import 'package:listen_uikit/uikit.dart';
-import 'package:listen_portfolio_flutter/features/splash/presentation/pages/splash_page.dart';
-import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_page.dart';
-import 'package:listen_portfolio_flutter/features/settings/presentation/pages/settings_page.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_page.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/password/forgot_password_page.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/sign_up/sign_up_page.dart';
+import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_page.dart';
+import 'package:listen_portfolio_flutter/features/splash/presentation/pages/splash_page.dart';
+import 'package:listen_portfolio_flutter/main.dart' as app;
+import 'package:listen_portfolio_flutter/shared/shared.dart';
+import 'package:listen_uikit/uikit.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 void main() {
@@ -28,9 +27,7 @@ void main() {
     notificationService = FakeNotificationService();
 
     // Configure LocalMockServer with very low latency for fast, race-free tests
-    LocalMockServer.initConfig(const MockServerConfig(
-      networkLatency: Duration(milliseconds: 10),
-    ));
+    LocalMockServer.initConfig(const MockServerConfig(networkLatency: Duration(milliseconds: 10)));
   });
 
   group('E2E App Integration Tests', () {
