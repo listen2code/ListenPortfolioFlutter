@@ -141,6 +141,7 @@ dart tools/dependency_rules.dart --graph
 - `docs/ai_intro_assistant_spec.md`：AI 助手规格说明（规划中）
 - `docs/listencore_audit.md`：`listen_core` 架构审计报告
 - `docs/push_notification_specification.md`：推送通知设计与集成规格
+- `docs/fido2_implementation_design.md`：FIDO2 / Passkey 免密认证设计方案
 - `docs/todo.md`：后续执行路线图
 
 ## 🎯 目标态（明确未全部实现）

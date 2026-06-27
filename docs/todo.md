@@ -121,7 +121,7 @@
 
 ### 1. 可展示增强项
 
-- 指纹 / 生物识别登录
+- FIDO2 / Passkey 免密安全登录（见 [fido2_implementation_design.md](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/docs/fido2_implementation_design.md)）
 - Google 第三方登录
 
 ### 2. 体验与平台能力
