@@ -27,10 +27,10 @@
       └── test_setup.dart
   ```
 
-  当前仓库中可检索到 **31 个** `_test.dart` 文件，覆盖 `core`、`auth`、`home`、`settings`、`splash` 等模块。
-  当前仓库**没有** `integration_test/` 目录，因此 CI 中对应步骤通常会直接跳过。
+  当前仓库中已补齐并运行着 **336 个**单元与组件测试用例，覆盖 `core`、`auth`、`home`、`settings`、`splash` 等模块。
+  当前仓库已包含 `integration_test/app_test.dart` 集成测试，支持端到端（E2E）模拟器与真机上的自动化流程验证。
 
-  > 当前不存在 `test/test_config.toml` 这类外部测试配置文件；测试配置主要体现在测试代码、mock 资源，以及 `scripts/run_tests.ps1` / `scripts/run_tests.sh` 中。
+  > 测试相关的模拟数据主要由本地 `LocalMockServer` 以及 `assets/mock/` 中的 JSON 结构提供，测试行为可通过 PowerShell 脚本或 Bash 脚本一键启动。
 
   ### 测试类型详解
 
@@ -265,37 +265,23 @@ lcov --summary coverage/lcov.info
  2. 优先修复 flaky / 依赖环境的测试
  3. 定期检查覆盖率趋势
  4. 监控测试执行时间
-  
-  ## 🎯 优先补强的关键测试场景
+  ## 🎯 已实现的特色核心测试场景
 
-  > 本节主要对应 `docs/todo.md` 中“测试补强”的待办项。
-  > 以下示例用于说明**建议新增**的测试方向，不代表这些测试当前已经存在于仓库中。
-
-### 1. AuthInterceptor 401 并发测试
-```dart
-test('should handle 3 concurrent 401 responses with single refresh', () async {
-  // 模拟 3 个并发请求同时收到 401
-  // 验证只触发一次 refresh
-  // 验证所有请求都成功重试
-});
-```
+### 1. AuthInterceptor 401 并发队列测试
+- **文件**：`test/core/network/auth_interceptor_test.dart`
+- **内容**：模拟 3 个并发请求同时收到 401 Unauthorized 响应，验证有且仅触发了一次 Token 刷新请求，且在刷新成功后所有挂起的请求都会被依次正确重试并获得成功响应。
 
 ### 2. CrashManager 安全模式测试
-```dart
-test('should trigger safe mode after 3 crashes in 30 seconds', () async {
-  // 模拟 30 秒内 3 次崩溃
-  // 验证 onReset() 正确触发
-  // 验证安全模式状态
-});
-```
+- **文件**：`test/core/crash_manager_test.dart`
+- **内容**：验证 CrashManager 正确在本地落盘 crash 日志，并在检测到 30 秒内发生 3 次及以上快速连续崩溃时，正确触发 `onReset()` 安全恢复流程以防 App 进入死循环崩溃。
 
 ### 3. I18n 键完整性测试
-```dart
-test('should have translations for all keys in zh and ja', () async {
-  // 遍历 I18nKeys 的所有 key
-  // 断言 zh/ja 语言文件都有对应翻译
-});
-```
+- **文件**：`test/core/i18n_test.dart`
+- **内容**：动态映射遍历 `I18nKeys` 常量列表中的所有字段，与中、英、日语言配置 Map 进行比对，确保没有遗漏的翻译项。
+
+### 4. E2E 端到端集成测试 (真机/模拟器)
+- **文件**：`integration_test/app_test.dart`
+- **内容**：在真实的模拟器或手机设备上进行 Splash 启动 ➡️ 进入首页 ➡️ Drawer 路由跳转 ➡️ 输入校验（覆盖空校验、非法邮箱校验、过短文本校验、密码不一致校验等异常提示）➡️ 正常表单提交 ➡️ 登录账号验证 ➡️ Drawer 侧边栏动态 Profile 信息校验 ➡️ Logout 对话框登出整条业务链的闭环自动化控制。
 
 ## 🛠️ 测试环境
 
@@ -338,9 +324,8 @@ Future<void> setupTestEnvironment() async {
 - **失败策略**: 覆盖率不足时当前仅警告（不阻止构建）
 
 #### **路径配置**
-- **单元测试路径**: `test/core/`, `test/features/`
-- **Widget 测试路径**: `test/features/home/projects/projects_widget_test.dart`
-- **集成测试路径**: `integration_test/`（如果未来新增；当前仓库中暂无该目录）
+- **单元与组件测试路径**: `test/` (运行所有单元与 Widget 测试)
+- **集成测试路径**: `integration_test/app_test.dart` (运行端到端真机测试)
 
 #### **脚本行为说明**
 - `run_tests.ps1` / `run_tests.sh` 会先执行 `flutter pub get`

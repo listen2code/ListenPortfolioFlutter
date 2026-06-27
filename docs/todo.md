@@ -65,7 +65,7 @@
 - `_AuthInterceptor` 401 并发队列测试 (在 `auth_interceptor_test.dart` 中完全覆盖并跑通)
 - `CrashManager` Safe Mode 管道测试 (在 `crash_manager_test.dart` 中完全覆盖并跑通)
 - i18n key 完整性测试 (在 `i18n_test.dart` 中实现 Key 与 Translation-Map 比对并完全跑通)
-- mock env 下的集成主流程测试 (已新增并在 `integration_flow_test.dart` 中跑通 E2E 完整生命周期)
+- E2E 自动化集成测试 (已在 `integration_test/app_test.dart` 中跑通，覆盖异常输入格式验证与正常登录/登出业务闭环流)
 
 ### 5. 可观测性闭环 MVP
 

@@ -2,9 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:http_mock_adapter/http_mock_adapter.dart';
+import 'package:http_mock_adapter/http_mock_adapter.dart' hide Matcher;
 import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/provider/auth_provider.dart';
 import 'package:listen_portfolio_flutter/main.dart';
@@ -12,6 +13,7 @@ import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_portfolio_flutter/features/splash/presentation/pages/splash_page.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_page.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/settings_page.dart';
+import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_page.dart';
 import 'package:listen_uikit/uikit.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -124,6 +126,7 @@ class TestAppInitializer {
       const NavigationProviderImpl(),
       const LogoutProviderImpl(),
       const ShareProviderImpl(),
+      const ConfirmProviderImpl(),
     ]);
 
     // 5. Setup Network Client
@@ -201,21 +204,53 @@ void main() {
     SharedPreferences.setMockInitialValues({});
     await SpUtil.init();
 
+    // Mock the plugins.it_nomads.com/flutter_secure_storage channel to prevent secure storage hanging in tests
+    final Map<String, String> secureStorageValues = {};
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
+          const MethodChannel('plugins.it_nomads.com/flutter_secure_storage'),
+          (MethodCall call) async {
+            final args = call.arguments as Map?;
+            if (call.method == 'write') {
+              if (args != null) {
+                secureStorageValues[args['key'] as String] = args['value'] as String;
+              }
+              return null;
+            } else if (call.method == 'read') {
+              return args != null ? secureStorageValues[args['key'] as String] : null;
+            } else if (call.method == 'delete') {
+              if (args != null) {
+                secureStorageValues.remove(args['key'] as String);
+              }
+              return null;
+            } else if (call.method == 'deleteAll') {
+              secureStorageValues.clear();
+              return null;
+            }
+            return null;
+          },
+        );
+
     // 3. Prevent visibility animations from lagging and blocking pumpAndSettle
     VisibilityDetectorController.instance.updateInterval = Duration.zero;
 
     // 4. Intercept network requests via DioAdapter for test stability
-    final dioAdapter = DioAdapter(dio: ApiClient.dio);
+    final dioAdapter = DioAdapter(dio: ApiClient.dio, matcher: const UrlRequestMatcher());
 
     // Read projects, user, and aboutMe json files directly from local mock assets
     final userJson = jsonDecode(File('assets/mock/v1/get/user.json').readAsStringSync());
     final projectsJson = jsonDecode(File('assets/mock/v1/get/projects.json').readAsStringSync());
     final aboutMeJson = jsonDecode(File('assets/mock/v1/get/aboutMe.json').readAsStringSync());
 
+    final loginJson = jsonDecode(File('assets/mock/v1/post/auth/login.json').readAsStringSync());
+    final logoutJson = jsonDecode(File('assets/mock/v1/post/user/logout.json').readAsStringSync());
+
     // Setup network mock returns
     dioAdapter.onGet('/v1/user', (server) => server.reply(200, userJson));
     dioAdapter.onGet('/v1/projects', (server) => server.reply(200, projectsJson));
     dioAdapter.onGet('/v1/aboutMe', (server) => server.reply(200, aboutMeJson));
+    dioAdapter.onPost('/v1/auth/login', (server) => server.reply(200, loginJson));
+    dioAdapter.onPost('/v1/user/logout', (server) => server.reply(200, logoutJson));
   });
 
   group('Mock E2E Integration Flow Tests', () {
@@ -268,6 +303,100 @@ void main() {
 
         // 12. Verify we returned successfully to the HomePage
         expect(find.byType(HomePage), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'Should successfully log in from guest mode, update drawer profile, and log out',
+      (WidgetTester tester) async {
+        // 1. Initialize Composition Root dependencies with Riverpod Container
+        final container = ProviderContainer();
+        await TestAppInitializer.init(container);
+
+        // 2. Boot the entire App widget tree
+        await tester.pumpWidget(UncontrolledProviderScope(container: container, child: const MyApp()));
+
+        // 3. First frame must render SplashPage
+        await tester.pump();
+        expect(find.byType(SplashPage), findsOneWidget);
+
+        // 4. Pump simulated delay of 2 seconds (Splash screen delay)
+        await tester.pump(const Duration(seconds: 2));
+        await tester.pumpAndSettle();
+
+        // 5. Verify transition completed into HomePage
+        expect(find.byType(HomePage), findsOneWidget);
+
+        // 6. Open Navigation Drawer using ScaffoldState
+        final ScaffoldState scaffoldState = tester.firstState(find.byType(Scaffold));
+        scaffoldState.openDrawer();
+        await tester.pumpAndSettle();
+
+        // 7. Verify we are guest and the login button is visible at the bottom of the drawer
+        final loginDrawerOption = find.text(I18nKeys.login.tr);
+        expect(loginDrawerOption, findsOneWidget);
+
+        // 8. Click "Login" in drawer and verify navigating to LoginPage
+        await tester.tap(loginDrawerOption);
+        await tester.pumpAndSettle();
+        expect(find.byType(LoginPage), findsOneWidget);
+
+        // 9. Input username and password
+        final textFields = find.byType(CommonTextField);
+        expect(textFields, findsNWidgets(2));
+        
+        final usernameFinder = textFields.at(0);
+        final passwordFinder = textFields.at(1);
+        
+        await tester.enterText(usernameFinder, 'test_user');
+        await tester.enterText(passwordFinder, 'password123');
+        await tester.pumpAndSettle();
+
+        // 10. Tap on "Login" button to submit form
+        final submitButton = find.text(I18nKeys.login.tr);
+        expect(submitButton, findsOneWidget);
+        await tester.tap(submitButton);
+
+        // Wait for login request and loader transition
+        await tester.pump(); // Start loading
+        await tester.pump(const Duration(milliseconds: 100)); // Process network
+        await tester.pumpAndSettle(); // Settle transition back to HomePage
+
+        // 11. Verify we returned successfully to the HomePage
+        expect(find.byType(HomePage), findsOneWidget);
+
+        // 12. Open Navigation Drawer again to verify user details updated
+        final ScaffoldState scaffoldStateAfterLogin = tester.firstState(find.byType(Scaffold));
+        scaffoldStateAfterLogin.openDrawer();
+        await tester.pumpAndSettle();
+
+        // 13. Verify profile info matches name/email from login.json or user.json
+        expect(find.text('Listen'), findsOneWidget);
+        expect(find.text('listen2code@gmail.com'), findsOneWidget);
+
+        // 14. Verify bottom button in drawer now shows "Logout" instead of "Login"
+        final logoutDrawerOption = find.text(I18nKeys.logout.tr);
+        expect(logoutDrawerOption, findsOneWidget);
+
+        // 15. Tap "Logout" to initiate logout flow
+        await tester.tap(logoutDrawerOption);
+        await tester.pumpAndSettle(); // Settle confirm dialog rendering
+
+        // 16. Tap confirmation "OK" button
+        final okButton = find.text(I18nKeys.ok.tr);
+        expect(okButton, findsOneWidget);
+        await tester.tap(okButton);
+        
+        // Wait for logout request and loader transition
+        await tester.pump(); // Start loading
+        await tester.pump(const Duration(milliseconds: 100)); // Process network
+        await tester.pumpAndSettle(); // Settle logout transition to LoginPage (since logout effect redirects to Login)
+
+        // 17. Verify we are redirected to LoginPage after logout
+        expect(find.byType(LoginPage), findsOneWidget);
+
+        // 18. Clean up any remaining Toast timers
+        await tester.pump(const Duration(seconds: 3));
       },
     );
   });
