@@ -32,6 +32,16 @@ rm -rf apkOutput
 mkdir apkOutput
 flutter clean
 
+if [ -d "android" ]; then
+    echo ">>> Cleaning Gradle cache..."
+    cd android
+    chmod +x gradlew
+    ./gradlew clean
+    cd ..
+else
+    echo ">>> Warning: 'android' directory not found, skipping gradlew clean."
+fi
+
 echo ">>> flutter pub get"
 flutter pub get
 
