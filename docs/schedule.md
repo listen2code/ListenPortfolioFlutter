@@ -47,7 +47,7 @@
 | P0 | **Spring Boot 后端核心 API 完善** | 30h | Auth（login/signup/refresh/logout）+ Portfolio CRUD（aboutMe/projects/user）。确保与 Flutter mock 数据格式一致 |
 | P0 | **Flutter 对接真实 API** | 15h | dev/prod 环境配置指向 Spring Boot 服务器。你已经有完善的环境切换机制，这一步应该很顺 |
 | P0 | **部署后端到 AWS** | 10h | EC2 或 Elastic Beanstalk，最小化部署。配合你 advice2026.md 中的 AWS 方向 |
-| P1 | **错误码体系落地** | 10h | 实现 [error-codes-reference.md](error-codes-reference.md) 中设计的错误码。让文档和代码完全对齐。后端返回标准错误码，Flutter 端映射到 i18n |
+| P1 | **错误码体系落地** | 10h | 实现 [error_codes_reference.md](error_codes_reference.md) 中设计的错误码。让文档和代码完全对齐。后端返回标准错误码，Flutter 端映射到 i18n |
 | P1 | **隐私政策页面** | 3h | 写一个简单的隐私政策，托管到 GitHub Pages。Google Play 审核必需 |
 
 **Phase 2 交付物：**

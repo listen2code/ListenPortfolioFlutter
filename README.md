@@ -134,13 +134,13 @@ dart tools/dependency_rules.dart --graph
 
 ## 📚 文档索引
 
-- `docs/project-development-guide.md`：项目开发指南
-- `docs/testing-guide.md`：测试策略与执行说明
-- `docs/error-codes-reference.md`：错误码设计参考（当前仍以设计为主）
+- `docs/project_development_guide.md`：项目开发指南
+- `docs/testing_guide.md`：测试策略与执行说明
+- `docs/error_codes_reference.md`：错误码设计参考（当前仍以设计为主）
 - `docs/performance_panel_spec.md`：性能面板规格说明（未完全落地）
 - `docs/ai_intro_assistant_spec.md`：AI 助手规格说明（规划中）
 - `docs/listencore_audit.md`：`listen_core` 架构审计报告
-- `docs/push-notification-specification.md`：推送通知设计与集成规格
+- `docs/push_notification_specification.md`：推送通知设计与集成规格
 - `docs/todo.md`：后续执行路线图
 
 ## 🎯 目标态（明确未全部实现）

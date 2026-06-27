@@ -343,10 +343,10 @@ flutter run --dart-define=APP_ENV=mock
 ## 📚 相关文档
 
 - [项目架构](../README.md)
-- [错误码参考](error-codes-reference.md)
-- [Mock 数据维护规范](mock-data-specification.md)
-- [项目开发指南](project-development-guide.md)
-- [文档生成指南](documentation-generation.md)
+- [错误码参考](error_codes_reference.md)
+- [Mock 数据维护规范](mock_data_specification.md)
+- [项目开发指南](project_development_guide.md)
+- [文档生成指南](documentation_generation.md)
 
 ---
 

@@ -492,10 +492,10 @@ find assets/mock/v1 -name "*.json" -exec sed -i 's/"updatedAt": "[^"]*"/"updated
 
 ## 📚 相关文档
 
-- [标准化开发工作流](development-workflow.md)
-- [错误码参考](error-codes-reference.md)
-- [项目开发指南](project-development-guide.md)
-- [文档生成指南](documentation-generation.md)
+- [标准化开发工作流](development_workflow.md)
+- [错误码参考](error_codes_reference.md)
+- [项目开发指南](project_development_guide.md)
+- [文档生成指南](documentation_generation.md)
 
 ---
 

@@ -514,10 +514,10 @@ String _getUserFriendlyMessage(Failure failure) {
 
 ## 📚 相关文档
 
-- [标准化开发工作流](development-workflow.md)
-- [Mock 数据维护规范](mock-data-specification.md)
-- [项目开发指南](project-development-guide.md)
-- [文档生成指南](documentation-generation.md)
+- [标准化开发工作流](development_workflow.md)
+- [Mock 数据维护规范](mock_data_specification.md)
+- [项目开发指南](project_development_guide.md)
+- [文档生成指南](documentation_generation.md)
 
 ---
 

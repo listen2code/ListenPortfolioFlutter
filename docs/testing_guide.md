@@ -426,7 +426,7 @@ flutter test --debug
 
 ## 📞 获取帮助
 
-1. **查看本文档**: `docs/testing-guide.md` (完整测试指南)
+1. **查看本文档**: `docs/testing_guide.md` (完整测试指南)
 2. **参考现有测试**: 查看 `test/features/` 下的测试文件
 3. **Flutter 测试文档**: https://docs.flutter.dev/testing
 4. **项目 TODO**: `docs/todo.md` 中的测试相关项目

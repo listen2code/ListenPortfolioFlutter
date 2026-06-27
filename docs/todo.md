@@ -17,7 +17,7 @@
 
 **已完成项**：
 - Backend: `security_features.md`, `development_setup.md` 已修订
-- Flutter: `testing-guide.md`, `mock-data-specification.md` 已修订
+- Flutter: `testing_guide.md`, `mock_data_specification.md` 已修订
 - README.md 已遵循"主文只描述已落地能力"原则
 
 **注意**：后续如有新增文档或代码变更导致不一致，需重新激活此任务。
