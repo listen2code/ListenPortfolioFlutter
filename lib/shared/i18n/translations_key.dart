@@ -272,4 +272,28 @@ class I18nKeys {
   static const String emptyResume = 'Resume is empty';
   static const String retry = 'Retry';
   static const String viewFullResume = 'View Full Resume';
+
+  // Playback / Tape Recording
+  static const String playbackTapeList = 'playbackTapeList';
+  static const String noPlaybackTapes = 'noPlaybackTapes';
+  static const String noStepsRecorded = 'noStepsRecorded';
+  static const String saveTape = 'saveTape';
+  static const String enterTapeName = 'enterTapeName';
+  static const String discard = 'discard';
+  static const String save = 'save';
+  static const String discardTapeMsg = 'discardTapeMsg';
+  static const String saveTapeSuccessMsg = 'saveTapeSuccessMsg';
+  static const String recordingStartedMsg = 'recordingStartedMsg';
+  static const String playbackStartedMsg = 'playbackStartedMsg';
+  static const String playbackFinishedMsg = 'playbackFinishedMsg';
+  static const String deleteTapeConfirmMsg = 'deleteTapeConfirmMsg';
+  static const String playbackLogFilter = 'playbackLogFilter';
+  static const String tapeDeletedMsg = 'tapeDeletedMsg';
+  static const String tapeDetails = 'tapeDetails';
+  static const String close = 'close';
+  static const String runPlayback = 'runPlayback';
+  static const String noPlaybackTapesHint = 'noPlaybackTapesHint';
+  static const String unnamedTape = 'unnamedTape';
+  static const String tapeStepsCount = 'tapeStepsCount';
+  static const String playbackStartOffset = 'playbackStartOffset';
 }

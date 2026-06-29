@@ -10,6 +10,7 @@ import 'package:listen_uikit/uikit.dart';
 
 import '../services/iap/iap_service_impl.dart';
 import '../services/review/review_service.dart';
+import 'playback_registry_init.dart';
 
 /// A central class to handle all application-wide initializations.
 /// This acts as the 'Composition Root' where core interfaces are tied to shared implementations.
@@ -19,6 +20,9 @@ class AppInitializer {
   /// Executes all initialization steps in order.
   /// [container] is the Riverpod container to be used for dependency resolution.
   static Future<void> init(ProviderContainer container) async {
+    // 0. Initialize MVI Playback Registry
+    initMviPlaybackRegistry();
+
     // 1. Initialize Infrastructure & Core Module (Including Nav & Error Hooks)
     await _initCore(container);
   }
@@ -46,6 +50,7 @@ class AppInitializer {
           const LogOverlayProviderImpl(),
           const RateAppProviderImpl(),
           const ShowLicensesProviderImpl(),
+          const ShowTapeDetailsProviderImpl(),
           const ColorPickerProviderImpl(),
           const PrintPdfProviderImpl(),
         ],

@@ -4,6 +4,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_core/core.dart';
 import 'package:dynamic_color/dynamic_color.dart';
+import 'features/settings/presentation/provider/playback_provider.dart';
+import 'features/settings/data/models/playback_tape_metadata.dart';
 import 'shared/shared.dart';
 import 'package:listen_uikit/uikit.dart';
 
@@ -13,6 +15,19 @@ void main() {
     () async {
       final ProviderContainer container = ProviderContainer();
       await AppInitializer.init(container);
+
+      // Wire up the delegate to persist recorded tapes using settings repository
+      MviPlaybackRecorder.saveTapeDelegate = (tapeKey, steps, name, timestamp) async {
+        final repository = container.read(playbackTapeRepositoryProvider);
+        final metadata = PlaybackTapeMetadata(
+          key: tapeKey,
+          name: name,
+          timestamp: timestamp,
+          steps: steps.length,
+        );
+        await repository.saveTape(tapeKey, steps, metadata);
+      };
+
       runApp(UncontrolledProviderScope(container: container, child: const MyApp()));
     },
     onAppError: (logPath, error, stack) async {

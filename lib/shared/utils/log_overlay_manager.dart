@@ -4,9 +4,11 @@ import 'package:flutter/services.dart';
 import 'package:listen_core/core.dart';
 import 'package:listen_uikit/uikit.dart';
 
+import '../../shared/utils/playback_observer_manager.dart';
 import '../i18n/translations_key.dart';
+import 'routes.dart';
 
-enum LogFilter { all, server, app, perf }
+enum LogFilter { all, server, app, perf, playback }
 
 class LogOverlayManager {
   LogOverlayManager._();
@@ -62,7 +64,13 @@ class LogOverlayManager {
       ),
     );
 
-    Overlay.of(context).insert(_overlayEntry!);
+    final overlayState = Overlay.maybeOf(context) ?? AppNavConfig.navigatorKey.currentState?.overlay;
+    if (overlayState != null) {
+      overlayState.insert(_overlayEntry!);
+    } else {
+      appLogger.e('LogOverlayManager: No OverlayState found!');
+      return;
+    }
     isShowingNotifier.value = true;
 
     await SpUtil.put(logOverlayKey, true);
@@ -111,6 +119,12 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
   bool isFilterVisible = false;
   final TextEditingController _traceController = TextEditingController();
 
+  // Explicitly tracked playback progress state fields
+  bool _isPlaybackPlaying = false;
+  int _playbackCurrentStepIndex = 0;
+  int _playbackTotalSteps = 0;
+  String _playbackCurrentStepName = '';
+
   static const double minWidth = 250.0;
   static const double minHeight = 200.0;
   static const double handleSize = 30.0;
@@ -122,14 +136,34 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
     windowOffset = widget.initialWindowOffset ?? const Offset(0, 50);
     windowSize = widget.initialWindowSize ?? Size.zero;
     isExpanded = widget.startExpanded;
+
+    final player = MviPlaybackPlayer.instance;
+    _isPlaybackPlaying = player.isPlaying;
+    _playbackCurrentStepIndex = player.currentStepIndex;
+    _playbackTotalSteps = player.totalSteps;
+    _playbackCurrentStepName = player.currentStepName;
+
     _traceController.addListener(() {
       setState(() {});
     });
+    // Listen to playback player progress changes to explicitly update local widget state fields
+    MviPlaybackPlayer.instance.onProgressChanged = (progress) {
+      if (mounted) {
+        setState(() {
+          _isPlaybackPlaying = progress.isPlaying;
+          _playbackCurrentStepIndex = progress.currentStepIndex;
+          _playbackTotalSteps = progress.totalSteps;
+          _playbackCurrentStepName = progress.currentStepName;
+        });
+      }
+    };
   }
 
   @override
   void dispose() {
     _traceController.dispose();
+    // Clean up playback progress listener
+    MviPlaybackPlayer.instance.onProgressChanged = null;
     super.dispose();
   }
 
@@ -214,25 +248,100 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
     );
   }
 
-  Widget _buildFloatingButton(Size screenSize) {
-    // ignore: use_common_clickable
-    return GestureDetector(
-      onPanUpdate: (details) => _updateOffset(details.delta, screenSize, const Size(50, 50)),
-      onTap: () {
-        setState(() {
-          isExpanded = true;
-        });
-      },
-      child: Container(
-        width: 50,
-        height: 50,
-        decoration: BoxDecoration(
-          color: Colors.black.withValues(alpha: 0.7),
-          shape: BoxShape.circle,
-          boxShadow: const [BoxShadow(blurRadius: 10, color: Colors.black26)],
-        ),
-        child: const Icon(Icons.bug_report_rounded, color: Colors.greenAccent, size: 28),
+  Future<void> _showSaveDialog({bool shouldExpandAfter = false}) async {
+    final controller = TextEditingController();
+    await CommonDialog.showCustom<void>(
+      title: I18nKeys.saveTape.tr,
+      barrierDismissible: false,
+      body: TextField(
+        controller: controller,
+        decoration: InputDecoration(hintText: I18nKeys.enterTapeName.tr),
       ),
+      actions: [
+        CommonButton(
+          text: I18nKeys.discard.tr,
+          type: ButtonType.text,
+          foregroundColor: Colors.grey,
+          isFullWidth: false,
+          onPressed: () {
+            MviPlaybackRecorder.instance.stopRecording('');
+            AppNav.back();
+            CommonToast.show(I18nKeys.discardTapeMsg.tr);
+          },
+        ),
+        CommonButton(
+          text: I18nKeys.save.tr,
+          type: ButtonType.text,
+          isFullWidth: false,
+          onPressed: () async {
+            final name = await MviPlaybackRecorder.instance.stopRecording(controller.text);
+            AppNav.back();
+            CommonToast.show(I18nKeys.saveTapeSuccessMsg.tr.replaceAll('%s', name));
+          },
+        ),
+      ],
+    );
+    if (mounted) {
+      setState(() {
+        if (shouldExpandAfter) {
+          isExpanded = true;
+        }
+      });
+    }
+  }
+
+  Widget _buildFloatingButton(Size screenSize) {
+    final isRecording = MviPlaybackRecorder.instance.isRecording;
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (_isPlaybackPlaying && _playbackCurrentStepName.isNotEmpty) ...[
+          Container(
+            margin: const EdgeInsets.only(right: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: Colors.black.withValues(alpha: 0.85),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.blueAccent.withValues(alpha: 0.5)),
+              boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 4, offset: Offset(0, 2))],
+            ),
+            child: CommonText(
+              '$_playbackCurrentStepIndex/$_playbackTotalSteps $_playbackCurrentStepName',
+              style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+        // ignore: use_common_clickable
+        GestureDetector(
+          onPanUpdate: (details) => _updateOffset(details.delta, screenSize, const Size(50, 50)),
+          onTap: () {
+            if (isRecording) {
+              // Click to stop recording directly from the collapsed button,
+              // prompt save dialog, and expand the log manager window upon completion.
+              _showSaveDialog(shouldExpandAfter: true);
+            } else {
+              setState(() => isExpanded = true);
+            }
+          },
+          child: Container(
+            width: 50,
+            height: 50,
+            decoration: BoxDecoration(
+              color: Colors.black.withValues(alpha: 0.7),
+              shape: BoxShape.circle,
+              boxShadow: const [BoxShadow(blurRadius: 10, color: Colors.black26)],
+            ),
+            child: Icon(
+              isRecording
+                  ? Icons.stop_rounded
+                  : (_isPlaybackPlaying ? Icons.play_arrow_rounded : Icons.bug_report_rounded),
+              color: isRecording ? Colors.redAccent : (_isPlaybackPlaying ? Colors.blueAccent : Colors.greenAccent),
+              size: 28,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -333,9 +442,21 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
                     CommonToast.show(I18nKeys.copiedToClipboard.tr);
                   }),
                   _buildHeaderAction(Icons.delete_sweep_outlined, () => LogManager.clear()),
-                  _buildHeaderAction(Icons.close_fullscreen_rounded, () {
+                  _buildHeaderAction(Icons.fiber_manual_record, () {
+                    MviPlaybackRecorder.instance.startRecording();
+                    // Collapse overlay when starting recording
                     setState(() => isExpanded = false);
-                  }),
+                    CommonToast.show(I18nKeys.recordingStartedMsg.tr);
+                  }, color: Colors.red),
+                  _buildHeaderAction(Icons.video_library_rounded, () {
+                    // Collapse overlay when navigating to tape list
+                    setState(() => isExpanded = false);
+                    AppNav.to(Routes.playbackTapeList);
+                  }, color: Colors.blueAccent),
+                  _buildHeaderAction(
+                    Icons.close_fullscreen_rounded,
+                    () => setState(() => isExpanded = false),
+                  ),
                   _buildHeaderAction(
                     Icons.power_settings_new_rounded,
                     widget.onClose,
@@ -365,10 +486,11 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
                     return false;
                   }
 
-                  // Source & Perf filter
+                  // Source, Perf, and Playback filter
                   final bool isMock = log.message.contains(LogManager.mockServerTag);
                   final bool isPerf =
                       log.message.contains(LogManager.summaryTag) || log.message.contains(LogManager.termTag);
+                  final bool isPlayback = log.message.contains('[${MviPlaybackPlayer.tag}]');
 
                   switch (currentFilter) {
                     case LogFilter.all:
@@ -376,9 +498,11 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
                     case LogFilter.server:
                       return isMock;
                     case LogFilter.app:
-                      return !isMock && !isPerf;
+                      return !isMock && !isPerf && !isPlayback;
                     case LogFilter.perf:
                       return isPerf;
+                    case LogFilter.playback:
+                      return isPlayback;
                   }
                 }).toList();
 
@@ -460,12 +584,14 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
           Row(
             children: [
               _filterChip('All', LogFilter.all),
-              const SizedBox(width: 8),
+              const SizedBox(width: 6),
               _filterChip('Server', LogFilter.server, color: Colors.orangeAccent),
-              const SizedBox(width: 8),
+              const SizedBox(width: 6),
               _filterChip('App', LogFilter.app, color: Colors.blueAccent),
-              const SizedBox(width: 8),
+              const SizedBox(width: 6),
               _filterChip('Perf', LogFilter.perf, color: Colors.purpleAccent),
+              const SizedBox(width: 6),
+              _filterChip('playback', LogFilter.playback, color: Colors.redAccent),
             ],
           ),
           const SizedBox(height: 8),

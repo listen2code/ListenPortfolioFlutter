@@ -16,6 +16,7 @@ import '../../features/settings/presentation/pages/delete_account/delete_account
 import '../../features/settings/presentation/pages/privacy_policy/privacy_policy_page.dart';
 import '../../features/settings/presentation/pages/settings_page.dart';
 import '../../features/settings/presentation/pages/terms_of_service/terms_of_service_page.dart';
+import '../../features/settings/presentation/pages/playback_tape_list/playback_tape_list_page.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
 import '../../features/home/presentation/pages/resume/resume_page.dart';
 
@@ -38,6 +39,7 @@ class Routes {
   static const String privacyPolicy = '/privacy_policy';
   static const String webViewTest = '/webview_test';
   static const String resume = '/resume';
+  static const String playbackTapeList = '/playback_tape_list';
 
   // Argument Keys - Enforce consistency between caller and receiver
   static const String argName = 'name';
@@ -63,6 +65,7 @@ class Routes {
     termsOfService: () => const TermsOfServicePage(),
     privacyPolicy: () => const PrivacyPolicyPage(),
     resume: () => const ResumePage(),
+    playbackTapeList: () => const PlaybackTapeListPage(),
     webViewTest: () => FutureBuilder<String>(
       future: rootBundle.loadString('assets/html/test.html'),
       builder: (context, snapshot) {

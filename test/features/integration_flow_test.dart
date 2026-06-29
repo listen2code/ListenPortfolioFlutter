@@ -127,6 +127,7 @@ class TestAppInitializer {
       const LogoutProviderImpl(),
       const ShareProviderImpl(),
       const ConfirmProviderImpl(),
+      const ShowTapeDetailsProviderImpl(),
     ]);
 
     // 5. Setup Network Client

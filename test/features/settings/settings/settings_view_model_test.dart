@@ -223,8 +223,8 @@ void main() {
         expect(confirmEffect.title, I18nKeys.resetConfirmTitle.tr);
 
         // Simulate confirmation (result: true)
-        confirmEffect.onResult(true);
-        await Future.delayed(const Duration(milliseconds: 100));
+        await (confirmEffect.onResult as dynamic)(true);
+        await Future.delayed(const Duration(milliseconds: 50));
 
         final loadingEffects = emittedEffects.whereType<LoadingEffect>().toList();
         expect(loadingEffects.length, greaterThanOrEqualTo(2));
@@ -240,8 +240,8 @@ void main() {
         // Assert
         final confirmEffects = emittedEffects.whereType<ConfirmEffect>().toList();
         expect(confirmEffects, isNotEmpty);
-        confirmEffects.last.onResult(true);
-        await Future.delayed(const Duration(milliseconds: 100));
+        await (confirmEffects.last.onResult as dynamic)(true);
+        await Future.delayed(const Duration(milliseconds: 50));
 
         final messageEffects = emittedEffects.whereType<MessageEffect>().toList();
         expect(messageEffects, isNotEmpty);
@@ -256,8 +256,8 @@ void main() {
         // Assert
         final confirmEffects = emittedEffects.whereType<ConfirmEffect>().toList();
         expect(confirmEffects, isNotEmpty);
-        confirmEffects.last.onResult(false);
-        await Future.delayed(const Duration(milliseconds: 100));
+        await (confirmEffects.last.onResult as dynamic)(false);
+        await Future.delayed(const Duration(milliseconds: 50));
 
         final loadingEffects = emittedEffects.whereType<LoadingEffect>().toList();
         expect(loadingEffects, isEmpty);

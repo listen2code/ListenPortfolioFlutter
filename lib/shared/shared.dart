@@ -14,6 +14,7 @@ export 'base/print_pdf_provider_impl.dart';
 export 'base/rate_app_provider_impl.dart';
 export 'base/share_provider_impl.dart';
 export 'base/show_licenses_provider_impl.dart';
+export 'base/show_tape_details_provider_impl.dart';
 export 'base/switch_dialog_provider_impl.dart';
 export 'constants/app_constants.dart';
 export 'constants/env_config.dart';
@@ -41,4 +42,5 @@ export 'widgets/common_settings_section_title.dart';
 export 'widgets/common_settings_card.dart';
 export 'widgets/common_settings_tile.dart';
 export 'widgets/common_settings_switch_tile.dart';
+export 'utils/playback_observer_manager.dart';
 

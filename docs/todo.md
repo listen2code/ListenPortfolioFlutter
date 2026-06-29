@@ -94,7 +94,7 @@
 - 类型安全路由参数
 - Deep Link 支持
 - `onBackInvoked` 系统返回策略统一
-- `state roaming` 的定义与实现边界明确
+- Intent & Effect 录制回放系统的定义与边界已明确（详见 [intent_effect_playback_spec.md](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/docs/intent_effect_playback_spec.md)）
 - `_effectController` 与 `EventBus` 的职责评估
 
 ### 2. Auth 与缓存策略增强
