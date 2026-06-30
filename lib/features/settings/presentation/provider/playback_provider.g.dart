@@ -63,11 +63,13 @@ final getPlaybackTapesUseCaseProvider = GetPlaybackTapesUseCaseProvider._();
 final class GetPlaybackTapesUseCaseProvider
     extends
         $FunctionalProvider<
+          AsyncValue<GetPlaybackTapesUseCase>,
           GetPlaybackTapesUseCase,
-          GetPlaybackTapesUseCase,
-          GetPlaybackTapesUseCase
+          FutureOr<GetPlaybackTapesUseCase>
         >
-    with $Provider<GetPlaybackTapesUseCase> {
+    with
+        $FutureModifier<GetPlaybackTapesUseCase>,
+        $FutureProvider<GetPlaybackTapesUseCase> {
   GetPlaybackTapesUseCaseProvider._()
     : super(
         from: null,
@@ -84,26 +86,18 @@ final class GetPlaybackTapesUseCaseProvider
 
   @$internal
   @override
-  $ProviderElement<GetPlaybackTapesUseCase> $createElement(
+  $FutureProviderElement<GetPlaybackTapesUseCase> $createElement(
     $ProviderPointer pointer,
-  ) => $ProviderElement(pointer);
+  ) => $FutureProviderElement(pointer);
 
   @override
-  GetPlaybackTapesUseCase create(Ref ref) {
+  FutureOr<GetPlaybackTapesUseCase> create(Ref ref) {
     return getPlaybackTapesUseCase(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(GetPlaybackTapesUseCase value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<GetPlaybackTapesUseCase>(value),
-    );
   }
 }
 
 String _$getPlaybackTapesUseCaseHash() =>
-    r'aaf2a35a0553b9439fe9bdf403b5526b96489bc4';
+    r'0b47847eaa49bf26afff2c1a0f362e1229b8b23d';
 
 @ProviderFor(getPlaybackTapeStepsUseCase)
 final getPlaybackTapeStepsUseCaseProvider =
@@ -112,11 +106,13 @@ final getPlaybackTapeStepsUseCaseProvider =
 final class GetPlaybackTapeStepsUseCaseProvider
     extends
         $FunctionalProvider<
+          AsyncValue<GetPlaybackTapeStepsUseCase>,
           GetPlaybackTapeStepsUseCase,
-          GetPlaybackTapeStepsUseCase,
-          GetPlaybackTapeStepsUseCase
+          FutureOr<GetPlaybackTapeStepsUseCase>
         >
-    with $Provider<GetPlaybackTapeStepsUseCase> {
+    with
+        $FutureModifier<GetPlaybackTapeStepsUseCase>,
+        $FutureProvider<GetPlaybackTapeStepsUseCase> {
   GetPlaybackTapeStepsUseCaseProvider._()
     : super(
         from: null,
@@ -133,26 +129,18 @@ final class GetPlaybackTapeStepsUseCaseProvider
 
   @$internal
   @override
-  $ProviderElement<GetPlaybackTapeStepsUseCase> $createElement(
+  $FutureProviderElement<GetPlaybackTapeStepsUseCase> $createElement(
     $ProviderPointer pointer,
-  ) => $ProviderElement(pointer);
+  ) => $FutureProviderElement(pointer);
 
   @override
-  GetPlaybackTapeStepsUseCase create(Ref ref) {
+  FutureOr<GetPlaybackTapeStepsUseCase> create(Ref ref) {
     return getPlaybackTapeStepsUseCase(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(GetPlaybackTapeStepsUseCase value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<GetPlaybackTapeStepsUseCase>(value),
-    );
   }
 }
 
 String _$getPlaybackTapeStepsUseCaseHash() =>
-    r'25f0691c06960877c89fd6cf46f9120b9f097c84';
+    r'6f19db152a6e2da2dcd29c90771b32307b7bf132';
 
 @ProviderFor(deletePlaybackTapeUseCase)
 final deletePlaybackTapeUseCaseProvider = DeletePlaybackTapeUseCaseProvider._();
@@ -160,11 +148,13 @@ final deletePlaybackTapeUseCaseProvider = DeletePlaybackTapeUseCaseProvider._();
 final class DeletePlaybackTapeUseCaseProvider
     extends
         $FunctionalProvider<
+          AsyncValue<DeletePlaybackTapeUseCase>,
           DeletePlaybackTapeUseCase,
-          DeletePlaybackTapeUseCase,
-          DeletePlaybackTapeUseCase
+          FutureOr<DeletePlaybackTapeUseCase>
         >
-    with $Provider<DeletePlaybackTapeUseCase> {
+    with
+        $FutureModifier<DeletePlaybackTapeUseCase>,
+        $FutureProvider<DeletePlaybackTapeUseCase> {
   DeletePlaybackTapeUseCaseProvider._()
     : super(
         from: null,
@@ -181,23 +171,15 @@ final class DeletePlaybackTapeUseCaseProvider
 
   @$internal
   @override
-  $ProviderElement<DeletePlaybackTapeUseCase> $createElement(
+  $FutureProviderElement<DeletePlaybackTapeUseCase> $createElement(
     $ProviderPointer pointer,
-  ) => $ProviderElement(pointer);
+  ) => $FutureProviderElement(pointer);
 
   @override
-  DeletePlaybackTapeUseCase create(Ref ref) {
+  FutureOr<DeletePlaybackTapeUseCase> create(Ref ref) {
     return deletePlaybackTapeUseCase(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(DeletePlaybackTapeUseCase value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<DeletePlaybackTapeUseCase>(value),
-    );
   }
 }
 
 String _$deletePlaybackTapeUseCaseHash() =>
-    r'379bbdf3d80e96c372b824c5a994beb84362a600';
+    r'f255f8a10941cea323748b45f9092d15bf7a3923';

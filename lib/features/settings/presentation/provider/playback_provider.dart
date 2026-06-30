@@ -1,5 +1,4 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
 import '../../data/repositories/playback_tape_repository_impl.dart';
 import '../../domain/repositories/playback_tape_repository.dart';
 import '../../domain/usecases/delete_playback_tape_use_case.dart';
@@ -14,19 +13,19 @@ PlaybackTapeRepository playbackTapeRepository(Ref ref) {
 }
 
 @riverpod
-GetPlaybackTapesUseCase getPlaybackTapesUseCase(Ref ref) {
+Future<GetPlaybackTapesUseCase> getPlaybackTapesUseCase(Ref ref) async {
   final repository = ref.watch(playbackTapeRepositoryProvider);
   return GetPlaybackTapesUseCase(repository);
 }
 
 @riverpod
-GetPlaybackTapeStepsUseCase getPlaybackTapeStepsUseCase(Ref ref) {
+Future<GetPlaybackTapeStepsUseCase> getPlaybackTapeStepsUseCase(Ref ref) async {
   final repository = ref.watch(playbackTapeRepositoryProvider);
   return GetPlaybackTapeStepsUseCase(repository);
 }
 
 @riverpod
-DeletePlaybackTapeUseCase deletePlaybackTapeUseCase(Ref ref) {
+Future<DeletePlaybackTapeUseCase> deletePlaybackTapeUseCase(Ref ref) async {
   final repository = ref.watch(playbackTapeRepositoryProvider);
   return DeletePlaybackTapeUseCase(repository);
 }

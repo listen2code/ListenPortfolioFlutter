@@ -1,10 +1,12 @@
 import 'dart:async';
+
 import 'package:listen_core/core.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
 import '../../../../../shared/shared.dart';
+import '../../../data/models/playback_step.dart';
 import '../../../data/models/playback_tape_metadata.dart';
 import '../../provider/playback_provider.dart';
-import '../../../data/models/playback_step.dart';
 import 'playback_tape_list_intent.dart';
 import 'playback_tape_list_state.dart';
 
@@ -66,7 +68,7 @@ class PlaybackTapeListViewModel extends _$PlaybackTapeListViewModel
 
   Future<void> _performDeleteTape(String tapeKey) async {
     await call(
-      ref.execute<void, String>(deletePlaybackTapeUseCaseProvider),
+      ref.execute<void, String>(deletePlaybackTapeUseCaseProvider, param: tapeKey),
       showLoading: true,
       onSuccess: (_) async {
         emitEffect(MessageEffect(I18nKeys.tapeDeletedMsg.tr));
@@ -80,7 +82,7 @@ class PlaybackTapeListViewModel extends _$PlaybackTapeListViewModel
 
   Future<void> _startPlayback(String tapeKey) async {
     await call(
-      ref.execute<List<PlaybackStep>, String>(getPlaybackTapeStepsUseCaseProvider),
+      ref.execute<List<PlaybackStep>, String>(getPlaybackTapeStepsUseCaseProvider, param: tapeKey),
       showLoading: true,
       onSuccess: (steps) async {
         if (steps.isEmpty) return;
@@ -118,7 +120,7 @@ class PlaybackTapeListViewModel extends _$PlaybackTapeListViewModel
 
   Future<void> _showTapeDetails(String tapeKey, String tapeName) async {
     await call(
-      ref.execute<List<PlaybackStep>, String>(getPlaybackTapeStepsUseCaseProvider),
+      ref.execute<List<PlaybackStep>, String>(getPlaybackTapeStepsUseCaseProvider, param: tapeKey),
       showLoading: true,
       onSuccess: (steps) async {
         if (steps.isNotEmpty) {
