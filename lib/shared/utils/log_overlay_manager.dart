@@ -264,7 +264,7 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
           foregroundColor: Colors.grey,
           isFullWidth: false,
           onPressed: () {
-            MviPlaybackRecorder.instance.stopRecording('');
+            MviPlaybackRecorder.instance.stopRecording();
             AppNav.back();
             CommonToast.show(I18nKeys.discardTapeMsg.tr);
           },
@@ -274,9 +274,10 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
           type: ButtonType.text,
           isFullWidth: false,
           onPressed: () async {
-            final name = await MviPlaybackRecorder.instance.stopRecording(controller.text);
+            final name = await MviPlaybackRecorder.instance.stopRecording(customName: controller.text);
             AppNav.back();
             CommonToast.show(I18nKeys.saveTapeSuccessMsg.tr.replaceAll('%s', name));
+            AppNav.to(Routes.playbackTapeList);
           },
         ),
       ],
@@ -293,38 +294,37 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
   Widget _buildFloatingButton(Size screenSize) {
     final isRecording = MviPlaybackRecorder.instance.isRecording;
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (_isPlaybackPlaying && _playbackCurrentStepName.isNotEmpty) ...[
+    return GestureDetector(
+      onPanUpdate: (details) => _updateOffset(details.delta, screenSize, const Size(50, 50)),
+      onTap: () {
+        if (isRecording) {
+          // Click to stop recording directly from the collapsed button,
+          // prompt save dialog, and expand the log manager window upon completion.
+          _showSaveDialog(shouldExpandAfter: true);
+        } else {
+          setState(() => isExpanded = true);
+        }
+      },
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (_isPlaybackPlaying && _playbackCurrentStepName.isNotEmpty) ...[
+            Container(
+              margin: const EdgeInsets.only(right: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: Colors.black.withValues(alpha: 0.85),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.blueAccent.withValues(alpha: 0.5)),
+                boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 4, offset: Offset(0, 2))],
+              ),
+              child: CommonText(
+                '$_playbackCurrentStepIndex/$_playbackTotalSteps\n$_playbackCurrentStepName',
+                style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
           Container(
-            margin: const EdgeInsets.only(right: 8),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: Colors.black.withValues(alpha: 0.85),
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.blueAccent.withValues(alpha: 0.5)),
-              boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 4, offset: Offset(0, 2))],
-            ),
-            child: CommonText(
-              '$_playbackCurrentStepIndex/$_playbackTotalSteps $_playbackCurrentStepName',
-              style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
-            ),
-          ),
-        ],
-        // ignore: use_common_clickable
-        GestureDetector(
-          onPanUpdate: (details) => _updateOffset(details.delta, screenSize, const Size(50, 50)),
-          onTap: () {
-            if (isRecording) {
-              // Click to stop recording directly from the collapsed button,
-              // prompt save dialog, and expand the log manager window upon completion.
-              _showSaveDialog(shouldExpandAfter: true);
-            } else {
-              setState(() => isExpanded = true);
-            }
-          },
-          child: Container(
             width: 50,
             height: 50,
             decoration: BoxDecoration(
@@ -336,12 +336,14 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
               isRecording
                   ? Icons.stop_rounded
                   : (_isPlaybackPlaying ? Icons.play_arrow_rounded : Icons.bug_report_rounded),
-              color: isRecording ? Colors.redAccent : (_isPlaybackPlaying ? Colors.blueAccent : Colors.greenAccent),
+              color: isRecording
+                  ? Colors.redAccent
+                  : (_isPlaybackPlaying ? Colors.blueAccent : Colors.greenAccent),
               size: 28,
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -434,24 +436,26 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
                     },
                     color: isFilterVisible ? Colors.greenAccent : Colors.white70,
                   ),
-                  _buildHeaderAction(Icons.refresh_rounded, () {
-                    LogManager.refresh();
-                  }),
+                  _buildHeaderAction(Icons.refresh_rounded, () => LogManager.refresh()),
                   _buildHeaderAction(Icons.copy_rounded, () {
                     Clipboard.setData(ClipboardData(text: LogManager.getAllLogsAsText()));
                     CommonToast.show(I18nKeys.copiedToClipboard.tr);
                   }),
                   _buildHeaderAction(Icons.delete_sweep_outlined, () => LogManager.clear()),
                   _buildHeaderAction(Icons.fiber_manual_record, () {
-                    MviPlaybackRecorder.instance.startRecording();
-                    // Collapse overlay when starting recording
-                    setState(() => isExpanded = false);
-                    CommonToast.show(I18nKeys.recordingStartedMsg.tr);
+                    if (!_isPlaybackPlaying) {
+                      MviPlaybackRecorder.instance.startRecording();
+                      // Collapse overlay when starting recording
+                      setState(() => isExpanded = false);
+                      CommonToast.show(I18nKeys.recordingStartedMsg.tr);
+                    }
                   }, color: Colors.red),
                   _buildHeaderAction(Icons.video_library_rounded, () {
-                    // Collapse overlay when navigating to tape list
-                    setState(() => isExpanded = false);
-                    AppNav.to(Routes.playbackTapeList);
+                    if (!_isPlaybackPlaying) {
+                      // Collapse overlay when navigating to tape list
+                      setState(() => isExpanded = false);
+                      AppNav.to(Routes.playbackTapeList);
+                    }
                   }, color: Colors.blueAccent),
                   _buildHeaderAction(
                     Icons.close_fullscreen_rounded,

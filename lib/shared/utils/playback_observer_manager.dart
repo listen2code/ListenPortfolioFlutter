@@ -1,7 +1,8 @@
 import 'dart:convert';
-import 'package:listen_core/core.dart';
-import '../../features/settings/data/models/playback_step.dart';
 
+import 'package:listen_core/core.dart';
+
+import '../../features/settings/data/models/playback_step.dart';
 import '../constants/app_constants.dart';
 import '../i18n/translations_key.dart';
 
@@ -59,7 +60,7 @@ class MviPlaybackRecorder {
   }
 
   /// Stops recording and saves to SharedPreferences.
-  Future<String> stopRecording(String? customName) async {
+  Future<String> stopRecording({String? customName}) async {
     if (!_isRecording) return '';
     _isRecording = false;
 
