@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:listen_core/core.dart';
-import '../../../../../../shared/utils/playback_observer_manager.dart';
+import '../../../../../../shared/utils/playback_registry_init.dart';
 
 part 'projects_intent.freezed.dart';
 
@@ -13,6 +13,10 @@ class ProjectsIntent extends BaseIntent with _$ProjectsIntent {
   /// Registers deserializers for MVI playback.
   static void registerPlayback() {
     MviPlaybackRegistry.register('ProjectsIntent', 'refresh', (args) => const ProjectsIntent.refresh());
-    MviPlaybackRegistry.register('ProjectsIntent', 'launchURL', (args) => ProjectsIntent.launchURL(args['url'] ?? ''));
+    MviPlaybackRegistry.register(
+      'ProjectsIntent',
+      'launchURL',
+      (args) => ProjectsIntent.launchURL(args['url'] ?? ''),
+    );
   }
 }

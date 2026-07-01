@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:listen_core/core.dart';
-import '../../../../../../shared/utils/playback_observer_manager.dart';
+import '../../../../../shared/utils/playback_registry_init.dart';
 
 part 'change_password_intent.freezed.dart';
 
@@ -15,9 +15,25 @@ class ChangePasswordIntent extends BaseIntent with _$ChangePasswordIntent {
 
   /// Registers deserializers for MVI playback.
   static void registerPlayback() {
-    MviPlaybackRegistry.register('ChangePasswordIntent', 'oldPasswordChanged', (args) => ChangePasswordIntent.oldPasswordChanged(args['password'] ?? ''));
-    MviPlaybackRegistry.register('ChangePasswordIntent', 'newPasswordChanged', (args) => ChangePasswordIntent.newPasswordChanged(args['password'] ?? ''));
-    MviPlaybackRegistry.register('ChangePasswordIntent', 'confirmPasswordChanged', (args) => ChangePasswordIntent.confirmPasswordChanged(args['password'] ?? ''));
-    MviPlaybackRegistry.register('ChangePasswordIntent', 'submitChange', (args) => const ChangePasswordIntent.submitChange());
+    MviPlaybackRegistry.register(
+      'ChangePasswordIntent',
+      'oldPasswordChanged',
+      (args) => ChangePasswordIntent.oldPasswordChanged(args['password'] ?? ''),
+    );
+    MviPlaybackRegistry.register(
+      'ChangePasswordIntent',
+      'newPasswordChanged',
+      (args) => ChangePasswordIntent.newPasswordChanged(args['password'] ?? ''),
+    );
+    MviPlaybackRegistry.register(
+      'ChangePasswordIntent',
+      'confirmPasswordChanged',
+      (args) => ChangePasswordIntent.confirmPasswordChanged(args['password'] ?? ''),
+    );
+    MviPlaybackRegistry.register(
+      'ChangePasswordIntent',
+      'submitChange',
+      (args) => const ChangePasswordIntent.submitChange(),
+    );
   }
 }

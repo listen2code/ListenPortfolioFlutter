@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:listen_core/core.dart';
-import '../../../../shared/utils/playback_observer_manager.dart';
+import '../../../../shared/utils/playback_registry_init.dart';
 import 'home_state.dart';
 
 part 'home_intent.freezed.dart';
@@ -19,9 +19,10 @@ class HomeIntent extends BaseIntent with _$HomeIntent {
     MviPlaybackRegistry.register('HomeIntent', 'tabChanged', (args) {
       final tabStr = args['tab'] ?? '';
       final tab = HomeTab.values.firstWhere(
-        (e) => e.toString().split('.').last == tabStr || 
-               e.toString() == tabStr || 
-               e.toString().split('.').last == tabStr.split('.').last,
+        (e) =>
+            e.toString().split('.').last == tabStr ||
+            e.toString() == tabStr ||
+            e.toString().split('.').last == tabStr.split('.').last,
         orElse: () => HomeTab.overview,
       );
       final closeDrawer = args['closeDrawer'] == 'true';

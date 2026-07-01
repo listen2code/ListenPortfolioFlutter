@@ -1,3 +1,5 @@
+import 'package:listen_core/core.dart';
+
 import '../../features/auth/presentation/pages/login/login_intent.dart';
 import '../../features/auth/presentation/pages/sign_up/sign_up_intent.dart';
 import '../../features/auth/presentation/pages/password/forgot_password_intent.dart';
@@ -35,4 +37,55 @@ void initMviPlaybackRegistry() {
   PrivacyPolicyIntent.registerPlayback();
   TermsOfServiceIntent.registerPlayback();
   SplashIntent.registerPlayback();
+}
+
+/// Static deserializer registry to reconstruct Intent instances in a reflectionless Flutter environment.
+mixin MviPlaybackRegistry {
+  static final Map<String, Map<String, BaseIntent? Function(Map<String, String> args)>> _deserializers = {};
+
+  /// Returns all registered classes and their constructor names for testing verification.
+  static Map<String, Set<String>> get registeredKeys =>
+      _deserializers.map((k, v) => MapEntry(k, v.keys.toSet()));
+
+  /// Register a custom deserializer dynamically for modular/decoupled features.
+  static void register(
+    String className,
+    String constructorName,
+    BaseIntent? Function(Map<String, String> args) deserializer,
+  ) {
+    _deserializers.putIfAbsent(className, () => {})[constructorName] = deserializer;
+  }
+
+  static BaseIntent? parseAndDeserialize(String intentStr) {
+    final regex = RegExp(r'^([a-zA-Z0-9_]+)\.([a-zA-Z0-9_]+)\((.*)\)$');
+    final match = regex.firstMatch(intentStr.trim());
+    if (match == null) return null;
+
+    final className = match.group(1)!;
+    final constructorName = match.group(2)!;
+    final body = match.group(3)!;
+
+    final args = <String, String>{};
+    if (body.isNotEmpty) {
+      final pairs = body.split(', ');
+      for (var pair in pairs) {
+        final parts = pair.split(': ');
+        if (parts.length >= 2) {
+          args[parts[0].trim()] = parts.sublist(1).join(': ').trim();
+        }
+      }
+    }
+    return deserialize(className, constructorName, args);
+  }
+
+  static BaseIntent? deserialize(String className, String constructorName, Map<String, String> args) {
+    final classMap = _deserializers[className];
+    if (classMap != null) {
+      final deserializer = classMap[constructorName];
+      if (deserializer != null) {
+        return deserializer(args);
+      }
+    }
+    return null;
+  }
 }

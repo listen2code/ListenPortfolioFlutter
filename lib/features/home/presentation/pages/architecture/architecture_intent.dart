@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:listen_core/core.dart';
-import '../../../../../../shared/utils/playback_observer_manager.dart';
+import '../../../../../../shared/utils/playback_registry_init.dart';
 
 part 'architecture_intent.freezed.dart';
 
@@ -13,7 +13,15 @@ class ArchitectureIntent extends BaseIntent with _$ArchitectureIntent {
 
   /// Registers deserializers for MVI playback.
   static void registerPlayback() {
-    MviPlaybackRegistry.register('ArchitectureIntent', 'refresh', (args) => const ArchitectureIntent.refresh());
-    MviPlaybackRegistry.register('ArchitectureIntent', 'launchURL', (args) => ArchitectureIntent.launchURL(args['url'] ?? ''));
+    MviPlaybackRegistry.register(
+      'ArchitectureIntent',
+      'refresh',
+      (args) => const ArchitectureIntent.refresh(),
+    );
+    MviPlaybackRegistry.register(
+      'ArchitectureIntent',
+      'launchURL',
+      (args) => ArchitectureIntent.launchURL(args['url'] ?? ''),
+    );
   }
 }

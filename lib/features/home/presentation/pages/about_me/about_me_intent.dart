@@ -2,7 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:listen_core/core.dart';
 
-import '../../../../../../shared/utils/playback_observer_manager.dart';
+import '../../../../../../shared/utils/playback_registry_init.dart';
 
 part 'about_me_intent.freezed.dart';
 

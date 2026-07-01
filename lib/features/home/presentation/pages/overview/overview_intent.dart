@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:listen_core/core.dart';
-import '../../../../../../shared/utils/playback_observer_manager.dart';
+import '../../../../../../shared/utils/playback_registry_init.dart';
 
 part 'overview_intent.freezed.dart';
 
@@ -13,6 +13,10 @@ class OverviewIntent extends BaseIntent with _$OverviewIntent {
   /// Registers deserializers for MVI playback.
   static void registerPlayback() {
     MviPlaybackRegistry.register('OverviewIntent', 'refresh', (args) => const OverviewIntent.refresh());
-    MviPlaybackRegistry.register('OverviewIntent', 'launchURL', (args) => OverviewIntent.launchURL(args['url'] ?? ''));
+    MviPlaybackRegistry.register(
+      'OverviewIntent',
+      'launchURL',
+      (args) => OverviewIntent.launchURL(args['url'] ?? ''),
+    );
   }
 }

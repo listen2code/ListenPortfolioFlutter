@@ -28,15 +28,16 @@ class PlaybackTapeListPage extends ConsumerWidget {
             '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')} ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
         final tapeKey = tape.key;
         final tapeName = tape.name.isNotEmpty ? tape.name : I18nKeys.unnamedTape.tr;
- 
+
         return Card(
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
           child: ListTile(
             onTap: () => viewModel.handleIntent(PlaybackTapeListIntent.showTapeDetails(tapeKey, tapeName)),
             leading: const CircleAvatar(child: Icon(Icons.movie_creation_outlined)),
             title: CommonText(
+              useFittedBox: false,
               tapeName,
-              style: const TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
             ),
             subtitle: CommonText(
               '$formattedDate · ${I18nKeys.tapeStepsCount.tr.replaceAll('%s', tape.steps.toString())}',

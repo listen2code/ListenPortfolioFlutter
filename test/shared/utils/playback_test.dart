@@ -8,7 +8,7 @@ import 'package:listen_core/base/base_view_model.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_intent.dart';
 
-import 'package:listen_portfolio_flutter/shared/utils/playback_registry_init.dart';
+import 'package:listen_portfolio_flutter/shared/utils/playback_manager.dart';
 import 'package:listen_portfolio_flutter/features/settings/domain/repositories/playback_tape_repository.dart';
 import 'package:listen_portfolio_flutter/features/settings/data/repositories/playback_tape_repository_impl.dart';
 import 'package:listen_portfolio_flutter/features/settings/data/models/playback_tape_metadata.dart';
@@ -176,7 +176,7 @@ void main() {
 
       for (final file in intentFiles) {
         final content = file.readAsStringSync();
-        
+
         // Find class name, e.g. "class LoginIntent"
         final classRegex = RegExp(r'class\s+([a-zA-Z0-9_]+)\s+extends\s+BaseIntent');
         final classMatch = classRegex.firstMatch(content);
@@ -187,20 +187,19 @@ void main() {
         if (className == 'PlaybackTapeListIntent') continue;
 
         // Find all union constructors, e.g. "const factory LoginIntent.usernameChanged("
-        final constructorRegex = RegExp(
-          'const\\s+factory\\s+' + className + '\\.([a-zA-Z0-9_]+)\\(',
-        );
+        final constructorRegex = RegExp('const\\s+factory\\s+' + className + '\\.([a-zA-Z0-9_]+)\\(');
         final matches = constructorRegex.allMatches(content);
-        
+
         final registeredConstructors = registered[className] ?? {};
 
         for (final match in matches) {
           final constructorName = match.group(1)!;
-          
+
           expect(
             registeredConstructors.contains(constructorName),
             isTrue,
-            reason: 'Constructor "$className.$constructorName" is not registered in MviPlaybackRegistry! '
+            reason:
+                'Constructor "$className.$constructorName" is not registered in MviPlaybackRegistry! '
                 'Please add it to the registerPlayback() method of $className.',
           );
         }

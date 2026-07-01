@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:listen_core/core.dart';
 import 'package:listen_uikit/uikit.dart';
 
-import '../../shared/utils/playback_observer_manager.dart';
+import '../../shared/utils/playback_manager.dart';
 import '../i18n/translations_key.dart';
 import 'routes.dart';
 
@@ -119,11 +119,8 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
   bool isFilterVisible = false;
   final TextEditingController _traceController = TextEditingController();
 
-  // Explicitly tracked playback progress state fields
-  bool _isPlaybackPlaying = false;
-  int _playbackCurrentStepIndex = 0;
-  int _playbackTotalSteps = 0;
-  String _playbackCurrentStepName = '';
+  // Explicitly tracked playback progress state
+  PlaybackProgress? _playbackProgress;
 
   static const double minWidth = 250.0;
   static const double minHeight = 200.0;
@@ -137,23 +134,16 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
     windowSize = widget.initialWindowSize ?? Size.zero;
     isExpanded = widget.startExpanded;
 
-    final player = MviPlaybackPlayer.instance;
-    _isPlaybackPlaying = player.isPlaying;
-    _playbackCurrentStepIndex = player.currentStepIndex;
-    _playbackTotalSteps = player.totalSteps;
-    _playbackCurrentStepName = player.currentStepName;
+    _playbackProgress = MviPlaybackPlayer.instance.progress;
 
     _traceController.addListener(() {
       setState(() {});
     });
-    // Listen to playback player progress changes to explicitly update local widget state fields
+    // Listen to playback player progress changes to explicitly update local widget state
     MviPlaybackPlayer.instance.onProgressChanged = (progress) {
       if (mounted) {
         setState(() {
-          _isPlaybackPlaying = progress.isPlaying;
-          _playbackCurrentStepIndex = progress.currentStepIndex;
-          _playbackTotalSteps = progress.totalSteps;
-          _playbackCurrentStepName = progress.currentStepName;
+          _playbackProgress = progress;
         });
       }
     };
@@ -294,6 +284,7 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
   Widget _buildFloatingButton(Size screenSize) {
     final isRecording = MviPlaybackRecorder.instance.isRecording;
 
+    // ignore: use_common_clickable
     return GestureDetector(
       onPanUpdate: (details) => _updateOffset(details.delta, screenSize, const Size(50, 50)),
       onTap: () {
@@ -305,25 +296,10 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
           setState(() => isExpanded = true);
         }
       },
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (_isPlaybackPlaying && _playbackCurrentStepName.isNotEmpty) ...[
-            Container(
-              margin: const EdgeInsets.only(right: 8),
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.85),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.blueAccent.withValues(alpha: 0.5)),
-                boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 4, offset: Offset(0, 2))],
-              ),
-              child: CommonText(
-                '$_playbackCurrentStepIndex/$_playbackTotalSteps\n$_playbackCurrentStepName',
-                style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
-              ),
-            ),
-          ],
           Container(
             width: 50,
             height: 50,
@@ -335,13 +311,32 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
             child: Icon(
               isRecording
                   ? Icons.stop_rounded
-                  : (_isPlaybackPlaying ? Icons.play_arrow_rounded : Icons.bug_report_rounded),
+                  : (_playbackProgress?.isPlaying == true
+                        ? Icons.play_arrow_rounded
+                        : Icons.bug_report_rounded),
               color: isRecording
                   ? Colors.redAccent
-                  : (_isPlaybackPlaying ? Colors.blueAccent : Colors.greenAccent),
+                  : (_playbackProgress?.isPlaying == true ? Colors.blueAccent : Colors.greenAccent),
               size: 28,
             ),
           ),
+          if (_playbackProgress?.isPlaying == true &&
+              _playbackProgress?.currentStepName.isNotEmpty == true) ...[
+            Container(
+              margin: const EdgeInsets.only(right: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: Colors.black.withValues(alpha: 0.85),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.blueAccent.withValues(alpha: 0.5)),
+                boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 4, offset: Offset(0, 2))],
+              ),
+              child: CommonText(
+                '${_playbackProgress?.currentStepIndex}/${_playbackProgress?.totalSteps}\n${_playbackProgress?.currentStepName}',
+                style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
         ],
       ),
     );
@@ -443,7 +438,7 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
                   }),
                   _buildHeaderAction(Icons.delete_sweep_outlined, () => LogManager.clear()),
                   _buildHeaderAction(Icons.fiber_manual_record, () {
-                    if (!_isPlaybackPlaying) {
+                    if (!(_playbackProgress?.isPlaying ?? false)) {
                       MviPlaybackRecorder.instance.startRecording();
                       // Collapse overlay when starting recording
                       setState(() => isExpanded = false);
@@ -451,7 +446,7 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
                     }
                   }, color: Colors.red),
                   _buildHeaderAction(Icons.video_library_rounded, () {
-                    if (!_isPlaybackPlaying) {
+                    if (!(_playbackProgress?.isPlaying ?? false)) {
                       // Collapse overlay when navigating to tape list
                       setState(() => isExpanded = false);
                       AppNav.to(Routes.playbackTapeList);

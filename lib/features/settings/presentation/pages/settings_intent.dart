@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:listen_core/core.dart';
 import '../../../../shared/shared.dart';
+import '../../../../shared/utils/playback_registry_init.dart';
 
 part 'settings_intent.freezed.dart';
 
@@ -34,9 +35,17 @@ class SettingsIntent extends BaseIntent with _$SettingsIntent {
   /// Registers deserializers for MVI playback.
   static void registerPlayback() {
     MviPlaybackRegistry.register('SettingsIntent', 'init', (args) => const SettingsIntent.init());
-    MviPlaybackRegistry.register('SettingsIntent', 'toggleNotifications', (args) => SettingsIntent.toggleNotifications(args['enabled'] == 'true'));
+    MviPlaybackRegistry.register(
+      'SettingsIntent',
+      'toggleNotifications',
+      (args) => SettingsIntent.toggleNotifications(args['enabled'] == 'true'),
+    );
     MviPlaybackRegistry.register('SettingsIntent', 'clearCache', (args) => const SettingsIntent.clearCache());
-    MviPlaybackRegistry.register('SettingsIntent', 'resetSettings', (args) => const SettingsIntent.resetSettings());
+    MviPlaybackRegistry.register(
+      'SettingsIntent',
+      'resetSettings',
+      (args) => const SettingsIntent.resetSettings(),
+    );
     MviPlaybackRegistry.register('SettingsIntent', 'switchLanguage', (args) {
       final langStr = args['language'] ?? '';
       final lang = AppLanguage.values.firstWhere(
@@ -53,21 +62,77 @@ class SettingsIntent extends BaseIntent with _$SettingsIntent {
       );
       return SettingsIntent.switchEnv(env);
     });
-    MviPlaybackRegistry.register('SettingsIntent', 'toggleLogOverlay', (args) => SettingsIntent.toggleLogOverlay(args['enabled'] == 'true'));
-    MviPlaybackRegistry.register('SettingsIntent', 'checkUpdates', (args) => const SettingsIntent.checkUpdates());
-    MviPlaybackRegistry.register('SettingsIntent', 'buyMeCoffee', (args) => const SettingsIntent.buyMeCoffee());
-    MviPlaybackRegistry.register('SettingsIntent', 'showEnvDialog', (args) => const SettingsIntent.showEnvDialog());
-    MviPlaybackRegistry.register('SettingsIntent', 'showLanguageDialog', (args) => const SettingsIntent.showLanguageDialog());
+    MviPlaybackRegistry.register(
+      'SettingsIntent',
+      'toggleLogOverlay',
+      (args) => SettingsIntent.toggleLogOverlay(args['enabled'] == 'true'),
+    );
+    MviPlaybackRegistry.register(
+      'SettingsIntent',
+      'checkUpdates',
+      (args) => const SettingsIntent.checkUpdates(),
+    );
+    MviPlaybackRegistry.register(
+      'SettingsIntent',
+      'buyMeCoffee',
+      (args) => const SettingsIntent.buyMeCoffee(),
+    );
+    MviPlaybackRegistry.register(
+      'SettingsIntent',
+      'showEnvDialog',
+      (args) => const SettingsIntent.showEnvDialog(),
+    );
+    MviPlaybackRegistry.register(
+      'SettingsIntent',
+      'showLanguageDialog',
+      (args) => const SettingsIntent.showLanguageDialog(),
+    );
     MviPlaybackRegistry.register('SettingsIntent', 'shareApp', (args) => const SettingsIntent.shareApp());
-    MviPlaybackRegistry.register('SettingsIntent', 'enableDeveloperMode', (args) => const SettingsIntent.enableDeveloperMode());
+    MviPlaybackRegistry.register(
+      'SettingsIntent',
+      'enableDeveloperMode',
+      (args) => const SettingsIntent.enableDeveloperMode(),
+    );
     MviPlaybackRegistry.register('SettingsIntent', 'rateApp', (args) => const SettingsIntent.rateApp());
-    MviPlaybackRegistry.register('SettingsIntent', 'showLicenses', (args) => const SettingsIntent.showLicenses());
-    MviPlaybackRegistry.register('SettingsIntent', 'toAppearance', (args) => const SettingsIntent.toAppearance());
-    MviPlaybackRegistry.register('SettingsIntent', 'toChangePassword', (args) => const SettingsIntent.toChangePassword());
-    MviPlaybackRegistry.register('SettingsIntent', 'toDeleteAccount', (args) => const SettingsIntent.toDeleteAccount());
-    MviPlaybackRegistry.register('SettingsIntent', 'toCrashLogs', (args) => const SettingsIntent.toCrashLogs());
-    MviPlaybackRegistry.register('SettingsIntent', 'toPrivacyPolicy', (args) => const SettingsIntent.toPrivacyPolicy());
-    MviPlaybackRegistry.register('SettingsIntent', 'toTermsOfService', (args) => const SettingsIntent.toTermsOfService());
-    MviPlaybackRegistry.register('SettingsIntent', 'toWebViewTest', (args) => const SettingsIntent.toWebViewTest());
+    MviPlaybackRegistry.register(
+      'SettingsIntent',
+      'showLicenses',
+      (args) => const SettingsIntent.showLicenses(),
+    );
+    MviPlaybackRegistry.register(
+      'SettingsIntent',
+      'toAppearance',
+      (args) => const SettingsIntent.toAppearance(),
+    );
+    MviPlaybackRegistry.register(
+      'SettingsIntent',
+      'toChangePassword',
+      (args) => const SettingsIntent.toChangePassword(),
+    );
+    MviPlaybackRegistry.register(
+      'SettingsIntent',
+      'toDeleteAccount',
+      (args) => const SettingsIntent.toDeleteAccount(),
+    );
+    MviPlaybackRegistry.register(
+      'SettingsIntent',
+      'toCrashLogs',
+      (args) => const SettingsIntent.toCrashLogs(),
+    );
+    MviPlaybackRegistry.register(
+      'SettingsIntent',
+      'toPrivacyPolicy',
+      (args) => const SettingsIntent.toPrivacyPolicy(),
+    );
+    MviPlaybackRegistry.register(
+      'SettingsIntent',
+      'toTermsOfService',
+      (args) => const SettingsIntent.toTermsOfService(),
+    );
+    MviPlaybackRegistry.register(
+      'SettingsIntent',
+      'toWebViewTest',
+      (args) => const SettingsIntent.toWebViewTest(),
+    );
   }
 }

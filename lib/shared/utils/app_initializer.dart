@@ -9,8 +9,6 @@ import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_uikit/uikit.dart';
 
 import '../services/iap/iap_service_impl.dart';
-import '../services/review/review_service.dart';
-import 'playback_registry_init.dart';
 
 /// A central class to handle all application-wide initializations.
 /// This acts as the 'Composition Root' where core interfaces are tied to shared implementations.

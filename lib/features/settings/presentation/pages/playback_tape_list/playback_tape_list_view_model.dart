@@ -36,22 +36,6 @@ class PlaybackTapeListViewModel extends _$PlaybackTapeListViewModel
     );
   }
 
-  void _deleteTape(String tapeKey) {
-    emitEffect(
-      ConfirmEffect(
-        title: I18nKeys.delete.tr,
-        message: I18nKeys.deleteTapeConfirmMsg.tr,
-        okText: I18nKeys.delete.tr,
-        cancelText: I18nKeys.cancel.tr,
-        onResult: (confirmed) {
-          if (confirmed) {
-            _performDeleteTape(tapeKey);
-          }
-        },
-      ),
-    );
-  }
-
   Future<void> _loadTapes() async {
     await call(
       ref.execute<List<PlaybackTapeMetadata>, BaseParam>(getPlaybackTapesUseCaseProvider),
@@ -66,17 +50,29 @@ class PlaybackTapeListViewModel extends _$PlaybackTapeListViewModel
     );
   }
 
-  Future<void> _performDeleteTape(String tapeKey) async {
-    await call(
-      ref.execute<void, String>(deletePlaybackTapeUseCaseProvider, param: tapeKey),
-      showLoading: true,
-      onSuccess: (_) async {
-        emitEffect(MessageEffect(I18nKeys.tapeDeletedMsg.tr));
-        _loadTapes();
-      },
-      onFailure: (failure) {
-        appLogger.e('Failed to delete tape: ${failure.message}');
-      },
+  void _deleteTape(String tapeKey) {
+    emitEffect(
+      ConfirmEffect(
+        title: I18nKeys.delete.tr,
+        message: I18nKeys.deleteTapeConfirmMsg.tr,
+        okText: I18nKeys.delete.tr,
+        cancelText: I18nKeys.cancel.tr,
+        onResult: (confirmed) async {
+          if (confirmed) {
+            await call(
+              ref.execute<void, String>(deletePlaybackTapeUseCaseProvider, param: tapeKey),
+              showLoading: true,
+              onSuccess: (_) async {
+                emitEffect(MessageEffect(I18nKeys.tapeDeletedMsg.tr));
+                _loadTapes();
+              },
+              onFailure: (failure) {
+                appLogger.e('Failed to delete tape: ${failure.message}');
+              },
+            );
+          }
+        },
+      ),
     );
   }
 
