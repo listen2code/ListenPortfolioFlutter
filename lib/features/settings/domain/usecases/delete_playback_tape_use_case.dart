@@ -12,11 +12,6 @@ class DeletePlaybackTapeUseCase implements UseCase<void, String> {
     if (param == null || param.isEmpty) {
       return const Left(ValidationFailure('Tape key cannot be empty'));
     }
-    try {
-      await repository.deleteTape(param);
-      return const Right(null);
-    } catch (e) {
-      return Left(CacheFailure(e.toString()));
-    }
+    return repository.deleteTape(param);
   }
 }

@@ -43,3 +43,4 @@ export 'widgets/common_settings_card.dart';
 export 'widgets/common_settings_tile.dart';
 export 'widgets/common_settings_switch_tile.dart';
 export 'utils/playback_manager.dart';
+export 'utils/playback_registry_init.dart';

@@ -2,8 +2,8 @@ name: listen_portfolio_flutter
 description: "Portfolio of Listen"
 publish_to: 'none'
 
-version: 1.0.56
-desc: "Fx Bug: MviPlaybackObserver LogOverlayManager"
+version: 1.0.57
+desc: "Fx Bug: MviPlaybackObserver"
 desc_zh: ""
 desc_ja: ""
 

@@ -13,11 +13,6 @@ class GetPlaybackTapeStepsUseCase implements UseCase<List<PlaybackStep>, String>
     if (param == null || param.isEmpty) {
       return const Left(ValidationFailure('Tape key cannot be empty'));
     }
-    try {
-      final steps = await repository.getTapeSteps(param);
-      return Right(steps);
-    } catch (e) {
-      return Left(CacheFailure(e.toString()));
-    }
+    return repository.getTapeSteps(param);
   }
 }

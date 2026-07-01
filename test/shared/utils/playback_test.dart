@@ -54,7 +54,11 @@ void main() {
         timestamp: timestamp,
         steps: steps.length,
       );
-      await repository.saveTape(tapeKey, steps, metadata);
+      final result = await repository.saveTape(tapeKey, steps, metadata);
+      result.fold(
+        (failure) => appLogger.e('Failed to save tape from test delegate: ${failure.message}'),
+        (_) => null,
+      );
     };
   });
 
@@ -80,7 +84,7 @@ void main() {
       expect(recorder.recordedSteps.first.name, contains('LoginIntent.usernameChanged'));
 
       // 停止录制
-      final savedName = await recorder.stopRecording('测试账号输入录制');
+      final savedName = await recorder.stopRecording(customName: '测试账号输入录制');
       expect(recorder.isRecording, isFalse);
       expect(savedName, equals('测试账号输入录制'));
 

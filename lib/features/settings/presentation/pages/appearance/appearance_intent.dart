@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:listen_core/core.dart';
 import '../../../../../shared/shared.dart';
-import '../../../../../shared/utils/playback_registry_init.dart';
 
 part 'appearance_intent.freezed.dart';
 

@@ -10,11 +10,6 @@ class GetPlaybackTapesUseCase implements UseCase<List<PlaybackTapeMetadata>, Bas
 
   @override
   Future<Either<Failure, List<PlaybackTapeMetadata>>> call({BaseParam? param}) async {
-    try {
-      final tapes = await repository.getTapes();
-      return Right(tapes);
-    } catch (e) {
-      return Left(CacheFailure(e.toString()));
-    }
+    return repository.getTapes();
   }
 }

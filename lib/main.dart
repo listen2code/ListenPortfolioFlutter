@@ -25,7 +25,11 @@ void main() {
           timestamp: timestamp,
           steps: steps.length,
         );
-        await repository.saveTape(tapeKey, steps, metadata);
+        final result = await repository.saveTape(tapeKey, steps, metadata);
+        result.fold(
+          (failure) => appLogger.e('Failed to save tape from delegate: ${failure.message}'),
+          (_) => null,
+        );
       };
 
       runApp(UncontrolledProviderScope(container: container, child: const MyApp()));
