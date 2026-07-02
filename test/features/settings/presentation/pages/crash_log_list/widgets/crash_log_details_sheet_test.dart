@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/crash_log_list/widgets/crash_log_details_sheet.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
+import 'package:listen_uikit/uikit.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -73,7 +74,7 @@ Random log detail line
 
       // Find copy button by its icon
       final copyButton = find.byWidgetPredicate(
-        (widget) => widget is IconButton && widget.icon is Icon && (widget.icon as Icon).icon == Icons.copy_all_rounded,
+        (widget) => widget is CommonIconButton && widget.icon is Icon && (widget.icon as Icon).icon == Icons.copy_all_rounded,
       );
       
       expect(copyButton, findsOneWidget);

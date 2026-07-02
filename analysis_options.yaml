@@ -39,6 +39,7 @@ custom_lint:
     - use_common_dialog
     - use_common_switch
     - use_common_text_field
+    - use_common_refresh_list
     - view_model_context_isolation
     - cross_feature_relative_import
     - no_hardcoded_strings

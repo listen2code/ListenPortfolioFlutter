@@ -23,6 +23,7 @@ class DependencyBoundaryLint extends PluginBase {
     const _UseCommonDialogRule(),
     const _UseCommonSwitchRule(),
     const _UseCommonTextFieldRule(),
+    const _UseCommonRefreshListRule(),
     const _ViewModelContextIsolationRule(),
     const _CrossFeatureRelativeImportRule(),
     const _NoHardcodedStringsRule(),
@@ -869,6 +870,94 @@ class _UseCommonTextFieldFix extends DartFix {
         builder.addSimpleReplacement(
           SourceRange(constructorName.offset, constructorName.length),
           'CommonTextField',
+        );
+      });
+    });
+  }
+}
+
+/// Rule to check and discourage direct usage of RefreshIndicator or CupertinoSliverRefreshControl
+class _UseCommonRefreshListRule extends DartLintRule {
+  static const LintCode _code = LintCode(
+    name: 'use_common_refresh_list',
+    problemMessage: 'Avoid using RefreshIndicator or CupertinoSliverRefreshControl directly.',
+    correctionMessage: 'Replace with CommonRefreshList from package:listen_uikit.',
+  );
+
+  const _UseCommonRefreshListRule() : super(code: _code);
+
+  @override
+  List<Fix> getFixes() => [_UseCommonRefreshListFix()];
+
+  @override
+  void run(
+    CustomLintResolver resolver,
+    ErrorReporter reporter,
+    CustomLintContext context,
+  ) {
+    context.registry.addInstanceCreationExpression((InstanceCreationExpression node) {
+      final typeElement = node.staticType?.element;
+      if (typeElement == null) return;
+
+      final typeName = typeElement.name;
+      final libraryUri = typeElement.library?.uri.toString() ?? '';
+      
+      // Check if it is a Flutter SDK widget creation
+      final isFlutterWidget = libraryUri.startsWith('package:flutter/');
+      if (!isFlutterWidget) return;
+
+      // Avoid flagging files in ListenUiKit or within tools/
+      final filePath = resolver.source.fullName;
+      if (filePath.contains('ListenUiKit') || filePath.contains('tools/')) return;
+
+      final isBasicRefresh = typeName == 'RefreshIndicator' ||
+          typeName == 'CupertinoSliverRefreshControl';
+
+      if (isBasicRefresh) {
+        reporter.atNode(
+          node,
+          _code,
+        );
+      }
+    });
+  }
+}
+
+class _UseCommonRefreshListFix extends DartFix {
+  _UseCommonRefreshListFix();
+
+  @override
+  void run(
+    CustomLintResolver resolver,
+    ChangeReporter reporter,
+    CustomLintContext context,
+    AnalysisError analysisError,
+    List<AnalysisError> others,
+  ) {
+    context.registry.addInstanceCreationExpression((InstanceCreationExpression node) {
+      if (!analysisError.sourceRange.intersects(node.sourceRange)) return;
+
+      final typeElement = node.staticType?.element;
+      if (typeElement == null) return;
+      final typeName = typeElement.name;
+      
+      final isBasicRefresh = typeName == 'RefreshIndicator' ||
+          typeName == 'CupertinoSliverRefreshControl';
+
+      if (!isBasicRefresh) return;
+
+      final changeBuilder = reporter.createChangeBuilder(
+        message: 'Replace with CommonRefreshList',
+        priority: 80,
+      );
+
+      changeBuilder.addDartFileEdit((builder) {
+        builder.importLibraryElement(Uri.parse('package:listen_uikit/uikit.dart'));
+
+        final constructorName = node.constructorName;
+        builder.addSimpleReplacement(
+          SourceRange(constructorName.offset, constructorName.length),
+          'CommonRefreshList',
         );
       });
     });
