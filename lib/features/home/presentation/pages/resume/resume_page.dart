@@ -18,13 +18,11 @@ class ResumePage extends ConsumerWidget {
       title: I18nKeys.resume.tr,
       provider: resumeViewModelProvider,
       actions: [
-        IconButton(
+        CommonIconButton(
           icon: const Icon(Icons.picture_as_pdf_outlined),
           tooltip: I18nKeys.exportPDF.tr,
           onPressed: () {
-            ref.read(resumeViewModelProvider.notifier).handleIntent(
-              const ResumeIntent.exportPDF(),
-            );
+            ref.read(resumeViewModelProvider.notifier).handleIntent(const ResumeIntent.exportPDF());
           },
         ),
       ],
@@ -36,10 +34,7 @@ class ResumePage extends ConsumerWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                CommonText(
-                  state.errorMessage!,
-                  style: const TextStyle(color: Colors.red),
-                ),
+                CommonText(state.errorMessage!, style: const TextStyle(color: Colors.red)),
                 const SizedBox(height: 16),
                 CommonButton(
                   text: I18nKeys.retry.tr,
@@ -52,10 +47,7 @@ class ResumePage extends ConsumerWidget {
           );
         }
 
-        return Markdown(
-          data: state.markdownContent,
-          selectable: true,
-        );
+        return Markdown(data: state.markdownContent, selectable: true);
       },
     );
   }

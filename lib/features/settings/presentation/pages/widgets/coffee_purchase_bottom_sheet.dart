@@ -186,7 +186,7 @@ class _CoffeePurchaseBottomSheetState extends State<CoffeePurchaseBottomSheet> w
                   I18nKeys.selectAmount.tr,
                   style: context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                 ),
-                IconButton(
+                CommonIconButton(
                   icon: Icon(Icons.close, size: 20.f),
                   onPressed: () => Navigator.of(context).pop(),
                 ),

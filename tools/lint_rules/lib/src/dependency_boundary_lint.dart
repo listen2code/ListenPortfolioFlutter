@@ -19,6 +19,7 @@ class DependencyBoundaryLint extends PluginBase {
     const _UseCommonClickableRule(),
     const _UseCommonTextRule(),
     const _UseCommonButtonRule(),
+    const _UseCommonIconButtonRule(),
     const _UseCommonDialogRule(),
     const _UseCommonSwitchRule(),
     const _UseCommonTextFieldRule(),
@@ -576,6 +577,98 @@ class _UseCommonButtonFix extends DartFix {
         builder.addSimpleReplacement(
           SourceRange(constructorName.offset, constructorName.length),
           'CommonButton',
+        );
+      });
+    });
+  }
+}
+
+/// Rule to check and discourage direct usage of basic IconButton widgets
+class _UseCommonIconButtonRule extends DartLintRule {
+  static const LintCode _code = LintCode(
+    name: 'use_common_icon_button',
+    problemMessage: 'Avoid using basic IconButton widgets directly.',
+    correctionMessage: 'Replace with CommonIconButton from package:listen_uikit.',
+  );
+
+  const _UseCommonIconButtonRule() : super(code: _code);
+
+  @override
+  List<Fix> getFixes() => [_UseCommonIconButtonFix()];
+
+  @override
+  void run(
+    CustomLintResolver resolver,
+    ErrorReporter reporter,
+    CustomLintContext context,
+  ) {
+    context.registry.addInstanceCreationExpression((InstanceCreationExpression node) {
+      final typeElement = node.staticType?.element;
+      if (typeElement == null) return;
+
+      final typeName = typeElement.name;
+      final libraryUri = typeElement.library?.uri.toString() ?? '';
+      
+      // Check if it is a Flutter SDK widget creation
+      final isFlutterWidget = libraryUri.startsWith('package:flutter/');
+      if (!isFlutterWidget) return;
+
+      // Avoid flagging files in ListenUiKit or within tools/
+      final filePath = resolver.source.fullName;
+      if (filePath.contains('ListenUiKit') || filePath.contains('tools/')) return;
+
+      final isBasicIconButton = typeName == 'IconButton' ||
+          typeName == 'FilledIconButton' ||
+          typeName == 'FilledTonalIconButton' ||
+          typeName == 'OutlinedIconButton';
+
+      if (isBasicIconButton) {
+        reporter.atNode(
+          node,
+          _code,
+        );
+      }
+    });
+  }
+}
+
+class _UseCommonIconButtonFix extends DartFix {
+  _UseCommonIconButtonFix();
+
+  @override
+  void run(
+    CustomLintResolver resolver,
+    ChangeReporter reporter,
+    CustomLintContext context,
+    AnalysisError analysisError,
+    List<AnalysisError> others,
+  ) {
+    context.registry.addInstanceCreationExpression((InstanceCreationExpression node) {
+      if (!analysisError.sourceRange.intersects(node.sourceRange)) return;
+
+      final typeElement = node.staticType?.element;
+      if (typeElement == null) return;
+      final typeName = typeElement.name;
+      
+      final isBasicIconButton = typeName == 'IconButton' ||
+          typeName == 'FilledIconButton' ||
+          typeName == 'FilledTonalIconButton' ||
+          typeName == 'OutlinedIconButton';
+
+      if (!isBasicIconButton) return;
+
+      final changeBuilder = reporter.createChangeBuilder(
+        message: 'Replace with CommonIconButton',
+        priority: 80,
+      );
+
+      changeBuilder.addDartFileEdit((builder) {
+        builder.importLibraryElement(Uri.parse('package:listen_uikit/uikit.dart'));
+
+        final constructorName = node.constructorName;
+        builder.addSimpleReplacement(
+          SourceRange(constructorName.offset, constructorName.length),
+          'CommonIconButton',
         );
       });
     });

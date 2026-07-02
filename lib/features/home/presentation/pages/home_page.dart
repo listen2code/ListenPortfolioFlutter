@@ -31,7 +31,7 @@ class HomePage extends ConsumerWidget {
           ? [
               Consumer(
                 builder: (context, ref, child) {
-                  return IconButton(
+                  return CommonIconButton(
                     icon: const Icon(Icons.share_outlined),
                     tooltip: I18nKeys.shareApp.tr,
                     onPressed: () {
@@ -212,7 +212,7 @@ class HomePage extends ConsumerWidget {
           Positioned(
             right: 0,
             top: 0,
-            child: IconButton(
+            child: CommonIconButton(
               icon: Icon(getModeIcon(), color: Colors.white, size: 24.f),
               onPressed: () => viewModel.handleIntent(const HomeIntent.toAppearance()),
               tooltip: I18nKeys.themeToggleSemanticLabel.tr,

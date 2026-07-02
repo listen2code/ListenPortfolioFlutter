@@ -31,12 +31,12 @@ class CrashLogListPage extends ConsumerWidget {
         }
       },
       actions: [
-        IconButton(
+        CommonIconButton(
           icon: const Icon(Icons.flash_on_rounded),
           onPressed: () => viewModel.handleIntent(const CrashLogListIntent.triggerCrash()),
           tooltip: I18nKeys.triggerCrash.tr,
         ),
-        IconButton(
+        CommonIconButton(
           icon: const Icon(Icons.delete_sweep_rounded),
           onPressed: state.logs.isEmpty
               ? null

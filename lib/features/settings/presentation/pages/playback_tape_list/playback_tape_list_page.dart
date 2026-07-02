@@ -46,12 +46,12 @@ class PlaybackTapeListPage extends ConsumerWidget {
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                IconButton(
+                CommonIconButton(
                   icon: const Icon(Icons.play_circle_outline, color: Colors.blue),
                   onPressed: () => viewModel.handleIntent(PlaybackTapeListIntent.startPlayback(tapeKey)),
                   tooltip: I18nKeys.runPlayback.tr,
                 ),
-                IconButton(
+                CommonIconButton(
                   icon: const Icon(Icons.delete_outline, color: Colors.red),
                   onPressed: () => viewModel.handleIntent(PlaybackTapeListIntent.deleteTape(tapeKey)),
                   tooltip: I18nKeys.delete.tr,

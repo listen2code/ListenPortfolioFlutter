@@ -9,11 +9,7 @@ class CrashLogDetailsSheet extends StatelessWidget {
   final String content;
   final String fileName;
 
-  const CrashLogDetailsSheet({
-    super.key,
-    required this.content,
-    required this.fileName,
-  });
+  const CrashLogDetailsSheet({super.key, required this.content, required this.fileName});
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +41,7 @@ class CrashLogDetailsSheet extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                IconButton(
+                CommonIconButton(
                   icon: const Icon(Icons.copy_all_rounded),
                   onPressed: () {
                     Clipboard.setData(ClipboardData(text: content));

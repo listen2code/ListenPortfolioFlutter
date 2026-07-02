@@ -35,6 +35,7 @@ custom_lint:
     - use_common_clickable
     - use_common_text
     - use_common_button
+    - use_common_icon_button
     - use_common_dialog
     - use_common_switch
     - use_common_text_field
