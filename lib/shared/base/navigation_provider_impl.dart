@@ -5,6 +5,7 @@ class NavigationEffect extends BaseEffect {
   /// The navigation target (Route path or Object). Can be null for back operations.
   final dynamic target;
   final bool isReplace;
+  final bool isReplaceAll;
   final bool isBack;
   final Object? arguments;
   final bool needLogin;
@@ -12,6 +13,7 @@ class NavigationEffect extends BaseEffect {
   NavigationEffect({
     this.target,
     this.isReplace = false,
+    this.isReplaceAll = false,
     this.isBack = false,
     this.arguments,
     this.needLogin = false,
@@ -36,6 +38,12 @@ class NavigationProviderImpl extends BaseProvider<NavigationEffect> {
       AppNav.back(effect.arguments);
     } else if (effect.isReplace) {
       AppNav.off(
+        effect.target,
+        needLogin: effect.needLogin,
+        arguments: effect.arguments as Map<String, dynamic>?,
+      );
+    } else if (effect.isReplaceAll) {
+      AppNav.offAll(
         effect.target,
         needLogin: effect.needLogin,
         arguments: effect.arguments as Map<String, dynamic>?,

@@ -182,29 +182,29 @@ class MviPlaybackPlayer {
         _currentStepIndex = i + 1;
         final step = steps[i];
         final type = step.type;
-        final tag = step.viewModelTag;
+        final viewModelTag = step.viewModelTag;
         final name = step.name;
 
         // Log each step to system log, making it queryable in the log overlay window
-        appLogger.i('[$tag] Replaying step ${i + 1}/${steps.length}: [$type] $tag -> $name');
+        appLogger.i('[$tag] Replaying step ${i + 1}/${steps.length}: [$type] $viewModelTag -> $name');
 
-        _currentStepName = '[$type] $tag: ${name.split('(').first}';
+        _currentStepName = '[$type][$viewModelTag]: ${name.split('(').first}';
         onProgressChanged?.call(progress);
 
         if (type == PlaybackStep.intent) {
           // 1. Locate the active ViewModel
-          final vm = ActiveViewModels.get(tag);
+          final vm = ActiveViewModels.get(viewModelTag);
           if (vm == null) {
-            appLogger.w('[$tag] Active ViewModel not found: $tag, skipping step');
+            appLogger.w('[$tag] Active ViewModel not found: $viewModelTag, skipping step');
           } else {
             // 2. Deserialize the intent string to a concrete Intent object
             final intent = MviPlaybackRegistry.parseAndDeserialize(name);
             if (intent != null) {
-              appLogger.i('[$tag] Success to handleIntent: $intent');
+              appLogger.i('[$tag][$viewModelTag] Success to handleIntent: $intent');
               // 3. Dispatch the intent
               vm.handleIntent(intent);
             } else {
-              appLogger.w('[$tag] Failed to deserialize Intent: $name');
+              appLogger.w('[$tag][$viewModelTag] Failed to deserialize Intent: $name');
             }
           }
         }

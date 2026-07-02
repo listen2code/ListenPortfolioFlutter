@@ -28,6 +28,7 @@ class DependencyBoundaryLint extends PluginBase {
     const _NoHardcodedStringsRule(),
     const _NoRawColorRule(),
     const _NoDirectStateAssignmentRule(),
+    const _NoDirectAppNavUsageRule(),
   ];
 }
 
@@ -1066,6 +1067,43 @@ class _NoDirectStateAssignmentRule extends DartLintRule {
       final left = node.leftHandSide;
       if (left is SimpleIdentifier && left.name == 'state') {
         reporter.atNode(node, _code);
+      }
+    });
+  }
+}
+
+/// Rule to check and discourage direct usage of AppNav in UI or ViewModels
+class _NoDirectAppNavUsageRule extends DartLintRule {
+  static const LintCode _code = LintCode(
+    name: 'no_direct_app_nav_usage',
+    problemMessage: 'Avoid calling AppNav methods directly in feature code.',
+    correctionMessage: 'Emit a NavigationEffect (using emitEffect) to perform navigation via MVI flow.',
+  );
+
+  const _NoDirectAppNavUsageRule() : super(code: _code);
+
+  @override
+  void run(
+    CustomLintResolver resolver,
+    ErrorReporter reporter,
+    CustomLintContext context,
+  ) {
+    final filePath = resolver.source.fullName.replaceAll('\\', '/');
+    // We only check files under features/ to ensure they conform to pure MVI flow.
+    if (!filePath.contains('/features/')) return;
+    // Exclude tests or generated files if any
+    if (filePath.contains('/test/') || filePath.contains('.g.dart') || filePath.contains('.freezed.dart')) return;
+
+    context.registry.addMethodInvocation((MethodInvocation node) {
+      final target = node.target;
+      if (target is SimpleIdentifier && target.name == 'AppNav') {
+        final methodName = node.methodName.name;
+        if (methodName == 'to' || 
+            methodName == 'back' || 
+            methodName == 'off' || 
+            methodName == 'offAll') {
+          reporter.atNode(node, _code);
+        }
       }
     });
   }

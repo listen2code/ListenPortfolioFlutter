@@ -258,7 +258,7 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
         onChanged: (val) {
           if (val is AppEnvironment) {
             handleIntent(SettingsIntent.switchEnv(val));
-            AppNav.back();
+            emitEffect(NavigationEffect.back());
           }
         },
       ),
@@ -293,7 +293,7 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
         onChanged: (val) {
           if (val is AppLanguage) {
             handleIntent(SettingsIntent.switchLanguage(val));
-            AppNav.back();
+            emitEffect(NavigationEffect.back());
           }
         },
       ),

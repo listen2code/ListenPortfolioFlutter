@@ -44,6 +44,7 @@ custom_lint:
     - no_hardcoded_strings
     - no_raw_color
     - no_direct_state_assignment
+    - no_direct_app_nav_usage
 
 linter:
   # The lint rules applied to this project can be customized in the

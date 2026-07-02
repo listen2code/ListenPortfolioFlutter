@@ -12,11 +12,7 @@ class AboutMeHeader extends StatelessWidget {
   final AboutMeViewModel viewModel;
   final AboutMeState state;
 
-  const AboutMeHeader({
-    super.key,
-    required this.viewModel,
-    required this.state,
-  });
+  const AboutMeHeader({super.key, required this.viewModel, required this.state});
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +103,6 @@ class AboutMeHeader extends StatelessWidget {
                 title: CommonText(I18nKeys.chooseFromGallery.tr),
                 onTap: () {
                   viewModel.handleIntent(const AboutMeIntent.pickImage(ImageSource.gallery));
-                  AppNav.back();
                 },
               ),
               ListTile(
@@ -115,7 +110,6 @@ class AboutMeHeader extends StatelessWidget {
                 title: CommonText(I18nKeys.takePhoto.tr),
                 onTap: () {
                   viewModel.handleIntent(const AboutMeIntent.pickImage(ImageSource.camera));
-                  AppNav.back();
                 },
               ),
               if (state.imageFile != null)
@@ -124,7 +118,6 @@ class AboutMeHeader extends StatelessWidget {
                   title: CommonText(I18nKeys.removePhoto.tr, style: const TextStyle(color: Colors.red)),
                   onTap: () {
                     viewModel.handleIntent(const AboutMeIntent.removeImage());
-                    AppNav.back();
                   },
                 ),
             ],

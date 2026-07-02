@@ -39,7 +39,7 @@ class AboutMeViewModel extends _$AboutMeViewModel with ViewModelMixin<AboutMeSta
   FutureOr<void> onIntent(AboutMeIntent intent) {
     return intent.when<FutureOr<void>>(
       pickImage: (source) => _onPickImage(source),
-      removeImage: () => updateState(state.copyWith(imageFile: null)),
+      removeImage: _onRemoveImage,
       refresh: _onRefresh,
       shareApp: _onShareApp,
       toResume: () => emitEffect(NavigationEffect(target: Routes.resume)),
@@ -55,6 +55,12 @@ class AboutMeViewModel extends _$AboutMeViewModel with ViewModelMixin<AboutMeSta
     if (pickedFile != null) {
       updateState(state.copyWith(imageFile: File(pickedFile.path)));
     }
+    emitEffect(NavigationEffect.back());
+  }
+
+  Future<void> _onRemoveImage() async {
+    updateState(state.copyWith(imageFile: null));
+    emitEffect(NavigationEffect.back());
   }
 
   /// Fetch about me data from the repository

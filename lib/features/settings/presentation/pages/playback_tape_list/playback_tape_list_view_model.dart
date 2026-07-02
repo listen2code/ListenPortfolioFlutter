@@ -95,12 +95,12 @@ class PlaybackTapeListViewModel extends _$PlaybackTapeListViewModel
           final route = firstStep.route;
 
           // Reset to Home screen to ensure fresh state
-          AppNav.offAll(Routes.home);
+          emitEffect(NavigationEffect(target: Routes.home, isReplaceAll: true));
           await Future<dynamic>.delayed(const Duration(milliseconds: 600));
 
           // Navigate to the target route if it's not Home
           if (route != null && route != Routes.home) {
-            AppNav.to(route);
+            emitEffect(NavigationEffect(target: route));
             await Future<dynamic>.delayed(const Duration(milliseconds: 500));
           }
         }
