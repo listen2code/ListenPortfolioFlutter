@@ -81,32 +81,12 @@ class PlaybackTapeListViewModel extends _$PlaybackTapeListViewModel
       ref.execute<List<PlaybackStep>, String>(getPlaybackTapeStepsUseCaseProvider, param: tapeKey),
       showLoading: true,
       onSuccess: (steps) async {
-        if (steps.isEmpty) return;
-
-        PlaybackStep? firstStep;
-        for (final s in steps) {
-          if (s.type == PlaybackStep.intent) {
-            firstStep = s;
-            break;
-          }
+        if (steps.isEmpty) {
+          appLogger.e('steps is empty');
+          return;
         }
-
-        if (firstStep != null) {
-          final route = firstStep.route;
-
-          // Reset to Home screen to ensure fresh state
-          emitEffect(NavigationEffect(target: Routes.home, isReplaceAll: true));
-          await Future<dynamic>.delayed(const Duration(milliseconds: 600));
-
-          // Navigate to the target route if it's not Home
-          if (route != null && route != Routes.home) {
-            emitEffect(NavigationEffect(target: route));
-            await Future<dynamic>.delayed(const Duration(milliseconds: 500));
-          }
-        }
-
         // Start playback
-        MviPlaybackPlayer.instance.play(tapeKey);
+        MviPlaybackPlayer.instance.play(tapeKey, steps);
       },
       onFailure: (failure) {
         appLogger.e('Failed to load steps: ${failure.message}');

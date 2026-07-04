@@ -1,11 +1,11 @@
-import 'dart:convert';
-
+import 'package:collection/collection.dart';
 import 'package:listen_core/core.dart';
 
 import '../../features/settings/data/models/playback_step.dart';
 import '../constants/app_constants.dart';
 import '../i18n/translations_key.dart';
 import 'playback_registry_init.dart';
+import 'routes.dart';
 
 /// Global MVI recorder that captures all Active ViewModels' Intents and Effects.
 class MviPlaybackRecorder {
@@ -155,26 +155,33 @@ class MviPlaybackPlayer {
   /// Callback when playback progress changes.
   void Function(PlaybackProgress progress)? onProgressChanged;
 
-  Future<void> play(String tapeKey) async {
+  Future<void> play(String tapeKey, List<PlaybackStep> steps) async {
     if (_isPlaying) return;
     _isPlaying = true;
     _status = PlaybackStatus.loading;
     _currentStepIndex = 0;
-    _totalSteps = 0;
+    _totalSteps = steps.length;
     _currentStepName = I18nKeys.loading.tr;
     onProgressChanged?.call(progress);
 
     appLogger.i('[$tag] Playback started for tape key: $tapeKey');
 
     try {
-      final tapeJson = SpUtil.getString(tapeKey);
-      if (tapeJson == null) {
-        throw Exception('Tape data not found');
+      final PlaybackStep? firstStep = steps.firstWhereOrNull((tape) => tape.type == PlaybackStep.intent);
+      if (firstStep != null && firstStep.route != null) {
+        final route = firstStep.route;
+
+        // Reset to Home screen to ensure fresh state
+        AppNav.offAll(Routes.home);
+        await Future<dynamic>.delayed(const Duration(milliseconds: 600));
+
+        // Navigate to the target route if it's not Home
+        if (route != Routes.home) {
+          AppNav.to(route!);
+          await Future<dynamic>.delayed(const Duration(milliseconds: 500));
+        }
       }
 
-      final List<dynamic> rawSteps = jsonDecode(tapeJson) as List<dynamic>;
-      final steps = rawSteps.map((s) => PlaybackStep.fromJson(s as Map<String, dynamic>)).toList();
-      _totalSteps = steps.length;
       _status = PlaybackStatus.playing;
       onProgressChanged?.call(progress);
 
