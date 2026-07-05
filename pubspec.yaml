@@ -133,7 +133,7 @@ flutter_assets_generator:
   # Automatically add missing dependencies (rive, flutter_svg, lottie) default: true
   auto_add_dependencies: true
   # Options: robust (default), legacy (old style)
-  style: robust
+  style: legacy
   package_parameter_enabled: false
   named_with_parent: true
   path_ignore: [ ]

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:listen_core/core.dart';
 import 'package:listen_uikit/uikit.dart';
 
-import '../../../../../../generated/r.dart';
 import '../../../../../../shared/shared.dart';
+import '../../../../../../generated/r.dart';
 
 class LoginHeader extends StatelessWidget {
   const LoginHeader({super.key});
@@ -32,7 +32,7 @@ class LoginHeader extends StatelessWidget {
                 ],
               ),
               child: CommonImage.asset(
-                R.images.icLauncherAdaptiveFore.path,
+                R.imagesIcLauncherAdaptiveFore,
                 width: 60,
                 height: 60,
                 color: accentColor,
