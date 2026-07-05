@@ -25,7 +25,7 @@ class ShowLicensesProviderImpl extends BaseProvider<ShowLicensesEffect> {
         applicationIcon: Padding(
           padding: EdgeInsets.all(8.f),
           child: CommonImage.asset(
-            R.imagesIcLauncherAdaptiveFore,
+            R.images.icLauncherAdaptiveFore.path,
             width: 48.f,
             height: 48.f,
             color: context.accentColor,

@@ -39,7 +39,7 @@ class SplashPage extends ConsumerWidget {
                   Hero(
                     tag: 'logo',
                     child: CommonImage.asset(
-                      R.imagesIcLauncherAdaptiveFore,
+                      R.images.icLauncherAdaptiveFore.path,
                       width: 120,
                       height: 120,
                       color: accentColor,

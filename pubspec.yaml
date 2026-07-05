@@ -125,5 +125,16 @@ flutter:
     - assets/mock/v1/post/user/
     - assets/mock/images/
     - assets/html/
-
+flutter_assets_generator:
+  output_dir: generated/
+  output_filename: r
+  class_name: R
+  auto_detection: true
+  # Automatically add missing dependencies (rive, flutter_svg, lottie) default: true
+  auto_add_dependencies: true
+  # Options: robust (default), legacy (old style)
+  style: robust
+  package_parameter_enabled: false
+  named_with_parent: true
+  path_ignore: [ ]
 
