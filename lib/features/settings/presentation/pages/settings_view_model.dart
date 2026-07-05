@@ -314,7 +314,7 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
   Future<void> _onEnableDeveloperMode() async {
     if (state.isDeveloperMode) return;
     updateState(state.copyWith(isDeveloperMode: true));
-    await SpUtil.put('developer_mode', true);
+    await SpUtil.put(AppConstants.developerModeKey, true);
     emitEffect(MessageEffect.info('开发者模式已开启'));
   }
 
