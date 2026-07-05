@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -10,9 +8,7 @@ import '../../../../../shared/shared.dart';
 import 'crash_log_list_intent.dart';
 import 'crash_log_list_state.dart';
 import 'crash_log_list_view_model.dart';
-import 'view_log_effect.dart';
 import 'widgets/crash_log_card.dart';
-import 'widgets/crash_log_details_sheet.dart';
 
 class CrashLogListPage extends ConsumerWidget {
   const CrashLogListPage({super.key});
@@ -25,11 +21,6 @@ class CrashLogListPage extends ConsumerWidget {
     return BaseRefreshPage<CrashLogListViewModel, CrashLogListState>(
       title: I18nKeys.crashReports.tr,
       provider: crashLogListViewModelProvider,
-      onEffect: (effect) {
-        if (effect is ViewLogEffect) {
-          _viewLog(context, effect.file);
-        }
-      },
       actions: [
         CommonIconButton(
           icon: const Icon(Icons.flash_on_rounded),
@@ -79,17 +70,6 @@ class CrashLogListPage extends ConsumerWidget {
           },
         );
       },
-    );
-  }
-
-  void _viewLog(BuildContext context, File file) async {
-    final content = await file.readAsString();
-    if (!context.mounted) return;
-    showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => CrashLogDetailsSheet(content: content, fileName: file.path.split('/').last),
     );
   }
 }

@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:listen_core/core.dart';
-import 'view_log_effect.dart';
 import '../../../../../shared/shared.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
