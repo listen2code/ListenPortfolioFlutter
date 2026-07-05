@@ -40,7 +40,11 @@ class ShowTapeDetailsProviderImpl extends BaseProvider<ShowTapeDetailsEffect> {
                   color: type == PlaybackStep.intent ? Colors.blue : Colors.green,
                 ),
                 title: CommonText('$tag: ${name.split('(').first}', style: const TextStyle(fontSize: 12)),
-                subtitle: CommonText(name, style: const TextStyle(fontSize: 10, color: Colors.grey)),
+                subtitle: CommonText(
+                  name,
+                  useFittedBox: false,
+                  style: const TextStyle(fontSize: 10, color: Colors.grey),
+                ),
               );
             },
           ),

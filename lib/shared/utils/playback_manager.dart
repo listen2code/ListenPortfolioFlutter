@@ -227,8 +227,6 @@ class MviPlaybackPlayer {
 
   PlaybackProgress get progress => _progress;
 
-
-
   /// Callback when playback progress changes.
   void Function(PlaybackProgress progress)? onProgressChanged;
 
@@ -350,13 +348,13 @@ class MviPlaybackPlayer {
           }
         } else if (type == PlaybackStep.pop) {
           final isRecordedPopup = name.startsWith('${PlaybackStep.pop}:');
-          if (isRecordedPopup) {
-            Route<dynamic>? currentTopRoute;
-            AppNavConfig.navigatorKey.currentState?.popUntil((r) {
-              currentTopRoute = r;
-              return true;
-            });
+          Route<dynamic>? currentTopRoute;
+          AppNavConfig.navigatorKey.currentState?.popUntil((r) {
+            currentTopRoute = r;
+            return true;
+          });
 
+          if (isRecordedPopup) {
             final isCurrentRoutePopup = currentTopRoute != null && currentTopRoute is! PageRoute;
             if (isCurrentRoutePopup) {
               appLogger.i('[$tag] Replaying popup dismissal (pop) for: $name');
@@ -365,8 +363,14 @@ class MviPlaybackPlayer {
               appLogger.i('[$tag] Skipping popup dismissal (pop) for: $name (already dismissed)');
             }
           } else {
-            appLogger.i('[$tag] Replaying page transition back navigation (pop) from: $name');
-            AppNav.back();
+            if (currentTopRoute?.settings.name == name) {
+              appLogger.i('[$tag] Replaying page transition back navigation (pop) from: $name');
+              AppNav.back();
+            } else {
+              appLogger.i(
+                '[$tag] Skipping page transition back navigation (pop) from: $name (already popped to: ${currentTopRoute?.settings.name})',
+              );
+            }
           }
         }
 
