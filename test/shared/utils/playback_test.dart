@@ -232,7 +232,7 @@ void main() {
       expect(steps[1].type, equals(PlaybackStep.pop));
       expect(steps[1].name, equals('/signup_view'));
       expect(steps[2].type, equals(PlaybackStep.pop));
-      expect(steps[2].name, startsWith('popup:_FakePopupRoute'));
+      expect(steps[2].name, startsWith('POP:_FakePopupRoute'));
 
       // Playback
       await MviPlaybackPlayer.instance.play('playback_tape_pop_test', steps);

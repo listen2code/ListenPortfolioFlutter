@@ -190,6 +190,22 @@ class PlaybackProgress {
     required this.totalSteps,
     required this.currentStepName,
   });
+
+  PlaybackProgress copyWith({
+    bool? isPlaying,
+    PlaybackStatus? status,
+    int? currentStepIndex,
+    int? totalSteps,
+    String? currentStepName,
+  }) {
+    return PlaybackProgress(
+      isPlaying: isPlaying ?? this.isPlaying,
+      status: status ?? this.status,
+      currentStepIndex: currentStepIndex ?? this.currentStepIndex,
+      totalSteps: totalSteps ?? this.totalSteps,
+      currentStepName: currentStepName ?? this.currentStepName,
+    );
+  }
 }
 
 /// Global MVI playback player to execute recorded tapes.
@@ -201,36 +217,46 @@ class MviPlaybackPlayer {
   /// Configurable delay between replaying each step.
   static Duration stepDelay = const Duration(milliseconds: 1200);
 
-  bool _isPlaying = false;
-  PlaybackStatus _status = PlaybackStatus.idle;
-  String _currentStepName = '';
-  int _currentStepIndex = 0;
-  int _totalSteps = 0;
-
-  bool get isPlaying => _isPlaying;
-  PlaybackStatus get status => _status;
-  String get currentStepName => _currentStepName;
-  int get currentStepIndex => _currentStepIndex;
-  int get totalSteps => _totalSteps;
-
-  PlaybackProgress get progress => PlaybackProgress(
-    isPlaying: _isPlaying,
-    status: _status,
-    currentStepIndex: _currentStepIndex,
-    totalSteps: _totalSteps,
-    currentStepName: _currentStepName,
+  PlaybackProgress _progress = const PlaybackProgress(
+    isPlaying: false,
+    status: PlaybackStatus.idle,
+    currentStepIndex: 0,
+    totalSteps: 0,
+    currentStepName: '',
   );
+
+  PlaybackProgress get progress => _progress;
+
+
 
   /// Callback when playback progress changes.
   void Function(PlaybackProgress progress)? onProgressChanged;
 
+  void _updateProgress({
+    bool? isPlaying,
+    PlaybackStatus? status,
+    int? currentStepIndex,
+    int? totalSteps,
+    String? currentStepName,
+  }) {
+    _progress = _progress.copyWith(
+      isPlaying: isPlaying,
+      status: status,
+      currentStepIndex: currentStepIndex,
+      totalSteps: totalSteps,
+      currentStepName: currentStepName,
+    );
+    onProgressChanged?.call(_progress);
+  }
+
   Future<void> play(String tapeKey, [List<PlaybackStep>? steps]) async {
-    if (_isPlaying) return;
-    _isPlaying = true;
-    _status = PlaybackStatus.loading;
-    _currentStepIndex = 0;
-    _currentStepName = I18nKeys.loading.tr;
-    onProgressChanged?.call(progress);
+    if (_progress.isPlaying) return;
+    _updateProgress(
+      isPlaying: true,
+      status: PlaybackStatus.loading,
+      currentStepIndex: 0,
+      currentStepName: I18nKeys.loading.tr,
+    );
 
     appLogger.i('[$tag] Playback started for tape key: $tapeKey');
 
@@ -248,10 +274,11 @@ class MviPlaybackPlayer {
         resolvedSteps = rawSteps.map((s) => PlaybackStep.fromJson(s as Map<String, dynamic>)).toList();
       }
     } catch (e) {
-      _isPlaying = false;
-      _status = PlaybackStatus.error;
-      _currentStepName = 'Failed to load steps: $e';
-      onProgressChanged?.call(progress);
+      _updateProgress(
+        isPlaying: false,
+        status: PlaybackStatus.error,
+        currentStepName: 'Failed to load steps: $e',
+      );
       rethrow;
     }
 
@@ -263,8 +290,7 @@ class MviPlaybackPlayer {
       if (mutableSteps.isNotEmpty && mutableSteps.first.type == PlaybackStep.initState) {
         initialStateStep = mutableSteps.removeAt(0);
       }
-      _totalSteps = mutableSteps.length;
-      onProgressChanged?.call(progress);
+      _updateProgress(totalSteps: mutableSteps.length);
 
       if (initialStateStep != null) {
         appLogger.i('[$tag] Applying init user state');
@@ -288,11 +314,9 @@ class MviPlaybackPlayer {
         }
       }
 
-      _status = PlaybackStatus.playing;
-      onProgressChanged?.call(progress);
+      _updateProgress(status: PlaybackStatus.playing);
 
       for (int i = 0; i < mutableSteps.length; i++) {
-        _currentStepIndex = i + 1;
         final step = mutableSteps[i];
         final type = step.type;
         final viewModelTag = step.viewModelTag;
@@ -301,8 +325,10 @@ class MviPlaybackPlayer {
         // Log each step to system log, making it queryable in the log overlay window
         appLogger.i('[$tag] Replaying step ${i + 1}/${mutableSteps.length}: [$type] $viewModelTag -> $name');
 
-        _currentStepName = '[$type][$viewModelTag]: ${name.split('(').first}';
-        onProgressChanged?.call(progress);
+        _updateProgress(
+          currentStepIndex: i + 1,
+          currentStepName: '[$type][$viewModelTag]: ${name.split('(').first}',
+        );
 
         if (type == PlaybackStep.intent) {
           // 1. Locate the active ViewModel
@@ -348,25 +374,20 @@ class MviPlaybackPlayer {
         await Future<dynamic>.delayed(stepDelay);
       }
 
-      _currentStepName = I18nKeys.playbackFinishedMsg.tr;
-      _status = PlaybackStatus.completed;
+      _updateProgress(status: PlaybackStatus.completed, currentStepName: I18nKeys.playbackFinishedMsg.tr);
       appLogger.i('[$tag] Playback finished.');
     } catch (e) {
-      _currentStepName = 'Playback error: $e';
-      _status = PlaybackStatus.error;
+      _updateProgress(status: PlaybackStatus.error, currentStepName: 'Playback error: $e');
       appLogger.e('[$tag] Playback encountered an error: $e');
     } finally {
       appLogger.i('[$tag] Restoring pre-playback user state sandbox...');
       await _applyState(prePlaybackState);
 
-      _isPlaying = false;
-      onProgressChanged?.call(progress);
+      _updateProgress(isPlaying: false);
       // Clear status display after 3 seconds
       Future.delayed(const Duration(seconds: 3), () {
-        if (!_isPlaying) {
-          _currentStepName = '';
-          _status = PlaybackStatus.idle;
-          onProgressChanged?.call(progress);
+        if (!_progress.isPlaying) {
+          _updateProgress(status: PlaybackStatus.idle, currentStepName: '');
         }
       });
     }
