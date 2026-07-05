@@ -67,7 +67,7 @@ void main() {
       final recorder = MviPlaybackRecorder.instance;
 
       // 开启录制
-      recorder.startRecording();
+      await recorder.startRecording();
       expect(recorder.isRecording, isTrue);
 
       // 创建 ViewModel 并派发 Intent
@@ -167,6 +167,43 @@ void main() {
 
       // 等待回放任务全部结束
       await playFuture;
+    });
+
+    test('MviPlaybackPlayer should handle INITIAL_STATE and restore sandboxed state', () async {
+      final sp = await SharedPreferences.getInstance();
+      await sp.setString('some_key', 'initial_value');
+
+      final recorder = MviPlaybackRecorder.instance;
+      await recorder.startRecording();
+
+      await sp.setString('some_key', 'changed_during_recording');
+
+      final viewModel = FakeTestViewModel();
+      viewModel.onInit();
+      await viewModel.handleIntent(const LoginIntent.submitLogin());
+
+      await recorder.stopRecording(customName: 'State test tape');
+
+      final steps = recorder.recordedSteps;
+      expect(steps.first.type, equals('INITIAL_STATE'));
+
+      await sp.setString('some_key', 'user_current_state');
+
+      // Set a non-zero step delay to verify intermediate state
+      MviPlaybackPlayer.stepDelay = const Duration(milliseconds: 100);
+
+      final playFuture = MviPlaybackPlayer.instance.play('playback_tape_state_test', steps);
+
+      await Future<void>.delayed(const Duration(milliseconds: 40));
+
+      expect(sp.getString('some_key'), equals('initial_value'));
+
+      await playFuture;
+
+      expect(sp.getString('some_key'), equals('user_current_state'));
+
+      // Reset step delay back to zero
+      MviPlaybackPlayer.stepDelay = Duration.zero;
     });
 
     test('All Intent union cases must be registered in MviPlaybackRegistry', () {

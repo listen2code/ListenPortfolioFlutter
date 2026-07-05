@@ -1,9 +1,14 @@
+import 'dart:convert';
+
 import 'package:collection/collection.dart';
 import 'package:listen_core/core.dart';
+import 'package:listen_uikit/uikit.dart';
 
+import '../../features/auth/data/models/user_model.dart';
 import '../../features/settings/data/models/playback_step.dart';
 import '../constants/app_constants.dart';
 import '../i18n/translations_key.dart';
+import 'auth_manager.dart';
 import 'playback_registry_init.dart';
 import 'routes.dart';
 
@@ -19,18 +24,51 @@ class MviPlaybackRecorder {
   bool _isRecording = false;
   final List<PlaybackStep> _recordedSteps = [];
   int? _startTimestamp;
+  Map<String, dynamic>? _initialState;
 
   bool get isRecording => _isRecording;
   List<PlaybackStep> get recordedSteps => List.unmodifiable(_recordedSteps);
 
-  void startRecording() {
+  Future<Map<String, dynamic>?> _captureInitialState() async {
+    try {
+      final Map<String, dynamic> spSnapshot = {};
+      final keys = SpUtil.getKeys();
+      for (final key in keys) {
+        if (key.contains(AppConstants.playbackTapeKey) || key.contains(AppConstants.playbackTapesListKey)) {
+          continue;
+        }
+        spSnapshot[key] = SpUtil.get(key);
+      }
+
+      final secureSnapshot = {
+        AppConstants.authTokenKey: await SecureStorageUtil.get(AppConstants.authTokenKey),
+        AppConstants.refreshTokenKey: await SecureStorageUtil.get(AppConstants.refreshTokenKey),
+        AppConstants.loginPasswordKey: await SecureStorageUtil.get(AppConstants.loginPasswordKey),
+      };
+
+      return {PlaybackStep.sp: spSnapshot, PlaybackStep.secure: secureSnapshot};
+    } catch (e) {
+      appLogger.e('[${MviPlaybackPlayer.tag}] Failed to capture initial state: $e');
+    }
+    return null;
+  }
+
+  Future<void> startRecording() async {
     _recordedSteps.clear();
     _startTimestamp = DateTime.now().millisecondsSinceEpoch;
     _isRecording = true;
 
-    // Bind global observer callbacks
+    // Bind global observer callbacks synchronously first to prevent missing early intents
     MviPlaybackObserver.onIntentDispatched = _onIntent;
     MviPlaybackObserver.onEffectEmitted = _onEffect;
+
+    try {
+      CommonLoading.show();
+    } catch (_) {}
+    _initialState = await _captureInitialState();
+    try {
+      CommonLoading.hide();
+    } catch (_) {}
 
     appLogger.i('[${MviPlaybackPlayer.tag}] : Recording started...');
   }
@@ -72,6 +110,18 @@ class MviPlaybackRecorder {
     if (_recordedSteps.isEmpty) {
       appLogger.i('[${MviPlaybackPlayer.tag}] : Recording is empty, not saved.');
       return '';
+    }
+
+    if (_initialState != null) {
+      _recordedSteps.insert(
+        0,
+        PlaybackStep(
+          type: PlaybackStep.initState,
+          viewModelTag: PlaybackStep.system,
+          name: jsonEncode(_initialState),
+          timestamp: _startTimestamp ?? DateTime.now().millisecondsSinceEpoch,
+        ),
+      );
     }
 
     // Generate default name
@@ -155,19 +205,66 @@ class MviPlaybackPlayer {
   /// Callback when playback progress changes.
   void Function(PlaybackProgress progress)? onProgressChanged;
 
-  Future<void> play(String tapeKey, List<PlaybackStep> steps) async {
+  Future<void> play(String tapeKey, [List<PlaybackStep>? steps]) async {
     if (_isPlaying) return;
     _isPlaying = true;
     _status = PlaybackStatus.loading;
     _currentStepIndex = 0;
-    _totalSteps = steps.length;
     _currentStepName = I18nKeys.loading.tr;
     onProgressChanged?.call(progress);
 
     appLogger.i('[$tag] Playback started for tape key: $tapeKey');
 
+    // Resolve steps
+    List<PlaybackStep> resolvedSteps;
     try {
-      final PlaybackStep? firstStep = steps.firstWhereOrNull((tape) => tape.type == PlaybackStep.intent);
+      if (steps != null) {
+        resolvedSteps = steps;
+      } else {
+        final tapeJson = SpUtil.getString(tapeKey);
+        if (tapeJson == null) {
+          throw Exception('Tape data not found');
+        }
+        final List<dynamic> rawSteps = jsonDecode(tapeJson) as List<dynamic>;
+        resolvedSteps = rawSteps.map((s) => PlaybackStep.fromJson(s as Map<String, dynamic>)).toList();
+      }
+    } catch (e) {
+      _isPlaying = false;
+      _status = PlaybackStatus.error;
+      _currentStepName = 'Failed to load steps: $e';
+      onProgressChanged?.call(progress);
+      rethrow;
+    }
+
+    final Map<String, Map<String, dynamic>> prePlaybackState = await _cachePreState();
+
+    try {
+      final List<PlaybackStep> mutableSteps = List<PlaybackStep>.from(resolvedSteps);
+      PlaybackStep? initialStateStep;
+      if (mutableSteps.isNotEmpty && mutableSteps.first.type == PlaybackStep.initState) {
+        initialStateStep = mutableSteps.removeAt(0);
+      }
+      _totalSteps = mutableSteps.length;
+      onProgressChanged?.call(progress);
+
+      if (initialStateStep != null) {
+        try {
+          final Map<String, dynamic> stateMap = jsonDecode(initialStateStep.name) as Map<String, dynamic>;
+          appLogger.i('[$tag] Restoring initial state snapshot: $stateMap');
+
+          final spMap = stateMap[PlaybackStep.sp] as Map<String, dynamic>?;
+          final secureMap = stateMap[PlaybackStep.secure] as Map<String, dynamic>?;
+
+          await _applySpState(spMap);
+          await _applySecureAndAuthState(secureMap, spMap);
+        } catch (e) {
+          appLogger.e('[$tag] Failed to restore initial state: $e');
+        }
+      }
+
+      final PlaybackStep? firstStep = mutableSteps.firstWhereOrNull(
+        (tape) => tape.type == PlaybackStep.intent,
+      );
       if (firstStep != null && firstStep.route != null) {
         final route = firstStep.route;
 
@@ -185,15 +282,15 @@ class MviPlaybackPlayer {
       _status = PlaybackStatus.playing;
       onProgressChanged?.call(progress);
 
-      for (int i = 0; i < steps.length; i++) {
+      for (int i = 0; i < mutableSteps.length; i++) {
         _currentStepIndex = i + 1;
-        final step = steps[i];
+        final step = mutableSteps[i];
         final type = step.type;
         final viewModelTag = step.viewModelTag;
         final name = step.name;
 
         // Log each step to system log, making it queryable in the log overlay window
-        appLogger.i('[$tag] Replaying step ${i + 1}/${steps.length}: [$type] $viewModelTag -> $name');
+        appLogger.i('[$tag] Replaying step ${i + 1}/${mutableSteps.length}: [$type] $viewModelTag -> $name');
 
         _currentStepName = '[$type][$viewModelTag]: ${name.split('(').first}';
         onProgressChanged?.call(progress);
@@ -228,6 +325,17 @@ class MviPlaybackPlayer {
       _status = PlaybackStatus.error;
       appLogger.e('[$tag] Playback encountered an error: $e');
     } finally {
+      try {
+        appLogger.i('[$tag] Restoring pre-playback user state sandbox...');
+        final spMap = prePlaybackState[PlaybackStep.sp];
+        final secureMap = prePlaybackState[PlaybackStep.secure];
+
+        await _applySpState(spMap);
+        await _applySecureAndAuthState(secureMap, spMap);
+      } catch (e) {
+        appLogger.e('[$tag] Failed to restore pre-playback user state: $e');
+      }
+
       _isPlaying = false;
       onProgressChanged?.call(progress);
       // Clear status display after 3 seconds
@@ -238,6 +346,66 @@ class MviPlaybackPlayer {
           onProgressChanged?.call(progress);
         }
       });
+    }
+  }
+
+  Future<Map<String, Map<String, dynamic>>> _cachePreState() async {
+    final Map<String, dynamic> prePlaybackSp = {};
+    for (final key in SpUtil.getKeys()) {
+      if (key.contains(AppConstants.playbackTapeKey) || key.contains(AppConstants.playbackTapesListKey)) {
+        continue;
+      }
+      prePlaybackSp[key] = SpUtil.get(key);
+    }
+    final prePlaybackSecure = {
+      AppConstants.authTokenKey: await SecureStorageUtil.get(AppConstants.authTokenKey),
+      AppConstants.refreshTokenKey: await SecureStorageUtil.get(AppConstants.refreshTokenKey),
+      AppConstants.loginPasswordKey: await SecureStorageUtil.get(AppConstants.loginPasswordKey),
+    };
+    return {PlaybackStep.sp: prePlaybackSp, PlaybackStep.secure: prePlaybackSecure};
+  }
+
+  Future<void> _applySpState(Map<String, dynamic>? spMap) async {
+    if (spMap == null) return;
+    for (final key in SpUtil.getKeys()) {
+      if (key.contains(AppConstants.playbackTapeKey) || key.contains(AppConstants.playbackTapesListKey)) {
+        continue;
+      }
+      await SpUtil.remove(key);
+    }
+    for (final entry in spMap.entries) {
+      final key = entry.key;
+      final val = entry.value;
+      await SpUtil.put(key, val);
+    }
+    await SpUtil.reload();
+  }
+
+  Future<void> _applySecureAndAuthState(Map<String, dynamic>? secureMap, Map<String, dynamic>? spMap) async {
+    if (secureMap == null) return;
+    final authToken = secureMap[AppConstants.authTokenKey] as String?;
+    final refreshToken = secureMap[AppConstants.refreshTokenKey] as String?;
+    final loginPassword = secureMap[AppConstants.loginPasswordKey] as String?;
+
+    await SecureStorageUtil.put(AppConstants.authTokenKey, authToken);
+    await SecureStorageUtil.put(AppConstants.refreshTokenKey, refreshToken);
+    await SecureStorageUtil.put(AppConstants.loginPasswordKey, loginPassword);
+
+    if (spMap != null) {
+      final userDataKeyWithPrefix = spMap.containsKey(AppConstants.userDataKey)
+          ? AppConstants.userDataKey
+          : spMap.keys.firstWhere((k) => k.endsWith(AppConstants.userDataKey), orElse: () => '');
+      final userData = userDataKeyWithPrefix.isNotEmpty ? spMap[userDataKeyWithPrefix] as String? : null;
+
+      if (authToken != null && userData != null) {
+        final userMap = jsonDecode(userData) as Map<String, dynamic>;
+        final user = UserModel.fromJson(userMap);
+        authManager.login(user);
+      } else {
+        authManager.logout();
+      }
+    } else {
+      authManager.logout();
     }
   }
 }

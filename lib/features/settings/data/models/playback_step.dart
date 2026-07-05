@@ -5,8 +5,12 @@ part 'playback_step.g.dart';
 
 @freezed
 abstract class PlaybackStep with _$PlaybackStep {
+  static const String initState = 'INITIAL_STATE';
   static const String intent = 'INTENT';
   static const String effect = 'EFFECT';
+  static const String system = 'system';
+  static const String sp = 'sp';
+  static const String secure = 'secure';
 
   const factory PlaybackStep({
     required String type,
@@ -16,6 +20,5 @@ abstract class PlaybackStep with _$PlaybackStep {
     required int timestamp,
   }) = _PlaybackStep;
 
-  factory PlaybackStep.fromJson(Map<String, dynamic> json) =>
-      _$PlaybackStepFromJson(json);
+  factory PlaybackStep.fromJson(Map<String, dynamic> json) => _$PlaybackStepFromJson(json);
 }
