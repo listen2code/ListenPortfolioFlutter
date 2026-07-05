@@ -1,5 +1,8 @@
 # Intent & Effect 录制与回放系统 - 规格定义与实现方案
 
+> [!NOTE]
+> 本系统已完成研发落地。关于具体的架构组件、时序返回劫持、沙箱保护机制、对话框旁路机制及单元测试详情，请阅读 [Intent & Effect 录制与回放系统 - 详细设计与实现文档](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/docs/intent_effect_playback_design.md)。
+
 本文档详细定义了 **ListenPortfolio** 项目中针对 MVI 架构设计的 **Intent & Effect 本地录制与回放系统**（即本地操作录像机）。本系统专注于在本地（SharedPreferences）记录用户的操作路径与副作用序列，用于**零网络依赖的自动化回归测试**和**线上故障路径还原**，不涉及云端同步。
 
 ---

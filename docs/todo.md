@@ -94,7 +94,7 @@
 - 类型安全路由参数
 - Deep Link 支持
 - `onBackInvoked` 系统返回策略统一
-- Intent & Effect 录制回放系统的定义与边界已明确（详见 [intent_effect_playback_spec.md](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/docs/intent_effect_playback_spec.md)）
+- ✅ Intent & Effect 录制与回放系统已完成整体设计、沙箱备份恢复、页面/弹窗返回拦截、轮询等待机制、对话框自动旁路并交付生产（详见 [设计与实现文档](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/docs/intent_effect_playback_design.md)）
 - `_effectController` 与 `EventBus` 的职责评估
 
 ### 2. Auth 与缓存策略增强
