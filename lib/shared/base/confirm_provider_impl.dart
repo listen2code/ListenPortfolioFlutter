@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:listen_core/core.dart';
 import 'package:listen_uikit/uikit.dart';
 
+import '../utils/playback_manager.dart';
+
 class ConfirmEffect extends BaseEffect {
   final String title;
   final String message;
@@ -27,6 +29,11 @@ class ConfirmProviderImpl extends BaseProvider<ConfirmEffect> {
 
   @override
   void handleEffect(ConfirmEffect effect) {
+    if (MviPlaybackPlayer.instance.progress.isPlaying) {
+      // Auto-confirm during playback to avoid blocking the replay flow
+      effect.onResult(true);
+      return;
+    }
     CommonDialog.showConfirm(
       title: effect.title,
       message: effect.message,

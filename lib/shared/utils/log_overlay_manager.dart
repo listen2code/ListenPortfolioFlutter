@@ -291,7 +291,7 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
         if (isRecording) {
           // Click to stop recording directly from the collapsed button,
           // prompt save dialog, and expand the log manager window upon completion.
-          _showSaveDialog(shouldExpandAfter: true);
+          _showSaveDialog(shouldExpandAfter: false);
         } else {
           setState(() => isExpanded = true);
         }
