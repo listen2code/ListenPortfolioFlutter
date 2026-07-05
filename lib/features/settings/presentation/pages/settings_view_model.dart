@@ -32,6 +32,7 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
 
   @override
   void onInit() {
+    super.onInit();
     handleIntent(const SettingsIntent.init());
     LogOverlayManager.isShowingNotifier.addListener(_onLogOverlayShowingChanged);
   }

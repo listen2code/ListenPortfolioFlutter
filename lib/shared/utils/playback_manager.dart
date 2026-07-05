@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
 import 'package:listen_core/core.dart';
 import 'package:listen_uikit/uikit.dart';
 
@@ -61,6 +62,7 @@ class MviPlaybackRecorder {
     // Bind global observer callbacks synchronously first to prevent missing early intents
     MviPlaybackObserver.onIntentDispatched = _onIntent;
     MviPlaybackObserver.onEffectEmitted = _onEffect;
+    AppNav.onRoutePopped = _onRoutePopped;
 
     try {
       CommonLoading.show();
@@ -98,6 +100,22 @@ class MviPlaybackRecorder {
     );
   }
 
+  void _onRoutePopped(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    if (!_isRecording) return;
+    if (route is! ModalRoute) return;
+
+    _recordedSteps.add(
+      PlaybackStep(
+        type: PlaybackStep.pop,
+        viewModelTag: PlaybackStep.system,
+        name: route is PageRoute
+            ? (route.settings.name ?? '')
+            : '${PlaybackStep.pop}:${route.runtimeType.toString()}',
+        timestamp: DateTime.now().millisecondsSinceEpoch,
+      ),
+    );
+  }
+
   /// Stops recording and saves to SharedPreferences.
   Future<String> stopRecording({String? customName}) async {
     if (!_isRecording) return '';
@@ -106,6 +124,7 @@ class MviPlaybackRecorder {
     // Unbind callbacks
     MviPlaybackObserver.onIntentDispatched = null;
     MviPlaybackObserver.onEffectEmitted = null;
+    AppNav.onRoutePopped = null;
 
     if (_recordedSteps.isEmpty) {
       appLogger.i('[${MviPlaybackPlayer.tag}] : Recording is empty, not saved.');
@@ -248,18 +267,8 @@ class MviPlaybackPlayer {
       onProgressChanged?.call(progress);
 
       if (initialStateStep != null) {
-        try {
-          final Map<String, dynamic> stateMap = jsonDecode(initialStateStep.name) as Map<String, dynamic>;
-          appLogger.i('[$tag] Restoring initial state snapshot: $stateMap');
-
-          final spMap = stateMap[PlaybackStep.sp] as Map<String, dynamic>?;
-          final secureMap = stateMap[PlaybackStep.secure] as Map<String, dynamic>?;
-
-          await _applySpState(spMap);
-          await _applySecureAndAuthState(secureMap, spMap);
-        } catch (e) {
-          appLogger.e('[$tag] Failed to restore initial state: $e');
-        }
+        appLogger.i('[$tag] Applying init user state');
+        await _applyState(jsonDecode(initialStateStep.name) as Map<String, dynamic>);
       }
 
       final PlaybackStep? firstStep = mutableSteps.firstWhereOrNull(
@@ -270,7 +279,7 @@ class MviPlaybackPlayer {
 
         // Reset to Home screen to ensure fresh state
         AppNav.offAll(Routes.home);
-        await Future<dynamic>.delayed(const Duration(milliseconds: 600));
+        await Future<dynamic>.delayed(const Duration(milliseconds: 500));
 
         // Navigate to the target route if it's not Home
         if (route != Routes.home) {
@@ -299,7 +308,9 @@ class MviPlaybackPlayer {
           // 1. Locate the active ViewModel
           final vm = ActiveViewModels.get(viewModelTag);
           if (vm == null) {
-            appLogger.w('[$tag] Active ViewModel not found: $viewModelTag, skipping step');
+            appLogger.w(
+              '[$tag] Active ViewModel not found: $viewModelTag, skipping step, Active ViewModels: ${ActiveViewModels.all.keys.toList()}',
+            );
           } else {
             // 2. Deserialize the intent string to a concrete Intent object
             final intent = MviPlaybackRegistry.parseAndDeserialize(name);
@@ -310,6 +321,26 @@ class MviPlaybackPlayer {
             } else {
               appLogger.w('[$tag][$viewModelTag] Failed to deserialize Intent: $name');
             }
+          }
+        } else if (type == PlaybackStep.pop) {
+          final isRecordedPopup = name.startsWith('${PlaybackStep.pop}:');
+          if (isRecordedPopup) {
+            Route<dynamic>? currentTopRoute;
+            AppNavConfig.navigatorKey.currentState?.popUntil((r) {
+              currentTopRoute = r;
+              return true;
+            });
+
+            final isCurrentRoutePopup = currentTopRoute != null && currentTopRoute is! PageRoute;
+            if (isCurrentRoutePopup) {
+              appLogger.i('[$tag] Replaying popup dismissal (pop) for: $name');
+              AppNav.back();
+            } else {
+              appLogger.i('[$tag] Skipping popup dismissal (pop) for: $name (already dismissed)');
+            }
+          } else {
+            appLogger.i('[$tag] Replaying page transition back navigation (pop) from: $name');
+            AppNav.back();
           }
         }
 
@@ -325,16 +356,8 @@ class MviPlaybackPlayer {
       _status = PlaybackStatus.error;
       appLogger.e('[$tag] Playback encountered an error: $e');
     } finally {
-      try {
-        appLogger.i('[$tag] Restoring pre-playback user state sandbox...');
-        final spMap = prePlaybackState[PlaybackStep.sp];
-        final secureMap = prePlaybackState[PlaybackStep.secure];
-
-        await _applySpState(spMap);
-        await _applySecureAndAuthState(secureMap, spMap);
-      } catch (e) {
-        appLogger.e('[$tag] Failed to restore pre-playback user state: $e');
-      }
+      appLogger.i('[$tag] Restoring pre-playback user state sandbox...');
+      await _applyState(prePlaybackState);
 
       _isPlaying = false;
       onProgressChanged?.call(progress);
@@ -346,6 +369,20 @@ class MviPlaybackPlayer {
           onProgressChanged?.call(progress);
         }
       });
+    }
+  }
+
+  Future<void> _applyState(Map<String, dynamic> stateMap) async {
+    try {
+      appLogger.i('[$tag] Restoring initial state snapshot: $stateMap');
+
+      final spMap = stateMap[PlaybackStep.sp] as Map<String, dynamic>?;
+      final secureMap = stateMap[PlaybackStep.secure] as Map<String, dynamic>?;
+
+      await _applySpState(spMap);
+      await _applySecureAndAuthState(secureMap, spMap);
+    } catch (e) {
+      appLogger.e('[$tag] Failed to restore initial state: $e');
     }
   }
 

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:listen_core/core.dart';
@@ -40,6 +41,7 @@ class FakeTestViewModel extends BaseViewModel<LoginIntent> with ViewModelMixin<T
 
 void main() {
   setUp(() async {
+    TestWidgetsFlutterBinding.ensureInitialized();
     SharedPreferences.setMockInitialValues({});
     await SpUtil.init();
     initMviPlaybackRegistry();
@@ -206,6 +208,36 @@ void main() {
       MviPlaybackPlayer.stepDelay = Duration.zero;
     });
 
+    test('MviPlaybackRecorder should record POP steps and MviPlaybackPlayer should replay them safely', () async {
+      final recorder = MviPlaybackRecorder.instance;
+      await recorder.startRecording();
+
+      // Simulate page back navigation
+      AppNav.onRoutePopped?.call(
+        MaterialPageRoute(
+          builder: (_) => Container(),
+          settings: const RouteSettings(name: '/signup_view'),
+        ),
+        null,
+      );
+
+      // Simulate dialog pop (not a PageRoute, e.g. DialogRoute or PopupRoute)
+      final popupRoute = _FakePopupRoute();
+      AppNav.onRoutePopped?.call(popupRoute, null);
+
+      await recorder.stopRecording(customName: 'Pop test tape');
+
+      final steps = recorder.recordedSteps;
+      expect(steps.length, equals(3));
+      expect(steps[1].type, equals(PlaybackStep.pop));
+      expect(steps[1].name, equals('/signup_view'));
+      expect(steps[2].type, equals(PlaybackStep.pop));
+      expect(steps[2].name, startsWith('popup:_FakePopupRoute'));
+
+      // Playback
+      await MviPlaybackPlayer.instance.play('playback_tape_pop_test', steps);
+    });
+
     test('All Intent union cases must be registered in MviPlaybackRegistry', () {
       final directory = Directory('lib');
       final intentFiles = directory
@@ -247,4 +279,23 @@ void main() {
       }
     });
   });
+}
+
+class _FakePopupRoute extends PopupRoute<void> {
+  @override
+  Color? get barrierColor => null;
+
+  @override
+  bool get barrierDismissible => true;
+
+  @override
+  String? get barrierLabel => null;
+
+  @override
+  Widget buildPage(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+    return Container();
+  }
+
+  @override
+  Duration get transitionDuration => Duration.zero;
 }

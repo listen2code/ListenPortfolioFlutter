@@ -8,6 +8,7 @@ abstract class PlaybackStep with _$PlaybackStep {
   static const String initState = 'INITIAL_STATE';
   static const String intent = 'INTENT';
   static const String effect = 'EFFECT';
+  static const String pop = 'POP';
   static const String system = 'system';
   static const String sp = 'sp';
   static const String secure = 'secure';

@@ -16,6 +16,7 @@ class SplashViewModel extends _$SplashViewModel with ViewModelMixin<SplashState,
 
   @override
   void onInit() {
+    super.onInit();
     handleIntent(const SplashIntent.init());
   }
 
