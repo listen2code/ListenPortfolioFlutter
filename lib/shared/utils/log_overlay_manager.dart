@@ -1,12 +1,14 @@
+import 'dart:async';
+import 'dart:ui' show PointMode;
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:listen_core/core.dart';
 import 'package:listen_uikit/uikit.dart';
 
-import '../../shared/utils/playback_manager.dart';
-import '../i18n/translations_key.dart';
-import 'routes.dart';
+import '../shared.dart';
 
 enum LogFilter { all, server, app, perf, playback }
 
@@ -23,6 +25,7 @@ class LogOverlayManager {
   static final ValueNotifier<bool> isShowingNotifier = ValueNotifier(false);
 
   static Future<void> init(BuildContext context) async {
+    if (kReleaseMode) return;
     final isEnabled = SpUtil.getBool(logOverlayKey, defaultValue: true);
     isShowingNotifier.value = isEnabled;
 
@@ -37,6 +40,7 @@ class LogOverlayManager {
 
   /// [startExpanded] if true, the overlay will open in window mode directly.
   static Future<void> show(BuildContext context, {bool startExpanded = false}) async {
+    if (kReleaseMode) return;
     if (_overlayEntry != null) {
       if (startExpanded) {
         hide();
@@ -47,7 +51,7 @@ class LogOverlayManager {
 
     final size = MediaQuery.of(context).size;
     // Default position for floating button: top right area
-    _offset ??= Offset(size.width - 70, 100);
+    _offset ??= Offset(size.width - 150, 100);
 
     _overlayEntry = OverlayEntry(
       builder: (context) => _LogOverlayWidget(
@@ -110,12 +114,15 @@ class _LogOverlayWidget extends StatefulWidget {
   State<_LogOverlayWidget> createState() => _LogOverlayWidgetState();
 }
 
+enum OverlayTab { logs, perf }
+
 class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
   late Offset buttonOffset; // Memory for floating button
   late Offset windowOffset; // Temporary position for expanded window
   late Size windowSize; // Dimensions of the expanded window
   late bool isExpanded;
   LogFilter currentFilter = LogFilter.all;
+  OverlayTab currentTab = OverlayTab.logs;
   bool isFilterVisible = false;
   final TextEditingController _traceController = TextEditingController();
 
@@ -136,6 +143,9 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
 
     _playbackProgress = MviPlaybackPlayer.instance.progress;
 
+    // Start monitoring frame metrics on overlay initialization
+    FrameMonitor.instance.start();
+
     _traceController.addListener(() {
       setState(() {});
     });
@@ -151,6 +161,8 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
 
   @override
   void dispose() {
+    // Stop frame timing callbacks to release resources
+    FrameMonitor.instance.stop();
     _traceController.dispose();
     // Clean up playback progress listener
     MviPlaybackPlayer.instance.onProgressChanged = null;
@@ -286,7 +298,7 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
 
     // ignore: use_common_clickable
     return GestureDetector(
-      onPanUpdate: (details) => _updateOffset(details.delta, screenSize, const Size(50, 50)),
+      onPanUpdate: (details) => _updateOffset(details.delta, screenSize, const Size(130, 50)),
       onTap: () {
         if (isRecording) {
           // Click to stop recording directly from the collapsed button,
@@ -301,27 +313,43 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            width: 50,
-            height: 50,
+            width: 130.0,
+            height: 50.0,
             decoration: BoxDecoration(
-              color: Colors.black.withValues(alpha: 0.7),
-              shape: BoxShape.circle,
-              boxShadow: const [BoxShadow(blurRadius: 10, color: Colors.black26)],
+              color: Colors.black.withValues(alpha: 0.8),
+              borderRadius: BorderRadius.circular(25.0),
+              border: Border.all(color: Colors.white10, width: 0.5),
+              boxShadow: const [BoxShadow(blurRadius: 10, color: Colors.black45, offset: Offset(0, 4))],
             ),
-            child: Icon(
-              isRecording
-                  ? Icons.stop_rounded
-                  : (_playbackProgress?.isPlaying == true
-                        ? Icons.play_arrow_rounded
-                        : Icons.bug_report_rounded),
-              color: isRecording
-                  ? Colors.redAccent
-                  : (_playbackProgress?.isPlaying == true ? Colors.blueAccent : Colors.greenAccent),
-              size: 28,
+            child: Row(
+              children: [
+                // Left-side circular control icon
+                Container(
+                  width: 50.0,
+                  height: 50.0,
+                  alignment: Alignment.center,
+                  child: Icon(
+                    isRecording
+                        ? Icons.stop_rounded
+                        : (_playbackProgress?.isPlaying == true
+                              ? Icons.play_arrow_rounded
+                              : Icons.bug_report_rounded),
+                    color: isRecording
+                        ? Colors.redAccent
+                        : (_playbackProgress?.isPlaying == true ? Colors.blueAccent : Colors.greenAccent),
+                    size: 26.0,
+                  ),
+                ),
+                const VerticalDivider(color: Colors.white10, width: 1, indent: 10, endIndent: 10),
+                // Right-side real-time FPS mini line chart
+                const Expanded(child: Center(child: _FpsMiniChart())),
+                const SizedBox(width: 8),
+              ],
             ),
           ),
           if (_playbackProgress?.isPlaying == true &&
               _playbackProgress?.currentStepName.isNotEmpty == true) ...[
+            const SizedBox(height: 8),
             Container(
               margin: const EdgeInsets.only(right: 8),
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -333,7 +361,7 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
               ),
               child: CommonText(
                 '${_playbackProgress?.currentStepIndex}/${_playbackProgress?.totalSteps}\n${_playbackProgress?.currentStepName}',
-                style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+                style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
               ),
             ),
           ],
@@ -416,27 +444,66 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.terminal_rounded, color: Colors.greenAccent, size: 18),
+                  Icon(
+                    currentTab == OverlayTab.logs ? Icons.terminal_rounded : Icons.bar_chart_rounded,
+                    color: Colors.greenAccent,
+                    size: 18,
+                  ),
                   const SizedBox(width: 10),
                   Expanded(
                     child: CommonText(
-                      I18nKeys.appLogs.tr,
+                      currentTab == OverlayTab.logs
+                          ? I18nKeys.appLogs.tr
+                          : (I18nKeys.appLogs.tr == '日志' ? '性能分析面板' : 'Performance APM'),
                       style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
                     ),
                   ),
-                  _buildHeaderAction(
-                    isFilterVisible ? Icons.filter_list_off_rounded : Icons.filter_list_rounded,
-                    () {
-                      setState(() => isFilterVisible = !isFilterVisible);
-                    },
-                    color: isFilterVisible ? Colors.greenAccent : Colors.white70,
-                  ),
-                  _buildHeaderAction(Icons.refresh_rounded, () => LogManager.refresh()),
-                  _buildHeaderAction(Icons.copy_rounded, () {
-                    Clipboard.setData(ClipboardData(text: LogManager.getAllLogsAsText()));
-                    CommonToast.show(I18nKeys.copiedToClipboard.tr);
+                  if (currentTab == OverlayTab.logs)
+                    _buildHeaderAction(
+                      isFilterVisible ? Icons.filter_list_off_rounded : Icons.filter_list_rounded,
+                      () {
+                        setState(() => isFilterVisible = !isFilterVisible);
+                      },
+                      color: isFilterVisible ? Colors.greenAccent : Colors.white70,
+                    ),
+                  _buildHeaderAction(Icons.refresh_rounded, () {
+                    if (currentTab == OverlayTab.logs) {
+                      LogManager.refresh();
+                    } else {
+                      // Reset Performance Stats and force a pipeline refresh
+                      FrameMonitor.instance.stop();
+                      FrameMonitor.instance.start();
+                      WidgetsBinding.instance.scheduleFrame();
+                      CommonToast.show(I18nKeys.appLogs.tr == '日志' ? '性能数据已重置' : 'Performance metrics reset');
+                    }
                   }),
-                  _buildHeaderAction(Icons.delete_sweep_outlined, () => LogManager.clear()),
+                  _buildHeaderAction(Icons.copy_rounded, () {
+                    if (currentTab == OverlayTab.logs) {
+                      Clipboard.setData(ClipboardData(text: LogManager.getAllLogsAsText()));
+                      CommonToast.show(I18nKeys.copiedToClipboard.tr);
+                    } else {
+                      // Copy performance summary
+                      final buffer = StringBuffer('=== PERFORMANCE APM SUMMARY ===\n');
+                      final snapshot = FrameMonitor.instance.snapshot.value;
+                      if (snapshot != null) {
+                        buffer.writeln('FPS: ${snapshot.fps.toStringAsFixed(1)}');
+                        buffer.writeln('Janks: ${snapshot.jankCount} (Severe: ${snapshot.severeJankCount})');
+                        buffer.writeln(
+                          'Worst Frame: ${(snapshot.worstFrameUs / 1000.0).toStringAsFixed(1)} ms',
+                        );
+                        buffer.writeln('Memory RSS: ${snapshot.memoryMB} MB');
+                      }
+                      Clipboard.setData(ClipboardData(text: buffer.toString()));
+                      CommonToast.show(I18nKeys.copiedToClipboard.tr);
+                    }
+                  }),
+                  _buildHeaderAction(Icons.delete_sweep_outlined, () {
+                    if (currentTab == OverlayTab.logs) {
+                      LogManager.clear();
+                    } else {
+                      PerfTraceStore.instance.clear();
+                    }
+                  }),
                   _buildHeaderAction(Icons.fiber_manual_record, () {
                     if (!(_playbackProgress?.isPlaying ?? false)) {
                       MviPlaybackRecorder.instance.startRecording();
@@ -465,59 +532,109 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
               ),
             ),
           ),
-          // Collapsible Filter Bar
-          AnimatedCrossFade(
-            firstChild: const SizedBox.shrink(),
-            secondChild: _buildFilterBar(),
-            crossFadeState: isFilterVisible ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-            duration: const Duration(milliseconds: 200),
+
+          // Tab Bar Container
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            color: Colors.white.withValues(alpha: 0.02),
+            child: Row(
+              children: [
+                _tabChip('📋 Logs', OverlayTab.logs),
+                const SizedBox(width: 8),
+                _tabChip('📊 Perf Dashboard', OverlayTab.perf),
+              ],
+            ),
           ),
           const Divider(color: Colors.white10, height: 1),
-          Expanded(
-            child: ValueListenableBuilder<List<LogEntry>>(
-              valueListenable: LogManager.logNotifier,
-              builder: (context, logs, _) {
-                final traceFilter = _traceController.text.trim();
-                // Apply source, Trace ID and Performance filtering
-                final filteredLogs = logs.where((log) {
-                  // Trace ID filter
-                  if (traceFilter.isNotEmpty && !log.message.contains(traceFilter)) {
-                    return false;
-                  }
 
-                  // Source, Perf, and Playback filter
-                  final bool isMock = log.message.contains(LogManager.mockServerTag);
-                  final bool isPerf =
-                      log.message.contains(LogManager.summaryTag) || log.message.contains(LogManager.termTag);
-                  final bool isPlayback = log.message.contains('[${MviPlaybackPlayer.tag}]');
-
-                  switch (currentFilter) {
-                    case LogFilter.all:
-                      return true;
-                    case LogFilter.server:
-                      return isMock;
-                    case LogFilter.app:
-                      return !isMock && !isPerf && !isPlayback;
-                    case LogFilter.perf:
-                      return isPerf;
-                    case LogFilter.playback:
-                      return isPlayback;
-                  }
-                }).toList();
-
-                return ListView.builder(
-                  padding: const EdgeInsets.all(12),
-                  itemCount: filteredLogs.length,
-                  itemBuilder: (context, index) {
-                    final log = filteredLogs[filteredLogs.length - 1 - index];
-                    return _buildLogRow(log);
-                  },
-                );
-              },
+          // Collapsible Filter Bar (Only visible in Logs Tab)
+          if (currentTab == OverlayTab.logs)
+            AnimatedCrossFade(
+              firstChild: const SizedBox.shrink(),
+              secondChild: _buildFilterBar(),
+              crossFadeState: isFilterVisible ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+              duration: const Duration(milliseconds: 200),
             ),
+          if (currentTab == OverlayTab.logs) const Divider(color: Colors.white10, height: 1),
+
+          // Tab Content
+          Expanded(
+            child: currentTab == OverlayTab.logs
+                ? _buildLogsTabContent()
+                : _PerfDashboardTab(traceFilter: _traceController.text),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _tabChip(String label, OverlayTab tab) {
+    final bool isSelected = currentTab == tab;
+    return CommonClickable(
+      onTap: () => setState(() => currentTab = tab),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.greenAccent.withValues(alpha: 0.15) : Colors.white10,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isSelected ? Colors.greenAccent.withValues(alpha: 0.4) : Colors.white10,
+            width: 0.5,
+          ),
+        ),
+        child: CommonText(
+          label,
+          style: TextStyle(
+            color: isSelected ? Colors.greenAccent : Colors.white38,
+            fontSize: 11,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLogsTabContent() {
+    return ValueListenableBuilder<List<LogEntry>>(
+      valueListenable: LogManager.logNotifier,
+      builder: (context, logs, _) {
+        final traceFilter = _traceController.text.trim();
+        // Apply source, Trace ID and Performance filtering
+        final filteredLogs = logs.where((log) {
+          // Trace ID filter
+          if (traceFilter.isNotEmpty && !log.message.contains(traceFilter)) {
+            return false;
+          }
+
+          // Source, Perf, and Playback filter
+          final bool isMock = log.message.contains(LogManager.mockServerTag);
+          final bool isPerf =
+              log.message.contains(LogManager.summaryTag) || log.message.contains(LogManager.termTag);
+          final bool isPlayback = log.message.contains('[${MviPlaybackPlayer.tag}]');
+
+          switch (currentFilter) {
+            case LogFilter.all:
+              return true;
+            case LogFilter.server:
+              return isMock;
+            case LogFilter.app:
+              return !isMock && !isPerf && !isPlayback;
+            case LogFilter.perf:
+              return isPerf;
+            case LogFilter.playback:
+              return isPlayback;
+          }
+        }).toList();
+
+        return ListView.builder(
+          padding: const EdgeInsets.all(12),
+          itemCount: filteredLogs.length,
+          itemBuilder: (context, index) {
+            final log = filteredLogs[filteredLogs.length - 1 - index];
+            return _buildLogRow(log);
+          },
+        );
+      },
     );
   }
 
@@ -551,7 +668,10 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
                 ),
                 recognizer: TapGestureRecognizer()
                   ..onTap = () {
-                    _traceController.text = traceId;
+                    setState(() {
+                      currentTab = OverlayTab.perf;
+                      _traceController.text = traceId;
+                    });
                     if (!isFilterVisible) setState(() => isFilterVisible = true);
                   },
               ),
@@ -679,5 +799,640 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
       default:
         return Colors.white70;
     }
+  }
+}
+
+/// A mini real-time FPS chart widget drawn using CustomPainter.
+///
+/// Implements [RepaintBoundary] and disables anti-aliasing for optimized drawing.
+class _FpsMiniChart extends StatelessWidget {
+  const _FpsMiniChart();
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<FrameMonitorSnapshot?>(
+      valueListenable: FrameMonitor.instance.snapshot,
+      builder: (context, snapshot, _) {
+        if (snapshot == null) return const SizedBox.shrink();
+
+        final double fps = snapshot.fps;
+        final Color color = _fpsColor(fps);
+
+        return RepaintBoundary(
+          child: SizedBox(
+            width: 70,
+            height: 40,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CustomPaint(
+                  size: const Size(60, 16),
+                  painter: _MiniChartPainter(frames: snapshot.recentFrames, color: color),
+                ),
+                const SizedBox(height: 2),
+                CommonText(
+                  '${fps.round()} FPS',
+                  style: TextStyle(color: color, fontSize: 8.0, fontWeight: FontWeight.bold, height: 1.0),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Color _fpsColor(double fps) {
+    if (fps >= 55) return Colors.greenAccent;
+    if (fps >= 50) return Colors.yellowAccent;
+    if (fps >= 30) return Colors.orangeAccent;
+    return Colors.redAccent;
+  }
+}
+
+/// Fast CustomPainter for drawing chronological frame latencies on a mini canvas.
+class _MiniChartPainter extends CustomPainter {
+  final RingBuffer<FrameMetric> frames;
+  final Color color;
+
+  _MiniChartPainter({required this.frames, required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (frames.isEmpty) return;
+
+    final paint = Paint()
+      ..color = color.withValues(alpha: 0.8)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.0
+      ..isAntiAlias = false; // Disable anti-aliasing for batch-rendering acceleration
+
+    final int len = frames.length;
+    final int displayCount = len > 25 ? 25 : len;
+    final int startIndex = len - displayCount;
+
+    final double stepX = size.width / 24.0;
+    // Cap vertical latency range at 50ms for scaling
+    final double maxLatencyUs = 50000.0;
+
+    final path = Path();
+    bool first = true;
+
+    for (int i = 0; i < displayCount; i++) {
+      final metric = frames[startIndex + i];
+
+      // Perform pixel snapping to avoid sub-pixel rendering blur
+      final double x = (i * stepX).roundToDouble();
+      final double yFraction = (metric.totalDurationUs / maxLatencyUs).clamp(0.0, 1.0);
+      final double y = (size.height - (yFraction * size.height)).roundToDouble();
+
+      if (first) {
+        path.moveTo(x, y);
+        first = false;
+      } else {
+        path.lineTo(x, y);
+      }
+    }
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant _MiniChartPainter oldDelegate) {
+    if (oldDelegate.frames.length != frames.length) return true;
+    if (frames.isNotEmpty && oldDelegate.frames.isNotEmpty) {
+      return oldDelegate.frames[oldDelegate.frames.length - 1].totalDurationUs !=
+          frames[frames.length - 1].totalDurationUs;
+    }
+    return false;
+  }
+}
+
+/// The main dashboard tab content for APM performance monitoring.
+class _PerfDashboardTab extends StatefulWidget {
+  final String? traceFilter;
+
+  const _PerfDashboardTab({this.traceFilter});
+
+  @override
+  State<_PerfDashboardTab> createState() => _PerfDashboardTabState();
+}
+
+class _PerfDashboardTabState extends State<_PerfDashboardTab> {
+  final Map<String, bool> _expandedIntents = {};
+  Timer? _refreshTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    // Periodically request a frame and notify listeners every 500ms to keep chart scrolling alive even when idle
+    _refreshTimer = Timer.periodic(const Duration(milliseconds: 500), (_) {
+      if (mounted) {
+        WidgetsBinding.instance.scheduleFrame();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _refreshTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<FrameMonitorSnapshot?>(
+      valueListenable: FrameMonitor.instance.snapshot,
+      builder: (context, snapshot, _) {
+        if (snapshot == null) {
+          return const Center(child: CircularProgressIndicator(color: Colors.greenAccent));
+        }
+
+        return ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            // 1. Large Real-Time FPS Line Chart
+            _buildChartSection(snapshot),
+            const SizedBox(height: 16),
+
+            // 2. Stats Cards
+            _buildStatsGrid(snapshot),
+            const SizedBox(height: 16),
+
+            // 3. Structure Trace Records (Pages and Intents)
+            _buildTraceLogsSection(),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildChartSection(FrameMonitorSnapshot snapshot) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.03),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white10),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              CommonText(
+                'FPS Trend (5s)',
+                style: const TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold),
+              ),
+              CommonText('Target Budget: Auto', style: const TextStyle(color: Colors.white38, fontSize: 10)),
+            ],
+          ),
+          const SizedBox(height: 12),
+          SizedBox(height: 100, child: _FpsLineChart(snapshot: snapshot)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatsGrid(FrameMonitorSnapshot snapshot) {
+    final worstMs = snapshot.worstFrameUs / 1000.0;
+
+    return Row(
+      children: [
+        // Jank Count Card
+        Expanded(
+          child: _buildStatCard(
+            'Jank Statistics',
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildStatItem('Janks (Total)', '${snapshot.jankCount}', Colors.orangeAccent),
+                _buildStatItem('Severe Janks', '${snapshot.severeJankCount}', Colors.redAccent),
+                _buildStatItem('Worst Frame', '${worstMs.toStringAsFixed(1)} ms', Colors.purpleAccent),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
+        // Memory Card
+        Expanded(
+          child: _buildStatCard(
+            'Memory Usage',
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CommonText(
+                  '${snapshot.memoryMB} MB',
+                  style: const TextStyle(
+                    color: Colors.greenAccent,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const CommonText(
+                  'Dart RSS Footprint (Excludes Native Cache)',
+                  style: TextStyle(color: Colors.white38, fontSize: 10, height: 1.3),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatCard(String title, Widget content) {
+    return Container(
+      height: 100,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.03),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white10),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CommonText(
+            title,
+            style: const TextStyle(color: Colors.white38, fontSize: 10, fontWeight: FontWeight.bold),
+          ),
+          const Spacer(),
+          content,
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatItem(String label, String val, Color valColor) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 2),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          CommonText(label, style: const TextStyle(color: Colors.white38, fontSize: 10)),
+          CommonText(
+            val,
+            style: TextStyle(color: valColor, fontSize: 10, fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTraceLogsSection() {
+    return ValueListenableBuilder<List<PerfTraceEntry>>(
+      valueListenable: PerfTraceStore.instance.traces,
+      builder: (context, traces, _) {
+        final filter = widget.traceFilter?.trim() ?? '';
+        final filteredTraces = traces.where((t) {
+          if (filter.isNotEmpty && t.traceId != filter) return false;
+          return true;
+        }).toList();
+
+        if (filteredTraces.isEmpty) {
+          return Container(
+            padding: const EdgeInsets.symmetric(vertical: 40),
+            alignment: Alignment.center,
+            child: const CommonText(
+              'No Trace Records Captured Yet.\nNavigate pages or execute actions to populate.',
+              style: TextStyle(color: Colors.white24, fontSize: 11, height: 1.4),
+            ),
+          );
+        }
+
+        // Partition traces into Page Render and Intent Traces
+        final pages = filteredTraces.where((t) => t.label == 'Page Render').toList();
+        final intents = filteredTraces.where((t) => t.label == 'Intent').toList();
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (pages.isNotEmpty) ...[
+              CommonSettingsSectionTitle(
+                title: I18nKeys.appLogs.tr == '日志' ? '页面渲染跟踪 (Page Render)' : 'Page Render Traces',
+              ),
+              const SizedBox(height: 8),
+              _buildPageTracesCard(pages),
+              const SizedBox(height: 20),
+            ],
+            if (intents.isNotEmpty) ...[
+              CommonSettingsSectionTitle(
+                title: I18nKeys.appLogs.tr == '日志' ? '业务行为耗时 (Intent Traces)' : 'Intent Traces',
+              ),
+              const SizedBox(height: 8),
+              _buildIntentTracesCard(intents),
+            ],
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildPageTracesCard(List<PerfTraceEntry> pages) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.03),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white10),
+      ),
+      child: ListView.separated(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: pages.length,
+        separatorBuilder: (_, __) => const Divider(color: Colors.white10, height: 1),
+        itemBuilder: (context, idx) {
+          final page = pages[pages.length - 1 - idx];
+          final color = _pageLatencyColor(page.totalMs);
+
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: Row(
+              children: [
+                Icon(Icons.circle, size: 8, color: color),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CommonText(
+                        page.name,
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      CommonText(
+                        'Trace ID: ${page.traceId}',
+                        style: const TextStyle(color: Colors.white24, fontSize: 9),
+                      ),
+                    ],
+                  ),
+                ),
+                CommonText(
+                  '${page.totalMs} ms',
+                  style: TextStyle(color: color, fontSize: 12, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Color _pageLatencyColor(int ms) {
+    if (ms <= 16) return Colors.greenAccent;
+    if (ms <= 32) return Colors.yellowAccent;
+    return Colors.redAccent;
+  }
+
+  Widget _buildIntentTracesCard(List<PerfTraceEntry> intents) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.03),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white10),
+      ),
+      child: ListView.separated(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: intents.length,
+        separatorBuilder: (_, __) => const Divider(color: Colors.white10, height: 1),
+        itemBuilder: (context, idx) {
+          final intent = intents[intents.length - 1 - idx];
+          final isExpanded = _expandedIntents[intent.traceId] ?? (widget.traceFilter == intent.traceId);
+
+          return Column(
+            children: [
+              CommonClickable(
+                onTap: () {
+                  setState(() {
+                    _expandedIntents[intent.traceId] = !isExpanded;
+                  });
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  child: Row(
+                    children: [
+                      Icon(
+                        isExpanded ? Icons.arrow_drop_down : Icons.arrow_right,
+                        color: Colors.white30,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CommonText(
+                              intent.name,
+                              style: const TextStyle(
+                                color: Colors.white70,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            CommonText(
+                              'Trace ID: ${intent.traceId}',
+                              style: const TextStyle(color: Colors.white24, fontSize: 9),
+                            ),
+                          ],
+                        ),
+                      ),
+                      CommonText(
+                        '${intent.totalMs} ms',
+                        style: const TextStyle(
+                          color: Colors.greenAccent,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              if (isExpanded) ...[
+                Container(
+                  padding: const EdgeInsets.only(left: 40, right: 16, bottom: 12),
+                  child: Column(
+                    children: intent.stages.map((stage) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 2),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            CommonText(
+                              '├ ${stage.name}',
+                              style: const TextStyle(color: Colors.white38, fontSize: 10),
+                            ),
+                            CommonText(
+                              '${stage.durationMs} ms',
+                              style: const TextStyle(color: Colors.white54, fontSize: 10),
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ],
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+/// A line chart displaying real-time FPS frame rendering latency with reference lines.
+class _FpsLineChart extends StatelessWidget {
+  final FrameMonitorSnapshot snapshot;
+
+  const _FpsLineChart({required this.snapshot});
+
+  @override
+  Widget build(BuildContext context) {
+    return RepaintBoundary(
+      child: CustomPaint(
+        size: Size.infinite,
+        painter: _LineChartPainter(frames: snapshot.recentFrames),
+      ),
+    );
+  }
+}
+
+/// Canvas painter optimized using batch-rendering instruction.
+class _LineChartPainter extends CustomPainter {
+  final RingBuffer<FrameMetric> frames;
+
+  const _LineChartPainter({required this.frames});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (frames.isEmpty) return;
+
+    final int len = frames.length;
+    // Map to maximum 120 frames in the viewport (~2 seconds of timeline)
+    final int displayCount = len > 120 ? 120 : len;
+    final int startIndex = len - displayCount;
+
+    final double stepX = size.width / 119.0;
+    final double maxLatencyUs = 50000.0; // 50ms cap
+
+    // 1. Draw horizontal reference threshold grid lines
+    _drawReferenceLine(
+      canvas,
+      size,
+      16670,
+      maxLatencyUs,
+      '16.6ms (60Hz)',
+      Colors.yellowAccent.withValues(alpha: 0.15),
+    );
+    _drawReferenceLine(
+      canvas,
+      size,
+      8333,
+      maxLatencyUs,
+      '8.3ms (120Hz)',
+      Colors.redAccent.withValues(alpha: 0.15),
+    );
+
+    // 2. Prepare paths for UI Frame build lines and GPU raster lines
+    final path = Path();
+    bool first = true;
+    final List<Offset> jankPoints = [];
+
+    for (int i = 0; i < displayCount; i++) {
+      final metric = frames[startIndex + i];
+      final double x = (i * stepX).roundToDouble(); // Pixel snapping
+
+      final double yFraction = (metric.totalDurationUs / maxLatencyUs).clamp(0.0, 1.0);
+      final double y = (size.height - (yFraction * size.height)).roundToDouble();
+
+      if (first) {
+        path.moveTo(x, y);
+        first = false;
+      } else {
+        path.lineTo(x, y);
+      }
+
+      if (metric.isJank) {
+        jankPoints.add(Offset(x, y));
+      }
+    }
+
+    // 3. Render core latency line
+    final linePaint = Paint()
+      ..color = Colors.greenAccent.withValues(alpha: 0.8)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5
+      ..isAntiAlias = true;
+
+    canvas.drawPath(path, linePaint);
+
+    // 4. Batch-draw drop-frame Jank anchors as red dots
+    if (jankPoints.isNotEmpty) {
+      final dotPaint = Paint()
+        ..color = Colors.redAccent
+        ..style = PaintingStyle.fill
+        ..strokeWidth = 4.0
+        ..strokeCap = StrokeCap.round;
+
+      canvas.drawPoints(PointMode.points, jankPoints, dotPaint);
+    }
+  }
+
+  void _drawReferenceLine(
+    Canvas canvas,
+    Size size,
+    double targetUs,
+    double maxUs,
+    String label,
+    Color color,
+  ) {
+    final double yFraction = (targetUs / maxUs).clamp(0.0, 1.0);
+    final double y = (size.height - (yFraction * size.height)).roundToDouble();
+
+    final linePaint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.0;
+
+    // Draw dashed threshold line
+    double curX = 0;
+    const double dashWidth = 4.0;
+    const double spaceWidth = 4.0;
+
+    while (curX < size.width) {
+      canvas.drawLine(Offset(curX, y), Offset(curX + dashWidth, y), linePaint);
+      curX += dashWidth + spaceWidth;
+    }
+
+    // Draw indicator label text
+    final textPainter = TextPainter(
+      text: TextSpan(
+        text: label,
+        style: TextStyle(color: color, fontSize: 8, fontWeight: FontWeight.bold),
+      ),
+      textDirection: TextDirection.ltr,
+    )..layout();
+
+    textPainter.paint(canvas, Offset(8, y - 10));
+  }
+
+  @override
+  bool shouldRepaint(covariant _LineChartPainter oldDelegate) {
+    if (oldDelegate.frames.length != frames.length) return true;
+    if (frames.isNotEmpty && oldDelegate.frames.isNotEmpty) {
+      return oldDelegate.frames[oldDelegate.frames.length - 1].totalDurationUs !=
+          frames[frames.length - 1].totalDurationUs;
+    }
+    return false;
   }
 }
