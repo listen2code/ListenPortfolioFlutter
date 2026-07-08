@@ -33,7 +33,7 @@ export 'theme/context_extension.dart';
 export 'theme/setting_provider.dart';
 export 'utils/app_initializer.dart';
 export 'utils/auth_manager.dart';
-export 'utils/log_overlay_manager.dart';
+export 'utils/log_overlay/log_overlay_manager.dart';
 export 'utils/quick_actions_manager.dart';
 export 'utils/routes.dart';
 export 'widgets/common_auth_text.dart';
