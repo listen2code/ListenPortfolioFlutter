@@ -125,7 +125,7 @@ class _PerfDashboardTabState extends State<_PerfDashboardTab> {
             ],
           ),
           const SizedBox(height: 12),
-          SizedBox(height: 100, child: _FpsLineChart(snapshot: snapshot)),
+          SizedBox(height: 130, child: _FpsLineChart(snapshot: snapshot)),
         ],
       ),
     );

@@ -109,18 +109,146 @@ class _MiniChartPainter extends CustomPainter {
 }
 
 /// A line chart displaying real-time FPS frame rendering latency with reference lines.
-class _FpsLineChart extends StatelessWidget {
+class _FpsLineChart extends StatefulWidget {
   final FrameMonitorSnapshot snapshot;
 
   const _FpsLineChart({required this.snapshot});
 
   @override
-  Widget build(BuildContext context) {
-    return RepaintBoundary(
-      child: CustomPaint(
-        size: Size.infinite,
-        painter: _LineChartPainter(frames: snapshot.recentFrames),
+  State<_FpsLineChart> createState() => _FpsLineChartState();
+}
+
+class _FpsLineChartState extends State<_FpsLineChart> {
+  int? _selectedIndex;
+
+  void _updateTouchPosition(double localX, double width) {
+    final frames = widget.snapshot.recentFrames;
+    if (frames.isEmpty) return;
+
+    final int len = frames.length;
+    final int displayCount = len > 120 ? 120 : len;
+    if (displayCount < 2) return;
+
+    final double stepX = width / 119.0;
+    int index = (localX / stepX).round();
+    index = index.clamp(0, displayCount - 1);
+
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  void _clearTouch() {
+    setState(() {
+      _selectedIndex = null;
+    });
+  }
+
+  Widget _buildTooltipBar(FrameMetric metric, double fpsVal) {
+    final isJank = metric.isJank;
+    final page = metric.routeName ?? 'Unknown';
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: Colors.white10, width: 0.5),
       ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Row(
+              children: [
+                Icon(
+                  isJank ? Icons.warning_amber_rounded : Icons.check_circle_outline_rounded,
+                  color: isJank ? Colors.redAccent : Colors.greenAccent,
+                  size: 13,
+                ),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: CommonText(
+                    'Page: $page',
+                    style: TextStyle(
+                      color: isJank ? Colors.redAccent : Colors.white70,
+                      fontSize: 9,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 8),
+          CommonText(
+            '${(metric.totalDurationUs / 1000.0).toStringAsFixed(1)} ms (${fpsVal.round()} FPS)',
+            style: TextStyle(
+              color: isJank ? Colors.redAccent : Colors.greenAccent,
+              fontSize: 9,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final frames = widget.snapshot.recentFrames;
+    final int len = frames.length;
+    final int displayCount = len > 120 ? 120 : len;
+    final int startIndex = len - displayCount;
+
+    FrameMetric? selectedMetric;
+    double calculatedFps = 0.0;
+    if (_selectedIndex != null && _selectedIndex! < displayCount) {
+      selectedMetric = frames[startIndex + _selectedIndex!];
+      calculatedFps = selectedMetric.totalDurationUs > 0
+          ? (1000000.0 / selectedMetric.totalDurationUs).clamp(1.0, 120.0)
+          : 0.0;
+    }
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Column(
+          children: [
+            SizedBox(
+              height: 24,
+              child: selectedMetric != null
+                  ? _buildTooltipBar(selectedMetric, calculatedFps)
+                  : Center(
+                      child: CommonText(
+                        '💡 左右拖动趋势图可锁定单帧数据与对应页面',
+                        style: const TextStyle(color: Colors.white30, fontSize: 8.5),
+                      ),
+                    ),
+            ),
+            const SizedBox(height: 6),
+            Expanded(
+              child: RepaintBoundary(
+                child: GestureDetector(
+                  onPanStart: (details) => _updateTouchPosition(details.localPosition.dx, constraints.maxWidth),
+                  onPanUpdate: (details) => _updateTouchPosition(details.localPosition.dx, constraints.maxWidth),
+                  onPanEnd: (_) => _clearTouch(),
+                  onPanCancel: () => _clearTouch(),
+                  onTapDown: (details) => _updateTouchPosition(details.localPosition.dx, constraints.maxWidth),
+                  onTapUp: (_) => _clearTouch(),
+                  child: CustomPaint(
+                    size: Size.infinite,
+                    painter: _LineChartPainter(
+                      frames: widget.snapshot.recentFrames,
+                      selectedIndex: _selectedIndex,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
@@ -128,8 +256,9 @@ class _FpsLineChart extends StatelessWidget {
 /// Canvas painter optimized using batch-rendering instruction.
 class _LineChartPainter extends CustomPainter {
   final RingBuffer<FrameMetric> frames;
+  final int? selectedIndex;
 
-  const _LineChartPainter({required this.frames});
+  const _LineChartPainter({required this.frames, this.selectedIndex});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -214,6 +343,42 @@ class _LineChartPainter extends CustomPainter {
 
       canvas.drawPoints(PointMode.points, jankPoints, dotPaint);
     }
+
+    // 5. Draw Crosshair vertical dashed line and highlight point if selected
+    if (selectedIndex != null && selectedIndex! < displayCount) {
+      final double targetX = (selectedIndex! * stepX).roundToDouble();
+      final crossPaint = Paint()
+        ..color = Colors.white.withValues(alpha: 0.35)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.0;
+
+      // Draw dashed crosshair line
+      double curY = 0;
+      const double dashHeight = 4.0;
+      const double spaceHeight = 4.0;
+      while (curY < size.height) {
+        canvas.drawLine(Offset(targetX, curY), Offset(targetX, curY + dashHeight), crossPaint);
+        curY += dashHeight + spaceHeight;
+      }
+
+      // Find Y coordinate of selected frame
+      final selectedMetric = frames[startIndex + selectedIndex!];
+      final double selectedLatencyUs = math.max(selectedMetric.buildDurationUs, selectedMetric.rasterDurationUs).toDouble();
+      final double yFraction = (selectedLatencyUs / maxLatencyUs).clamp(0.0, 1.0);
+      final double targetY = (size.height - (yFraction * size.height)).roundToDouble();
+
+      // Outer halo circle
+      final haloPaint = Paint()
+        ..color = (selectedMetric.isJank ? Colors.redAccent : Colors.greenAccent).withValues(alpha: 0.3)
+        ..style = PaintingStyle.fill;
+      canvas.drawCircle(Offset(targetX, targetY), 6.0, haloPaint);
+
+      // Inner solid dot
+      final dotPaint = Paint()
+        ..color = selectedMetric.isJank ? Colors.redAccent : Colors.greenAccent
+        ..style = PaintingStyle.fill;
+      canvas.drawCircle(Offset(targetX, targetY), 3.0, dotPaint);
+    }
   }
 
   void _drawReferenceLine(
@@ -255,5 +420,7 @@ class _LineChartPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _LineChartPainter oldDelegate) => true;
+  bool shouldRepaint(covariant _LineChartPainter oldDelegate) {
+    return oldDelegate.frames != frames || oldDelegate.selectedIndex != selectedIndex;
+  }
 }
