@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 import 'dart:ui' show PointMode;
 
 import 'package:flutter/foundation.dart';
@@ -872,8 +873,16 @@ class _MiniChartPainter extends CustomPainter {
     final int startIndex = len - displayCount;
 
     final double stepX = size.width / 24.0;
-    // Cap vertical latency range at 50ms for scaling
-    final double maxLatencyUs = 50000.0;
+    // Find local worst frame latency to auto-scale the Y axis adaptively
+    double localMaxUs = 16670.0;
+    for (int i = 0; i < displayCount; i++) {
+      final metric = frames[startIndex + i];
+      final double latencyUs = math.max(metric.buildDurationUs, metric.rasterDurationUs).toDouble();
+      if (latencyUs > localMaxUs) {
+        localMaxUs = latencyUs;
+      }
+    }
+    final double maxLatencyUs = (localMaxUs * 1.2).clamp(16670.0, 500000.0);
 
     final path = Path();
     bool first = true;
@@ -883,7 +892,8 @@ class _MiniChartPainter extends CustomPainter {
 
       // Perform pixel snapping to avoid sub-pixel rendering blur
       final double x = (i * stepX).roundToDouble();
-      final double yFraction = (metric.totalDurationUs / maxLatencyUs).clamp(0.0, 1.0);
+      final double latencyUs = math.max(metric.buildDurationUs, metric.rasterDurationUs).toDouble();
+      final double yFraction = (latencyUs / maxLatencyUs).clamp(0.0, 1.0);
       final double y = (size.height - (yFraction * size.height)).roundToDouble();
 
       if (first) {
@@ -898,14 +908,7 @@ class _MiniChartPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _MiniChartPainter oldDelegate) {
-    if (oldDelegate.frames.length != frames.length) return true;
-    if (frames.isNotEmpty && oldDelegate.frames.isNotEmpty) {
-      return oldDelegate.frames[oldDelegate.frames.length - 1].totalDurationUs !=
-          frames[frames.length - 1].totalDurationUs;
-    }
-    return false;
-  }
+  bool shouldRepaint(covariant _MiniChartPainter oldDelegate) => true;
 }
 
 /// The main dashboard tab content for APM performance monitoring.
@@ -920,24 +923,6 @@ class _PerfDashboardTab extends StatefulWidget {
 
 class _PerfDashboardTabState extends State<_PerfDashboardTab> {
   final Map<String, bool> _expandedIntents = {};
-  Timer? _refreshTimer;
-
-  @override
-  void initState() {
-    super.initState();
-    // Periodically request a frame and notify listeners every 500ms to keep chart scrolling alive even when idle
-    _refreshTimer = Timer.periodic(const Duration(milliseconds: 500), (_) {
-      if (mounted) {
-        WidgetsBinding.instance.scheduleFrame();
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _refreshTimer?.cancel();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -951,6 +936,31 @@ class _PerfDashboardTabState extends State<_PerfDashboardTab> {
         return ListView(
           padding: const EdgeInsets.all(16),
           children: [
+            if (kDebugMode) ...[
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.orangeAccent.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.orangeAccent.withValues(alpha: 0.25), width: 0.5),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.info_outline_rounded, color: Colors.orangeAccent, size: 14),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: CommonText(
+                        I18nKeys.appLogs.tr == '日志'
+                            ? '当前处于调试模式，渲染耗时偏高。精确测定请在 Profile 模式下运行。'
+                            : 'Debug overhead detected. Run in Profile Mode for precise performance metrics.',
+                        style: const TextStyle(color: Colors.orangeAccent, fontSize: 10, height: 1.3),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+            ],
             // 1. Large Real-Time FPS Line Chart
             _buildChartSection(snapshot),
             const SizedBox(height: 16),
@@ -967,7 +977,23 @@ class _PerfDashboardTabState extends State<_PerfDashboardTab> {
     );
   }
 
+  Color _getFpsColor(FrameMonitorSnapshot snapshot) {
+    double targetMaxFps = 60.0;
+    if (snapshot.recentFrames.isNotEmpty) {
+      final budget = snapshot.recentFrames[snapshot.recentFrames.length - 1].vsyncBudgetUs;
+      if (budget > 0) {
+        targetMaxFps = 1000000.0 / budget;
+      }
+    }
+    final ratio = snapshot.fps / targetMaxFps;
+    if (ratio >= 0.9) return Colors.greenAccent;
+    if (ratio >= 0.75) return Colors.orangeAccent;
+    return Colors.redAccent;
+  }
+
   Widget _buildChartSection(FrameMonitorSnapshot snapshot) {
+    final fpsColor = _getFpsColor(snapshot);
+
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -981,9 +1007,30 @@ class _PerfDashboardTabState extends State<_PerfDashboardTab> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              CommonText(
-                I18nKeys.fpsTrend.tr,
-                style: const TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold),
+              Row(
+                children: [
+                  CommonText(
+                    I18nKeys.fpsTrend.tr,
+                    style: const TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
+                    decoration: BoxDecoration(
+                      color: fpsColor.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(6),
+                      border: Border.all(color: fpsColor.withValues(alpha: 0.3), width: 0.5),
+                    ),
+                    child: CommonText(
+                      '${snapshot.fps.toStringAsFixed(1)} FPS',
+                      style: TextStyle(
+                        color: fpsColor,
+                        fontSize: 9,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
               ),
               CommonText(I18nKeys.targetBudgetAuto.tr, style: const TextStyle(color: Colors.white38, fontSize: 10)),
             ],
@@ -1323,7 +1370,16 @@ class _LineChartPainter extends CustomPainter {
     final int startIndex = len - displayCount;
 
     final double stepX = size.width / 119.0;
-    final double maxLatencyUs = 50000.0; // 50ms cap
+    // Find local worst frame latency to auto-scale the Y axis adaptively
+    double localMaxUs = 16670.0;
+    for (int i = 0; i < displayCount; i++) {
+      final metric = frames[startIndex + i];
+      final double latencyUs = math.max(metric.buildDurationUs, metric.rasterDurationUs).toDouble();
+      if (latencyUs > localMaxUs) {
+        localMaxUs = latencyUs;
+      }
+    }
+    final double maxLatencyUs = (localMaxUs * 1.2).clamp(16670.0, 500000.0);
 
     // 1. Draw horizontal reference threshold grid lines
     _drawReferenceLine(
@@ -1352,7 +1408,8 @@ class _LineChartPainter extends CustomPainter {
       final metric = frames[startIndex + i];
       final double x = (i * stepX).roundToDouble(); // Pixel snapping
 
-      final double yFraction = (metric.totalDurationUs / maxLatencyUs).clamp(0.0, 1.0);
+      final double latencyUs = math.max(metric.buildDurationUs, metric.rasterDurationUs).toDouble();
+      final double yFraction = (latencyUs / maxLatencyUs).clamp(0.0, 1.0);
       final double y = (size.height - (yFraction * size.height)).roundToDouble();
 
       if (first) {
@@ -1427,12 +1484,5 @@ class _LineChartPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _LineChartPainter oldDelegate) {
-    if (oldDelegate.frames.length != frames.length) return true;
-    if (frames.isNotEmpty && oldDelegate.frames.isNotEmpty) {
-      return oldDelegate.frames[oldDelegate.frames.length - 1].totalDurationUs !=
-          frames[frames.length - 1].totalDurationUs;
-    }
-    return false;
-  }
+  bool shouldRepaint(covariant _LineChartPainter oldDelegate) => true;
 }
