@@ -30,7 +30,6 @@ class LogOverlayManager {
   static final ValueNotifier<bool> isShowingNotifier = ValueNotifier(false);
 
   static Future<void> init(BuildContext context) async {
-    if (kReleaseMode) return;
     appLogger.d('LogOverlayManager: init called, context mounted: ${context.mounted}');
     final isEnabled = SpUtil.getBool(logOverlayKey, defaultValue: true);
     isShowingNotifier.value = isEnabled;
