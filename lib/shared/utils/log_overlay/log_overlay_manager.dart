@@ -48,7 +48,6 @@ class LogOverlayManager {
 
   /// [startExpanded] if true, the overlay will open in window mode directly.
   static Future<void> show(BuildContext context, {bool startExpanded = false}) async {
-    if (kReleaseMode) return;
     appLogger.d('LogOverlayManager: show called, startExpanded: $startExpanded, isAlreadyShowing: $isShowing');
     if (_overlayEntry != null) {
       if (startExpanded) {
