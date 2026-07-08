@@ -145,13 +145,20 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
     final screenSize = MediaQuery.of(context).size;
 
     // Initialize default window size if not set (first expansion)
-    if (windowSize == Size.zero) {
+    if (windowSize == Size.zero && screenSize.width > 0) {
       windowSize = Size(screenSize.width, screenSize.height * 0.5);
     }
 
+    // Clamp coordinates dynamically to prevent offset going out of screen boundaries (e.g. initial zero-size pollution during splash)
+    final double safeButtonX = buttonOffset.dx.clamp(0.0, math.max(0.0, screenSize.width - 130.0));
+    final double safeButtonY = buttonOffset.dy.clamp(0.0, math.max(0.0, screenSize.height - 50.0));
+
+    final double safeWindowX = windowOffset.dx.clamp(0.0, math.max(0.0, screenSize.width - (windowSize.width > 0 ? windowSize.width : minWidth)));
+    final double safeWindowY = windowOffset.dy.clamp(0.0, math.max(0.0, screenSize.height - (windowSize.height > 0 ? windowSize.height : minHeight)));
+
     return Positioned(
-      left: isExpanded ? windowOffset.dx : buttonOffset.dx,
-      top: isExpanded ? windowOffset.dy : buttonOffset.dy,
+      left: isExpanded ? safeWindowX : safeButtonX,
+      top: isExpanded ? safeWindowY : safeButtonY,
       child: Material(
         color: Colors.transparent,
         child: isExpanded ? _buildExpandedViewWithHandles(screenSize) : _buildFloatingButton(screenSize),
