@@ -255,4 +255,18 @@ final Map<String, String> zh = {
   I18nKeys.unnamedTape: '未命名录像',
   I18nKeys.tapeStepsCount: '%s 步操作',
   I18nKeys.playbackStartOffset: '开始',
+
+  // APM Performance Dashboard
+  I18nKeys.performanceApm: '性能分析面板',
+  I18nKeys.pageRenderTraces: '页面渲染跟踪',
+  I18nKeys.intentTraces: '业务行为耗时',
+  I18nKeys.performanceMetricsReset: '性能数据已重置',
+  I18nKeys.fpsTrend: 'FPS 趋势 (5秒)',
+  I18nKeys.targetBudgetAuto: '物理帧预算: 自动适应',
+  I18nKeys.jankStatistics: '卡顿统计',
+  I18nKeys.janksTotal: '卡顿总数 (Jank)',
+  I18nKeys.severeJanks: '严重卡顿数',
+  I18nKeys.worstFrame: '最差单帧耗时',
+  I18nKeys.memoryUsage: '内存占用 (RSS)',
+  I18nKeys.noTraceRecords: '暂无耗时跟踪数据\n请切换页面或执行操作后查看',
 };

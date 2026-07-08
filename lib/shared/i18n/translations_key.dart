@@ -296,4 +296,18 @@ class I18nKeys {
   static const String unnamedTape = 'unnamedTape';
   static const String tapeStepsCount = 'tapeStepsCount';
   static const String playbackStartOffset = 'playbackStartOffset';
+
+  // APM Performance Dashboard
+  static const String performanceApm = 'performanceApm';
+  static const String pageRenderTraces = 'pageRenderTraces';
+  static const String intentTraces = 'intentTraces';
+  static const String performanceMetricsReset = 'performanceMetricsReset';
+  static const String fpsTrend = 'fpsTrend';
+  static const String targetBudgetAuto = 'targetBudgetAuto';
+  static const String jankStatistics = 'jankStatistics';
+  static const String janksTotal = 'janksTotal';
+  static const String severeJanks = 'severeJanks';
+  static const String worstFrame = 'worstFrame';
+  static const String memoryUsage = 'memoryUsage';
+  static const String noTraceRecords = 'noTraceRecords';
 }

@@ -255,4 +255,18 @@ final Map<String, String> ja = {
   I18nKeys.unnamedTape: '未命名の録画',
   I18nKeys.tapeStepsCount: '%s ステップ',
   I18nKeys.playbackStartOffset: '開始',
+
+  // APM Performance Dashboard
+  I18nKeys.performanceApm: '性能分析パネル',
+  I18nKeys.pageRenderTraces: 'ページレンダリング追跡',
+  I18nKeys.intentTraces: 'ビジネス処理所要時間',
+  I18nKeys.performanceMetricsReset: '性能データをリセットしました',
+  I18nKeys.fpsTrend: 'FPS トレンド (5秒)',
+  I18nKeys.targetBudgetAuto: '物理フレームバジェット: 自動適応',
+  I18nKeys.jankStatistics: 'カクつき統計',
+  I18nKeys.janksTotal: 'カクつき総数 (Jank)',
+  I18nKeys.severeJanks: '深刻なカクつき数',
+  I18nKeys.worstFrame: 'ワーストフレーム所要時間',
+  I18nKeys.memoryUsage: 'メモリ使用量 (RSS)',
+  I18nKeys.noTraceRecords: 'トレースレコードがありません\nページ遷移や操作を行ってください',
 };

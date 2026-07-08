@@ -454,7 +454,7 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
                     child: CommonText(
                       currentTab == OverlayTab.logs
                           ? I18nKeys.appLogs.tr
-                          : (I18nKeys.appLogs.tr == '日志' ? '性能分析面板' : 'Performance APM'),
+                          : I18nKeys.performanceApm.tr,
                       style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
                     ),
                   ),
@@ -474,7 +474,7 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
                       FrameMonitor.instance.stop();
                       FrameMonitor.instance.start();
                       WidgetsBinding.instance.scheduleFrame();
-                      CommonToast.show(I18nKeys.appLogs.tr == '日志' ? '性能数据已重置' : 'Performance metrics reset');
+                      CommonToast.show(I18nKeys.performanceMetricsReset.tr);
                     }
                   }),
                   _buildHeaderAction(Icons.copy_rounded, () {
@@ -982,10 +982,10 @@ class _PerfDashboardTabState extends State<_PerfDashboardTab> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               CommonText(
-                'FPS Trend (5s)',
+                I18nKeys.fpsTrend.tr,
                 style: const TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold),
               ),
-              CommonText('Target Budget: Auto', style: const TextStyle(color: Colors.white38, fontSize: 10)),
+              CommonText(I18nKeys.targetBudgetAuto.tr, style: const TextStyle(color: Colors.white38, fontSize: 10)),
             ],
           ),
           const SizedBox(height: 12),
@@ -1003,13 +1003,13 @@ class _PerfDashboardTabState extends State<_PerfDashboardTab> {
         // Jank Count Card
         Expanded(
           child: _buildStatCard(
-            'Jank Statistics',
+            I18nKeys.jankStatistics.tr,
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildStatItem('Janks (Total)', '${snapshot.jankCount}', Colors.orangeAccent),
-                _buildStatItem('Severe Janks', '${snapshot.severeJankCount}', Colors.redAccent),
-                _buildStatItem('Worst Frame', '${worstMs.toStringAsFixed(1)} ms', Colors.purpleAccent),
+                _buildStatItem(I18nKeys.janksTotal.tr, '${snapshot.jankCount}', Colors.orangeAccent),
+                _buildStatItem(I18nKeys.severeJanks.tr, '${snapshot.severeJankCount}', Colors.redAccent),
+                _buildStatItem(I18nKeys.worstFrame.tr, '${worstMs.toStringAsFixed(1)} ms', Colors.purpleAccent),
               ],
             ),
           ),
@@ -1018,7 +1018,7 @@ class _PerfDashboardTabState extends State<_PerfDashboardTab> {
         // Memory Card
         Expanded(
           child: _buildStatCard(
-            'Memory Usage',
+            I18nKeys.memoryUsage.tr,
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -1096,9 +1096,9 @@ class _PerfDashboardTabState extends State<_PerfDashboardTab> {
           return Container(
             padding: const EdgeInsets.symmetric(vertical: 40),
             alignment: Alignment.center,
-            child: const CommonText(
-              'No Trace Records Captured Yet.\nNavigate pages or execute actions to populate.',
-              style: TextStyle(color: Colors.white24, fontSize: 11, height: 1.4),
+            child: CommonText(
+              I18nKeys.noTraceRecords.tr,
+              style: const TextStyle(color: Colors.white24, fontSize: 11, height: 1.4),
             ),
           );
         }
@@ -1112,7 +1112,7 @@ class _PerfDashboardTabState extends State<_PerfDashboardTab> {
           children: [
             if (pages.isNotEmpty) ...[
               CommonSettingsSectionTitle(
-                title: I18nKeys.appLogs.tr == '日志' ? '页面渲染跟踪 (Page Render)' : 'Page Render Traces',
+                title: I18nKeys.pageRenderTraces.tr,
               ),
               const SizedBox(height: 8),
               _buildPageTracesCard(pages),
@@ -1120,7 +1120,7 @@ class _PerfDashboardTabState extends State<_PerfDashboardTab> {
             ],
             if (intents.isNotEmpty) ...[
               CommonSettingsSectionTitle(
-                title: I18nKeys.appLogs.tr == '日志' ? '业务行为耗时 (Intent Traces)' : 'Intent Traces',
+                title: I18nKeys.intentTraces.tr,
               ),
               const SizedBox(height: 8),
               _buildIntentTracesCard(intents),
