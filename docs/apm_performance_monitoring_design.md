@@ -85,6 +85,16 @@ graph TD
   * **原理解耦**：在 APM 全局架构下，主日志系统的日志格式都会打印当前执行 Zone 的 Trace ID（例如：`💡 [trace-id-xxxx] Logs...`）。
   * **联动机制**：抓包 Tab（`_NetworkInspectorTab`）中的每个请求行记录都携带有该次网络调用发生时所在的 Trace ID。点击 **“Drill Logs”** 时，系统将该请求的 Trace ID 赋值给 `TextEditingController` 的文本内容，并切回 `Logs` Tab。主日志渲染视图在接收到文本变更后，会自动利用 `log.message.contains(traceFilter)` 进行布尔计算，只向屏幕输出包含该 Trace ID 的日志条目，实现了从网络抓包到逻辑日志上下文的无缝快速溯源。
 
+### 2.7 崩溃日志（Crash Log）与 TraceId / Logs 一键联动下钻原理
+* **上下文元数据注入**：修改底层 `CrashManager.saveCrashLog`。当 App 发生未捕获异常或受管理异常被写入落盘日志（`.log`）时，自动从 `ZoneManager.currentTraceId` 提取当前 Zone 正在追踪的 `Trace ID`，并结合 `AppNav.currentRouteName` 记录下发生崩溃那一刻的页面路由，并统一写入崩溃日志头部。
+* **全局联动（LogOverlayManager 消息中枢）**：
+  * `LogOverlayManager` 暴露了一个全局静态的 `traceFilterNotifier` (`ValueNotifier<String?>`) 监听中心。
+  * 日志浮窗内部的 `_LogOverlayWidgetState` 挂载了对该 `ValueNotifier` 的监听器。一旦外部（如崩溃日志详情弹窗）将其更新为新的 Trace ID，日志浮窗便会自动将过滤搜索栏置为该 Trace ID，并把当前标签页强切至 `OverlayTab.logs` 触发日志流重绘过滤。
+* **一键下钻诊断（Drill Logs）**：
+  * 崩溃日志详情 Sheet 弹窗在展示日志文本时，利用 `RegExp` 动态解析日志中的 `Trace ID` 字段。
+  * 若解析出有效的 Trace ID，在顶部标题栏侧渲染一个高亮的 **“Drill Logs (联动诊断)”** 芯片。
+  * 用户点击时自动关闭 Sheet 详情弹窗，唤起/最大化展开日志悬浮窗，瞬间将调试场景切回崩溃现场发生前的所有上下文日志流中，实现闭环调试。
+
 ---
 
 ## 3. 编译期 Tree-shaking 裁剪
