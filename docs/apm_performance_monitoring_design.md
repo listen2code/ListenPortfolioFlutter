@@ -57,6 +57,21 @@ graph TD
 * **CustomPainter 重绘规避机制**：因为老 delegate 与新 delegate 内部共享同一个 `RingBuffer` 引用，常规的 `shouldRepaint` 长度/值对比会由于物理指针相同而失效导致缓存。我们将其 `shouldRepaint` 设为恒常返回 `true`，结合定时 `setState`，保证了闲置状态下折线图也具有“平滑向左推移”的滚动呼吸感。
 * 当关闭面板时自动注销，恢复 0 常态开销。
 
+### 2.4 页面路由与慢帧关联诊断及交互式十字准星悬浮窗
+传统的帧监控仅能记录耗时，无法知道卡顿是在哪个页面/路由发生的。
+* **关联诊断**：在 `FrameMetric` 中添加了非空的 `routeName` 字段。每当 Scheduler 触发 `_onTimings` 回调生成 `FrameMetric` 时，会自动抓取 `AppNav.currentRouteName`（当前处于活动状态的路由名称），将慢帧耗时与当前所在的页面进行高精度绑定。
+* **交互式十字准星（Crosshair）与浮窗**：
+  * 重构大图表 `_FpsLineChart` 为 `StatefulWidget`，引入手势识别器 `GestureDetector`。
+  * 当用户在折线图区域进行左右横向拖拽（`onPanUpdate`/`onTapDown`）时，能够精准计算出手指当前所在的 X 坐标所对应的帧索引。
+  * 画布上的 CustomPainter 会动态绘制一条高亮的垂直白色虚线（十字准星），并在对应折线上绘制大小圆点 Halo。
+  * 折线图顶部区域动态渲染 Tooltip 提示浮窗，显示所选中帧的精确耗时（毫秒）、即时 FPS、当前所处的页面路由（`Page: xxx`）以及该帧是否被判定为 Jank 卡顿。
+
+### 2.5 悬浮框收起态实时渲染优化与 Y 轴视口动态缩放
+* **RepaintBoundary 渲染优化**：为了避免收起态下的 `_FpsMiniChart` 高频重建（每 250ms 触发一次 `ValueListenableBuilder` 刷新）导致 Flutter 的 `RenderRepaintBoundary` 图层图层缓存重用，我们完全移除了收起状态下微型折线图内的 `RepaintBoundary`。使 `CustomPaint` 直接挂载在上层 Overlay 的 Canvas 上，保证每次 FPS 发生变化时 100% 渲染刷新，完美杜绝图层渲染冷冻/挂死的问题。
+* **Y 轴视口动态缩放（解决 Mini 折线图无起伏的视觉死寂问题）**：
+  * **原痛点**：先前 `_MiniChartPainter` 的 Y 轴最大值直接使用了 `16.6ms` 的限制。而在极速流畅的正常渲染（1ms - 3ms 帧耗时）时，折线的所有坐标都被极致压缩在 16 像素高 Canvas 的最底部（`y = 14` 至 `15` 之间），使得曲线在视觉上呈现出完全静止的水平直线。
+  * **优化方案**：去除死限，将 Mini 折线图 Y 轴最大值的 `clamp` 下限调整为 **`3.0ms (3000us)`**。这样即使在极其流畅的帧率下，轻微的帧耗时差异也会被放大展示（在 `y = 5` 至 `y = 11` 之间波動），为用户提供清晰、平滑、具有极强滚动呼吸感的实时波浪曲线图。
+
 ---
 
 ## 3. 编译期 Tree-shaking 裁剪
