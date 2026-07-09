@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:listen_core/core.dart';
-import 'package:listen_uikit/uikit.dart';
 
 import '../../../features/auth/data/models/user_model.dart';
 import '../../../features/settings/data/models/playback_step.dart';
@@ -14,7 +13,6 @@ import '../auth_manager.dart';
 import '../playback_registry_init.dart';
 import '../routes.dart';
 import 'playback_progress.dart';
-import 'playback_recorder.dart';
 
 /// Global MVI playback player to execute recorded tapes.
 class MviPlaybackPlayer {

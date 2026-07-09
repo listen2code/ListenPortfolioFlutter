@@ -33,7 +33,7 @@ class AboutMeRepositoryImpl with BaseRepository implements AboutMeRepository {
   @override
   Future<Either<Failure, String>> getResumeMarkdown() async {
     if (resumeRemoteDataSource == null || resumeLocalDataSource == null) {
-      return Left(ServerFailure('Resume data sources not provided'));
+      return const Left(ServerFailure('Resume data sources not provided'));
     }
     try {
       final result = await resumeRemoteDataSource!.getResumeMarkdown();

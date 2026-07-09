@@ -278,7 +278,7 @@ class _PerfDashboardTabState extends State<_PerfDashboardTab> {
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         itemCount: pages.length,
-        separatorBuilder: (_, __) => const Divider(color: Colors.white10, height: 1),
+        separatorBuilder: (_, _) => const Divider(color: Colors.white10, height: 1),
         itemBuilder: (context, idx) {
           final page = pages[pages.length - 1 - idx];
           final color = _pageLatencyColor(page.totalMs);
@@ -338,7 +338,7 @@ class _PerfDashboardTabState extends State<_PerfDashboardTab> {
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         itemCount: intents.length,
-        separatorBuilder: (_, __) => const Divider(color: Colors.white10, height: 1),
+        separatorBuilder: (_, _) => const Divider(color: Colors.white10, height: 1),
         itemBuilder: (context, idx) {
           final intent = intents[intents.length - 1 - idx];
           final isExpanded = _expandedIntents[intent.traceId] ?? (widget.traceFilter == intent.traceId);

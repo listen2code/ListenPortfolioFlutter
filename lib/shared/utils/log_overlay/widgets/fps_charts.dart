@@ -219,10 +219,10 @@ class _FpsLineChartState extends State<_FpsLineChart> {
               height: 24,
               child: selectedMetric != null
                   ? _buildTooltipBar(selectedMetric, calculatedFps)
-                  : Center(
+                  : const Center(
                       child: CommonText(
                         '💡 左右拖动趋势图可锁定单帧数据与对应页面',
-                        style: const TextStyle(color: Colors.white30, fontSize: 8.5),
+                        style: TextStyle(color: Colors.white30, fontSize: 8.5),
                       ),
                     ),
             ),
@@ -424,5 +424,6 @@ class _LineChartPainter extends CustomPainter {
     textPainter.paint(canvas, Offset(8, y - 10));
   }
 
+  @override
   bool shouldRepaint(covariant _LineChartPainter oldDelegate) => true;
 }
