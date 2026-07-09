@@ -18,6 +18,7 @@ class AppInitializer {
   /// Executes all initialization steps in order.
   /// [container] is the Riverpod container to be used for dependency resolution.
   static Future<void> init(ProviderContainer container) async {
+    LaunchMonitor.recordInitStart();
     // 0. Initialize MVI Playback Registry
     initMviPlaybackRegistry();
 
@@ -134,6 +135,7 @@ class AppInitializer {
     } catch (e, stackTrace) {
       appLogger.e('AppInitializer: In-App Purchase initialization failed.', error: e, stackTrace: stackTrace);
     }
+    LaunchMonitor.recordInitEnd();
   }
 }
 

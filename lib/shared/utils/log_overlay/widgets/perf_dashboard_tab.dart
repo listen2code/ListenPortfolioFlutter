@@ -58,6 +58,10 @@ class _PerfDashboardTabState extends State<_PerfDashboardTab> {
             _buildStatsGrid(snapshot),
             const SizedBox(height: 16),
 
+            // App Launch baseline monitor section
+            _buildLaunchMonitorSection(),
+            const SizedBox(height: 16),
+
             // 3. Structure Trace Records (Pages and Intents)
             _buildTraceLogsSection(),
           ],
@@ -422,6 +426,151 @@ class _PerfDashboardTabState extends State<_PerfDashboardTab> {
           );
         },
       ),
+    );
+  }
+
+  Widget _buildLaunchMonitorSection() {
+    return ValueListenableBuilder<LaunchReport?>(
+      valueListenable: LaunchMonitor.latestReport,
+      builder: (context, report, _) {
+        if (report == null) {
+          return const SizedBox.shrink();
+        }
+
+        final history = LaunchMonitor.getHistory();
+        final regressionColor = report.isRegression ? Colors.redAccent : Colors.greenAccent;
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CommonSettingsSectionTitle(
+              title: I18nKeys.appLogs.tr == '日志' ? '启动耗时基线监测' : 'App Launch Baseline Monitor',
+            ),
+            const SizedBox(height: 8),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.03),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.white10),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CommonText(
+                        I18nKeys.appLogs.tr == '日志' ? '本次启动总时延' : 'Latest Launch Duration',
+                        style: const TextStyle(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.bold),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
+                        decoration: BoxDecoration(
+                          color: regressionColor.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(color: regressionColor.withValues(alpha: 0.3), width: 0.5),
+                        ),
+                        child: CommonText(
+                          report.isRegression
+                              ? (I18nKeys.appLogs.tr == '日志'
+                                  ? '性能退化 +${report.regressionAmountMs}ms'
+                                  : 'Regression +${report.regressionAmountMs}ms')
+                              : (I18nKeys.appLogs.tr == '日志' ? '健康 / 无退化' : 'Healthy / Stable'),
+                          style: TextStyle(color: regressionColor, fontSize: 9, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CommonText(
+                        '${report.totalMs} ms',
+                        style: TextStyle(color: regressionColor, fontSize: 24, fontWeight: FontWeight.bold),
+                      ),
+                      CommonText(
+                        '${report.timestamp.toLocal().toString().substring(11, 19)}',
+                        style: const TextStyle(color: Colors.white24, fontSize: 10),
+                      ),
+                    ],
+                  ),
+                  const Divider(color: Colors.white10, height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _buildLaunchBreakdownItem(
+                          I18nKeys.appLogs.tr == '日志' ? '冷启动引导' : 'Cold Boot', '${report.coldBootMs}ms'),
+                      _buildLaunchBreakdownItem(
+                          I18nKeys.appLogs.tr == '日志' ? '系统初始化' : 'Services Init', '${report.initMs}ms'),
+                      _buildLaunchBreakdownItem(
+                          I18nKeys.appLogs.tr == '日志' ? '首帧绘制' : 'First Frame Render', '${report.renderMs}ms'),
+                    ],
+                  ),
+                  if (history.length > 1) ...[
+                    const Divider(color: Colors.white10, height: 16),
+                    Theme(
+                      data: Theme.of(context).copyWith(
+                        dividerColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        splashColor: Colors.transparent,
+                      ),
+                      child: ExpansionTile(
+                        tilePadding: EdgeInsets.zero,
+                        childrenPadding: EdgeInsets.zero,
+                        title: CommonText(
+                          I18nKeys.appLogs.tr == '日志' ? '历史启动数据统计' : 'Launch History Statistics',
+                          style: const TextStyle(color: Colors.white38, fontSize: 10, fontWeight: FontWeight.bold),
+                        ),
+                        children: [
+                          const SizedBox(height: 8),
+                          ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: history.length,
+                            itemBuilder: (context, index) {
+                              final item = history[index];
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 4),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    CommonText(
+                                      'Launch #${history.length - index}',
+                                      style: const TextStyle(color: Colors.white38, fontSize: 10),
+                                    ),
+                                    CommonText(
+                                      '${item.totalMs}ms (Boot: ${item.coldBootMs}ms, Init: ${item.initMs}ms, Render: ${item.renderMs}ms)',
+                                      style: const TextStyle(color: Colors.white70, fontSize: 10, fontFamily: 'monospace'),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildLaunchBreakdownItem(String label, String value) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CommonText(label, style: const TextStyle(color: Colors.white38, fontSize: 9)),
+        const SizedBox(height: 2),
+        CommonText(value, style: const TextStyle(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.bold)),
+      ],
     );
   }
 }

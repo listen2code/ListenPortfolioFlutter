@@ -10,6 +10,7 @@ import 'shared/shared.dart';
 import 'package:listen_uikit/uikit.dart';
 
 void main() {
+  LaunchMonitor.recordMainStart();
   // Use Core.run to manage the app lifecycle, automatic crash logging, and global error handling.
   Core.run(
     () async {
@@ -57,6 +58,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      LaunchMonitor.recordFirstFrame();
+    });
     return BaseSettingPage(
       builder: (context, child) {
         return DynamicColorBuilder(
