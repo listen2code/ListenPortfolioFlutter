@@ -230,11 +230,14 @@ class _FpsLineChartState extends State<_FpsLineChart> {
             Expanded(
               child: RepaintBoundary(
                 child: GestureDetector(
-                  onPanStart: (details) => _updateTouchPosition(details.localPosition.dx, constraints.maxWidth),
-                  onPanUpdate: (details) => _updateTouchPosition(details.localPosition.dx, constraints.maxWidth),
+                  onPanStart: (details) =>
+                      _updateTouchPosition(details.localPosition.dx, constraints.maxWidth),
+                  onPanUpdate: (details) =>
+                      _updateTouchPosition(details.localPosition.dx, constraints.maxWidth),
                   onPanEnd: (_) => _clearTouch(),
                   onPanCancel: () => _clearTouch(),
-                  onTapDown: (details) => _updateTouchPosition(details.localPosition.dx, constraints.maxWidth),
+                  onTapDown: (details) =>
+                      _updateTouchPosition(details.localPosition.dx, constraints.maxWidth),
                   onTapUp: (_) => _clearTouch(),
                   child: CustomPaint(
                     size: Size.infinite,
@@ -363,7 +366,9 @@ class _LineChartPainter extends CustomPainter {
 
       // Find Y coordinate of selected frame
       final selectedMetric = frames[startIndex + selectedIndex!];
-      final double selectedLatencyUs = math.max(selectedMetric.buildDurationUs, selectedMetric.rasterDurationUs).toDouble();
+      final double selectedLatencyUs = math
+          .max(selectedMetric.buildDurationUs, selectedMetric.rasterDurationUs)
+          .toDouble();
       final double yFraction = (selectedLatencyUs / maxLatencyUs).clamp(0.0, 1.0);
       final double targetY = (size.height - (yFraction * size.height)).roundToDouble();
 
@@ -419,8 +424,5 @@ class _LineChartPainter extends CustomPainter {
     textPainter.paint(canvas, Offset(8, y - 10));
   }
 
-  @override
-  bool shouldRepaint(covariant _LineChartPainter oldDelegate) {
-    return oldDelegate.frames != frames || oldDelegate.selectedIndex != selectedIndex;
-  }
+  bool shouldRepaint(covariant _LineChartPainter oldDelegate) => true;
 }
