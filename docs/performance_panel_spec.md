@@ -1,8 +1,8 @@
 # 性能指标面板 — 实现方案说明书
 
-**Status**: `Spec Only`
+**Status**: `Implemented`
 
-> 本文档描述的是性能面板的设计方案、模块拆分与分阶段落地计划，不代表相关能力已经在 `ListenCore` 或 Flutter App 中完整实现。
+> 本文档描述的是性能面板的原始设计方案与模块拆分。目前该性能面板（APM 性能监控面板）已在 `ListenCore` 与 Flutter App 中完整实现。最终落地的详细技术设计与实现请参考最新的 [APM 性能监控面板设计与实现文档](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/docs/apm_performance_monitoring_design.md)。
 
 ## 1. 概述
 
@@ -46,8 +46,8 @@ Log Overlay                               UI 扩展
 
 ## 2. 系统架构
 
-> [!WARNING]
-> 本章节及后续所描述的系统架构、数据模型、实现细节与 UI 界面均为设计草稿（Spec Only），当前代码库中尚未实现，仅作为未来实施性能面板时的参考。
+> [!NOTE]
+> 本章节及后续所描述的系统架构、数据模型、实现细节与 UI 界面已在底座和主工程中完全实现，具体开发细节请看最新的 [设计与实现文档](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/docs/apm_performance_monitoring_design.md)。
 
 ### 2.1 模块划分
 
