@@ -55,11 +55,14 @@ void main() {
       // Indirectly verify configuration is set via checking functionality
     });
 
-    test('saveCrashLog saves log correctly to file', () async {
+    test('saveCrashLog saves log correctly to file with Trace ID', () async {
       final error = Exception('Simulated test crash error');
       final stack = StackTrace.current;
 
-      final path = await CrashManager.saveCrashLog(error, stack);
+      final path = await ZoneManager.run<Future<dynamic>>(
+        () => CrashManager.saveCrashLog(error, stack),
+        traceId: 'test-trace-id',
+      );
       expect(path, isNotNull);
 
       final file = File(path!);
@@ -69,6 +72,8 @@ void main() {
       expect(content.contains('=== CRASH REPORT ==='), true);
       expect(content.contains('Simulated test crash error'), true);
       expect(content.contains('=== STACK TRACE ==='), true);
+      expect(content.contains('Trace ID: test-trace-id'), true);
+      expect(content.contains('Route:'), true);
     });
 
     test('getSavedCrashLogs lists logs in descending order', () async {

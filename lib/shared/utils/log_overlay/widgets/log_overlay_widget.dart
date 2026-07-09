@@ -66,6 +66,9 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
         });
       }
     };
+
+    // Listen to external trace linkage requests (e.g. from crash logs)
+    LogOverlayManager.traceFilterNotifier.addListener(_onTraceFilterChanged);
   }
 
   @override
@@ -75,7 +78,18 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
     _traceController.dispose();
     // Clean up playback progress listener
     MviPlaybackPlayer.instance.onProgressChanged = null;
+    LogOverlayManager.traceFilterNotifier.removeListener(_onTraceFilterChanged);
     super.dispose();
+  }
+
+  void _onTraceFilterChanged() {
+    final traceId = LogOverlayManager.traceFilterNotifier.value;
+    if (traceId != null && traceId.isNotEmpty) {
+      setState(() {
+        _traceController.text = traceId;
+        currentTab = OverlayTab.logs;
+      });
+    }
   }
 
   // Clamps and updates the relevant offset based on expansion state

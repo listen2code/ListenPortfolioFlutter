@@ -31,6 +31,9 @@ class LogOverlayManager {
   /// Notifier to let external widgets listen to the visibility state
   static final ValueNotifier<bool> isShowingNotifier = ValueNotifier(false);
 
+  /// Notifier to trigger internal trace filters and navigate back to Logs tab
+  static final ValueNotifier<String?> traceFilterNotifier = ValueNotifier(null);
+
   static Future<void> init(BuildContext context) async {
     appLogger.d('LogOverlayManager: init called, context mounted: ${context.mounted}');
     final isEnabled = SpUtil.getBool(logOverlayKey, defaultValue: true);

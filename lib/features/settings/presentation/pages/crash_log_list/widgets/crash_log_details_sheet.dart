@@ -13,6 +13,10 @@ class CrashLogDetailsSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final traceIdMatch = RegExp(r'^Trace ID:\s+(.+)$', multiLine: true).firstMatch(content);
+    final String? traceId = traceIdMatch?.group(1)?.trim();
+    final bool hasValidTraceId = traceId != null && traceId.isNotEmpty && traceId != 'no-trace-id';
+
     return Container(
       height: MediaQuery.of(context).size.height * 0.85,
       decoration: BoxDecoration(
@@ -41,6 +45,34 @@ class CrashLogDetailsSheet extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
+                if (hasValidTraceId) ...[
+                  CommonClickable(
+                    onTap: () {
+                      Navigator.pop(context); // Close details sheet
+                      LogOverlayManager.traceFilterNotifier.value = traceId;
+                      LogOverlayManager.show(context, startExpanded: true);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: Colors.greenAccent.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(color: Colors.greenAccent.withValues(alpha: 0.3), width: 0.5),
+                      ),
+                      child: const Row(
+                        children: [
+                          Icon(Icons.zoom_in_rounded, color: Colors.greenAccent, size: 13),
+                          SizedBox(width: 4),
+                          CommonText(
+                            'Drill Logs',
+                            style: TextStyle(color: Colors.greenAccent, fontSize: 10, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                ],
                 CommonIconButton(
                   icon: const Icon(Icons.copy_all_rounded),
                   onPressed: () {
