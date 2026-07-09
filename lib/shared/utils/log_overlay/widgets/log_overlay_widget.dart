@@ -23,7 +23,7 @@ class _LogOverlayWidget extends StatefulWidget {
   State<_LogOverlayWidget> createState() => _LogOverlayWidgetState();
 }
 
-enum OverlayTab { logs, perf; }
+enum OverlayTab { logs, perf, network; }
 
 class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
   late Offset buttonOffset; // Memory for floating button
@@ -457,7 +457,9 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
               children: [
                 _tabChip('📋 Logs', OverlayTab.logs),
                 const SizedBox(width: 8),
-                _tabChip('📊 Perf Dashboard', OverlayTab.perf),
+                _tabChip('📊 Perf', OverlayTab.perf),
+                const SizedBox(width: 8),
+                _tabChip('🌐 Network', OverlayTab.network),
               ],
             ),
           ),
@@ -477,7 +479,17 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
           Expanded(
             child: currentTab == OverlayTab.logs
                 ? _buildLogsTabContent()
-                : _PerfDashboardTab(traceFilter: _traceController.text),
+                : (currentTab == OverlayTab.perf
+                    ? _PerfDashboardTab(traceFilter: _traceController.text)
+                    : _NetworkInspectorTab(
+                        traceController: _traceController,
+                        onNavigateToLogs: (traceId) {
+                          setState(() {
+                            _traceController.text = traceId;
+                            currentTab = OverlayTab.logs;
+                          });
+                        },
+                      )),
           ),
         ],
       ),

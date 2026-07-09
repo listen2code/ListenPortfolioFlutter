@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math' as math;
 import 'dart:ui' show PointMode;
 
@@ -14,6 +15,7 @@ import '../../shared.dart';
 part 'widgets/fps_charts.dart';
 part 'widgets/perf_dashboard_tab.dart';
 part 'widgets/log_overlay_widget.dart';
+part 'widgets/network_inspector_tab.dart';
 
 enum LogFilter { all, server, app, perf, playback }
 

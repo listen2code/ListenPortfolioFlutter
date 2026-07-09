@@ -13,11 +13,13 @@ graph TD
   Engine[Flutter Engine Pipeline] -->|addTimingsCallback| Monitor[FrameMonitor]
   Monitor -->|FrameMetric| Buffer[RingBuffer]
   ZoneManager[ZoneManager Stages] -->|EventBus Stream| Store[PerfTraceStore]
+  Dio[Dio HTTP Client] -->|_NetworkInspectorInterceptor| NetStore[NetworkInspectorStore]
   
   subgraph UI Overlay Layer
     Buffer -->|CustomPaint| MiniChart[_FpsMiniChart]
     Buffer -->|CustomPaint| LineChart[_FpsLineChart]
     Store -->|ListView| Dash[_PerfDashboardTab]
+    NetStore -->|ValueListenableBuilder| NetTab[_NetworkInspectorTab]
   end
 ```
 
@@ -28,11 +30,16 @@ graph TD
 
 ### 1.2 高效缓冲区 (`RingBuffer<T>`)
 * 自研固定容量的环形队列，支持指定 Chronological 顺时下标索引操作 `operator []`。
-* **零 GC 堆分配**：通过物理数组循环覆盖机制，避免了 CustomPainter 绘图高频扫描时产生临时 list 复制和堆内存分配，实现极速只读迭代。
+* **零 GC 堆分配**：通过物理数组循环覆盖机制，避免了 CustomPainter 绘图高频扫描时产生临时 list 复制 and 堆内存分配，实现极速只读迭代。
 
 ### 1.3 业务 Trace 存储层 (`PerfTraceStore`)
 * 基于 `ZoneManager` 的分段耗时拦截（如 `Start -> API Query -> Parse JSON -> Render`），将完整的业务 Trace 流通过 EventBus 级别广播解耦，由 `PerfTraceStore` 监听录入。
 * 存储层设置 200 条滚动上限，提供 ValueNotifier 响应式更新，实现完美的结构化 Trace 耗时树。
+
+### 1.4 网络抓包审计层 (`NetworkInspectorStore`)
+* 基于 Dio 拦截器机制，对客户端发起的全部 HTTP 流量进行无缝拦截和审计。
+* 内存中维持固定 100 条滚动容量的先进先出（FIFO）数据队列，支持在 App 崩溃或切换账号时安全释放以规避内存膨胀风险。
+* 通过 `ValueNotifier` 暴露响应式数据源，驱动 Overlay 窗口下的抓包 Tab 自动刷新。
 
 ---
 
@@ -72,6 +79,12 @@ graph TD
   * **原痛点**：先前 `_MiniChartPainter` 的 Y 轴最大值直接使用了 `16.6ms` 的限制。而在极速流畅的正常渲染（1ms - 3ms 帧耗时）时，折线的所有坐标都被极致压缩在 16 像素高 Canvas 的最底部（`y = 14` 至 `15` 之间），使得曲线在视觉上呈现出完全静止的水平直线。
   * **优化方案**：去除死限，将 Mini 折线图 Y 轴最大值的 `clamp` 下限调整为 **`3.0ms (3000us)`**。这样即使在极其流畅的帧率下，轻微的帧耗时差异也会被放大展示（在 `y = 5` 至 `y = 11` 之间波動），为用户提供清晰、平滑、具有极强滚动呼吸感的实时波浪曲线图。
 
+### 2.6 轻量级网络抓包（Net Inspector）拦截机制与 TraceId 联动下钻原理
+* **精准全生命周期捕捉**：使用 Dio 的 `Interceptor`，在 `onRequest` 中由 UUID 生成该次 HTTP 请求的唯一 `id` 存入 `options.extra`，并将请求方法、URL、Payload、起始时间与当前 Dart Zone 中的 `traceId` 关联存盘。在 `onResponse` / `onError` 中匹配对应的 `id` 更新最终的状态码、时延与返回体。
+* **TraceId 分布式链路联动下钻（Drill Logs）**：
+  * **原理解耦**：在 APM 全局架构下，主日志系统的日志格式都会打印当前执行 Zone 的 Trace ID（例如：`💡 [trace-id-xxxx] Logs...`）。
+  * **联动机制**：抓包 Tab（`_NetworkInspectorTab`）中的每个请求行记录都携带有该次网络调用发生时所在的 Trace ID。点击 **“Drill Logs”** 时，系统将该请求的 Trace ID 赋值给 `TextEditingController` 的文本内容，并切回 `Logs` Tab。主日志渲染视图在接收到文本变更后，会自动利用 `log.message.contains(traceFilter)` 进行布尔计算，只向屏幕输出包含该 Trace ID 的日志条目，实现了从网络抓包到逻辑日志上下文的无缝快速溯源。
+
 ---
 
 ## 3. 编译期 Tree-shaking 裁剪
@@ -100,10 +113,11 @@ static Future<void> show(BuildContext context, {bool startExpanded = false}) asy
 项目建立了完善的自动化单元测试集，保障了底层算法的可靠性：
 1. **`ring_buffer_test.dart`**：验证环形队列物理越界防护、Chronological Order 读写及覆盖逻辑。
 2. **`frame_monitor_test.dart`**：利用 `Mocktail` 模拟 FrameTimings 脉冲，覆盖冷启动降噪、自适应高刷 Budget 对齐、物理时钟 FPS 计算及 `ZoneManager` 的 Trace 自动流转。
+3. **`network_inspector_store_test.dart`**：验证网络数据捕获内存队列的入库、先进先出容量限制（100 条上限滚动清除）与状态更新逻辑。
 
 通过以下命令运行并确保测试绿灯：
 ```bash
-flutter test test/core/ring_buffer_test.dart test/core/frame_monitor_test.dart
+flutter test test/core/ring_buffer_test.dart test/core/frame_monitor_test.dart test/core/network_inspector_store_test.dart
 ```
 
 静态分析保持全绿，无任何 Warning 或 Error：
