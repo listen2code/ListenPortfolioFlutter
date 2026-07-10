@@ -95,11 +95,21 @@ graph TD
   * 若解析出有效的 Trace ID，在顶部标题栏侧渲染一个高亮的 **“Drill Logs (联动诊断)”** 芯片。
   * 用户点击时自动关闭 Sheet 详情弹窗，唤起/最大化展开日志悬浮窗，瞬间将调试场景切回崩溃现场发生前的所有上下文日志流中，实现闭环调试。
 
+### 2.8 App 启动耗时与首帧时延监测 (Launch Monitor)
+* **分阶段高精打桩**：为了全面分析冷启动性能瓶颈，在客户端全生命周期链条中挂载了三个核心打桩点：
+  1. `recordMainStart()`：主入口 `main()` 第一行执行，捕捉 Dart 运行时启动起点（与系统冷启动耗时对齐）。
+  2. `recordInitStart()` / `recordInitEnd()`：包围 `AppInitializer.init()`，监测全部核心 SDK、缓存及状态机制初始化阶段的开销。
+  3. `recordFirstFrame()`：通过 `WidgetsBinding.instance.addPostFrameCallback` 在首帧布局渲染结束的瞬间被调用，作为端到端页面完全呈现给用户的终点。
+* **本地基线回溯与 FIFO 队列表 (50条上限)**：
+  每次编译的启动耗时汇总成 `LaunchReport` 对象，通过 JSON 编码后存储 in `SpUtil`。系统维护最大 50 组启动记录的环形淘汰队列，并在面板中支持可折叠的历史列表展示。
+* **性能退化判定 (Regression Detection) 算法**：
+  若历史数据大于 3 条，系统会自动计算均值。当本次冷启动时长超出往期均值 **`25%`** 且绝对延迟增加量大于 **`150ms`** 时，判定该次启动存在严重“性能退化 (Regression)”。面板卡片会自动由健康绿色状态（Healthy）转换为警示红色状态（Regression +X ms），提醒开发人员防范串行阻塞。
+
 ---
 
 ## 3. 编译期 Tree-shaking 裁剪
 
-为了保证生产环境（Release Mode）包体积的绝对纯净以及“零运行开销”，我们在浮窗初始化与打开的底层入口做了编译期常量拦截：
+为了保证生产环境（Release Mode）包体积 of the absolute purity as well as "zero runtime overhead", we intercept overlay creation inside its entry points:
 
 ```dart
 static Future<void> init(BuildContext context) async {
@@ -123,11 +133,12 @@ static Future<void> show(BuildContext context, {bool startExpanded = false}) asy
 项目建立了完善的自动化单元测试集，保障了底层算法的可靠性：
 1. **`ring_buffer_test.dart`**：验证环形队列物理越界防护、Chronological Order 读写及覆盖逻辑。
 2. **`frame_monitor_test.dart`**：利用 `Mocktail` 模拟 FrameTimings 脉冲，覆盖冷启动降噪、自适应高刷 Budget 对齐、物理时钟 FPS 计算及 `ZoneManager` 的 Trace 自动流转。
-3. **`network_inspector_store_test.dart`**：验证网络数据捕获内存队列的入库、先进先出容量限制（100 条上限滚动清除）与状态更新逻辑。
+3. **`network_inspector_store_test.dart`**：验证网络数据捕获内存队列 of log, response and trace metadata.
+4. **`launch_monitor_test.dart`**：验证冷启动时时戳记录、本地基线 FIFO 存储（50 条限制）与 25% + 150ms 性能退化警报的算法判定准确度。
 
 通过以下命令运行并确保测试绿灯：
 ```bash
-flutter test test/core/ring_buffer_test.dart test/core/frame_monitor_test.dart test/core/network_inspector_store_test.dart
+flutter test test/core/ring_buffer_test.dart test/core/frame_monitor_test.dart test/core/network_inspector_store_test.dart test/core/launch_monitor_test.dart
 ```
 
 静态分析保持全绿，无任何 Warning 或 Error：
