@@ -200,6 +200,9 @@ void main() {
       await dataSource.cacheAuthToken(testToken);
       await dataSource.cacheRefreshToken(testToken);
       await dataSource.cacheUser(testUser);
+      await SpUtil.put(AppConstants.projectsDataKey, 'projects_data');
+      await SpUtil.put(AppConstants.aboutMeDataKey, 'about_me_data');
+      await SpUtil.put(AppConstants.resumeKey, 'resume_data');
 
       // Act
       await dataSource.clearAuthData();
@@ -208,6 +211,9 @@ void main() {
       expect(await dataSource.getAuthToken(), isNull);
       expect(await dataSource.getRefreshToken(), isNull);
       expect(await dataSource.getCachedUser(), isNull);
+      expect(SpUtil.getString(AppConstants.projectsDataKey), isNull);
+      expect(SpUtil.getString(AppConstants.aboutMeDataKey), isNull);
+      expect(SpUtil.getString(AppConstants.resumeKey), isNull);
     });
 
     test('should throw CacheException when clearing secure storage fails', () async {

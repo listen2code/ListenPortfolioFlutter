@@ -104,6 +104,9 @@ class AuthLocalDataSource {
       await SecureStorageUtil.remove(AppConstants.authTokenKey);
       await SecureStorageUtil.remove(AppConstants.refreshTokenKey);
       await SpUtil.remove(AppConstants.userDataKey);
+      await SpUtil.remove(AppConstants.projectsDataKey);
+      await SpUtil.remove(AppConstants.aboutMeDataKey);
+      await SpUtil.remove(AppConstants.resumeKey);
       appLogger.d('AuthLocalDataSource: All auth data cleared successfully');
     } catch (e) {
       appLogger.e('AuthLocalDataSource: Failed to clear auth data: $e');

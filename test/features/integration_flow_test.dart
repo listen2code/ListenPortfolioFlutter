@@ -124,7 +124,7 @@ class TestAppInitializer {
       const LoadingProviderImpl(),
       const MessageProviderImpl(),
       const NavigationProviderImpl(),
-      const LogoutProviderImpl(),
+      LogoutProviderImpl(container),
       const ShareProviderImpl(),
       const ConfirmProviderImpl(),
       const ShowTapeDetailsProviderImpl(),
