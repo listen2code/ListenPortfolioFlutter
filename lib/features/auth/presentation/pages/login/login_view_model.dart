@@ -33,7 +33,10 @@ class LoginViewModel extends _$LoginViewModel with ViewModelMixin<LoginState, Lo
       togglePasswordVisibility: _onTogglePasswordVisibility,
       toggleRememberMe: _onToggleRememberMe,
       submitLogin: _onSubmitLogin,
-      navigateToSignup: () => emitEffect(NavigationEffect(target: Routes.signUp, arguments: state.username)),
+      navigateToSignup: () => emitEffect(NavigationEffect(
+            target: Routes.signUp,
+            arguments: SignUpArguments(initialUsername: state.username),
+          )),
       navigateToForgotPassword: () => emitEffect(NavigationEffect(target: Routes.forgotPassword)),
       skipLogin: () => emitEffect(NavigationEffect.back(result: false)),
     );

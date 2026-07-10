@@ -86,7 +86,8 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
         await notificationService.subscribeToTopic(AppConstants.versionUpdatesTopic);
       }
     }
-    if (AppNav.getParam<bool>(Routes.argCheckUpdate) == true) {
+    final SettingsArguments? args = AppNav.getArgs<SettingsArguments>();
+    if (args?.checkUpdate == true) {
       handleIntent(const SettingsIntent.checkUpdates());
     }
   }

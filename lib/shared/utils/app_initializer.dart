@@ -30,6 +30,11 @@ class AppInitializer {
   static Future<void> _initCore(ProviderContainer container) async {
     WidgetsFlutterBinding.ensureInitialized();
 
+    // Register routing arguments converters
+    AppNav.registerArgumentConverter<SignUpArguments>((map) => SignUpArguments.fromMap(map));
+    AppNav.registerArgumentConverter<SettingsArguments>((map) => SettingsArguments.fromMap(map));
+    AppNav.registerArgumentConverter<CrashLogListArguments>((map) => CrashLogListArguments.fromMap(map));
+
     // 1. Centralized Core Initialization (Encapsulates Storage, Bus, Net, Crash, I18n, Nav, Error)
     await Core.init(
       CoreConfig(
@@ -71,6 +76,7 @@ class AppInitializer {
         languageCodeProvider: () => settingManager.locale.languageCode,
         // Navigation & Auth Interception Logic
         routes: Routes.routes,
+        schemes: const ['listen'],
         isGuestCheck: () => authManager.state.isGuest,
         onLoginRedirect: (context) async {
           final result = await AppNav.to(Routes.login);

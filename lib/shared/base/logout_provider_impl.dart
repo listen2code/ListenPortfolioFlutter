@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_core/core.dart';
-import '../../features/home/presentation/pages/home_view_model.dart';
 import '../../features/home/presentation/pages/overview/overview_view_model.dart';
 import '../../features/home/presentation/pages/about_me/about_me_view_model.dart';
 import '../../features/home/presentation/pages/projects/projects_view_model.dart';

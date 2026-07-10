@@ -106,12 +106,20 @@
 - **内存安全销毁**：采用延后销毁策略，等待注销后路由转换 settles，通过 `ProviderContainer.invalidate()` 销毁 `Overview/AboutMe/Projects/Resume` 的 ViewModels，防范残留脏数据泄露。
 - **设计决策变更（Token 预过期的架构权衡）**：由于本地系统时钟存在偏差（Clock Drift）所带来的高频误刷新和误失效的极高生产风险，同时服务端随时可能吊销/拉黑 Token 导致本地状态与服务端实际权限不一致。因此架构决策上选择**剔除客户端时钟强校验**，统一使用 Dio 拦截器中并发等待/刷新队列对 401 报错做终极静默重试，兼备极高可信度与极佳性能。
 
+### 9. 强类型路由与 Deep Link 整合
+
+**状态**：✅ 已完成（2026-07-10）  
+**现状**：重构应用内路由与外部 URI Scheme 唤起入参为强类型参数，实现解耦和类型安全。  
+**验收标准**：
+- **底座解耦注册**：`ListenCore` 中不硬编码任何具体业务模型与 Scheme。支持在 `AppNavConfig` 动态注册 Scheme（如 `listenportfolio`、`myapp`），并提供 `AppNav.registerArgumentConverter<T>` 委托进行强类型反序列化。
+- **宿主业务适配**：在 `app_initializer.dart` 中注册转换委托与原生 Schemes。
+- **原生层 Scheme 配置**：配置 Android `AndroidManifest.xml` 的 `intent-filter` 匹配 Scheme 以及 iOS `Info.plist` 的 `CFBundleURLTypes`。
+- **设计决策文档**：输出详细设计与 Native vs `app_links` 的架构权衡文档（详见 [设计与实现文档](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/docs/deep_link_routing_design.md)）。
+
 ## Next
 
 ### 1. 路由与状态治理增强
 
-- 类型安全路由参数
-- Deep Link 支持
 - `onBackInvoked` 系统返回策略统一
 - ✅ Intent & Effect 录制与回放系统已完成整体设计、沙箱备份恢复、页面/弹窗返回拦截、轮询等待机制、对话框自动旁路并交付生产（详见 [设计与实现文档](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/docs/intent_effect_playback_design.md)）
 - `_effectController` 与 `EventBus` 的职责评估

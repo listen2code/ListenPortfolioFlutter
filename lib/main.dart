@@ -46,7 +46,7 @@ void main() {
           cancelText: I18nKeys.dismiss.tr,
         );
         if (confirmed == true) {
-          AppNav.to(Routes.crashLogs, arguments: {Routes.argFilePath: logPath});
+          AppNav.to(Routes.crashLogs, arguments: CrashLogListArguments(filePath: logPath));
         }
       }
     },

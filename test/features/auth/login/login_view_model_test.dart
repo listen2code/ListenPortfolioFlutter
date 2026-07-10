@@ -218,7 +218,8 @@ void main() {
         expect(effects.first, isA<NavigationEffect>());
         final navEffect = effects.first as NavigationEffect;
         expect(navEffect.target, Routes.signUp);
-        expect(navEffect.arguments, ''); // Empty username
+        expect(navEffect.arguments, isA<SignUpArguments>());
+        expect((navEffect.arguments as SignUpArguments).initialUsername, '');
       });
 
       test('should emit navigation effect to signup with username', () async {
@@ -237,7 +238,8 @@ void main() {
         expect(effects.first, isA<NavigationEffect>());
         final navEffect = effects.first as NavigationEffect;
         expect(navEffect.target, Routes.signUp);
-        expect(navEffect.arguments, 'test_user');
+        expect(navEffect.arguments, isA<SignUpArguments>());
+        expect((navEffect.arguments as SignUpArguments).initialUsername, 'test_user');
       });
 
       test('should emit navigation effect to forgot password', () async {

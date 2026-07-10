@@ -15,7 +15,8 @@ part 'sign_up_view_model.g.dart';
 class SignUpViewModel extends _$SignUpViewModel with ViewModelMixin<SignUpState, SignUpIntent> {
   @override
   SignUpState build() {
-    final String initialName = AppNav.getArgs<String>() ?? '';
+    final SignUpArguments? args = AppNav.getArgs<SignUpArguments>();
+    final String initialName = args?.initialUsername ?? '';
     return SignUpState(fullName: initialName);
   }
 

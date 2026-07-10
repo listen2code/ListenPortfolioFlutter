@@ -1089,7 +1089,7 @@ packages:
       path: "../ListenCore"
       relative: true
     source: path
-    version: "0.0.25"
+    version: "0.0.26"
   listen_uikit:
     dependency: "direct main"
     description:

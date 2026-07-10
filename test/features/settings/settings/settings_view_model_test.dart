@@ -400,7 +400,7 @@ void main() {
 
       test('should trigger checkUpdates when argCheckUpdate is true', () async {
         // Arrange
-        AppNav.currentArgs = {Routes.argCheckUpdate: true};
+        AppNav.currentArgs = const SettingsArguments(checkUpdate: true);
         when(() => mockSettingsRepository.getLatestVersion()).thenAnswer(
           (_) async => const Right(
             VersionModel(

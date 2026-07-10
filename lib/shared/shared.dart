@@ -36,6 +36,7 @@ export 'utils/auth_manager.dart';
 export 'utils/log_overlay/log_overlay_manager.dart';
 export 'utils/quick_actions_manager.dart';
 export 'utils/routes.dart';
+export 'utils/routing_arguments.dart';
 export 'widgets/common_auth_text.dart';
 export 'widgets/common_section_header.dart';
 export 'widgets/common_timeline_item.dart';

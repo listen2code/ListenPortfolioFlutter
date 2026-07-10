@@ -39,7 +39,8 @@ class CrashLogListViewModel extends _$CrashLogListViewModel
     emitEffect(LoadingEffect(true));
     await _loadLogs();
 
-    final String? initialFilePath = AppNav.getParam<String>(Routes.argFilePath);
+    final CrashLogListArguments? args = AppNav.getArgs<CrashLogListArguments>();
+    final String? initialFilePath = args?.filePath;
     if (initialFilePath != null) {
       final file = File(initialFilePath);
       if (file.existsSync()) {
