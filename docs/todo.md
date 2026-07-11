@@ -115,6 +115,9 @@
 - **宿主业务适配**：在 `app_initializer.dart` 中注册转换委托与原生 Schemes。
 - **原生层 Scheme 配置**：配置 Android `AndroidManifest.xml` 的 `intent-filter` 匹配 Scheme 以及 iOS `Info.plist` 的 `CFBundleURLTypes`。
 - **设计决策文档**：输出详细设计与 Native vs `app_links` 的架构权衡文档（详见 [设计与实现文档](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/docs/deep_link_routing_design.md)）。
+- **路由重用与去重防冲突（重磅补强）**：
+  - 支持可选的 `replaceIfExists` 参数决定是否在已处于目标页面时执行 `pushReplacement` 替换当前路由，抑或直接静默返回（默认）。
+  - 在 `BaseViewModel` 引入 `_activeEffectSubscription`，实现新页面绑定时自动同步注销老页面订阅；在 `BaseLifeCyclePage` 实现 `onPop` 同步注销监听句柄，彻底规避 `pushReplacement` 期间 (300ms 动画重叠期) ViewModel 重用导致的双重弹窗问题。
 
 ## Next
 
