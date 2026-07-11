@@ -332,14 +332,16 @@ jobs:
 
       - name: Generate version.json
         run: dart run tools/generate_version_json.dart
-
       - name: Commit and Push version.json
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add pages/version.json
-          git diff-index --quiet HEAD || (git commit -m "Auto-generate version.json [skip ci]" && git push)
-
+          if ! git diff-index --quiet HEAD; then
+            git commit -m "Auto-generate version.json [skip ci]"
+            git pull origin ${{ github.ref_name }} --rebase -X theirs
+            git push origin ${{ github.ref_name }}
+          fi
   deploy-to-google-play:
     needs: [check-conditions, update-version-json]
     if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop') && github.event_name == 'push'
