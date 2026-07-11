@@ -72,6 +72,10 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
   }
 
   Future<void> _onInit() async {
+    final SettingsArguments? args = AppNav.getArgs<SettingsArguments>();
+    if (args?.checkUpdate == true) {
+      handleIntent(const SettingsIntent.checkUpdates());
+    }
     await _updateCacheSize();
 
     // Scheme C: If notifications are enabled in settings (defaulting to true),
@@ -85,10 +89,6 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
       } else {
         await notificationService.subscribeToTopic(AppConstants.versionUpdatesTopic);
       }
-    }
-    final SettingsArguments? args = AppNav.getArgs<SettingsArguments>();
-    if (args?.checkUpdate == true) {
-      handleIntent(const SettingsIntent.checkUpdates());
     }
   }
 

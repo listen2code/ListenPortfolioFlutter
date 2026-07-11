@@ -44,10 +44,9 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
           if (targetRoute != null && targetRoute.isNotEmpty) {
             // Navigate to target route safely on the next frame to avoid build collision
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              emitEffect(NavigationEffect(
-                target: targetRoute,
-                arguments: const SettingsArguments(checkUpdate: true),
-              ));
+              emitEffect(
+                NavigationEffect(target: targetRoute, arguments: const SettingsArguments(checkUpdate: true)),
+              );
             });
           }
         }
@@ -60,6 +59,21 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ReviewService().checkAndPromptReview();
     });
+
+    // Subscribe to unified deep link event via core EventBus
+    subscribeEvent<CommonEvent<Uri>>(
+      (event) {
+        final uri = event.data;
+        if (uri != null) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            appLogger.i('HomeViewModel: Processing deep link from EventBus: $uri');
+            emitEffect(NavigationEffect(target: uri.toString(), replaceIfExists: true));
+          });
+        }
+      },
+      key: DeepLinkManager.deepLinkEventKey,
+      sticky: true,
+    );
 
     return const HomeState();
   }
@@ -80,8 +94,6 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
       emitEffect(NavigationEffect.back());
     }
   }
-
-
 
   void _onLogout() {
     if (authManager.state.isGuest) {

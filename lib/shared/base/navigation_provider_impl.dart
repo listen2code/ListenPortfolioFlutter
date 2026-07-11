@@ -4,19 +4,21 @@ import 'package:listen_core/core.dart';
 class NavigationEffect extends BaseEffect {
   /// The navigation target (Route path or Object). Can be null for back operations.
   final dynamic target;
+  final Object? arguments;
   final bool isReplace;
   final bool isReplaceAll;
   final bool isBack;
-  final Object? arguments;
   final bool needLogin;
+  final bool replaceIfExists;
 
   NavigationEffect({
     this.target,
+    this.arguments,
     this.isReplace = false,
     this.isReplaceAll = false,
     this.isBack = false,
-    this.arguments,
     this.needLogin = false,
+    this.replaceIfExists = false,
   });
 
   /// Helper constructor for back navigation.
@@ -24,8 +26,8 @@ class NavigationEffect extends BaseEffect {
 
   @override
   String toString() {
-    return 'NavigationEffect(target: $target, isReplace: $isReplace, isBack: $isBack, needLogin: '
-        '$needLogin, arguments: $arguments)';
+    return 'NavigationEffect(target: $target, isReplace: $isReplace, isReplaceAll: $isReplaceAll, '
+        'isBack: $isBack, needLogin: $needLogin, replaceIfExists: $replaceIfExists, arguments: $arguments)';
   }
 }
 
@@ -50,7 +52,12 @@ class NavigationProviderImpl extends BaseProvider<NavigationEffect> {
         arguments: effect.arguments as Map<String, dynamic>?,
       );
     } else {
-      AppNav.to(effect.target, needLogin: effect.needLogin, arguments: effect.arguments);
+      AppNav.to(
+        effect.target,
+        needLogin: effect.needLogin,
+        arguments: effect.arguments,
+        replaceIfExists: effect.replaceIfExists,
+      );
     }
   }
 }

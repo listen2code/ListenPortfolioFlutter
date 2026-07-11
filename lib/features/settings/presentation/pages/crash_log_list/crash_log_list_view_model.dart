@@ -36,10 +36,10 @@ class CrashLogListViewModel extends _$CrashLogListViewModel
   }
 
   Future<void> _onInit() async {
+    final CrashLogListArguments? args = AppNav.getArgs<CrashLogListArguments>();
     emitEffect(LoadingEffect(true));
     await _loadLogs();
 
-    final CrashLogListArguments? args = AppNav.getArgs<CrashLogListArguments>();
     final String? initialFilePath = args?.filePath;
     if (initialFilePath != null) {
       final file = File(initialFilePath);

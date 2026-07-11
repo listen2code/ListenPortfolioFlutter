@@ -24,6 +24,9 @@ class AppInitializer {
 
     // 1. Initialize Infrastructure & Core Module (Including Nav & Error Hooks)
     await _initCore(container);
+
+    // 2. Initialize Deep Link Handling (after all dependencies are registered)
+    await DeepLinkManager.instance.init();
   }
 
   /// Initializes infrastructure and the centralized ListenCore module.
