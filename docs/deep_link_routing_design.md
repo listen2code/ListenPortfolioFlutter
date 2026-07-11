@@ -134,3 +134,46 @@ class SettingsArguments {
 2. **View 级防御性 Pop 拦截（辅助保护）**：在 `BaseLifeCyclePage` 层的路由观察代理中注册 `onPop`。当 `pop` 或 `pushReplacement` 动作发出时，老页面通过 Navigator 收到 `didPop` 回调瞬间同步注销对 ViewModel `effectStream` 的所有监听，不依赖动画结束后才执行的 `dispose()`。
 
 通过这套机制，框架成功保证了即使在多路由瞬时重叠、Provider 频繁重用的高压场景下，MVI 副作用也始终遵循单向、单发与高安全的通道分发原则。
+
+---
+
+## 6. 系统返回手势与 PopScope 统一管理设计 (Unified Back Gesture & PopScope Management)
+
+随着 Android 13/14+ 预测性返回手势（Predictive Back）的引入，以及对页面返回生命周期管理的整洁性要求，我们将系统返回手势的拦截与分发逻辑从 UI 布局骨架层（`BaseScaffoldPage`）彻底移出，在生命周期底座层（`BaseLifeCyclePage`）进行了统一封装。
+
+### 6.1 核心设计原则
+
+1. **布局与手势控制解耦**：
+   * `BaseScaffoldPage` 不再包含任何 `PopScope` 或返回拦截的逻辑，保持其作为布局脚手架的纯粹职责。
+   * `BaseLifeCyclePage` 作为包裹每个独立页面的生命周期组件，统一接管 `PopScope` 返回手势监听。
+2. **加载态手势拦截与异步请求注销优先级**：
+   * 当页面存在内部加载态（`_isInternalLoading.value == true`）时，系统返回键会被直接拦截（`canPop = false`）。
+   * 拦截发生后，框架通过精简、零冗余的逻辑优先执行后台异步请求的取消（`_viewModel?.cancelRequests("onBackInvoked")`），并发送副作用重置页面加载状态，实现“首击取消加载并中断请求”。
+3. **多标签页回退与双击退出应用（`HomePage`）**：
+   * 针对应用的根页面（`HomePage`），系统手势始终被拦截（`canPop = false`）。
+   * 当用户从二级标签页返回时，侧滑手势自动导向第一页（`Overview` 标签）。
+   * 当处于 `Overview` 页面时，侧滑手势将触发 2 秒内的双击检测：第一击显示国际化 Toast 提示（如“再按一次退出应用”），2 秒内再次点击则调用 `SystemNavigator.pop()` 退出，实现流畅的原生回退体验，避免误触退出。
+
+### 6.2 零重复代码的 PopScope 分发实现 (`onPopInvokedWithResult`)
+
+在 `BaseLifeCyclePage` 中，我们以一种优雅、免维护的形式组合了出栈生命周期和拦截逻辑，规避了大量样板代码的复制：
+
+```dart
+          onPopInvokedWithResult: (didPop, resultVal) {
+            // 是否应当拦截并触发自定义返回事件（仅当非出栈、非加载中、且定义了自定义拦截时）
+            final shouldInterceptCustomBack = !didPop && !_isInternalLoading.value && widget.onInterceptBack != null;
+            if (shouldInterceptCustomBack) {
+              // 触发自定义拦截回调
+              widget.onInterceptBack!();
+            } else {
+              // 统一注销挂起中的请求以释放网络资源
+              _viewModel?.cancelRequests("onBackInvoked");
+              if (!didPop) {
+                // 如果是加载中触发返回拦截（!didPop 且 _isInternalLoading 为 true），或者回退兜底，则重置并取消加载框
+                _viewModel?.emitEffect(LoadingEffect(false));
+              }
+            }
+          },
+```
+通过该设计，整个架构保障了在返回手势交互下网络请求的即时回收、UI 加载态的智能闭环，以及根级页面返回栈的最佳实践。
+

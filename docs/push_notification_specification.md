@@ -223,11 +223,11 @@ class FirebaseNotificationServiceImpl implements INotificationService {
     if (data.containsKey(AppConstants.notificationParamTab)) {
       final tabStr = data[AppConstants.notificationParamTab] as String;
       if (tabStr == AppConstants.notificationTabSettings) {
-        // Dispatch a sticky event to handle Settings page navigation inside HomeViewModel
+        // Dispatch a sticky event to handle Settings page navigation via core deep link manager
         eventBus.fire(
-          const CommonEvent<String>(
-            AppConstants.routeChangedEvent,
-            data: Routes.settings,
+          CommonEvent<Uri>(
+            DeepLinkManager.deepLinkEventKey,
+            data: Uri.parse('listen://settings?check_update=true'),
             sticky: true,
             autoClear: true,
           ),
