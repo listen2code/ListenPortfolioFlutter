@@ -14,6 +14,18 @@ import 'firebase_options.dart';
 /// Concrete implementation of INotificationService using Firebase Cloud Messaging (FCM)
 /// and flutter_local_notifications.
 class FirebaseNotificationServiceImpl implements INotificationService {
+  /// Timeout for Firebase core initialization.
+  static const Duration _kInitTimeout = Duration(seconds: 10);
+
+  /// Timeout for local configuration calls (foreground options, initial message query).
+  static const Duration _kConfigTimeout = Duration(seconds: 5);
+
+  /// Timeout for FCM network operations (getToken, subscribe/unsubscribe topic).
+  static const Duration _kNetworkTimeout = Duration(seconds: 10);
+
+  /// Timeout for system permission dialog (user interaction required).
+  static const Duration _kPermissionTimeout = Duration(seconds: 5);
+
   FirebaseMessaging get _fcm => FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin _localNotifications = FlutterLocalNotificationsPlugin();
 
@@ -29,7 +41,13 @@ class FirebaseNotificationServiceImpl implements INotificationService {
     try {
       // 1. Initialize Firebase Core
       if (Firebase.apps.isEmpty) {
-        await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+        await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform).timeout(
+          _kInitTimeout,
+          onTimeout: () {
+            appLogger.e('FirebaseNotificationService: Firebase.initializeApp timed out after $_kInitTimeout');
+            throw TimeoutException('Firebase.initializeApp', _kInitTimeout);
+          },
+        );
       }
       _isFirebaseInitialized = true;
       appLogger.i('FirebaseNotificationService: Firebase initialized successfully.');
@@ -66,7 +84,17 @@ class FirebaseNotificationServiceImpl implements INotificationService {
       appLogger.i('FirebaseNotificationService: createNotificationChannel successfully.');
 
       // 3. Configure iOS foreground presentation settings
-      await _fcm.setForegroundNotificationPresentationOptions(alert: true, badge: true, sound: true);
+      await _fcm
+          .setForegroundNotificationPresentationOptions(alert: true, badge: true, sound: true)
+          .timeout(
+            _kConfigTimeout,
+            onTimeout: () {
+              appLogger.e(
+                'FirebaseNotificationService: setForegroundNotificationPresentationOptions timed out after $_kConfigTimeout',
+              );
+              throw TimeoutException('setForegroundNotificationPresentationOptions', _kConfigTimeout);
+            },
+          );
       appLogger.i('FirebaseNotificationService: setForegroundNotificationPresentationOptions successfully.');
 
       // 4. Listen to foreground FCM messages
@@ -96,7 +124,13 @@ class FirebaseNotificationServiceImpl implements INotificationService {
       });
 
       // 6. Handle terminated startup click
-      final initialMessage = await _fcm.getInitialMessage();
+      final initialMessage = await _fcm.getInitialMessage().timeout(
+        _kConfigTimeout,
+        onTimeout: () {
+          appLogger.e('FirebaseNotificationService: getInitialMessage timed out after $_kConfigTimeout');
+          return null;
+        },
+      );
       appLogger.i('FirebaseNotificationService: getInitialMessage=$initialMessage');
       if (initialMessage != null) {
         // Discard if notifications are disabled in settings
@@ -111,9 +145,23 @@ class FirebaseNotificationServiceImpl implements INotificationService {
       final isEnabled = SpUtil.getBool(AppConstants.notificationsKey, defaultValue: true);
       appLogger.i('FirebaseNotificationService: subscribeToTopic=$isEnabled');
       if (isEnabled) {
-        await subscribeToTopic(AppConstants.versionUpdatesTopic);
+        await subscribeToTopic(AppConstants.versionUpdatesTopic).timeout(
+          _kNetworkTimeout,
+          onTimeout: () {
+            appLogger.e(
+              'FirebaseNotificationService: subscribeToTopic timed out during initialize after $_kNetworkTimeout',
+            );
+          },
+        );
       } else {
-        await unsubscribeFromTopic(AppConstants.versionUpdatesTopic);
+        await unsubscribeFromTopic(AppConstants.versionUpdatesTopic).timeout(
+          _kNetworkTimeout,
+          onTimeout: () {
+            appLogger.e(
+              'FirebaseNotificationService: unsubscribeFromTopic timed out during initialize after $_kNetworkTimeout',
+            );
+          },
+        );
       }
     } catch (e) {
       appLogger.e('FirebaseNotificationService: Failed to setup FCM handlers: $e');
@@ -191,7 +239,17 @@ class FirebaseNotificationServiceImpl implements INotificationService {
   Future<bool> requestPermission() async {
     if (!_isFirebaseInitialized) return false;
     try {
-      final settings = await _fcm.requestPermission(alert: true, badge: true, sound: true);
+      final settings = await _fcm
+          .requestPermission(alert: true, badge: true, sound: true)
+          .timeout(
+            _kPermissionTimeout,
+            onTimeout: () {
+              appLogger.e(
+                'FirebaseNotificationService: requestPermission timed out after $_kPermissionTimeout',
+              );
+              throw TimeoutException('requestPermission', _kPermissionTimeout);
+            },
+          );
       return settings.authorizationStatus == AuthorizationStatus.authorized;
     } catch (e) {
       appLogger.w('FirebaseNotificationService: Failed to request push permission: $e');
@@ -203,7 +261,13 @@ class FirebaseNotificationServiceImpl implements INotificationService {
   Future<String?> getToken() async {
     if (!_isFirebaseInitialized) return null;
     try {
-      return await _fcm.getToken();
+      return await _fcm.getToken().timeout(
+        _kNetworkTimeout,
+        onTimeout: () {
+          appLogger.e('FirebaseNotificationService: getToken timed out after $_kNetworkTimeout');
+          return null;
+        },
+      );
     } catch (e) {
       appLogger.w('FirebaseNotificationService: Failed to get push token: $e');
       return null;
@@ -226,7 +290,18 @@ class FirebaseNotificationServiceImpl implements INotificationService {
   Future<void> subscribeToTopic(String topic) async {
     if (!_isFirebaseInitialized) return;
     try {
-      await _fcm.subscribeToTopic(topic);
+      appLogger.i('FirebaseNotificationService: subscribeToTopic start...');
+      await _fcm
+          .subscribeToTopic(topic)
+          .timeout(
+            _kNetworkTimeout,
+            onTimeout: () {
+              appLogger.e(
+                'FirebaseNotificationService: subscribeToTopic("$topic") timed out after $_kNetworkTimeout',
+              );
+              throw TimeoutException('subscribeToTopic', _kNetworkTimeout);
+            },
+          );
       appLogger.i('FirebaseNotificationService: Subscribed to topic "$topic".');
     } catch (e) {
       appLogger.e('FirebaseNotificationService: Failed to subscribe to topic "$topic": $e');
@@ -237,7 +312,18 @@ class FirebaseNotificationServiceImpl implements INotificationService {
   Future<void> unsubscribeFromTopic(String topic) async {
     if (!_isFirebaseInitialized) return;
     try {
-      await _fcm.unsubscribeFromTopic(topic);
+      appLogger.i('FirebaseNotificationService: unsubscribeFromTopic start...');
+      await _fcm
+          .unsubscribeFromTopic(topic)
+          .timeout(
+            _kNetworkTimeout,
+            onTimeout: () {
+              appLogger.e(
+                'FirebaseNotificationService: unsubscribeFromTopic("$topic") timed out after $_kNetworkTimeout',
+              );
+              throw TimeoutException('unsubscribeFromTopic', _kNetworkTimeout);
+            },
+          );
       appLogger.i('FirebaseNotificationService: Unsubscribed from topic "$topic".');
     } catch (e) {
       appLogger.e('FirebaseNotificationService: Failed to unsubscribe from topic "$topic": $e');
