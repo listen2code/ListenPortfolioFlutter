@@ -15,14 +15,7 @@ part 'home_view_model.g.dart';
 class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeIntent> {
   @override
   HomeState build() {
-    // Subscribe to logout event to reset to overview tab
-    subscribeEvent<CommonEvent<dynamic>>((event) {
-      if (state.currentTab != HomeTab.overview) {
-        handleIntent(const HomeIntent.tabChanged(HomeTab.overview));
-      }
-    }, key: AppConstants.resetOverview);
-
-    // Subscribe to tab change event (e.g. from push notifications)
+    // Subscribe to tab change event (e.g. from logout or push notifications)
     subscribeEvent<CommonEvent<HomeTab>>(
       (event) {
         if (event.key == AppConstants.tabChangedEvent) {
@@ -33,25 +26,6 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
         }
       },
       key: AppConstants.tabChangedEvent,
-      sticky: true,
-    );
-
-    // Subscribe to route change event (e.g. from push notifications)
-    subscribeEvent<CommonEvent<String>>(
-      (event) {
-        if (event.key == AppConstants.routeChangedEvent) {
-          final targetRoute = event.data;
-          if (targetRoute != null && targetRoute.isNotEmpty) {
-            // Navigate to target route safely on the next frame to avoid build collision
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              emitEffect(
-                NavigationEffect(target: targetRoute, arguments: const SettingsArguments(checkUpdate: true)),
-              );
-            });
-          }
-        }
-      },
-      key: AppConstants.routeChangedEvent,
       sticky: true,
     );
 

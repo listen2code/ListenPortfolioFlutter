@@ -269,4 +269,5 @@ final Map<String, String> zh = {
   I18nKeys.worstFrame: '最差单帧耗时',
   I18nKeys.memoryUsage: '内存占用 (RSS)',
   I18nKeys.noTraceRecords: '暂无耗时跟踪数据\n请切换页面或执行操作后查看',
+  I18nKeys.pressBackAgainToExit: '再按一次退出应用',
 };

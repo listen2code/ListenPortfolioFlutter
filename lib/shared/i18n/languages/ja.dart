@@ -269,4 +269,5 @@ final Map<String, String> ja = {
   I18nKeys.worstFrame: 'ワーストフレーム所要時間',
   I18nKeys.memoryUsage: 'メモリ使用量 (RSS)',
   I18nKeys.noTraceRecords: 'トレースレコードがありません\nページ遷移や操作を行ってください',
+  I18nKeys.pressBackAgainToExit: 'もう一度戻ると終了します',
 };

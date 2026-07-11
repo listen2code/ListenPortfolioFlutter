@@ -14,8 +14,12 @@ import 'home_view_model.dart';
 import 'overview/overview_widget.dart';
 import 'projects/projects_widget.dart';
 
+import 'package:flutter/services.dart';
+
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
+
+  static DateTime? _lastPressedAt;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -26,7 +30,7 @@ class HomePage extends ConsumerWidget {
       provider: homeViewModelProvider,
       title: state.title,
       drawer: _buildDrawer(context, viewModel, state),
-      canPop: state.currentTab == HomeTab.overview,
+      canPop: false, // Always intercept system back gesture on home screen to handle tab change or double back exit
       actions: state.currentTab == HomeTab.aboutMe
           ? [
               Consumer(
@@ -47,6 +51,14 @@ class HomePage extends ConsumerWidget {
       onInterceptBack: () {
         if (state.currentTab != HomeTab.overview) {
           viewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.overview));
+        } else {
+          final now = DateTime.now();
+          if (_lastPressedAt == null || now.difference(_lastPressedAt!) > const Duration(seconds: 2)) {
+            _lastPressedAt = now;
+            CommonToast.show(I18nKeys.pressBackAgainToExit.tr);
+          } else {
+            SystemNavigator.pop();
+          }
         }
       },
       onLoading: _buildOverviewSkeleton(context),

@@ -310,4 +310,5 @@ class I18nKeys {
   static const String worstFrame = 'worstFrame';
   static const String memoryUsage = 'memoryUsage';
   static const String noTraceRecords = 'noTraceRecords';
+  static const String pressBackAgainToExit = 'Press back again to exit';
 }

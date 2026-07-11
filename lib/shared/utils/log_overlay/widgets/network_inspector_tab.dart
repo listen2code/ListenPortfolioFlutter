@@ -200,7 +200,6 @@ class _RequestRowWidgetState extends State<_RequestRowWidget> {
     final req = widget.request;
     final methodColor = _getMethodColor(req.method);
     final statusColor = _getStatusColor(req.statusCode);
-    final isSuccess = req.statusCode != null && req.statusCode! >= 200 && req.statusCode! < 300;
 
     return Column(
       children: [

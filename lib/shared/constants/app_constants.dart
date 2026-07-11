@@ -6,9 +6,7 @@ class AppConstants {
   static const String appVersion = String.fromEnvironment('APP_VERSION', defaultValue: '0.0.9');
 
   // EventBus keys
-  static const String resetOverview = 'reset_to_overview';
   static const String tabChangedEvent = 'tab_changed';
-  static const String routeChangedEvent = 'route_changed';
 
   // Setting keys
   static const String themeKey = 'theme_mode';

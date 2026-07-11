@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_core/core.dart';
+import '../../features/home/presentation/pages/home_state.dart';
 import '../../features/home/presentation/pages/overview/overview_view_model.dart';
 import '../../features/home/presentation/pages/about_me/about_me_view_model.dart';
 import '../../features/home/presentation/pages/projects/projects_view_model.dart';
@@ -32,7 +33,7 @@ class LogoutProviderImpl extends BaseProvider<LogoutEffect> {
       await AppNav.offAll(Routes.home, isReplace: false);
 
       // 4. Fire event to notify HomeViewModel to reset to overview tab
-      eventBus.fire(const CommonEvent<String>(AppConstants.resetOverview));
+      eventBus.fire(const CommonEvent<HomeTab>(AppConstants.tabChangedEvent, data: HomeTab.overview));
     }
 
     // 5. Invalidate Riverpod view models safely AFTER navigation has settled,
