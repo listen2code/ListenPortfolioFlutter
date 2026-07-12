@@ -237,9 +237,9 @@ class FirebaseNotificationServiceImpl implements INotificationService {
 
         if (targetTab != null) {
           eventBus.fire(
-            CommonEvent<HomeTab>(
-              AppConstants.tabChangedEvent,
-              data: targetTab,
+            CommonEvent<Uri>(
+              DeepLinkManager.deepLinkEventKey,
+              data: Uri.parse('listen://home?tab=$tabStr'),
               sticky: true,
               autoClear: true,
             ),
@@ -252,9 +252,9 @@ class FirebaseNotificationServiceImpl implements INotificationService {
     if (data.containsKey(AppConstants.notificationParamProjectId)) {
       final projectId = data[AppConstants.notificationParamProjectId] as String;
       eventBus.fire(
-        const CommonEvent<HomeTab>(
-          AppConstants.tabChangedEvent,
-          data: HomeTab.projects,
+        CommonEvent<Uri>(
+          DeepLinkManager.deepLinkEventKey,
+          data: Uri.parse('listen://home?tab=projects'),
           sticky: true,
           autoClear: true,
         ),
@@ -422,8 +422,15 @@ void setupNotificationNavigation(INotificationService notificationService) {
       final targetTab = HomeTab.values.firstWhereOrNull((tab) => tab.name == tabStr);
       
       if (targetTab != null) {
-        // 利用全局 EventBus 发送 Tab 切换通知，由 HomeViewModel 进行拦截与更新
-        eventBus.fire(CommonEvent<HomeTab>(AppConstants.tabChangedEvent, data: targetTab));
+        // 利用全局 EventBus 发送 Uri，由 HomeViewModel 进行拦截与更新
+        eventBus.fire(
+          CommonEvent<Uri>(
+            DeepLinkManager.deepLinkEventKey,
+            data: Uri.parse('listen://home?tab=$tabStr'),
+            sticky: true,
+            autoClear: true,
+          ),
+        );
       }
     }
     

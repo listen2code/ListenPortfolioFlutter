@@ -115,8 +115,7 @@ async function getAccessToken() {
 // Parse command-line arguments
 const args = process.argv.slice(2);
 const options = {
-  type: '',
-  tab: '',
+  link: '',
   token: '',
   title: '',
   body: ''
@@ -127,19 +126,15 @@ for (let i = 0; i < args.length; i++) {
     console.log(`Usage: node tools/send_push_notification.js [options]
 
 Options:
-  --type <type>        Type of notification: "update", "tab"(default: "update")
-  --tab <tab>          HomeTab name: "settings", "overview", "aboutMe", "projects", "architecture"
+  --link <link>        Deep link URI, e.g. "listen://settings?check_update=true" or "listen://home?tab=projects"
   --token <token>      Send to specific FCM registration token instead of version_updates topic
   --title <title>      Custom notification title
   --body <body>        Custom notification body
   -h, --help           Show this help message`);
     process.exit(0);
   }
-  if (args[i] === '--type' && args[i + 1]) {
-    options.type = args[i + 1];
-    i++;
-  } else if (args[i] === '--tab' && args[i + 1]) {
-    options.tab = args[i + 1];
+  if (args[i] === '--link' && args[i + 1]) {
+    options.link = args[i + 1];
     i++;
   } else if (args[i] === '--token' && args[i + 1]) {
     options.token = args[i + 1];
@@ -150,15 +145,6 @@ Options:
   } else if (args[i] === '--body' && args[i + 1]) {
     options.body = args[i + 1];
     i++;
-  }
-}
-
-// Infer type if not explicitly set
-if (!options.type) {
-  if (options.tab) {
-    options.type = 'tab';
-  } else {
-    options.type = 'update';
   }
 }
 
@@ -190,34 +176,22 @@ async function main() {
       console.log("FCM: Broadcast delivery target -> topic: 'version_updates'");
     }
 
-    // Populate title, body, and data fields based on message type
-    if (options.type === 'update') {
-      message.notification = {
-        title: options.title || `New version v${appVersion} has been released!`,
-        body: options.body || appDesc
-      };
-      message.data.tab = 'settings';
-      message.data.version = appVersion;
-      message.data.desc = appDesc;
-    } else if (options.type === 'tab') {
-      const targetTab = options.tab || 'overview';
-      message.notification = {
-        title: options.title || `Featured Section Available`,
-        body: options.body || `Tap to open the ${targetTab} view directly.`
-      };
-      message.data.tab = targetTab;
+    // Populate title, body, and data fields
+    message.notification = {
+      title: options.title || "Listen Portfolio Update",
+      body: options.body || "A new feature or version is available!"
+    };
+
+    if (options.link) {
+      message.data.link = options.link;
     } else {
-      // Freeform custom type
-      message.notification = {
-        title: options.title || "Listen Portfolio Update",
-        body: options.body || "Open App to see what's new"
-      };
-      if (options.tab) message.data.tab = options.tab;
+      // Default fallback link if none provided
+      message.data.link = 'listen://home?tab=overview';
     }
 
     const payload = JSON.stringify({ message });
 
-    console.log(`FCM: Dispatching payload (Type: ${options.type})...`);
+    console.log(`FCM: Dispatching payload (Link: ${message.data.link})...`);
 
     const response = await request({
       hostname: 'fcm.googleapis.com',

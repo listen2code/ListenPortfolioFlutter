@@ -1,6 +1,4 @@
-import 'dart:async';
-
-import 'package:flutter/widgets.dart';
+import 'package:collection/collection.dart';
 import 'package:listen_core/core.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -15,41 +13,44 @@ part 'home_view_model.g.dart';
 class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeIntent> {
   @override
   HomeState build() {
-    // Subscribe to tab change event (e.g. from logout or push notifications)
-    subscribeEvent<CommonEvent<HomeTab>>(
-      (event) {
-        if (event.key == AppConstants.tabChangedEvent) {
-          final targetTab = event.data;
-          if (targetTab != null && state.currentTab != targetTab) {
-            handleIntent(HomeIntent.tabChanged(targetTab));
-          }
-        }
-      },
-      key: AppConstants.tabChangedEvent,
-      sticky: true,
-    );
+    return const HomeState();
+  }
 
+  @override
+  void onReady() {
+    super.onReady();
     // Trigger in-app review check on app startup
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ReviewService().checkAndPromptReview();
-    });
+    ReviewService().checkAndPromptReview();
 
     // Subscribe to unified deep link event via core EventBus
     subscribeEvent<CommonEvent<Uri>>(
       (event) {
         final uri = event.data;
         if (uri != null) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            appLogger.i('HomeViewModel: Processing deep link from EventBus: $uri');
-            emitEffect(NavigationEffect(target: uri.toString(), replaceIfExists: true));
-          });
+          final host = uri.host;
+          final path = uri.path;
+
+          // Handle home tab navigation via deep link directly to avoid full page replacement
+          if (host == 'home' || path == '/home') {
+            final tabStr = uri.queryParameters['tab'];
+            if (tabStr != null) {
+              final targetTab = HomeTab.values.firstWhereOrNull((tab) => tab.name == tabStr);
+              if (targetTab != null) {
+                if (state.currentTab != targetTab) {
+                  handleIntent(HomeIntent.tabChanged(targetTab));
+                }
+                return;
+              }
+            }
+          }
+
+          appLogger.i('HomeViewModel: Processing deep link from EventBus: $uri');
+          emitEffect(NavigationEffect(target: uri.toString(), replaceIfExists: true));
         }
       },
       key: DeepLinkManager.deepLinkEventKey,
       sticky: true,
     );
-
-    return const HomeState();
   }
 
   @override

@@ -5,9 +5,6 @@ class AppConstants {
 
   static const String appVersion = String.fromEnvironment('APP_VERSION', defaultValue: '0.0.9');
 
-  // EventBus keys
-  static const String tabChangedEvent = 'tab_changed';
-
   // Setting keys
   static const String themeKey = 'theme_mode';
   static const String accentColorKey = 'accent_color';
@@ -21,12 +18,7 @@ class AppConstants {
   static const String notificationChannelDescription = 'Used for portfolio updates and interactive messages.';
   static const String versionUpdatesTopic = 'version_updates';
   static const String defaultNotificationIcon = '@mipmap/ic_launcher';
-  static const String notificationParamTab = 'tab';
-  static const String notificationTabSettings = 'settings';
-  static const String notificationTabOverview = 'overview';
-  static const String notificationTabAboutMe = 'aboutMe';
-  static const String notificationTabProjects = 'projects';
-  static const String notificationTabArchitecture = 'architecture';
+  static const String notificationParamLink = 'link';
   static const String appLaunchCountKey = 'app_launch_count';
   static const String lastReviewPromptTimeKey = 'last_review_prompt_time';
   static const String hasReviewKey = 'has_review';

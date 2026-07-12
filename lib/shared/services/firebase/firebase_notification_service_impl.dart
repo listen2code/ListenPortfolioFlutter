@@ -1,13 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:collection/collection.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:listen_core/core.dart';
 
-import '../../../features/home/presentation/pages/home_state.dart';
 import '../../shared.dart';
 import 'firebase_options.dart';
 
@@ -179,31 +177,20 @@ class FirebaseNotificationServiceImpl implements INotificationService {
       return route.settings.name == Routes.home || route.isFirst;
     });
 
-    // Check for tab redirection
-    if (data.containsKey(AppConstants.notificationParamTab)) {
-      final tabStr = data[AppConstants.notificationParamTab] as String;
-      if (tabStr == AppConstants.notificationTabSettings) {
-        // Dispatch a sticky event to handle Settings page navigation via core deep link manager
+    // Check for direct deep link redirection
+    if (data.containsKey(AppConstants.notificationParamLink)) {
+      final linkStr = data[AppConstants.notificationParamLink] as String;
+      final uri = Uri.tryParse(linkStr);
+      if (uri != null) {
         eventBus.fire(
           CommonEvent<Uri>(
             DeepLinkManager.deepLinkEventKey,
-            data: Uri.parse('listen://settings?check_update=true'),
+            data: uri,
             sticky: true,
             autoClear: true,
           ),
         );
-      } else {
-        final targetTab = HomeTab.values.firstWhereOrNull((tab) => tab.name == tabStr);
-        if (targetTab != null) {
-          eventBus.fire(
-            CommonEvent<HomeTab>(
-              AppConstants.tabChangedEvent,
-              data: targetTab,
-              sticky: true,
-              autoClear: true,
-            ),
-          );
-        }
+        return;
       }
     }
   }

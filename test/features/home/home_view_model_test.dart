@@ -66,5 +66,29 @@ void main() {
 
       expect(container.read(homeViewModelProvider), isNotNull);
     });
+
+    test('Should handle deep link tab change event fired through EventBus', () async {
+      // Keep provider alive by listening to it
+      final sub = container.listen(homeViewModelProvider, (_, __) {});
+
+      // Given
+      viewModel.onReady(); // Subscribes to events
+
+      // When - Fire a sticky tab change deep link
+      final testUri = Uri.parse('listen://home?tab=aboutMe');
+      EventBus().fire(CommonEvent<Uri>(
+        DeepLinkManager.deepLinkEventKey,
+        data: testUri,
+        sticky: true,
+        autoClear: true,
+      ));
+
+      // Allow event stream to process
+      await Future<void>.delayed(Duration.zero);
+
+      // Then - Tab should update to aboutMe
+      expect(container.read(homeViewModelProvider).currentTab, HomeTab.aboutMe);
+      sub.close();
+    });
   });
 }
