@@ -2,8 +2,8 @@ name: listen_portfolio_flutter
 description: "Portfolio of Listen"
 publish_to: 'none'
 
-version: 1.0.78
-desc: "Daily build"
+version: 1.0.79
+desc: "Add: AI Chat"
 desc_zh: ""
 desc_ja: ""
 
@@ -124,6 +124,7 @@ flutter:
     - assets/mock/v1/post/
     - assets/mock/v1/post/auth/
     - assets/mock/v1/post/user/
+    - assets/mock/v1/post/ai/
     - assets/mock/images/
     - assets/html/
 flutter_assets_generator:

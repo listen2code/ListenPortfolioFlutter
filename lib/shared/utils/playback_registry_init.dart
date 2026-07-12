@@ -17,6 +17,7 @@ import '../../features/settings/presentation/pages/delete_account/delete_account
 import '../../features/settings/presentation/pages/privacy_policy/privacy_policy_intent.dart';
 import '../../features/settings/presentation/pages/terms_of_service/terms_of_service_intent.dart';
 import '../../features/splash/presentation/pages/splash_intent.dart';
+import '../../features/ai_chat/presentation/pages/ai_chat_intent.dart';
 
 /// Initializes the MVI Playback registry with deserializers by delegating to each specific Intent class.
 void initMviPlaybackRegistry() {
@@ -37,6 +38,7 @@ void initMviPlaybackRegistry() {
   PrivacyPolicyIntent.registerPlayback();
   TermsOfServiceIntent.registerPlayback();
   SplashIntent.registerPlayback();
+  AiChatIntent.registerPlayback();
 }
 
 /// Static deserializer registry to reconstruct Intent instances in a reflectionless Flutter environment.

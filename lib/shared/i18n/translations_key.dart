@@ -35,6 +35,16 @@ class I18nKeys {
   static const String noEmailApp = 'No email apps installed';
   static const String loading = 'loading';
 
+  // AI Assistant
+  static const String aiChatTitle = 'AI Assistant';
+  static const String aiChatSubtitle = 'Portfolio Guide & Mock Interviewer';
+  static const String aiModeVisitor = 'Agent Mode';
+  static const String aiModeInterviewer = 'Mock Interview';
+  static const String aiChatInputPlaceholder = 'Type a question...';
+  static const String aiChatWelcomeVisitor = 'Welcome! I am Listen\'s AI Agent. I can answer questions about the current page, Listen\'s experience, and the project architecture.';
+  static const String aiChatWelcomeInterviewer = 'Let\'s start the mock technical interview! I will ask you questions based on Listen\'s experience. Feel free to answer or ask for feedback.';
+  static const String aiPresetQuestions = 'Preset Questions';
+
   // Custom Color
   static const String customColor = 'Custom Color';
   static const String selectColor = 'Select Color';

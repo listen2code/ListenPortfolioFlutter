@@ -8,12 +8,14 @@ class R {
   static const String get_User = 'assets/mock/v1/get/user.json';
   static const String get_AboutMe = 'assets/mock/v1/get/aboutMe.json';
   static const String get_Projects = 'assets/mock/v1/get/projects.json';
+  static const String get_PresetQa = 'assets/mock/v1/get/preset-qa.json';
   static const String authLogin = 'assets/mock/v1/post/auth/login.json';
   static const String authSignUp = 'assets/mock/v1/post/auth/signUp.json';
   static const String authRefresh = 'assets/mock/v1/post/auth/refresh.json';
   static const String authForgotPassword = 'assets/mock/v1/post/auth/forgot-password.json';
   static const String userLogout = 'assets/mock/v1/post/user/logout.json';
   static const String userChangePassword = 'assets/mock/v1/post/user/change-password.json';
+  static const String aiChat = 'assets/mock/v1/post/ai/chat.json';
   static const String imagesProject1 = 'assets/mock/images/project1.jpg';
   static const String imagesProject2 = 'assets/mock/images/project2.jpg';
   static const String imagesProject3 = 'assets/mock/images/project3.jpg';

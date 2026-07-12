@@ -8,6 +8,7 @@ import 'features/settings/presentation/provider/playback_provider.dart';
 import 'features/settings/data/models/playback_tape_metadata.dart';
 import 'shared/shared.dart';
 import 'package:listen_uikit/uikit.dart';
+import 'features/ai_chat/presentation/pages/global_ai_chat_overlay.dart';
 
 void main() {
   LaunchMonitor.recordMainStart();
@@ -92,6 +93,9 @@ class MyApp extends StatelessWidget {
               // Use initialRoute instead of home to ensure the first page (SplashPage)
               // also passes through AppNav.onGenerateRoute and ZoneManager.runPage.
               initialRoute: Routes.root,
+              builder: (context, child) {
+                return GlobalAiChatOverlay(child: child!);
+              },
             );
           },
         );

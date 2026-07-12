@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'home_view_model.dart';
+part of 'ai_chat_view_model.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -9,51 +9,51 @@ part of 'home_view_model.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(HomeViewModel)
-final homeViewModelProvider = HomeViewModelProvider._();
+@ProviderFor(AiChatViewModel)
+final aiChatViewModelProvider = AiChatViewModelProvider._();
 
-final class HomeViewModelProvider
-    extends $NotifierProvider<HomeViewModel, HomeState> {
-  HomeViewModelProvider._()
+final class AiChatViewModelProvider
+    extends $NotifierProvider<AiChatViewModel, AiChatState> {
+  AiChatViewModelProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'homeViewModelProvider',
+        name: r'aiChatViewModelProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$homeViewModelHash();
+  String debugGetCreateSourceHash() => _$aiChatViewModelHash();
 
   @$internal
   @override
-  HomeViewModel create() => HomeViewModel();
+  AiChatViewModel create() => AiChatViewModel();
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(HomeState value) {
+  Override overrideWithValue(AiChatState value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<HomeState>(value),
+      providerOverride: $SyncValueProvider<AiChatState>(value),
     );
   }
 }
 
-String _$homeViewModelHash() => r'62ad77f50785466d41f27ffebfdbdfa0a7805453';
+String _$aiChatViewModelHash() => r'cb602df2bfa4628be3bd16d5250817bb8647b961';
 
-abstract class _$HomeViewModel extends $Notifier<HomeState> {
-  HomeState build();
+abstract class _$AiChatViewModel extends $Notifier<AiChatState> {
+  AiChatState build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final ref = this.ref as $Ref<HomeState, HomeState>;
+    final ref = this.ref as $Ref<AiChatState, AiChatState>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<HomeState, HomeState>,
-              HomeState,
+              AnyNotifier<AiChatState, AiChatState>,
+              AiChatState,
               Object?,
               Object?
             >;

@@ -1,0 +1,77 @@
+{
+  "result": "0",
+  "messageId": "",
+  "message": "success",
+  "body": {
+    "global": [
+      {
+        "question": "这个项目主要使用了哪些技术栈？",
+        "answer": "本项目全栈技术方案：移动端采用 Flutter 3.22+、Riverpod 3 状态管理及 Clean Architecture（干净架构）设计，配套 ListenUiKit 风格化组件；后端基于 Spring Boot 4.0.1、Flyway 数据库版本管理与 MySQL，支持 Docker 容器化并部署于 AWS 云计算生态中。"
+      },
+      {
+        "question": "如何联系开发者 Listen？",
+        "answer": "您可以通过电子邮件 listen2code@gmail.com 取得联系，或者访问我的 GitHub 个人主页：https://github.com/listen2code。"
+      },
+      {
+        "question": "什么是 ListenCore 和 ListenUiKit？",
+        "answer": "ListenCore 是专为 Flutter 构建的企业级业务无关底座框架，包含生命周期绑定、网络库封装（Dio）以及全局路由总线；ListenUiKit 是配套的高颜值自定义 UI 库，主打深色流光极简风格。"
+      }
+    ],
+    "/home?tab=overview": [
+      {
+        "question": "这个 Overview 页面展示的核心定位是什么？",
+        "answer": "总览（Overview）定位为“资深 Android / Flutter 移动端专家 + 垂直扩展的后端与 AWS 云计算能力”。展示了开发者的核心护城河：APM 性能监控设计、高颜值跨平台研发以及全栈自走交付能力。"
+      },
+      {
+        "question": "首屏炫酷的流光界面是如何实现的？",
+        "answer": "采用 ListenUiKit 提供的深色流光微动效背景，结合 MediaQuery 动态计算与自适应卡片布局，打造出了极具科技感的现代化个人名片。"
+      }
+    ],
+    "/home?tab=aboutMe": [
+      {
+        "question": "关于 Listen 的开发年限与经验？",
+        "answer": "Listen 拥有 11 年 Android 底层与应用层开发经验（深谙 AMS/WMS/Binder 与性能调优），并具备数年 Flutter 高级跨平台和后端（SpringBoot + AWS）实战经验，定位为全面扛事的“全栈移动专家”。"
+      },
+      {
+        "question": "Listen 的日语沟通能力如何？",
+        "answer": "目前具备技术无障碍沟通能力，能够顺畅编写日文设计文档、进行 Code Review 并提出架构改修方案，正向“日本本地化技术自走”迈进。"
+      }
+    ],
+    "/home?tab=projects": [
+      {
+        "question": "这个项目列表中包含了哪些作品？",
+        "answer": "包含了 ListenCore（Flutter 核心底座）、ListenUiKit（高颜值组件库）以及 ListenPortfolioBackend（SpringBoot 后端服务）等三个主力开源/实战库，旨在体现移动到后端的全栈掌控力。"
+      },
+      {
+        "question": "项目卡片中的 'TODO' 状态代表什么？",
+        "answer": "代表该项目当前处于概念设计或迭代建设阶段，旨在通过持续集成不断完善整个作品集生态。"
+      }
+    ],
+    "/home?tab=resume": [
+      {
+        "question": "这里的简历页面是如何排版渲染的？",
+        "answer": "使用 flutter_markdown_plus 库，将远程/本地 of Markdown 文本解析为带有富文本链接和语法高亮的精美页面，并支持通过 AppBar 动作一键导出为 PDF 格式。"
+      },
+      {
+        "question": "如何导出这份简历为 PDF？",
+        "answer": "点击页面右上角的 PDF 导出图标，App 会将当前的 Markdown 内容排版转换，拉起系统打印预览或直接保存为本地 PDF 文件。"
+      }
+    ],
+    "/settings": [
+      {
+        "question": "这个设置页面有哪些可交互的选项？",
+        "answer": "支持切换主题模式（Light/Dark）、选择语言种类（简体中文/English/日本語）、启用 Material 3 动态配色（Dynamic Color），以及开启开发者性能监控浮窗。"
+      },
+      {
+        "question": "性能监控看板 (Performance Dashboard) 是什么？",
+        "answer": "这是内置在 ListenCore 底座中的 APM 性能工具，可实时绘制 FPS 波形图、记录主线程 Build/Raster 耗时并对大网络请求的拦截做时延 and 包大小解析。"
+      }
+    ],
+    "/crash_logs": [
+      {
+        "question": "异常日志收集在 Flutter 是如何捕获的？",
+        "answer": "通过 ListenCore 中的 `Core.run` 托管方法，全局注册 `PlatformDispatcher.onError` 与 `FlutterError.onError`。当发生未捕获异常时，自动生成带有 Trace Telemetry 的堆栈日志并保存至沙盒，提供一键查看和 analysis 功能。"
+      }
+    ]
+  }
+}
