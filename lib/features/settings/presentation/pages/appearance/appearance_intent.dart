@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:listen_core/core.dart';
+
 import '../../../../../shared/shared.dart';
 
 part 'appearance_intent.freezed.dart';
@@ -26,7 +27,7 @@ class AppearanceIntent extends BaseIntent with _$AppearanceIntent {
     });
     MviPlaybackRegistry.register('AppearanceIntent', 'setAccentColor', (args) {
       final colorStr = args['color'] ?? '';
-      final value = int.tryParse(colorStr.replaceAll(RegExp(r'[^\dxa-fA-F]'), '')) ?? Colors.blue.value;
+      final value = int.tryParse(colorStr.replaceAll(RegExp(r'[^\dxa-fA-F]'), '')) ?? Colors.blue.toARGB32();
       return AppearanceIntent.setAccentColor(Color(value));
     });
     MviPlaybackRegistry.register('AppearanceIntent', 'setFontSize', (args) {
@@ -44,7 +45,7 @@ class AppearanceIntent extends BaseIntent with _$AppearanceIntent {
     );
     MviPlaybackRegistry.register('AppearanceIntent', 'showColorPicker', (args) {
       final colorStr = args['initialColor'] ?? '';
-      final value = int.tryParse(colorStr.replaceAll(RegExp(r'[^\dxa-fA-F]'), '')) ?? Colors.blue.value;
+      final value = int.tryParse(colorStr.replaceAll(RegExp(r'[^\dxa-fA-F]'), '')) ?? Colors.blue.toARGB32();
       return AppearanceIntent.showColorPicker(Color(value));
     });
   }
