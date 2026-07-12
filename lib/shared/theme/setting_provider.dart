@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:listen_core/core.dart';
-import 'package:listen_portfolio_flutter/shared/shared.dart';
+import '../shared.dart';
 
 /// Font size options for the app
 enum AppFontSize {

@@ -187,7 +187,7 @@ class FirebaseNotificationServiceImpl implements INotificationService {
         eventBus.fire(
           CommonEvent<Uri>(
             DeepLinkManager.deepLinkEventKey,
-            data: Uri.parse('listen://settings?check_update=false'),
+            data: Uri.parse('listen://settings?check_update=true'),
             sticky: true,
             autoClear: true,
           ),

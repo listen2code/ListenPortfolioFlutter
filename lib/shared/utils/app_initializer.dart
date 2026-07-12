@@ -4,8 +4,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_core/core.dart';
-import 'package:listen_portfolio_flutter/features/auth/presentation/provider/auth_provider.dart';
-import 'package:listen_portfolio_flutter/shared/shared.dart';
+import '../../features/auth/presentation/provider/auth_provider.dart';
+import '../shared.dart';
 import 'package:listen_uikit/uikit.dart';
 
 import '../services/iap/iap_service_impl.dart';
@@ -42,7 +42,7 @@ class AppInitializer {
     await Core.init(
       CoreConfig(
         // Storage Configuration
-        storagePrefix: "${AppConstants.appName}_",
+        storagePrefix: '${AppConstants.appName}_',
         // Inject Core Architecture capability providers
         initialProviders: [
           const LoadingProviderImpl(),
@@ -93,7 +93,7 @@ class AppInitializer {
           );
           return result == true;
         },
-        networkConfig: NetworkConfig(
+        networkConfig: const NetworkConfig(
           visitorPaths: [
             '/v1/auth/signUp',
             '/v1/auth/login',
