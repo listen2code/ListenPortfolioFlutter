@@ -11,6 +11,9 @@ part 'splash_view_model.g.dart';
 
 @riverpod
 class SplashViewModel extends _$SplashViewModel with ViewModelMixin<SplashState, SplashIntent> {
+  /// Allows tests to override the artificial splash screen delay.
+  static Duration splashDelay = const Duration(seconds: 2);
+
   @override
   SplashState build() => const SplashState();
 
@@ -27,7 +30,7 @@ class SplashViewModel extends _$SplashViewModel with ViewModelMixin<SplashState,
 
   Future<void> _onInit() async {
     // Artificial delay for splash screen branding
-    await Future<void>.delayed(const Duration(seconds: 2));
+    await Future<void>.delayed(splashDelay);
     emitEffect(NavigationEffect(target: Routes.home, isReplace: true));
   }
 }

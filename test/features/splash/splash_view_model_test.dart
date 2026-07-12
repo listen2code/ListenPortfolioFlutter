@@ -19,6 +19,7 @@ void main() {
     setUp(() async {
       SharedPreferences.setMockInitialValues({});
       await SpUtil.init(prefix: 'test_');
+      SplashViewModel.splashDelay = Duration.zero; // Bypass delay for tests
 
       container = ProviderContainer();
       // Keep provider alive during the 2s artificial delay
@@ -33,6 +34,7 @@ void main() {
       // Wait for any pending async operations before disposing
       await Future.delayed(Duration(milliseconds: 100));
       container.dispose();
+      SplashViewModel.splashDelay = const Duration(seconds: 2); // Restore default
     });
 
     group('Initial State', () {

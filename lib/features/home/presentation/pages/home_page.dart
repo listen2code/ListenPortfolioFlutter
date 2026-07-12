@@ -48,7 +48,7 @@ class HomePage extends ConsumerWidget {
               ),
             ]
           : null,
-      onInterceptBack: () {
+      onInterceptBack: () async {
         if (state.currentTab != HomeTab.overview) {
           viewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.overview));
         } else {
@@ -57,6 +57,7 @@ class HomePage extends ConsumerWidget {
             _lastPressedAt = now;
             CommonToast.show(I18nKeys.pressBackAgainToExit.tr);
           } else {
+            await LocalMockServer.stop();
             SystemNavigator.pop();
           }
         }

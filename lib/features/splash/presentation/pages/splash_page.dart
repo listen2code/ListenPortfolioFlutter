@@ -20,11 +20,9 @@ class SplashPage extends ConsumerWidget {
       // Handle UI-related lifecycle logic via the new parameter
       lifecycle: _SplashLifecycle(context),
       body: (context, child, viewModel, state) {
-        final accentColor = context.accentColor;
-
-        return Scaffold(
-          backgroundColor: context.theme.scaffoldBackgroundColor,
-          body: Center(
+        return Material(
+          color: context.theme.scaffoldBackgroundColor,
+          child: Center(
             // Use TweenAnimationBuilder to handle fade animation without manually managing AnimationController
             child: TweenAnimationBuilder<double>(
               tween: Tween(begin: 0.0, end: 1.0),
@@ -42,7 +40,7 @@ class SplashPage extends ConsumerWidget {
                       R.imagesIcLauncherAdaptiveFore,
                       width: 120,
                       height: 120,
-                      color: accentColor,
+                      color: context.accentColor,
                       semanticLabel: I18nKeys.appLogoSemanticLabel.tr,
                     ),
                   ),
@@ -53,7 +51,7 @@ class SplashPage extends ConsumerWidget {
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.w300,
-                      color: accentColor,
+                      color: context.accentColor,
                       letterSpacing: 1.2,
                     ),
                   ),
