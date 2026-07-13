@@ -31,8 +31,25 @@ class _GlobalAiChatOverlayState extends ConsumerState<GlobalAiChatOverlay> with 
   final TextEditingController _inputController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
 
+  void _onRouteChanged() {
+    if (mounted) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          setState(() {});
+        }
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    AppNav.routeChangeNotifier.addListener(_onRouteChanged);
+  }
+
   @override
   void dispose() {
+    AppNav.routeChangeNotifier.removeListener(_onRouteChanged);
     _inputController.dispose();
     _scrollController.dispose();
     super.dispose();
@@ -41,7 +58,7 @@ class _GlobalAiChatOverlayState extends ConsumerState<GlobalAiChatOverlay> with 
   // Check if current route should show the floating AI button
   bool _shouldShowButton() {
     final route = AppNav.currentRouteName;
-    if (route == null || route == '/splash' || route == '/login' || route == '/signUp') {
+    if (route == null || route == Routes.root || route == Routes.login || route == Routes.signUp) {
       return false;
     }
     return true;

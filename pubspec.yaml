@@ -16,7 +16,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  listen_core: ^0.0.32
+  listen_core: ^0.0.34
   listen_uikit: ^0.0.15
   dynamic_color: ^1.8.1
 

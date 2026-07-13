@@ -46,10 +46,7 @@ class AiChatViewModel extends _$AiChatViewModel with ViewModelMixin<AiChatState,
       ref.execute<AiPresetQaResponseModel?, String>(getPresetQaUseCaseProvider),
       onSuccess: (data) {
         if (data != null) {
-          updateState(state.copyWith(
-            allPresetQAs: data.qas,
-            errorMessage: null,
-          ));
+          updateState(state.copyWith(allPresetQAs: data.qas, errorMessage: null));
           updatePresetQuestions();
           if (state.messages.isEmpty) {
             _addWelcomeMessage();
@@ -88,9 +85,7 @@ class AiChatViewModel extends _$AiChatViewModel with ViewModelMixin<AiChatState,
 
   void _addWelcomeMessage() {
     final isVisitor = state.mode == 'visitor';
-    final welcomeText = isVisitor
-        ? I18nKeys.aiChatWelcomeVisitor.tr
-        : I18nKeys.aiChatWelcomeInterviewer.tr;
+    final welcomeText = isVisitor ? I18nKeys.aiChatWelcomeVisitor.tr : I18nKeys.aiChatWelcomeInterviewer.tr;
 
     final welcomeMsg = ChatMessage(
       id: _uuid.v4(),
@@ -106,17 +101,9 @@ class AiChatViewModel extends _$AiChatViewModel with ViewModelMixin<AiChatState,
     if (text.trim().isEmpty || state.isLoading) return;
 
     // 1. Append user message
-    final userMsg = ChatMessage(
-      id: _uuid.v4(),
-      role: 'user',
-      content: text,
-      timestamp: DateTime.now(),
-    );
+    final userMsg = ChatMessage(id: _uuid.v4(), role: 'user', content: text, timestamp: DateTime.now());
 
-    updateState(state.copyWith(
-      messages: [...state.messages, userMsg],
-      isLoading: true,
-    ));
+    updateState(state.copyWith(messages: [...state.messages, userMsg], isLoading: true));
 
     // 2. Check local preset QA knowledge base for matches to save token usage
     final localReply = _matchLocalPresetQA(text);
@@ -128,10 +115,7 @@ class AiChatViewModel extends _$AiChatViewModel with ViewModelMixin<AiChatState,
         content: localReply,
         timestamp: DateTime.now(),
       );
-      updateState(state.copyWith(
-        messages: [...state.messages, modelMsg],
-        isLoading: false,
-      ));
+      updateState(state.copyWith(messages: [...state.messages, modelMsg], isLoading: false));
       return;
     }
 
@@ -153,10 +137,7 @@ class AiChatViewModel extends _$AiChatViewModel with ViewModelMixin<AiChatState,
             content: response.reply,
             timestamp: DateTime.now(),
           );
-          updateState(state.copyWith(
-            messages: [...state.messages, modelMsg],
-            isLoading: false,
-          ));
+          updateState(state.copyWith(messages: [...state.messages, modelMsg], isLoading: false));
         }
       },
       onFailure: (failure) {
@@ -167,20 +148,25 @@ class AiChatViewModel extends _$AiChatViewModel with ViewModelMixin<AiChatState,
           content: '抱歉，网络连接失败：${failure.message}。您可以点击刚才的问题重试，或尝试使用预设推荐问题获取离线回答。',
           timestamp: DateTime.now(),
         );
-        updateState(state.copyWith(
-          messages: state.messages.map((m) => m.id == userMsg.id ? failedMsg : m).toList() + [modelErrorMsg],
-          isLoading: false,
-        ));
+        updateState(
+          state.copyWith(
+            messages:
+                state.messages.map((m) => m.id == userMsg.id ? failedMsg : m).toList() + [modelErrorMsg],
+            isLoading: false,
+          ),
+        );
       },
     );
   }
 
   void _onChangeMode(String newMode) {
     if (state.mode == newMode) return;
-    updateState(state.copyWith(
-      mode: newMode,
-      messages: [], // Reset history for new context
-    ));
+    updateState(
+      state.copyWith(
+        mode: newMode,
+        messages: [], // Reset history for new context
+      ),
+    );
     _addWelcomeMessage();
   }
 
@@ -193,12 +179,12 @@ class AiChatViewModel extends _$AiChatViewModel with ViewModelMixin<AiChatState,
 
   String _getCurrentPath() {
     final currentRoute = AppNav.currentRouteName ?? '';
-    if (currentRoute == '/home' || currentRoute == '/') {
+    if (currentRoute == Routes.home || currentRoute == '/') {
       try {
         final homeState = ref.read(homeViewModelProvider);
-        return '/home?tab=${homeState.currentTab.name}';
+        return '${Routes.home}?tab=${homeState.currentTab.name}';
       } catch (_) {
-        return '/home?tab=overview';
+        return '${Routes.home}?tab=overview';
       }
     }
     return currentRoute;
@@ -243,7 +229,24 @@ class AiChatViewModel extends _$AiChatViewModel with ViewModelMixin<AiChatState,
     final List<String> keywords = [];
 
     // Simple keyword extraction for project-specific contexts
-    const keyVocabs = ['技术栈', '经历', '年限', '日语', '作品', 'pdf', '简历', '联系', 'listencore', 'listenuikit', '架构', '设置', '性能', 'apm', '异常', '日志'];
+    const keyVocabs = [
+      '技术栈',
+      '经历',
+      '年限',
+      '日语',
+      '作品',
+      'pdf',
+      '简历',
+      '联系',
+      'listencore',
+      'listenuikit',
+      '架构',
+      '设置',
+      '性能',
+      'apm',
+      '异常',
+      '日志',
+    ];
     for (final vocab in keyVocabs) {
       if (cleanText.contains(vocab)) {
         keywords.add(vocab);

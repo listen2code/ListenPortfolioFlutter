@@ -81,6 +81,9 @@ class AuthLocalDataSource implements CacheDataSource<UserModel> {
     }
   }
 
+  /// Backward compatibility wrapper for cache.
+  Future<void> cacheUser(UserModel? user) => cache(user);
+
   /// Get cached user data
   @override
   Future<UserModel?> getCached() async {
@@ -99,6 +102,9 @@ class AuthLocalDataSource implements CacheDataSource<UserModel> {
       return null;
     }
   }
+
+  /// Backward compatibility wrapper for getCached.
+  Future<UserModel?> getCachedUser() => getCached();
 
   /// Clear all cached authentication data.
   Future<void> clearAuthData() async {
