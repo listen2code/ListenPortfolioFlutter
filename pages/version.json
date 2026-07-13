@@ -1,10 +1,10 @@
 {
-  "version": "1.0.80",
+  "version": "1.0.81",
   "buildNumber": 1,
   "url": "https://play.google.com/store/apps/details?id=com.listen.portfolio.listen_portfolio_flutter",
   "changelog": {
     "zh": "",
-    "en": "Add: AI Chat",
+    "en": "Fix: AI Chat",
     "ja": ""
   }
 }
