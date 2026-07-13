@@ -14,22 +14,15 @@ class AiChatRepositoryImpl with BaseRepository implements AiChatRepository {
   AiChatRepositoryImpl({required this.remoteDataSource, required this.localDataSource});
 
   @override
-  Future<Either<Failure, AiChatResponseModel?>> sendChatMessage({
-    required AiChatRequestModel? param,
-  }) async {
-    return await safeCall<AiChatResponseModel>(
-      call: () => remoteDataSource.sendChatMessage(param),
-    );
+  Future<Either<Failure, AiChatResponseModel?>> sendChatMessage({required AiChatRequestModel? param}) async {
+    return await safeCall<AiChatResponseModel>(call: () => remoteDataSource.sendChatMessage(param));
   }
 
   @override
   Future<Either<Failure, AiPresetQaResponseModel?>> getPresetQAs({String? route}) async {
     return await safeCall<AiPresetQaResponseModel>(
       call: () => remoteDataSource.getPresetQAs(route),
-      saveCache: (response) async {
-        await localDataSource.cachePresetQAs(response);
-      },
-      getCached: () => localDataSource.getCachedPresetQAs(),
+      cacheDataSource: localDataSource,
     );
   }
 }

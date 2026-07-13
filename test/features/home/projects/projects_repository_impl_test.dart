@@ -89,7 +89,7 @@ void main() {
       when(
         () => mockRemote.getProjects(),
       ).thenAnswer((_) async => successResponse);
-      when(() => mockLocal.cacheProjects(any())).thenAnswer((_) async {});
+      when(() => mockLocal.cache(any())).thenAnswer((_) async {});
 
       // Act
       final result = await repository.getProjects();
@@ -103,7 +103,7 @@ void main() {
         expect(data.first.title, testProjects.first.title);
       });
       verify(() => mockRemote.getProjects()).called(1);
-      verify(() => mockLocal.cacheProjects(any())).called(1);
+      verify(() => mockLocal.cache(any())).called(1);
     });
 
     test('should cache project list after successful remote fetch', () async {
@@ -111,13 +111,13 @@ void main() {
       when(
         () => mockRemote.getProjects(),
       ).thenAnswer((_) async => successResponse);
-      when(() => mockLocal.cacheProjects(any())).thenAnswer((_) async {});
+      when(() => mockLocal.cache(any())).thenAnswer((_) async {});
 
       // Act
       await repository.getProjects();
 
       // Assert — cache must be written exactly once
-      verify(() => mockLocal.cacheProjects(any())).called(1);
+      verify(() => mockLocal.cache(any())).called(1);
     });
 
     test(
@@ -128,7 +128,7 @@ void main() {
           () => mockRemote.getProjects(),
         ).thenAnswer((_) async => failureResponse);
         when(
-          () => mockLocal.getCachedProjects(),
+          () => mockLocal.getCached(),
         ).thenAnswer((_) async => testProjects);
 
         // Act
@@ -140,7 +140,7 @@ void main() {
           (failure) => fail('Expected Right but got Left: $failure'),
           (data) => expect(data.length, testProjects.length),
         );
-        verify(() => mockLocal.getCachedProjects()).called(1);
+        verify(() => mockLocal.getCached()).called(1);
       },
     );
 
@@ -151,7 +151,7 @@ void main() {
         when(
           () => mockRemote.getProjects(),
         ).thenAnswer((_) async => failureResponse);
-        when(() => mockLocal.getCachedProjects()).thenAnswer((_) async => null);
+        when(() => mockLocal.getCached()).thenAnswer((_) async => null);
 
         // Act
         final result = await repository.getProjects();
@@ -169,7 +169,7 @@ void main() {
           () => mockRemote.getProjects(),
         ).thenThrow(Exception('Connection refused'));
         when(
-          () => mockLocal.getCachedProjects(),
+          () => mockLocal.getCached(),
         ).thenAnswer((_) async => testProjects);
 
         // Act
@@ -193,7 +193,7 @@ void main() {
           () => mockRemote.getProjects(),
         ).thenAnswer((_) async => sessionTimeoutResponse);
         when(
-          () => mockLocal.getCachedProjects(),
+          () => mockLocal.getCached(),
         ).thenAnswer((_) async => testProjects);
 
         // Act
@@ -217,7 +217,7 @@ void main() {
       when(
         () => mockRemote.getProjects(),
       ).thenAnswer((_) async => emptyResponse);
-      when(() => mockLocal.cacheProjects(any())).thenAnswer((_) async {});
+      when(() => mockLocal.cache(any())).thenAnswer((_) async {});
 
       // Act
       final result = await repository.getProjects();

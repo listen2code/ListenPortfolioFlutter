@@ -179,7 +179,7 @@ async function main() {
     // Populate title, body, and data fields
     message.notification = {
       title: options.title || "Listen Portfolio Update",
-      body: options.body || "A new feature or version is available!"
+      body: options.body || appDesc
     };
 
     if (options.link) {

@@ -5,8 +5,9 @@ import 'package:listen_core/core.dart';
 import '../../../../shared/shared.dart';
 import '../models/about_me_model.dart';
 
-class AboutMeLocalDataSource {
-  Future<void> cacheAboutMe(AboutMeModel data) async {
+class AboutMeLocalDataSource implements CacheDataSource<AboutMeModel> {
+  @override
+  Future<void> cache(AboutMeModel data) async {
     try {
       await SpUtil.put(AppConstants.aboutMeDataKey, json.encode(data.toJson()));
     } catch (e) {
@@ -14,7 +15,8 @@ class AboutMeLocalDataSource {
     }
   }
 
-  Future<AboutMeModel?> getCachedAboutMe() async {
+  @override
+  Future<AboutMeModel?> getCached() async {
     try {
       final jsonString = SpUtil.getString(AppConstants.aboutMeDataKey);
       if (jsonString != null) {

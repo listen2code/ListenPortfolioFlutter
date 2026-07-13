@@ -1,16 +1,18 @@
 import 'package:listen_core/core.dart';
 import '../../../../shared/shared.dart';
 
-class ResumeLocalDataSource {
-  Future<void> cacheResume(String markdownContent) async {
+class ResumeLocalDataSource implements CacheDataSource<String> {
+  @override
+  Future<void> cache(String data) async {
     try {
-      await SpUtil.put(AppConstants.resumeKey, markdownContent);
+      await SpUtil.put(AppConstants.resumeKey, data);
     } catch (e) {
       appLogger.e('ResumeLocalDataSource: Failed to cache resume: $e');
     }
   }
 
-  Future<String?> getCachedResume() async {
+  @override
+  Future<String?> getCached() async {
     try {
       return SpUtil.getString(AppConstants.resumeKey);
     } catch (e) {

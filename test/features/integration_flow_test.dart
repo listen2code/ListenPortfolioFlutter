@@ -361,15 +361,20 @@ void main() {
         // Wait for login request and loader transition
         await tester.pump(); // Start loading
         await tester.pump(const Duration(milliseconds: 100)); // Process network
-        await tester.pumpAndSettle(); // Settle transition back to HomePage
+        await tester.pump(const Duration(seconds: 1));
+        await tester.pump(const Duration(seconds: 1));
 
         // 11. Verify we returned successfully to the HomePage
         expect(find.byType(HomePage), findsOneWidget);
 
+        // Dismiss the login success toast to avoid pumpAndSettle timer timeout
+        CommonToast.hide();
+
         // 12. Open Navigation Drawer again to verify user details updated
         final ScaffoldState scaffoldStateAfterLogin = tester.firstState(find.byType(Scaffold));
         scaffoldStateAfterLogin.openDrawer();
-        await tester.pumpAndSettle();
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 1));
 
         // 13. Verify profile info matches name/email from login.json or user.json
         expect(find.text('Listen'), findsOneWidget);

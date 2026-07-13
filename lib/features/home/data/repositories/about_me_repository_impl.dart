@@ -25,8 +25,7 @@ class AboutMeRepositoryImpl with BaseRepository implements AboutMeRepository {
   Future<Either<Failure, AboutMeModel>> getAboutMe() async {
     return await safeCall<AboutMeModel>(
       call: () => remoteDataSource.getAboutMe(),
-      saveCache: (data) => localDataSource.cacheAboutMe(data),
-      getCached: () => localDataSource.getCachedAboutMe(),
+      cacheDataSource: localDataSource,
     );
   }
 
@@ -35,25 +34,15 @@ class AboutMeRepositoryImpl with BaseRepository implements AboutMeRepository {
     if (resumeRemoteDataSource == null || resumeLocalDataSource == null) {
       return const Left(ServerFailure('Resume data sources not provided'));
     }
-    try {
-      final result = await resumeRemoteDataSource!.getResumeMarkdown();
-      await resumeLocalDataSource!.cacheResume(result);
-      return Right(result);
-    } catch (e, stackTrace) {
-      appLogger.e(
-        'Failed to fetch resume markdown, attempting to load from cache',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      try {
-        final cached = await resumeLocalDataSource!.getCachedResume();
-        if (cached != null && cached.isNotEmpty) {
-          return Right(cached);
-        }
-      } catch (cacheError) {
-        appLogger.e('Failed to load cached resume', error: cacheError);
-      }
-      return Left(ServerFailure(e.toString()));
-    }
+    return await safeCall<String>(
+      call: () async {
+        final result = await resumeRemoteDataSource!.getResumeMarkdown();
+        return BaseResponseModel<String>(
+          result: ApiResult.success,
+          body: result,
+        );
+      },
+      cacheDataSource: resumeLocalDataSource,
+    );
   }
 }

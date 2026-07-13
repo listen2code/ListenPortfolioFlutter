@@ -1,12 +1,13 @@
 import 'dart:convert';
 
 import 'package:listen_core/core.dart';
-import '../models/user_model.dart';
+
 import '../../../../shared/shared.dart';
+import '../models/user_model.dart';
 
 /// Local data source for authentication.
 /// Handles caching of auth token, refresh token, and user data.
-class AuthLocalDataSource {
+class AuthLocalDataSource implements CacheDataSource<UserModel> {
   AuthLocalDataSource();
 
   /// Cache authentication token securely.
@@ -67,7 +68,8 @@ class AuthLocalDataSource {
   }
 
   /// Cache user data using SpUtil.
-  Future<void> cacheUser(UserModel? user) async {
+  @override
+  Future<void> cache(UserModel? user) async {
     appLogger.d('AuthLocalDataSource: Starting to cache user data');
     try {
       final userJson = json.encode(user?.toJson());
@@ -80,7 +82,8 @@ class AuthLocalDataSource {
   }
 
   /// Get cached user data
-  Future<UserModel?> getCachedUser() async {
+  @override
+  Future<UserModel?> getCached() async {
     appLogger.d('AuthLocalDataSource: Fetching user data from cache');
     try {
       final userJson = SpUtil.getString(AppConstants.userDataKey);

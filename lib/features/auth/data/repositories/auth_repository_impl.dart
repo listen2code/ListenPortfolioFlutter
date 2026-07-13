@@ -59,8 +59,7 @@ class AuthRepositoryImpl with BaseRepository implements AuthRepository {
   Future<Either<Failure, UserModel?>> getCurrentUser({required GetCurrentUserRequestModel? param}) async {
     return await safeCall<UserModel>(
       call: () => remoteDataSource.getUserById(param?.userId ?? ''),
-      saveCache: (user) => localDataSource.cacheUser(user),
-      getCached: () => localDataSource.getCachedUser(),
+      cacheDataSource: localDataSource,
     );
   }
 
@@ -72,7 +71,7 @@ class AuthRepositoryImpl with BaseRepository implements AuthRepository {
       return const Left(AuthFailure('No refresh token available'));
     }
 
-    // 2. Request new credentials and persist them using the unified safeCall pipeline
+    // 2. Request new credentials and persist them
     final result = await safeCall<LoginModel>(
       call: () => remoteDataSource.refreshToken(storedRefreshToken),
       saveCache: (response) async {

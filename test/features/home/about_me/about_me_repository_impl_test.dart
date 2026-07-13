@@ -71,7 +71,7 @@ void main() {
       when(
         () => mockRemote.getAboutMe(),
       ).thenAnswer((_) async => successResponse);
-      when(() => mockLocal.cacheAboutMe(testAboutMe)).thenAnswer((_) async {});
+      when(() => mockLocal.cache(testAboutMe)).thenAnswer((_) async {});
 
       // Act
       final result = await repository.getAboutMe();
@@ -85,7 +85,7 @@ void main() {
         expect(data.jobTitle, testAboutMe.jobTitle);
       });
       verify(() => mockRemote.getAboutMe()).called(1);
-      verify(() => mockLocal.cacheAboutMe(testAboutMe)).called(1);
+      verify(() => mockLocal.cache(testAboutMe)).called(1);
     });
 
     test('should cache data after successful remote fetch', () async {
@@ -93,13 +93,13 @@ void main() {
       when(
         () => mockRemote.getAboutMe(),
       ).thenAnswer((_) async => successResponse);
-      when(() => mockLocal.cacheAboutMe(testAboutMe)).thenAnswer((_) async {});
+      when(() => mockLocal.cache(testAboutMe)).thenAnswer((_) async {});
 
       // Act
       await repository.getAboutMe();
 
       // Assert — cache must be written exactly once
-      verify(() => mockLocal.cacheAboutMe(testAboutMe)).called(1);
+      verify(() => mockLocal.cache(testAboutMe)).called(1);
     });
 
     test(
@@ -110,7 +110,7 @@ void main() {
           () => mockRemote.getAboutMe(),
         ).thenAnswer((_) async => failureResponse);
         when(
-          () => mockLocal.getCachedAboutMe(),
+          () => mockLocal.getCached(),
         ).thenAnswer((_) async => testAboutMe);
 
         // Act
@@ -122,7 +122,7 @@ void main() {
           (failure) => fail('Expected Right but got Left: $failure'),
           (data) => expect(data.status, testAboutMe.status),
         );
-        verify(() => mockLocal.getCachedAboutMe()).called(1);
+        verify(() => mockLocal.getCached()).called(1);
       },
     );
 
@@ -133,7 +133,7 @@ void main() {
         when(
           () => mockRemote.getAboutMe(),
         ).thenAnswer((_) async => failureResponse);
-        when(() => mockLocal.getCachedAboutMe()).thenAnswer((_) async => null);
+        when(() => mockLocal.getCached()).thenAnswer((_) async => null);
 
         // Act
         final result = await repository.getAboutMe();
@@ -151,7 +151,7 @@ void main() {
           () => mockRemote.getAboutMe(),
         ).thenThrow(Exception('Connection refused'));
         when(
-          () => mockLocal.getCachedAboutMe(),
+          () => mockLocal.getCached(),
         ).thenAnswer((_) async => testAboutMe);
 
         // Act
@@ -175,7 +175,7 @@ void main() {
           () => mockRemote.getAboutMe(),
         ).thenAnswer((_) async => sessionTimeoutResponse);
         when(
-          () => mockLocal.getCachedAboutMe(),
+          () => mockLocal.getCached(),
         ).thenAnswer((_) async => testAboutMe);
 
         // Act

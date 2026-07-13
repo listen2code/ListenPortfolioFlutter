@@ -1,29 +1,30 @@
 import 'dart:convert';
+
 import 'package:listen_core/core.dart';
+
+import '../../../../shared/shared.dart';
 import '../models/ai_preset_qa_response_model.dart';
 
-class AiChatLocalDataSource {
+class AiChatLocalDataSource implements CacheDataSource<AiPresetQaResponseModel> {
   AiChatLocalDataSource();
 
-  static const String _presetQAsKey = 'preset_qas_cache';
-
-  Future<void> cachePresetQAs(AiPresetQaResponseModel? model) async {
+  @override
+  Future<void> cache(AiPresetQaResponseModel model) async {
     appLogger.d('AiChatLocalDataSource: Starting to cache preset QAs');
     try {
-      if (model != null) {
-        final jsonStr = json.encode(model.toJson());
-        await SpUtil.put(_presetQAsKey, jsonStr);
-        appLogger.d('AiChatLocalDataSource: Preset QAs cached successfully');
-      }
+      final jsonStr = json.encode(model.toJson());
+      await SpUtil.put(AppConstants.presetQAsKey, jsonStr);
+      appLogger.d('AiChatLocalDataSource: Preset QAs cached successfully');
     } catch (e) {
       appLogger.e('AiChatLocalDataSource: Failed to cache preset QAs: $e');
     }
   }
 
-  Future<AiPresetQaResponseModel?> getCachedPresetQAs() async {
+  @override
+  Future<AiPresetQaResponseModel?> getCached() async {
     appLogger.d('AiChatLocalDataSource: Fetching preset QAs from cache');
     try {
-      final jsonStr = SpUtil.getString(_presetQAsKey);
+      final jsonStr = SpUtil.getString(AppConstants.presetQAsKey);
       if (jsonStr != null) {
         final Map<String, dynamic> decoded = json.decode(jsonStr) as Map<String, dynamic>;
         final model = AiPresetQaResponseModel.fromJson(decoded);

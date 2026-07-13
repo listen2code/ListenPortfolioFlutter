@@ -15,8 +15,7 @@ class ProjectsRepositoryImpl with BaseRepository implements ProjectsRepository {
   Future<Either<Failure, List<ProjectModel>>> getProjects() async {
     return await safeCall<List<ProjectModel>>(
       call: () => remoteDataSource.getProjects(),
-      saveCache: (projects) => localDataSource.cacheProjects(projects),
-      getCached: () => localDataSource.getCachedProjects(),
+      cacheDataSource: localDataSource,
     );
   }
 }

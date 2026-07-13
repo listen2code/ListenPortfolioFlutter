@@ -34,7 +34,8 @@ class AppConstants {
   static const String aboutMeDataKey = 'about_me';
   static const String resumeKey = 'resume';
   static const String playbackTapesListKey = 'playback_tapes_list';
-  static const String playbackTapeKey = 'playback_tape_';
+  static const String playbackTapeKey = 'playback_tape';
+  static const String presetQAsKey = 'preset_qas';
 
   // Common keys
   static const String appName = 'lPortfolio';

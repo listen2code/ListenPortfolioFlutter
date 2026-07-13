@@ -114,7 +114,7 @@ void main() {
           () => mockRemoteDataSource.getUserById(any()),
         ).thenAnswer((_) async => testApiResponse);
         when(
-          () => mockLocalDataSource.cacheUser(any()),
+          () => mockLocalDataSource.cache(any()),
         ).thenAnswer((_) async => {});
 
         // Act
@@ -125,7 +125,7 @@ void main() {
         // Assert
         expect(result.getRight().toNullable(), testUserModel);
         verify(() => mockRemoteDataSource.getUserById(testUserId)).called(1);
-        verify(() => mockLocalDataSource.cacheUser(testUserModel)).called(1);
+        verify(() => mockLocalDataSource.cache(testUserModel)).called(1);
       },
     );
 
@@ -137,7 +137,7 @@ void main() {
           () => mockRemoteDataSource.getUserById(any()),
         ).thenAnswer((_) async => failureResponse);
         when(
-          () => mockLocalDataSource.getCachedUser(),
+          () => mockLocalDataSource.getCached(),
         ).thenAnswer((_) async => testUserModel);
 
         // Act
@@ -147,7 +147,7 @@ void main() {
 
         // Assert
         expect(result.getRight().toNullable(), testUserModel);
-        verify(() => mockLocalDataSource.getCachedUser()).called(1);
+        verify(() => mockLocalDataSource.getCached()).called(1);
       },
     );
 
@@ -159,7 +159,7 @@ void main() {
           () => mockRemoteDataSource.getUserById(any()),
         ).thenAnswer((_) async => failureResponse);
         when(
-          () => mockLocalDataSource.getCachedUser(),
+          () => mockLocalDataSource.getCached(),
         ).thenAnswer((_) async => null);
 
         // Act
@@ -169,7 +169,7 @@ void main() {
 
         // Assert
         expect(result.isLeft(), true);
-        verify(() => mockLocalDataSource.getCachedUser()).called(1);
+        verify(() => mockLocalDataSource.getCached()).called(1);
       },
     );
   });

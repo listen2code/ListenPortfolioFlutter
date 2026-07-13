@@ -4,8 +4,10 @@ import 'package:listen_core/core.dart';
 import '../models/project_model.dart';
 import '../../../../shared/shared.dart';
 
-class ProjectsLocalDataSource {
-  Future<void> cacheProjects(List<ProjectModel> projects) async {
+class ProjectsLocalDataSource implements CacheDataSource<List<ProjectModel>> {
+
+  @override
+  Future<void> cache(List<ProjectModel> projects) async {
     try {
       final jsonString = json.encode(projects.map((e) => e.toJson()).toList());
       await SpUtil.put(AppConstants.projectsDataKey, jsonString);
@@ -14,7 +16,8 @@ class ProjectsLocalDataSource {
     }
   }
 
-  Future<List<ProjectModel>?> getCachedProjects() async {
+  @override
+  Future<List<ProjectModel>?> getCached() async {
     try {
       final jsonString = SpUtil.getString(AppConstants.projectsDataKey);
       if (jsonString != null) {
