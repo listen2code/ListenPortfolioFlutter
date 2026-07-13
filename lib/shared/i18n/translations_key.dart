@@ -44,6 +44,9 @@ class I18nKeys {
   static const String aiChatWelcomeVisitor = 'Welcome! I am Listen\'s AI Agent. I can answer questions about the current page, Listen\'s experience, and the project architecture.';
   static const String aiChatWelcomeInterviewer = 'Let\'s start the mock technical interview! I will ask you questions based on Listen\'s experience. Feel free to answer or ask for feedback.';
   static const String aiPresetQuestions = 'Preset Questions';
+  static const String aiChatLoadFailed = 'Failed to load QAs: %s';
+  static const String aiChatSendFailed = 'Failed to send';
+  static const String aiChatNetworkError = 'Sorry, network connection failed: %s. You can click the question to retry, or try recommended preset questions for offline answers.';
 
   // Custom Color
   static const String customColor = 'Custom Color';

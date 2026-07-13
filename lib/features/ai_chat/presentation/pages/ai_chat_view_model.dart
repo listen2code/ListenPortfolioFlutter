@@ -54,7 +54,9 @@ class AiChatViewModel extends _$AiChatViewModel with ViewModelMixin<AiChatState,
         }
       },
       onFailure: (failure) {
-        updateState(state.copyWith(errorMessage: 'Failed to load QAs: ${failure.message}'));
+        updateState(state.copyWith(
+          errorMessage: I18nKeys.aiChatLoadFailed.trArgs([failure.message]),
+        ));
       },
     );
   }
@@ -145,7 +147,7 @@ class AiChatViewModel extends _$AiChatViewModel with ViewModelMixin<AiChatState,
         final modelErrorMsg = ChatMessage(
           id: _uuid.v4(),
           role: 'model',
-          content: '抱歉，网络连接失败：${failure.message}。您可以点击刚才的问题重试，或尝试使用预设推荐问题获取离线回答。',
+          content: I18nKeys.aiChatNetworkError.trArgs([failure.message]),
           timestamp: DateTime.now(),
         );
         updateState(

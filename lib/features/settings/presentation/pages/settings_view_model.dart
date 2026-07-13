@@ -17,16 +17,12 @@ part 'settings_view_model.g.dart';
 class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<SettingsState, SettingsIntent> {
   @override
   SettingsState build() {
-    // Load persisted notifications setting
-    final enabled = SpUtil.getBool(AppConstants.notificationsKey, defaultValue: true);
-    final isDevMode = SpUtil.getBool(AppConstants.developerModeKey, defaultValue: false);
-
     return SettingsState(
       currentLanguage: settingManager.language,
       currentEnv: AppEnv.currentEnv,
-      notificationsEnabled: enabled,
+      notificationsEnabled: SpUtil.getBool(AppConstants.notificationsKey, defaultValue: true),
       isLogOverlayShowing: LogOverlayManager.isShowingNotifier.value,
-      isDeveloperMode: isDevMode,
+      isDeveloperMode: SpUtil.getBool(AppConstants.developerModeKey, defaultValue: false),
     );
   }
 
