@@ -94,7 +94,9 @@ class MyApp extends StatelessWidget {
               // also passes through AppNav.onGenerateRoute and ZoneManager.runPage.
               initialRoute: Routes.root,
               builder: (context, child) {
-                return GlobalAiChatOverlay(child: child!);
+                // Temporarily bypass AI Chat Overlay while preserving the code
+                return child!;
+                // return GlobalAiChatOverlay(child: child!);
               },
             );
           },
