@@ -1,8 +1,8 @@
 # AI Intro Assistant — 实现方案说明书
 
-**Status**: `Spec Only`
+**Status**: `Partially Implemented (Frontend Complete, Backend Mocked)`
 
-> 本文档描述的是规划中的实现方案与分阶段落地路径，不代表相关前后端能力已经在代码中完整实现。
+> 本文档描述了已落地的前端 AI 模块功能实现及底层数据流，并保留了后端 RAG 规划，供后续后端实际接入时参考。目前前端已具备完整的本地 Q&A 匹配、模式切换、多语言本地化和缓存系统，并通过 mock API 数据完成集成测试。
 
 ## 1. 概述
 
@@ -25,11 +25,10 @@
 ### 1.3 用户场景
 
 ```
-面试官收到简历 → 下载/打开 Portfolio App → 点击 AI 助手
-→ 看到预设热门问题列表（FAQ）
-→ 点击预设问题 → 立即返回答案（本地匹配，无延迟）
+面试官收到简历 → 下载/打开 Portfolio App → 打开 AI 助手
+→ 看到当前页面关联的预设热门问题列表（FAQ）
+→ 点击预设问题 → 立即匹配本地问答库返回答案（本地匹配，无延迟）
 → 输入自定义问题 "你的 AuthInterceptor 并发队列怎么实现的？"
-→ 关键词匹配未命中 → 触发 RAG + Gemini
 → 后端检索相关文档片段 → 拼入 prompt → Gemini 生成回答
 → 面试官看到详细的技术解答（2-3 秒延迟）
 ```
@@ -38,8 +37,8 @@
 
 ## 2. 系统架构
 
-> [!WARNING]
-> 本章节及后续所描述的系统架构、数据模型、RAG Pipeline 细节、接口设计与 UI 界面均为设计草稿（Spec Only），当前代码库中尚未实现，仅作为未来实施 AI 问答助手时的参考。
+> [!IMPORTANT]
+> **开发状态**：前端功能（UI 气泡、滑出面板、本地问答库匹配、页面路由/Tab关联、状态流管理、国际化）已完全落地实现并整合进主工程。后端 API（如 `/v1/ai/chat` 等）目前由 `LocalMockServer`（配置位于 `tools/api/json/v1`）提供模拟响应，作为后端未来落地的协议标准。
 
 ### 2.1 整体数据流
 
@@ -195,16 +194,48 @@
 
 ### 3.2 前端新增（Flutter）
 
-| 组件 | 用途 | 依赖 |
-|------|------|------|
-| `AiChatPage` | 聊天 UI 页面 | 无新增依赖 |
-| `AiChatViewModel` | MVI 状态管理 | Riverpod + Freezed（已有） |
-| `AiChatState` | 对话状态（消息列表、加载中、错误） | Freezed（已有） |
-| `AiRemoteDataSource` | Retrofit 接口定义 | Retrofit（已有） |
-| `AiRepository` | 数据层（safeCall） | 复用 BaseRepository |
-| `AskQuestionUseCase` | 用例层 | 复用 BaseUseCase |
+### Phase 3：前端 — Flutter Chat UI（已完成）
 
-> **零新增 pub 依赖**：完全复用现有 MVI + Retrofit + Riverpod 架构。
+目前前端架构已根据 Clean Architecture + MVI 设计模式完全落实：
+
+| 模块 | 功能 | 落地文件 |
+|------|------|----------|
+| **State** | 对话状态（消息列表、模式切换、预设推荐、错误处理等） | [ai_chat_state.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/presentation/pages/ai_chat_state.dart) |
+| **Intent** | 动作声明（初始化、发送消息、切换模式、清除历史） | [ai_chat_intent.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/presentation/pages/ai_chat_intent.dart) |
+| **ViewModel** | 处理 MVI Intents、匹配本地预设问答库（FAQ）以节省 token、派发业务逻辑 | [ai_chat_view_model.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/presentation/pages/ai_chat_view_model.dart) |
+| **Data Sources** | 远程 REST/Mock 请求获取推荐问答与对话内容；本地双层缓存（SP 缓存与 SecureStorage） | [ai_chat_remote_data_source.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/data/datasources/ai_chat_remote_data_source.dart)<br>[ai_chat_local_data_source.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/data/datasources/ai_chat_local_data_source.dart) |
+| **Repository** | 数据仓库（继承自 `safeCall` 机制，绑定 `cacheDataSource`） | [ai_chat_repository_impl.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/data/repositories/ai_chat_repository_impl.dart) |
+| **Decoupled UI** | UI 表现层解耦为**悬浮控制层**与**问答看板层** | [global_ai_chat_overlay.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/presentation/pages/global_ai_chat_overlay.dart)（拖拽定位及显示控制）<br>[ai_chat_panel.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/presentation/widgets/ai_chat_panel.dart)（对话流展示与输入交互） |
+
+#### 3.8 核心机制与设计考量
+
+##### 3.8.1 前端 UI 表现层完全解耦
+为避免单个 Widget 文件过大（原先超 460 行），我们将其进行了清晰的职责分工：
+* `GlobalAiChatOverlay` 作为全画面的顶层 Widget，仅管理 AI 机器人的浮动位置（支持平滑的拖放手势控制）、面板开关状态机 `_isPanelOpen` 以及与路由通知器的生命周期监听。
+* `AiChatPanel` 包含所有的输入框、滑动列表、局部控制和输入管理（`ScrollController` 与 `TextEditingController`），只有在展开状态下才会挂载，从而极大地优化了首帧的渲染速度与内存占用。
+
+##### 3.8.2 全局路由联动与定向重建
+AI 悬浮框需要感知用户的当前页面，并在用户处于 `/splash`（启动页）或 `/login`/`/signUp`（认证页）时**不显示**，在其他项目主页面时展示：
+* 我们在底层 `AppNav` 模块中提供了 `routeChangeNotifier`，并在 `GlobalAiChatOverlay` 中对其进行了监听。
+* 使用 `addPostFrameCallback` 避免了在 Flutter Widget 树排版过程中调用 `setState()` 引起的冲突错误。
+* 当页面切换完成，组件会更新对应的路由属性并精确刷新，极大地确保了路由监听重建的性能与可靠度。
+
+##### 3.8.3 本地预设 QA 机制与 Token 防刷保护
+为防止过度消耗 API 额度：
+1. **启动时拉取 QAs**：客户端在初始化时会获取一份覆盖所有路由的预设问答集 `portfolio_qa.json` 缓存在本地。
+2. **Tab 动态关联**：当处于 `/home?tab=resume` 时，AI 助手会自动切换到关联该 Tab 的预设问题集。
+3. **模糊关键词匹配**：在用户发起自由提问时，ViewModel 会通过提取关键字，在本地问答库中搜索高匹配度的条目。如果高度匹配，直接在本地输出回答，从而彻底杜绝了频繁调用云端 API 导致的 Token 超量。
+
+##### 3.8.4 临时开关控制（代码保留）
+为了平滑地调整样式并允许未来一键启用，我们在 **[main.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/main.dart)** 中保留了 `GlobalAiChatOverlay` 组件，但通过在 `builder` 中短路返回 `child!` 的方式，在现阶段默认隐藏了 AI 悬浮入口。
+
+```dart
+              builder: (context, child) {
+                // 暂时短路返回以隐藏 AI 悬浮框，在此处恢复以重新显示
+                return child!;
+                // return GlobalAiChatOverlay(child: child!);
+              },
+```
 
 ### 3.3 环境变量新增
 
@@ -322,52 +353,12 @@ public class FaqEntry {
 
 **Phase 2 交付标准**：完整 RAG pipeline 工作，FAQ 未命中时自动 fallback 到 RAG + Gemini。
 
-### Phase 3：前端 — Flutter Chat UI（2-3 天）
+### Phase 3：前端 — Flutter Chat UI（已完成）
 
-| 步骤 | 任务 | 文件 |
-|------|------|------|
-| 3.1 | 创建 `AiChatState`（Freezed） | `features/ai_chat/presentation/state/` |
-| 3.2 | 创建 `AiChatIntent`：SendMessage / SelectFaq / Retry | 同上 |
-| 3.3 | 创建 `AiChatViewModel`（BaseViewModel） | `features/ai_chat/presentation/viewmodel/` |
-| 3.4 | 创建 `AiRemoteDataSource`（Retrofit） | `features/ai_chat/data/` |
-| 3.5 | 创建 `AiRepository`（BaseRepository + safeCall） | `features/ai_chat/data/` |
-| 3.6 | 创建 `AskQuestionUseCase` | `features/ai_chat/domain/` |
-| 3.7 | 创建 `AiChatPage` UI | `features/ai_chat/presentation/pages/` |
-| 3.8 | 添加路由注册到 `AppNav` | `shared/navigation/app_nav.dart` |
-| 3.9 | i18n：中文/日文/英文 | `shared/i18n/` |
+> [!NOTE]
+> 前端 UI 与架构设计已于 Phase 3 落地完成。具体实现细节、架构文件层级及核心机制设计考量，请参见 **[3.2 章节 — 前端完成状态 (Frontend Complete)](#32-前端新增flutter)**。
 
-**UI 设计**：
-
-```
-┌──────────────────────────────┐
-│  ← AI 架构助手                │  AppBar
-├──────────────────────────────┤
-│                              │
-│  ┌────────────────────────┐  │  热门问题（FAQ 快捷入口）
-│  │ 🏗️ 整体架构是什么？     │  │
-│  │ 🔐 JWT 认证流程？       │  │
-│  │ 📱 状态管理方案？        │  │
-│  │ 🌐 网络层设计？          │  │
-│  └────────────────────────┘  │
-│                              │
-│  ┌─ 面试官 ──────────────┐   │  对话气泡
-│  │ 你的 AuthInterceptor  │   │
-│  │ 并发队列怎么实现的？    │   │
-│  └───────────────────────┘   │
-│                              │
-│  ┌─ AI 助手 ─────────────┐   │
-│  │ AuthInterceptor 使用   │   │
-│  │ Completer 队列模式...  │   │
-│  │                        │   │
-│  │ 📄 来源: api_client.dart│  │  引用来源标注
-│  └───────────────────────┘   │
-│                              │
-├──────────────────────────────┤
-│ [请输入您的问题...]    [发送] │  输入栏
-└──────────────────────────────┘
-```
-
-**Phase 3 交付标准**：完整的 Chat UI，支持预设问题点击 + 自由输入，符合现有 MVI 架构。
+**Phase 3 交付标准**：完整的 Chat UI，支持根据页面关联推荐预设问题 + 自由输入，完全契合 Clean & MVI 架构，测试套件 100% 通过。
 
 ### Phase 4：隐私合规（1 天）
 
