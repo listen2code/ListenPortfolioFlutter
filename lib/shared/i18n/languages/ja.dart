@@ -134,6 +134,7 @@ final Map<String, String> ja = {
   I18nKeys.openSourceDesc: 'このアプリのソースコードはGitHubで公開されています。',
   I18nKeys.backendDevOpsTitle: 'バックエンドとDevOps',
   I18nKeys.developer: '開発者',
+  I18nKeys.developerModeEnabled: 'デベロッパーモードが有効になりました',
   I18nKeys.viewLogs: 'アプリログを確認',
   I18nKeys.resetSettings: 'すべての設定をリセット',
   I18nKeys.resetConfirmTitle: '設定をリセットしますか？',

@@ -50,13 +50,15 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
       switchEnv: _onSwitchEnv,
       toggleLogOverlay: _onToggleLogOverlay,
       checkUpdates: _onCheckUpdates,
-      buyMeCoffee: _onBuyMeCoffee,
       showEnvDialog: _onShowEnvDialog,
       showLanguageDialog: _onShowLanguageDialog,
-      shareApp: _onShareApp,
       enableDeveloperMode: _onEnableDeveloperMode,
-      rateApp: _onRateApp,
-      showLicenses: _onShowLicenses,
+      buyMeCoffee: () => emitEffect(CoffeePurchaseEffect()),
+      shareApp: () => emitEffect(
+        ShareEffect(text: '${AppConstants.appName} - ${I18nKeys.shareApp.tr}: ${AppConstants.storeShare}'),
+      ),
+      rateApp: () => emitEffect(RateAppEffect()),
+      showLicenses: () => emitEffect(ShowLicensesEffect()),
       toAppearance: () => emitEffect(NavigationEffect(target: Routes.appearance)),
       toChangePassword: () => emitEffect(NavigationEffect(target: Routes.changePassword, needLogin: true)),
       toDeleteAccount: () => emitEffect(NavigationEffect(target: Routes.deleteAccount, needLogin: true)),
@@ -70,7 +72,7 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
   Future<void> _onInit() async {
     final SettingsArguments? args = AppNav.getArgs<SettingsArguments>();
     if (args?.checkUpdate == true) {
-      handleIntent(const SettingsIntent.checkUpdates());
+      _onCheckUpdates();
     }
     await _updateCacheSize();
 
@@ -183,8 +185,8 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
       ref.execute<VersionModel, BaseParam>(checkUpdatesUseCaseProvider),
       showLoading: true,
       loadingMessage: I18nKeys.checkingUpdates.tr,
-      onSuccess: (versionModel) async {
-        await _handleVersionCheckResult(versionModel);
+      onSuccess: (versionModel) {
+        _handleVersionCheckResult(versionModel);
       },
       onFailure: (failure) {
         emitEffect(MessageEffect.error(I18nKeys.updateCheckFailed.tr));
@@ -196,7 +198,6 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
     final currentVersion = Core.packageInfo.version;
     final hasUpdate = _isNewerVersion(currentVersion, versionModel.version);
 
-    emitEffect(LoadingEffect(false));
     if (hasUpdate) {
       final localeCode = settingManager.language.locale.languageCode;
       final changelogText = versionModel.changelog[localeCode] ?? versionModel.changelog['en'] ?? '';
@@ -235,10 +236,6 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
       return remote.compareTo(current) > 0;
     }
     return false;
-  }
-
-  void _onBuyMeCoffee() {
-    emitEffect(CoffeePurchaseEffect());
   }
 
   void _onShowEnvDialog() {
@@ -298,12 +295,6 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
     );
   }
 
-  void _onShareApp() {
-    emitEffect(
-      ShareEffect(text: '${AppConstants.appName} - ${I18nKeys.shareApp.tr}: ${AppConstants.storeShare}'),
-    );
-  }
-
   void _onLogOverlayShowingChanged() {
     handleIntent(SettingsIntent.toggleLogOverlay(LogOverlayManager.isShowingNotifier.value));
   }
@@ -312,14 +303,6 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
     if (state.isDeveloperMode) return;
     updateState(state.copyWith(isDeveloperMode: true));
     await SpUtil.put(AppConstants.developerModeKey, true);
-    emitEffect(MessageEffect.info('开发者模式已开启'));
-  }
-
-  void _onRateApp() {
-    emitEffect(RateAppEffect());
-  }
-
-  void _onShowLicenses() {
-    emitEffect(ShowLicensesEffect());
+    emitEffect(MessageEffect.info(I18nKeys.developerModeEnabled.tr));
   }
 }

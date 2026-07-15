@@ -161,6 +161,7 @@ class I18nKeys {
 
   // Developer & Reset Settings
   static const String developer = 'Developer';
+  static const String developerModeEnabled = 'Developer mode enabled';
   static const String viewLogs = 'View App Logs';
   static const String resetSettings = 'Reset All Settings';
   static const String resetConfirmTitle = 'Reset Settings?';

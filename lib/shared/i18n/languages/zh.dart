@@ -134,6 +134,7 @@ final Map<String, String> zh = {
   I18nKeys.openSourceDesc: '本应用的所有源码已在 GitHub 开源，欢迎探索。',
   I18nKeys.backendDevOpsTitle: '后端与运维',
   I18nKeys.developer: '开发者',
+  I18nKeys.developerModeEnabled: '开发者模式已开启',
   I18nKeys.viewLogs: '查看应用日志',
   I18nKeys.resetSettings: '重置所有设置',
   I18nKeys.resetConfirmTitle: '重置设置？',

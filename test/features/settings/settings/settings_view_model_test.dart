@@ -437,7 +437,7 @@ void main() {
         expect(SpUtil.getBool('developer_mode'), isTrue);
         expect(
           emittedEffects.any(
-            (effect) => effect is MessageEffect && effect.message == '开发者模式已开启',
+            (effect) => effect is MessageEffect && effect.message == I18nKeys.developerModeEnabled.tr,
           ),
           isTrue,
         );
