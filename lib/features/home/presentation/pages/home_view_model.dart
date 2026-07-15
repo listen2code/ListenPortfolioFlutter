@@ -19,8 +19,8 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
   @override
   void onReady() {
     super.onReady();
-    // Trigger in-app review check on app startup
-    ReviewService().checkAndPromptReview();
+    // Trigger in-app review check on app startup via effect
+    emitEffect(RateAppEffect(action: RateAppAction.checkAndPrompt));
 
     // Subscribe to unified deep link event via core EventBus
     subscribeEvent<CommonEvent<Uri>>(

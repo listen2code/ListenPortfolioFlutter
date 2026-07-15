@@ -21,13 +21,12 @@ void main() {
       // Wire up the delegate to persist recorded tapes using settings repository
       MviPlaybackRecorder.saveTapeDelegate = (tapeKey, steps, name, timestamp) async {
         final repository = container.read(playbackTapeRepositoryProvider);
-        final metadata = PlaybackTapeMetadata(
+        final result = await repository.saveTape(tapeKey, steps, PlaybackTapeMetadata(
           key: tapeKey,
           name: name,
           timestamp: timestamp,
           steps: steps.length,
-        );
-        final result = await repository.saveTape(tapeKey, steps, metadata);
+        ));
         result.fold(
           (failure) => appLogger.e('Failed to save tape from delegate: ${failure.message}'),
           (_) => null,
@@ -59,9 +58,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      LaunchMonitor.recordFirstFrame();
-    });
     return BaseSettingPage(
       builder: (context, child) {
         return DynamicColorBuilder(

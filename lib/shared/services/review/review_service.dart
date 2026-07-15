@@ -23,17 +23,17 @@ class ReviewService {
   }
 
   /// Marks that the user has rated or successfully prompted the review dialog.
-  Future<void> markAsRated() async {
+  Future<void> _markAsRated() async {
     await SpUtil.put(AppConstants.hasReviewKey, true);
   }
 
   /// Explicitly requests the in-app review dialog.
-  Future<void> requestReviewDirectly() async {
+  Future<void> _requestReviewDirectly() async {
     try {
       final isAvailable = await _inAppReview.isAvailable();
       if (isAvailable) {
         await _inAppReview.requestReview();
-        await markAsRated();
+        await _markAsRated();
       } else {
         appLogger.w('ReviewService: In-app review is not available on this device.');
       }
@@ -50,7 +50,7 @@ class ReviewService {
         // Replace with your iOS App Store ID when publishing on Apple App Store
         appStoreId: AppConstants.appStoreId,
       );
-      await markAsRated();
+      await _markAsRated();
     } catch (e) {
       appLogger.e('ReviewService: Failed to open store listing: $e');
     }
@@ -66,7 +66,7 @@ class ReviewService {
   /// Set [force] to true to bypass rate-limits (e.g. after a purchase).
   Future<void> checkAndPromptReview({bool force = false}) async {
     if (force) {
-      await requestReviewDirectly();
+      await _requestReviewDirectly();
       return;
     }
 
@@ -94,6 +94,6 @@ class ReviewService {
 
     appLogger.i('ReviewService: Rate limits passed. Prompting in-app review dialog.');
     await SpUtil.put(AppConstants.lastReviewPromptTimeKey, now);
-    await requestReviewDirectly();
+    await _requestReviewDirectly();
   }
 }

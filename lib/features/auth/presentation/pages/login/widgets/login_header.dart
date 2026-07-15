@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:listen_core/core.dart';
 import 'package:listen_uikit/uikit.dart';
 
-import '../../../../../../shared/shared.dart';
 import '../../../../../../generated/r.dart';
+import '../../../../../../shared/shared.dart';
+import '../../../../../splash/presentation/pages/splash_page.dart';
 
 class LoginHeader extends StatelessWidget {
   const LoginHeader({super.key});
@@ -16,7 +17,7 @@ class LoginHeader extends StatelessWidget {
       children: [
         const SizedBox(height: 40),
         Hero(
-          tag: 'logo',
+          tag: SplashPage.logo,
           child: Center(
             child: Container(
               padding: const EdgeInsets.all(15),

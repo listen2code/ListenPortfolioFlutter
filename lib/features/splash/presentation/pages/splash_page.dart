@@ -11,6 +11,8 @@ import 'splash_view_model.dart';
 class SplashPage extends ConsumerWidget {
   const SplashPage({super.key});
 
+  static const String logo = 'logo';
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return BaseRefreshPage<SplashViewModel, SplashState>(
@@ -35,7 +37,7 @@ class SplashPage extends ConsumerWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Hero(
-                    tag: 'logo',
+                    tag: SplashPage.logo,
                     child: CommonImage.asset(
                       R.imagesIcLauncherAdaptiveFore,
                       width: 120,
@@ -72,6 +74,8 @@ class _SplashLifecycle extends PageLifecycle {
 
   @override
   void onReady() {
+    // Record first frame of the app startup
+    LaunchMonitor.recordFirstFrame();
     // Initialize Log Overlay when the page is fully ready
     LogOverlayManager.init(context);
   }
