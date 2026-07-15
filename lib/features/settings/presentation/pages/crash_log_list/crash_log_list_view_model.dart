@@ -37,7 +37,6 @@ class CrashLogListViewModel extends _$CrashLogListViewModel
 
   Future<void> _onInit() async {
     final CrashLogListArguments? args = AppNav.getArgs<CrashLogListArguments>();
-    emitEffect(LoadingEffect(true));
     await _loadLogs();
 
     final String? initialFilePath = args?.filePath;
@@ -47,7 +46,6 @@ class CrashLogListViewModel extends _$CrashLogListViewModel
         await _onViewLog(file);
       }
     }
-    emitEffect(LoadingEffect(false));
   }
 
   Future<void> _onRefresh() async {
@@ -88,14 +86,9 @@ class CrashLogListViewModel extends _$CrashLogListViewModel
       okColor: Colors.red,
       onResult: (confirmed) async {
         if (confirmed) {
-          emitEffect(LoadingEffect(true));
-          try {
-            await CrashManager.deleteAllCrashLogs();
-            await _loadLogs();
-            emitEffect(MessageEffect.info(I18nKeys.cacheCleared.tr));
-          } finally {
-            emitEffect(LoadingEffect(false));
-          }
+          await CrashManager.deleteAllCrashLogs();
+          await _loadLogs();
+          emitEffect(MessageEffect.info(I18nKeys.cacheCleared.tr));
         }
       },
     ));
@@ -109,13 +102,8 @@ class CrashLogListViewModel extends _$CrashLogListViewModel
       okColor: Colors.red,
       onResult: (confirmed) async {
         if (confirmed) {
-          emitEffect(LoadingEffect(true));
-          try {
-            await CrashManager.deleteCrashLog(file);
-            await _loadLogs();
-          } finally {
-            emitEffect(LoadingEffect(false));
-          }
+          await CrashManager.deleteCrashLog(file);
+          await _loadLogs();
         }
       },
     ));
@@ -126,13 +114,6 @@ class CrashLogListViewModel extends _$CrashLogListViewModel
   }
 
   Future<void> _onViewLog(File file) async {
-    emitEffect(LoadingEffect(true));
-    try {
-      emitEffect(LoadingEffect(false));
-      emitEffect(ViewLogEffect(file));
-    } catch (e) {
-      emitEffect(LoadingEffect(false));
-      emitEffect(MessageEffect.error(e.toString()));
-    }
+    emitEffect(ViewLogEffect(file));
   }
 }

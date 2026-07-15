@@ -31,8 +31,8 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
           final path = uri.path;
 
           // Handle home tab navigation via deep link directly to avoid full page replacement
-          if (host == 'home' || path == '/home') {
-            final tabStr = uri.queryParameters['tab'];
+          if (host == AppConstants.deepLinkHostHome) {
+            final tabStr = uri.queryParameters[AppConstants.deepLinkParamTab];
             if (tabStr != null) {
               final targetTab = HomeTab.values.firstWhereOrNull((tab) => tab.name == tabStr);
               if (targetTab != null) {
