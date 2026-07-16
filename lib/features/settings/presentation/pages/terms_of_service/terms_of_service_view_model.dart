@@ -17,9 +17,7 @@ class TermsOfServiceViewModel extends _$TermsOfServiceViewModel
     super.onReady();
     // Use onReady instead of onInit to avoid "modifying provider during build" error.
     // onReady is called within WidgetsBinding.instance.addPostFrameCallback.
-    if (state.sections.isEmpty) {
-      handleIntent(const TermsOfServiceIntent.init());
-    }
+    handleIntent(const TermsOfServiceIntent.init());
   }
 
   @override

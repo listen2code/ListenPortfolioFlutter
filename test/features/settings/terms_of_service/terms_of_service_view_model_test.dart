@@ -96,22 +96,6 @@ void main() {
         final state = container.read(termsOfServiceViewModelProvider);
         expect(state.sections, isNotEmpty);
       });
-
-      test('onReady should NOT re-trigger init when sections are already loaded', () async {
-        // Arrange — load once
-        await viewModel.handleIntent(const TermsOfServiceIntent.init());
-        await Future.delayed(const Duration(milliseconds: 100));
-
-        final countAfterFirstLoad = container.read(termsOfServiceViewModelProvider).sections.length;
-
-        // Act — trigger onReady again
-        viewModel.onReady();
-        await Future.delayed(const Duration(milliseconds: 100));
-
-        // Assert — sections count unchanged
-        final state = container.read(termsOfServiceViewModelProvider);
-        expect(state.sections.length, countAfterFirstLoad);
-      });
     });
   });
 }

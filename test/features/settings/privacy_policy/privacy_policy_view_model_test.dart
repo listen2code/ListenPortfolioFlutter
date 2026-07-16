@@ -97,22 +97,6 @@ void main() {
         final state = container.read(privacyPolicyViewModelProvider);
         expect(state.sections, isNotEmpty);
       });
-
-      test('onReady should NOT re-trigger refresh when sections are already loaded', () async {
-        // Arrange — load once
-        await viewModel.handleIntent(const PrivacyPolicyIntent.refresh());
-        await Future.delayed(const Duration(milliseconds: 100));
-
-        final sectionsAfterFirstLoad = container.read(privacyPolicyViewModelProvider).sections.length;
-
-        // Act — trigger onReady again
-        viewModel.onReady();
-        await Future.delayed(const Duration(milliseconds: 100));
-
-        // Assert — sections count should remain unchanged
-        final state = container.read(privacyPolicyViewModelProvider);
-        expect(state.sections.length, sectionsAfterFirstLoad);
-      });
     });
   });
 }

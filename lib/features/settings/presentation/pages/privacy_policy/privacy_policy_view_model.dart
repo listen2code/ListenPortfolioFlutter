@@ -15,9 +15,7 @@ class PrivacyPolicyViewModel extends _$PrivacyPolicyViewModel
   @override
   void onReady() {
     super.onReady();
-    if (state.sections.isEmpty) {
-      handleIntent(const PrivacyPolicyIntent.refresh());
-    }
+    handleIntent(const PrivacyPolicyIntent.refresh());
   }
 
   @override
