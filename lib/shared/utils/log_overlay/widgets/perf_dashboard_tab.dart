@@ -491,7 +491,7 @@ class _PerfDashboardTabState extends State<_PerfDashboardTab> {
                         style: TextStyle(color: regressionColor, fontSize: 24, fontWeight: FontWeight.bold),
                       ),
                       CommonText(
-                        '${report.timestamp.toLocal().toString().substring(11, 19)}',
+                        report.timestamp.toLocal().toString().substring(11, 19),
                         style: const TextStyle(color: Colors.white24, fontSize: 10),
                       ),
                     ],

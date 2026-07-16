@@ -8,7 +8,6 @@ import 'features/settings/presentation/provider/playback_provider.dart';
 import 'features/settings/data/models/playback_tape_metadata.dart';
 import 'shared/shared.dart';
 import 'package:listen_uikit/uikit.dart';
-import 'features/ai_chat/presentation/pages/global_ai_chat_overlay.dart';
 
 void main() {
   LaunchMonitor.recordMainStart();
@@ -21,12 +20,11 @@ void main() {
       // Wire up the delegate to persist recorded tapes using settings repository
       MviPlaybackRecorder.saveTapeDelegate = (tapeKey, steps, name, timestamp) async {
         final repository = container.read(playbackTapeRepositoryProvider);
-        final result = await repository.saveTape(tapeKey, steps, PlaybackTapeMetadata(
-          key: tapeKey,
-          name: name,
-          timestamp: timestamp,
-          steps: steps.length,
-        ));
+        final result = await repository.saveTape(
+          tapeKey,
+          steps,
+          PlaybackTapeMetadata(key: tapeKey, name: name, timestamp: timestamp, steps: steps.length),
+        );
         result.fold(
           (failure) => appLogger.e('Failed to save tape from delegate: ${failure.message}'),
           (_) => null,

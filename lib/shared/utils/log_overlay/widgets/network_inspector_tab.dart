@@ -185,7 +185,7 @@ class _RequestRowWidgetState extends State<_RequestRowWidget> {
   String _prettyPrintBody(dynamic body) {
     if (body == null) return 'Empty';
     try {
-      final encoder = JsonEncoder.withIndent('  ');
+      const encoder = JsonEncoder.withIndent('  ');
       if (body is String) {
         return encoder.convert(jsonDecode(body));
       }
