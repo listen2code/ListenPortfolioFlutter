@@ -109,10 +109,8 @@ class HomePage extends ConsumerWidget {
                     label: I18nKeys.aboutMe.tr,
                     blurLevel: AuthBlurLevel.low,
                     isSelected: state.currentTab == HomeTab.aboutMe,
-                    onTap: () => AppNav.tryLogin(
-                      onSuccess: () => viewModel.handleIntent(
-                        const HomeIntent.tabChanged(HomeTab.aboutMe, closeDrawer: true),
-                      ),
+                    onTap: () => viewModel.handleIntent(
+                      const HomeIntent.tabChanged(HomeTab.aboutMe, closeDrawer: true),
                     ),
                   ),
                   _buildDrawerItem(

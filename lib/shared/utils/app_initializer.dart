@@ -38,6 +38,13 @@ class AppInitializer {
     AppNav.registerArgumentConverter<SettingsArguments>((map) => SettingsArguments.fromMap(map));
     AppNav.registerArgumentConverter<CrashLogListArguments>((map) => CrashLogListArguments.fromMap(map));
 
+    // Register authentication delegates for ViewModel intent protection
+    ViewModelMixin.isUserAuthenticated = () => !authManager.state.isGuest;
+    ViewModelMixin.triggerLogin = ({required onSuccess, onFail}) => AppNav.tryLogin(
+      onSuccess: onSuccess,
+      onFail: onFail,
+    );
+
     // 1. Centralized Core Initialization (Encapsulates Storage, Bus, Net, Crash, I18n, Nav, Error)
     await Core.init(
       CoreConfig(

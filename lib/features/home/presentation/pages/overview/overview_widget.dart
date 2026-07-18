@@ -53,11 +53,7 @@ class OverviewWidget extends StatelessWidget {
                   CommonSectionHeader(title: I18nKeys.quickActions.tr),
                   SizedBox(height: 12.f),
                   QuickActions(
-                    onTapAboutMe: () {
-                      AppNav.tryLogin(
-                        onSuccess: () => homeViewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.aboutMe)),
-                      );
-                    },
+                    onTapAboutMe: () => homeViewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.aboutMe)),
                     onTapArchitecture: () => homeViewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.architecture)),
                     onTapGithub: () => viewModel.handleIntent(
                       OverviewIntent.launchURL(state.aboutMe?.github ?? AppConstants.github),

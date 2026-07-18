@@ -27,6 +27,8 @@ void main() {
     });
 
     tearDown(() async {
+      ViewModelMixin.isUserAuthenticated = null;
+      ViewModelMixin.triggerLogin = null;
       // Wait for any pending async operations before disposing
       await Future.delayed(Duration(milliseconds: 100));
       container.dispose();
@@ -97,6 +99,35 @@ void main() {
       // Then - Tab should update to aboutMe
       expect(container.read(homeViewModelProvider).currentTab, HomeTab.aboutMe);
       sub.close();
+    });
+
+    test('Should intercept tabChanged(aboutMe) when not authenticated, and resume on success', () async {
+      // Given - Not authenticated
+      bool isAuthenticated = false;
+      ViewModelMixin.isUserAuthenticated = () => isAuthenticated;
+
+      bool triggerLoginCalled = false;
+      void Function()? loginSuccessCallback;
+
+      ViewModelMixin.triggerLogin = ({required onSuccess, onFail}) {
+        triggerLoginCalled = true;
+        loginSuccessCallback = onSuccess;
+      };
+
+      // When - Change tab to aboutMe
+      await viewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.aboutMe));
+
+      // Then - Should be intercepted, triggerLogin called, and state unchanged (still overview)
+      expect(triggerLoginCalled, isTrue);
+      expect(container.read(homeViewModelProvider).currentTab, HomeTab.overview);
+      expect(loginSuccessCallback, isNotNull);
+
+      // And When - Login succeeds
+      isAuthenticated = true;
+      loginSuccessCallback!();
+
+      // Then - Intent resumes, tab updates to aboutMe
+      expect(container.read(homeViewModelProvider).currentTab, HomeTab.aboutMe);
     });
   });
 }
