@@ -18,4 +18,4 @@ abstract class IIapService {
 }
 
 /// Global instance of IapService, initialized at application start.
-late final IIapService iapService;
+late IIapService iapService;

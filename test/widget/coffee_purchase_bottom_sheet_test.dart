@@ -1,3 +1,4 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
 import 'package:mocktail/mocktail.dart';
@@ -16,7 +17,15 @@ void main() {
     when(() => mockIAP.queryProducts(any<Set<String>>())).thenAnswer((_) async => <ProductDetails>[]);
     when(() => mockIAP.purchaseStream).thenAnswer((_) => const Stream<List<PurchaseDetails>>.empty());
 
-    await tester.pumpWidget(MaterialApp(home: Scaffold(body: CoffeePurchaseBottomSheet())));
+    await tester.pumpWidget(
+      ProviderScope(
+        child: MaterialApp(
+          home: Scaffold(
+            body: const CoffeePurchaseBottomSheet(),
+          ),
+        ),
+      ),
+    );
     // Loading state should show CircularProgressIndicator
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
   });
