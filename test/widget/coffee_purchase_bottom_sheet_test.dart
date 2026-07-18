@@ -6,9 +6,15 @@ import 'package:listen_portfolio_flutter/features/settings/presentation/pages/wi
 import 'package:listen_portfolio_flutter/shared/services/iap/iap_service.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 
+import 'package:visibility_detector/visibility_detector.dart';
+
 class MockIAPService extends Mock implements IIapService {}
 
 void main() {
+  setUpAll(() {
+    VisibilityDetectorController.instance.updateInterval = Duration.zero;
+  });
+
   testWidgets('CoffeePurchaseBottomSheet shows loading indicator initially', (WidgetTester tester) async {
     final mockIAP = MockIAPService();
     registerFallbackValue(<String>{});

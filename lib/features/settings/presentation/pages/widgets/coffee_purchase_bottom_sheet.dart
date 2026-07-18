@@ -75,39 +75,42 @@ class _CoffeePurchaseBottomSheetState extends ConsumerState<CoffeePurchaseBottom
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(coffeePurchaseViewModelProvider);
-    final viewModel = ref.read(coffeePurchaseViewModelProvider.notifier);
-
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20.f, vertical: 24.f),
-      decoration: BoxDecoration(
-        color: context.theme.scaffoldBackgroundColor,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24.f)),
-      ),
-      child: SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return BaseRefreshPage<CoffeePurchaseViewModel, CoffeePurchaseState>(
+      provider: coffeePurchaseViewModelProvider,
+      useScaffold: false,
+      body: (context, child, viewModel, state) {
+        return Container(
+          padding: EdgeInsets.symmetric(horizontal: 20.f, vertical: 24.f),
+          decoration: BoxDecoration(
+            color: context.theme.scaffoldBackgroundColor,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24.f)),
+          ),
+          child: SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                CommonText(
-                  I18nKeys.selectAmount.tr,
-                  style: context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CommonText(
+                      I18nKeys.selectAmount.tr,
+                      style: context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    CommonIconButton(
+                      icon: Icon(Icons.close, size: 20.f),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  ],
                 ),
-                CommonIconButton(
-                  icon: Icon(Icons.close, size: 20.f),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
+                SizedBox(height: 16.f),
+                _buildBody(context, state, viewModel),
+                SizedBox(height: 12.f),
               ],
             ),
-            SizedBox(height: 16.f),
-            _buildBody(context, state, viewModel),
-            SizedBox(height: 12.f),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }
