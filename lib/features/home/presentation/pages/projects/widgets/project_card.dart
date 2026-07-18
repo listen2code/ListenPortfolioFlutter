@@ -130,18 +130,15 @@ class ProjectCard extends StatelessWidget {
                   child: Column(
                     children: [
                       SizedBox(height: 20.f),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _buildActionChip(
-                              context,
-                              Icons.code,
-                              I18nKeys.sourceCode.tr,
-                              baseColor,
-                              onPressed: () => viewModel.handleIntent(ProjectsIntent.launchURL(project.githubUrl!)),
-                            ),
-                          ),
-                        ],
+                      SizedBox(
+                        width: double.infinity,
+                        child: _buildActionChip(
+                          context,
+                          Icons.code,
+                          I18nKeys.sourceCode.tr,
+                          baseColor,
+                          onPressed: () => viewModel.handleIntent(ProjectsIntent.launchURL(project.githubUrl!)),
+                        ),
                       ),
                     ],
                   ),
