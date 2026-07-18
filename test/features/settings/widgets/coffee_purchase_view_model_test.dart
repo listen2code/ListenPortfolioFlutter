@@ -12,7 +12,9 @@ import 'package:listen_portfolio_flutter/features/settings/presentation/pages/wi
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MockIapService extends Mock implements IIapService {}
+
 class MockProductDetails extends Mock implements ProductDetails {}
+
 class MockPurchaseDetails extends Mock implements PurchaseDetails {}
 
 void main() {
