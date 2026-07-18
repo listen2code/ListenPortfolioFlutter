@@ -12,6 +12,7 @@ class HomeIntent extends BaseIntent with _$HomeIntent {
   const factory HomeIntent.confirmLogout() = _ConfirmLogout;
   const factory HomeIntent.toSettings() = _ToSettings;
   const factory HomeIntent.toAppearance() = _ToAppearance;
+  const factory HomeIntent.handleDeepLink(Uri uri) = _HandleDeepLink;
 
   const HomeIntent._();
 
@@ -33,5 +34,9 @@ class HomeIntent extends BaseIntent with _$HomeIntent {
     MviPlaybackRegistry.register('HomeIntent', 'confirmLogout', (args) => const HomeIntent.confirmLogout());
     MviPlaybackRegistry.register('HomeIntent', 'toSettings', (args) => const HomeIntent.toSettings());
     MviPlaybackRegistry.register('HomeIntent', 'toAppearance', (args) => const HomeIntent.toAppearance());
+    MviPlaybackRegistry.register('HomeIntent', 'handleDeepLink', (args) {
+      final uriStr = args['uri'] ?? '';
+      return HomeIntent.handleDeepLink(Uri.parse(uriStr));
+    });
   }
 }

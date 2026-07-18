@@ -55,7 +55,7 @@ extension HomeIntentPatterns on HomeIntent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _TabChanged value)?  tabChanged,TResult Function( _Logout value)?  logout,TResult Function( _ConfirmLogout value)?  confirmLogout,TResult Function( _ToSettings value)?  toSettings,TResult Function( _ToAppearance value)?  toAppearance,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _TabChanged value)?  tabChanged,TResult Function( _Logout value)?  logout,TResult Function( _ConfirmLogout value)?  confirmLogout,TResult Function( _ToSettings value)?  toSettings,TResult Function( _ToAppearance value)?  toAppearance,TResult Function( _HandleDeepLink value)?  handleDeepLink,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _TabChanged() when tabChanged != null:
@@ -63,7 +63,8 @@ return tabChanged(_that);case _Logout() when logout != null:
 return logout(_that);case _ConfirmLogout() when confirmLogout != null:
 return confirmLogout(_that);case _ToSettings() when toSettings != null:
 return toSettings(_that);case _ToAppearance() when toAppearance != null:
-return toAppearance(_that);case _:
+return toAppearance(_that);case _HandleDeepLink() when handleDeepLink != null:
+return handleDeepLink(_that);case _:
   return orElse();
 
 }
@@ -81,7 +82,7 @@ return toAppearance(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _TabChanged value)  tabChanged,required TResult Function( _Logout value)  logout,required TResult Function( _ConfirmLogout value)  confirmLogout,required TResult Function( _ToSettings value)  toSettings,required TResult Function( _ToAppearance value)  toAppearance,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _TabChanged value)  tabChanged,required TResult Function( _Logout value)  logout,required TResult Function( _ConfirmLogout value)  confirmLogout,required TResult Function( _ToSettings value)  toSettings,required TResult Function( _ToAppearance value)  toAppearance,required TResult Function( _HandleDeepLink value)  handleDeepLink,}){
 final _that = this;
 switch (_that) {
 case _TabChanged():
@@ -89,7 +90,8 @@ return tabChanged(_that);case _Logout():
 return logout(_that);case _ConfirmLogout():
 return confirmLogout(_that);case _ToSettings():
 return toSettings(_that);case _ToAppearance():
-return toAppearance(_that);case _:
+return toAppearance(_that);case _HandleDeepLink():
+return handleDeepLink(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -106,7 +108,7 @@ return toAppearance(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _TabChanged value)?  tabChanged,TResult? Function( _Logout value)?  logout,TResult? Function( _ConfirmLogout value)?  confirmLogout,TResult? Function( _ToSettings value)?  toSettings,TResult? Function( _ToAppearance value)?  toAppearance,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _TabChanged value)?  tabChanged,TResult? Function( _Logout value)?  logout,TResult? Function( _ConfirmLogout value)?  confirmLogout,TResult? Function( _ToSettings value)?  toSettings,TResult? Function( _ToAppearance value)?  toAppearance,TResult? Function( _HandleDeepLink value)?  handleDeepLink,}){
 final _that = this;
 switch (_that) {
 case _TabChanged() when tabChanged != null:
@@ -114,7 +116,8 @@ return tabChanged(_that);case _Logout() when logout != null:
 return logout(_that);case _ConfirmLogout() when confirmLogout != null:
 return confirmLogout(_that);case _ToSettings() when toSettings != null:
 return toSettings(_that);case _ToAppearance() when toAppearance != null:
-return toAppearance(_that);case _:
+return toAppearance(_that);case _HandleDeepLink() when handleDeepLink != null:
+return handleDeepLink(_that);case _:
   return null;
 
 }
@@ -131,14 +134,15 @@ return toAppearance(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( HomeTab tab,  bool closeDrawer)?  tabChanged,TResult Function()?  logout,TResult Function()?  confirmLogout,TResult Function()?  toSettings,TResult Function()?  toAppearance,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( HomeTab tab,  bool closeDrawer)?  tabChanged,TResult Function()?  logout,TResult Function()?  confirmLogout,TResult Function()?  toSettings,TResult Function()?  toAppearance,TResult Function( Uri uri)?  handleDeepLink,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TabChanged() when tabChanged != null:
 return tabChanged(_that.tab,_that.closeDrawer);case _Logout() when logout != null:
 return logout();case _ConfirmLogout() when confirmLogout != null:
 return confirmLogout();case _ToSettings() when toSettings != null:
 return toSettings();case _ToAppearance() when toAppearance != null:
-return toAppearance();case _:
+return toAppearance();case _HandleDeepLink() when handleDeepLink != null:
+return handleDeepLink(_that.uri);case _:
   return orElse();
 
 }
@@ -156,14 +160,15 @@ return toAppearance();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( HomeTab tab,  bool closeDrawer)  tabChanged,required TResult Function()  logout,required TResult Function()  confirmLogout,required TResult Function()  toSettings,required TResult Function()  toAppearance,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( HomeTab tab,  bool closeDrawer)  tabChanged,required TResult Function()  logout,required TResult Function()  confirmLogout,required TResult Function()  toSettings,required TResult Function()  toAppearance,required TResult Function( Uri uri)  handleDeepLink,}) {final _that = this;
 switch (_that) {
 case _TabChanged():
 return tabChanged(_that.tab,_that.closeDrawer);case _Logout():
 return logout();case _ConfirmLogout():
 return confirmLogout();case _ToSettings():
 return toSettings();case _ToAppearance():
-return toAppearance();case _:
+return toAppearance();case _HandleDeepLink():
+return handleDeepLink(_that.uri);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -180,14 +185,15 @@ return toAppearance();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( HomeTab tab,  bool closeDrawer)?  tabChanged,TResult? Function()?  logout,TResult? Function()?  confirmLogout,TResult? Function()?  toSettings,TResult? Function()?  toAppearance,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( HomeTab tab,  bool closeDrawer)?  tabChanged,TResult? Function()?  logout,TResult? Function()?  confirmLogout,TResult? Function()?  toSettings,TResult? Function()?  toAppearance,TResult? Function( Uri uri)?  handleDeepLink,}) {final _that = this;
 switch (_that) {
 case _TabChanged() when tabChanged != null:
 return tabChanged(_that.tab,_that.closeDrawer);case _Logout() when logout != null:
 return logout();case _ConfirmLogout() when confirmLogout != null:
 return confirmLogout();case _ToSettings() when toSettings != null:
 return toSettings();case _ToAppearance() when toAppearance != null:
-return toAppearance();case _:
+return toAppearance();case _HandleDeepLink() when handleDeepLink != null:
+return handleDeepLink(_that.uri);case _:
   return null;
 
 }
@@ -390,5 +396,71 @@ String toString() {
 
 
 
+
+/// @nodoc
+
+
+class _HandleDeepLink extends HomeIntent {
+  const _HandleDeepLink(this.uri): super._();
+  
+
+ final  Uri uri;
+
+/// Create a copy of HomeIntent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$HandleDeepLinkCopyWith<_HandleDeepLink> get copyWith => __$HandleDeepLinkCopyWithImpl<_HandleDeepLink>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HandleDeepLink&&(identical(other.uri, uri) || other.uri == uri));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,uri);
+
+@override
+String toString() {
+  return 'HomeIntent.handleDeepLink(uri: $uri)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$HandleDeepLinkCopyWith<$Res> implements $HomeIntentCopyWith<$Res> {
+  factory _$HandleDeepLinkCopyWith(_HandleDeepLink value, $Res Function(_HandleDeepLink) _then) = __$HandleDeepLinkCopyWithImpl;
+@useResult
+$Res call({
+ Uri uri
+});
+
+
+
+
+}
+/// @nodoc
+class __$HandleDeepLinkCopyWithImpl<$Res>
+    implements _$HandleDeepLinkCopyWith<$Res> {
+  __$HandleDeepLinkCopyWithImpl(this._self, this._then);
+
+  final _HandleDeepLink _self;
+  final $Res Function(_HandleDeepLink) _then;
+
+/// Create a copy of HomeIntent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? uri = null,}) {
+  return _then(_HandleDeepLink(
+null == uri ? _self.uri : uri // ignore: cast_nullable_to_non_nullable
+as Uri,
+  ));
+}
+
+
+}
 
 // dart format on

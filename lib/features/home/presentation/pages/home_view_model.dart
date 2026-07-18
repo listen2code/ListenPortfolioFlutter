@@ -25,26 +25,8 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
     // Subscribe to unified deep link event via core EventBus
     subscribeEvent<CommonEvent<Uri>>(
       (event) {
-        final uri = event.data;
-        if (uri != null) {
-          final host = uri.host;
-
-          // Handle home tab navigation via deep link directly to avoid full page replacement
-          if (host == AppConstants.deepLinkHostHome) {
-            final tabStr = uri.queryParameters[AppConstants.deepLinkParamTab];
-            if (tabStr != null) {
-              final targetTab = HomeTab.values.firstWhereOrNull((tab) => tab.name == tabStr);
-              if (targetTab != null) {
-                if (state.currentTab != targetTab) {
-                  handleIntent(HomeIntent.tabChanged(targetTab));
-                }
-                return;
-              }
-            }
-          }
-
-          appLogger.i('HomeViewModel: Processing deep link from EventBus: $uri');
-          emitEffect(NavigationEffect(target: uri.toString(), replaceIfExists: true));
+        if (event.data != null) {
+          handleIntent(HomeIntent.handleDeepLink(event.data!));
         }
       },
       key: DeepLinkManager.deepLinkEventKey,
@@ -60,7 +42,26 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
       confirmLogout: _onConfirmLogout,
       toSettings: () => emitEffect(NavigationEffect(target: Routes.settings)),
       toAppearance: () => emitEffect(NavigationEffect(target: Routes.appearance)),
+      handleDeepLink: _onHandleDeepLink,
     );
+  }
+
+  void _onHandleDeepLink(Uri uri) {
+    // 1. Handle home tab navigation via deep link directly to avoid full page replacement
+    if (uri.host == AppConstants.deepLinkHostHome) {
+      final tabName = uri.queryParameters[AppConstants.deepLinkParamTab];
+      final targetTab = HomeTab.values.firstWhereOrNull((t) => t.name == tabName);
+      if (targetTab != null) {
+        if (state.currentTab != targetTab) {
+          _onTabChanged(targetTab, false);
+        }
+        return;
+      }
+    }
+
+    // 2. Otherwise, route via global navigation provider
+    appLogger.i('HomeViewModel: Processing deep link from EventBus: $uri');
+    emitEffect(NavigationEffect(target: uri.toString(), replaceIfExists: true));
   }
 
   Future<void> _onTabChanged(HomeTab tab, bool closeDrawer) async {
