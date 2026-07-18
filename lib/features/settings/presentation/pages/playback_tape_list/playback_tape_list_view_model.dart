@@ -46,7 +46,7 @@ class PlaybackTapeListViewModel extends _$PlaybackTapeListViewModel
         updateState(state.copyWith(tapes: tapes));
       },
       onFailure: (failure) {
-        appLogger.e('Failed to load tape list: ${failure.message}');
+        emitEffect(MessageEffect.error('Failed to load tape list: ${failure.message}'));
       },
     );
   }
@@ -76,7 +76,7 @@ class PlaybackTapeListViewModel extends _$PlaybackTapeListViewModel
         _loadTapes();
       },
       onFailure: (failure) {
-        appLogger.e('Failed to delete tape: ${failure.message}');
+        emitEffect(MessageEffect.error('Failed to delete tape: ${failure.message}'));
       },
     );
   }
@@ -94,7 +94,7 @@ class PlaybackTapeListViewModel extends _$PlaybackTapeListViewModel
         MviPlaybackPlayer.instance.play(tapeKey, steps);
       },
       onFailure: (failure) {
-        appLogger.e('Failed to load steps: ${failure.message}');
+        emitEffect(MessageEffect.error('Failed to load steps: ${failure.message}'));
       },
     );
   }
@@ -109,7 +109,7 @@ class PlaybackTapeListViewModel extends _$PlaybackTapeListViewModel
         }
       },
       onFailure: (failure) {
-        appLogger.e('Failed to load tape details: ${failure.message}');
+        emitEffect(MessageEffect.error('Failed to load tape details: ${failure.message}'));
       },
     );
   }

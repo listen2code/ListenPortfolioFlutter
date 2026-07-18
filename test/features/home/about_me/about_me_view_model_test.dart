@@ -242,7 +242,7 @@ void main() async {
         expect(state.imageFile, isNotNull);
         expect(state.imageFile!.path, _testImagePath);
 
-        expect(emittedEffects.any((e) => e is NavigationEffect && (e as NavigationEffect).type == NavigationType.back), isTrue);
+        expect(emittedEffects.any((e) => e is NavigationEffect && (e as NavigationEffect).isBack), isTrue);
       });
 
       test('should handle null image selection', () async {
@@ -251,7 +251,7 @@ void main() async {
 
         final state = container.read(aboutMeViewModelProvider);
         expect(state.imageFile, isNull);
-        expect(emittedEffects.any((e) => e is NavigationEffect && (e as NavigationEffect).type == NavigationType.back), isTrue);
+        expect(emittedEffects.any((e) => e is NavigationEffect && (e as NavigationEffect).isBack), isTrue);
       });
     });
 

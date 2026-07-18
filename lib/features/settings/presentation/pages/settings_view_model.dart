@@ -66,8 +66,8 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
       toPrivacyPolicy: () => emitEffect(NavigationEffect(target: Routes.privacyPolicy)),
       toTermsOfService: () => emitEffect(NavigationEffect(target: Routes.termsOfService)),
       toWebViewTest: () => emitEffect(NavigationEffect(target: Routes.webViewTest)),
-      confirmOpenSettings: _onConfirmOpenSettings,
-      confirmDownloadUpdate: _onConfirmDownloadUpdate,
+      confirmOpenSettings: () => emitEffect(OpenAppSettingsEffect()),
+      confirmDownloadUpdate: (url) => emitEffect(LaunchUrlEffect(url)),
     );
   }
 
@@ -110,33 +110,26 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
         // Permission denied: revert toggle and prompt user to open system settings
         updateState(state.copyWith(notificationsEnabled: false));
         await SpUtil.put(AppConstants.notificationsKey, false);
-        _showPermissionDeniedDialog();
+
+        /// Shows a dialog prompting the user to enable notification permission in system settings.
+        emitEffect(
+          ConfirmEffect(
+            title: I18nKeys.notificationPermissionTitle.tr,
+            message: I18nKeys.notificationPermissionMessage.tr,
+            okText: I18nKeys.openSettings.tr,
+            onResult: (confirmed) async {
+              if (confirmed) {
+                handleIntent(const SettingsIntent.confirmOpenSettings());
+              }
+            },
+          ),
+        );
         return;
       }
       await notificationService.subscribeToTopic(AppConstants.versionUpdatesTopic);
     } else {
       await notificationService.unsubscribeFromTopic(AppConstants.versionUpdatesTopic);
     }
-  }
-
-  /// Shows a dialog prompting the user to enable notification permission in system settings.
-  void _showPermissionDeniedDialog() {
-    emitEffect(
-      ConfirmEffect(
-        title: I18nKeys.notificationPermissionTitle.tr,
-        message: I18nKeys.notificationPermissionMessage.tr,
-        okText: I18nKeys.openSettings.tr,
-        onResult: (confirmed) async {
-          if (confirmed) {
-            handleIntent(const SettingsIntent.confirmOpenSettings());
-          }
-        },
-      ),
-    );
-  }
-
-  Future<void> _onConfirmOpenSettings() async {
-    emitEffect(OpenAppSettingsEffect());
   }
 
   Future<void> _onClearCache() async {
@@ -205,10 +198,7 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
   }
 
   Future<void> _handleVersionCheckResult(VersionModel versionModel) async {
-    final currentVersion = Core.packageInfo.version;
-    final hasUpdate = _isNewerVersion(currentVersion, versionModel.version);
-
-    if (hasUpdate) {
+    if (_isNewerVersion(Core.packageInfo.version, versionModel.version)) {
       final localeCode = settingManager.language.locale.languageCode;
       final changelogText = versionModel.changelog[localeCode] ?? versionModel.changelog['en'] ?? '';
 
@@ -227,10 +217,6 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
     } else {
       emitEffect(MessageEffect.dialog(I18nKeys.latestVersion.tr, title: I18nKeys.checkUpdates.tr));
     }
-  }
-
-  Future<void> _onConfirmDownloadUpdate(String url) async {
-    emitEffect(LaunchUrlEffect(url));
   }
 
   bool _isNewerVersion(String current, String remote) {

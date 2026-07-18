@@ -65,7 +65,11 @@ class CrashLogDetailsSheet extends StatelessWidget {
                           SizedBox(width: 4),
                           CommonText(
                             'Drill Logs',
-                            style: TextStyle(color: Colors.greenAccent, fontSize: 10, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              color: Colors.greenAccent,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ],
                       ),
@@ -180,24 +184,25 @@ class CrashLogDetailsSheet extends StatelessWidget {
     final match = regex.firstMatch(line);
 
     if (match != null) {
-      spans.add(
-        TextSpan(
-          text: '${match.group(1)} ',
-          style: TextStyle(color: defaultColor.withValues(alpha: 0.3)),
-        ),
-      );
-      spans.add(
-        TextSpan(
-          text: '${match.group(2)} ',
-          style: TextStyle(color: levelColor, fontWeight: FontWeight.bold),
-        ),
-      );
-      spans.add(
-        TextSpan(
-          text: '${match.group(3)}\n',
-          style: TextStyle(color: messageColor),
-        ),
-      );
+      spans
+        ..add(
+          TextSpan(
+            text: '${match.group(1)} ',
+            style: TextStyle(color: defaultColor.withValues(alpha: 0.3)),
+          ),
+        )
+        ..add(
+          TextSpan(
+            text: '${match.group(2)} ',
+            style: TextStyle(color: levelColor, fontWeight: FontWeight.bold),
+          ),
+        )
+        ..add(
+          TextSpan(
+            text: '${match.group(3)}\n',
+            style: TextStyle(color: messageColor),
+          ),
+        );
     } else {
       spans.add(
         TextSpan(
