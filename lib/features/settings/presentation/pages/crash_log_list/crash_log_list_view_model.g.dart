@@ -34,11 +34,15 @@ final class CrashLogListViewModelProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(CrashLogListState value) {
-    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<CrashLogListState>(value));
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<CrashLogListState>(value),
+    );
   }
 }
 
-String _$crashLogListViewModelHash() => r'99890329b8cb7bbf0cb339f77cf8a7393f3dbe4c';
+String _$crashLogListViewModelHash() =>
+    r'dcf8351f008f0b7b077adb5543e43d6b1ce4c5e7';
 
 abstract class _$CrashLogListViewModel extends $Notifier<CrashLogListState> {
   CrashLogListState build();

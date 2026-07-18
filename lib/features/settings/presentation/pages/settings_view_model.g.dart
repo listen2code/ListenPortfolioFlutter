@@ -12,7 +12,8 @@ part of 'settings_view_model.dart';
 @ProviderFor(SettingsViewModel)
 final settingsViewModelProvider = SettingsViewModelProvider._();
 
-final class SettingsViewModelProvider extends $NotifierProvider<SettingsViewModel, SettingsState> {
+final class SettingsViewModelProvider
+    extends $NotifierProvider<SettingsViewModel, SettingsState> {
   SettingsViewModelProvider._()
     : super(
         from: null,
@@ -33,11 +34,14 @@ final class SettingsViewModelProvider extends $NotifierProvider<SettingsViewMode
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(SettingsState value) {
-    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<SettingsState>(value));
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<SettingsState>(value),
+    );
   }
 }
 
-String _$settingsViewModelHash() => r'df964d279d8137569ffe0b12a5db53f6bf9e4854';
+String _$settingsViewModelHash() => r'a238812b724f9c493a25687c63ec955ad6f3def0';
 
 abstract class _$SettingsViewModel extends $Notifier<SettingsState> {
   SettingsState build();

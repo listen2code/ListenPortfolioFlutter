@@ -49,6 +49,8 @@ class AppInitializer {
           const MessageProviderImpl(),
           const NavigationProviderImpl(),
           const LaunchUrlProviderImpl(),
+          const OpenAppSettingsProviderImpl(),
+          const PickImageProviderImpl(),
           LogoutProviderImpl(container),
           const ShareProviderImpl(),
           const CoffeePurchaseProviderImpl(),

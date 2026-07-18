@@ -34,11 +34,15 @@ final class PrivacyPolicyViewModelProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(PrivacyPolicyState value) {
-    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<PrivacyPolicyState>(value));
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<PrivacyPolicyState>(value),
+    );
   }
 }
 
-String _$privacyPolicyViewModelHash() => r'672fdcd59d872f33b90a2189e92461a8178b78c9';
+String _$privacyPolicyViewModelHash() =>
+    r'c4489075c75af312b712a69a2797ec350a38e8e0';
 
 abstract class _$PrivacyPolicyViewModel extends $Notifier<PrivacyPolicyState> {
   PrivacyPolicyState build();

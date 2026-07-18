@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:image_picker/image_picker.dart';
+import 'package:image_picker/image_picker.dart' show ImageSource;
 import 'package:listen_core/core.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -39,6 +39,7 @@ class AboutMeViewModel extends _$AboutMeViewModel with ViewModelMixin<AboutMeSta
   FutureOr<void> onIntent(AboutMeIntent intent) {
     return intent.when<FutureOr<void>>(
       pickImage: (source) => _onPickImage(source),
+      imagePicked: (file) => _onImagePicked(file),
       removeImage: _onRemoveImage,
       refresh: _onRefresh,
       shareApp: _onShareApp,
@@ -49,11 +50,19 @@ class AboutMeViewModel extends _$AboutMeViewModel with ViewModelMixin<AboutMeSta
   /// Handle image selection from camera or gallery
   /// Updates state with the selected image file
   Future<void> _onPickImage(ImageSource source) async {
-    final picker = ImagePicker();
-    final XFile? pickedFile = await picker.pickImage(source: source);
+    emitEffect(
+      PickImageEffect(
+        source: source,
+        onResult: (file) {
+          handleIntent(AboutMeIntent.imagePicked(file));
+        },
+      ),
+    );
+  }
 
-    if (pickedFile != null) {
-      updateState(state.copyWith(imageFile: File(pickedFile.path)));
+  Future<void> _onImagePicked(File? file) async {
+    if (file != null) {
+      updateState(state.copyWith(imageFile: file));
     }
     emitEffect(NavigationEffect.back());
   }

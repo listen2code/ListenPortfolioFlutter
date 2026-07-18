@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:listen_core/core.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../shared/shared.dart';
@@ -137,7 +136,7 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
   }
 
   Future<void> _onConfirmOpenSettings() async {
-    await openAppSettings();
+    emitEffect(OpenAppSettingsEffect());
   }
 
   Future<void> _onClearCache() async {

@@ -226,55 +226,40 @@ void main() async {
     });
 
     group('Image Pick Intent Tests', () {
-      test('should successfully pick image from camera', () async {
-        // platform channel mock set to return _testImagePath by default
+      test('should emit PickImageEffect on pickImage intent', () async {
         await viewModel.handleIntent(const AboutMeIntent.pickImage(ImageSource.camera));
+        
+        final effect = emittedEffects.firstWhere((e) => e is PickImageEffect) as PickImageEffect;
+        expect(effect.source, equals(ImageSource.camera));
+      });
+
+      test('should successfully update state and navigate back on imagePicked', () async {
+        final testFile = File(_testImagePath);
+        await viewModel.handleIntent(AboutMeIntent.imagePicked(testFile));
         await Future.delayed(const Duration(milliseconds: 100));
 
         final state = container.read(aboutMeViewModelProvider);
         expect(state.imageFile, isNotNull);
         expect(state.imageFile!.path, _testImagePath);
+
+        expect(emittedEffects.any((e) => e is NavigationEffect && (e as NavigationEffect).type == NavigationType.back), isTrue);
       });
 
-      test('should successfully pick image from gallery', () async {
-        // platform channel returns the same mock path regardless of source
-        await viewModel.handleIntent(const AboutMeIntent.pickImage(ImageSource.gallery));
+      test('should handle null image selection', () async {
+        await viewModel.handleIntent(const AboutMeIntent.imagePicked(null));
         await Future.delayed(const Duration(milliseconds: 100));
 
         final state = container.read(aboutMeViewModelProvider);
-        expect(state.imageFile, isNotNull);
-        expect(state.imageFile!.path, _testImagePath);
-      });
-
-      test('should handle cancelled image selection', () async {
-        // Configure platform channel to return null (user cancelled)
-        mockImagePickerPath = null;
-
-        await viewModel.handleIntent(const AboutMeIntent.pickImage(ImageSource.camera));
-        await Future.delayed(const Duration(milliseconds: 100));
-
-        expect(container.read(aboutMeViewModelProvider).imageFile, isNull);
-      });
-
-      test('should handle ImagePicker PlatformException gracefully', () async {
-        // Configure platform channel to throw
-        mockImagePickerThrows = true;
-
-        // handleIntent returns a Future; the exception propagates asynchronously
-        await expectLater(
-          viewModel.handleIntent(const AboutMeIntent.pickImage(ImageSource.camera)),
-          throwsA(isA<PlatformException>()),
-        );
-
-        // State must remain unchanged
-        expect(container.read(aboutMeViewModelProvider).imageFile, isNull);
+        expect(state.imageFile, isNull);
+        expect(emittedEffects.any((e) => e is NavigationEffect && (e as NavigationEffect).type == NavigationType.back), isTrue);
       });
     });
 
     group('Remove Image Intent Tests', () {
       test('should remove existing image file', () async {
-        // Platform channel already returns _testImagePath by default
-        await viewModel.handleIntent(const AboutMeIntent.pickImage(ImageSource.camera));
+        // Set up initial image state
+        final testFile = File(_testImagePath);
+        await viewModel.handleIntent(AboutMeIntent.imagePicked(testFile));
         await Future.delayed(const Duration(milliseconds: 100));
 
         // Verify image was set
@@ -344,14 +329,14 @@ void main() async {
 
     group('State Management Tests', () {
       test('should maintain separate state for image file and data', () async {
-        // Arrange: platform channel returns _testImagePath by default
         when(() => mockGetAboutMeUseCase.call(param: null)).thenAnswer((_) async => Right(testAboutMeModel));
 
-        // Act: First refresh data, then pick image
+        // Act: First refresh data, then pick image via imagePicked intent
         await viewModel.handleIntent(const AboutMeIntent.refresh());
         await Future.delayed(const Duration(milliseconds: 300));
 
-        await viewModel.handleIntent(const AboutMeIntent.pickImage(ImageSource.camera));
+        final testFile = File(_testImagePath);
+        await viewModel.handleIntent(AboutMeIntent.imagePicked(testFile));
         await Future.delayed(const Duration(milliseconds: 100));
 
         // Assert: Verify both data and image are maintained
