@@ -9,6 +9,7 @@ part 'home_intent.freezed.dart';
 class HomeIntent extends BaseIntent with _$HomeIntent {
   const factory HomeIntent.tabChanged(HomeTab tab, {@Default(false) bool closeDrawer}) = _TabChanged;
   const factory HomeIntent.logout() = _Logout;
+  const factory HomeIntent.confirmLogout() = _ConfirmLogout;
   const factory HomeIntent.toSettings() = _ToSettings;
   const factory HomeIntent.toAppearance() = _ToAppearance;
 
@@ -29,6 +30,7 @@ class HomeIntent extends BaseIntent with _$HomeIntent {
       return HomeIntent.tabChanged(tab, closeDrawer: closeDrawer);
     });
     MviPlaybackRegistry.register('HomeIntent', 'logout', (args) => const HomeIntent.logout());
+    MviPlaybackRegistry.register('HomeIntent', 'confirmLogout', (args) => const HomeIntent.confirmLogout());
     MviPlaybackRegistry.register('HomeIntent', 'toSettings', (args) => const HomeIntent.toSettings());
     MviPlaybackRegistry.register('HomeIntent', 'toAppearance', (args) => const HomeIntent.toAppearance());
   }

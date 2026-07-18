@@ -10,6 +10,7 @@ class SettingsIntent extends BaseIntent with _$SettingsIntent {
   const factory SettingsIntent.toggleNotifications(bool enabled) = _ToggleNotifications;
   const factory SettingsIntent.clearCache() = _ClearCache;
   const factory SettingsIntent.resetSettings() = _ResetSettings;
+  const factory SettingsIntent.confirmReset() = _ConfirmReset;
   const factory SettingsIntent.switchLanguage(AppLanguage language) = _SwitchLanguage;
   const factory SettingsIntent.switchEnv(AppEnvironment env) = _SwitchEnv;
   const factory SettingsIntent.toggleLogOverlay(bool enabled) = _ToggleLogOverlay;
@@ -28,6 +29,8 @@ class SettingsIntent extends BaseIntent with _$SettingsIntent {
   const factory SettingsIntent.toPrivacyPolicy() = _ToPrivacyPolicy;
   const factory SettingsIntent.toTermsOfService() = _ToTermsOfService;
   const factory SettingsIntent.toWebViewTest() = _ToWebViewTest;
+  const factory SettingsIntent.confirmOpenSettings() = _ConfirmOpenSettings;
+  const factory SettingsIntent.confirmDownloadUpdate(String url) = _ConfirmDownloadUpdate;
 
   const SettingsIntent._();
 
@@ -44,6 +47,11 @@ class SettingsIntent extends BaseIntent with _$SettingsIntent {
       'SettingsIntent',
       'resetSettings',
       (args) => const SettingsIntent.resetSettings(),
+    );
+    MviPlaybackRegistry.register(
+      'SettingsIntent',
+      'confirmReset',
+      (args) => const SettingsIntent.confirmReset(),
     );
     MviPlaybackRegistry.register('SettingsIntent', 'switchLanguage', (args) {
       final langStr = args['language'] ?? '';
@@ -132,6 +140,16 @@ class SettingsIntent extends BaseIntent with _$SettingsIntent {
       'SettingsIntent',
       'toWebViewTest',
       (args) => const SettingsIntent.toWebViewTest(),
+    );
+    MviPlaybackRegistry.register(
+      'SettingsIntent',
+      'confirmOpenSettings',
+      (args) => const SettingsIntent.confirmOpenSettings(),
+    );
+    MviPlaybackRegistry.register(
+      'SettingsIntent',
+      'confirmDownloadUpdate',
+      (args) => SettingsIntent.confirmDownloadUpdate(args['url'] ?? ''),
     );
   }
 }

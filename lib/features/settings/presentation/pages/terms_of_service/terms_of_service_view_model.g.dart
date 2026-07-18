@@ -34,18 +34,13 @@ final class TermsOfServiceViewModelProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(TermsOfServiceState value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<TermsOfServiceState>(value),
-    );
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<TermsOfServiceState>(value));
   }
 }
 
-String _$termsOfServiceViewModelHash() =>
-    r'10b0f097bb6b73044606319d1551b6b47d1b94a1';
+String _$termsOfServiceViewModelHash() => r'10b0f097bb6b73044606319d1551b6b47d1b94a1';
 
-abstract class _$TermsOfServiceViewModel
-    extends $Notifier<TermsOfServiceState> {
+abstract class _$TermsOfServiceViewModel extends $Notifier<TermsOfServiceState> {
   TermsOfServiceState build();
   @$mustCallSuper
   @override

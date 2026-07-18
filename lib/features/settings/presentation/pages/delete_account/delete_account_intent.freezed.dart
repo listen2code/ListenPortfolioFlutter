@@ -55,12 +55,13 @@ extension DeleteAccountIntentPatterns on DeleteAccountIntent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _ToggleConfirm value)?  toggleConfirm,TResult Function( _DeleteAccount value)?  deleteAccount,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _ToggleConfirm value)?  toggleConfirm,TResult Function( _DeleteAccount value)?  deleteAccount,TResult Function( _ConfirmDelete value)?  confirmDelete,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _ToggleConfirm() when toggleConfirm != null:
 return toggleConfirm(_that);case _DeleteAccount() when deleteAccount != null:
-return deleteAccount(_that);case _:
+return deleteAccount(_that);case _ConfirmDelete() when confirmDelete != null:
+return confirmDelete(_that);case _:
   return orElse();
 
 }
@@ -78,12 +79,13 @@ return deleteAccount(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _ToggleConfirm value)  toggleConfirm,required TResult Function( _DeleteAccount value)  deleteAccount,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _ToggleConfirm value)  toggleConfirm,required TResult Function( _DeleteAccount value)  deleteAccount,required TResult Function( _ConfirmDelete value)  confirmDelete,}){
 final _that = this;
 switch (_that) {
 case _ToggleConfirm():
 return toggleConfirm(_that);case _DeleteAccount():
-return deleteAccount(_that);case _:
+return deleteAccount(_that);case _ConfirmDelete():
+return confirmDelete(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -100,12 +102,13 @@ return deleteAccount(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _ToggleConfirm value)?  toggleConfirm,TResult? Function( _DeleteAccount value)?  deleteAccount,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _ToggleConfirm value)?  toggleConfirm,TResult? Function( _DeleteAccount value)?  deleteAccount,TResult? Function( _ConfirmDelete value)?  confirmDelete,}){
 final _that = this;
 switch (_that) {
 case _ToggleConfirm() when toggleConfirm != null:
 return toggleConfirm(_that);case _DeleteAccount() when deleteAccount != null:
-return deleteAccount(_that);case _:
+return deleteAccount(_that);case _ConfirmDelete() when confirmDelete != null:
+return confirmDelete(_that);case _:
   return null;
 
 }
@@ -122,11 +125,12 @@ return deleteAccount(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  toggleConfirm,TResult Function()?  deleteAccount,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  toggleConfirm,TResult Function()?  deleteAccount,TResult Function()?  confirmDelete,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ToggleConfirm() when toggleConfirm != null:
 return toggleConfirm();case _DeleteAccount() when deleteAccount != null:
-return deleteAccount();case _:
+return deleteAccount();case _ConfirmDelete() when confirmDelete != null:
+return confirmDelete();case _:
   return orElse();
 
 }
@@ -144,11 +148,12 @@ return deleteAccount();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  toggleConfirm,required TResult Function()  deleteAccount,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  toggleConfirm,required TResult Function()  deleteAccount,required TResult Function()  confirmDelete,}) {final _that = this;
 switch (_that) {
 case _ToggleConfirm():
 return toggleConfirm();case _DeleteAccount():
-return deleteAccount();case _:
+return deleteAccount();case _ConfirmDelete():
+return confirmDelete();case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -165,11 +170,12 @@ return deleteAccount();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  toggleConfirm,TResult? Function()?  deleteAccount,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  toggleConfirm,TResult? Function()?  deleteAccount,TResult? Function()?  confirmDelete,}) {final _that = this;
 switch (_that) {
 case _ToggleConfirm() when toggleConfirm != null:
 return toggleConfirm();case _DeleteAccount() when deleteAccount != null:
-return deleteAccount();case _:
+return deleteAccount();case _ConfirmDelete() when confirmDelete != null:
+return confirmDelete();case _:
   return null;
 
 }
@@ -233,6 +239,38 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'DeleteAccountIntent.deleteAccount()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _ConfirmDelete extends DeleteAccountIntent {
+  const _ConfirmDelete(): super._();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ConfirmDelete);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'DeleteAccountIntent.confirmDelete()';
 }
 
 

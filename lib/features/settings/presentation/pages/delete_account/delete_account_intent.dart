@@ -8,6 +8,7 @@ part 'delete_account_intent.freezed.dart';
 class DeleteAccountIntent extends BaseIntent with _$DeleteAccountIntent {
   const factory DeleteAccountIntent.toggleConfirm() = _ToggleConfirm;
   const factory DeleteAccountIntent.deleteAccount() = _DeleteAccount;
+  const factory DeleteAccountIntent.confirmDelete() = _ConfirmDelete;
   const DeleteAccountIntent._();
 
   /// Registers deserializers for MVI playback.
@@ -21,6 +22,11 @@ class DeleteAccountIntent extends BaseIntent with _$DeleteAccountIntent {
       'DeleteAccountIntent',
       'deleteAccount',
       (args) => const DeleteAccountIntent.deleteAccount(),
+    );
+    MviPlaybackRegistry.register(
+      'DeleteAccountIntent',
+      'confirmDelete',
+      (args) => const DeleteAccountIntent.confirmDelete(),
     );
   }
 }

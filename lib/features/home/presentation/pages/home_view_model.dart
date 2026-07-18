@@ -57,6 +57,7 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
     return intent.when<FutureOr<void>>(
       tabChanged: _onTabChanged,
       logout: _onLogout,
+      confirmLogout: _onConfirmLogout,
       toSettings: () => emitEffect(NavigationEffect(target: Routes.settings)),
       toAppearance: () => emitEffect(NavigationEffect(target: Routes.appearance)),
     );
@@ -80,21 +81,25 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
       ConfirmEffect(
         title: I18nKeys.logout.tr,
         message: I18nKeys.logoutTips.tr,
-        onResult: (confirmed) async {
+        onResult: (confirmed) {
           if (confirmed) {
-            await call<void>(
-              ref.execute<void, BaseParam>(logoutUseCaseProvider),
-              showLoading: true,
-              onSuccess: (_) async {
-                if (state.currentTab == HomeTab.aboutMe) {
-                  handleIntent(const HomeIntent.tabChanged(HomeTab.overview));
-                }
-                emitEffect(LogoutEffect(to: Routes.login, message: I18nKeys.logoutSuccess.tr));
-              },
-            );
+            handleIntent(const HomeIntent.confirmLogout());
           }
         },
       ),
+    );
+  }
+
+  Future<void> _onConfirmLogout() async {
+    await call<void>(
+      ref.execute<void, BaseParam>(logoutUseCaseProvider),
+      showLoading: true,
+      onSuccess: (_) async {
+        if (state.currentTab == HomeTab.aboutMe) {
+          handleIntent(const HomeIntent.tabChanged(HomeTab.overview));
+        }
+        emitEffect(LogoutEffect(to: Routes.login, message: I18nKeys.logoutSuccess.tr));
+      },
     );
   }
 }

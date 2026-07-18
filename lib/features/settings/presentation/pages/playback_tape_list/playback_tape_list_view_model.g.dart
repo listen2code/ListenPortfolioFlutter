@@ -13,8 +13,7 @@ part of 'playback_tape_list_view_model.dart';
 final playbackTapeListViewModelProvider = PlaybackTapeListViewModelProvider._();
 
 final class PlaybackTapeListViewModelProvider
-    extends
-        $NotifierProvider<PlaybackTapeListViewModel, PlaybackTapeListState> {
+    extends $NotifierProvider<PlaybackTapeListViewModel, PlaybackTapeListState> {
   PlaybackTapeListViewModelProvider._()
     : super(
         from: null,
@@ -42,11 +41,9 @@ final class PlaybackTapeListViewModelProvider
   }
 }
 
-String _$playbackTapeListViewModelHash() =>
-    r'c10b99fe7a95f2487374ecb23ae0d02c1a147ac5';
+String _$playbackTapeListViewModelHash() => r'c10b99fe7a95f2487374ecb23ae0d02c1a147ac5';
 
-abstract class _$PlaybackTapeListViewModel
-    extends $Notifier<PlaybackTapeListState> {
+abstract class _$PlaybackTapeListViewModel extends $Notifier<PlaybackTapeListState> {
   PlaybackTapeListState build();
   @$mustCallSuper
   @override

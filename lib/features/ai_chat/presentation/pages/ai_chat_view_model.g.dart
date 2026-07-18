@@ -12,8 +12,7 @@ part of 'ai_chat_view_model.dart';
 @ProviderFor(AiChatViewModel)
 final aiChatViewModelProvider = AiChatViewModelProvider._();
 
-final class AiChatViewModelProvider
-    extends $NotifierProvider<AiChatViewModel, AiChatState> {
+final class AiChatViewModelProvider extends $NotifierProvider<AiChatViewModel, AiChatState> {
   AiChatViewModelProvider._()
     : super(
         from: null,
@@ -34,10 +33,7 @@ final class AiChatViewModelProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(AiChatState value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<AiChatState>(value),
-    );
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<AiChatState>(value));
   }
 }
 
@@ -51,12 +47,7 @@ abstract class _$AiChatViewModel extends $Notifier<AiChatState> {
     final ref = this.ref as $Ref<AiChatState, AiChatState>;
     final element =
         ref.element
-            as $ClassProviderElement<
-              AnyNotifier<AiChatState, AiChatState>,
-              AiChatState,
-              Object?,
-              Object?
-            >;
+            as $ClassProviderElement<AnyNotifier<AiChatState, AiChatState>, AiChatState, Object?, Object?>;
     element.handleCreate(ref, build);
   }
 }

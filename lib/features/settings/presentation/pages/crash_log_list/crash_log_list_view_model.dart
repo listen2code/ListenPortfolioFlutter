@@ -28,8 +28,11 @@ class CrashLogListViewModel extends _$CrashLogListViewModel
       init: _onInit,
       refresh: _onRefresh,
       triggerCrash: _onTriggerCrash,
+      confirmTriggerCrash: _onConfirmTriggerCrash,
       deleteAll: _onDeleteAll,
+      confirmDeleteAll: _onConfirmDeleteAll,
       deleteLog: _onDeleteLog,
+      confirmDeleteLog: _onConfirmDeleteLog,
       shareLog: _onShareLog,
       viewLog: _onViewLog,
     );
@@ -69,13 +72,17 @@ class CrashLogListViewModel extends _$CrashLogListViewModel
       title: I18nKeys.triggerCrash.tr,
       message: I18nKeys.triggerCrashDesc.tr,
       okText: I18nKeys.startTimer.tr,
-      onResult: (confirmed) {
+      onResult: (confirmed) async {
         if (confirmed) {
-          CrashManager.scheduleRandomCrash();
-          emitEffect(MessageEffect.info(I18nKeys.crashScheduled.tr));
+          handleIntent(const CrashLogListIntent.confirmTriggerCrash());
         }
       },
     ));
+  }
+
+  Future<void> _onConfirmTriggerCrash() async {
+    CrashManager.scheduleRandomCrash();
+    emitEffect(MessageEffect.info(I18nKeys.crashScheduled.tr));
   }
 
   Future<void> _onDeleteAll() async {
@@ -86,12 +93,16 @@ class CrashLogListViewModel extends _$CrashLogListViewModel
       okColor: Colors.red,
       onResult: (confirmed) async {
         if (confirmed) {
-          await CrashManager.deleteAllCrashLogs();
-          await _loadLogs();
-          emitEffect(MessageEffect.info(I18nKeys.cacheCleared.tr));
+          handleIntent(const CrashLogListIntent.confirmDeleteAll());
         }
       },
     ));
+  }
+
+  Future<void> _onConfirmDeleteAll() async {
+    await CrashManager.deleteAllCrashLogs();
+    await _loadLogs();
+    emitEffect(MessageEffect.info(I18nKeys.cacheCleared.tr));
   }
 
   Future<void> _onDeleteLog(File file) async {
@@ -102,11 +113,15 @@ class CrashLogListViewModel extends _$CrashLogListViewModel
       okColor: Colors.red,
       onResult: (confirmed) async {
         if (confirmed) {
-          await CrashManager.deleteCrashLog(file);
-          await _loadLogs();
+          handleIntent(CrashLogListIntent.confirmDeleteLog(file));
         }
       },
     ));
+  }
+
+  Future<void> _onConfirmDeleteLog(File file) async {
+    await CrashManager.deleteCrashLog(file);
+    await _loadLogs();
   }
 
   Future<void> _onShareLog(File file) async {

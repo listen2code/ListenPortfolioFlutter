@@ -55,12 +55,13 @@ extension PlaybackTapeListIntentPatterns on PlaybackTapeListIntent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _LoadTapes value)?  loadTapes,TResult Function( _DeleteTape value)?  deleteTape,TResult Function( _StartPlayback value)?  startPlayback,TResult Function( _ShowTapeDetails value)?  showTapeDetails,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _LoadTapes value)?  loadTapes,TResult Function( _DeleteTape value)?  deleteTape,TResult Function( _ConfirmDeleteTape value)?  confirmDeleteTape,TResult Function( _StartPlayback value)?  startPlayback,TResult Function( _ShowTapeDetails value)?  showTapeDetails,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _LoadTapes() when loadTapes != null:
 return loadTapes(_that);case _DeleteTape() when deleteTape != null:
-return deleteTape(_that);case _StartPlayback() when startPlayback != null:
+return deleteTape(_that);case _ConfirmDeleteTape() when confirmDeleteTape != null:
+return confirmDeleteTape(_that);case _StartPlayback() when startPlayback != null:
 return startPlayback(_that);case _ShowTapeDetails() when showTapeDetails != null:
 return showTapeDetails(_that);case _:
   return orElse();
@@ -80,12 +81,13 @@ return showTapeDetails(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _LoadTapes value)  loadTapes,required TResult Function( _DeleteTape value)  deleteTape,required TResult Function( _StartPlayback value)  startPlayback,required TResult Function( _ShowTapeDetails value)  showTapeDetails,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _LoadTapes value)  loadTapes,required TResult Function( _DeleteTape value)  deleteTape,required TResult Function( _ConfirmDeleteTape value)  confirmDeleteTape,required TResult Function( _StartPlayback value)  startPlayback,required TResult Function( _ShowTapeDetails value)  showTapeDetails,}){
 final _that = this;
 switch (_that) {
 case _LoadTapes():
 return loadTapes(_that);case _DeleteTape():
-return deleteTape(_that);case _StartPlayback():
+return deleteTape(_that);case _ConfirmDeleteTape():
+return confirmDeleteTape(_that);case _StartPlayback():
 return startPlayback(_that);case _ShowTapeDetails():
 return showTapeDetails(_that);case _:
   throw StateError('Unexpected subclass');
@@ -104,12 +106,13 @@ return showTapeDetails(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _LoadTapes value)?  loadTapes,TResult? Function( _DeleteTape value)?  deleteTape,TResult? Function( _StartPlayback value)?  startPlayback,TResult? Function( _ShowTapeDetails value)?  showTapeDetails,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _LoadTapes value)?  loadTapes,TResult? Function( _DeleteTape value)?  deleteTape,TResult? Function( _ConfirmDeleteTape value)?  confirmDeleteTape,TResult? Function( _StartPlayback value)?  startPlayback,TResult? Function( _ShowTapeDetails value)?  showTapeDetails,}){
 final _that = this;
 switch (_that) {
 case _LoadTapes() when loadTapes != null:
 return loadTapes(_that);case _DeleteTape() when deleteTape != null:
-return deleteTape(_that);case _StartPlayback() when startPlayback != null:
+return deleteTape(_that);case _ConfirmDeleteTape() when confirmDeleteTape != null:
+return confirmDeleteTape(_that);case _StartPlayback() when startPlayback != null:
 return startPlayback(_that);case _ShowTapeDetails() when showTapeDetails != null:
 return showTapeDetails(_that);case _:
   return null;
@@ -128,11 +131,12 @@ return showTapeDetails(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  loadTapes,TResult Function( String tapeKey)?  deleteTape,TResult Function( String tapeKey)?  startPlayback,TResult Function( String tapeKey,  String tapeName)?  showTapeDetails,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  loadTapes,TResult Function( String tapeKey)?  deleteTape,TResult Function( String tapeKey)?  confirmDeleteTape,TResult Function( String tapeKey)?  startPlayback,TResult Function( String tapeKey,  String tapeName)?  showTapeDetails,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _LoadTapes() when loadTapes != null:
 return loadTapes();case _DeleteTape() when deleteTape != null:
-return deleteTape(_that.tapeKey);case _StartPlayback() when startPlayback != null:
+return deleteTape(_that.tapeKey);case _ConfirmDeleteTape() when confirmDeleteTape != null:
+return confirmDeleteTape(_that.tapeKey);case _StartPlayback() when startPlayback != null:
 return startPlayback(_that.tapeKey);case _ShowTapeDetails() when showTapeDetails != null:
 return showTapeDetails(_that.tapeKey,_that.tapeName);case _:
   return orElse();
@@ -152,11 +156,12 @@ return showTapeDetails(_that.tapeKey,_that.tapeName);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  loadTapes,required TResult Function( String tapeKey)  deleteTape,required TResult Function( String tapeKey)  startPlayback,required TResult Function( String tapeKey,  String tapeName)  showTapeDetails,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  loadTapes,required TResult Function( String tapeKey)  deleteTape,required TResult Function( String tapeKey)  confirmDeleteTape,required TResult Function( String tapeKey)  startPlayback,required TResult Function( String tapeKey,  String tapeName)  showTapeDetails,}) {final _that = this;
 switch (_that) {
 case _LoadTapes():
 return loadTapes();case _DeleteTape():
-return deleteTape(_that.tapeKey);case _StartPlayback():
+return deleteTape(_that.tapeKey);case _ConfirmDeleteTape():
+return confirmDeleteTape(_that.tapeKey);case _StartPlayback():
 return startPlayback(_that.tapeKey);case _ShowTapeDetails():
 return showTapeDetails(_that.tapeKey,_that.tapeName);case _:
   throw StateError('Unexpected subclass');
@@ -175,11 +180,12 @@ return showTapeDetails(_that.tapeKey,_that.tapeName);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  loadTapes,TResult? Function( String tapeKey)?  deleteTape,TResult? Function( String tapeKey)?  startPlayback,TResult? Function( String tapeKey,  String tapeName)?  showTapeDetails,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  loadTapes,TResult? Function( String tapeKey)?  deleteTape,TResult? Function( String tapeKey)?  confirmDeleteTape,TResult? Function( String tapeKey)?  startPlayback,TResult? Function( String tapeKey,  String tapeName)?  showTapeDetails,}) {final _that = this;
 switch (_that) {
 case _LoadTapes() when loadTapes != null:
 return loadTapes();case _DeleteTape() when deleteTape != null:
-return deleteTape(_that.tapeKey);case _StartPlayback() when startPlayback != null:
+return deleteTape(_that.tapeKey);case _ConfirmDeleteTape() when confirmDeleteTape != null:
+return confirmDeleteTape(_that.tapeKey);case _StartPlayback() when startPlayback != null:
 return startPlayback(_that.tapeKey);case _ShowTapeDetails() when showTapeDetails != null:
 return showTapeDetails(_that.tapeKey,_that.tapeName);case _:
   return null;
@@ -279,6 +285,72 @@ class __$DeleteTapeCopyWithImpl<$Res>
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? tapeKey = null,}) {
   return _then(_DeleteTape(
+null == tapeKey ? _self.tapeKey : tapeKey // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _ConfirmDeleteTape extends PlaybackTapeListIntent {
+  const _ConfirmDeleteTape(this.tapeKey): super._();
+  
+
+ final  String tapeKey;
+
+/// Create a copy of PlaybackTapeListIntent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ConfirmDeleteTapeCopyWith<_ConfirmDeleteTape> get copyWith => __$ConfirmDeleteTapeCopyWithImpl<_ConfirmDeleteTape>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ConfirmDeleteTape&&(identical(other.tapeKey, tapeKey) || other.tapeKey == tapeKey));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,tapeKey);
+
+@override
+String toString() {
+  return 'PlaybackTapeListIntent.confirmDeleteTape(tapeKey: $tapeKey)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ConfirmDeleteTapeCopyWith<$Res> implements $PlaybackTapeListIntentCopyWith<$Res> {
+  factory _$ConfirmDeleteTapeCopyWith(_ConfirmDeleteTape value, $Res Function(_ConfirmDeleteTape) _then) = __$ConfirmDeleteTapeCopyWithImpl;
+@useResult
+$Res call({
+ String tapeKey
+});
+
+
+
+
+}
+/// @nodoc
+class __$ConfirmDeleteTapeCopyWithImpl<$Res>
+    implements _$ConfirmDeleteTapeCopyWith<$Res> {
+  __$ConfirmDeleteTapeCopyWithImpl(this._self, this._then);
+
+  final _ConfirmDeleteTape _self;
+  final $Res Function(_ConfirmDeleteTape) _then;
+
+/// Create a copy of PlaybackTapeListIntent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? tapeKey = null,}) {
+  return _then(_ConfirmDeleteTape(
 null == tapeKey ? _self.tapeKey : tapeKey // ignore: cast_nullable_to_non_nullable
 as String,
   ));

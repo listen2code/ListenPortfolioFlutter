@@ -55,15 +55,18 @@ extension CrashLogListIntentPatterns on CrashLogListIntent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Init value)?  init,TResult Function( _Refresh value)?  refresh,TResult Function( _TriggerCrash value)?  triggerCrash,TResult Function( _DeleteAll value)?  deleteAll,TResult Function( _DeleteLog value)?  deleteLog,TResult Function( _ShareLog value)?  shareLog,TResult Function( _ViewLog value)?  viewLog,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Init value)?  init,TResult Function( _Refresh value)?  refresh,TResult Function( _TriggerCrash value)?  triggerCrash,TResult Function( _ConfirmTriggerCrash value)?  confirmTriggerCrash,TResult Function( _DeleteAll value)?  deleteAll,TResult Function( _ConfirmDeleteAll value)?  confirmDeleteAll,TResult Function( _DeleteLog value)?  deleteLog,TResult Function( _ConfirmDeleteLog value)?  confirmDeleteLog,TResult Function( _ShareLog value)?  shareLog,TResult Function( _ViewLog value)?  viewLog,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Init() when init != null:
 return init(_that);case _Refresh() when refresh != null:
 return refresh(_that);case _TriggerCrash() when triggerCrash != null:
-return triggerCrash(_that);case _DeleteAll() when deleteAll != null:
-return deleteAll(_that);case _DeleteLog() when deleteLog != null:
-return deleteLog(_that);case _ShareLog() when shareLog != null:
+return triggerCrash(_that);case _ConfirmTriggerCrash() when confirmTriggerCrash != null:
+return confirmTriggerCrash(_that);case _DeleteAll() when deleteAll != null:
+return deleteAll(_that);case _ConfirmDeleteAll() when confirmDeleteAll != null:
+return confirmDeleteAll(_that);case _DeleteLog() when deleteLog != null:
+return deleteLog(_that);case _ConfirmDeleteLog() when confirmDeleteLog != null:
+return confirmDeleteLog(_that);case _ShareLog() when shareLog != null:
 return shareLog(_that);case _ViewLog() when viewLog != null:
 return viewLog(_that);case _:
   return orElse();
@@ -83,15 +86,18 @@ return viewLog(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Init value)  init,required TResult Function( _Refresh value)  refresh,required TResult Function( _TriggerCrash value)  triggerCrash,required TResult Function( _DeleteAll value)  deleteAll,required TResult Function( _DeleteLog value)  deleteLog,required TResult Function( _ShareLog value)  shareLog,required TResult Function( _ViewLog value)  viewLog,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Init value)  init,required TResult Function( _Refresh value)  refresh,required TResult Function( _TriggerCrash value)  triggerCrash,required TResult Function( _ConfirmTriggerCrash value)  confirmTriggerCrash,required TResult Function( _DeleteAll value)  deleteAll,required TResult Function( _ConfirmDeleteAll value)  confirmDeleteAll,required TResult Function( _DeleteLog value)  deleteLog,required TResult Function( _ConfirmDeleteLog value)  confirmDeleteLog,required TResult Function( _ShareLog value)  shareLog,required TResult Function( _ViewLog value)  viewLog,}){
 final _that = this;
 switch (_that) {
 case _Init():
 return init(_that);case _Refresh():
 return refresh(_that);case _TriggerCrash():
-return triggerCrash(_that);case _DeleteAll():
-return deleteAll(_that);case _DeleteLog():
-return deleteLog(_that);case _ShareLog():
+return triggerCrash(_that);case _ConfirmTriggerCrash():
+return confirmTriggerCrash(_that);case _DeleteAll():
+return deleteAll(_that);case _ConfirmDeleteAll():
+return confirmDeleteAll(_that);case _DeleteLog():
+return deleteLog(_that);case _ConfirmDeleteLog():
+return confirmDeleteLog(_that);case _ShareLog():
 return shareLog(_that);case _ViewLog():
 return viewLog(_that);case _:
   throw StateError('Unexpected subclass');
@@ -110,15 +116,18 @@ return viewLog(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Init value)?  init,TResult? Function( _Refresh value)?  refresh,TResult? Function( _TriggerCrash value)?  triggerCrash,TResult? Function( _DeleteAll value)?  deleteAll,TResult? Function( _DeleteLog value)?  deleteLog,TResult? Function( _ShareLog value)?  shareLog,TResult? Function( _ViewLog value)?  viewLog,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Init value)?  init,TResult? Function( _Refresh value)?  refresh,TResult? Function( _TriggerCrash value)?  triggerCrash,TResult? Function( _ConfirmTriggerCrash value)?  confirmTriggerCrash,TResult? Function( _DeleteAll value)?  deleteAll,TResult? Function( _ConfirmDeleteAll value)?  confirmDeleteAll,TResult? Function( _DeleteLog value)?  deleteLog,TResult? Function( _ConfirmDeleteLog value)?  confirmDeleteLog,TResult? Function( _ShareLog value)?  shareLog,TResult? Function( _ViewLog value)?  viewLog,}){
 final _that = this;
 switch (_that) {
 case _Init() when init != null:
 return init(_that);case _Refresh() when refresh != null:
 return refresh(_that);case _TriggerCrash() when triggerCrash != null:
-return triggerCrash(_that);case _DeleteAll() when deleteAll != null:
-return deleteAll(_that);case _DeleteLog() when deleteLog != null:
-return deleteLog(_that);case _ShareLog() when shareLog != null:
+return triggerCrash(_that);case _ConfirmTriggerCrash() when confirmTriggerCrash != null:
+return confirmTriggerCrash(_that);case _DeleteAll() when deleteAll != null:
+return deleteAll(_that);case _ConfirmDeleteAll() when confirmDeleteAll != null:
+return confirmDeleteAll(_that);case _DeleteLog() when deleteLog != null:
+return deleteLog(_that);case _ConfirmDeleteLog() when confirmDeleteLog != null:
+return confirmDeleteLog(_that);case _ShareLog() when shareLog != null:
 return shareLog(_that);case _ViewLog() when viewLog != null:
 return viewLog(_that);case _:
   return null;
@@ -137,14 +146,17 @@ return viewLog(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  init,TResult Function()?  refresh,TResult Function()?  triggerCrash,TResult Function()?  deleteAll,TResult Function( File file)?  deleteLog,TResult Function( File file)?  shareLog,TResult Function( File file)?  viewLog,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  init,TResult Function()?  refresh,TResult Function()?  triggerCrash,TResult Function()?  confirmTriggerCrash,TResult Function()?  deleteAll,TResult Function()?  confirmDeleteAll,TResult Function( File file)?  deleteLog,TResult Function( File file)?  confirmDeleteLog,TResult Function( File file)?  shareLog,TResult Function( File file)?  viewLog,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Init() when init != null:
 return init();case _Refresh() when refresh != null:
 return refresh();case _TriggerCrash() when triggerCrash != null:
-return triggerCrash();case _DeleteAll() when deleteAll != null:
-return deleteAll();case _DeleteLog() when deleteLog != null:
-return deleteLog(_that.file);case _ShareLog() when shareLog != null:
+return triggerCrash();case _ConfirmTriggerCrash() when confirmTriggerCrash != null:
+return confirmTriggerCrash();case _DeleteAll() when deleteAll != null:
+return deleteAll();case _ConfirmDeleteAll() when confirmDeleteAll != null:
+return confirmDeleteAll();case _DeleteLog() when deleteLog != null:
+return deleteLog(_that.file);case _ConfirmDeleteLog() when confirmDeleteLog != null:
+return confirmDeleteLog(_that.file);case _ShareLog() when shareLog != null:
 return shareLog(_that.file);case _ViewLog() when viewLog != null:
 return viewLog(_that.file);case _:
   return orElse();
@@ -164,14 +176,17 @@ return viewLog(_that.file);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  init,required TResult Function()  refresh,required TResult Function()  triggerCrash,required TResult Function()  deleteAll,required TResult Function( File file)  deleteLog,required TResult Function( File file)  shareLog,required TResult Function( File file)  viewLog,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  init,required TResult Function()  refresh,required TResult Function()  triggerCrash,required TResult Function()  confirmTriggerCrash,required TResult Function()  deleteAll,required TResult Function()  confirmDeleteAll,required TResult Function( File file)  deleteLog,required TResult Function( File file)  confirmDeleteLog,required TResult Function( File file)  shareLog,required TResult Function( File file)  viewLog,}) {final _that = this;
 switch (_that) {
 case _Init():
 return init();case _Refresh():
 return refresh();case _TriggerCrash():
-return triggerCrash();case _DeleteAll():
-return deleteAll();case _DeleteLog():
-return deleteLog(_that.file);case _ShareLog():
+return triggerCrash();case _ConfirmTriggerCrash():
+return confirmTriggerCrash();case _DeleteAll():
+return deleteAll();case _ConfirmDeleteAll():
+return confirmDeleteAll();case _DeleteLog():
+return deleteLog(_that.file);case _ConfirmDeleteLog():
+return confirmDeleteLog(_that.file);case _ShareLog():
 return shareLog(_that.file);case _ViewLog():
 return viewLog(_that.file);case _:
   throw StateError('Unexpected subclass');
@@ -190,14 +205,17 @@ return viewLog(_that.file);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  init,TResult? Function()?  refresh,TResult? Function()?  triggerCrash,TResult? Function()?  deleteAll,TResult? Function( File file)?  deleteLog,TResult? Function( File file)?  shareLog,TResult? Function( File file)?  viewLog,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  init,TResult? Function()?  refresh,TResult? Function()?  triggerCrash,TResult? Function()?  confirmTriggerCrash,TResult? Function()?  deleteAll,TResult? Function()?  confirmDeleteAll,TResult? Function( File file)?  deleteLog,TResult? Function( File file)?  confirmDeleteLog,TResult? Function( File file)?  shareLog,TResult? Function( File file)?  viewLog,}) {final _that = this;
 switch (_that) {
 case _Init() when init != null:
 return init();case _Refresh() when refresh != null:
 return refresh();case _TriggerCrash() when triggerCrash != null:
-return triggerCrash();case _DeleteAll() when deleteAll != null:
-return deleteAll();case _DeleteLog() when deleteLog != null:
-return deleteLog(_that.file);case _ShareLog() when shareLog != null:
+return triggerCrash();case _ConfirmTriggerCrash() when confirmTriggerCrash != null:
+return confirmTriggerCrash();case _DeleteAll() when deleteAll != null:
+return deleteAll();case _ConfirmDeleteAll() when confirmDeleteAll != null:
+return confirmDeleteAll();case _DeleteLog() when deleteLog != null:
+return deleteLog(_that.file);case _ConfirmDeleteLog() when confirmDeleteLog != null:
+return confirmDeleteLog(_that.file);case _ShareLog() when shareLog != null:
 return shareLog(_that.file);case _ViewLog() when viewLog != null:
 return viewLog(_that.file);case _:
   return null;
@@ -306,6 +324,38 @@ String toString() {
 /// @nodoc
 
 
+class _ConfirmTriggerCrash extends CrashLogListIntent {
+  const _ConfirmTriggerCrash(): super._();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ConfirmTriggerCrash);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'CrashLogListIntent.confirmTriggerCrash()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
 class _DeleteAll extends CrashLogListIntent {
   const _DeleteAll(): super._();
   
@@ -327,6 +377,38 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'CrashLogListIntent.deleteAll()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _ConfirmDeleteAll extends CrashLogListIntent {
+  const _ConfirmDeleteAll(): super._();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ConfirmDeleteAll);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'CrashLogListIntent.confirmDeleteAll()';
 }
 
 
@@ -393,6 +475,72 @@ class __$DeleteLogCopyWithImpl<$Res>
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? file = null,}) {
   return _then(_DeleteLog(
+null == file ? _self.file : file // ignore: cast_nullable_to_non_nullable
+as File,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _ConfirmDeleteLog extends CrashLogListIntent {
+  const _ConfirmDeleteLog(this.file): super._();
+  
+
+ final  File file;
+
+/// Create a copy of CrashLogListIntent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ConfirmDeleteLogCopyWith<_ConfirmDeleteLog> get copyWith => __$ConfirmDeleteLogCopyWithImpl<_ConfirmDeleteLog>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ConfirmDeleteLog&&(identical(other.file, file) || other.file == file));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,file);
+
+@override
+String toString() {
+  return 'CrashLogListIntent.confirmDeleteLog(file: $file)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ConfirmDeleteLogCopyWith<$Res> implements $CrashLogListIntentCopyWith<$Res> {
+  factory _$ConfirmDeleteLogCopyWith(_ConfirmDeleteLog value, $Res Function(_ConfirmDeleteLog) _then) = __$ConfirmDeleteLogCopyWithImpl;
+@useResult
+$Res call({
+ File file
+});
+
+
+
+
+}
+/// @nodoc
+class __$ConfirmDeleteLogCopyWithImpl<$Res>
+    implements _$ConfirmDeleteLogCopyWith<$Res> {
+  __$ConfirmDeleteLogCopyWithImpl(this._self, this._then);
+
+  final _ConfirmDeleteLog _self;
+  final $Res Function(_ConfirmDeleteLog) _then;
+
+/// Create a copy of CrashLogListIntent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? file = null,}) {
+  return _then(_ConfirmDeleteLog(
 null == file ? _self.file : file // ignore: cast_nullable_to_non_nullable
 as File,
   ));

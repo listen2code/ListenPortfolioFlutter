@@ -28,11 +28,12 @@ class PlaybackTapeListViewModel extends _$PlaybackTapeListViewModel
 
   @override
   FutureOr<void> onIntent(PlaybackTapeListIntent intent) {
-    intent.map(
-      loadTapes: (_) => _loadTapes(),
-      deleteTape: (val) => _deleteTape(val.tapeKey),
-      startPlayback: (val) => _startPlayback(val.tapeKey),
-      showTapeDetails: (val) => _showTapeDetails(val.tapeKey, val.tapeName),
+    return intent.when<FutureOr<void>>(
+      loadTapes: _loadTapes,
+      deleteTape: _deleteTape,
+      confirmDeleteTape: _onConfirmDeleteTape,
+      startPlayback: _startPlayback,
+      showTapeDetails: _showTapeDetails,
     );
   }
 
@@ -59,20 +60,24 @@ class PlaybackTapeListViewModel extends _$PlaybackTapeListViewModel
         cancelText: I18nKeys.cancel.tr,
         onResult: (confirmed) async {
           if (confirmed) {
-            await call(
-              ref.execute<void, String>(deletePlaybackTapeUseCaseProvider, param: tapeKey),
-              showLoading: true,
-              onSuccess: (_) async {
-                emitEffect(MessageEffect(I18nKeys.tapeDeletedMsg.tr));
-                _loadTapes();
-              },
-              onFailure: (failure) {
-                appLogger.e('Failed to delete tape: ${failure.message}');
-              },
-            );
+            handleIntent(PlaybackTapeListIntent.confirmDeleteTape(tapeKey));
           }
         },
       ),
+    );
+  }
+
+  Future<void> _onConfirmDeleteTape(String tapeKey) async {
+    await call(
+      ref.execute<void, String>(deletePlaybackTapeUseCaseProvider, param: tapeKey),
+      showLoading: true,
+      onSuccess: (_) async {
+        emitEffect(MessageEffect(I18nKeys.tapeDeletedMsg.tr));
+        _loadTapes();
+      },
+      onFailure: (failure) {
+        appLogger.e('Failed to delete tape: ${failure.message}');
+      },
     );
   }
 

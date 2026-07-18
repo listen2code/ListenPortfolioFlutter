@@ -34,15 +34,11 @@ final class DeleteAccountViewModelProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(DeleteAccountState value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<DeleteAccountState>(value),
-    );
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<DeleteAccountState>(value));
   }
 }
 
-String _$deleteAccountViewModelHash() =>
-    r'57dc90148cc0597e2ccc9d658ab2399458ae296e';
+String _$deleteAccountViewModelHash() => r'57dc90148cc0597e2ccc9d658ab2399458ae296e';
 
 abstract class _$DeleteAccountViewModel extends $Notifier<DeleteAccountState> {
   DeleteAccountState build();

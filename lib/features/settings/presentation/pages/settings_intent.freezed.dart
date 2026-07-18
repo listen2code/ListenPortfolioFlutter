@@ -55,14 +55,15 @@ extension SettingsIntentPatterns on SettingsIntent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Init value)?  init,TResult Function( _ToggleNotifications value)?  toggleNotifications,TResult Function( _ClearCache value)?  clearCache,TResult Function( _ResetSettings value)?  resetSettings,TResult Function( _SwitchLanguage value)?  switchLanguage,TResult Function( _SwitchEnv value)?  switchEnv,TResult Function( _ToggleLogOverlay value)?  toggleLogOverlay,TResult Function( _CheckUpdates value)?  checkUpdates,TResult Function( _BuyMeCoffee value)?  buyMeCoffee,TResult Function( _ShowEnvDialog value)?  showEnvDialog,TResult Function( _ShowLanguageDialog value)?  showLanguageDialog,TResult Function( _ShareApp value)?  shareApp,TResult Function( _EnableDeveloperMode value)?  enableDeveloperMode,TResult Function( _RateApp value)?  rateApp,TResult Function( _ShowLicenses value)?  showLicenses,TResult Function( _ToAppearance value)?  toAppearance,TResult Function( _ToChangePassword value)?  toChangePassword,TResult Function( _ToDeleteAccount value)?  toDeleteAccount,TResult Function( _ToCrashLogs value)?  toCrashLogs,TResult Function( _ToPrivacyPolicy value)?  toPrivacyPolicy,TResult Function( _ToTermsOfService value)?  toTermsOfService,TResult Function( _ToWebViewTest value)?  toWebViewTest,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Init value)?  init,TResult Function( _ToggleNotifications value)?  toggleNotifications,TResult Function( _ClearCache value)?  clearCache,TResult Function( _ResetSettings value)?  resetSettings,TResult Function( _ConfirmReset value)?  confirmReset,TResult Function( _SwitchLanguage value)?  switchLanguage,TResult Function( _SwitchEnv value)?  switchEnv,TResult Function( _ToggleLogOverlay value)?  toggleLogOverlay,TResult Function( _CheckUpdates value)?  checkUpdates,TResult Function( _BuyMeCoffee value)?  buyMeCoffee,TResult Function( _ShowEnvDialog value)?  showEnvDialog,TResult Function( _ShowLanguageDialog value)?  showLanguageDialog,TResult Function( _ShareApp value)?  shareApp,TResult Function( _EnableDeveloperMode value)?  enableDeveloperMode,TResult Function( _RateApp value)?  rateApp,TResult Function( _ShowLicenses value)?  showLicenses,TResult Function( _ToAppearance value)?  toAppearance,TResult Function( _ToChangePassword value)?  toChangePassword,TResult Function( _ToDeleteAccount value)?  toDeleteAccount,TResult Function( _ToCrashLogs value)?  toCrashLogs,TResult Function( _ToPrivacyPolicy value)?  toPrivacyPolicy,TResult Function( _ToTermsOfService value)?  toTermsOfService,TResult Function( _ToWebViewTest value)?  toWebViewTest,TResult Function( _ConfirmOpenSettings value)?  confirmOpenSettings,TResult Function( _ConfirmDownloadUpdate value)?  confirmDownloadUpdate,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Init() when init != null:
 return init(_that);case _ToggleNotifications() when toggleNotifications != null:
 return toggleNotifications(_that);case _ClearCache() when clearCache != null:
 return clearCache(_that);case _ResetSettings() when resetSettings != null:
-return resetSettings(_that);case _SwitchLanguage() when switchLanguage != null:
+return resetSettings(_that);case _ConfirmReset() when confirmReset != null:
+return confirmReset(_that);case _SwitchLanguage() when switchLanguage != null:
 return switchLanguage(_that);case _SwitchEnv() when switchEnv != null:
 return switchEnv(_that);case _ToggleLogOverlay() when toggleLogOverlay != null:
 return toggleLogOverlay(_that);case _CheckUpdates() when checkUpdates != null:
@@ -80,7 +81,9 @@ return toDeleteAccount(_that);case _ToCrashLogs() when toCrashLogs != null:
 return toCrashLogs(_that);case _ToPrivacyPolicy() when toPrivacyPolicy != null:
 return toPrivacyPolicy(_that);case _ToTermsOfService() when toTermsOfService != null:
 return toTermsOfService(_that);case _ToWebViewTest() when toWebViewTest != null:
-return toWebViewTest(_that);case _:
+return toWebViewTest(_that);case _ConfirmOpenSettings() when confirmOpenSettings != null:
+return confirmOpenSettings(_that);case _ConfirmDownloadUpdate() when confirmDownloadUpdate != null:
+return confirmDownloadUpdate(_that);case _:
   return orElse();
 
 }
@@ -98,14 +101,15 @@ return toWebViewTest(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Init value)  init,required TResult Function( _ToggleNotifications value)  toggleNotifications,required TResult Function( _ClearCache value)  clearCache,required TResult Function( _ResetSettings value)  resetSettings,required TResult Function( _SwitchLanguage value)  switchLanguage,required TResult Function( _SwitchEnv value)  switchEnv,required TResult Function( _ToggleLogOverlay value)  toggleLogOverlay,required TResult Function( _CheckUpdates value)  checkUpdates,required TResult Function( _BuyMeCoffee value)  buyMeCoffee,required TResult Function( _ShowEnvDialog value)  showEnvDialog,required TResult Function( _ShowLanguageDialog value)  showLanguageDialog,required TResult Function( _ShareApp value)  shareApp,required TResult Function( _EnableDeveloperMode value)  enableDeveloperMode,required TResult Function( _RateApp value)  rateApp,required TResult Function( _ShowLicenses value)  showLicenses,required TResult Function( _ToAppearance value)  toAppearance,required TResult Function( _ToChangePassword value)  toChangePassword,required TResult Function( _ToDeleteAccount value)  toDeleteAccount,required TResult Function( _ToCrashLogs value)  toCrashLogs,required TResult Function( _ToPrivacyPolicy value)  toPrivacyPolicy,required TResult Function( _ToTermsOfService value)  toTermsOfService,required TResult Function( _ToWebViewTest value)  toWebViewTest,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Init value)  init,required TResult Function( _ToggleNotifications value)  toggleNotifications,required TResult Function( _ClearCache value)  clearCache,required TResult Function( _ResetSettings value)  resetSettings,required TResult Function( _ConfirmReset value)  confirmReset,required TResult Function( _SwitchLanguage value)  switchLanguage,required TResult Function( _SwitchEnv value)  switchEnv,required TResult Function( _ToggleLogOverlay value)  toggleLogOverlay,required TResult Function( _CheckUpdates value)  checkUpdates,required TResult Function( _BuyMeCoffee value)  buyMeCoffee,required TResult Function( _ShowEnvDialog value)  showEnvDialog,required TResult Function( _ShowLanguageDialog value)  showLanguageDialog,required TResult Function( _ShareApp value)  shareApp,required TResult Function( _EnableDeveloperMode value)  enableDeveloperMode,required TResult Function( _RateApp value)  rateApp,required TResult Function( _ShowLicenses value)  showLicenses,required TResult Function( _ToAppearance value)  toAppearance,required TResult Function( _ToChangePassword value)  toChangePassword,required TResult Function( _ToDeleteAccount value)  toDeleteAccount,required TResult Function( _ToCrashLogs value)  toCrashLogs,required TResult Function( _ToPrivacyPolicy value)  toPrivacyPolicy,required TResult Function( _ToTermsOfService value)  toTermsOfService,required TResult Function( _ToWebViewTest value)  toWebViewTest,required TResult Function( _ConfirmOpenSettings value)  confirmOpenSettings,required TResult Function( _ConfirmDownloadUpdate value)  confirmDownloadUpdate,}){
 final _that = this;
 switch (_that) {
 case _Init():
 return init(_that);case _ToggleNotifications():
 return toggleNotifications(_that);case _ClearCache():
 return clearCache(_that);case _ResetSettings():
-return resetSettings(_that);case _SwitchLanguage():
+return resetSettings(_that);case _ConfirmReset():
+return confirmReset(_that);case _SwitchLanguage():
 return switchLanguage(_that);case _SwitchEnv():
 return switchEnv(_that);case _ToggleLogOverlay():
 return toggleLogOverlay(_that);case _CheckUpdates():
@@ -123,7 +127,9 @@ return toDeleteAccount(_that);case _ToCrashLogs():
 return toCrashLogs(_that);case _ToPrivacyPolicy():
 return toPrivacyPolicy(_that);case _ToTermsOfService():
 return toTermsOfService(_that);case _ToWebViewTest():
-return toWebViewTest(_that);case _:
+return toWebViewTest(_that);case _ConfirmOpenSettings():
+return confirmOpenSettings(_that);case _ConfirmDownloadUpdate():
+return confirmDownloadUpdate(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -140,14 +146,15 @@ return toWebViewTest(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Init value)?  init,TResult? Function( _ToggleNotifications value)?  toggleNotifications,TResult? Function( _ClearCache value)?  clearCache,TResult? Function( _ResetSettings value)?  resetSettings,TResult? Function( _SwitchLanguage value)?  switchLanguage,TResult? Function( _SwitchEnv value)?  switchEnv,TResult? Function( _ToggleLogOverlay value)?  toggleLogOverlay,TResult? Function( _CheckUpdates value)?  checkUpdates,TResult? Function( _BuyMeCoffee value)?  buyMeCoffee,TResult? Function( _ShowEnvDialog value)?  showEnvDialog,TResult? Function( _ShowLanguageDialog value)?  showLanguageDialog,TResult? Function( _ShareApp value)?  shareApp,TResult? Function( _EnableDeveloperMode value)?  enableDeveloperMode,TResult? Function( _RateApp value)?  rateApp,TResult? Function( _ShowLicenses value)?  showLicenses,TResult? Function( _ToAppearance value)?  toAppearance,TResult? Function( _ToChangePassword value)?  toChangePassword,TResult? Function( _ToDeleteAccount value)?  toDeleteAccount,TResult? Function( _ToCrashLogs value)?  toCrashLogs,TResult? Function( _ToPrivacyPolicy value)?  toPrivacyPolicy,TResult? Function( _ToTermsOfService value)?  toTermsOfService,TResult? Function( _ToWebViewTest value)?  toWebViewTest,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Init value)?  init,TResult? Function( _ToggleNotifications value)?  toggleNotifications,TResult? Function( _ClearCache value)?  clearCache,TResult? Function( _ResetSettings value)?  resetSettings,TResult? Function( _ConfirmReset value)?  confirmReset,TResult? Function( _SwitchLanguage value)?  switchLanguage,TResult? Function( _SwitchEnv value)?  switchEnv,TResult? Function( _ToggleLogOverlay value)?  toggleLogOverlay,TResult? Function( _CheckUpdates value)?  checkUpdates,TResult? Function( _BuyMeCoffee value)?  buyMeCoffee,TResult? Function( _ShowEnvDialog value)?  showEnvDialog,TResult? Function( _ShowLanguageDialog value)?  showLanguageDialog,TResult? Function( _ShareApp value)?  shareApp,TResult? Function( _EnableDeveloperMode value)?  enableDeveloperMode,TResult? Function( _RateApp value)?  rateApp,TResult? Function( _ShowLicenses value)?  showLicenses,TResult? Function( _ToAppearance value)?  toAppearance,TResult? Function( _ToChangePassword value)?  toChangePassword,TResult? Function( _ToDeleteAccount value)?  toDeleteAccount,TResult? Function( _ToCrashLogs value)?  toCrashLogs,TResult? Function( _ToPrivacyPolicy value)?  toPrivacyPolicy,TResult? Function( _ToTermsOfService value)?  toTermsOfService,TResult? Function( _ToWebViewTest value)?  toWebViewTest,TResult? Function( _ConfirmOpenSettings value)?  confirmOpenSettings,TResult? Function( _ConfirmDownloadUpdate value)?  confirmDownloadUpdate,}){
 final _that = this;
 switch (_that) {
 case _Init() when init != null:
 return init(_that);case _ToggleNotifications() when toggleNotifications != null:
 return toggleNotifications(_that);case _ClearCache() when clearCache != null:
 return clearCache(_that);case _ResetSettings() when resetSettings != null:
-return resetSettings(_that);case _SwitchLanguage() when switchLanguage != null:
+return resetSettings(_that);case _ConfirmReset() when confirmReset != null:
+return confirmReset(_that);case _SwitchLanguage() when switchLanguage != null:
 return switchLanguage(_that);case _SwitchEnv() when switchEnv != null:
 return switchEnv(_that);case _ToggleLogOverlay() when toggleLogOverlay != null:
 return toggleLogOverlay(_that);case _CheckUpdates() when checkUpdates != null:
@@ -165,7 +172,9 @@ return toDeleteAccount(_that);case _ToCrashLogs() when toCrashLogs != null:
 return toCrashLogs(_that);case _ToPrivacyPolicy() when toPrivacyPolicy != null:
 return toPrivacyPolicy(_that);case _ToTermsOfService() when toTermsOfService != null:
 return toTermsOfService(_that);case _ToWebViewTest() when toWebViewTest != null:
-return toWebViewTest(_that);case _:
+return toWebViewTest(_that);case _ConfirmOpenSettings() when confirmOpenSettings != null:
+return confirmOpenSettings(_that);case _ConfirmDownloadUpdate() when confirmDownloadUpdate != null:
+return confirmDownloadUpdate(_that);case _:
   return null;
 
 }
@@ -182,13 +191,14 @@ return toWebViewTest(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  init,TResult Function( bool enabled)?  toggleNotifications,TResult Function()?  clearCache,TResult Function()?  resetSettings,TResult Function( AppLanguage language)?  switchLanguage,TResult Function( AppEnvironment env)?  switchEnv,TResult Function( bool enabled)?  toggleLogOverlay,TResult Function()?  checkUpdates,TResult Function()?  buyMeCoffee,TResult Function()?  showEnvDialog,TResult Function()?  showLanguageDialog,TResult Function()?  shareApp,TResult Function()?  enableDeveloperMode,TResult Function()?  rateApp,TResult Function()?  showLicenses,TResult Function()?  toAppearance,TResult Function()?  toChangePassword,TResult Function()?  toDeleteAccount,TResult Function()?  toCrashLogs,TResult Function()?  toPrivacyPolicy,TResult Function()?  toTermsOfService,TResult Function()?  toWebViewTest,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  init,TResult Function( bool enabled)?  toggleNotifications,TResult Function()?  clearCache,TResult Function()?  resetSettings,TResult Function()?  confirmReset,TResult Function( AppLanguage language)?  switchLanguage,TResult Function( AppEnvironment env)?  switchEnv,TResult Function( bool enabled)?  toggleLogOverlay,TResult Function()?  checkUpdates,TResult Function()?  buyMeCoffee,TResult Function()?  showEnvDialog,TResult Function()?  showLanguageDialog,TResult Function()?  shareApp,TResult Function()?  enableDeveloperMode,TResult Function()?  rateApp,TResult Function()?  showLicenses,TResult Function()?  toAppearance,TResult Function()?  toChangePassword,TResult Function()?  toDeleteAccount,TResult Function()?  toCrashLogs,TResult Function()?  toPrivacyPolicy,TResult Function()?  toTermsOfService,TResult Function()?  toWebViewTest,TResult Function()?  confirmOpenSettings,TResult Function( String url)?  confirmDownloadUpdate,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Init() when init != null:
 return init();case _ToggleNotifications() when toggleNotifications != null:
 return toggleNotifications(_that.enabled);case _ClearCache() when clearCache != null:
 return clearCache();case _ResetSettings() when resetSettings != null:
-return resetSettings();case _SwitchLanguage() when switchLanguage != null:
+return resetSettings();case _ConfirmReset() when confirmReset != null:
+return confirmReset();case _SwitchLanguage() when switchLanguage != null:
 return switchLanguage(_that.language);case _SwitchEnv() when switchEnv != null:
 return switchEnv(_that.env);case _ToggleLogOverlay() when toggleLogOverlay != null:
 return toggleLogOverlay(_that.enabled);case _CheckUpdates() when checkUpdates != null:
@@ -206,7 +216,9 @@ return toDeleteAccount();case _ToCrashLogs() when toCrashLogs != null:
 return toCrashLogs();case _ToPrivacyPolicy() when toPrivacyPolicy != null:
 return toPrivacyPolicy();case _ToTermsOfService() when toTermsOfService != null:
 return toTermsOfService();case _ToWebViewTest() when toWebViewTest != null:
-return toWebViewTest();case _:
+return toWebViewTest();case _ConfirmOpenSettings() when confirmOpenSettings != null:
+return confirmOpenSettings();case _ConfirmDownloadUpdate() when confirmDownloadUpdate != null:
+return confirmDownloadUpdate(_that.url);case _:
   return orElse();
 
 }
@@ -224,13 +236,14 @@ return toWebViewTest();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  init,required TResult Function( bool enabled)  toggleNotifications,required TResult Function()  clearCache,required TResult Function()  resetSettings,required TResult Function( AppLanguage language)  switchLanguage,required TResult Function( AppEnvironment env)  switchEnv,required TResult Function( bool enabled)  toggleLogOverlay,required TResult Function()  checkUpdates,required TResult Function()  buyMeCoffee,required TResult Function()  showEnvDialog,required TResult Function()  showLanguageDialog,required TResult Function()  shareApp,required TResult Function()  enableDeveloperMode,required TResult Function()  rateApp,required TResult Function()  showLicenses,required TResult Function()  toAppearance,required TResult Function()  toChangePassword,required TResult Function()  toDeleteAccount,required TResult Function()  toCrashLogs,required TResult Function()  toPrivacyPolicy,required TResult Function()  toTermsOfService,required TResult Function()  toWebViewTest,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  init,required TResult Function( bool enabled)  toggleNotifications,required TResult Function()  clearCache,required TResult Function()  resetSettings,required TResult Function()  confirmReset,required TResult Function( AppLanguage language)  switchLanguage,required TResult Function( AppEnvironment env)  switchEnv,required TResult Function( bool enabled)  toggleLogOverlay,required TResult Function()  checkUpdates,required TResult Function()  buyMeCoffee,required TResult Function()  showEnvDialog,required TResult Function()  showLanguageDialog,required TResult Function()  shareApp,required TResult Function()  enableDeveloperMode,required TResult Function()  rateApp,required TResult Function()  showLicenses,required TResult Function()  toAppearance,required TResult Function()  toChangePassword,required TResult Function()  toDeleteAccount,required TResult Function()  toCrashLogs,required TResult Function()  toPrivacyPolicy,required TResult Function()  toTermsOfService,required TResult Function()  toWebViewTest,required TResult Function()  confirmOpenSettings,required TResult Function( String url)  confirmDownloadUpdate,}) {final _that = this;
 switch (_that) {
 case _Init():
 return init();case _ToggleNotifications():
 return toggleNotifications(_that.enabled);case _ClearCache():
 return clearCache();case _ResetSettings():
-return resetSettings();case _SwitchLanguage():
+return resetSettings();case _ConfirmReset():
+return confirmReset();case _SwitchLanguage():
 return switchLanguage(_that.language);case _SwitchEnv():
 return switchEnv(_that.env);case _ToggleLogOverlay():
 return toggleLogOverlay(_that.enabled);case _CheckUpdates():
@@ -248,7 +261,9 @@ return toDeleteAccount();case _ToCrashLogs():
 return toCrashLogs();case _ToPrivacyPolicy():
 return toPrivacyPolicy();case _ToTermsOfService():
 return toTermsOfService();case _ToWebViewTest():
-return toWebViewTest();case _:
+return toWebViewTest();case _ConfirmOpenSettings():
+return confirmOpenSettings();case _ConfirmDownloadUpdate():
+return confirmDownloadUpdate(_that.url);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -265,13 +280,14 @@ return toWebViewTest();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  init,TResult? Function( bool enabled)?  toggleNotifications,TResult? Function()?  clearCache,TResult? Function()?  resetSettings,TResult? Function( AppLanguage language)?  switchLanguage,TResult? Function( AppEnvironment env)?  switchEnv,TResult? Function( bool enabled)?  toggleLogOverlay,TResult? Function()?  checkUpdates,TResult? Function()?  buyMeCoffee,TResult? Function()?  showEnvDialog,TResult? Function()?  showLanguageDialog,TResult? Function()?  shareApp,TResult? Function()?  enableDeveloperMode,TResult? Function()?  rateApp,TResult? Function()?  showLicenses,TResult? Function()?  toAppearance,TResult? Function()?  toChangePassword,TResult? Function()?  toDeleteAccount,TResult? Function()?  toCrashLogs,TResult? Function()?  toPrivacyPolicy,TResult? Function()?  toTermsOfService,TResult? Function()?  toWebViewTest,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  init,TResult? Function( bool enabled)?  toggleNotifications,TResult? Function()?  clearCache,TResult? Function()?  resetSettings,TResult? Function()?  confirmReset,TResult? Function( AppLanguage language)?  switchLanguage,TResult? Function( AppEnvironment env)?  switchEnv,TResult? Function( bool enabled)?  toggleLogOverlay,TResult? Function()?  checkUpdates,TResult? Function()?  buyMeCoffee,TResult? Function()?  showEnvDialog,TResult? Function()?  showLanguageDialog,TResult? Function()?  shareApp,TResult? Function()?  enableDeveloperMode,TResult? Function()?  rateApp,TResult? Function()?  showLicenses,TResult? Function()?  toAppearance,TResult? Function()?  toChangePassword,TResult? Function()?  toDeleteAccount,TResult? Function()?  toCrashLogs,TResult? Function()?  toPrivacyPolicy,TResult? Function()?  toTermsOfService,TResult? Function()?  toWebViewTest,TResult? Function()?  confirmOpenSettings,TResult? Function( String url)?  confirmDownloadUpdate,}) {final _that = this;
 switch (_that) {
 case _Init() when init != null:
 return init();case _ToggleNotifications() when toggleNotifications != null:
 return toggleNotifications(_that.enabled);case _ClearCache() when clearCache != null:
 return clearCache();case _ResetSettings() when resetSettings != null:
-return resetSettings();case _SwitchLanguage() when switchLanguage != null:
+return resetSettings();case _ConfirmReset() when confirmReset != null:
+return confirmReset();case _SwitchLanguage() when switchLanguage != null:
 return switchLanguage(_that.language);case _SwitchEnv() when switchEnv != null:
 return switchEnv(_that.env);case _ToggleLogOverlay() when toggleLogOverlay != null:
 return toggleLogOverlay(_that.enabled);case _CheckUpdates() when checkUpdates != null:
@@ -289,7 +305,9 @@ return toDeleteAccount();case _ToCrashLogs() when toCrashLogs != null:
 return toCrashLogs();case _ToPrivacyPolicy() when toPrivacyPolicy != null:
 return toPrivacyPolicy();case _ToTermsOfService() when toTermsOfService != null:
 return toTermsOfService();case _ToWebViewTest() when toWebViewTest != null:
-return toWebViewTest();case _:
+return toWebViewTest();case _ConfirmOpenSettings() when confirmOpenSettings != null:
+return confirmOpenSettings();case _ConfirmDownloadUpdate() when confirmDownloadUpdate != null:
+return confirmDownloadUpdate(_that.url);case _:
   return null;
 
 }
@@ -451,6 +469,38 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'SettingsIntent.resetSettings()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _ConfirmReset extends SettingsIntent {
+  const _ConfirmReset(): super._();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ConfirmReset);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'SettingsIntent.confirmReset()';
 }
 
 
@@ -1136,5 +1186,103 @@ String toString() {
 
 
 
+
+/// @nodoc
+
+
+class _ConfirmOpenSettings extends SettingsIntent {
+  const _ConfirmOpenSettings(): super._();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ConfirmOpenSettings);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'SettingsIntent.confirmOpenSettings()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _ConfirmDownloadUpdate extends SettingsIntent {
+  const _ConfirmDownloadUpdate(this.url): super._();
+  
+
+ final  String url;
+
+/// Create a copy of SettingsIntent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ConfirmDownloadUpdateCopyWith<_ConfirmDownloadUpdate> get copyWith => __$ConfirmDownloadUpdateCopyWithImpl<_ConfirmDownloadUpdate>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ConfirmDownloadUpdate&&(identical(other.url, url) || other.url == url));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,url);
+
+@override
+String toString() {
+  return 'SettingsIntent.confirmDownloadUpdate(url: $url)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ConfirmDownloadUpdateCopyWith<$Res> implements $SettingsIntentCopyWith<$Res> {
+  factory _$ConfirmDownloadUpdateCopyWith(_ConfirmDownloadUpdate value, $Res Function(_ConfirmDownloadUpdate) _then) = __$ConfirmDownloadUpdateCopyWithImpl;
+@useResult
+$Res call({
+ String url
+});
+
+
+
+
+}
+/// @nodoc
+class __$ConfirmDownloadUpdateCopyWithImpl<$Res>
+    implements _$ConfirmDownloadUpdateCopyWith<$Res> {
+  __$ConfirmDownloadUpdateCopyWithImpl(this._self, this._then);
+
+  final _ConfirmDownloadUpdate _self;
+  final $Res Function(_ConfirmDownloadUpdate) _then;
+
+/// Create a copy of SettingsIntent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? url = null,}) {
+  return _then(_ConfirmDownloadUpdate(
+null == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
 
 // dart format on

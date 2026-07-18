@@ -46,6 +46,7 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
       toggleNotifications: _onToggleNotifications,
       clearCache: _onClearCache,
       resetSettings: _onResetSettings,
+      confirmReset: _onConfirmReset,
       switchLanguage: _onSwitchLanguage,
       switchEnv: _onSwitchEnv,
       toggleLogOverlay: _onToggleLogOverlay,
@@ -66,6 +67,8 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
       toPrivacyPolicy: () => emitEffect(NavigationEffect(target: Routes.privacyPolicy)),
       toTermsOfService: () => emitEffect(NavigationEffect(target: Routes.termsOfService)),
       toWebViewTest: () => emitEffect(NavigationEffect(target: Routes.webViewTest)),
+      confirmOpenSettings: _onConfirmOpenSettings,
+      confirmDownloadUpdate: _onConfirmDownloadUpdate,
     );
   }
 
@@ -126,11 +129,15 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
         okText: I18nKeys.openSettings.tr,
         onResult: (confirmed) async {
           if (confirmed) {
-            await openAppSettings();
+            handleIntent(const SettingsIntent.confirmOpenSettings());
           }
         },
       ),
     );
+  }
+
+  Future<void> _onConfirmOpenSettings() async {
+    await openAppSettings();
   }
 
   Future<void> _onClearCache() async {
@@ -148,21 +155,25 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
         message: I18nKeys.resetConfirmContent.tr,
         okText: I18nKeys.reset.tr,
         okColor: Colors.red,
-        onResult: (confirmed) async {
+        onResult: (confirmed) {
           if (confirmed) {
-            emitEffect(LoadingEffect(true));
-            try {
-              await settingManager.resetSettings();
-              await _updateCacheSize();
-              // Even if disposed, this will now be handled globally and logged.
-              emitEffect(MessageEffect.info(I18nKeys.settingsResetSuccess.tr));
-            } finally {
-              emitEffect(LoadingEffect(false));
-            }
+            handleIntent(const SettingsIntent.confirmReset());
           }
         },
       ),
     );
+  }
+
+  Future<void> _onConfirmReset() async {
+    emitEffect(LoadingEffect(true));
+    try {
+      await settingManager.resetSettings();
+      await _updateCacheSize();
+      // Even if disposed, this will now be handled globally and logged.
+      emitEffect(MessageEffect.info(I18nKeys.settingsResetSuccess.tr));
+    } finally {
+      emitEffect(LoadingEffect(false));
+    }
   }
 
   Future<void> _onSwitchLanguage(AppLanguage language) async {
@@ -209,7 +220,7 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
           okText: I18nKeys.update.tr,
           onResult: (confirmed) async {
             if (confirmed) {
-              emitEffect(LaunchUrlEffect(versionModel.url));
+              handleIntent(SettingsIntent.confirmDownloadUpdate(versionModel.url));
             }
           },
         ),
@@ -217,6 +228,10 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
     } else {
       emitEffect(MessageEffect.dialog(I18nKeys.latestVersion.tr, title: I18nKeys.checkUpdates.tr));
     }
+  }
+
+  Future<void> _onConfirmDownloadUpdate(String url) async {
+    emitEffect(LaunchUrlEffect(url));
   }
 
   bool _isNewerVersion(String current, String remote) {
