@@ -48,7 +48,10 @@ class ExperienceGrid extends StatelessWidget {
           Row(
             children: [
               for (int i = 0; i < otherExps.length; i++) ...[
-                if (i > 0) SizedBox(width: 12.f),
+                Visibility(
+                  visible: i > 0,
+                  child: SizedBox(width: 12.f),
+                ),
                 _buildStatCard(
                   context,
                   '${otherExps[i].year}${I18nKeys.yearsShort.tr}+',

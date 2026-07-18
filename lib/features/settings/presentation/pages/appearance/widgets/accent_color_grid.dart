@@ -70,7 +70,10 @@ class AccentColorGrid extends StatelessWidget {
                 ? [BoxShadow(color: color.withValues(alpha: 0.4), blurRadius: 10, spreadRadius: 2)]
                 : null,
           ),
-          child: isSelected ? const Icon(Icons.check, color: Colors.white) : null,
+          child: Visibility(
+            visible: isSelected,
+            child: const Icon(Icons.check, color: Colors.white),
+          ),
         ),
       ),
     );
@@ -103,9 +106,11 @@ class AccentColorGrid extends StatelessWidget {
                   ]
                 : null,
           ),
-          child: isSelected
-              ? const Icon(Icons.check, color: Colors.white)
-              : const Icon(Icons.colorize_outlined, color: Colors.grey),
+          child: Visibility(
+            visible: isSelected,
+            replacement: const Icon(Icons.colorize_outlined, color: Colors.grey),
+            child: const Icon(Icons.check, color: Colors.white),
+          ),
         ),
       ),
     );

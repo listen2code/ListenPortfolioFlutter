@@ -31,7 +31,7 @@ class FontSizeOptionTile extends StatelessWidget {
         ),
       ),
       title: CommonText(label),
-      trailing: isSelected ? Icon(Icons.check_circle, color: accentColor) : null,
+      trailing: Visibility(visible: isSelected, child: Icon(Icons.check_circle, color: accentColor)),
       onTap: onTap,
     );
   }

@@ -17,6 +17,8 @@ class AboutMeHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final accentColor = context.accentColor;
+    final imageFile = state.imageFile;
+
     return Center(
       child: Column(
         children: [
@@ -28,21 +30,25 @@ class AboutMeHeader extends StatelessWidget {
                   shape: BoxShape.circle,
                   border: Border.all(color: accentColor, width: 2.f),
                 ),
-                child: state.imageFile != null
-                    ? CommonImage.file(
-                        state.imageFile!,
-                        width: 120.f,
-                        height: 120.f,
-                        borderRadius: 60.f,
-                        semanticLabel: I18nKeys.profilePhotoSemanticLabel.tr,
-                      )
-                    : CommonImage.url(
-                        authManager.state.user?.avatarUrl ?? '',
-                        width: 120.f,
-                        height: 120.f,
-                        borderRadius: 60.f,
-                        semanticLabel: I18nKeys.profilePhotoSemanticLabel.tr,
-                      ),
+                child: Visibility(
+                  visible: imageFile != null,
+                  replacement: CommonImage.url(
+                    authManager.state.user?.avatarUrl ?? '',
+                    width: 120.f,
+                    height: 120.f,
+                    borderRadius: 60.f,
+                    semanticLabel: I18nKeys.profilePhotoSemanticLabel.tr,
+                  ),
+                  child: imageFile != null
+                      ? CommonImage.file(
+                          imageFile,
+                          width: 120.f,
+                          height: 120.f,
+                          borderRadius: 60.f,
+                          semanticLabel: I18nKeys.profilePhotoSemanticLabel.tr,
+                        )
+                      : const SizedBox.shrink(),
+                ),
               ),
               Positioned(
                 bottom: 0,
@@ -112,14 +118,16 @@ class AboutMeHeader extends StatelessWidget {
                   viewModel.handleIntent(const AboutMeIntent.pickImage(ImageSource.camera));
                 },
               ),
-              if (state.imageFile != null)
-                ListTile(
+              Visibility(
+                visible: state.imageFile != null,
+                child: ListTile(
                   leading: Icon(Icons.delete_outline, color: Colors.red, size: 24.f),
                   title: CommonText(I18nKeys.removePhoto.tr, style: const TextStyle(color: Colors.red)),
                   onTap: () {
                     viewModel.handleIntent(const AboutMeIntent.removeImage());
                   },
                 ),
+              ),
             ],
           ),
         );

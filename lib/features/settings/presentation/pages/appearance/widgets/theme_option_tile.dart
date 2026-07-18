@@ -26,7 +26,7 @@ class ThemeOptionTile extends StatelessWidget {
     return ListTile(
       leading: SizedBox(width: 20.f, child: Icon(icon, color: isSelected ? accentColor : Colors.grey)),
       title: CommonText(label),
-      trailing: isSelected ? Icon(Icons.check_circle, color: accentColor) : null,
+      trailing: Visibility(visible: isSelected, child: Icon(Icons.check_circle, color: accentColor)),
       onTap: onTap,
     );
   }

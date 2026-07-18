@@ -38,17 +38,9 @@ class ProjectCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header: Image or Gradient
-          if (hasImage)
-            CommonImage.url(
-              project.imageUrl!.toApiUrl(),
-              width: double.infinity,
-              height: 140.f,
-              fit: BoxFit.cover,
-              semanticLabel: I18nKeys.projectCoverSemanticLabel.tr,
-            )
-          else
-            Container(
+          Visibility(
+            visible: hasImage,
+            replacement: Container(
               height: 120.f,
               width: double.infinity,
               decoration: BoxDecoration(
@@ -66,7 +58,16 @@ class ProjectCard extends StatelessWidget {
                 ),
               ),
             ),
-          // Content Section
+            child: hasImage
+                ? CommonImage.url(
+                    project.imageUrl!.toApiUrl(),
+                    width: double.infinity,
+                    height: 140.f,
+                    fit: BoxFit.cover,
+                    semanticLabel: I18nKeys.projectCoverSemanticLabel.tr,
+                  )
+                : const SizedBox.shrink(),
+          ),
           Padding(
             padding: EdgeInsets.all(20.f),
             child: Column(
@@ -81,8 +82,9 @@ class ProjectCard extends StatelessWidget {
                         style: context.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                       ),
                     ),
-                    if (project.subtitle != null)
-                      Container(
+                    Visibility(
+                      visible: project.subtitle != null,
+                      child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 10.f, vertical: 4.f),
                         decoration: BoxDecoration(
                           color: isTodo
@@ -91,13 +93,14 @@ class ProjectCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(8.f),
                         ),
                         child: CommonText(
-                          project.subtitle!,
+                          project.subtitle ?? '',
                           style: context.textTheme.labelSmall?.copyWith(
                             color: isTodo ? Colors.grey : baseColor,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
+                    ),
                   ],
                 ),
                 SizedBox(height: 12.f),
@@ -106,32 +109,43 @@ class ProjectCard extends StatelessWidget {
                   style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey, height: 1.5),
                   useFittedBox: false,
                 ),
-                if (project.techStack.isNotEmpty) ...[
-                  SizedBox(height: 16.f),
-                  Wrap(
-                    spacing: 8.f,
-                    runSpacing: 8.f,
-                    children: project.techStack
-                        .map((tech) => _buildTechTag(context, tech, baseColor))
-                        .toList(),
-                  ),
-                ],
-                SizedBox(height: 20.f),
-                // Only show Source Code button if githubUrl exists
-                if (!isTodo && project.githubUrl != null)
-                  Row(
+                Visibility(
+                  visible: project.techStack.isNotEmpty,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: _buildActionChip(
-                          context,
-                          Icons.code,
-                          I18nKeys.sourceCode.tr,
-                          baseColor,
-                          onPressed: () => viewModel.handleIntent(ProjectsIntent.launchURL(project.githubUrl!)),
-                        ),
+                      SizedBox(height: 16.f),
+                      Wrap(
+                        spacing: 8.f,
+                        runSpacing: 8.f,
+                        children: project.techStack
+                            .map((tech) => _buildTechTag(context, tech, baseColor))
+                            .toList(),
                       ),
                     ],
                   ),
+                ),
+                Visibility(
+                  visible: !isTodo && project.githubUrl != null,
+                  child: Column(
+                    children: [
+                      SizedBox(height: 20.f),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildActionChip(
+                              context,
+                              Icons.code,
+                              I18nKeys.sourceCode.tr,
+                              baseColor,
+                              onPressed: () => viewModel.handleIntent(ProjectsIntent.launchURL(project.githubUrl!)),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),

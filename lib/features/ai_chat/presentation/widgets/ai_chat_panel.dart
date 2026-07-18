@@ -89,15 +89,19 @@ class _AiChatPanelState extends ConsumerState<AiChatPanel> {
                 ),
 
                 // Loading Indicators
-                if (chatState.isLoading)
-                  const Padding(
+                Visibility(
+                  visible: chatState.isLoading,
+                  child: const Padding(
                     padding: EdgeInsets.symmetric(vertical: 8.0),
                     child: Center(child: CircularProgressIndicator()),
                   ),
+                ),
 
                 // Suggestion Chips (Preset questions for the current route)
-                if (chatState.presetQuestions.isNotEmpty)
-                  _buildPresetQuestions(theme, chatViewModel, chatState),
+                Visibility(
+                  visible: chatState.presetQuestions.isNotEmpty,
+                  child: _buildPresetQuestions(theme, chatViewModel, chatState),
+                ),
 
                 // Input Bar
                 _buildInputBar(theme, chatViewModel, chatState),
@@ -243,8 +247,9 @@ class _AiChatPanelState extends ConsumerState<AiChatPanel> {
                   msg.content,
                   style: const TextStyle(color: Colors.white, height: 1.4),
                 ),
-                if (msg.isFailed)
-                  Padding(
+                Visibility(
+                  visible: msg.isFailed,
+                  child: Padding(
                     padding: const EdgeInsets.only(top: 4.0),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -258,6 +263,7 @@ class _AiChatPanelState extends ConsumerState<AiChatPanel> {
                       ],
                     ),
                   ),
+                ),
               ],
             ),
           ),
