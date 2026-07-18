@@ -30,9 +30,9 @@ class ProjectsWidget extends StatelessWidget {
         return Padding(
           padding: EdgeInsets.only(top: index == 0 ? 20.f : 0),
           child: ProjectCard(
-            viewModel: viewModel,
             project: project,
             baseColor: accentColor,
+            onTapGithub: (url) => viewModel.handleIntent(ProjectsIntent.launchURL(url)),
           ),
         );
       },

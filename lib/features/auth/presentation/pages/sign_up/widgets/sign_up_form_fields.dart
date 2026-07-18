@@ -3,17 +3,18 @@ import 'package:listen_core/core.dart';
 import 'package:listen_uikit/uikit.dart';
 
 import '../../../../../../shared/shared.dart';
-import '../sign_up_intent.dart';
 import '../sign_up_state.dart';
-import '../sign_up_view_model.dart';
 
 class SignUpFormFields extends StatelessWidget {
   final TextEditingController nameController;
   final TextEditingController emailController;
   final TextEditingController pwdController;
   final TextEditingController confirmPwdController;
-  final SignUpViewModel viewModel;
   final SignUpState state;
+  final ValueChanged<String> onNameChanged;
+  final ValueChanged<String> onEmailChanged;
+  final ValueChanged<String> onPasswordChanged;
+  final ValueChanged<String> onConfirmPasswordChanged;
 
   const SignUpFormFields({
     super.key,
@@ -21,8 +22,11 @@ class SignUpFormFields extends StatelessWidget {
     required this.emailController,
     required this.pwdController,
     required this.confirmPwdController,
-    required this.viewModel,
     required this.state,
+    required this.onNameChanged,
+    required this.onEmailChanged,
+    required this.onPasswordChanged,
+    required this.onConfirmPasswordChanged,
   });
 
   @override
@@ -36,7 +40,7 @@ class SignUpFormFields extends StatelessWidget {
           labelText: I18nKeys.fullName.tr,
           prefixIcon: Icons.person_outline,
           errorText: state.fullNameError,
-          onChanged: (val) => viewModel.handleIntent(SignUpIntent.fullNameChanged(val)),
+          onChanged: onNameChanged,
         ),
         SizedBox(height: 20.f),
         // Email Input
@@ -46,7 +50,7 @@ class SignUpFormFields extends StatelessWidget {
           labelText: I18nKeys.email.tr,
           prefixIcon: Icons.email_outlined,
           errorText: state.emailError,
-          onChanged: (val) => viewModel.handleIntent(SignUpIntent.emailChanged(val)),
+          onChanged: onEmailChanged,
         ),
         SizedBox(height: 20.f),
         // Password Input
@@ -56,7 +60,7 @@ class SignUpFormFields extends StatelessWidget {
           labelText: I18nKeys.password.tr,
           prefixIcon: Icons.lock_outline,
           errorText: state.passwordError,
-          onChanged: (val) => viewModel.handleIntent(SignUpIntent.passwordChanged(val)),
+          onChanged: onPasswordChanged,
         ),
         SizedBox(height: 20.f),
         // Confirm Password Input
@@ -66,7 +70,7 @@ class SignUpFormFields extends StatelessWidget {
           labelText: I18nKeys.confirmPassword.tr,
           prefixIcon: Icons.lock_outline,
           errorText: state.confirmPasswordError,
-          onChanged: (val) => viewModel.handleIntent(SignUpIntent.confirmPasswordChanged(val)),
+          onChanged: onConfirmPasswordChanged,
         ),
       ],
     );

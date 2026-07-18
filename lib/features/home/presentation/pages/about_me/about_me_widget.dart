@@ -37,10 +37,17 @@ class AboutMeWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 40.f),
-              AboutMeHeader(viewModel: viewModel, state: state),
+              AboutMeHeader(
+                state: state,
+                onPickImage: (source) => viewModel.handleIntent(AboutMeIntent.pickImage(source)),
+                onRemoveImage: () => viewModel.handleIntent(const AboutMeIntent.removeImage()),
+              ),
               if (data.bio != null) ...[
                 SizedBox(height: 35.f),
-                BioSection(bio: data.bio!, viewModel: viewModel),
+                BioSection(
+                  bio: data.bio!,
+                  onTapResume: () => viewModel.handleIntent(const AboutMeIntent.toResume()),
+                ),
               ],
               if (data.experiences.isNotEmpty) ...[
                 SizedBox(height: 25.f),

@@ -3,15 +3,15 @@ import 'package:listen_core/core.dart';
 import 'package:listen_uikit/uikit.dart';
 
 import '../../../../../../shared/shared.dart';
-import '../sign_up_intent.dart';
-import '../sign_up_view_model.dart';
 
 class SignUpActionButtons extends StatelessWidget {
-  final SignUpViewModel viewModel;
+  final VoidCallback onSubmitSignUp;
+  final VoidCallback onTapLogin;
 
   const SignUpActionButtons({
     super.key,
-    required this.viewModel,
+    required this.onSubmitSignUp,
+    required this.onTapLogin,
   });
 
   @override
@@ -22,7 +22,7 @@ class SignUpActionButtons extends StatelessWidget {
         // Main Sign Up Action
         CommonButton(
           text: I18nKeys.signUp.tr,
-          onPressed: () => viewModel.handleIntent(const SignUpIntent.submitSignUp()),
+          onPressed: onSubmitSignUp,
           borderRadius: 15,
           height: 56.f,
         ),
@@ -45,7 +45,7 @@ class SignUpActionButtons extends StatelessWidget {
               isFullWidth: false,
               padding: EdgeInsets.zero,
               fontSize: 14.f,
-              onPressed: () => viewModel.handleIntent(const SignUpIntent.navigateToLogin()),
+              onPressed: onTapLogin,
             ),
           ],
         ),

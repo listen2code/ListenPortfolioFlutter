@@ -4,15 +4,19 @@ import 'package:listen_core/core.dart';
 import 'package:listen_uikit/uikit.dart';
 
 import '../../../../../../shared/shared.dart';
-import '../about_me_intent.dart';
 import '../about_me_state.dart';
-import '../about_me_view_model.dart';
 
 class AboutMeHeader extends StatelessWidget {
-  final AboutMeViewModel viewModel;
   final AboutMeState state;
+  final ValueChanged<ImageSource> onPickImage;
+  final VoidCallback onRemoveImage;
 
-  const AboutMeHeader({super.key, required this.viewModel, required this.state});
+  const AboutMeHeader({
+    super.key,
+    required this.state,
+    required this.onPickImage,
+    required this.onRemoveImage,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +62,7 @@ class AboutMeHeader extends StatelessWidget {
                   shape: const CircleBorder(),
                   elevation: 4.f,
                   child: CommonClickable(
-                    onTap: () => _showPickerMenu(context, viewModel, state),
+                    onTap: () => _showPickerMenu(context),
                     borderRadius: BorderRadius.circular(20.f),
                     semanticLabel: I18nKeys.changeProfilePhoto.tr,
                     child: Padding(
@@ -96,7 +100,7 @@ class AboutMeHeader extends StatelessWidget {
     );
   }
 
-  void _showPickerMenu(BuildContext context, AboutMeViewModel viewModel, AboutMeState state) {
+  void _showPickerMenu(BuildContext context) {
     showModalBottomSheet<void>(
       context: context,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20.f))),
@@ -108,14 +112,16 @@ class AboutMeHeader extends StatelessWidget {
                 leading: Icon(Icons.photo_library_outlined, size: 24.f),
                 title: CommonText(I18nKeys.chooseFromGallery.tr),
                 onTap: () {
-                  viewModel.handleIntent(const AboutMeIntent.pickImage(ImageSource.gallery));
+                  Navigator.pop(context);
+                  onPickImage(ImageSource.gallery);
                 },
               ),
               ListTile(
                 leading: Icon(Icons.camera_alt_outlined, size: 24.f),
                 title: CommonText(I18nKeys.takePhoto.tr),
                 onTap: () {
-                  viewModel.handleIntent(const AboutMeIntent.pickImage(ImageSource.camera));
+                  Navigator.pop(context);
+                  onPickImage(ImageSource.camera);
                 },
               ),
               Visibility(
@@ -124,7 +130,8 @@ class AboutMeHeader extends StatelessWidget {
                   leading: Icon(Icons.delete_outline, color: Colors.red, size: 24.f),
                   title: CommonText(I18nKeys.removePhoto.tr, style: const TextStyle(color: Colors.red)),
                   onTap: () {
-                    viewModel.handleIntent(const AboutMeIntent.removeImage());
+                    Navigator.pop(context);
+                    onRemoveImage();
                   },
                 ),
               ),

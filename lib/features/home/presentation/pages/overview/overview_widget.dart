@@ -53,10 +53,20 @@ class OverviewWidget extends StatelessWidget {
                   CommonSectionHeader(title: I18nKeys.quickActions.tr),
                   SizedBox(height: 12.f),
                   QuickActions(
-                    userModel: userModel,
-                    viewModel: viewModel,
-                    state: state,
-                    homeViewModel: homeViewModel,
+                    onTapAboutMe: () {
+                      AppNav.tryLogin(
+                        onSuccess: () => homeViewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.aboutMe)),
+                      );
+                    },
+                    onTapArchitecture: () => homeViewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.architecture)),
+                    onTapGithub: () => viewModel.handleIntent(
+                      OverviewIntent.launchURL(state.aboutMe?.github ?? AppConstants.github),
+                    ),
+                    onTapContactMe: () => viewModel.handleIntent(
+                      OverviewIntent.launchURL(
+                        'mailto:${userModel?.email ?? AppConstants.mail}?subject=Portfolio%20Feedback',
+                      ),
+                    ),
                   ),
                   SizedBox(height: 28.f),
                 ],

@@ -41,7 +41,10 @@ class ArchitectureWidget extends StatelessWidget {
                   ),
                 ),
               ...state.sections.map(
-                (section) => ArchitectureSectionCard(section: section, viewModel: viewModel),
+                (section) => ArchitectureSectionCard(
+                  section: section,
+                  onTapLink: (url) => viewModel.handleIntent(ArchitectureIntent.launchURL(url)),
+                ),
               ),
               SizedBox(height: 30.f),
             ],

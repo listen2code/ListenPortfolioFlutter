@@ -3,20 +3,22 @@ import 'package:listen_core/core.dart';
 import 'package:listen_uikit/uikit.dart';
 
 import '../../../../../../shared/shared.dart';
-import '../forgot_password_intent.dart';
 import '../forgot_password_state.dart';
-import '../forgot_password_view_model.dart';
 
 class ForgotPasswordForm extends StatelessWidget {
   final TextEditingController emailController;
-  final ForgotPasswordViewModel viewModel;
   final ForgotPasswordState state;
+  final ValueChanged<String> onEmailChanged;
+  final VoidCallback onSubmitReset;
+  final VoidCallback onTapLogin;
 
   const ForgotPasswordForm({
     super.key,
     required this.emailController,
-    required this.viewModel,
     required this.state,
+    required this.onEmailChanged,
+    required this.onSubmitReset,
+    required this.onTapLogin,
   });
 
   @override
@@ -31,13 +33,13 @@ class ForgotPasswordForm extends StatelessWidget {
           labelText: I18nKeys.emailAddress.tr,
           prefixIcon: Icons.email_outlined,
           errorText: state.emailError,
-          onChanged: (val) => viewModel.handleIntent(ForgotPasswordIntent.emailChanged(val)),
+          onChanged: onEmailChanged,
         ),
         SizedBox(height: 32.f),
         // Submit Action
         CommonButton(
           text: I18nKeys.sendResetLink.tr,
-          onPressed: () => viewModel.handleIntent(const ForgotPasswordIntent.submitReset()),
+          onPressed: onSubmitReset,
           borderRadius: 15,
           height: 56.f,
         ),
@@ -60,7 +62,7 @@ class ForgotPasswordForm extends StatelessWidget {
               isFullWidth: false,
               padding: EdgeInsets.zero,
               fontSize: 14.f,
-              onPressed: () => viewModel.handleIntent(const ForgotPasswordIntent.navigateToLogin()),
+              onPressed: onTapLogin,
             ),
           ],
         ),

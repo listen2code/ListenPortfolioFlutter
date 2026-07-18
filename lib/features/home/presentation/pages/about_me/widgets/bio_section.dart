@@ -3,17 +3,15 @@ import 'package:listen_core/core.dart';
 import 'package:listen_uikit/uikit.dart';
 
 import '../../../../../../shared/shared.dart';
-import '../about_me_intent.dart';
-import '../about_me_view_model.dart';
 
 class BioSection extends StatelessWidget {
   final String bio;
-  final AboutMeViewModel viewModel;
+  final VoidCallback onTapResume;
 
   const BioSection({
     super.key,
     required this.bio,
-    required this.viewModel,
+    required this.onTapResume,
   });
 
   @override
@@ -28,7 +26,7 @@ class BioSection extends StatelessWidget {
         SizedBox(
           width: double.infinity,
           child: CommonClickable(
-            onTap: () => viewModel.handleIntent(const AboutMeIntent.toResume()),
+            onTap: onTapResume,
             borderRadius: BorderRadius.circular(12.f),
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 16.f, vertical: 12.f),

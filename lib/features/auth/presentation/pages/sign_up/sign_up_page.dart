@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../shared/shared.dart';
+import 'sign_up_intent.dart';
 import 'sign_up_state.dart';
 import 'sign_up_view_model.dart';
 import 'widgets/sign_up_action_buttons.dart';
@@ -55,12 +56,16 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
               emailController: _emailController,
               pwdController: _pwdController,
               confirmPwdController: _confirmPwdController,
-              viewModel: viewModel,
               state: state,
+              onNameChanged: (val) => viewModel.handleIntent(SignUpIntent.fullNameChanged(val)),
+              onEmailChanged: (val) => viewModel.handleIntent(SignUpIntent.emailChanged(val)),
+              onPasswordChanged: (val) => viewModel.handleIntent(SignUpIntent.passwordChanged(val)),
+              onConfirmPasswordChanged: (val) => viewModel.handleIntent(SignUpIntent.confirmPasswordChanged(val)),
             ),
             SizedBox(height: 40.f),
             SignUpActionButtons(
-              viewModel: viewModel,
+              onSubmitSignUp: () => viewModel.handleIntent(const SignUpIntent.submitSignUp()),
+              onTapLogin: () => viewModel.handleIntent(const SignUpIntent.navigateToLogin()),
             ),
             SizedBox(height: 40.f),
           ],

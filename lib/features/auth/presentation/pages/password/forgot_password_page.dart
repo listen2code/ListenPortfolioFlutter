@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../shared/shared.dart';
+import 'forgot_password_intent.dart';
 import 'forgot_password_state.dart';
 import 'forgot_password_view_model.dart';
 import 'widgets/forgot_password_form.dart';
@@ -37,8 +38,10 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
             SizedBox(height: 48.f),
             ForgotPasswordForm(
               emailController: _emailController,
-              viewModel: viewModel,
               state: state,
+              onEmailChanged: (val) => viewModel.handleIntent(ForgotPasswordIntent.emailChanged(val)),
+              onSubmitReset: () => viewModel.handleIntent(const ForgotPasswordIntent.submitReset()),
+              onTapLogin: () => viewModel.handleIntent(const ForgotPasswordIntent.navigateToLogin()),
             ),
           ],
         ),

@@ -4,16 +4,15 @@ import 'package:listen_uikit/uikit.dart';
 import '../../../../../../shared/shared.dart';
 import '../architecture_intent.dart';
 import '../architecture_state.dart';
-import '../architecture_view_model.dart';
 
 class ArchitectureSectionCard extends StatelessWidget {
   final ArchitectureSection section;
-  final ArchitectureViewModel viewModel;
+  final ValueChanged<String> onTapLink;
 
   const ArchitectureSectionCard({
     super.key,
     required this.section,
-    required this.viewModel,
+    required this.onTapLink,
   });
 
   @override
@@ -49,7 +48,7 @@ class ArchitectureSectionCard extends StatelessWidget {
                   isFullWidth: false,
                   padding: EdgeInsets.zero,
                   icon: Icons.link,
-                  onPressed: () => viewModel.handleIntent(ArchitectureIntent.launchURL(section.linkUrl!)),
+                  onPressed: () => onTapLink(section.linkUrl!),
                 ),
               ),
           ],

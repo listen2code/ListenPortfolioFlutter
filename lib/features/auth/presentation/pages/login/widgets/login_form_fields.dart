@@ -3,22 +3,26 @@ import 'package:listen_core/core.dart';
 import 'package:listen_uikit/uikit.dart';
 
 import '../../../../../../shared/shared.dart';
-import '../login_intent.dart';
 import '../login_state.dart';
-import '../login_view_model.dart';
 
 class LoginFormFields extends StatelessWidget {
   final TextEditingController usernameController;
   final TextEditingController passwordController;
-  final LoginViewModel viewModel;
   final LoginState state;
+  final ValueChanged<String> onUsernameChanged;
+  final ValueChanged<String> onPasswordChanged;
+  final VoidCallback onToggleRememberMe;
+  final VoidCallback onTapForgotPassword;
 
   const LoginFormFields({
     super.key,
     required this.usernameController,
     required this.passwordController,
-    required this.viewModel,
     required this.state,
+    required this.onUsernameChanged,
+    required this.onPasswordChanged,
+    required this.onToggleRememberMe,
+    required this.onTapForgotPassword,
   });
 
   @override
@@ -35,7 +39,7 @@ class LoginFormFields extends StatelessWidget {
           labelText: I18nKeys.username.tr,
           prefixIcon: Icons.person_outline,
           errorText: state.usernameError,
-          onChanged: (value) => viewModel.handleIntent(LoginIntent.usernameChanged(value)),
+          onChanged: onUsernameChanged,
         ),
         const SizedBox(height: 20),
         // Password
@@ -45,7 +49,7 @@ class LoginFormFields extends StatelessWidget {
           labelText: I18nKeys.password.tr,
           prefixIcon: Icons.lock_outline,
           errorText: state.passwordError,
-          onChanged: (value) => viewModel.handleIntent(LoginIntent.passwordChanged(value)),
+          onChanged: onPasswordChanged,
         ),
         // Remember Me & Forgot Password
         Row(
@@ -65,8 +69,7 @@ class LoginFormFields extends StatelessWidget {
                         value: state.rememberMe,
                         activeColor: accentColor,
                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        onChanged: (value) =>
-                            viewModel.handleIntent(const LoginIntent.toggleRememberMe()),
+                        onChanged: (_) => onToggleRememberMe(),
                       ),
                     ),
                   ),
@@ -80,7 +83,7 @@ class LoginFormFields extends StatelessWidget {
                       padding: EdgeInsets.zero,
                       foregroundColor: Colors.grey,
                       fontSize: 14.f,
-                      onPressed: () => viewModel.handleIntent(const LoginIntent.toggleRememberMe()),
+                      onPressed: onToggleRememberMe,
                     ),
                   ),
                 ],
@@ -96,7 +99,7 @@ class LoginFormFields extends StatelessWidget {
                 height: 40,
                 padding: EdgeInsets.zero,
                 fontSize: 14.f,
-                onPressed: () => viewModel.handleIntent(const LoginIntent.navigateToForgotPassword()),
+                onPressed: onTapForgotPassword,
               ),
             ),
           ],

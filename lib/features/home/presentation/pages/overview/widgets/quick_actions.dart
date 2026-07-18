@@ -3,26 +3,19 @@ import 'package:listen_core/core.dart';
 import 'package:listen_uikit/uikit.dart';
 
 import '../../../../../../shared/shared.dart';
-import '../../../../../auth/data/models/user_model.dart';
-import '../../home_intent.dart';
-import '../../home_state.dart';
-import '../../home_view_model.dart';
-import '../overview_intent.dart';
-import '../overview_state.dart';
-import '../overview_view_model.dart';
 
 class QuickActions extends StatelessWidget {
-  final UserModel? userModel;
-  final OverviewViewModel viewModel;
-  final OverviewState state;
-  final HomeViewModel homeViewModel;
+  final VoidCallback onTapAboutMe;
+  final VoidCallback onTapArchitecture;
+  final VoidCallback onTapGithub;
+  final VoidCallback onTapContactMe;
 
   const QuickActions({
     super.key,
-    required this.userModel,
-    required this.viewModel,
-    required this.state,
-    required this.homeViewModel,
+    required this.onTapAboutMe,
+    required this.onTapArchitecture,
+    required this.onTapGithub,
+    required this.onTapContactMe,
   });
 
   @override
@@ -37,11 +30,7 @@ class QuickActions extends StatelessWidget {
               I18nKeys.aboutMe.tr,
               Icons.person_outline_rounded,
               accentColor,
-              () {
-                AppNav.tryLogin(
-                  onSuccess: () => homeViewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.aboutMe)),
-                );
-              },
+              onTapAboutMe,
               subtitle: I18nKeys.detailedCv.tr,
               blurLevel: AuthBlurLevel.low,
             ),
@@ -51,7 +40,7 @@ class QuickActions extends StatelessWidget {
               I18nKeys.architecture.tr,
               Icons.account_tree_outlined,
               Colors.orange,
-              () => homeViewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.architecture)),
+              onTapArchitecture,
               subtitle: I18nKeys.appDesign.tr,
             ),
           ],
@@ -64,9 +53,7 @@ class QuickActions extends StatelessWidget {
               I18nKeys.github.tr,
               Icons.code_rounded,
               Colors.grey,
-              () => viewModel.handleIntent(
-                OverviewIntent.launchURL(state.aboutMe?.github ?? AppConstants.github),
-              ),
+              onTapGithub,
             ),
             SizedBox(width: 12.f),
             _buildActionButton(
@@ -74,11 +61,7 @@ class QuickActions extends StatelessWidget {
               I18nKeys.contactMe.tr,
               Icons.alternate_email_rounded,
               Colors.grey,
-              () => viewModel.handleIntent(
-                OverviewIntent.launchURL(
-                  'mailto:${userModel?.email ?? AppConstants.mail}?subject=Portfolio%20Feedback',
-                ),
-              ),
+              onTapContactMe,
             ),
           ],
         ),

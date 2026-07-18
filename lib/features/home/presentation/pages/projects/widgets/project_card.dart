@@ -5,18 +5,17 @@ import 'package:listen_uikit/uikit.dart';
 import '../../../../../../shared/shared.dart';
 import '../../../../data/models/project_model.dart';
 import '../projects_intent.dart';
-import '../projects_view_model.dart';
 
 class ProjectCard extends StatelessWidget {
-  final ProjectsViewModel viewModel;
   final ProjectModel project;
   final Color baseColor;
+  final ValueChanged<String> onTapGithub;
 
   const ProjectCard({
     super.key,
-    required this.viewModel,
     required this.project,
     required this.baseColor,
+    required this.onTapGithub,
   });
 
   @override
@@ -137,7 +136,7 @@ class ProjectCard extends StatelessWidget {
                           Icons.code,
                           I18nKeys.sourceCode.tr,
                           baseColor,
-                          onPressed: () => viewModel.handleIntent(ProjectsIntent.launchURL(project.githubUrl!)),
+                          onPressed: () => onTapGithub(project.githubUrl!),
                         ),
                       ),
                     ],

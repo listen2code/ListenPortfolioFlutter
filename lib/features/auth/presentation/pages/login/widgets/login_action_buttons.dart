@@ -3,15 +3,17 @@ import 'package:listen_core/core.dart';
 import 'package:listen_uikit/uikit.dart';
 
 import '../../../../../../shared/shared.dart';
-import '../login_intent.dart';
-import '../login_view_model.dart';
 
 class LoginActionButtons extends StatelessWidget {
-  final LoginViewModel viewModel;
+  final VoidCallback onTapLogin;
+  final VoidCallback onTapSkip;
+  final VoidCallback onTapSignUp;
 
   const LoginActionButtons({
     super.key,
-    required this.viewModel,
+    required this.onTapLogin,
+    required this.onTapSkip,
+    required this.onTapSignUp,
   });
 
   @override
@@ -21,7 +23,7 @@ class LoginActionButtons extends StatelessWidget {
       children: [
         CommonButton(
           text: I18nKeys.login.tr,
-          onPressed: () => viewModel.handleIntent(const LoginIntent.submitLogin()),
+          onPressed: onTapLogin,
           borderRadius: 15,
           height: 56,
         ),
@@ -30,7 +32,7 @@ class LoginActionButtons extends StatelessWidget {
           text: I18nKeys.skipForNow.tr,
           type: ButtonType.text,
           foregroundColor: Colors.grey,
-          onPressed: () => viewModel.handleIntent(const LoginIntent.skipLogin()),
+          onPressed: onTapSkip,
         ),
         const SizedBox(height: 10),
         Row(
@@ -47,7 +49,7 @@ class LoginActionButtons extends StatelessWidget {
               text: I18nKeys.signUp.tr,
               type: ButtonType.text,
               isFullWidth: false,
-              onPressed: () => viewModel.handleIntent(const LoginIntent.navigateToSignup()),
+              onPressed: onTapSignUp,
             ),
           ],
         ),

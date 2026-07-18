@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../shared/shared.dart';
+import 'login_intent.dart';
 import 'login_state.dart';
 import 'login_view_model.dart';
 import 'widgets/login_action_buttons.dart';
@@ -64,12 +65,17 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               LoginFormFields(
                 usernameController: _usernameController,
                 passwordController: _passwordController,
-                viewModel: viewModel,
                 state: state,
+                onUsernameChanged: (val) => viewModel.handleIntent(LoginIntent.usernameChanged(val)),
+                onPasswordChanged: (val) => viewModel.handleIntent(LoginIntent.passwordChanged(val)),
+                onToggleRememberMe: () => viewModel.handleIntent(const LoginIntent.toggleRememberMe()),
+                onTapForgotPassword: () => viewModel.handleIntent(const LoginIntent.navigateToForgotPassword()),
               ),
               const SizedBox(height: 30),
               LoginActionButtons(
-                viewModel: viewModel,
+                onTapLogin: () => viewModel.handleIntent(const LoginIntent.submitLogin()),
+                onTapSkip: () => viewModel.handleIntent(const LoginIntent.skipLogin()),
+                onTapSignUp: () => viewModel.handleIntent(const LoginIntent.navigateToSignup()),
               ),
               const SizedBox(height: 40),
             ],

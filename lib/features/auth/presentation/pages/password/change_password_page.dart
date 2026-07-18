@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../shared/shared.dart';
+import 'change_password_intent.dart';
 import 'change_password_state.dart';
 import 'change_password_view_model.dart';
 import 'widgets/change_password_form.dart';
@@ -43,8 +44,11 @@ class _ChangePasswordPageState extends ConsumerState<ChangePasswordPage> {
               oldPwdController: _oldPwdController,
               newPwdController: _newPwdController,
               confirmPwdController: _confirmPwdController,
-              viewModel: viewModel,
               state: state,
+              onOldPasswordChanged: (val) => viewModel.handleIntent(ChangePasswordIntent.oldPasswordChanged(val)),
+              onNewPasswordChanged: (val) => viewModel.handleIntent(ChangePasswordIntent.newPasswordChanged(val)),
+              onConfirmPasswordChanged: (val) => viewModel.handleIntent(ChangePasswordIntent.confirmPasswordChanged(val)),
+              onSubmit: () => viewModel.handleIntent(const ChangePasswordIntent.submitChange()),
             ),
           ],
         ),
