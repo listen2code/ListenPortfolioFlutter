@@ -19,8 +19,7 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
   @override
   void onReady() {
     super.onReady();
-    // Trigger in-app review check on app startup via effect
-    emitEffect(RateAppEffect(action: RateAppAction.checkAndPrompt));
+    handleIntent(const HomeIntent.init());
 
     // Subscribe to unified deep link event via core EventBus
     subscribeEvent<CommonEvent<Uri>>(
@@ -37,6 +36,7 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
   @override
   FutureOr<void> onIntent(HomeIntent intent) {
     return intent.when<FutureOr<void>>(
+      init: _onInit,
       tabChanged: _onTabChanged,
       logout: _onLogout,
       confirmLogout: _onConfirmLogout,
@@ -44,6 +44,11 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
       toAppearance: () => emitEffect(NavigationEffect(target: Routes.appearance)),
       handleDeepLink: _onHandleDeepLink,
     );
+  }
+
+  void _onInit() {
+    // Trigger in-app review check on app startup via effect
+    emitEffect(RateAppEffect(action: RateAppAction.checkAndPrompt));
   }
 
   void _onHandleDeepLink(Uri uri) {
@@ -64,7 +69,7 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
     emitEffect(NavigationEffect(target: uri.toString(), replaceIfExists: true));
   }
 
-  Future<void> _onTabChanged(HomeTab tab, bool closeDrawer) async {
+  void _onTabChanged(HomeTab tab, bool closeDrawer) {
     updateState(state.copyWith(currentTab: tab));
     if (closeDrawer) {
       emitEffect(NavigationEffect.back());
@@ -97,7 +102,7 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
       showLoading: true,
       onSuccess: (_) async {
         if (state.currentTab == HomeTab.aboutMe) {
-          handleIntent(const HomeIntent.tabChanged(HomeTab.overview));
+          _onTabChanged(HomeTab.overview, false);
         }
         emitEffect(LogoutEffect(to: Routes.login, message: I18nKeys.logoutSuccess.tr));
       },

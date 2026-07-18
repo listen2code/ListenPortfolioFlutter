@@ -4,6 +4,7 @@ import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_intent.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_state.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_view_model.dart';
+import 'package:listen_portfolio_flutter/shared/shared.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -55,6 +56,13 @@ void main() {
         await viewModel.handleIntent(HomeIntent.tabChanged(tab));
         expect(container.read(homeViewModelProvider).currentTab, tab);
       }
+    });
+
+    test('Should emit RateAppEffect when init intent is handled', () async {
+      await viewModel.handleIntent(const HomeIntent.init());
+      expect(emittedEffects.length, 1);
+      expect(emittedEffects.first, isA<RateAppEffect>());
+      expect((emittedEffects.first as RateAppEffect).action, RateAppAction.checkAndPrompt);
     });
 
     test('Should handle lifecycle events without crashing', () {

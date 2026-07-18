@@ -13,6 +13,7 @@ class HomeIntent extends BaseIntent with _$HomeIntent {
   const factory HomeIntent.toSettings() = _ToSettings;
   const factory HomeIntent.toAppearance() = _ToAppearance;
   const factory HomeIntent.handleDeepLink(Uri uri) = _HandleDeepLink;
+  const factory HomeIntent.init() = _Init;
 
   const HomeIntent._();
 
@@ -38,5 +39,6 @@ class HomeIntent extends BaseIntent with _$HomeIntent {
       final uriStr = args['uri'] ?? '';
       return HomeIntent.handleDeepLink(Uri.parse(uriStr));
     });
+    MviPlaybackRegistry.register('HomeIntent', 'init', (args) => const HomeIntent.init());
   }
 }
