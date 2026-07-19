@@ -92,12 +92,10 @@ class AboutMeViewModel extends _$AboutMeViewModel with ViewModelMixin<AboutMeSta
     if (file != null) {
       updateState(state.copyWith(imageFile: file));
     }
-    emitEffect(NavigationEffect.back());
   }
 
   Future<void> _onRemoveImage() async {
     updateState(state.copyWith(imageFile: null));
-    emitEffect(NavigationEffect.back());
   }
 
   /// Fetch about me data from the repository

@@ -76,6 +76,7 @@ class AppConstants {
   static const Set<String> coffeeProductIds = {coffeeTier1, coffeeTier2, coffeeTier3};
 
   // Deep Link Constants
+  static const String deepLinkScheme = 'listen';
   static const String deepLinkHostHome = 'home';
   static const String deepLinkParamTab = 'tab';
 }

@@ -24,16 +24,11 @@ import '../../features/home/presentation/pages/resume/resume_page.dart';
 class Routes {
   Routes._();
 
-  // Deep Link Constants & Helpers
-  static const String deepLinkScheme = 'listen';
-  static const String deepLinkHome = 'home';
-  static const String paramTab = 'tab';
-
   static Uri makeHomeTabDeepLink(String tabName) {
     return Uri(
-      scheme: deepLinkScheme,
-      host: deepLinkHome,
-      queryParameters: {paramTab: tabName},
+      scheme: AppConstants.deepLinkScheme,
+      host: AppConstants.deepLinkHostHome,
+      queryParameters: {AppConstants.deepLinkParamTab: tabName},
     );
   }
 
