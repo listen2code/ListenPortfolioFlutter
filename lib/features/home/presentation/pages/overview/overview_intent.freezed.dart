@@ -55,12 +55,13 @@ extension OverviewIntentPatterns on OverviewIntent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Refresh value)?  refresh,TResult Function( _LaunchURL value)?  launchURL,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Refresh value)?  refresh,TResult Function( _LaunchURL value)?  launchURL,TResult Function( _ContactMe value)?  contactMe,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Refresh() when refresh != null:
 return refresh(_that);case _LaunchURL() when launchURL != null:
-return launchURL(_that);case _:
+return launchURL(_that);case _ContactMe() when contactMe != null:
+return contactMe(_that);case _:
   return orElse();
 
 }
@@ -78,12 +79,13 @@ return launchURL(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Refresh value)  refresh,required TResult Function( _LaunchURL value)  launchURL,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Refresh value)  refresh,required TResult Function( _LaunchURL value)  launchURL,required TResult Function( _ContactMe value)  contactMe,}){
 final _that = this;
 switch (_that) {
 case _Refresh():
 return refresh(_that);case _LaunchURL():
-return launchURL(_that);case _:
+return launchURL(_that);case _ContactMe():
+return contactMe(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -100,12 +102,13 @@ return launchURL(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Refresh value)?  refresh,TResult? Function( _LaunchURL value)?  launchURL,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Refresh value)?  refresh,TResult? Function( _LaunchURL value)?  launchURL,TResult? Function( _ContactMe value)?  contactMe,}){
 final _that = this;
 switch (_that) {
 case _Refresh() when refresh != null:
 return refresh(_that);case _LaunchURL() when launchURL != null:
-return launchURL(_that);case _:
+return launchURL(_that);case _ContactMe() when contactMe != null:
+return contactMe(_that);case _:
   return null;
 
 }
@@ -122,11 +125,12 @@ return launchURL(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  refresh,TResult Function( String url)?  launchURL,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  refresh,TResult Function( String url)?  launchURL,TResult Function( String email)?  contactMe,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Refresh() when refresh != null:
 return refresh();case _LaunchURL() when launchURL != null:
-return launchURL(_that.url);case _:
+return launchURL(_that.url);case _ContactMe() when contactMe != null:
+return contactMe(_that.email);case _:
   return orElse();
 
 }
@@ -144,11 +148,12 @@ return launchURL(_that.url);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  refresh,required TResult Function( String url)  launchURL,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  refresh,required TResult Function( String url)  launchURL,required TResult Function( String email)  contactMe,}) {final _that = this;
 switch (_that) {
 case _Refresh():
 return refresh();case _LaunchURL():
-return launchURL(_that.url);case _:
+return launchURL(_that.url);case _ContactMe():
+return contactMe(_that.email);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -165,11 +170,12 @@ return launchURL(_that.url);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  refresh,TResult? Function( String url)?  launchURL,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  refresh,TResult? Function( String url)?  launchURL,TResult? Function( String email)?  contactMe,}) {final _that = this;
 switch (_that) {
 case _Refresh() when refresh != null:
 return refresh();case _LaunchURL() when launchURL != null:
-return launchURL(_that.url);case _:
+return launchURL(_that.url);case _ContactMe() when contactMe != null:
+return contactMe(_that.email);case _:
   return null;
 
 }
@@ -268,6 +274,72 @@ class __$LaunchURLCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') $Res call({Object? url = null,}) {
   return _then(_LaunchURL(
 null == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _ContactMe extends OverviewIntent {
+  const _ContactMe(this.email): super._();
+  
+
+ final  String email;
+
+/// Create a copy of OverviewIntent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ContactMeCopyWith<_ContactMe> get copyWith => __$ContactMeCopyWithImpl<_ContactMe>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ContactMe&&(identical(other.email, email) || other.email == email));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,email);
+
+@override
+String toString() {
+  return 'OverviewIntent.contactMe(email: $email)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ContactMeCopyWith<$Res> implements $OverviewIntentCopyWith<$Res> {
+  factory _$ContactMeCopyWith(_ContactMe value, $Res Function(_ContactMe) _then) = __$ContactMeCopyWithImpl;
+@useResult
+$Res call({
+ String email
+});
+
+
+
+
+}
+/// @nodoc
+class __$ContactMeCopyWithImpl<$Res>
+    implements _$ContactMeCopyWith<$Res> {
+  __$ContactMeCopyWithImpl(this._self, this._then);
+
+  final _ContactMe _self;
+  final $Res Function(_ContactMe) _then;
+
+/// Create a copy of OverviewIntent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? email = null,}) {
+  return _then(_ContactMe(
+null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }

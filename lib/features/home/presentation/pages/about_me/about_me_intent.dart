@@ -16,10 +16,12 @@ class AboutMeIntent extends BaseIntent with _$AboutMeIntent {
   const factory AboutMeIntent.refresh() = _Refresh;
   const factory AboutMeIntent.shareApp() = _ShareApp;
   const factory AboutMeIntent.toResume() = _ToResume;
+  const factory AboutMeIntent.showPickerMenu() = _ShowPickerMenu;
   const AboutMeIntent._();
 
   /// Registers deserializers for MVI playback.
   static void registerPlayback() {
+    MviPlaybackRegistry.register('AboutMeIntent', 'showPickerMenu', (args) => const AboutMeIntent.showPickerMenu());
     MviPlaybackRegistry.register('AboutMeIntent', 'pickImage', (args) {
       final srcStr = args['source'] ?? '';
       final source = ImageSource.values.firstWhere(

@@ -14,8 +14,6 @@ import '../../features/home/presentation/pages/resume/resume_intent.dart';
 import '../../features/settings/presentation/pages/appearance/appearance_intent.dart';
 import '../../features/settings/presentation/pages/crash_log_list/crash_log_list_intent.dart';
 import '../../features/settings/presentation/pages/delete_account/delete_account_intent.dart';
-import '../../features/settings/presentation/pages/privacy_policy/privacy_policy_intent.dart';
-import '../../features/settings/presentation/pages/terms_of_service/terms_of_service_intent.dart';
 import '../../features/settings/presentation/pages/playback_tape_list/playback_tape_list_intent.dart';
 import '../../features/splash/presentation/pages/splash_intent.dart';
 import '../../features/ai_chat/presentation/pages/ai_chat_intent.dart';
@@ -37,8 +35,6 @@ void initMviPlaybackRegistry() {
   AppearanceIntent.registerPlayback();
   CrashLogListIntent.registerPlayback();
   DeleteAccountIntent.registerPlayback();
-  PrivacyPolicyIntent.registerPlayback();
-  TermsOfServiceIntent.registerPlayback();
   PlaybackTapeListIntent.registerPlayback();
   SplashIntent.registerPlayback();
   AiChatIntent.registerPlayback();

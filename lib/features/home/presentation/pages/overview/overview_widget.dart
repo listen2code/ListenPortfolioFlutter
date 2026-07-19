@@ -59,9 +59,7 @@ class OverviewWidget extends StatelessWidget {
                       OverviewIntent.launchURL(state.aboutMe?.github ?? AppConstants.github),
                     ),
                     onTapContactMe: () => viewModel.handleIntent(
-                      OverviewIntent.launchURL(
-                        'mailto:${userModel?.email ?? AppConstants.mail}?subject=Portfolio%20Feedback',
-                      ),
+                      OverviewIntent.contactMe(userModel?.email ?? AppConstants.mail),
                     ),
                   ),
                   SizedBox(height: 28.f),

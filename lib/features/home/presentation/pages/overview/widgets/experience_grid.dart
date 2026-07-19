@@ -6,6 +6,52 @@ import '../../../../../../shared/shared.dart';
 import '../../../../data/models/about_me_model.dart';
 import '../overview_state.dart';
 
+enum ExperienceType {
+  android,
+  flutter,
+  javaWeb,
+  unknown;
+
+  static ExperienceType fromString(String? val) {
+    switch (val?.toLowerCase()) {
+      case 'android':
+        return ExperienceType.android;
+      case 'flutter':
+        return ExperienceType.flutter;
+      case 'java_web':
+        return ExperienceType.javaWeb;
+      default:
+        return ExperienceType.unknown;
+    }
+  }
+
+  IconData get icon {
+    switch (this) {
+      case ExperienceType.android:
+        return Icons.android_rounded;
+      case ExperienceType.flutter:
+        return Icons.flutter_dash_rounded;
+      case ExperienceType.javaWeb:
+        return Icons.code_rounded;
+      case ExperienceType.unknown:
+        return Icons.help_outline_rounded;
+    }
+  }
+
+  Color get color {
+    switch (this) {
+      case ExperienceType.android:
+        return Colors.green;
+      case ExperienceType.flutter:
+        return Colors.blue;
+      case ExperienceType.javaWeb:
+        return Colors.orange;
+      case ExperienceType.unknown:
+        return Colors.grey;
+    }
+  }
+}
+
 class ExperienceGrid extends StatelessWidget {
   final OverviewState state;
 
@@ -31,6 +77,7 @@ class ExperienceGrid extends StatelessWidget {
     if (stats.isEmpty) return const SizedBox.shrink();
 
     final mainExp = stats.first;
+    final mainExpType = ExperienceType.fromString(mainExp.businessId);
     final otherExps = stats.skip(1).toList();
 
     return Column(
@@ -39,8 +86,8 @@ class ExperienceGrid extends StatelessWidget {
           context,
           '${mainExp.year}${I18nKeys.yearsShort.tr}+',
           mainExp.label?.tr ?? '',
-          _getExperienceIcon(mainExp.businessId),
-          _getExperienceColor(mainExp.businessId),
+          mainExpType.icon,
+          mainExpType.color,
           tags: mainExp.tags,
         ),
         if (otherExps.isNotEmpty) ...[
@@ -52,18 +99,23 @@ class ExperienceGrid extends StatelessWidget {
                   visible: i > 0,
                   child: SizedBox(width: 12.f),
                 ),
-                _buildStatCard(
-                  context,
-                  '${otherExps[i].year}${I18nKeys.yearsShort.tr}+',
-                  otherExps[i].label?.tr ?? '',
-                  _getExperienceIcon(otherExps[i].businessId),
-                  _getExperienceColor(otherExps[i].businessId),
-                ),
+                _buildStatCardFromModel(context, otherExps[i]),
               ],
             ],
           ),
         ],
       ],
+    );
+  }
+
+  Widget _buildStatCardFromModel(BuildContext context, AboutMeStatModel model) {
+    final expType = ExperienceType.fromString(model.businessId);
+    return _buildStatCard(
+      context,
+      '${model.year}${I18nKeys.yearsShort.tr}+',
+      model.label?.tr ?? '',
+      expType.icon,
+      expType.color,
     );
   }
 
@@ -182,31 +234,5 @@ class ExperienceGrid extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  IconData _getExperienceIcon(String? businessId) {
-    switch (businessId) {
-      case 'android':
-        return Icons.android_rounded;
-      case 'flutter':
-        return Icons.flutter_dash_rounded;
-      case 'java_web':
-        return Icons.code_rounded;
-      default:
-        return Icons.help_outline_rounded;
-    }
-  }
-
-  Color _getExperienceColor(String? businessId) {
-    switch (businessId) {
-      case 'android':
-        return Colors.green;
-      case 'flutter':
-        return Colors.blue;
-      case 'java_web':
-        return Colors.orange;
-      default:
-        return Colors.grey;
-    }
   }
 }

@@ -17,6 +17,9 @@ class ResumePage extends ConsumerWidget {
     return BaseRefreshPage<ResumeViewModel, ResumeState>(
       title: I18nKeys.resume.tr,
       provider: resumeViewModelProvider,
+      onRefresh: (viewModel, state) async {
+        viewModel.handleIntent(const ResumeIntent.init());
+      },
       actions: [
         CommonIconButton(
           icon: const Icon(Icons.picture_as_pdf_outlined),
@@ -28,25 +31,6 @@ class ResumePage extends ConsumerWidget {
       ],
       body: (context, child, viewModel, state) {
         if (state.markdownContent.isEmpty) return null;
-
-        if (state.errorMessage != null) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CommonText(state.errorMessage!, style: const TextStyle(color: Colors.red)),
-                const SizedBox(height: 16),
-                CommonButton(
-                  text: I18nKeys.retry.tr,
-                  onPressed: () {
-                    viewModel.handleIntent(const ResumeIntent.init());
-                  },
-                ),
-              ],
-            ),
-          );
-        }
-
         return Markdown(data: state.markdownContent, selectable: true);
       },
     );

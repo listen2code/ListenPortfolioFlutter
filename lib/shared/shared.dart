@@ -1,3 +1,4 @@
+export 'base/action_sheet_provider_impl.dart';
 export 'base/base_auth_page.dart';
 export 'base/base_refresh_page.dart';
 export 'base/base_setting_page.dart';
@@ -12,6 +13,7 @@ export 'base/navigation_provider_impl.dart';
 export 'base/launch_url_provider_impl.dart';
 export 'base/open_app_settings_provider_impl.dart';
 export 'base/pick_image_provider_impl.dart';
+export 'base/play_tape_provider_impl.dart';
 export 'base/print_pdf_provider_impl.dart';
 export 'base/rate_app_provider_impl.dart';
 export 'base/share_provider_impl.dart';

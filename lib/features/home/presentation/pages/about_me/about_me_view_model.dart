@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart' show ImageSource;
 import 'package:listen_core/core.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -44,6 +45,33 @@ class AboutMeViewModel extends _$AboutMeViewModel with ViewModelMixin<AboutMeSta
       refresh: _onRefresh,
       shareApp: _onShareApp,
       toResume: () => emitEffect(NavigationEffect(target: Routes.resume)),
+      showPickerMenu: _onShowPickerMenu,
+    );
+  }
+
+  void _onShowPickerMenu() {
+    emitEffect(
+      ActionSheetEffect(
+        options: [
+          ActionSheetOption(
+            label: I18nKeys.chooseFromGallery.tr,
+            icon: Icons.photo_library_outlined,
+            onTap: () => handleIntent(AboutMeIntent.pickImage(ImageSource.gallery)),
+          ),
+          ActionSheetOption(
+            label: I18nKeys.takePhoto.tr,
+            icon: Icons.camera_alt_outlined,
+            onTap: () => handleIntent(AboutMeIntent.pickImage(ImageSource.camera)),
+          ),
+          ActionSheetOption(
+            label: I18nKeys.removePhoto.tr,
+            icon: Icons.delete_outline,
+            color: Colors.red,
+            visible: state.imageFile != null,
+            onTap: () => handleIntent(const AboutMeIntent.removeImage()),
+          ),
+        ],
+      ),
     );
   }
 

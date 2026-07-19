@@ -33,7 +33,6 @@ class ResumeViewModel extends _$ResumeViewModel with ViewModelMixin<ResumeState,
   }
 
   Future<void> _onInit() async {
-    updateState(state.copyWith(errorMessage: null));
     await call<String>(
       ref.execute<String, BaseParam>(getResumeUseCaseProvider),
       showLoading: true,
@@ -42,7 +41,7 @@ class ResumeViewModel extends _$ResumeViewModel with ViewModelMixin<ResumeState,
         updateState(state.copyWith(markdownContent: content));
       },
       onFailure: (failure) {
-        updateState(state.copyWith(errorMessage: I18nKeys.errNetwork.tr));
+        emitEffect(MessageEffect.error(I18nKeys.errNetwork.tr));
       },
     );
   }

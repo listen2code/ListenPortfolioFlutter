@@ -13,9 +13,9 @@ import '../../features/home/presentation/pages/home_page.dart';
 import '../../features/settings/presentation/pages/appearance/appearance_page.dart';
 import '../../features/settings/presentation/pages/crash_log_list/crash_log_list_page.dart';
 import '../../features/settings/presentation/pages/delete_account/delete_account_page.dart';
-import '../../features/settings/presentation/pages/privacy_policy/privacy_policy_page.dart';
+import '../pages/common_web_view_page.dart';
+import '../shared.dart';
 import '../../features/settings/presentation/pages/settings_page.dart';
-import '../../features/settings/presentation/pages/terms_of_service/terms_of_service_page.dart';
 import '../../features/settings/presentation/pages/playback_tape_list/playback_tape_list_page.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
 import '../../features/home/presentation/pages/resume/resume_page.dart';
@@ -62,8 +62,14 @@ class Routes {
     appearance: () => const AppearancePage(),
     deleteAccount: () => const DeleteAccountPage(),
     crashLogs: () => const CrashLogListPage(),
-    termsOfService: () => const TermsOfServicePage(),
-    privacyPolicy: () => const PrivacyPolicyPage(),
+    termsOfService: () => CommonWebViewPage(
+      title: I18nKeys.termsOfService.tr,
+      url: AppConstants.githubPageTermsOfService,
+    ),
+    privacyPolicy: () => CommonWebViewPage(
+      title: I18nKeys.privacyPolicy.tr,
+      url: AppConstants.githubPagePrivacyPolicy,
+    ),
     resume: () => const ResumePage(),
     playbackTapeList: () => const PlaybackTapeListPage(),
     webViewTest: () => FutureBuilder<String>(

@@ -52,12 +52,14 @@ class AppInitializer {
         storagePrefix: '${AppConstants.appName}_',
         // Inject Core Architecture capability providers
         initialProviders: [
+          const ActionSheetProviderImpl(),
           const LoadingProviderImpl(),
           const MessageProviderImpl(),
           const NavigationProviderImpl(),
           const LaunchUrlProviderImpl(),
           const OpenAppSettingsProviderImpl(),
           const PickImageProviderImpl(),
+          const PlayTapeProviderImpl(),
           LogoutProviderImpl(container),
           const ShareProviderImpl(),
           const CoffeePurchaseProviderImpl(),

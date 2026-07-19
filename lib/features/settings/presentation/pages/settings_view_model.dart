@@ -171,11 +171,13 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
   Future<void> _onSwitchLanguage(AppLanguage language) async {
     await settingManager.setLanguage(language);
     updateState(state.copyWith(currentLanguage: language));
+    emitEffect(NavigationEffect.back());
   }
 
   Future<void> _onSwitchEnv(AppEnvironment env) async {
     await AppEnv.setEnvironment(env);
     updateState(state.copyWith(currentEnv: env));
+    emitEffect(NavigationEffect.back());
   }
 
   void _onToggleLogOverlay(bool enabled) {
@@ -253,7 +255,6 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
         onChanged: (val) {
           if (val is AppEnvironment) {
             handleIntent(SettingsIntent.switchEnv(val));
-            emitEffect(NavigationEffect.back());
           }
         },
       ),
@@ -288,7 +289,6 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
         onChanged: (val) {
           if (val is AppLanguage) {
             handleIntent(SettingsIntent.switchLanguage(val));
-            emitEffect(NavigationEffect.back());
           }
         },
       ),

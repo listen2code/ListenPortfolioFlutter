@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:listen_core/core.dart';
+import 'package:listen_uikit/uikit.dart';
 
 import '../../features/settings/presentation/pages/crash_log_list/widgets/crash_log_details_sheet.dart';
 
@@ -39,7 +40,7 @@ class ViewLogProviderImpl extends BaseProvider<ViewLogEffect> {
 
     if (!context.mounted) return;
 
-    showModalBottomSheet<void>(
+    CommonBottomSheet.show<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,

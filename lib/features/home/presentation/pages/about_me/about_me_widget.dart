@@ -39,8 +39,7 @@ class AboutMeWidget extends StatelessWidget {
               SizedBox(height: 40.f),
               AboutMeHeader(
                 state: state,
-                onPickImage: (source) => viewModel.handleIntent(AboutMeIntent.pickImage(source)),
-                onRemoveImage: () => viewModel.handleIntent(const AboutMeIntent.removeImage()),
+                onTapCamera: () => viewModel.handleIntent(const AboutMeIntent.showPickerMenu()),
               ),
               if (data.bio != null) ...[
                 SizedBox(height: 35.f),

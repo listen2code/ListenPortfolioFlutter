@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:listen_core/core.dart';
 import 'package:listen_uikit/uikit.dart';
 
@@ -8,14 +7,12 @@ import '../about_me_state.dart';
 
 class AboutMeHeader extends StatelessWidget {
   final AboutMeState state;
-  final ValueChanged<ImageSource> onPickImage;
-  final VoidCallback onRemoveImage;
+  final VoidCallback onTapCamera;
 
   const AboutMeHeader({
     super.key,
     required this.state,
-    required this.onPickImage,
-    required this.onRemoveImage,
+    required this.onTapCamera,
   });
 
   @override
@@ -62,7 +59,7 @@ class AboutMeHeader extends StatelessWidget {
                   shape: const CircleBorder(),
                   elevation: 4.f,
                   child: CommonClickable(
-                    onTap: () => _showPickerMenu(context),
+                    onTap: onTapCamera,
                     borderRadius: BorderRadius.circular(20.f),
                     semanticLabel: I18nKeys.changeProfilePhoto.tr,
                     child: Padding(
@@ -97,48 +94,6 @@ class AboutMeHeader extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  void _showPickerMenu(BuildContext context) {
-    showModalBottomSheet<void>(
-      context: context,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20.f))),
-      builder: (context) {
-        return SafeArea(
-          child: Wrap(
-            children: [
-              ListTile(
-                leading: Icon(Icons.photo_library_outlined, size: 24.f),
-                title: CommonText(I18nKeys.chooseFromGallery.tr),
-                onTap: () {
-                  Navigator.pop(context);
-                  onPickImage(ImageSource.gallery);
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.camera_alt_outlined, size: 24.f),
-                title: CommonText(I18nKeys.takePhoto.tr),
-                onTap: () {
-                  Navigator.pop(context);
-                  onPickImage(ImageSource.camera);
-                },
-              ),
-              Visibility(
-                visible: state.imageFile != null,
-                child: ListTile(
-                  leading: Icon(Icons.delete_outline, color: Colors.red, size: 24.f),
-                  title: CommonText(I18nKeys.removePhoto.tr, style: const TextStyle(color: Colors.red)),
-                  onTap: () {
-                    Navigator.pop(context);
-                    onRemoveImage();
-                  },
-                ),
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 }

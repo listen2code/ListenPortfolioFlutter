@@ -91,7 +91,7 @@ class PlaybackTapeListViewModel extends _$PlaybackTapeListViewModel
           return;
         }
         // Start playback
-        MviPlaybackPlayer.instance.play(tapeKey, steps);
+        emitEffect(PlayTapeEffect(tapeKey, steps));
       },
       onFailure: (failure) {
         emitEffect(MessageEffect.error('Failed to load steps: ${failure.message}'));
