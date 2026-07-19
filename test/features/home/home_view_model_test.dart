@@ -85,7 +85,7 @@ void main() {
       viewModel.onReady(); // Subscribes to events
 
       // When - Fire a sticky tab change deep link
-      final testUri = Uri.parse('listen://home?tab=aboutMe');
+      final testUri = Routes.makeHomeTabDeepLink(HomeTab.aboutMe.name);
       EventBus().fire(CommonEvent<Uri>(
         DeepLinkManager.deepLinkEventKey,
         data: testUri,

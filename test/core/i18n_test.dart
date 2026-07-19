@@ -22,7 +22,7 @@ void main() {
     final List<String> allKeys = [];
 
     for (final match in matches) {
-      final keyVal = match.group(1)!;
+      final keyVal = match.group(1)!.replaceAll(r'\n', '\n');
       allKeys.add(keyVal);
 
       // Verify keyVal exists in zh map

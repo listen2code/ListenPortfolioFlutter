@@ -31,12 +31,8 @@ class OverviewViewModel extends _$OverviewViewModel with ViewModelMixin<Overview
     return intent.when<FutureOr<void>>(
       refresh: () => _onRefresh(),
       launchURL: (url) => emitEffect(LaunchUrlEffect(url)),
-      contactMe: (email) => _onContactMe(email),
+      contactMe: (email) => emitEffect(LaunchUrlEffect('mailto:$email?subject=Portfolio%20Feedback')),
     );
-  }
-
-  void _onContactMe(String email) {
-    emitEffect(LaunchUrlEffect('mailto:$email?subject=Portfolio%20Feedback'));
   }
 
   Future<void> _onRefresh() async {

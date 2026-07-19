@@ -52,7 +52,24 @@ class ResumeViewModel extends _$ResumeViewModel with ViewModelMixin<ResumeState,
     updateState(state.copyWith(isExporting: true));
     try {
       final bodyHtml = md.markdownToHtml(state.markdownContent);
-      final htmlContent = '''
+      final htmlContent = _buildPdfHtmlContent(bodyHtml);
+
+      emitEffect(
+        PrintPdfEffect(
+          htmlContent: htmlContent,
+          fileName: 'Resume_${DateTime.now().millisecondsSinceEpoch}.pdf',
+        ),
+      );
+    } catch (e, stack) {
+      appLogger.e('Failed to compile markdown to PDF', error: e, stackTrace: stack);
+      emitEffect(MessageEffect.error(I18nKeys.errServerError.tr));
+    } finally {
+      updateState(state.copyWith(isExporting: false));
+    }
+  }
+
+  String _buildPdfHtmlContent(String bodyHtml) {
+    return '''
 <!DOCTYPE html>
 <html>
 <head>
@@ -145,18 +162,5 @@ class ResumeViewModel extends _$ResumeViewModel with ViewModelMixin<ResumeState,
 </body>
 </html>
 ''';
-
-      emitEffect(
-        PrintPdfEffect(
-          htmlContent: htmlContent,
-          fileName: 'Resume_${DateTime.now().millisecondsSinceEpoch}.pdf',
-        ),
-      );
-    } catch (e, stack) {
-      appLogger.e('Failed to compile markdown to PDF', error: e, stackTrace: stack);
-      emitEffect(MessageEffect.error(I18nKeys.errServerError.tr));
-    } finally {
-      updateState(state.copyWith(isExporting: false));
-    }
   }
 }

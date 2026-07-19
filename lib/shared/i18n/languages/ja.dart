@@ -220,7 +220,7 @@ final Map<String, String> ja = {
   I18nKeys.checkUpdates: 'アップデートを確認',
   I18nKeys.checkingUpdates: 'アップデートを確認中...',
   I18nKeys.latestVersion: '最新バージョンです',
-  I18nKeys.updateAvailable: '新しいバージョン %s が利用可能です。アップデートしますか？',
+  I18nKeys.updateAvailable: '新しいバージョン %s が利用可能です。アップデートしますか？\n（注：Google Playストアへの反映に時間がかかる場合があります。更新ボタンが表示されない場合は、しばらく経ってから再度お試しください）',
   I18nKeys.update: 'アップデート',
   I18nKeys.updateCheckFailed: 'アップデートの確認に失敗しました。後でもう一度お試しください。',
 

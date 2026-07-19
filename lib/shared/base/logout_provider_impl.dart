@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_core/core.dart';
+import '../../features/home/presentation/pages/home_state.dart';
 import '../../features/home/presentation/pages/overview/overview_view_model.dart';
 import '../../features/home/presentation/pages/about_me/about_me_view_model.dart';
 import '../../features/home/presentation/pages/projects/projects_view_model.dart';
@@ -35,7 +36,7 @@ class LogoutProviderImpl extends BaseProvider<LogoutEffect> {
       eventBus.fire(
         CommonEvent<Uri>(
           DeepLinkManager.deepLinkEventKey,
-          data: Uri.parse('listen://home?tab=overview'),
+          data: Routes.makeHomeTabDeepLink(HomeTab.overview.name),
           sticky: true,
           autoClear: true,
         ),

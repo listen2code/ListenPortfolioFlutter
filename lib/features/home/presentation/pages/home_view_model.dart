@@ -44,7 +44,7 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
   @override
   FutureOr<void> onIntent(HomeIntent intent) {
     return intent.when<FutureOr<void>>(
-      init: _onInit,
+      init: () => emitEffect(RateAppEffect(action: RateAppAction.checkAndPrompt)),
       tabChanged: _onTabChanged,
       logout: _onLogout,
       confirmLogout: _onConfirmLogout,
@@ -52,11 +52,6 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
       toAppearance: () => emitEffect(NavigationEffect(target: Routes.appearance)),
       handleDeepLink: _onHandleDeepLink,
     );
-  }
-
-  void _onInit() {
-    // Trigger in-app review check on app startup via effect
-    emitEffect(RateAppEffect(action: RateAppAction.checkAndPrompt));
   }
 
   void _onHandleDeepLink(Uri uri) {

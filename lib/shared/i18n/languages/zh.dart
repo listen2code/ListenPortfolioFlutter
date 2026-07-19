@@ -220,7 +220,7 @@ final Map<String, String> zh = {
   I18nKeys.checkUpdates: '检查更新',
   I18nKeys.checkingUpdates: '正在检查更新...',
   I18nKeys.latestVersion: '已是最新版本',
-  I18nKeys.updateAvailable: '检测到新版本 %s，是否更新？',
+  I18nKeys.updateAvailable: '检测到新版本 %s，是否更新？\n（注：应用商店发布可能有延迟，若未看见更新，请稍候几分钟再试）',
   I18nKeys.update: '更新',
   I18nKeys.updateCheckFailed: '检查更新失败，请稍后重试。',
 
