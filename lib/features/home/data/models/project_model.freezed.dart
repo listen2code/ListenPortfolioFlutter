@@ -215,8 +215,8 @@ return $default(_that.id,_that.businessId,_that.title,_that.subtitle,_that.desc,
 /// @nodoc
 @JsonSerializable()
 
-class _ProjectModel implements ProjectModel {
-  const _ProjectModel({@ToStringConverter() this.id, this.businessId, this.title, this.subtitle, this.desc, this.imageUrl, this.githubUrl, final  List<String> techStack = const []}): _techStack = techStack;
+class _ProjectModel extends ProjectModel {
+  const _ProjectModel({@ToStringConverter() this.id, this.businessId, this.title, this.subtitle, this.desc, this.imageUrl, this.githubUrl, final  List<String> techStack = const []}): _techStack = techStack,super._();
   factory _ProjectModel.fromJson(Map<String, dynamic> json) => _$ProjectModelFromJson(json);
 
 @override@ToStringConverter() final  String? id;

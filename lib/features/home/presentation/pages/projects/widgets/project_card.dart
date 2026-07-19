@@ -20,7 +20,7 @@ class ProjectCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isTodo = project.subtitle == 'TODO';
+    final bool isTodo = project.isTodo;
     final hasImage = project.imageUrl != null && project.imageUrl!.isNotEmpty;
 
     return Container(

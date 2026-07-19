@@ -20,8 +20,7 @@ final aboutMeViewModelProvider = AboutMeViewModelProvider._();
 ///
 /// Manages the state and business logic for displaying and editing user profile information.
 /// Handles data fetching, image selection, and state updates following the MVI pattern.
-final class AboutMeViewModelProvider
-    extends $NotifierProvider<AboutMeViewModel, AboutMeState> {
+final class AboutMeViewModelProvider extends $NotifierProvider<AboutMeViewModel, AboutMeState> {
   /// ViewModel for the About Me page
   ///
   /// Manages the state and business logic for displaying and editing user profile information.
@@ -46,10 +45,7 @@ final class AboutMeViewModelProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(AboutMeState value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<AboutMeState>(value),
-    );
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<AboutMeState>(value));
   }
 }
 
@@ -68,12 +64,7 @@ abstract class _$AboutMeViewModel extends $Notifier<AboutMeState> {
     final ref = this.ref as $Ref<AboutMeState, AboutMeState>;
     final element =
         ref.element
-            as $ClassProviderElement<
-              AnyNotifier<AboutMeState, AboutMeState>,
-              AboutMeState,
-              Object?,
-              Object?
-            >;
+            as $ClassProviderElement<AnyNotifier<AboutMeState, AboutMeState>, AboutMeState, Object?, Object?>;
     element.handleCreate(ref, build);
   }
 }
