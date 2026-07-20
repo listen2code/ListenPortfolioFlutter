@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:listen_core/core.dart';
-import 'package:listen_portfolio_flutter/shared/utils/playback_registry_init.dart';
+import '../../../../../../shared/utils/playback_registry_init.dart';
 
 part 'coffee_purchase_intent.freezed.dart';
 

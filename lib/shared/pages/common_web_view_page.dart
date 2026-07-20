@@ -21,16 +21,15 @@ class CommonWebViewPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: CommonWebView(
-        title: title,
-        initialUrl: url,
-        showAppBar: true,
-        onLoadStart: onLoadStart,
-        onLoadStop: onLoadStop,
-        shouldOverrideUrlLoading: shouldOverrideUrlLoading,
-        javascriptHandlers: javascriptHandlers,
-      ),
+    return CommonWebView(
+      title: title,
+      initialUrl: url,
+      showAppBar: true,
+      shrinkWrap: false,
+      onLoadStart: onLoadStart,
+      onLoadStop: onLoadStop,
+      shouldOverrideUrlLoading: shouldOverrideUrlLoading,
+      javascriptHandlers: javascriptHandlers,
     );
   }
 }

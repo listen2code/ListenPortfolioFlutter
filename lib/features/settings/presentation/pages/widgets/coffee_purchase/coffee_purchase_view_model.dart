@@ -5,7 +5,7 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:listen_core/core.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import 'package:listen_portfolio_flutter/shared/shared.dart';
+import '../../../../../../shared/shared.dart';
 import 'coffee_purchase_intent.dart';
 import 'coffee_purchase_state.dart';
 

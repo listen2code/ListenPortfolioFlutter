@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_core/core.dart';
 import 'package:listen_uikit/uikit.dart';
 
-import 'package:listen_portfolio_flutter/shared/shared.dart';
+import '../../../../../shared/shared.dart';
 import 'coffee_product_card.dart';
 import 'coffee_purchase/coffee_purchase_intent.dart';
 import 'coffee_purchase/coffee_purchase_state.dart';
