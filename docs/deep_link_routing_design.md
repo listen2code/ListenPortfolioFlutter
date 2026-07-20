@@ -139,41 +139,67 @@ class SettingsArguments {
 
 ## 6. 系统返回手势与 PopScope 统一管理设计 (Unified Back Gesture & PopScope Management)
 
-随着 Android 13/14+ 预测性返回手势（Predictive Back）的引入，以及对页面返回生命周期管理的整洁性要求，我们将系统返回手势的拦截与分发逻辑从 UI 布局骨架层（`BaseScaffoldPage`）彻底移出，在生命周期底座层（`BaseLifeCyclePage`）进行了统一封装。
+随着 Android 13/14+ 预测性返回手势（Predictive Back）的引入，以及对页面返回生命周期管理的整洁性要求，我们将系统返回手势的拦截与分发逻辑从 UI 布局骨架层（`BaseScaffoldPage`）彻底移出，在生命周期底座层（`BaseLifeCyclePage`）和 `CommonWebView` 中进行了统一封装与演进治理。
 
 ### 6.1 核心设计原则
 
 1. **布局与手势控制解耦**：
    * `BaseScaffoldPage` 不再包含任何 `PopScope` 或返回拦截的逻辑，保持其作为布局脚手架的纯粹职责。
    * `BaseLifeCyclePage` 作为包裹每个独立页面的生命周期组件，统一接管 `PopScope` 返回手势监听。
-2. **加载态手势拦截与异步请求注销优先级**：
-   * 当页面存在内部加载态（`_isInternalLoading.value == true`）时，系统返回键会被直接拦截（`canPop = false`）。
+2. **多标签页共存（`IndexedStack`）状态治理**：
+   * 在使用多子页共存的 `IndexedStack` 场景下，处于后台的非激活 Tab 仍保留在 Widget 树中，其 `PopScope` 会误拦截全局侧滑返回。
+   * 我们引入了 `widget.active` 过滤校验：当页面未被激活时，`PopScope.canPop` 强置为 `true` 予以直接放行；在 `onPopInvokedWithResult` 中，若 `!widget.active` 则直接 return，完全避免了后台刷新页面对全局返回手势的无意劫持。
+3. **加载态手势拦截与异步请求注销优先级**：
+   * 当激活页面存在内部加载态（`_isInternalLoading.value == true`）时，系统返回键会被直接拦截（`canPop = false`）。
    * 拦截发生后，框架通过精简、零冗余的逻辑优先执行后台异步请求的取消（`_viewModel?.cancelRequests("onBackInvoked")`），并发送副作用重置页面加载状态，实现“首击取消加载并中断请求”。
-3. **多标签页回退与双击退出应用（`HomePage`）**：
+4. **多标签页回退与双击退出应用（`HomePage`）**：
    * 针对应用的根页面（`HomePage`），系统手势始终被拦截（`canPop = false`）。
    * 当用户从二级标签页返回时，侧滑手势自动导向第一页（`Overview` 标签）。
-   * 当处于 `Overview` 页面时，侧滑手势将触发 2 秒内的双击检测：第一击显示国际化 Toast 提示（如“再按一次退出应用”），2 秒内再次点击则调用 `SystemNavigator.pop()` 退出，实现流畅的原生回退体验，避免误触退出。
+   * 当处于 `Overview` 页面时，侧滑手势将触发 2 秒内的双击检测：第一击显示国际化 Toast 提示（如“再按一次退出应用”）， 2 秒内再次点击则调用 `SystemNavigator.pop()` 退出，实现流畅的原生回退体验，避免误触退出。
 
-### 6.2 零重复代码的 PopScope 分发实现 (`onPopInvokedWithResult`)
+### 6.2 WebView 动态返回手势与自定义 Scheme 拦截
+
+针对内置 H5 页面的拦截交互，`CommonWebView` 设计了更加精细化的手势感知与分发链条：
+
+1. **动态 `canPop` 预测返回**：
+   * 为了支持 Android 13+ 系统原生预测性返回动画，WebView 的 `PopScope.canPop` 不再一刀切硬编码为 `false`，而是声明为动态值：`canPop: !widget.enableBackHistory || !_canGoBack`。
+   * 页面通过注册 `onUpdateVisitedHistory` 和 `onLoadStop` 监听，实时向 Native 层查询当前 WebView 历史记录中是否还有上一页可退（通过 `controller.canGoBack()`），并动态更新 `_canGoBack` 状态。
+   * 当有历史可退时，`canPop` 为 `false`，手势拦截触发并调用 `_webViewController.goBack()`；当回退至首个网页页面时，`canPop` 自动变回 `true`，用户再次侧滑将直接调用 Android 系统原生 Predictive Back 退栈动画关闭 WebView。
+2. **生命周期保活（`Offstage` 重构）**：
+   * 为了解决页面加载失败后原生 `InAppWebView` 被销毁重建导致 Controller 的 MethodChannel 彻底解绑并诱发重试按钮报 `MissingPluginException` 的问题，我们将 WebView 视口的条件渲染修改为：
+     ```dart
+     Offstage(
+       offstage: _hasError,
+       child: _buildWebView(context),
+     )
+     ```
+   * 这保证了即使发生报错，原生视图和底层管道也依然存活，点击“Retry”可无缝重试。
+3. **自定义 Scheme Interception (`url_launcher`)**：
+   * 通过在 `CommonWebView` 中引入 `webSchemes` 属性（默认包含 `['http', 'https', 'file', 'chrome', 'about']`），支持自定义配置内部网页协议。
+   * 任何非此配置中的协议（如 `mailto:`, `tel:`, `sms:` 等），在 `shouldOverrideUrlLoading` 阶段就会被自动侦测，并交由 `url_launcher` 从系统外部唤起相应应用，防止 WebView 直接抛出 Native 网页加载错误而破坏用户体验。
+
+### 6.3 零重复代码的 PopScope 分发实现 (`onPopInvokedWithResult`)
 
 在 `BaseLifeCyclePage` 中，我们以一种优雅、免维护的形式组合了出栈生命周期和拦截逻辑，规避了大量样板代码的复制：
 
 ```dart
+        return PopScope(
+          canPop: !widget.active || ((widget.canPop ?? true) && !_isInternalLoading.value),
           onPopInvokedWithResult: (didPop, resultVal) {
-            // 是否应当拦截并触发自定义返回事件（仅当非出栈、非加载中、且定义了自定义拦截时）
-            final shouldInterceptCustomBack = !didPop && !_isInternalLoading.value && widget.onInterceptBack != null;
-            if (shouldInterceptCustomBack) {
-              // 触发自定义拦截回调
-              widget.onInterceptBack!();
-            } else {
-              // 统一注销挂起中的请求以释放网络资源
+            if (!widget.active) return;
+            if (didPop) {
+              // Page successfully popped. Cancel pending requests immediately to release network resources.
               _viewModel?.cancelRequests("onBackInvoked");
-              if (!didPop) {
-                // 如果是加载中触发返回拦截（!didPop 且 _isInternalLoading 为 true），或者回退兜底，则重置并取消加载框
-                _viewModel?.emitEffect(LoadingEffect(false));
-              }
+            } else if (_isInternalLoading.value) {
+              // If page is currently loading internally, intercept back gesture to cancel requests and dismiss loading spinner first.
+              _viewModel?.cancelRequests("onBackInvoked");
+              _viewModel?.emitEffect(LoadingEffect(false));
+            } else if (widget.onInterceptBack != null) {
+              // Back gesture blocked/intercepted. Trigger custom intercept callback if provided.
+              widget.onInterceptBack!();
             }
           },
+          child: result,
+        );
 ```
 通过该设计，整个架构保障了在返回手势交互下网络请求的即时回收、UI 加载态的智能闭环，以及根级页面返回栈的最佳实践。
-
