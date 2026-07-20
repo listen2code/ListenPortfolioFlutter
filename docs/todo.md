@@ -139,7 +139,7 @@
 - Architecture 文档：模块图、状态流、网络链路图
 - 可观测性说明图：trace、log、crash、mock、backend 联调路径如何串起来
 - ADR：记录 Zone tracing、SafeMode、MockServer、401 refresh queue 等关键决策
-- 一篇“为什么这个项目优先做可观测性与稳定性”的短文档，用于对外解释项目取向
+- ✅ 一篇“为什么这个项目优先做可观测性与稳定性”的短文档已沉淀，用于对外解释项目选型与质量取向（详见 [设计与实现文档](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/docs/project_philosophy.md)）
 - Screen capture / GIF：Overview、Login、Settings、CrashLogs
 - Tech stack 选型说明
 

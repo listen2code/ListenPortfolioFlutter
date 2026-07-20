@@ -140,6 +140,9 @@ dart tools/dependency_rules.dart --graph
 - `docs/performance_panel_spec.md`：性能面板规格说明（未完全落地）
 - `docs/ai_intro_assistant_spec.md`：AI 助手规格说明（规划中）
 - `docs/listencore_audit.md`：`listen_core` 架构审计报告
+- `docs/event_bus_vs_base_effect.md`：EventBus 与 BaseEffect 架构通信设计规范
+- `docs/repository_caching_strategy.md`：BaseRepository 二级缓存与数据降级规范
+- `docs/project_philosophy.md`：项目选型与质量取向说明（为什么优先做观测与稳定性）
 - `docs/push_notification_specification.md`：推送通知设计与集成规格
 - `docs/fido2_implementation_design.md`：FIDO2 / Passkey 免密认证设计方案
 - `docs/intent_effect_playback_spec.md`：Intent & Effect 录制与回放设计方案
