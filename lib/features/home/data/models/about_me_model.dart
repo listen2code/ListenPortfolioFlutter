@@ -42,6 +42,7 @@ abstract class AboutMeStatModel with _$AboutMeStatModel {
 @freezed
 abstract class ExperienceItemModel with _$ExperienceItemModel {
   const factory ExperienceItemModel({
+    @ToStringConverter() String? id,
     String? title,
     String? company,
     String? period,
@@ -55,6 +56,7 @@ abstract class ExperienceItemModel with _$ExperienceItemModel {
 @freezed
 abstract class EducationItemModel with _$EducationItemModel {
   const factory EducationItemModel({
+    @ToStringConverter() String? id,
     String? degree,
     String? school,
     String? period,
@@ -79,8 +81,11 @@ abstract class SkillCategoryModel with _$SkillCategoryModel {
 
 @freezed
 abstract class LanguageItemModel with _$LanguageItemModel {
-  const factory LanguageItemModel({String? name, String? level}) =
-      _LanguageItemModel;
+  const factory LanguageItemModel({
+    @ToStringConverter() String? id,
+    String? name,
+    String? level,
+  }) = _LanguageItemModel;
 
   factory LanguageItemModel.fromJson(Map<String, Object?> json) =>
       _$LanguageItemModelFromJson(json);

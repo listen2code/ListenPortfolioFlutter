@@ -134,6 +134,7 @@ Map<String, dynamic> _$AboutMeStatModelToJson(_AboutMeStatModel instance) =>
 _ExperienceItemModel _$ExperienceItemModelFromJson(Map json) =>
     $checkedCreate('_ExperienceItemModel', json, ($checkedConvert) {
       final val = _ExperienceItemModel(
+        id: $checkedConvert('id', (v) => const ToStringConverter().fromJson(v)),
         title: $checkedConvert('title', (v) => v as String?),
         company: $checkedConvert('company', (v) => v as String?),
         period: $checkedConvert('period', (v) => v as String?),
@@ -145,6 +146,7 @@ _ExperienceItemModel _$ExperienceItemModelFromJson(Map json) =>
 Map<String, dynamic> _$ExperienceItemModelToJson(
   _ExperienceItemModel instance,
 ) => <String, dynamic>{
+  'id': const ToStringConverter().toJson(instance.id),
   'title': instance.title,
   'company': instance.company,
   'period': instance.period,
@@ -154,6 +156,7 @@ Map<String, dynamic> _$ExperienceItemModelToJson(
 _EducationItemModel _$EducationItemModelFromJson(Map json) =>
     $checkedCreate('_EducationItemModel', json, ($checkedConvert) {
       final val = _EducationItemModel(
+        id: $checkedConvert('id', (v) => const ToStringConverter().fromJson(v)),
         degree: $checkedConvert('degree', (v) => v as String?),
         school: $checkedConvert('school', (v) => v as String?),
         period: $checkedConvert('period', (v) => v as String?),
@@ -164,6 +167,7 @@ _EducationItemModel _$EducationItemModelFromJson(Map json) =>
 
 Map<String, dynamic> _$EducationItemModelToJson(_EducationItemModel instance) =>
     <String, dynamic>{
+      'id': const ToStringConverter().toJson(instance.id),
       'degree': instance.degree,
       'school': instance.school,
       'period': instance.period,
@@ -197,6 +201,7 @@ Map<String, dynamic> _$SkillCategoryModelToJson(_SkillCategoryModel instance) =>
 _LanguageItemModel _$LanguageItemModelFromJson(Map json) =>
     $checkedCreate('_LanguageItemModel', json, ($checkedConvert) {
       final val = _LanguageItemModel(
+        id: $checkedConvert('id', (v) => const ToStringConverter().fromJson(v)),
         name: $checkedConvert('name', (v) => v as String?),
         level: $checkedConvert('level', (v) => v as String?),
       );
@@ -204,4 +209,8 @@ _LanguageItemModel _$LanguageItemModelFromJson(Map json) =>
     });
 
 Map<String, dynamic> _$LanguageItemModelToJson(_LanguageItemModel instance) =>
-    <String, dynamic>{'name': instance.name, 'level': instance.level};
+    <String, dynamic>{
+      'id': const ToStringConverter().toJson(instance.id),
+      'name': instance.name,
+      'level': instance.level,
+    };

@@ -49,36 +49,42 @@
     ],
     "experiences": [
       {
+        "id": "1",
         "title": "Android / Flutter Engineer",
         "company": "LYC Corp. (Rakuten Securities Project)",
         "period": "2023.02 - Present",
         "description": "Lead developer for new securities Flutter app: architecture design, framework development, FIDO2 authentication integration, and Flutter version upgrades. Maintaining Android stock trading app and conducting code reviews for team members."
       },
       {
+        "id": "2",
         "title": "Android Engineer — Mobile Infrastructure",
         "company": "Youzan Technology",
         "period": "2021.10 - 2022.07",
         "description": "Built mobile APM stutter/ANR detection SDK with optimized data reporting and aggregation. Created full-stack monitoring dashboards (React/AntDesign frontend + Spring Boot backend with RESTful APIs). Participated in Commerce SDK Redux-pattern refactoring."
       },
       {
+        "id": "3",
         "title": "Android Engineer",
         "company": "Duolu (Yin'ai Network Technology)",
         "period": "2019.11 - 2021.10",
         "description": "Established Feed monitoring system, reducing timeout rate from 1.5% to 0.3% and latency by 40%+. Led componentization (module + module_api + module_run) and plugin architecture (Shadow framework). Built dev-stage performance monitoring tools and automated testing (44 Feed cases via AirTest)."
       },
       {
+        "id": "4",
         "title": "Android Engineer",
         "company": "Qibei Technology (Bike-sharing)",
         "period": "2016.09 - 2019.08",
         "description": "Developed bike-sharing apps (Qibei Bike, Dingda Transit) across 4+ major versions. Implemented hot-fix (Tinker), online performance monitoring (Matrix), and reduced build time by 30%+ via Gradle optimization. Set up Jenkins CI pipeline with wireless ADB deployment."
       },
       {
+        "id": "5",
         "title": "Android Engineer",
         "company": "Baidu (Waimai Delivery)",
         "period": "2014.12 - 2016.06",
         "description": "Independently maintained delivery rider app (Xiaodu Knight v1.4-2.9). Designed dynamic GPS tracking strategy reducing redundant uploads by 10%+. Developed PassSDK for unified B-side authentication with AES/JNI encryption. Built logistics development framework for multi-app scaffolding."
       },
       {
+        "id": "6",
         "title": "Java Developer",
         "company": "NewLand Software Engineering",
         "period": "2013.05 - 2014.09",
@@ -87,12 +93,14 @@
     ],
     "education": [
       {
+        "id": "1",
         "degree": "Bachelor of Software Engineering",
         "school": "Fujian University of Technology",
         "period": "2011.09 - 2013.06",
         "description": "Outstanding Graduation Thesis: 'Design and Implementation of CRM System Based on Intelligent Evaluation System'"
       },
       {
+        "id": "2",
         "degree": "Associate in Computer Applications",
         "school": "Fujian Normal University (IT College)",
         "period": "2008.09 - 2011.06",
@@ -100,9 +108,9 @@
       }
     ],
     "languages": [
-      { "name": "Japanese", "level": "JLPT N1 (131), BJT J2 (512)" },
-      { "name": "Chinese", "level": "Native" },
-      { "name": "English", "level": "CET-4" }
+      { "id": "1", "name": "Japanese", "level": "JLPT N1 (131), BJT J2 (512)" },
+      { "id": "2", "name": "Chinese", "level": "Native" },
+      { "id": "3", "name": "English", "level": "CET-4" }
     ],
     "skills": [
       {

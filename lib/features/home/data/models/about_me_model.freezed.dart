@@ -628,7 +628,7 @@ as List<String>,
 /// @nodoc
 mixin _$ExperienceItemModel {
 
- String? get title; String? get company; String? get period; String? get description;
+@ToStringConverter() String? get id; String? get title; String? get company; String? get period; String? get description;
 /// Create a copy of ExperienceItemModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -641,16 +641,16 @@ $ExperienceItemModelCopyWith<ExperienceItemModel> get copyWith => _$ExperienceIt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ExperienceItemModel&&(identical(other.title, title) || other.title == title)&&(identical(other.company, company) || other.company == company)&&(identical(other.period, period) || other.period == period)&&(identical(other.description, description) || other.description == description));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ExperienceItemModel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.company, company) || other.company == company)&&(identical(other.period, period) || other.period == period)&&(identical(other.description, description) || other.description == description));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,title,company,period,description);
+int get hashCode => Object.hash(runtimeType,id,title,company,period,description);
 
 @override
 String toString() {
-  return 'ExperienceItemModel(title: $title, company: $company, period: $period, description: $description)';
+  return 'ExperienceItemModel(id: $id, title: $title, company: $company, period: $period, description: $description)';
 }
 
 
@@ -661,7 +661,7 @@ abstract mixin class $ExperienceItemModelCopyWith<$Res>  {
   factory $ExperienceItemModelCopyWith(ExperienceItemModel value, $Res Function(ExperienceItemModel) _then) = _$ExperienceItemModelCopyWithImpl;
 @useResult
 $Res call({
- String? title, String? company, String? period, String? description
+@ToStringConverter() String? id, String? title, String? company, String? period, String? description
 });
 
 
@@ -678,9 +678,10 @@ class _$ExperienceItemModelCopyWithImpl<$Res>
 
 /// Create a copy of ExperienceItemModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? title = freezed,Object? company = freezed,Object? period = freezed,Object? description = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? title = freezed,Object? company = freezed,Object? period = freezed,Object? description = freezed,}) {
   return _then(_self.copyWith(
-title: freezed == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,title: freezed == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String?,company: freezed == company ? _self.company : company // ignore: cast_nullable_to_non_nullable
 as String?,period: freezed == period ? _self.period : period // ignore: cast_nullable_to_non_nullable
 as String?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
@@ -769,10 +770,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? title,  String? company,  String? period,  String? description)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@ToStringConverter()  String? id,  String? title,  String? company,  String? period,  String? description)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ExperienceItemModel() when $default != null:
-return $default(_that.title,_that.company,_that.period,_that.description);case _:
+return $default(_that.id,_that.title,_that.company,_that.period,_that.description);case _:
   return orElse();
 
 }
@@ -790,10 +791,10 @@ return $default(_that.title,_that.company,_that.period,_that.description);case _
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? title,  String? company,  String? period,  String? description)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@ToStringConverter()  String? id,  String? title,  String? company,  String? period,  String? description)  $default,) {final _that = this;
 switch (_that) {
 case _ExperienceItemModel():
-return $default(_that.title,_that.company,_that.period,_that.description);case _:
+return $default(_that.id,_that.title,_that.company,_that.period,_that.description);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -810,10 +811,10 @@ return $default(_that.title,_that.company,_that.period,_that.description);case _
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? title,  String? company,  String? period,  String? description)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@ToStringConverter()  String? id,  String? title,  String? company,  String? period,  String? description)?  $default,) {final _that = this;
 switch (_that) {
 case _ExperienceItemModel() when $default != null:
-return $default(_that.title,_that.company,_that.period,_that.description);case _:
+return $default(_that.id,_that.title,_that.company,_that.period,_that.description);case _:
   return null;
 
 }
@@ -825,9 +826,10 @@ return $default(_that.title,_that.company,_that.period,_that.description);case _
 @JsonSerializable()
 
 class _ExperienceItemModel implements ExperienceItemModel {
-  const _ExperienceItemModel({this.title, this.company, this.period, this.description});
+  const _ExperienceItemModel({@ToStringConverter() this.id, this.title, this.company, this.period, this.description});
   factory _ExperienceItemModel.fromJson(Map<String, dynamic> json) => _$ExperienceItemModelFromJson(json);
 
+@override@ToStringConverter() final  String? id;
 @override final  String? title;
 @override final  String? company;
 @override final  String? period;
@@ -846,16 +848,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ExperienceItemModel&&(identical(other.title, title) || other.title == title)&&(identical(other.company, company) || other.company == company)&&(identical(other.period, period) || other.period == period)&&(identical(other.description, description) || other.description == description));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ExperienceItemModel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.company, company) || other.company == company)&&(identical(other.period, period) || other.period == period)&&(identical(other.description, description) || other.description == description));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,title,company,period,description);
+int get hashCode => Object.hash(runtimeType,id,title,company,period,description);
 
 @override
 String toString() {
-  return 'ExperienceItemModel(title: $title, company: $company, period: $period, description: $description)';
+  return 'ExperienceItemModel(id: $id, title: $title, company: $company, period: $period, description: $description)';
 }
 
 
@@ -866,7 +868,7 @@ abstract mixin class _$ExperienceItemModelCopyWith<$Res> implements $ExperienceI
   factory _$ExperienceItemModelCopyWith(_ExperienceItemModel value, $Res Function(_ExperienceItemModel) _then) = __$ExperienceItemModelCopyWithImpl;
 @override @useResult
 $Res call({
- String? title, String? company, String? period, String? description
+@ToStringConverter() String? id, String? title, String? company, String? period, String? description
 });
 
 
@@ -883,9 +885,10 @@ class __$ExperienceItemModelCopyWithImpl<$Res>
 
 /// Create a copy of ExperienceItemModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? title = freezed,Object? company = freezed,Object? period = freezed,Object? description = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? title = freezed,Object? company = freezed,Object? period = freezed,Object? description = freezed,}) {
   return _then(_ExperienceItemModel(
-title: freezed == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,title: freezed == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String?,company: freezed == company ? _self.company : company // ignore: cast_nullable_to_non_nullable
 as String?,period: freezed == period ? _self.period : period // ignore: cast_nullable_to_non_nullable
 as String?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
@@ -900,7 +903,7 @@ as String?,
 /// @nodoc
 mixin _$EducationItemModel {
 
- String? get degree; String? get school; String? get period; String? get description;
+@ToStringConverter() String? get id; String? get degree; String? get school; String? get period; String? get description;
 /// Create a copy of EducationItemModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -913,16 +916,16 @@ $EducationItemModelCopyWith<EducationItemModel> get copyWith => _$EducationItemM
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EducationItemModel&&(identical(other.degree, degree) || other.degree == degree)&&(identical(other.school, school) || other.school == school)&&(identical(other.period, period) || other.period == period)&&(identical(other.description, description) || other.description == description));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EducationItemModel&&(identical(other.id, id) || other.id == id)&&(identical(other.degree, degree) || other.degree == degree)&&(identical(other.school, school) || other.school == school)&&(identical(other.period, period) || other.period == period)&&(identical(other.description, description) || other.description == description));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,degree,school,period,description);
+int get hashCode => Object.hash(runtimeType,id,degree,school,period,description);
 
 @override
 String toString() {
-  return 'EducationItemModel(degree: $degree, school: $school, period: $period, description: $description)';
+  return 'EducationItemModel(id: $id, degree: $degree, school: $school, period: $period, description: $description)';
 }
 
 
@@ -933,7 +936,7 @@ abstract mixin class $EducationItemModelCopyWith<$Res>  {
   factory $EducationItemModelCopyWith(EducationItemModel value, $Res Function(EducationItemModel) _then) = _$EducationItemModelCopyWithImpl;
 @useResult
 $Res call({
- String? degree, String? school, String? period, String? description
+@ToStringConverter() String? id, String? degree, String? school, String? period, String? description
 });
 
 
@@ -950,9 +953,10 @@ class _$EducationItemModelCopyWithImpl<$Res>
 
 /// Create a copy of EducationItemModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? degree = freezed,Object? school = freezed,Object? period = freezed,Object? description = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? degree = freezed,Object? school = freezed,Object? period = freezed,Object? description = freezed,}) {
   return _then(_self.copyWith(
-degree: freezed == degree ? _self.degree : degree // ignore: cast_nullable_to_non_nullable
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,degree: freezed == degree ? _self.degree : degree // ignore: cast_nullable_to_non_nullable
 as String?,school: freezed == school ? _self.school : school // ignore: cast_nullable_to_non_nullable
 as String?,period: freezed == period ? _self.period : period // ignore: cast_nullable_to_non_nullable
 as String?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
@@ -1041,10 +1045,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? degree,  String? school,  String? period,  String? description)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@ToStringConverter()  String? id,  String? degree,  String? school,  String? period,  String? description)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _EducationItemModel() when $default != null:
-return $default(_that.degree,_that.school,_that.period,_that.description);case _:
+return $default(_that.id,_that.degree,_that.school,_that.period,_that.description);case _:
   return orElse();
 
 }
@@ -1062,10 +1066,10 @@ return $default(_that.degree,_that.school,_that.period,_that.description);case _
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? degree,  String? school,  String? period,  String? description)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@ToStringConverter()  String? id,  String? degree,  String? school,  String? period,  String? description)  $default,) {final _that = this;
 switch (_that) {
 case _EducationItemModel():
-return $default(_that.degree,_that.school,_that.period,_that.description);case _:
+return $default(_that.id,_that.degree,_that.school,_that.period,_that.description);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1082,10 +1086,10 @@ return $default(_that.degree,_that.school,_that.period,_that.description);case _
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? degree,  String? school,  String? period,  String? description)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@ToStringConverter()  String? id,  String? degree,  String? school,  String? period,  String? description)?  $default,) {final _that = this;
 switch (_that) {
 case _EducationItemModel() when $default != null:
-return $default(_that.degree,_that.school,_that.period,_that.description);case _:
+return $default(_that.id,_that.degree,_that.school,_that.period,_that.description);case _:
   return null;
 
 }
@@ -1097,9 +1101,10 @@ return $default(_that.degree,_that.school,_that.period,_that.description);case _
 @JsonSerializable()
 
 class _EducationItemModel implements EducationItemModel {
-  const _EducationItemModel({this.degree, this.school, this.period, this.description});
+  const _EducationItemModel({@ToStringConverter() this.id, this.degree, this.school, this.period, this.description});
   factory _EducationItemModel.fromJson(Map<String, dynamic> json) => _$EducationItemModelFromJson(json);
 
+@override@ToStringConverter() final  String? id;
 @override final  String? degree;
 @override final  String? school;
 @override final  String? period;
@@ -1118,16 +1123,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EducationItemModel&&(identical(other.degree, degree) || other.degree == degree)&&(identical(other.school, school) || other.school == school)&&(identical(other.period, period) || other.period == period)&&(identical(other.description, description) || other.description == description));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EducationItemModel&&(identical(other.id, id) || other.id == id)&&(identical(other.degree, degree) || other.degree == degree)&&(identical(other.school, school) || other.school == school)&&(identical(other.period, period) || other.period == period)&&(identical(other.description, description) || other.description == description));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,degree,school,period,description);
+int get hashCode => Object.hash(runtimeType,id,degree,school,period,description);
 
 @override
 String toString() {
-  return 'EducationItemModel(degree: $degree, school: $school, period: $period, description: $description)';
+  return 'EducationItemModel(id: $id, degree: $degree, school: $school, period: $period, description: $description)';
 }
 
 
@@ -1138,7 +1143,7 @@ abstract mixin class _$EducationItemModelCopyWith<$Res> implements $EducationIte
   factory _$EducationItemModelCopyWith(_EducationItemModel value, $Res Function(_EducationItemModel) _then) = __$EducationItemModelCopyWithImpl;
 @override @useResult
 $Res call({
- String? degree, String? school, String? period, String? description
+@ToStringConverter() String? id, String? degree, String? school, String? period, String? description
 });
 
 
@@ -1155,9 +1160,10 @@ class __$EducationItemModelCopyWithImpl<$Res>
 
 /// Create a copy of EducationItemModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? degree = freezed,Object? school = freezed,Object? period = freezed,Object? description = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? degree = freezed,Object? school = freezed,Object? period = freezed,Object? description = freezed,}) {
   return _then(_EducationItemModel(
-degree: freezed == degree ? _self.degree : degree // ignore: cast_nullable_to_non_nullable
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,degree: freezed == degree ? _self.degree : degree // ignore: cast_nullable_to_non_nullable
 as String?,school: freezed == school ? _self.school : school // ignore: cast_nullable_to_non_nullable
 as String?,period: freezed == period ? _self.period : period // ignore: cast_nullable_to_non_nullable
 as String?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
@@ -1447,7 +1453,7 @@ as List<String>,
 /// @nodoc
 mixin _$LanguageItemModel {
 
- String? get name; String? get level;
+@ToStringConverter() String? get id; String? get name; String? get level;
 /// Create a copy of LanguageItemModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1460,16 +1466,16 @@ $LanguageItemModelCopyWith<LanguageItemModel> get copyWith => _$LanguageItemMode
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LanguageItemModel&&(identical(other.name, name) || other.name == name)&&(identical(other.level, level) || other.level == level));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LanguageItemModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.level, level) || other.level == level));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,level);
+int get hashCode => Object.hash(runtimeType,id,name,level);
 
 @override
 String toString() {
-  return 'LanguageItemModel(name: $name, level: $level)';
+  return 'LanguageItemModel(id: $id, name: $name, level: $level)';
 }
 
 
@@ -1480,7 +1486,7 @@ abstract mixin class $LanguageItemModelCopyWith<$Res>  {
   factory $LanguageItemModelCopyWith(LanguageItemModel value, $Res Function(LanguageItemModel) _then) = _$LanguageItemModelCopyWithImpl;
 @useResult
 $Res call({
- String? name, String? level
+@ToStringConverter() String? id, String? name, String? level
 });
 
 
@@ -1497,9 +1503,10 @@ class _$LanguageItemModelCopyWithImpl<$Res>
 
 /// Create a copy of LanguageItemModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? name = freezed,Object? level = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? name = freezed,Object? level = freezed,}) {
   return _then(_self.copyWith(
-name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,level: freezed == level ? _self.level : level // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
@@ -1586,10 +1593,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? name,  String? level)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@ToStringConverter()  String? id,  String? name,  String? level)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _LanguageItemModel() when $default != null:
-return $default(_that.name,_that.level);case _:
+return $default(_that.id,_that.name,_that.level);case _:
   return orElse();
 
 }
@@ -1607,10 +1614,10 @@ return $default(_that.name,_that.level);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? name,  String? level)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@ToStringConverter()  String? id,  String? name,  String? level)  $default,) {final _that = this;
 switch (_that) {
 case _LanguageItemModel():
-return $default(_that.name,_that.level);case _:
+return $default(_that.id,_that.name,_that.level);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1627,10 +1634,10 @@ return $default(_that.name,_that.level);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? name,  String? level)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@ToStringConverter()  String? id,  String? name,  String? level)?  $default,) {final _that = this;
 switch (_that) {
 case _LanguageItemModel() when $default != null:
-return $default(_that.name,_that.level);case _:
+return $default(_that.id,_that.name,_that.level);case _:
   return null;
 
 }
@@ -1642,9 +1649,10 @@ return $default(_that.name,_that.level);case _:
 @JsonSerializable()
 
 class _LanguageItemModel implements LanguageItemModel {
-  const _LanguageItemModel({this.name, this.level});
+  const _LanguageItemModel({@ToStringConverter() this.id, this.name, this.level});
   factory _LanguageItemModel.fromJson(Map<String, dynamic> json) => _$LanguageItemModelFromJson(json);
 
+@override@ToStringConverter() final  String? id;
 @override final  String? name;
 @override final  String? level;
 
@@ -1661,16 +1669,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LanguageItemModel&&(identical(other.name, name) || other.name == name)&&(identical(other.level, level) || other.level == level));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LanguageItemModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.level, level) || other.level == level));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,level);
+int get hashCode => Object.hash(runtimeType,id,name,level);
 
 @override
 String toString() {
-  return 'LanguageItemModel(name: $name, level: $level)';
+  return 'LanguageItemModel(id: $id, name: $name, level: $level)';
 }
 
 
@@ -1681,7 +1689,7 @@ abstract mixin class _$LanguageItemModelCopyWith<$Res> implements $LanguageItemM
   factory _$LanguageItemModelCopyWith(_LanguageItemModel value, $Res Function(_LanguageItemModel) _then) = __$LanguageItemModelCopyWithImpl;
 @override @useResult
 $Res call({
- String? name, String? level
+@ToStringConverter() String? id, String? name, String? level
 });
 
 
@@ -1698,9 +1706,10 @@ class __$LanguageItemModelCopyWithImpl<$Res>
 
 /// Create a copy of LanguageItemModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? name = freezed,Object? level = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? name = freezed,Object? level = freezed,}) {
   return _then(_LanguageItemModel(
-name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,level: freezed == level ? _self.level : level // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
