@@ -7,7 +7,7 @@ class CommonWebViewPage extends StatelessWidget {
   final void Function(String? url)? onLoadStart;
   final void Function(String? url)? onLoadStop;
   final bool Function(String url)? shouldOverrideUrlLoading;
-  final Map<String, Function(List<dynamic> args)>? javascriptHandlers;
+  final Map<String, dynamic Function(List<dynamic> args)>? javascriptHandlers;
 
   const CommonWebViewPage({
     super.key,

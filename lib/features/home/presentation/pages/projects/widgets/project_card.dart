@@ -4,7 +4,6 @@ import 'package:listen_uikit/uikit.dart';
 
 import '../../../../../../shared/shared.dart';
 import '../../../../data/models/project_model.dart';
-import '../projects_intent.dart';
 
 class ProjectCard extends StatelessWidget {
   final ProjectModel project;

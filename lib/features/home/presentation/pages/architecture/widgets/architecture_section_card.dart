@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:listen_uikit/uikit.dart';
 
 import '../../../../../../shared/shared.dart';
-import '../architecture_intent.dart';
 import '../architecture_state.dart';
 
 class ArchitectureSectionCard extends StatelessWidget {

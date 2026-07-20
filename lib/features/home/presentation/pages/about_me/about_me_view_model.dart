@@ -56,12 +56,12 @@ class AboutMeViewModel extends _$AboutMeViewModel with ViewModelMixin<AboutMeSta
           ActionSheetOption(
             label: I18nKeys.chooseFromGallery.tr,
             icon: Icons.photo_library_outlined,
-            onTap: () => handleIntent(AboutMeIntent.pickImage(ImageSource.gallery)),
+            onTap: () => handleIntent(const AboutMeIntent.pickImage(ImageSource.gallery)),
           ),
           ActionSheetOption(
             label: I18nKeys.takePhoto.tr,
             icon: Icons.camera_alt_outlined,
-            onTap: () => handleIntent(AboutMeIntent.pickImage(ImageSource.camera)),
+            onTap: () => handleIntent(const AboutMeIntent.pickImage(ImageSource.camera)),
           ),
           ActionSheetOption(
             label: I18nKeys.removePhoto.tr,
