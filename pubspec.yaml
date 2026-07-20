@@ -16,8 +16,8 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  listen_core: ^0.0.36
-  listen_uikit: ^0.0.16
+  listen_core: ^0.0.37
+  listen_uikit: ^0.0.17
   dynamic_color: ^1.8.1
 
   # Firebase & Notifications
