@@ -126,13 +126,13 @@
 - ✅ `onBackInvoked` 系统返回策略与 IndexedStack 拦截失效治理已完成（对齐 native Predictive Back 行为且保证 IndexedStack 非激活 Tab 不会强行截获返回手势）
 - ✅ 路由拦截器与 `AppNav.tryLogin` 体系合并统一（已废弃冗余代码，并实现卫士式的 RouteInterceptor 过滤链流式导航）
 - ✅ `CacheManager` 职责纠偏与重命名（已正式更名为 `DiskCleanupUtil`，规避与 Repository 缓存策略概念冲突）
-- ⏳ **(进行中)** 在 `ListenCore` 补充高频常用扩展（如 `BuildContext.theme`、`String.isEmail` 等，消灭样板代码）
+- ✅ 在 `ListenCore` 补充高频常用扩展（BuildContext 快捷属性，String 格式校验与转换，消灭样板代码，已合并至主线）
 - ✅ Intent & Effect 录制与回放系统已完成整体设计、沙箱备份恢复、页面/弹窗返回拦截、轮询等待机制、对话框自动旁路并交付生产（详见 [设计与实现文档](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/docs/intent_effect_playback_design.md)）
-- `_effectController` 与 `EventBus` 的职责评估
+- ✅ `_effectController` 与 `EventBus` 的职责评估与规范设计文档已正式沉淀（详见 [设计与实现文档](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/docs/event_bus_vs_base_effect.md)）
 
 ### 2. Auth 与缓存策略增强
 
-- BaseRepository 缓存策略文档化：TTL、key 规范、是否采用 stale-while-revalidate
+- ✅ `BaseRepository` 缓存与数据降级策略设计规范文档化（已完成 TTL 缓存与 SWR 后台静默刷新模式规约，详见 [设计与实现文档](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/docs/repository_caching_strategy.md)）
 
 ### 3. 文档与展示补强
 
