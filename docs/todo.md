@@ -123,7 +123,10 @@
 
 ### 1. 路由与状态治理增强
 
-- `onBackInvoked` 系统返回策略统一
+- ✅ `onBackInvoked` 系统返回策略与 IndexedStack 拦截失效治理已完成（对齐 native Predictive Back 行为且保证 IndexedStack 非激活 Tab 不会强行截获返回手势）
+- ✅ 路由拦截器与 `AppNav.tryLogin` 体系合并统一（已废弃冗余代码，并实现卫士式的 RouteInterceptor 过滤链流式导航）
+- ✅ `CacheManager` 职责纠偏与重命名（已正式更名为 `DiskCleanupUtil`，规避与 Repository 缓存策略概念冲突）
+- ⏳ **(进行中)** 在 `ListenCore` 补充高频常用扩展（如 `BuildContext.theme`、`String.isEmail` 等，消灭样板代码）
 - ✅ Intent & Effect 录制与回放系统已完成整体设计、沙箱备份恢复、页面/弹窗返回拦截、轮询等待机制、对话框自动旁路并交付生产（详见 [设计与实现文档](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/docs/intent_effect_playback_design.md)）
 - `_effectController` 与 `EventBus` 的职责评估
 

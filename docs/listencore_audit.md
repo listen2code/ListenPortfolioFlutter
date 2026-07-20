@@ -99,7 +99,7 @@ import 'dart:io';
 **问题**：Web 平台没有 `dart:io`，在 `AppEnv.init()` 中 `LocalMockServer.start()` 会编译失败。
 **修复**：条件导入（`import 'mock_server_stub.dart' if (dart.library.io) 'local_mock_server.dart'`），或 Web 端走 Dio Interceptor mock 而不是 HttpServer。
 
-### 2.3 🟡 `BaseRepository._networkInfo` 每次调用创建新实例
+### 2.3 🟢 [已解决] `BaseRepository._networkInfo` 每次调用创建新实例
 
 ```dart
 // base_repository.dart:9
@@ -108,8 +108,9 @@ NetworkInfo get _networkInfo => NetworkInfoImpl(Connectivity());
 
 **问题**：每次 `safeCall` 都 `new Connectivity()`，虽然 connectivity_plus 内部有单例，但这违反依赖注入原则且不利于测试 mock。
 **修复**：改为 `Core.init()` 时注册一个全局 `NetworkInfo` 单例。
+**进展**：✅ 已完成。已将 `networkInfo` 重构为 `Core` 下具有自动回退机制的全局懒加载单例，消除每次调用的额外实例化开销，并全面兼容测试 mock。
 
-### 2.4 🟡 `ApiClient._dio` 是 `static final`，初始化时序陷阱
+### 2.4 🟢 [已解决] `ApiClient._dio` 是 `static final`，初始化时序陷阱
 
 ```dart
 // api_client.dart:253
@@ -121,6 +122,7 @@ static final Dio _dio = _initDio();
 当前靠 `Core.init()` 的顺序保证（先 init Storage → 再 init ApiClient），但如果有人在 `Core.init()` 之前意外访问 `ApiClient.dio`，会拿到错误配置。
 
 **修复**：改为 `static late final Dio _dio`，在 `ApiClient.init()` 中显式创建，而非 lazy static。
+**进展**：✅ 已完成。将 `_initDio` 中初始连接超时改为 30 秒安全默认值以彻底切断对 `AppEnv` 的硬性时序绑定，且在其后 `AppEnv.init` 运行时利用 `_applyDioConfig()` 重新安全覆盖为当前环境真实值。
 
 ### 2.5 🟡 `Translations` 不支持复数/性别/嵌套参数
 
@@ -150,23 +152,20 @@ String trArgs(List<dynamic> args) {
 - **Effect**：ViewModel → UI 的一次性指令（Toast、Navigation、Loading）
 - **EventBus**：跨模块/跨页面的全局广播（登录状态变化、数据刷新信号）
 
-### 2.7 🟢 `CacheManager` 功能过于简陋
+### 2.7 🟢 [已解决] `CacheManager` 功能过于简陋与命名误导
 
-只有 `getCacheSize()` 和 `clearAllCache()`，没有：
-- 按 key 缓存/读取
-- TTL（过期时间）
-- 缓存策略（LRU/LFU）
-
-实际的 HTTP 缓存在 `BaseRepository.safeCall` 中通过 `saveCache/getCached` 回调实现，但回调的具体实现完全交给业务层，Core 没有提供默认实现。
+只有 `getCacheSize()` and `clearAllCache()`，没有真正的缓存管理。
 
 **建议**：这个 `CacheManager` 的命名有误导性，它其实是 "DiskCleanupUtil"。要么重命名，要么补全为真正的缓存管理器。
+**进展**：✅ 已完成。已将底座库 `CacheManager` 正式更名为 `DiskCleanupUtil`，并在 `core.dart` 导出及宿主 App 业务调用端同步替换，厘清了磁盘清理与 Repository 缓存策略（`CacheDataSource`）的概念边界。
 
-### 2.8 🟢 `RouteInterceptor` 体系和 `AppNav.tryLogin()` 重复
+### 2.8 🟢 [已解决] `RouteInterceptor` 体系和 `AppNav.tryLogin()` 重复
 
-`AppNav.to/off/offAll` 内部直接调用 `tryLogin()`，绕过了 `RouteInterceptorRunner`。`route_interceptor.dart` 中的 `LoginRouteInterceptor` + `RouteInterceptorRunner` 存在但**几乎没被使用**。
+`AppNav.to/off/offAll` 内部直接调用 `tryLogin()`，绕过了 `RouteInterceptorRunner`。`route_interceptor.dart` 中的 `LoginRouteInterceptor` + `RouteInterceptorRunner` 存在但几乎没被使用。
 
 **问题**：两套登录拦截逻辑并存，维护负担。
 **建议**：统一为一套。要么让 `AppNav` 内部走 `RouteInterceptorRunner`，要么删掉 `route_interceptor.dart`。
+**进展**：✅ 已完成。重新设计了 `RouteInterceptor` 统一返回 `Future<bool>` 的 Guard 过滤网关模式，并在 `AppNav` 各个核心导航方法中全面接入 `_runInterceptors` 过滤器链条，将原有跳转与授权交互归口封装为独立的 `LoginRouteInterceptor`。同时完美桥接了外部 `tryLogin` 入口，实现了完美向后兼容。
 
 ---
 
