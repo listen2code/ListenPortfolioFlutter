@@ -38,6 +38,9 @@ class BaseRefreshPage<V extends BaseViewModel<dynamic>, S extends BaseState> ext
   /// Defaults to true for root pages, false for embedded sub-pages.
   final bool useScaffold;
 
+  /// Whether the page body should expand to fill the parent container when [useScaffold] is false.
+  final bool expandBody;
+
   /// The Riverpod Provider used to automatically resolve the [BaseViewModel] and [BaseState].
   final ProviderListenable<S> provider;
 
@@ -90,6 +93,7 @@ class BaseRefreshPage<V extends BaseViewModel<dynamic>, S extends BaseState> ext
     this.useGradientBackground = true,
     this.active = true,
     this.useScaffold = true,
+    this.expandBody = true,
     required this.provider,
     this.onEffect,
     this.onLoading,
@@ -160,6 +164,7 @@ class BaseRefreshPage<V extends BaseViewModel<dynamic>, S extends BaseState> ext
       useGradientBackground: useGradientBackground,
       active: active,
       useScaffold: useScaffold,
+      expandBody: expandBody,
       viewModel: effectiveViewModel,
       onEffect: onEffect,
       onLoading: onLoading,

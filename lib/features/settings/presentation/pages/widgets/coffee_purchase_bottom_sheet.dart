@@ -78,6 +78,7 @@ class _CoffeePurchaseBottomSheetState extends ConsumerState<CoffeePurchaseBottom
     return BaseRefreshPage<CoffeePurchaseViewModel, CoffeePurchaseState>(
       provider: coffeePurchaseViewModelProvider,
       useScaffold: false,
+      expandBody: false,
       body: (context, child, viewModel, state) {
         return Container(
           padding: EdgeInsets.symmetric(horizontal: 20.f, vertical: 24.f),

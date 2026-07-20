@@ -93,7 +93,7 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
   }
 
   Future<void> _updateCacheSize() async {
-    final size = await CacheManager.getCacheSize();
+    final size = await DiskCleanupUtil.getCacheSize();
     updateState(state.copyWith(cacheSize: size));
   }
 
@@ -134,7 +134,7 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
 
   Future<void> _onClearCache() async {
     emitEffect(LoadingEffect(true));
-    await CacheManager.clearAllCache();
+    await DiskCleanupUtil.clearAllCache();
     await _updateCacheSize();
     emitEffect(LoadingEffect(false));
     emitEffect(MessageEffect.info(I18nKeys.cacheCleared.tr));

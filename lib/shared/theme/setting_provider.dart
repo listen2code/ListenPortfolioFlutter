@@ -131,7 +131,7 @@ class SettingManager extends ChangeNotifier {
     // you should remove keys one by one.
     await SpUtil.clear();
     await SecureStorageUtil.clear();
-    await CacheManager.clearAllCache();
+    await DiskCleanupUtil.clearAllCache();
     EventBus().clearAllSticky();
     // Restore defaults after clearing
     await setThemeMode(_themeMode);
