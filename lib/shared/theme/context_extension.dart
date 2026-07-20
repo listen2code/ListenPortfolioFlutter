@@ -3,18 +3,6 @@ import '../shared.dart';
 
 /// Extension to provide shorthand access to common theme, layout, and setting properties.
 extension BuildContextX on BuildContext {
-  /// Shorthand for Theme.of(context)
-  ThemeData get theme => Theme.of(this);
-
-  /// Shorthand for Theme.of(context).textTheme
-  TextTheme get textTheme => theme.textTheme;
-
-  /// Shorthand for Theme.of(context).colorScheme
-  ColorScheme get colorScheme => theme.colorScheme;
-
-  /// Shorthand for the app's global accent color (with dynamic color support)
-  Color get accentColor => theme.colorScheme.primary;
-
   /// Quick check for dark mode
   bool get isDark => theme.brightness == Brightness.dark;
 
