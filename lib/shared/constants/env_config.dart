@@ -12,14 +12,14 @@ enum EnvConfigs implements BaseEnvConfig {
   ),
   dev(
     env: AppEnvironment.dev,
-    baseUrl: 'http://192.168.0.223:9898',
+    baseUrl: 'http://192.168.0.224:9898',
     apiTimeout: 30000,
     connectTimeout: 15000,
     receiveTimeout: 15000,
   ),
   test(
     env: AppEnvironment.test,
-    baseUrl: 'http://192.168.0.223:8080',
+    baseUrl: 'http://192.168.0.224:8080',
     apiTimeout: 30000,
     connectTimeout: 15000,
     receiveTimeout: 15000,
