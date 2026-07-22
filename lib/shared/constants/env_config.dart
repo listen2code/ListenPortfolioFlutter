@@ -26,7 +26,7 @@ enum EnvConfigs implements BaseEnvConfig {
   ),
   prod(
     env: AppEnvironment.prod,
-    baseUrl: 'https://api.lPortfolio.com',
+    baseUrl: 'http://13.218.192.181:8080',
     apiTimeout: 60000,
     connectTimeout: 30000,
     receiveTimeout: 30000,
