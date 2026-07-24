@@ -188,6 +188,9 @@ final Map<String, String> ja = {
   I18nKeys.errEmailRegistered: 'このメールアドレスはすでに登録されています。',
   I18nKeys.errCurrentPasswordIncorrect: '現在のパスワードが正しくありません。',
   I18nKeys.errDeleteAccountFailed: 'アカウントの削除に失敗しました。しばらくしてからもう一度お試しください。',
+  I18nKeys.errLogoutFailed: 'ログアウトに失敗しました。時間をおいてから再度お試しください。',
+  I18nKeys.errAboutMeNotFound: '自己紹介情報が見つかりませんでした。',
+  I18nKeys.errProjectsNotFound: 'プロジェクト情報が見つかりませんでした。',
 
   I18nKeys.detailedCv: '詳細な履歴書',
   I18nKeys.appDesign: 'アプリ設計',

@@ -188,6 +188,9 @@ final Map<String, String> zh = {
   I18nKeys.errEmailRegistered: '该邮箱已被注册',
   I18nKeys.errCurrentPasswordIncorrect: '原密码输入错误',
   I18nKeys.errDeleteAccountFailed: '账户注销失败，请稍后重试',
+  I18nKeys.errLogoutFailed: '注销登录失败，请稍后重试',
+  I18nKeys.errAboutMeNotFound: '未找到个人简介信息',
+  I18nKeys.errProjectsNotFound: '未找到项目信息',
 
   I18nKeys.detailedCv: '详细简历',
   I18nKeys.appDesign: '应用设计',

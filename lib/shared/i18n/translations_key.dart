@@ -254,6 +254,9 @@ class I18nKeys {
   static const String errEmailRegistered = 'BIZ_0501';
   static const String errCurrentPasswordIncorrect = 'BIZ_0502';
   static const String errDeleteAccountFailed = 'BIZ_0503';
+  static const String errLogoutFailed = 'BIZ_0504';
+  static const String errAboutMeNotFound = 'BIZ_0505';
+  static const String errProjectsNotFound = 'BIZ_0506';
 
   // Update Check
   static const String checkUpdates = 'Check for Updates';
