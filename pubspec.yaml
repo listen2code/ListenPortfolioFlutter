@@ -2,7 +2,7 @@ name: listen_portfolio_flutter
 description: "Portfolio of Listen"
 publish_to: 'none'
 
-version: 1.0.93
+version: 1.0.94
 desc: "Daily build"
 desc_zh: ""
 desc_ja: ""
@@ -16,8 +16,8 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  listen_core: ^0.0.41
-  listen_uikit: ^0.0.17
+  listen_core: ^0.0.42
+  listen_uikit: ^0.0.18
   dynamic_color: ^1.8.1
 
   # Firebase & Notifications

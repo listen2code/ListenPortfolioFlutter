@@ -10,6 +10,7 @@ import '../../domain/usecases/get_current_user_use_case.dart';
 import '../../domain/usecases/login_use_case.dart';
 import '../../domain/usecases/logout_use_case.dart';
 import '../../domain/usecases/signup_use_case.dart';
+import '../../domain/usecases/upload_avatar_use_case.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'auth_provider.g.dart';
@@ -94,4 +95,11 @@ Future<GetCurrentUserUseCase> getCurrentUserUseCase(Ref ref) async {
 Future<DeleteAccountUseCase> deleteAccountUseCase(Ref ref) async {
   final repository = await ref.watch(authRepositoryProvider.future);
   return DeleteAccountUseCase(repository);
+}
+
+/// Provides UploadAvatarUseCase instance
+@riverpod
+Future<UploadAvatarUseCase> uploadAvatarUseCase(Ref ref) async {
+  final repository = await ref.watch(authRepositoryProvider.future);
+  return UploadAvatarUseCase(repository);
 }

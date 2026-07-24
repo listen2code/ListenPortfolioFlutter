@@ -162,6 +162,8 @@ final Map<String, String> zh = {
   I18nKeys.uploading: '正在上传...',
   I18nKeys.uploadSuccess: '崩溃报告上传成功',
   I18nKeys.uploadFailed: '上传失败',
+  I18nKeys.avatarUploadSuccess: '头像上传成功',
+  I18nKeys.avatarUploadFailed: '头像上传失败',
   I18nKeys.deleteReport: '删除报告',
   I18nKeys.deleteReportConfirm: '您确定要删除此崩溃报告吗？',
   I18nKeys.copiedToClipboard: '已复制到剪贴板',

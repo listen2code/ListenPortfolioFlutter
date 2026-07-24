@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart' show ImageSource;
@@ -7,6 +8,8 @@ import 'package:listen_core/core.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../../shared/shared.dart';
+import '../../../../auth/presentation/provider/auth_provider.dart';
+import '../../../../auth/data/models/user_model.dart';
 import '../../../data/models/about_me_model.dart';
 import '../../provider/about_me_provider.dart';
 import 'about_me_intent.dart';
@@ -91,6 +94,31 @@ class AboutMeViewModel extends _$AboutMeViewModel with ViewModelMixin<AboutMeSta
   Future<void> _onImagePicked(File? file) async {
     if (file != null) {
       updateState(state.copyWith(imageFile: file));
+      
+      // Perform base64 conversion and upload to backend
+      final bytes = await file.readAsBytes();
+      final String base64Data = base64Encode(bytes);
+      final String mimeType = file.path.imageMimeType;
+      final String dataUrl = 'data:$mimeType;base64,$base64Data';
+      
+      await call(
+        ref.execute<UserModel?, String>(uploadAvatarUseCaseProvider, param: dataUrl),
+        showLoading: true,
+        loadingMessage: I18nKeys.uploading.tr,
+        onSuccess: (userModel) {
+          if (userModel != null) {
+            // Update authManager state globally
+            authManager.login(userModel);
+            // Reset imageFile to null so the screen renders from authManager.state.user.avatarUrl
+            updateState(state.copyWith(imageFile: null));
+            emitEffect(MessageEffect.info(I18nKeys.avatarUploadSuccess.tr));
+          }
+        },
+        onFailure: (failure) {
+          updateState(state.copyWith(imageFile: null));
+          emitEffect(MessageEffect.error(I18nKeys.avatarUploadFailed.tr));
+        },
+      );
     }
   }
 

@@ -36,4 +36,7 @@ abstract class AuthRepository {
   /// Refreshes the authentication token using the stored refresh token.
   /// Returns the new access token if successful.
   Future<Either<Failure, String>> refreshToken();
+
+  /// Upload avatar (Base64).
+  Future<Either<Failure, UserModel?>> uploadAvatar({required String base64Data});
 }

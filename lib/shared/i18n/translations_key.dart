@@ -181,6 +181,8 @@ class I18nKeys {
   static const String uploading = 'Uploading...';
   static const String uploadSuccess = 'Crash report uploaded successfully';
   static const String uploadFailed = 'Upload failed';
+  static const String avatarUploadSuccess = 'Avatar uploaded successfully';
+  static const String avatarUploadFailed = 'Avatar upload failed';
   static const String deleteReport = 'Delete Report';
   static const String deleteReportConfirm = 'Are you sure you want to delete this crash report?';
   static const String copiedToClipboard = 'Copied to clipboard';

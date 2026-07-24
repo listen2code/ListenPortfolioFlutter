@@ -477,3 +477,50 @@ final class DeleteAccountUseCaseProvider
 
 String _$deleteAccountUseCaseHash() =>
     r'424ee60a78eea211e7469e0415fde8bfd960bc02';
+
+/// Provides UploadAvatarUseCase instance
+
+@ProviderFor(uploadAvatarUseCase)
+final uploadAvatarUseCaseProvider = UploadAvatarUseCaseProvider._();
+
+/// Provides UploadAvatarUseCase instance
+
+final class UploadAvatarUseCaseProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<UploadAvatarUseCase>,
+          UploadAvatarUseCase,
+          FutureOr<UploadAvatarUseCase>
+        >
+    with
+        $FutureModifier<UploadAvatarUseCase>,
+        $FutureProvider<UploadAvatarUseCase> {
+  /// Provides UploadAvatarUseCase instance
+  UploadAvatarUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'uploadAvatarUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$uploadAvatarUseCaseHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<UploadAvatarUseCase> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<UploadAvatarUseCase> create(Ref ref) {
+    return uploadAvatarUseCase(ref);
+  }
+}
+
+String _$uploadAvatarUseCaseHash() =>
+    r'21b9cf646a051ef3adbe3099b37b5e6951d246b3';

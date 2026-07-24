@@ -53,7 +53,7 @@ final class AboutMeViewModelProvider
   }
 }
 
-String _$aboutMeViewModelHash() => r'd9744771433430d3c902b4b8178ccd595dcbbecc';
+String _$aboutMeViewModelHash() => r'fd1b0c11953567bc11b0e879e45e68ce77e0aaba';
 
 /// ViewModel for the About Me page
 ///

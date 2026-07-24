@@ -7,6 +7,7 @@ import '../models/login_model.dart';
 import '../models/login_request_model.dart';
 import '../models/signup_request_model.dart';
 import '../models/user_model.dart';
+import '../models/upload_avatar_request_model.dart';
 import 'package:retrofit/retrofit.dart';
 
 part 'auth_remote_data_source.g.dart';
@@ -38,4 +39,7 @@ abstract class AuthRemoteDataSource {
 
   @GET('/v1/user')
   Future<BaseResponseModel<UserModel>> getUserById(@Query('id') String id);
+
+  @POST('/v1/user/upload-avatar')
+  Future<BaseResponseModel<UserModel>> uploadAvatar(@Body() UploadAvatarRequestModel? request);
 }

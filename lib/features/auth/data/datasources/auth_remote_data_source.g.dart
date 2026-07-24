@@ -274,6 +274,39 @@ class _AuthRemoteDataSource implements AuthRemoteDataSource {
     return _value;
   }
 
+  @override
+  Future<BaseResponseModel<UserModel>> uploadAvatar(
+    UploadAvatarRequestModel? request,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
+    final _data = request;
+    final _options = _setStreamType<BaseResponseModel<UserModel>>(
+      Options(method: 'POST', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/v1/user/upload-avatar',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseResponseModel<UserModel> _value;
+    try {
+      _value = BaseResponseModel<UserModel>.fromJson(
+        _result.data!,
+        (json) => UserModel.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
     if (T != dynamic &&
         !(requestOptions.responseType == ResponseType.bytes ||

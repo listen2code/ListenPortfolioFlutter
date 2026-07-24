@@ -162,6 +162,8 @@ final Map<String, String> ja = {
   I18nKeys.uploading: 'アップロード中...',
   I18nKeys.uploadSuccess: 'レポートをアップロードしました',
   I18nKeys.uploadFailed: '失敗しました',
+  I18nKeys.avatarUploadSuccess: 'アバターをアップロードしました',
+  I18nKeys.avatarUploadFailed: 'アバターのアップロードに失敗しました',
   I18nKeys.deleteReport: 'レポートを削除',
   I18nKeys.deleteReportConfirm: 'このレポートを削除してもよろしいですか？',
   I18nKeys.copiedToClipboard: 'クリップボードにコピーしました',

@@ -10,6 +10,7 @@ import '../models/login_model.dart';
 import '../models/login_request_model.dart';
 import '../models/signup_request_model.dart';
 import '../models/user_model.dart';
+import '../models/upload_avatar_request_model.dart';
 import '../../domain/repositories/auth_repository.dart';
 
 class AuthRepositoryImpl with BaseRepository implements AuthRepository {
@@ -91,5 +92,14 @@ class AuthRepositoryImpl with BaseRepository implements AuthRepository {
   @override
   Future<Either<Failure, void>> deleteAccount({required DeleteAccountRequestModel? param}) async {
     return await safeCall<void>(call: () => remoteDataSource.deleteAccount(param));
+  }
+
+  @override
+  Future<Either<Failure, UserModel?>> uploadAvatar({required String base64Data}) async {
+    return await safeCall<UserModel>(
+      call: () => remoteDataSource.uploadAvatar(
+        UploadAvatarRequestModel(avatar: base64Data),
+      ),
+    );
   }
 }
