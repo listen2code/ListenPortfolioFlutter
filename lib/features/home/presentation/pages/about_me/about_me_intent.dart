@@ -12,6 +12,7 @@ part 'about_me_intent.freezed.dart';
 class AboutMeIntent extends BaseIntent with _$AboutMeIntent {
   const factory AboutMeIntent.pickImage(ImageSource source) = _PickImage;
   const factory AboutMeIntent.imagePicked(File? file) = _ImagePicked;
+  const factory AboutMeIntent.imageCropped(File file) = _ImageCropped;
   const factory AboutMeIntent.removeImage() = _RemoveImage;
   const factory AboutMeIntent.refresh() = _Refresh;
   const factory AboutMeIntent.shareApp() = _ShareApp;
@@ -40,6 +41,13 @@ class AboutMeIntent extends BaseIntent with _$AboutMeIntent {
       final match = pathRegex.firstMatch(fileStr);
       final path = match?.group(1) ?? match?.group(2) ?? '';
       return AboutMeIntent.imagePicked(path.isNotEmpty ? File(path) : null);
+    });
+    MviPlaybackRegistry.register('AboutMeIntent', 'imageCropped', (args) {
+      final fileStr = args['file'] ?? '';
+      final pathRegex = RegExp(r"File:\s*'([^']+)'|File\('([^']+)'\)");
+      final match = pathRegex.firstMatch(fileStr);
+      final path = match?.group(1) ?? match?.group(2) ?? '';
+      return AboutMeIntent.imageCropped(File(path));
     });
     MviPlaybackRegistry.register('AboutMeIntent', 'refresh', (args) => const AboutMeIntent.refresh());
     MviPlaybackRegistry.register('AboutMeIntent', 'shareApp', (args) => const AboutMeIntent.shareApp());

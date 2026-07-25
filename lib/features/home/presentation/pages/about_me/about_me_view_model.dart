@@ -44,6 +44,7 @@ class AboutMeViewModel extends _$AboutMeViewModel with ViewModelMixin<AboutMeSta
     return intent.when<FutureOr<void>>(
       pickImage: (source) => _onPickImage(source),
       imagePicked: (file) => _onImagePicked(file),
+      imageCropped: (file) => _onImageCropped(file),
       removeImage: _onRemoveImage,
       refresh: _onRefresh,
       shareApp: _onShareApp,
@@ -93,33 +94,44 @@ class AboutMeViewModel extends _$AboutMeViewModel with ViewModelMixin<AboutMeSta
 
   Future<void> _onImagePicked(File? file) async {
     if (file != null) {
-      updateState(state.copyWith(imageFile: file));
-      
-      // Perform base64 conversion and upload to backend
-      final bytes = await file.readAsBytes();
-      final String base64Data = base64Encode(bytes);
-      final String mimeType = file.path.imageMimeType;
-      final String dataUrl = 'data:$mimeType;base64,$base64Data';
-      
-      await call(
-        ref.execute<UserModel?, String>(uploadAvatarUseCaseProvider, param: dataUrl),
-        showLoading: true,
-        loadingMessage: I18nKeys.uploading.tr,
-        onSuccess: (userModel) {
-          if (userModel != null) {
-            // Update authManager state globally
-            authManager.login(userModel);
-            // Reset imageFile to null so the screen renders from authManager.state.user.avatarUrl
-            updateState(state.copyWith(imageFile: null));
-            emitEffect(MessageEffect.info(I18nKeys.avatarUploadSuccess.tr));
+      emitEffect(CropAvatarEffect(
+        imageFile: file,
+        onResult: (croppedFile) {
+          if (croppedFile != null) {
+            handleIntent(AboutMeIntent.imageCropped(croppedFile));
           }
         },
-        onFailure: (failure) {
-          updateState(state.copyWith(imageFile: null));
-          emitEffect(MessageEffect.error(I18nKeys.avatarUploadFailed.tr));
-        },
-      );
+      ));
     }
+  }
+
+  Future<void> _onImageCropped(File file) async {
+    updateState(state.copyWith(imageFile: file));
+    
+    // Perform base64 conversion and upload to backend
+    final bytes = await file.readAsBytes();
+    final String base64Data = base64Encode(bytes);
+    final String mimeType = file.path.imageMimeType;
+    final String dataUrl = 'data:$mimeType;base64,$base64Data';
+    
+    await call(
+      ref.execute<UserModel?, String>(uploadAvatarUseCaseProvider, param: dataUrl),
+      showLoading: true,
+      loadingMessage: I18nKeys.uploading.tr,
+      onSuccess: (userModel) {
+        if (userModel != null) {
+          // Update authManager state globally
+          authManager.login(userModel);
+          // Reset imageFile to null so the screen renders from authManager.state.user.avatarUrl
+          updateState(state.copyWith(imageFile: null));
+          emitEffect(MessageEffect.info(I18nKeys.avatarUploadSuccess.tr));
+        }
+      },
+      onFailure: (failure) {
+        updateState(state.copyWith(imageFile: null));
+        emitEffect(MessageEffect.error(I18nKeys.avatarUploadFailed.tr));
+      },
+    );
   }
 
   Future<void> _onRemoveImage() async {

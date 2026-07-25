@@ -14,6 +14,7 @@ export 'base/navigation_provider_impl.dart';
 export 'base/launch_url_provider_impl.dart';
 export 'base/open_app_settings_provider_impl.dart';
 export 'base/pick_image_provider_impl.dart';
+export 'base/crop_avatar_provider_impl.dart';
 export 'base/play_tape_provider_impl.dart';
 export 'base/print_pdf_provider_impl.dart';
 export 'base/rate_app_provider_impl.dart';

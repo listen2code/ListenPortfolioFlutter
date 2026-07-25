@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:listen_core/core.dart';
+import 'package:listen_portfolio_flutter/features/auth/domain/usecases/upload_avatar_use_case.dart';
+import 'package:listen_portfolio_flutter/features/auth/presentation/provider/auth_provider.dart';
 import 'package:listen_portfolio_flutter/features/home/data/models/about_me_model.dart';
 import 'package:listen_portfolio_flutter/features/home/domain/usecases/get_about_me_use_case.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/about_me/about_me_intent.dart';
@@ -37,12 +39,13 @@ import '../../../test_helpers/test_setup.dart';
 
 // Mock classes
 class MockGetAboutMeUseCase extends Mock implements GetAboutMeUseCase {}
+class MockUploadAvatarUseCase extends Mock implements UploadAvatarUseCase {}
 
 class MockImagePicker extends Mock implements ImagePicker {}
 
 // Platform channel for image_picker (used to mock the internal ImagePicker instance)
 const _imagePickerChannel = MethodChannel('plugins.flutter.io/image_picker');
-const _testImagePath = '/test/path/image.jpg';
+late String _testImagePath;
 
 void main() async {
   // 初始化测试绑定
@@ -55,6 +58,7 @@ void main() async {
     late ProviderContainer container;
     late AboutMeViewModel viewModel;
     late MockGetAboutMeUseCase mockGetAboutMeUseCase;
+    late MockUploadAvatarUseCase mockUploadAvatarUseCase;
     late MockImagePicker mockImagePicker;
     final List<BaseEffect> emittedEffects = [];
 
@@ -93,7 +97,7 @@ void main() async {
     );
 
     // Controls what the image_picker platform channel mock returns per test
-    String? mockImagePickerPath = _testImagePath; // null = cancelled
+    String? mockImagePickerPath; // null = cancelled
     bool mockImagePickerThrows = false;
 
     setUp(() async {
@@ -101,8 +105,21 @@ void main() async {
       SharedPreferences.setMockInitialValues({});
       await SpUtil.init(prefix: 'test_');
 
+      _testImagePath = '${Directory.systemTemp.path}/test_image.jpg';
+      final testFile = File(_testImagePath);
+      if (!await testFile.exists()) {
+        await testFile.create(recursive: true);
+        await testFile.writeAsBytes([0, 1, 2]);
+      }
+      mockImagePickerPath = _testImagePath;
+
       mockGetAboutMeUseCase = MockGetAboutMeUseCase();
+      mockUploadAvatarUseCase = MockUploadAvatarUseCase();
       mockImagePicker = MockImagePicker();
+
+      // Stub upload to return success
+      when(() => mockUploadAvatarUseCase.call(param: any(named: 'param')))
+          .thenAnswer((_) async => const Right(null));
 
       // Mock image_picker platform channel — ViewModel creates ImagePicker() internally
       mockImagePickerPath = _testImagePath;
@@ -118,7 +135,10 @@ void main() async {
       );
 
       container = ProviderContainer(
-        overrides: [getAboutMeUseCaseProvider.overrideWith((ref) => mockGetAboutMeUseCase)],
+        overrides: [
+          getAboutMeUseCaseProvider.overrideWith((ref) => mockGetAboutMeUseCase),
+          uploadAvatarUseCaseProvider.overrideWith((ref) => mockUploadAvatarUseCase),
+        ],
       );
 
       // Keep provider alive during async operations to prevent auto-dispose
@@ -133,6 +153,11 @@ void main() async {
       // Wait for any pending async operations before disposing
       await Future.delayed(Duration(milliseconds: 100));
       container.dispose();
+      
+      final testFile = File(_testImagePath);
+      if (await testFile.exists()) {
+        await testFile.delete();
+      }
     });
 
     group('Initial State Tests', () {
@@ -233,16 +258,26 @@ void main() async {
         expect(effect.source, equals(ImageSource.camera));
       });
 
-      test('should successfully update state and navigate back on imagePicked', () async {
+      test('should emit CropAvatarEffect on imagePicked', () async {
         final testFile = File(_testImagePath);
         await viewModel.handleIntent(AboutMeIntent.imagePicked(testFile));
         await Future.delayed(const Duration(milliseconds: 100));
 
+        final effect = emittedEffects.firstWhere((e) => e is CropAvatarEffect) as CropAvatarEffect;
+        expect(effect.imageFile.path, equals(_testImagePath));
+        expect(effect.onResult, isNotNull);
+      });
+
+      test('should successfully update state and upload on imageCropped', () async {
+        final testFile = File(_testImagePath);
+        await viewModel.handleIntent(AboutMeIntent.imageCropped(testFile));
+        await Future.delayed(const Duration(milliseconds: 100));
+
+        // State imageFile remains testFile because mockUploadAvatarUseCase returns null, which doesn't trigger successful userModel state update resets
         final state = container.read(aboutMeViewModelProvider);
         expect(state.imageFile, isNotNull);
         expect(state.imageFile!.path, _testImagePath);
-
-        expect(emittedEffects.any((e) => e is NavigationEffect && (e as NavigationEffect).isBack), isFalse);
+        verify(() => mockUploadAvatarUseCase.call(param: any(named: 'param'))).called(1);
       });
 
       test('should handle null image selection', () async {
@@ -259,7 +294,7 @@ void main() async {
       test('should remove existing image file', () async {
         // Set up initial image state
         final testFile = File(_testImagePath);
-        await viewModel.handleIntent(AboutMeIntent.imagePicked(testFile));
+        await viewModel.handleIntent(AboutMeIntent.imageCropped(testFile));
         await Future.delayed(const Duration(milliseconds: 100));
 
         // Verify image was set
@@ -336,7 +371,7 @@ void main() async {
         await Future.delayed(const Duration(milliseconds: 300));
 
         final testFile = File(_testImagePath);
-        await viewModel.handleIntent(AboutMeIntent.imagePicked(testFile));
+        await viewModel.handleIntent(AboutMeIntent.imageCropped(testFile));
         await Future.delayed(const Duration(milliseconds: 100));
 
         // Assert: Verify both data and image are maintained

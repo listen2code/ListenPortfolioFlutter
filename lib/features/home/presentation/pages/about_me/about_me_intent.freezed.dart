@@ -55,12 +55,13 @@ extension AboutMeIntentPatterns on AboutMeIntent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _PickImage value)?  pickImage,TResult Function( _ImagePicked value)?  imagePicked,TResult Function( _RemoveImage value)?  removeImage,TResult Function( _Refresh value)?  refresh,TResult Function( _ShareApp value)?  shareApp,TResult Function( _ToResume value)?  toResume,TResult Function( _ShowPickerMenu value)?  showPickerMenu,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _PickImage value)?  pickImage,TResult Function( _ImagePicked value)?  imagePicked,TResult Function( _ImageCropped value)?  imageCropped,TResult Function( _RemoveImage value)?  removeImage,TResult Function( _Refresh value)?  refresh,TResult Function( _ShareApp value)?  shareApp,TResult Function( _ToResume value)?  toResume,TResult Function( _ShowPickerMenu value)?  showPickerMenu,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _PickImage() when pickImage != null:
 return pickImage(_that);case _ImagePicked() when imagePicked != null:
-return imagePicked(_that);case _RemoveImage() when removeImage != null:
+return imagePicked(_that);case _ImageCropped() when imageCropped != null:
+return imageCropped(_that);case _RemoveImage() when removeImage != null:
 return removeImage(_that);case _Refresh() when refresh != null:
 return refresh(_that);case _ShareApp() when shareApp != null:
 return shareApp(_that);case _ToResume() when toResume != null:
@@ -83,12 +84,13 @@ return showPickerMenu(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _PickImage value)  pickImage,required TResult Function( _ImagePicked value)  imagePicked,required TResult Function( _RemoveImage value)  removeImage,required TResult Function( _Refresh value)  refresh,required TResult Function( _ShareApp value)  shareApp,required TResult Function( _ToResume value)  toResume,required TResult Function( _ShowPickerMenu value)  showPickerMenu,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _PickImage value)  pickImage,required TResult Function( _ImagePicked value)  imagePicked,required TResult Function( _ImageCropped value)  imageCropped,required TResult Function( _RemoveImage value)  removeImage,required TResult Function( _Refresh value)  refresh,required TResult Function( _ShareApp value)  shareApp,required TResult Function( _ToResume value)  toResume,required TResult Function( _ShowPickerMenu value)  showPickerMenu,}){
 final _that = this;
 switch (_that) {
 case _PickImage():
 return pickImage(_that);case _ImagePicked():
-return imagePicked(_that);case _RemoveImage():
+return imagePicked(_that);case _ImageCropped():
+return imageCropped(_that);case _RemoveImage():
 return removeImage(_that);case _Refresh():
 return refresh(_that);case _ShareApp():
 return shareApp(_that);case _ToResume():
@@ -110,12 +112,13 @@ return showPickerMenu(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _PickImage value)?  pickImage,TResult? Function( _ImagePicked value)?  imagePicked,TResult? Function( _RemoveImage value)?  removeImage,TResult? Function( _Refresh value)?  refresh,TResult? Function( _ShareApp value)?  shareApp,TResult? Function( _ToResume value)?  toResume,TResult? Function( _ShowPickerMenu value)?  showPickerMenu,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _PickImage value)?  pickImage,TResult? Function( _ImagePicked value)?  imagePicked,TResult? Function( _ImageCropped value)?  imageCropped,TResult? Function( _RemoveImage value)?  removeImage,TResult? Function( _Refresh value)?  refresh,TResult? Function( _ShareApp value)?  shareApp,TResult? Function( _ToResume value)?  toResume,TResult? Function( _ShowPickerMenu value)?  showPickerMenu,}){
 final _that = this;
 switch (_that) {
 case _PickImage() when pickImage != null:
 return pickImage(_that);case _ImagePicked() when imagePicked != null:
-return imagePicked(_that);case _RemoveImage() when removeImage != null:
+return imagePicked(_that);case _ImageCropped() when imageCropped != null:
+return imageCropped(_that);case _RemoveImage() when removeImage != null:
 return removeImage(_that);case _Refresh() when refresh != null:
 return refresh(_that);case _ShareApp() when shareApp != null:
 return shareApp(_that);case _ToResume() when toResume != null:
@@ -137,11 +140,12 @@ return showPickerMenu(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( ImageSource source)?  pickImage,TResult Function( File? file)?  imagePicked,TResult Function()?  removeImage,TResult Function()?  refresh,TResult Function()?  shareApp,TResult Function()?  toResume,TResult Function()?  showPickerMenu,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( ImageSource source)?  pickImage,TResult Function( File? file)?  imagePicked,TResult Function( File file)?  imageCropped,TResult Function()?  removeImage,TResult Function()?  refresh,TResult Function()?  shareApp,TResult Function()?  toResume,TResult Function()?  showPickerMenu,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PickImage() when pickImage != null:
 return pickImage(_that.source);case _ImagePicked() when imagePicked != null:
-return imagePicked(_that.file);case _RemoveImage() when removeImage != null:
+return imagePicked(_that.file);case _ImageCropped() when imageCropped != null:
+return imageCropped(_that.file);case _RemoveImage() when removeImage != null:
 return removeImage();case _Refresh() when refresh != null:
 return refresh();case _ShareApp() when shareApp != null:
 return shareApp();case _ToResume() when toResume != null:
@@ -164,11 +168,12 @@ return showPickerMenu();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( ImageSource source)  pickImage,required TResult Function( File? file)  imagePicked,required TResult Function()  removeImage,required TResult Function()  refresh,required TResult Function()  shareApp,required TResult Function()  toResume,required TResult Function()  showPickerMenu,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( ImageSource source)  pickImage,required TResult Function( File? file)  imagePicked,required TResult Function( File file)  imageCropped,required TResult Function()  removeImage,required TResult Function()  refresh,required TResult Function()  shareApp,required TResult Function()  toResume,required TResult Function()  showPickerMenu,}) {final _that = this;
 switch (_that) {
 case _PickImage():
 return pickImage(_that.source);case _ImagePicked():
-return imagePicked(_that.file);case _RemoveImage():
+return imagePicked(_that.file);case _ImageCropped():
+return imageCropped(_that.file);case _RemoveImage():
 return removeImage();case _Refresh():
 return refresh();case _ShareApp():
 return shareApp();case _ToResume():
@@ -190,11 +195,12 @@ return showPickerMenu();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( ImageSource source)?  pickImage,TResult? Function( File? file)?  imagePicked,TResult? Function()?  removeImage,TResult? Function()?  refresh,TResult? Function()?  shareApp,TResult? Function()?  toResume,TResult? Function()?  showPickerMenu,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( ImageSource source)?  pickImage,TResult? Function( File? file)?  imagePicked,TResult? Function( File file)?  imageCropped,TResult? Function()?  removeImage,TResult? Function()?  refresh,TResult? Function()?  shareApp,TResult? Function()?  toResume,TResult? Function()?  showPickerMenu,}) {final _that = this;
 switch (_that) {
 case _PickImage() when pickImage != null:
 return pickImage(_that.source);case _ImagePicked() when imagePicked != null:
-return imagePicked(_that.file);case _RemoveImage() when removeImage != null:
+return imagePicked(_that.file);case _ImageCropped() when imageCropped != null:
+return imageCropped(_that.file);case _RemoveImage() when removeImage != null:
 return removeImage();case _Refresh() when refresh != null:
 return refresh();case _ShareApp() when shareApp != null:
 return shareApp();case _ToResume() when toResume != null:
@@ -333,6 +339,72 @@ class __$ImagePickedCopyWithImpl<$Res>
   return _then(_ImagePicked(
 freezed == file ? _self.file : file // ignore: cast_nullable_to_non_nullable
 as File?,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _ImageCropped extends AboutMeIntent {
+  const _ImageCropped(this.file): super._();
+  
+
+ final  File file;
+
+/// Create a copy of AboutMeIntent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ImageCroppedCopyWith<_ImageCropped> get copyWith => __$ImageCroppedCopyWithImpl<_ImageCropped>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ImageCropped&&(identical(other.file, file) || other.file == file));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,file);
+
+@override
+String toString() {
+  return 'AboutMeIntent.imageCropped(file: $file)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ImageCroppedCopyWith<$Res> implements $AboutMeIntentCopyWith<$Res> {
+  factory _$ImageCroppedCopyWith(_ImageCropped value, $Res Function(_ImageCropped) _then) = __$ImageCroppedCopyWithImpl;
+@useResult
+$Res call({
+ File file
+});
+
+
+
+
+}
+/// @nodoc
+class __$ImageCroppedCopyWithImpl<$Res>
+    implements _$ImageCroppedCopyWith<$Res> {
+  __$ImageCroppedCopyWithImpl(this._self, this._then);
+
+  final _ImageCropped _self;
+  final $Res Function(_ImageCropped) _then;
+
+/// Create a copy of AboutMeIntent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? file = null,}) {
+  return _then(_ImageCropped(
+null == file ? _self.file : file // ignore: cast_nullable_to_non_nullable
+as File,
   ));
 }
 
