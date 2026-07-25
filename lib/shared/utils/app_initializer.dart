@@ -60,6 +60,7 @@ class AppInitializer {
           const OpenAppSettingsProviderImpl(),
           const PickImageProviderImpl(),
           const CropAvatarProviderImpl(),
+          const PreviewImageProviderImpl(),
           const PlayTapeProviderImpl(),
           LogoutProviderImpl(container),
           const ShareProviderImpl(),

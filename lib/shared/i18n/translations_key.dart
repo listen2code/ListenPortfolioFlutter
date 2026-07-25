@@ -64,6 +64,9 @@ class I18nKeys {
   static const String cancel = 'Cancel';
   static const String ok = 'OK';
   static const String reset = 'Reset';
+  static const String confirm = 'Confirm';
+  static const String cropImage = 'Crop Image';
+  static const String cropFailed = 'Failed to crop image';
 
   // Login Page
   static const String welcomeBack = 'Welcome Back!';

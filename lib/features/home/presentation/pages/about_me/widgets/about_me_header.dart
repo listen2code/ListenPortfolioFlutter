@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:listen_core/core.dart';
 import 'package:listen_uikit/uikit.dart';
 
 import '../../../../../../shared/shared.dart';
@@ -8,12 +7,9 @@ import '../about_me_state.dart';
 class AboutMeHeader extends StatelessWidget {
   final AboutMeState state;
   final VoidCallback onTapCamera;
+  final VoidCallback? onTapAvatar;
 
-  const AboutMeHeader({
-    super.key,
-    required this.state,
-    required this.onTapCamera,
-  });
+  const AboutMeHeader({super.key, required this.state, required this.onTapCamera, this.onTapAvatar});
 
   @override
   Widget build(BuildContext context) {
@@ -25,30 +21,33 @@ class AboutMeHeader extends StatelessWidget {
         children: [
           Stack(
             children: [
-              Container(
-                padding: EdgeInsets.all(3.f),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: accentColor, width: 2.f),
-                ),
-                child: Visibility(
-                  visible: imageFile != null,
-                  replacement: CommonImage.url(
-                    authManager.state.user?.avatarUrl ?? '',
-                    width: 120.f,
-                    height: 120.f,
-                    borderRadius: 60.f,
-                    semanticLabel: I18nKeys.profilePhotoSemanticLabel.tr,
+              Hero(
+                tag: 'avatar_preview',
+                child: CommonClickable(
+                  ripple: false,
+                  onTap: onTapAvatar,
+                  child: Container(
+                    padding: EdgeInsets.all(3.f),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: accentColor, width: 2.f),
+                    ),
+                    child: imageFile != null
+                        ? CommonImage.file(
+                            imageFile,
+                            width: 120.f,
+                            height: 120.f,
+                            borderRadius: 60.f,
+                            semanticLabel: I18nKeys.profilePhotoSemanticLabel.tr,
+                          )
+                        : CommonImage.url(
+                            authManager.state.user?.avatarUrl ?? '',
+                            width: 120.f,
+                            height: 120.f,
+                            borderRadius: 60.f,
+                            semanticLabel: I18nKeys.profilePhotoSemanticLabel.tr,
+                          ),
                   ),
-                  child: imageFile != null
-                      ? CommonImage.file(
-                          imageFile,
-                          width: 120.f,
-                          height: 120.f,
-                          borderRadius: 60.f,
-                          semanticLabel: I18nKeys.profilePhotoSemanticLabel.tr,
-                        )
-                      : const SizedBox.shrink(),
                 ),
               ),
               Positioned(

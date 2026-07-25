@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:listen_core/core.dart';
 import 'package:listen_uikit/uikit.dart';
 
 import '../../../../shared/shared.dart';
@@ -30,7 +29,8 @@ class HomePage extends ConsumerWidget {
       provider: homeViewModelProvider,
       title: state.title,
       drawer: _buildDrawer(context, viewModel, state),
-      canPop: false, // Always intercept system back gesture on home screen to handle tab change or double back exit
+      canPop:
+          false, // Always intercept system back gesture on home screen to handle tab change or double back exit
       actions: state.currentTab == HomeTab.aboutMe
           ? [
               Consumer(
@@ -183,25 +183,37 @@ class HomePage extends ConsumerWidget {
               Semantics(
                 label: I18nKeys.profilePhotoSemanticLabel.tr,
                 image: true,
-                child: Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 2.f),
-                  ),
-                  child: isLoggedIn
-                      ? CommonImage.url(
-                          authManager.state.user?.avatarUrl ?? '',
-                          width: 70.f,
-                          height: 70.f,
-                          borderRadius: 35.f,
-                          excludeFromSemantics: true,
-                        )
-                      : Container(
+                child: Hero(
+                  tag: 'drawer_avatar_preview',
+                  child: CommonClickable(
+                    onTap: () {
+                      if (isLoggedIn) {
+                        viewModel.handleIntent(const HomeIntent.previewAvatar());
+                      }
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white, width: 2.f),
+                      ),
+                      child: Visibility(
+                        visible: isLoggedIn,
+                        replacement: Container(
                           width: 70.f,
                           height: 70.f,
                           decoration: const BoxDecoration(color: Colors.white24, shape: BoxShape.circle),
                           child: Icon(Icons.person, size: 35.f, color: Colors.white70),
                         ),
+                        child: CommonImage.url(
+                          authManager.state.user?.avatarUrl ?? '',
+                          width: 70.f,
+                          height: 70.f,
+                          borderRadius: 35.f,
+                          excludeFromSemantics: true,
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ),
               SizedBox(height: 15.f),

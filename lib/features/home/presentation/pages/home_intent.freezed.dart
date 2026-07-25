@@ -55,7 +55,7 @@ extension HomeIntentPatterns on HomeIntent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _TabChanged value)?  tabChanged,TResult Function( _Logout value)?  logout,TResult Function( _ConfirmLogout value)?  confirmLogout,TResult Function( _ToSettings value)?  toSettings,TResult Function( _ToAppearance value)?  toAppearance,TResult Function( _HandleDeepLink value)?  handleDeepLink,TResult Function( _Init value)?  init,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _TabChanged value)?  tabChanged,TResult Function( _Logout value)?  logout,TResult Function( _ConfirmLogout value)?  confirmLogout,TResult Function( _ToSettings value)?  toSettings,TResult Function( _ToAppearance value)?  toAppearance,TResult Function( _HandleDeepLink value)?  handleDeepLink,TResult Function( _Init value)?  init,TResult Function( _PreviewAvatar value)?  previewAvatar,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _TabChanged() when tabChanged != null:
@@ -65,7 +65,8 @@ return confirmLogout(_that);case _ToSettings() when toSettings != null:
 return toSettings(_that);case _ToAppearance() when toAppearance != null:
 return toAppearance(_that);case _HandleDeepLink() when handleDeepLink != null:
 return handleDeepLink(_that);case _Init() when init != null:
-return init(_that);case _:
+return init(_that);case _PreviewAvatar() when previewAvatar != null:
+return previewAvatar(_that);case _:
   return orElse();
 
 }
@@ -83,7 +84,7 @@ return init(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _TabChanged value)  tabChanged,required TResult Function( _Logout value)  logout,required TResult Function( _ConfirmLogout value)  confirmLogout,required TResult Function( _ToSettings value)  toSettings,required TResult Function( _ToAppearance value)  toAppearance,required TResult Function( _HandleDeepLink value)  handleDeepLink,required TResult Function( _Init value)  init,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _TabChanged value)  tabChanged,required TResult Function( _Logout value)  logout,required TResult Function( _ConfirmLogout value)  confirmLogout,required TResult Function( _ToSettings value)  toSettings,required TResult Function( _ToAppearance value)  toAppearance,required TResult Function( _HandleDeepLink value)  handleDeepLink,required TResult Function( _Init value)  init,required TResult Function( _PreviewAvatar value)  previewAvatar,}){
 final _that = this;
 switch (_that) {
 case _TabChanged():
@@ -93,7 +94,8 @@ return confirmLogout(_that);case _ToSettings():
 return toSettings(_that);case _ToAppearance():
 return toAppearance(_that);case _HandleDeepLink():
 return handleDeepLink(_that);case _Init():
-return init(_that);case _:
+return init(_that);case _PreviewAvatar():
+return previewAvatar(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -110,7 +112,7 @@ return init(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _TabChanged value)?  tabChanged,TResult? Function( _Logout value)?  logout,TResult? Function( _ConfirmLogout value)?  confirmLogout,TResult? Function( _ToSettings value)?  toSettings,TResult? Function( _ToAppearance value)?  toAppearance,TResult? Function( _HandleDeepLink value)?  handleDeepLink,TResult? Function( _Init value)?  init,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _TabChanged value)?  tabChanged,TResult? Function( _Logout value)?  logout,TResult? Function( _ConfirmLogout value)?  confirmLogout,TResult? Function( _ToSettings value)?  toSettings,TResult? Function( _ToAppearance value)?  toAppearance,TResult? Function( _HandleDeepLink value)?  handleDeepLink,TResult? Function( _Init value)?  init,TResult? Function( _PreviewAvatar value)?  previewAvatar,}){
 final _that = this;
 switch (_that) {
 case _TabChanged() when tabChanged != null:
@@ -120,7 +122,8 @@ return confirmLogout(_that);case _ToSettings() when toSettings != null:
 return toSettings(_that);case _ToAppearance() when toAppearance != null:
 return toAppearance(_that);case _HandleDeepLink() when handleDeepLink != null:
 return handleDeepLink(_that);case _Init() when init != null:
-return init(_that);case _:
+return init(_that);case _PreviewAvatar() when previewAvatar != null:
+return previewAvatar(_that);case _:
   return null;
 
 }
@@ -137,7 +140,7 @@ return init(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( HomeTab tab,  bool closeDrawer)?  tabChanged,TResult Function()?  logout,TResult Function()?  confirmLogout,TResult Function()?  toSettings,TResult Function()?  toAppearance,TResult Function( Uri uri)?  handleDeepLink,TResult Function()?  init,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( HomeTab tab,  bool closeDrawer)?  tabChanged,TResult Function()?  logout,TResult Function()?  confirmLogout,TResult Function()?  toSettings,TResult Function()?  toAppearance,TResult Function( Uri uri)?  handleDeepLink,TResult Function()?  init,TResult Function()?  previewAvatar,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TabChanged() when tabChanged != null:
 return tabChanged(_that.tab,_that.closeDrawer);case _Logout() when logout != null:
@@ -146,7 +149,8 @@ return confirmLogout();case _ToSettings() when toSettings != null:
 return toSettings();case _ToAppearance() when toAppearance != null:
 return toAppearance();case _HandleDeepLink() when handleDeepLink != null:
 return handleDeepLink(_that.uri);case _Init() when init != null:
-return init();case _:
+return init();case _PreviewAvatar() when previewAvatar != null:
+return previewAvatar();case _:
   return orElse();
 
 }
@@ -164,7 +168,7 @@ return init();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( HomeTab tab,  bool closeDrawer)  tabChanged,required TResult Function()  logout,required TResult Function()  confirmLogout,required TResult Function()  toSettings,required TResult Function()  toAppearance,required TResult Function( Uri uri)  handleDeepLink,required TResult Function()  init,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( HomeTab tab,  bool closeDrawer)  tabChanged,required TResult Function()  logout,required TResult Function()  confirmLogout,required TResult Function()  toSettings,required TResult Function()  toAppearance,required TResult Function( Uri uri)  handleDeepLink,required TResult Function()  init,required TResult Function()  previewAvatar,}) {final _that = this;
 switch (_that) {
 case _TabChanged():
 return tabChanged(_that.tab,_that.closeDrawer);case _Logout():
@@ -173,7 +177,8 @@ return confirmLogout();case _ToSettings():
 return toSettings();case _ToAppearance():
 return toAppearance();case _HandleDeepLink():
 return handleDeepLink(_that.uri);case _Init():
-return init();case _:
+return init();case _PreviewAvatar():
+return previewAvatar();case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -190,7 +195,7 @@ return init();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( HomeTab tab,  bool closeDrawer)?  tabChanged,TResult? Function()?  logout,TResult? Function()?  confirmLogout,TResult? Function()?  toSettings,TResult? Function()?  toAppearance,TResult? Function( Uri uri)?  handleDeepLink,TResult? Function()?  init,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( HomeTab tab,  bool closeDrawer)?  tabChanged,TResult? Function()?  logout,TResult? Function()?  confirmLogout,TResult? Function()?  toSettings,TResult? Function()?  toAppearance,TResult? Function( Uri uri)?  handleDeepLink,TResult? Function()?  init,TResult? Function()?  previewAvatar,}) {final _that = this;
 switch (_that) {
 case _TabChanged() when tabChanged != null:
 return tabChanged(_that.tab,_that.closeDrawer);case _Logout() when logout != null:
@@ -199,7 +204,8 @@ return confirmLogout();case _ToSettings() when toSettings != null:
 return toSettings();case _ToAppearance() when toAppearance != null:
 return toAppearance();case _HandleDeepLink() when handleDeepLink != null:
 return handleDeepLink(_that.uri);case _Init() when init != null:
-return init();case _:
+return init();case _PreviewAvatar() when previewAvatar != null:
+return previewAvatar();case _:
   return null;
 
 }
@@ -493,6 +499,38 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'HomeIntent.init()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _PreviewAvatar extends HomeIntent {
+  const _PreviewAvatar(): super._();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PreviewAvatar);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'HomeIntent.previewAvatar()';
 }
 
 

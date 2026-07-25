@@ -18,6 +18,7 @@ class AboutMeIntent extends BaseIntent with _$AboutMeIntent {
   const factory AboutMeIntent.shareApp() = _ShareApp;
   const factory AboutMeIntent.toResume() = _ToResume;
   const factory AboutMeIntent.showPickerMenu() = _ShowPickerMenu;
+  const factory AboutMeIntent.previewAvatar() = _PreviewAvatar;
   const AboutMeIntent._();
 
   /// Registers deserializers for MVI playback.
@@ -52,5 +53,6 @@ class AboutMeIntent extends BaseIntent with _$AboutMeIntent {
     MviPlaybackRegistry.register('AboutMeIntent', 'refresh', (args) => const AboutMeIntent.refresh());
     MviPlaybackRegistry.register('AboutMeIntent', 'shareApp', (args) => const AboutMeIntent.shareApp());
     MviPlaybackRegistry.register('AboutMeIntent', 'toResume', (args) => const AboutMeIntent.toResume());
+    MviPlaybackRegistry.register('AboutMeIntent', 'previewAvatar', (args) => const AboutMeIntent.previewAvatar());
   }
 }

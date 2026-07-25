@@ -4,7 +4,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart' show ImageSource;
-import 'package:listen_core/core.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../../shared/shared.dart';
@@ -50,6 +49,7 @@ class AboutMeViewModel extends _$AboutMeViewModel with ViewModelMixin<AboutMeSta
       shareApp: _onShareApp,
       toResume: () => emitEffect(NavigationEffect(target: Routes.resume)),
       showPickerMenu: _onShowPickerMenu,
+      previewAvatar: _onPreviewAvatar,
     );
   }
 
@@ -94,26 +94,28 @@ class AboutMeViewModel extends _$AboutMeViewModel with ViewModelMixin<AboutMeSta
 
   Future<void> _onImagePicked(File? file) async {
     if (file != null) {
-      emitEffect(CropAvatarEffect(
-        imageFile: file,
-        onResult: (croppedFile) {
-          if (croppedFile != null) {
-            handleIntent(AboutMeIntent.imageCropped(croppedFile));
-          }
-        },
-      ));
+      emitEffect(
+        CropAvatarEffect(
+          imageFile: file,
+          onResult: (croppedFile) {
+            if (croppedFile != null) {
+              handleIntent(AboutMeIntent.imageCropped(croppedFile));
+            }
+          },
+        ),
+      );
     }
   }
 
   Future<void> _onImageCropped(File file) async {
     updateState(state.copyWith(imageFile: file));
-    
+
     // Perform base64 conversion and upload to backend
     final bytes = await file.readAsBytes();
     final String base64Data = base64Encode(bytes);
     final String mimeType = file.path.imageMimeType;
     final String dataUrl = 'data:$mimeType;base64,$base64Data';
-    
+
     await call(
       ref.execute<UserModel?, String>(uploadAvatarUseCaseProvider, param: dataUrl),
       showLoading: true,
@@ -155,6 +157,17 @@ class AboutMeViewModel extends _$AboutMeViewModel with ViewModelMixin<AboutMeSta
   void _onShareApp() {
     emitEffect(
       ShareEffect(text: '${AppConstants.appName} - ${I18nKeys.shareApp.tr}: ${AppConstants.storeShare}'),
+    );
+  }
+
+  void _onPreviewAvatar() {
+    final avatarUrl = authManager.state.user?.avatarUrl;
+    emitEffect(
+      PreviewImageEffect(
+        imageUrl: state.imageFile == null ? avatarUrl : null,
+        imageFile: state.imageFile,
+        heroTag: 'avatar_preview',
+      ),
     );
   }
 }

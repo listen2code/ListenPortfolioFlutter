@@ -1,5 +1,4 @@
 import 'package:collection/collection.dart';
-import 'package:listen_core/core.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../shared/shared.dart';
@@ -35,10 +34,7 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
 
   @override
   bool checkNeedLogin(HomeIntent intent) {
-    return intent.maybeWhen(
-      tabChanged: (tab, _) => tab == HomeTab.aboutMe,
-      orElse: () => false,
-    );
+    return intent.maybeWhen(tabChanged: (tab, _) => tab == HomeTab.aboutMe, orElse: () => false);
   }
 
   @override
@@ -51,6 +47,7 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
       toSettings: () => emitEffect(NavigationEffect(target: Routes.settings)),
       toAppearance: () => emitEffect(NavigationEffect(target: Routes.appearance)),
       handleDeepLink: _onHandleDeepLink,
+      previewAvatar: _onPreviewAvatar,
     );
   }
 
@@ -110,5 +107,12 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
         emitEffect(LogoutEffect(to: Routes.login, message: I18nKeys.logoutSuccess.tr));
       },
     );
+  }
+
+  void _onPreviewAvatar() {
+    final avatarUrl = authManager.state.user?.avatarUrl;
+    if (avatarUrl != null && avatarUrl.isNotEmpty) {
+      emitEffect(PreviewImageEffect(imageUrl: avatarUrl, heroTag: 'drawer_avatar_preview'));
+    }
   }
 }

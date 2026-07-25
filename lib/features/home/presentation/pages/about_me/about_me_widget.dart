@@ -40,6 +40,7 @@ class AboutMeWidget extends StatelessWidget {
               AboutMeHeader(
                 state: state,
                 onTapCamera: () => viewModel.handleIntent(const AboutMeIntent.showPickerMenu()),
+                onTapAvatar: () => viewModel.handleIntent(const AboutMeIntent.previewAvatar()),
               ),
               if (data.bio != null) ...[
                 SizedBox(height: 35.f),
