@@ -33,6 +33,7 @@ class BaseRefreshPage<V extends BaseViewModel<dynamic>, S extends BaseState> ext
   final Color bottomBarColor;
   final bool useGradientBackground;
   final bool active;
+  final bool drawerEnableOpenDragGesture;
 
   /// Whether to wrap the content in a Scaffold.
   /// Defaults to true for root pages, false for embedded sub-pages.
@@ -94,6 +95,7 @@ class BaseRefreshPage<V extends BaseViewModel<dynamic>, S extends BaseState> ext
     this.active = true,
     this.useScaffold = true,
     this.expandBody = true,
+    this.drawerEnableOpenDragGesture = true,
     required this.provider,
     this.onEffect,
     this.onLoading,
@@ -147,6 +149,7 @@ class BaseRefreshPage<V extends BaseViewModel<dynamic>, S extends BaseState> ext
       body: (context, child) => content ?? const CommonEmptyView(),
       title: title,
       drawer: drawer,
+      drawerEnableOpenDragGesture: drawerEnableOpenDragGesture,
       canPop: canPop,
       onInterceptBack: onInterceptBack,
       actions: actions,

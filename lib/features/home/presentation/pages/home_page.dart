@@ -29,6 +29,7 @@ class HomePage extends ConsumerWidget {
       provider: homeViewModelProvider,
       title: state.title,
       drawer: _buildDrawer(context, viewModel, state),
+      drawerEnableOpenDragGesture: false,
       canPop:
           false, // Always intercept system back gesture on home screen to handle tab change or double back exit
       actions: state.currentTab == HomeTab.aboutMe
