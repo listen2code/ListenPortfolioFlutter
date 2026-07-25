@@ -64,7 +64,7 @@ class DeleteAccountViewModel extends _$DeleteAccountViewModel
 
         // 3. Show success message and redirect to login
         emitEffect(MessageEffect.info(I18nKeys.deleteAccountSuccess.tr));
-        emitEffect(NavigationEffect(target: Routes.login, isReplace: true));
+        emitEffect(NavigationEffect<void>(target: Routes.login, isReplace: true));
       },
       onFailure: (failure) async {
         // Handle deletion error - user stays logged in

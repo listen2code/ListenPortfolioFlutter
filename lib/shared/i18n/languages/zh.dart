@@ -30,7 +30,6 @@ final Map<String, String> zh = {
   I18nKeys.switchEnv: '切换环境',
   I18nKeys.envMock: '模拟环境(Mock)',
   I18nKeys.envDev: '开发环境',
-  I18nKeys.envTest: '测试环境',
   I18nKeys.envProd: '正式环境',
   I18nKeys.currentlyActive: '当前生效',
   I18nKeys.envSwitched: '环境已切换至：',

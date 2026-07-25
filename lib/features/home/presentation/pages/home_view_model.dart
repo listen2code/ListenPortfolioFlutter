@@ -44,8 +44,8 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
       tabChanged: _onTabChanged,
       logout: _onLogout,
       confirmLogout: _onConfirmLogout,
-      toSettings: () => emitEffect(NavigationEffect(target: Routes.settings)),
-      toAppearance: () => emitEffect(NavigationEffect(target: Routes.appearance)),
+      toSettings: () => emitEffect(NavigationEffect<void>(target: Routes.settings)),
+      toAppearance: () => emitEffect(NavigationEffect<void>(target: Routes.appearance)),
       handleDeepLink: _onHandleDeepLink,
       previewAvatar: _onPreviewAvatar,
     );
@@ -66,7 +66,7 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
 
     // 2. Otherwise, route via global navigation provider
     appLogger.i('HomeViewModel: Processing deep link from EventBus: $uri');
-    emitEffect(NavigationEffect(target: uri.toString(), replaceIfExists: true));
+    emitEffect(NavigationEffect<void>(target: uri.toString(), replaceIfExists: true));
   }
 
   void _onTabChanged(HomeTab tab, bool closeDrawer) {
@@ -78,7 +78,7 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
 
   void _onLogout() {
     if (authManager.state.isGuest) {
-      emitEffect(NavigationEffect(target: Routes.login));
+      emitEffect(NavigationEffect<void>(target: Routes.login));
       return;
     }
     // 1. First, show the confirmation dialog via ConfirmEffect.

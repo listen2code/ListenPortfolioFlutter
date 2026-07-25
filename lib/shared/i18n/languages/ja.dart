@@ -30,7 +30,6 @@ final Map<String, String> ja = {
   I18nKeys.switchEnv: '環境切替',
   I18nKeys.envMock: 'デモ(Mock)',
   I18nKeys.envDev: '開発用',
-  I18nKeys.envTest: 'テスト用',
   I18nKeys.envProd: '本番用',
   I18nKeys.currentlyActive: '現在有効',
   I18nKeys.envSwitched: '環境を切り替えました：',
@@ -203,12 +202,14 @@ final Map<String, String> ja = {
   I18nKeys.errCouldNotLaunch: '%s を起動できませんでした',
   I18nKeys.locationJapanTokyo: '日本 / 東京',
 
-  I18nKeys.cleanMviDesc: 'このアプリは、クリーンアーキテクチャの原則に従い、データ層、ドメイン層、プレゼンテーション層に関心を分離しています。プレゼンテーション層では、MVI（Model-View-Intent）パターンにより単方向データフローを保証します。',
+  I18nKeys.cleanMviDesc:
+      'このアプリは、クリーンアーキテクチャの原則に従い、データ層、ドメイン層、プレゼンテーション層に関心を分離しています。プレゼンテーション層では、MVI（Model-View-Intent）パターンにより単方向データフローを保証します。',
   I18nKeys.descRiverpod: '状態管理と依存性注入',
   I18nKeys.descFreezed: '不変状態のためのコード生成',
   I18nKeys.descDioRetrofit: '型安全なネットワーク',
   I18nKeys.descFpdart: '関数型プログラミング (Either/Option)',
-  I18nKeys.backendDevOpsDesc: 'バックエンドサービスは、サーバーレスアプローチを使用してAWS上にデプロイされています。主なサービスには、Lambda、API Gateway、DynamoDBなどがあります。',
+  I18nKeys.backendDevOpsDesc:
+      'バックエンドサービスは、サーバーレスアプローチを使用してAWS上にデプロイされています。主なサービスには、Lambda、API Gateway、DynamoDBなどがあります。',
   I18nKeys.logoutSuccess: 'ログアウト成功！',
   I18nKeys.sessionExpired: 'セッションの期限が切れました',
   I18nKeys.appLogs: 'アプリログ',
@@ -228,7 +229,8 @@ final Map<String, String> ja = {
   I18nKeys.checkUpdates: 'アップデートを確認',
   I18nKeys.checkingUpdates: 'アップデートを確認中...',
   I18nKeys.latestVersion: '最新バージョンです',
-  I18nKeys.updateAvailable: '新しいバージョン %s が利用可能です。アップデートしますか？\n（注：Google Playストアへの反映に時間がかかる場合があります。更新ボタンが表示されない場合は、しばらく経ってから再度お試しください）',
+  I18nKeys.updateAvailable:
+      '新しいバージョン %s が利用可能です。アップデートしますか？\n（注：Google Playストアへの反映に時間がかかる場合があります。更新ボタンが表示されない場合は、しばらく経ってから再度お試しください）',
   I18nKeys.update: 'アップデート',
   I18nKeys.updateCheckFailed: 'アップデートの確認に失敗しました。後でもう一度お試しください。',
 

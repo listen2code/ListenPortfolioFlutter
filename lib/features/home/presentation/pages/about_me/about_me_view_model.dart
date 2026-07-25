@@ -47,7 +47,7 @@ class AboutMeViewModel extends _$AboutMeViewModel with ViewModelMixin<AboutMeSta
       removeImage: _onRemoveImage,
       refresh: _onRefresh,
       shareApp: _onShareApp,
-      toResume: () => emitEffect(NavigationEffect(target: Routes.resume)),
+      toResume: () => emitEffect(NavigationEffect<void>(target: Routes.resume)),
       showPickerMenu: _onShowPickerMenu,
       previewAvatar: _onPreviewAvatar,
     );

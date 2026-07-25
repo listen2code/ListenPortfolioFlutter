@@ -28,7 +28,6 @@ class I18nKeys {
   static const String switchEnv = 'Switch Environment';
   static const String envMock = 'Mock';
   static const String envDev = 'Development';
-  static const String envTest = 'Testing';
   static const String envProd = 'Production';
   static const String currentlyActive = 'Currently Active';
   static const String envSwitched = 'Environment switched to:';
@@ -41,12 +40,15 @@ class I18nKeys {
   static const String aiModeVisitor = 'Agent Mode';
   static const String aiModeInterviewer = 'Mock Interview';
   static const String aiChatInputPlaceholder = 'Type a question...';
-  static const String aiChatWelcomeVisitor = 'Welcome! I am Listen\'s AI Agent. I can answer questions about the current page, Listen\'s experience, and the project architecture.';
-  static const String aiChatWelcomeInterviewer = 'Let\'s start the mock technical interview! I will ask you questions based on Listen\'s experience. Feel free to answer or ask for feedback.';
+  static const String aiChatWelcomeVisitor =
+      'Welcome! I am Listen\'s AI Agent. I can answer questions about the current page, Listen\'s experience, and the project architecture.';
+  static const String aiChatWelcomeInterviewer =
+      'Let\'s start the mock technical interview! I will ask you questions based on Listen\'s experience. Feel free to answer or ask for feedback.';
   static const String aiPresetQuestions = 'Preset Questions';
   static const String aiChatLoadFailed = 'Failed to load QAs: %s';
   static const String aiChatSendFailed = 'Failed to send';
-  static const String aiChatNetworkError = 'Sorry, network connection failed: %s. You can click the question to retry, or try recommended preset questions for offline answers.';
+  static const String aiChatNetworkError =
+      'Sorry, network connection failed: %s. You can click the question to retry, or try recommended preset questions for offline answers.';
 
   // Custom Color
   static const String customColor = 'Custom Color';
@@ -218,12 +220,14 @@ class I18nKeys {
   static const String errCouldNotLaunch = 'Could not launch %s';
   static const String locationJapanTokyo = 'Japan / Tokyo';
 
-  static const String cleanMviDesc = 'The app follows Clean Architecture principles to separate concerns into Data, Domain, and Presentation layers. On the Presentation layer, the MVI (Model-View-Intent) pattern ensures unidirectional data flow.';
+  static const String cleanMviDesc =
+      'The app follows Clean Architecture principles to separate concerns into Data, Domain, and Presentation layers. On the Presentation layer, the MVI (Model-View-Intent) pattern ensures unidirectional data flow.';
   static const String descRiverpod = 'State management & DI';
   static const String descFreezed = 'Code generation for immutable states';
   static const String descDioRetrofit = 'Type-safe networking';
   static const String descFpdart = 'Functional programming (Either/Option)';
-  static const String backendDevOpsDesc = 'The backend services are deployed on AWS using a serverless approach. Key services include Lambda, API Gateway, and DynamoDB.';
+  static const String backendDevOpsDesc =
+      'The backend services are deployed on AWS using a serverless approach. Key services include Lambda, API Gateway, and DynamoDB.';
   static const String logoutSuccess = 'Logout Success!';
   static const String sessionExpired = 'Session expired';
   static const String appLogs = 'App Logs';
@@ -244,17 +248,17 @@ class I18nKeys {
   static const String errTimeout = 'NET_0002';
   static const String errServerError = 'SRV_0100';
   static const String errTooManyRequests = 'SRV_0104';
-  
+
   static const String errInvalidCredentials = 'AUTH_0300';
   static const String errAccountNotFound = 'AUTH_0301';
   static const String errAccountLocked = 'AUTH_0302';
   static const String errSessionExpired = 'AUTH_0303';
   static const String errAccessDenied = 'AUTH_0305';
-  
+
   static const String errEmailInvalid = 'VAL_0400';
   static const String errPasswordTooShort = 'VAL_0401';
   static const String errPasswordsNotMatch = 'VAL_0402';
-  
+
   static const String errUsernameExists = 'BIZ_0500';
   static const String errEmailRegistered = 'BIZ_0501';
   static const String errCurrentPasswordIncorrect = 'BIZ_0502';
@@ -267,7 +271,8 @@ class I18nKeys {
   static const String checkUpdates = 'Check for Updates';
   static const String checkingUpdates = 'Checking for updates...';
   static const String latestVersion = 'You are on the latest version.';
-  static const String updateAvailable = 'A new version %s is available. Would you like to update?\n(Note: App store updates may take some time to propagate. If you do not see the update button, please try again in a few minutes.)';
+  static const String updateAvailable =
+      'A new version %s is available. Would you like to update?\n(Note: App store updates may take some time to propagate. If you do not see the update button, please try again in a few minutes.)';
   static const String update = 'Update';
   static const String updateCheckFailed = 'Failed to check for updates. Please try again later.';
 

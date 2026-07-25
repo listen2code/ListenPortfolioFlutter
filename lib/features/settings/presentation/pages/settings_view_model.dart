@@ -58,13 +58,15 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
       ),
       rateApp: () => emitEffect(RateAppEffect()),
       showLicenses: () => emitEffect(ShowLicensesEffect()),
-      toAppearance: () => emitEffect(NavigationEffect(target: Routes.appearance)),
-      toChangePassword: () => emitEffect(NavigationEffect(target: Routes.changePassword, needLogin: true)),
-      toDeleteAccount: () => emitEffect(NavigationEffect(target: Routes.deleteAccount, needLogin: true)),
-      toCrashLogs: () => emitEffect(NavigationEffect(target: Routes.crashLogs)),
-      toPrivacyPolicy: () => emitEffect(NavigationEffect(target: Routes.privacyPolicy)),
-      toTermsOfService: () => emitEffect(NavigationEffect(target: Routes.termsOfService)),
-      toWebViewTest: () => emitEffect(NavigationEffect(target: Routes.webViewTest)),
+      toAppearance: () => emitEffect(NavigationEffect<void>(target: Routes.appearance)),
+      toChangePassword: () =>
+          emitEffect(NavigationEffect<void>(target: Routes.changePassword, needLogin: true)),
+      toDeleteAccount: () =>
+          emitEffect(NavigationEffect<void>(target: Routes.deleteAccount, needLogin: true)),
+      toCrashLogs: () => emitEffect(NavigationEffect<void>(target: Routes.crashLogs)),
+      toPrivacyPolicy: () => emitEffect(NavigationEffect<void>(target: Routes.privacyPolicy)),
+      toTermsOfService: () => emitEffect(NavigationEffect<void>(target: Routes.termsOfService)),
+      toWebViewTest: () => emitEffect(NavigationEffect<void>(target: Routes.webViewTest)),
       confirmOpenSettings: () => emitEffect(OpenAppSettingsEffect()),
       confirmDownloadUpdate: (url) => emitEffect(LaunchUrlEffect(url)),
     );
@@ -170,13 +172,13 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
   Future<void> _onSwitchLanguage(AppLanguage language) async {
     await settingManager.setLanguage(language);
     updateState(state.copyWith(currentLanguage: language));
-    emitEffect(NavigationEffect.back());
+    emitEffect(NavigationEffect<void>.back());
   }
 
   Future<void> _onSwitchEnv(AppEnvironment env) async {
     await AppEnv.setEnvironment(env);
     updateState(state.copyWith(currentEnv: env));
-    emitEffect(NavigationEffect.back());
+    emitEffect(NavigationEffect<void>.back());
   }
 
   void _onToggleLogOverlay(bool enabled) {
@@ -266,8 +268,6 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
         return I18nKeys.envMock.tr;
       case AppEnvironment.dev:
         return I18nKeys.envDev.tr;
-      case AppEnvironment.test:
-        return I18nKeys.envTest.tr;
       case AppEnvironment.prod:
         return I18nKeys.envProd.tr;
     }

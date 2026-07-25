@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import '../../../../shared/shared.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../shared/shared.dart';
 import 'splash_intent.dart';
 import 'splash_state.dart';
 
@@ -30,6 +30,6 @@ class SplashViewModel extends _$SplashViewModel with ViewModelMixin<SplashState,
   Future<void> _onInit() async {
     // Artificial delay for splash screen branding
     await Future<void>.delayed(splashDelay);
-    emitEffect(NavigationEffect(target: Routes.home, isReplace: true));
+    emitEffect(NavigationEffect<void>(target: Routes.home, isReplace: true));
   }
 }
