@@ -1,7 +1,7 @@
 import 'package:listen_core/core.dart';
 
 /// Standard Effect for navigating to a new target reactively.
-class NavigationEffect extends BaseEffect {
+class NavigationEffect<T> extends BaseEffect {
   /// The navigation target (Route path or Object). Can be null for back operations.
   final dynamic target;
   final Object? arguments;
@@ -10,6 +10,7 @@ class NavigationEffect extends BaseEffect {
   final bool isBack;
   final bool needLogin;
   final bool replaceIfExists;
+  final void Function(T? result)? onResult;
 
   NavigationEffect({
     this.target,
@@ -19,10 +20,11 @@ class NavigationEffect extends BaseEffect {
     this.isBack = false,
     this.needLogin = false,
     this.replaceIfExists = false,
+    this.onResult,
   });
 
   /// Helper constructor for back navigation.
-  factory NavigationEffect.back({Object? result}) => NavigationEffect(isBack: true, arguments: result);
+  factory NavigationEffect.back({T? result}) => NavigationEffect<T>(isBack: true, arguments: result);
 
   @override
   String toString() {
@@ -32,32 +34,35 @@ class NavigationEffect extends BaseEffect {
 }
 
 /// Concrete implementation for handling [NavigationEffect] using [AppNav].
-class NavigationProviderImpl extends BaseProvider<NavigationEffect> {
+class NavigationProviderImpl extends BaseProvider<NavigationEffect<dynamic>> {
   const NavigationProviderImpl();
 
   @override
-  void handleEffect(NavigationEffect effect) {
+  void handleEffect(NavigationEffect<dynamic> effect) async {
     if (effect.isBack) {
       AppNav.back(effect.arguments);
     } else if (effect.isReplace) {
-      AppNav.off(
+      final result = await AppNav.off(
         effect.target,
         needLogin: effect.needLogin,
         arguments: effect.arguments as Map<String, dynamic>?,
       );
+      effect.onResult?.call(result);
     } else if (effect.isReplaceAll) {
-      AppNav.offAll(
+      final result = await AppNav.offAll(
         effect.target,
         needLogin: effect.needLogin,
         arguments: effect.arguments as Map<String, dynamic>?,
       );
+      effect.onResult?.call(result);
     } else {
-      AppNav.to(
+      final result = await AppNav.to(
         effect.target,
         needLogin: effect.needLogin,
         arguments: effect.arguments,
         replaceIfExists: effect.replaceIfExists,
       );
+      effect.onResult?.call(result);
     }
   }
 }

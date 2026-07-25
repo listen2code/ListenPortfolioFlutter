@@ -7,6 +7,7 @@ import '../../../../../shared/shared.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'sign_up_state.dart';
+import '../login/login_state.dart';
 
 part 'sign_up_view_model.g.dart';
 
@@ -77,7 +78,10 @@ class SignUpViewModel extends _$SignUpViewModel with ViewModelMixin<SignUpState,
       showLoading: true,
       onSuccess: (_) {
         emitEffect(MessageEffect(I18nKeys.registrationSuccess.tr));
-        emitEffect(NavigationEffect.back(result: true));
+        emitEffect(NavigationEffect<LoginState>.back(result: LoginState(
+          username: state.fullName,
+          password: state.password,
+        )));
       },
     );
   }

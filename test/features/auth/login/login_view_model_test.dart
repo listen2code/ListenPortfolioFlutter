@@ -242,6 +242,36 @@ void main() {
         expect((navEffect.arguments as SignUpArguments).initialUsername, 'test_user');
       });
 
+      test('should update login state with username and password when signup returns credentials', () async {
+        // Keep provider alive so it doesn't auto-dispose when yielding execution
+        final subscription = container.listen(loginViewModelProvider, (_, __) {});
+
+        // Given
+        final effects = <BaseEffect>[];
+        viewModel.onBindEffect((effect) => effects.add(effect));
+
+        // When
+        viewModel.handleIntent(const LoginIntent.navigateToSignup());
+        await Future.delayed(Duration.zero);
+
+        // Then - Should have emitted NavigationEffect
+        expect(effects, isNotEmpty);
+        final navEffect = effects.first as NavigationEffect<LoginState>;
+        expect(navEffect.onResult, isNotNull);
+
+        // When - Simulate signup success by invoking the onResult callback
+        navEffect.onResult!(const LoginState(
+          username: 'newly_registered_user',
+          password: 'secret_password_123',
+        ));
+
+        // Then - Login state should be updated
+        expect(viewModel.state.username, 'newly_registered_user');
+        expect(viewModel.state.password, 'secret_password_123');
+
+        subscription.close();
+      });
+
       test('should emit navigation effect to forgot password', () async {
         // When - Navigate to forgot password
         final effects = <BaseEffect>[];
