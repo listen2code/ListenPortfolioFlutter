@@ -23,16 +23,14 @@ class _LogOverlayWidget extends StatefulWidget {
   State<_LogOverlayWidget> createState() => _LogOverlayWidgetState();
 }
 
-enum OverlayTab { logs, perf, network; }
+enum OverlayTab { logs, perf, network }
 
 class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
   late Offset buttonOffset; // Memory for floating button
   late Offset windowOffset; // Temporary position for expanded window
   late Size windowSize; // Dimensions of the expanded window
   late bool isExpanded;
-  LogFilter currentFilter = LogFilter.all;
   OverlayTab currentTab = OverlayTab.logs;
-  bool isFilterVisible = false;
   final TextEditingController _traceController = TextEditingController();
 
   // Explicitly tracked playback progress state
@@ -167,8 +165,14 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
     final double safeButtonX = buttonOffset.dx.clamp(0.0, math.max(0.0, screenSize.width - 130.0));
     final double safeButtonY = buttonOffset.dy.clamp(0.0, math.max(0.0, screenSize.height - 50.0));
 
-    final double safeWindowX = windowOffset.dx.clamp(0.0, math.max(0.0, screenSize.width - (windowSize.width > 0 ? windowSize.width : minWidth)));
-    final double safeWindowY = windowOffset.dy.clamp(0.0, math.max(0.0, screenSize.height - (windowSize.height > 0 ? windowSize.height : minHeight)));
+    final double safeWindowX = windowOffset.dx.clamp(
+      0.0,
+      math.max(0.0, screenSize.width - (windowSize.width > 0 ? windowSize.width : minWidth)),
+    );
+    final double safeWindowY = windowOffset.dy.clamp(
+      0.0,
+      math.max(0.0, screenSize.height - (windowSize.height > 0 ? windowSize.height : minHeight)),
+    );
 
     return Positioned(
       left: isExpanded ? safeWindowX : safeButtonX,
@@ -185,9 +189,9 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
     await CommonDialog.showCustom<void>(
       title: I18nKeys.saveTape.tr,
       barrierDismissible: false,
-      body: TextField(
+      body: CommonTextField(
         controller: controller,
-        decoration: InputDecoration(hintText: I18nKeys.enterTapeName.tr),
+        hintText: I18nKeys.enterTapeName.tr,
       ),
       actions: [
         CommonButton(
@@ -262,8 +266,8 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
                     isRecording
                         ? Icons.stop_rounded
                         : (_playbackProgress?.isPlaying == true
-                            ? Icons.play_arrow_rounded
-                            : Icons.bug_report_rounded),
+                              ? Icons.play_arrow_rounded
+                              : Icons.bug_report_rounded),
                     color: isRecording
                         ? Colors.redAccent
                         : (_playbackProgress?.isPlaying == true ? Colors.blueAccent : Colors.greenAccent),
@@ -350,6 +354,33 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
     );
   }
 
+  Widget _headerTab(String label, OverlayTab tab) {
+    final bool isSelected = currentTab == tab;
+    return CommonClickable(
+      onTap: () => setState(() => currentTab = tab),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.greenAccent.withValues(alpha: 0.15) : Colors.transparent,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: isSelected ? Colors.greenAccent.withValues(alpha: 0.3) : Colors.transparent,
+            width: 0.5,
+          ),
+        ),
+        child: CommonText(
+          label,
+          alignment: Alignment.center,
+          style: TextStyle(
+            color: isSelected ? Colors.greenAccent : Colors.white60,
+            fontSize: 12,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildWindowContent(Size screenSize) {
     return Container(
       width: windowSize.width,
@@ -362,89 +393,45 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
       ),
       child: Column(
         children: [
-          // Draggable Header Bar
+          // Level 1: Draggable Header Bar
           // ignore: use_common_clickable
           GestureDetector(
             onPanUpdate: (details) => _updateOffset(details.delta, screenSize, windowSize),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: const BoxDecoration(
                 color: Colors.white10,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
               ),
               child: Row(
                 children: [
-                  Icon(
-                    currentTab == OverlayTab.logs ? Icons.terminal_rounded : Icons.bar_chart_rounded,
-                    color: Colors.greenAccent,
-                    size: 18,
-                  ),
-                  const SizedBox(width: 10),
+                  const Icon(Icons.bug_report_rounded, color: Colors.greenAccent, size: 18),
+                  const SizedBox(width: 8),
                   Expanded(
-                    child: CommonText(
-                      currentTab == OverlayTab.logs
-                          ? I18nKeys.appLogs.tr
-                          : I18nKeys.performanceApm.tr,
-                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _headerTab(I18nKeys.tabLogs.tr, OverlayTab.logs),
+                          const SizedBox(width: 4),
+                          _headerTab(I18nKeys.tabPerf.tr, OverlayTab.perf),
+                          const SizedBox(width: 4),
+                          _headerTab(I18nKeys.tabNetwork.tr, OverlayTab.network),
+                        ],
+                      ),
                     ),
                   ),
-                  if (currentTab == OverlayTab.logs)
-                    _buildHeaderAction(
-                      isFilterVisible ? Icons.filter_list_off_rounded : Icons.filter_list_rounded,
-                      () {
-                        setState(() => isFilterVisible = !isFilterVisible);
-                      },
-                      color: isFilterVisible ? Colors.greenAccent : Colors.white70,
-                    ),
-                  _buildHeaderAction(Icons.refresh_rounded, () {
-                    if (currentTab == OverlayTab.logs) {
-                      LogManager.refresh();
-                    } else {
-                      // Reset Performance Stats and force a pipeline refresh
-                      FrameMonitor.instance.stop();
-                      FrameMonitor.instance.start();
-                      WidgetsBinding.instance.scheduleFrame();
-                      CommonToast.show(I18nKeys.performanceMetricsReset.tr);
-                    }
-                  }),
-                  _buildHeaderAction(Icons.copy_rounded, () {
-                    if (currentTab == OverlayTab.logs) {
-                      Clipboard.setData(ClipboardData(text: LogManager.getAllLogsAsText()));
-                      CommonToast.show(I18nKeys.copiedToClipboard.tr);
-                    } else {
-                      // Copy performance summary
-                      final buffer = StringBuffer('=== PERFORMANCE APM SUMMARY ===\n');
-                      final snapshot = FrameMonitor.instance.snapshot.value;
-                      if (snapshot != null) {
-                        buffer.writeln('FPS: ${snapshot.fps.toStringAsFixed(1)}');
-                        buffer.writeln('Janks: ${snapshot.jankCount} (Severe: ${snapshot.severeJankCount})');
-                        buffer.writeln(
-                          'Worst Frame: ${(snapshot.worstFrameUs / 1000.0).toStringAsFixed(1)} ms',
-                        );
-                        buffer.writeln('Memory RSS: ${snapshot.memoryMB} MB');
-                      }
-                      Clipboard.setData(ClipboardData(text: buffer.toString()));
-                      CommonToast.show(I18nKeys.copiedToClipboard.tr);
-                    }
-                  }),
-                  _buildHeaderAction(Icons.delete_sweep_outlined, () {
-                    if (currentTab == OverlayTab.logs) {
-                      LogManager.clear();
-                    } else {
-                      PerfTraceStore.instance.clear();
-                    }
-                  }),
+                  const SizedBox(width: 8),
                   _buildHeaderAction(Icons.fiber_manual_record, () {
                     if (!(_playbackProgress?.isPlaying ?? false)) {
                       MviPlaybackRecorder.instance.startRecording();
-                      // Collapse overlay when starting recording
                       setState(() => isExpanded = false);
                       CommonToast.show(I18nKeys.recordingStartedMsg.tr);
                     }
                   }, color: Colors.red),
                   _buildHeaderAction(Icons.video_library_rounded, () {
                     if (!(_playbackProgress?.isPlaying ?? false)) {
-                      // Collapse overlay when navigating to tape list
                       setState(() => isExpanded = false);
                       AppNav.to(Routes.playbackTapeList);
                     }
@@ -463,259 +450,31 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
             ),
           ),
 
-          // Tab Bar Container
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            color: Colors.white.withValues(alpha: 0.02),
-            child: Row(
-              children: [
-                _tabChip('📋 Logs', OverlayTab.logs),
-                const SizedBox(width: 8),
-                _tabChip('📊 Perf', OverlayTab.perf),
-                const SizedBox(width: 8),
-                _tabChip('🌐 Network', OverlayTab.network),
-              ],
-            ),
-          ),
-          const Divider(color: Colors.white10, height: 1),
-
-          // Collapsible Filter Bar (Only visible in Logs Tab)
-          if (currentTab == OverlayTab.logs)
-            AnimatedCrossFade(
-              firstChild: const SizedBox.shrink(),
-              secondChild: _buildFilterBar(),
-              crossFadeState: isFilterVisible ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-              duration: const Duration(milliseconds: 200),
-            ),
-          if (currentTab == OverlayTab.logs) const Divider(color: Colors.white10, height: 1),
-
           // Tab Content
           Expanded(
             child: currentTab == OverlayTab.logs
-                ? _buildLogsTabContent()
+                ? _LogsInspectorTab(
+                    traceController: _traceController,
+                    onNavigateToPerf: (traceId) {
+                      setState(() {
+                        currentTab = OverlayTab.perf;
+                        _traceController.text = traceId;
+                      });
+                    },
+                  )
                 : (currentTab == OverlayTab.perf
-                    ? _PerfDashboardTab(traceFilter: _traceController.text)
-                    : _NetworkInspectorTab(
-                        traceController: _traceController,
-                        onNavigateToLogs: (traceId) {
-                          setState(() {
-                            _traceController.text = traceId;
-                            currentTab = OverlayTab.logs;
-                          });
-                        },
-                      )),
+                      ? _PerfDashboardTab(traceFilter: _traceController.text)
+                      : _NetworkInspectorTab(
+                          traceController: _traceController,
+                          onNavigateToLogs: (traceId) {
+                            setState(() {
+                              _traceController.text = traceId;
+                              currentTab = OverlayTab.logs;
+                            });
+                          },
+                        )),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _tabChip(String label, OverlayTab tab) {
-    final bool isSelected = currentTab == tab;
-    return CommonClickable(
-      onTap: () => setState(() => currentTab = tab),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        decoration: BoxDecoration(
-          color: isSelected ? Colors.greenAccent.withValues(alpha: 0.15) : Colors.white10,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: isSelected ? Colors.greenAccent.withValues(alpha: 0.4) : Colors.white10,
-            width: 0.5,
-          ),
-        ),
-        child: CommonText(
-          label,
-          style: TextStyle(
-            color: isSelected ? Colors.greenAccent : Colors.white38,
-            fontSize: 11,
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLogsTabContent() {
-    return ValueListenableBuilder<List<LogEntry>>(
-      valueListenable: LogManager.logNotifier,
-      builder: (context, logs, _) {
-        final traceFilter = _traceController.text.trim();
-        // Apply source, Trace ID and Performance filtering
-        final filteredLogs = logs.where((log) {
-          // Trace ID filter
-          if (traceFilter.isNotEmpty && !log.message.contains(traceFilter)) {
-            return false;
-          }
-
-          // Source, Perf, and Playback filter
-          final bool isMock = log.message.contains(LogManager.mockServerTag);
-          final bool isPerf =
-              log.message.contains(LogManager.summaryTag) || log.message.contains(LogManager.termTag);
-          final bool isPlayback = log.message.contains('[${MviPlaybackPlayer.tag}]');
-
-          switch (currentFilter) {
-            case LogFilter.all:
-              return true;
-            case LogFilter.server:
-              return isMock;
-            case LogFilter.app:
-              return !isMock && !isPerf && !isPlayback;
-            case LogFilter.perf:
-              return isPerf;
-            case LogFilter.playback:
-              return isPlayback;
-          }
-        }).toList();
-
-        return ListView.builder(
-          padding: const EdgeInsets.all(12),
-          itemCount: filteredLogs.length,
-          itemBuilder: (context, index) {
-            final log = filteredLogs[filteredLogs.length - 1 - index];
-            return _buildLogRow(log);
-          },
-        );
-      },
-    );
-  }
-
-  Widget _buildLogRow(LogEntry log) {
-    // Attempt to extract traceId from format [uuid-v4] or mainTraceId
-    final traceRegex = RegExp('\\[([a-f0-9-]{36}|${ZoneManager.mainTraceId})\\]');
-    final match = traceRegex.firstMatch(log.message);
-    final String? traceId = match?.group(1);
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 4.0),
-      child: RichText(
-        text: TextSpan(
-          style: const TextStyle(fontSize: 10),
-          children: [
-            TextSpan(
-              text: '[${log.formattedTime}] ',
-              style: const TextStyle(color: Colors.white38),
-            ),
-            if (traceId != null) ...[
-              const TextSpan(
-                text: '[',
-                style: TextStyle(color: Colors.white24),
-              ),
-              TextSpan(
-                text: traceId,
-                style: const TextStyle(
-                  color: Colors.greenAccent,
-                  decoration: TextDecoration.underline,
-                  decorationStyle: TextDecorationStyle.dashed,
-                ),
-                recognizer: TapGestureRecognizer()
-                  ..onTap = () {
-                    setState(() {
-                      currentTab = OverlayTab.perf;
-                      _traceController.text = traceId;
-                    });
-                    if (!isFilterVisible) setState(() => isFilterVisible = true);
-                  },
-              ),
-              const TextSpan(
-                text: '] ',
-                style: TextStyle(color: Colors.white24),
-              ),
-              TextSpan(
-                text: log.message.replaceFirst('[$traceId]', ''),
-                style: TextStyle(color: _getLogColor(log.level)),
-              ),
-            ] else
-              TextSpan(
-                text: log.message,
-                style: TextStyle(color: _getLogColor(log.level)),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFilterBar() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      color: Colors.white.withValues(alpha: 0.02),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              _filterChip('All', LogFilter.all),
-              const SizedBox(width: 6),
-              _filterChip('Server', LogFilter.server, color: Colors.orangeAccent),
-              const SizedBox(width: 6),
-              _filterChip('App', LogFilter.app, color: Colors.blueAccent),
-              const SizedBox(width: 6),
-              _filterChip('Perf', LogFilter.perf, color: Colors.purpleAccent),
-              const SizedBox(width: 6),
-              _filterChip('playback', LogFilter.playback, color: Colors.redAccent),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Container(
-            height: 32,
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.05),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Row(
-              children: [
-                const Icon(Icons.search_rounded, size: 14, color: Colors.white24),
-                const SizedBox(width: 8),
-                Expanded(
-                  // ignore: use_common_text_field
-                  child: TextField(
-                    controller: _traceController,
-                    style: const TextStyle(color: Colors.white70, fontSize: 11),
-                    decoration: const InputDecoration(
-                      hintText: 'Filter by Trace ID...',
-                      hintStyle: TextStyle(color: Colors.white24, fontSize: 11),
-                      border: InputBorder.none,
-                      isDense: true,
-                      contentPadding: EdgeInsets.zero,
-                    ),
-                  ),
-                ),
-                if (_traceController.text.isNotEmpty)
-                  CommonClickable(
-                    onTap: () => _traceController.clear(),
-                    child: const Icon(Icons.close_rounded, size: 14, color: Colors.white24),
-                  ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _filterChip(String label, LogFilter filter, {Color? color}) {
-    final bool isSelected = currentFilter == filter;
-    return CommonClickable(
-      onTap: () => setState(() => currentFilter = filter),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-        decoration: BoxDecoration(
-          color: isSelected ? (color ?? Colors.greenAccent).withValues(alpha: 0.2) : Colors.white10,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: isSelected ? (color ?? Colors.greenAccent).withValues(alpha: 0.5) : Colors.white10,
-            width: 0.5,
-          ),
-        ),
-        child: CommonText(
-          label,
-          style: TextStyle(
-            color: isSelected ? (color ?? Colors.greenAccent) : Colors.white38,
-            fontSize: 10,
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-          ),
-        ),
       ),
     );
   }
@@ -728,18 +487,5 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
         child: Icon(icon, color: color, size: 18),
       ),
     );
-  }
-
-  Color _getLogColor(LogLevel level) {
-    switch (level) {
-      case LogLevel.error:
-        return Colors.redAccent;
-      case LogLevel.warning:
-        return Colors.orangeAccent;
-      case LogLevel.debug:
-        return Colors.blueAccent;
-      default:
-        return Colors.white70;
-    }
   }
 }

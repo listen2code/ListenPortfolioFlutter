@@ -40,26 +40,46 @@ class _NetworkInspectorTabState extends State<_NetworkInspectorTab> {
                     color: Colors.white.withValues(alpha: 0.05),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: TextField(
-                    controller: _searchController,
-                    onChanged: (val) => setState(() => _searchQuery = val.trim().toLowerCase()),
-                    style: const TextStyle(color: Colors.white, fontSize: 12),
-                    decoration: InputDecoration(
-                      hintText: 'Filter URL, status, traceId...',
-                      hintStyle: const TextStyle(color: Colors.white30, fontSize: 11),
-                      prefixIcon: const Icon(Icons.search, size: 14, color: Colors.white30),
-                      suffixIcon: _searchQuery.isNotEmpty
-                          ? CommonClickable(
-                              onTap: () {
-                                _searchController.clear();
-                                setState(() => _searchQuery = '');
-                              },
-                              child: const Icon(Icons.clear, size: 14, color: Colors.white30),
-                            )
-                          : null,
-                      border: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(vertical: 8),
-                    ),
+                  child: Row(
+                    children: [
+                      const SizedBox(width: 8),
+                      const Icon(Icons.search, size: 14, color: Colors.white30),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Theme(
+                          data: Theme.of(context).copyWith(
+                            textTheme: const TextTheme(
+                              bodyLarge: TextStyle(color: Colors.white, fontSize: 12),
+                              titleMedium: TextStyle(color: Colors.white, fontSize: 12),
+                            ),
+                            inputDecorationTheme: const InputDecorationTheme(
+                              border: InputBorder.none,
+                              enabledBorder: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                              isDense: true,
+                              contentPadding: EdgeInsets.zero,
+                              filled: true,
+                              fillColor: Colors.transparent,
+                            ),
+                          ),
+                          child: CommonTextField(
+                            controller: _searchController,
+                            hintText: 'Filter URL, status, traceId...',
+                            onChanged: (val) => setState(() => _searchQuery = val.trim().toLowerCase()),
+                          ),
+                        ),
+                      ),
+                      if (_searchQuery.isNotEmpty) ...[
+                        CommonClickable(
+                          onTap: () {
+                            _searchController.clear();
+                            setState(() => _searchQuery = '');
+                          },
+                          child: const Icon(Icons.clear, size: 14, color: Colors.white30),
+                        ),
+                        const SizedBox(width: 8),
+                      ],
+                    ],
                   ),
                 ),
               ),

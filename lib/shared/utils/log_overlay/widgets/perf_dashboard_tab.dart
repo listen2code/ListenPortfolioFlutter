@@ -15,17 +15,22 @@ class _PerfDashboardTabState extends State<_PerfDashboardTab> {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<FrameMonitorSnapshot?>(
-      valueListenable: FrameMonitor.instance.snapshot,
-      builder: (context, snapshot, _) {
-        if (snapshot == null) {
-          return const Center(child: CircularProgressIndicator(color: Colors.greenAccent));
-        }
+    return Column(
+      children: [
+        _buildPerfSubHeader(),
+        const Divider(color: Colors.white10, height: 1),
+        Expanded(
+          child: ValueListenableBuilder<FrameMonitorSnapshot?>(
+            valueListenable: FrameMonitor.instance.snapshot,
+            builder: (context, snapshot, _) {
+              if (snapshot == null) {
+                return const Center(child: CircularProgressIndicator(color: Colors.greenAccent));
+              }
 
-        return ListView(
-          padding: const EdgeInsets.all(16),
-          children: [
-            if (kDebugMode) ...[
+              return ListView(
+                padding: const EdgeInsets.all(16),
+                children: [
+                  if (kDebugMode) ...[
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
@@ -67,8 +72,11 @@ class _PerfDashboardTabState extends State<_PerfDashboardTab> {
           ],
         );
       },
-    );
-  }
+    ),
+  ),
+],
+);
+}
 
   Color _getFpsColor(FrameMonitorSnapshot snapshot) {
     double targetMaxFps = 60.0;
@@ -259,8 +267,43 @@ class _PerfDashboardTabState extends State<_PerfDashboardTab> {
               const SizedBox(height: 20),
             ],
             if (intents.isNotEmpty) ...[
-              CommonSettingsSectionTitle(
-                title: I18nKeys.intentTraces.tr,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Expanded(
+                    child: CommonSettingsSectionTitle(
+                      title: I18nKeys.intentTraces.tr,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: CommonClickable(
+                      onTap: () {
+                        PerfTraceStore.instance.clear();
+                        CommonToast.show(I18nKeys.btnClear.tr);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.redAccent.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(color: Colors.redAccent.withValues(alpha: 0.2), width: 0.5),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.delete_outline_rounded, color: Colors.redAccent, size: 12),
+                            const SizedBox(width: 4),
+                            CommonText(
+                              I18nKeys.btnClear.tr,
+                              style: const TextStyle(color: Colors.redAccent, fontSize: 10, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 8),
               _buildIntentTracesCard(intents),
@@ -571,6 +614,68 @@ class _PerfDashboardTabState extends State<_PerfDashboardTab> {
         const SizedBox(height: 2),
         CommonText(value, style: const TextStyle(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.bold)),
       ],
+    );
+  }
+
+  Widget _buildPerfSubHeader() {
+    final resetText = I18nKeys.reset.tr;
+    final copyText = I18nKeys.btnCopy.tr;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      color: Colors.white.withValues(alpha: 0.02),
+      child: Row(
+        children: [
+          _subHeaderActionButton(resetText, Icons.refresh_rounded, () {
+            FrameMonitor.instance.stop();
+            FrameMonitor.instance.start();
+            WidgetsBinding.instance.scheduleFrame();
+            CommonToast.show(I18nKeys.performanceMetricsReset.tr);
+          }),
+          const SizedBox(width: 8),
+          _subHeaderActionButton(copyText, Icons.copy_rounded, () {
+            final buffer = StringBuffer('=== PERFORMANCE APM SUMMARY ===\n');
+            final snapshot = FrameMonitor.instance.snapshot.value;
+            if (snapshot != null) {
+              buffer.writeln('FPS: ${snapshot.fps.toStringAsFixed(1)}');
+              buffer.writeln('Janks: ${snapshot.jankCount} (Severe: ${snapshot.severeJankCount})');
+              buffer.writeln(
+                'Worst Frame: ${(snapshot.worstFrameUs / 1000.0).toStringAsFixed(1)} ms',
+              );
+              buffer.writeln('Memory RSS: ${snapshot.memoryMB} MB');
+            }
+            Clipboard.setData(ClipboardData(text: buffer.toString()));
+            CommonToast.show(I18nKeys.copiedToClipboard.tr);
+          }),
+        ],
+      ),
+    );
+  }
+
+  Widget _subHeaderActionButton(
+    String label,
+    IconData icon,
+    VoidCallback onTap, {
+    Color color = Colors.white70,
+  }) {
+    return CommonClickable(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.05),
+          borderRadius: BorderRadius.circular(6),
+          border: Border.all(color: Colors.white10, width: 0.5),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 12, color: color),
+            const SizedBox(width: 4),
+            CommonText(label, style: TextStyle(color: color, fontSize: 10)),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -103,7 +103,7 @@ class SettingsPage extends ConsumerWidget {
                 children: [
                   CommonSettingsSwitchTile(
                     icon: Icons.terminal_rounded,
-                    title: I18nKeys.viewLogs.tr,
+                    title: I18nKeys.debugPanel.tr,
                     value: state.isLogOverlayShowing,
                     onChanged: (val) {
                       viewModel.handleIntent(SettingsIntent.toggleLogOverlay(val));

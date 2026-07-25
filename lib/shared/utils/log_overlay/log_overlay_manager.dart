@@ -15,6 +15,7 @@ part 'widgets/fps_charts.dart';
 part 'widgets/perf_dashboard_tab.dart';
 part 'widgets/log_overlay_widget.dart';
 part 'widgets/network_inspector_tab.dart';
+part 'widgets/logs_inspector_tab.dart';
 
 enum LogFilter { all, server, app, perf, playback }
 

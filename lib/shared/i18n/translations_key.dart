@@ -167,7 +167,6 @@ class I18nKeys {
   // Developer & Reset Settings
   static const String developer = 'Developer';
   static const String developerModeEnabled = 'Developer mode enabled';
-  static const String viewLogs = 'View App Logs';
   static const String resetSettings = 'Reset All Settings';
   static const String resetConfirmTitle = 'Reset Settings?';
   static const String resetConfirmContent =
@@ -231,6 +230,15 @@ class I18nKeys {
   static const String logoutSuccess = 'Logout Success!';
   static const String sessionExpired = 'Session expired';
   static const String appLogs = 'App Logs';
+  static const String debugPanel = 'Debug Panel';
+  static const String tabLogs = 'Logs';
+  static const String tabPerf = 'Perf';
+  static const String tabNetwork = 'Network';
+  static const String btnFilterLogs = 'Filter Logs';
+  static const String btnHideFilter = 'Hide Filter';
+  static const String btnRefresh = 'Refresh';
+  static const String btnCopy = 'Copy';
+  static const String btnClear = 'Clear';
   static const String dynamicColor = 'Dynamic Color';
   static const String dynamicColorSubtitle = 'Use system wallpaper colors (Material You)';
 
