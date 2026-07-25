@@ -269,12 +269,12 @@ void main() {
     group('Switch Env Intent', () {
       test('should update currentEnv and verify AppEnv changes', () async {
         // Act
-        await viewModel.handleIntent(const SettingsIntent.switchEnv(AppEnvironment.test));
+        await viewModel.handleIntent(const SettingsIntent.switchEnv(AppEnvironment.dev));
         await Future.delayed(const Duration(milliseconds: 100));
 
         // Assert
-        expect(container.read(settingsViewModelProvider).currentEnv, AppEnvironment.test);
-        expect(AppEnv.currentEnv, AppEnvironment.test);
+        expect(container.read(settingsViewModelProvider).currentEnv, AppEnvironment.dev);
+        expect(AppEnv.currentEnv, AppEnvironment.dev);
 
         // Switch back to mock environment
         await viewModel.handleIntent(const SettingsIntent.switchEnv(AppEnvironment.mock));

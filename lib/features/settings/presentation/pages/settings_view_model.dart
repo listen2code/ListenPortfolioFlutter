@@ -249,6 +249,7 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
         options: EnvConfigs.values.map((config) {
           return SwitchDialogOption(
             label: _getEnvLabel(config.env),
+            subtitle: config.baseUrl,
             value: config.env,
             isSelected: state.currentEnv == config.env,
           );

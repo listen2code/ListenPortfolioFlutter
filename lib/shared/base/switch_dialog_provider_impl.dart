@@ -3,10 +3,11 @@ import 'package:listen_uikit/uikit.dart';
 
 class SwitchDialogOption {
   final String label;
+  final String? subtitle;
   final dynamic value;
   final bool isSelected;
 
-  const SwitchDialogOption({required this.label, required this.value, required this.isSelected});
+  const SwitchDialogOption({required this.label, this.subtitle, required this.value, required this.isSelected});
 }
 
 class SwitchDialogEffect extends BaseEffect {
@@ -36,6 +37,7 @@ class SwitchDialogProviderImpl extends BaseProvider<SwitchDialogEffect> {
         items: effect.options.map((option) {
           return DialogSwitchItem(
             label: option.label,
+            subtitle: option.subtitle,
             value: option.isSelected,
             onChanged: (_) async {
               effect.onChanged(option.value);
