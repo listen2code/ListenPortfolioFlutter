@@ -1,10 +1,10 @@
 {
-  "version": "1.0.96",
+  "version": "1.0.97",
   "buildNumber": 1,
   "url": "https://play.google.com/store/apps/details?id=com.listen.portfolio.listen_portfolio_flutter",
   "changelog": {
     "zh": "",
-    "en": "Crop image",
+    "en": "Fix: image preview",
     "ja": ""
   }
 }
