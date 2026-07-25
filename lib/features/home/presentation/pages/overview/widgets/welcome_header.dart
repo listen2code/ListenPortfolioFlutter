@@ -57,13 +57,12 @@ class WelcomeHeader extends StatelessWidget {
         SizedBox(height: 8.f),
         // Certifications section
         if (state.aboutMe?.certifications != null || userModel == null)
-          Row(
+          Wrap(
+            spacing: 8.f,
+            runSpacing: 8.f,
             children: (state.aboutMe?.certifications ?? [I18nKeys.jlptN1, I18nKeys.bjtJ2])
                 .map(
-                  (certKey) => Padding(
-                    padding: EdgeInsets.only(right: 8.f),
-                    child: _buildCertBadge(accentColor, certKey.tr),
-                  ),
+                  (certKey) => _buildCertBadge(accentColor, certKey.tr),
                 )
                 .toList(),
           ),

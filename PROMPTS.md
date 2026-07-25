@@ -80,6 +80,7 @@ ListenPortfolioFlutter 不是单纯的“简历展示 App”。
 - 网络层优先沿用现有 `ApiClient`、拦截器链、`Either<Failure, T>` 与既有错误收敛方式。
 - 状态管理优先沿用当前的 Riverpod + MVI + `freezed` 约定。
 - 新增功能或行为变化时，优先补与改动直接相关的测试，而不是泛泛宣称“后续再补”。
+- **响应式布局与防溢出规则**：在 `Row` / `Flex` 容器中嵌套动态文本（如 `CommonText` / `CommonAuthText`）或可伸缩按钮时，**必须**使用 `Expanded` 或 `Flexible` 进行限宽包裹，并启用 `TextOverflow.ellipsis` 防止 RenderFlex 右侧溢出；对多个卡片、标签（Badge / Chip）的展示，应首选 `Wrap` 替换 `Row` 以支持自适应折行；按钮操作栏在小屏幕或小窗口下应使用横向 `SingleChildScrollView` 保护。
 
 ## 8. 阅读顺序建议
 

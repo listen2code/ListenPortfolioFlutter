@@ -52,30 +52,33 @@ class _LogsInspectorTabState extends State<_LogsInspectorTab> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       color: Colors.white.withValues(alpha: 0.02),
-      child: Row(
-        children: [
-          _subHeaderActionButton(
-            filterText,
-            isFilterVisible ? Icons.filter_list_off_rounded : Icons.filter_list_rounded,
-            () {
-              setState(() => isFilterVisible = !isFilterVisible);
-            },
-            color: isFilterVisible ? Colors.greenAccent : Colors.white70,
-          ),
-          const SizedBox(width: 8),
-          _subHeaderActionButton(refreshText, Icons.refresh_rounded, () {
-            LogManager.refresh();
-          }),
-          const SizedBox(width: 8),
-          _subHeaderActionButton(copyText, Icons.copy_rounded, () {
-            Clipboard.setData(ClipboardData(text: LogManager.getAllLogsAsText()));
-            CommonToast.show(I18nKeys.copiedToClipboard.tr);
-          }),
-          const SizedBox(width: 8),
-          _subHeaderActionButton(clearText, Icons.delete_sweep_outlined, () {
-            LogManager.clear();
-          }),
-        ],
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            _subHeaderActionButton(
+              filterText,
+              isFilterVisible ? Icons.filter_list_off_rounded : Icons.filter_list_rounded,
+              () {
+                setState(() => isFilterVisible = !isFilterVisible);
+              },
+              color: isFilterVisible ? Colors.greenAccent : Colors.white70,
+            ),
+            const SizedBox(width: 8),
+            _subHeaderActionButton(refreshText, Icons.refresh_rounded, () {
+              LogManager.refresh();
+            }),
+            const SizedBox(width: 8),
+            _subHeaderActionButton(copyText, Icons.copy_rounded, () {
+              Clipboard.setData(ClipboardData(text: LogManager.getAllLogsAsText()));
+              CommonToast.show(I18nKeys.copiedToClipboard.tr);
+            }),
+            const SizedBox(width: 8),
+            _subHeaderActionButton(clearText, Icons.delete_sweep_outlined, () {
+              LogManager.clear();
+            }),
+          ],
+        ),
       ),
     );
   }
@@ -216,16 +219,14 @@ class _LogsInspectorTabState extends State<_LogsInspectorTab> {
       color: Colors.white.withValues(alpha: 0.02),
       child: Column(
         children: [
-          Row(
+          Wrap(
+            spacing: 6,
+            runSpacing: 6,
             children: [
               _filterChip('All', LogFilter.all),
-              const SizedBox(width: 6),
               _filterChip('Server', LogFilter.server, color: Colors.orangeAccent),
-              const SizedBox(width: 6),
               _filterChip('App', LogFilter.app, color: Colors.blueAccent),
-              const SizedBox(width: 6),
               _filterChip('Perf', LogFilter.perf, color: Colors.purpleAccent),
-              const SizedBox(width: 6),
               _filterChip('playback', LogFilter.playback, color: Colors.redAccent),
             ],
           ),

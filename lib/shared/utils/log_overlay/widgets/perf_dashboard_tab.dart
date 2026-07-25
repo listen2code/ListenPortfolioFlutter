@@ -108,32 +108,45 @@ class _PerfDashboardTabState extends State<_PerfDashboardTab> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  CommonText(
-                    I18nKeys.fpsTrend.tr,
-                    style: const TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(width: 8),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
-                    decoration: BoxDecoration(
-                      color: fpsColor.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(6),
-                      border: Border.all(color: fpsColor.withValues(alpha: 0.3), width: 0.5),
-                    ),
-                    child: CommonText(
-                      '${snapshot.fps.toStringAsFixed(1)} FPS',
-                      style: TextStyle(
-                        color: fpsColor,
-                        fontSize: 9,
-                        fontWeight: FontWeight.bold,
+              Flexible(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Flexible(
+                      child: CommonText(
+                        I18nKeys.fpsTrend.tr,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold),
                       ),
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
+                      decoration: BoxDecoration(
+                        color: fpsColor.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(color: fpsColor.withValues(alpha: 0.3), width: 0.5),
+                      ),
+                      child: CommonText(
+                        '${snapshot.fps.toStringAsFixed(1)} FPS',
+                        style: TextStyle(
+                          color: fpsColor,
+                          fontSize: 9,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              CommonText(I18nKeys.targetBudgetAuto.tr, style: const TextStyle(color: Colors.white38, fontSize: 10)),
+              const SizedBox(width: 8),
+              Flexible(
+                child: CommonText(
+                  I18nKeys.targetBudgetAuto.tr,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(color: Colors.white38, fontSize: 10),
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 12),
@@ -220,7 +233,14 @@ class _PerfDashboardTabState extends State<_PerfDashboardTab> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          CommonText(label, style: const TextStyle(color: Colors.white38, fontSize: 10)),
+          Flexible(
+            child: CommonText(
+              label,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(color: Colors.white38, fontSize: 10),
+            ),
+          ),
+          const SizedBox(width: 8),
           CommonText(
             val,
             style: TextStyle(color: valColor, fontSize: 10, fontWeight: FontWeight.bold),
@@ -450,10 +470,14 @@ class _PerfDashboardTabState extends State<_PerfDashboardTab> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            CommonText(
-                              '├ ${stage.name}',
-                              style: const TextStyle(color: Colors.white38, fontSize: 10),
+                            Flexible(
+                              child: CommonText(
+                                '├ ${stage.name}',
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(color: Colors.white38, fontSize: 10),
+                              ),
                             ),
+                            const SizedBox(width: 8),
                             CommonText(
                               '${stage.durationMs} ms',
                               style: const TextStyle(color: Colors.white54, fontSize: 10),
@@ -503,24 +527,31 @@ class _PerfDashboardTabState extends State<_PerfDashboardTab> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      CommonText(
-                        I18nKeys.appLogs.tr == '日志' ? '本次启动总时延' : 'Latest Launch Duration',
-                        style: const TextStyle(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.bold),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
-                        decoration: BoxDecoration(
-                          color: regressionColor.withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(6),
-                          border: Border.all(color: regressionColor.withValues(alpha: 0.3), width: 0.5),
-                        ),
+                      Flexible(
                         child: CommonText(
-                          report.isRegression
-                              ? (I18nKeys.appLogs.tr == '日志'
-                                  ? '性能退化 +${report.regressionAmountMs}ms'
-                                  : 'Regression +${report.regressionAmountMs}ms')
-                              : (I18nKeys.appLogs.tr == '日志' ? '健康 / 无退化' : 'Healthy / Stable'),
-                          style: TextStyle(color: regressionColor, fontSize: 9, fontWeight: FontWeight.bold),
+                          I18nKeys.appLogs.tr == '日志' ? '本次启动总时延' : 'Latest Launch Duration',
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Flexible(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
+                          decoration: BoxDecoration(
+                            color: regressionColor.withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(color: regressionColor.withValues(alpha: 0.3), width: 0.5),
+                          ),
+                          child: CommonText(
+                            report.isRegression
+                                ? (I18nKeys.appLogs.tr == '日志'
+                                    ? '性能退化 +${report.regressionAmountMs}ms'
+                                    : 'Regression +${report.regressionAmountMs}ms')
+                                : (I18nKeys.appLogs.tr == '日志' ? '健康 / 无退化' : 'Healthy / Stable'),
+                            style: TextStyle(color: regressionColor, fontSize: 9, fontWeight: FontWeight.bold),
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                       ),
                     ],
@@ -584,9 +615,13 @@ class _PerfDashboardTabState extends State<_PerfDashboardTab> {
                                       'Launch #${history.length - index}',
                                       style: const TextStyle(color: Colors.white38, fontSize: 10),
                                     ),
-                                    CommonText(
-                                      '${item.totalMs}ms (Boot: ${item.coldBootMs}ms, Init: ${item.initMs}ms, Render: ${item.renderMs}ms)',
-                                      style: const TextStyle(color: Colors.white70, fontSize: 10, fontFamily: 'monospace'),
+                                    const SizedBox(width: 8),
+                                    Flexible(
+                                      child: CommonText(
+                                        '${item.totalMs}ms (Boot: ${item.coldBootMs}ms, Init: ${item.initMs}ms, Render: ${item.renderMs}ms)',
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(color: Colors.white70, fontSize: 9, fontFamily: 'monospace'),
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -607,13 +642,23 @@ class _PerfDashboardTabState extends State<_PerfDashboardTab> {
   }
 
   Widget _buildLaunchBreakdownItem(String label, String value) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CommonText(label, style: const TextStyle(color: Colors.white38, fontSize: 9)),
-        const SizedBox(height: 2),
-        CommonText(value, style: const TextStyle(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.bold)),
-      ],
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CommonText(
+            label,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(color: Colors.white38, fontSize: 9),
+          ),
+          const SizedBox(height: 2),
+          CommonText(
+            value,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
     );
   }
 

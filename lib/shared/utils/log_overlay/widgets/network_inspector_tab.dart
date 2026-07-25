@@ -309,61 +309,64 @@ class _RequestRowWidgetState extends State<_RequestRowWidget> {
                 const Divider(color: Colors.white10, height: 12),
 
                 // Action Bar (Drill Logs & Copy APIs)
-                Row(
-                  children: [
-                    if (req.traceId.isNotEmpty && req.traceId != 'no-trace-id')
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      if (req.traceId.isNotEmpty && req.traceId != 'no-trace-id')
+                        CommonClickable(
+                          onTap: () => widget.onNavigateToLogs(req.traceId),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                            decoration: BoxDecoration(
+                              color: Colors.greenAccent.withValues(alpha: 0.12),
+                              borderRadius: BorderRadius.circular(4),
+                              border: Border.all(color: Colors.greenAccent.withValues(alpha: 0.3), width: 0.5),
+                            ),
+                            child: const Row(
+                              children: [
+                                Icon(Icons.zoom_in_rounded, color: Colors.greenAccent, size: 12),
+                                SizedBox(width: 4),
+                                CommonText(
+                                  'Drill Logs',
+                                  style: TextStyle(color: Colors.greenAccent, fontSize: 10, fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      const SizedBox(width: 8),
                       CommonClickable(
-                        onTap: () => widget.onNavigateToLogs(req.traceId),
+                        onTap: () {
+                          Clipboard.setData(ClipboardData(text: req.url));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('URL copied to clipboard'),
+                              duration: Duration(seconds: 1),
+                            ),
+                          );
+                        },
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
                           decoration: BoxDecoration(
-                            color: Colors.greenAccent.withValues(alpha: 0.12),
+                            color: Colors.white.withValues(alpha: 0.05),
                             borderRadius: BorderRadius.circular(4),
-                            border: Border.all(color: Colors.greenAccent.withValues(alpha: 0.3), width: 0.5),
+                            border: Border.all(color: Colors.white12, width: 0.5),
                           ),
                           child: const Row(
                             children: [
-                              Icon(Icons.zoom_in_rounded, color: Colors.greenAccent, size: 12),
+                              Icon(Icons.copy_all_rounded, color: Colors.white54, size: 12),
                               SizedBox(width: 4),
                               CommonText(
-                                'Drill Logs',
-                                style: TextStyle(color: Colors.greenAccent, fontSize: 10, fontWeight: FontWeight.bold),
+                                'Copy URL',
+                                style: TextStyle(color: Colors.white70, fontSize: 10),
                               ),
                             ],
                           ),
                         ),
                       ),
-                    const SizedBox(width: 8),
-                    CommonClickable(
-                      onTap: () {
-                        Clipboard.setData(ClipboardData(text: req.url));
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('URL copied to clipboard'),
-                            duration: Duration(seconds: 1),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.05),
-                          borderRadius: BorderRadius.circular(4),
-                          border: Border.all(color: Colors.white12, width: 0.5),
-                        ),
-                        child: const Row(
-                          children: [
-                            Icon(Icons.copy_all_rounded, color: Colors.white54, size: 12),
-                            SizedBox(width: 4),
-                            CommonText(
-                              'Copy URL',
-                              style: TextStyle(color: Colors.white70, fontSize: 10),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 12),
 
@@ -445,10 +448,14 @@ class _CollapsibleCardState extends State<_CollapsibleCard> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  CommonText(
-                    widget.title,
-                    style: const TextStyle(color: Colors.white70, fontSize: 10, fontWeight: FontWeight.w600),
+                  Flexible(
+                    child: CommonText(
+                      widget.title,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(color: Colors.white70, fontSize: 10, fontWeight: FontWeight.w600),
+                    ),
                   ),
+                  const SizedBox(width: 8),
                   Icon(
                     _expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded,
                     color: Colors.white54,

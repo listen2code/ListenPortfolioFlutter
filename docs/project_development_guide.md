@@ -836,6 +836,56 @@ context.registry.addImportDirective((node) {
 
 ---
 
+## 📐 第四部分：响应式布局与防溢出设计规范
+
+为了应对多种屏幕尺寸（如小屏 Android 手机、窄侧栏模式）以及多语言翻译带来的字符长度暴涨问题，所有 UI 层的开发必须遵循以下防溢出安全规则：
+
+### 1. Row/Flex 容器内动态文本限宽
+当在 `Row` 或横向 `Flex` 容器中放置动态加载的文本（如 `CommonText`、`CommonAuthText`）或可自适应拉伸的按钮时，必须使用 `Expanded` 或 `Flexible` 进行限宽包裹，并开启 `TextOverflow.ellipsis` 以实现自动截断或安全换行。
+
+* **错误示例**（导致 `RenderFlex overflowed` 异常）：
+  ```dart
+  Row(
+    children: [
+      Icon(Icons.info),
+      SizedBox(width: 8),
+      CommonText(dynamicLabel), // ❌ 错误：如果文字极长，将顶爆右侧屏幕边缘
+    ],
+  )
+  ```
+* **正确示例**：
+  ```dart
+  Row(
+    children: [
+      Icon(Icons.info),
+      SizedBox(width: 8),
+      Expanded(
+        child: CommonText(
+          dynamicLabel,
+          overflow: TextOverflow.ellipsis, // ✅ 正确：受限于 Expanded 且安全缩略
+        ),
+      ),
+    ],
+  )
+  ```
+
+### 2. 徽章和标签组自适应折行
+对于横向排列的多个徽章（`CommonBadge`）、标签或滤镜芯片（`Chip`），若其总数量或文字长度是动态不确定的，**严禁**使用 `Row` 进行横向平铺，应首选 `Wrap` 替换以支持自适应折行。
+
+* **正确示例**：
+  ```dart
+  Wrap(
+    spacing: 8.f,      // 横向间距
+    runSpacing: 8.f,   // 换行纵向间距
+    children: tags.map((t) => _buildBadge(t)).toList(), // ✅ 自动换行排版
+  )
+  ```
+
+### 3. 操作栏与工具按钮组的滚动防护
+若子操作栏或工具栏包含 3 个及以上的按钮，且在折叠面板、调试浮窗等受限宽度空间下呈现时，应当使用 `SingleChildScrollView` 进行包裹以提供横向滚动兜底保护。
+
+---
+
 ## 🎉 总结
 
 ### 🎯 **最终状态**

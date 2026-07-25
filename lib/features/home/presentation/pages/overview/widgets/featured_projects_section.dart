@@ -84,12 +84,15 @@ class FeaturedProjectsSection extends StatelessWidget {
                 decoration: BoxDecoration(color: color.withValues(alpha: 0.1), shape: BoxShape.circle),
                 child: Icon(icon, color: color, size: 24.f),
               ),
-              CommonBadge(
-                text: tag,
-                color: Colors.blue.withValues(alpha: 0.05),
-                textColor: Colors.blue,
-                fontSize: 10.f,
-                borderRadius: 8.f,
+              const SizedBox(width: 8),
+              Flexible(
+                child: CommonBadge(
+                  text: tag,
+                  color: Colors.blue.withValues(alpha: 0.05),
+                  textColor: Colors.blue,
+                  fontSize: 10.f,
+                  borderRadius: 8.f,
+                ),
               ),
             ],
           ),
