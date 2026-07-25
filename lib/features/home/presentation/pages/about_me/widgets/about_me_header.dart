@@ -21,17 +21,17 @@ class AboutMeHeader extends StatelessWidget {
         children: [
           Stack(
             children: [
-              Hero(
-                tag: 'avatar_preview',
-                child: CommonClickable(
-                  ripple: false,
-                  onTap: onTapAvatar,
-                  child: Container(
-                    padding: EdgeInsets.all(3.f),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: accentColor, width: 2.f),
-                    ),
+              CommonClickable(
+                ripple: false,
+                onTap: onTapAvatar,
+                child: Container(
+                  padding: EdgeInsets.all(3.f),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: accentColor, width: 2.f),
+                  ),
+                  child: Hero(
+                    tag: 'avatar_preview',
                     child: imageFile != null
                         ? CommonImage.file(
                             imageFile,

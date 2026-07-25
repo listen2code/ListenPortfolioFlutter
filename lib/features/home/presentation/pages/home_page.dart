@@ -183,27 +183,27 @@ class HomePage extends ConsumerWidget {
               Semantics(
                 label: I18nKeys.profilePhotoSemanticLabel.tr,
                 image: true,
-                child: Hero(
-                  tag: 'drawer_avatar_preview',
-                  child: CommonClickable(
-                    onTap: () {
-                      if (isLoggedIn) {
-                        viewModel.handleIntent(const HomeIntent.previewAvatar());
-                      }
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 2.f),
+                child: CommonClickable(
+                  onTap: () {
+                    if (isLoggedIn) {
+                      viewModel.handleIntent(const HomeIntent.previewAvatar());
+                    }
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 2.f),
+                    ),
+                    child: Visibility(
+                      visible: isLoggedIn,
+                      replacement: Container(
+                        width: 70.f,
+                        height: 70.f,
+                        decoration: const BoxDecoration(color: Colors.white24, shape: BoxShape.circle),
+                        child: Icon(Icons.person, size: 35.f, color: Colors.white70),
                       ),
-                      child: Visibility(
-                        visible: isLoggedIn,
-                        replacement: Container(
-                          width: 70.f,
-                          height: 70.f,
-                          decoration: const BoxDecoration(color: Colors.white24, shape: BoxShape.circle),
-                          child: Icon(Icons.person, size: 35.f, color: Colors.white70),
-                        ),
+                      child: Hero(
+                        tag: 'drawer_avatar_preview',
                         child: CommonImage.url(
                           authManager.state.user?.avatarUrl ?? '',
                           width: 70.f,
