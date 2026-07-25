@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:listen_core/core.dart';
 import '../../../data/models/forgot_password_request_model.dart';
 import 'forgot_password_intent.dart';
 import 'forgot_password_state.dart';

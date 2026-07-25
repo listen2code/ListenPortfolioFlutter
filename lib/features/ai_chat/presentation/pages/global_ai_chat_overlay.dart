@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:listen_core/core.dart';
 
 import '../widgets/ai_chat_panel.dart';
 import '../../../../shared/shared.dart';

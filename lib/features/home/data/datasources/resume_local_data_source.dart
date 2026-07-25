@@ -1,4 +1,3 @@
-import 'package:listen_core/core.dart';
 import '../../../../shared/shared.dart';
 
 class ResumeLocalDataSource implements CacheDataSource<String> {

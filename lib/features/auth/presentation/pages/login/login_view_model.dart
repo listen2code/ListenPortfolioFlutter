@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:listen_core/core.dart';
 import '../../../data/models/login_request_model.dart';
 import '../../../data/models/user_model.dart';
 import 'login_intent.dart';

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:listen_core/core.dart';
 
 import '../../../../../shared/shared.dart';
 import '../../../../auth/data/models/user_model.dart';

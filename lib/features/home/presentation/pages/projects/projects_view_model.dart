@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:listen_core/core.dart';
 import '../../../data/models/project_model.dart';
 import '../../provider/projects_provider.dart';
 import '../../../../../shared/shared.dart';

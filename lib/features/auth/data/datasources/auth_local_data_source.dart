@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:listen_core/core.dart';
 
 import '../../../../shared/shared.dart';
 import '../models/user_model.dart';

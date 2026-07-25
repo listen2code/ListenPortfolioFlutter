@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:listen_core/core.dart';
 import 'package:retrofit/retrofit.dart';
 
 import '../../../../shared/shared.dart';

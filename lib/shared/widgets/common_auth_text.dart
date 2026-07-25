@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:listen_core/core.dart';
 import '../shared.dart';
 import 'package:listen_uikit/uikit.dart';
 

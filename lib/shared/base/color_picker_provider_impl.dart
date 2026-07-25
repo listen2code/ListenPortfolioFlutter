@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:listen_core/core.dart';
 import 'package:listen_uikit/uikit.dart';
 
 import '../../features/settings/presentation/pages/widgets/color_picker_widget.dart';

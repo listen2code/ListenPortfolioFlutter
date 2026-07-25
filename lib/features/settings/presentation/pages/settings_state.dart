@@ -1,5 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:listen_core/core.dart';
 import '../../../../shared/shared.dart';
 
 part 'settings_state.freezed.dart';

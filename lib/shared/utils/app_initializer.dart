@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:listen_core/core.dart';
 import '../../features/auth/presentation/provider/auth_provider.dart';
 import '../shared.dart';
 import 'package:listen_uikit/uikit.dart';

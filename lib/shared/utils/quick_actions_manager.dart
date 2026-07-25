@@ -1,4 +1,3 @@
-import 'package:listen_core/core.dart';
 import '../shared.dart';
 import 'package:quick_actions/quick_actions.dart';
 import 'package:url_launcher/url_launcher.dart';

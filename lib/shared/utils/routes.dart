@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide RoutePageBuilder;
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:listen_core/core.dart';
 import 'package:listen_uikit/uikit.dart';
 
 import '../../features/auth/presentation/pages/login/login_page.dart';

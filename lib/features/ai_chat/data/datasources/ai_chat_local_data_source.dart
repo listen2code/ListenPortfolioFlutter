@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:listen_core/core.dart';
 
 import '../../../../shared/shared.dart';
 import '../models/ai_preset_qa_response_model.dart';

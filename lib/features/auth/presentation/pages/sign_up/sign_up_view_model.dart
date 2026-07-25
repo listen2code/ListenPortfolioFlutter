@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:listen_core/core.dart';
 import '../../../data/models/signup_request_model.dart';
 import 'sign_up_intent.dart';
 import '../../provider/auth_provider.dart';
