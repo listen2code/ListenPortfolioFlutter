@@ -2,7 +2,7 @@ name: listen_portfolio_flutter
 description: "Portfolio of Listen"
 publish_to: 'none'
 
-version: 1.0.95
+version: 1.0.96
 desc: "Crop image"
 desc_zh: ""
 desc_ja: ""
