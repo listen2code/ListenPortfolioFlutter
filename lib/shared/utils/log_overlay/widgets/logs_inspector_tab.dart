@@ -4,10 +4,7 @@ class _LogsInspectorTab extends StatefulWidget {
   final TextEditingController traceController;
   final ValueChanged<String> onNavigateToPerf;
 
-  const _LogsInspectorTab({
-    required this.traceController,
-    required this.onNavigateToPerf,
-  });
+  const _LogsInspectorTab({required this.traceController, required this.onNavigateToPerf});
 
   @override
   State<_LogsInspectorTab> createState() => _LogsInspectorTabState();
@@ -20,6 +17,7 @@ class _LogsInspectorTabState extends State<_LogsInspectorTab> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildLogsSubHeader(),
         const Divider(color: Colors.white10, height: 1),
@@ -36,9 +34,7 @@ class _LogsInspectorTabState extends State<_LogsInspectorTab> {
           crossFadeState: isFilterVisible ? CrossFadeState.showSecond : CrossFadeState.showFirst,
           duration: const Duration(milliseconds: 200),
         ),
-        Expanded(
-          child: _buildLogsTabContent(),
-        ),
+        Expanded(child: _buildLogsTabContent()),
       ],
     );
   }
@@ -55,6 +51,7 @@ class _LogsInspectorTabState extends State<_LogsInspectorTab> {
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             _subHeaderActionButton(
               filterText,
@@ -218,6 +215,7 @@ class _LogsInspectorTabState extends State<_LogsInspectorTab> {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       color: Colors.white.withValues(alpha: 0.02),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Wrap(
             spacing: 6,
