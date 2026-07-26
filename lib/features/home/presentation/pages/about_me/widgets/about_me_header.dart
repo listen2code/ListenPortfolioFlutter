@@ -40,12 +40,21 @@ class AboutMeHeader extends StatelessWidget {
                             borderRadius: 60.f,
                             semanticLabel: I18nKeys.profilePhotoSemanticLabel.tr,
                           )
-                        : CommonImage.url(
-                            authManager.state.user?.avatarUrl ?? '',
-                            width: 120.f,
-                            height: 120.f,
-                            borderRadius: 60.f,
-                            semanticLabel: I18nKeys.profilePhotoSemanticLabel.tr,
+                        : Visibility(
+                            visible: authManager.state.user?.avatarUrl?.isNotEmpty == true,
+                            replacement: Container(
+                              width: 120.f,
+                              height: 120.f,
+                              decoration: const BoxDecoration(color: Colors.white24, shape: BoxShape.circle),
+                              child: Icon(Icons.person, size: 35.f, color: Colors.white70),
+                            ),
+                            child: CommonImage.url(
+                              authManager.state.user?.avatarUrl ?? '',
+                              width: 120.f,
+                              height: 120.f,
+                              borderRadius: 60.f,
+                              semanticLabel: I18nKeys.profilePhotoSemanticLabel.tr,
+                            ),
                           ),
                   ),
                 ),

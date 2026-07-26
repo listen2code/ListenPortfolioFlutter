@@ -185,6 +185,7 @@ class HomePage extends ConsumerWidget {
                 label: I18nKeys.profilePhotoSemanticLabel.tr,
                 image: true,
                 child: CommonClickable(
+                  ripple: false,
                   onTap: () {
                     if (isLoggedIn) {
                       viewModel.handleIntent(const HomeIntent.previewAvatar());
@@ -196,7 +197,7 @@ class HomePage extends ConsumerWidget {
                       border: Border.all(color: Colors.white, width: 2.f),
                     ),
                     child: Visibility(
-                      visible: isLoggedIn,
+                      visible: isLoggedIn && authManager.state.user?.avatarUrl?.isNotEmpty == true,
                       replacement: Container(
                         width: 70.f,
                         height: 70.f,
