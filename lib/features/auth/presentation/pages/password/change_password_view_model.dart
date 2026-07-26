@@ -55,7 +55,7 @@ class ChangePasswordViewModel extends _$ChangePasswordViewModel
 
     // 2. Real Password Update via UseCase
     await call<void>(
-      ref.execute(
+      ref.execute<void, ChangePasswordRequestModel>(
         changePasswordUseCaseProvider,
         param: ChangePasswordRequestModel(
           userId: authManager.state.user?.id ?? '',

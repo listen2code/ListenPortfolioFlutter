@@ -50,7 +50,7 @@ class DeleteAccountViewModel extends _$DeleteAccountViewModel
 
   Future<void> _onConfirmDelete() async {
     await call<void>(
-      ref.execute(
+      ref.execute<void, DeleteAccountRequestModel>(
         deleteAccountUseCaseProvider,
         param: DeleteAccountRequestModel(userId: authManager.state.user?.id ?? ''),
       ),

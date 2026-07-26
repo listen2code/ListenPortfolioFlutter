@@ -71,7 +71,7 @@ class SignUpViewModel extends _$SignUpViewModel with ViewModelMixin<SignUpState,
 
     // 2. Execute registration request via UseCase
     await call<void>(
-      ref.execute(
+      ref.execute<void, SignupRequestModel>(
         signupUseCaseProvider,
         param: SignupRequestModel(userName: state.fullName, email: state.email, password: state.password),
       ),

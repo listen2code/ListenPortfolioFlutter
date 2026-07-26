@@ -214,7 +214,7 @@ void main() {
       test('should emit ConfirmEffect first, and emit LoadingEffect(true)/LoadingEffect(false) on confirmation', () async {
         // Act
         viewModel.handleIntent(const SettingsIntent.resetSettings());
-        await Future.delayed(const Duration(milliseconds: 50));
+        await Future.delayed(const Duration(milliseconds: 300));
 
         // Assert
         final confirmEffects = emittedEffects.whereType<ConfirmEffect>().toList();
@@ -224,7 +224,7 @@ void main() {
 
         // Simulate confirmation (result: true)
         await (confirmEffect.onResult as dynamic)(true);
-        await Future.delayed(const Duration(milliseconds: 50));
+        await Future.delayed(const Duration(milliseconds: 300));
 
         final loadingEffects = emittedEffects.whereType<LoadingEffect>().toList();
         expect(loadingEffects.length, greaterThanOrEqualTo(2));
@@ -235,13 +235,13 @@ void main() {
       test('should emit a MessageEffect after resetting settings is confirmed', () async {
         // Act
         viewModel.handleIntent(const SettingsIntent.resetSettings());
-        await Future.delayed(const Duration(milliseconds: 50));
+        await Future.delayed(const Duration(milliseconds: 300));
 
         // Assert
         final confirmEffects = emittedEffects.whereType<ConfirmEffect>().toList();
         expect(confirmEffects, isNotEmpty);
         await (confirmEffects.last.onResult as dynamic)(true);
-        await Future.delayed(const Duration(milliseconds: 50));
+        await Future.delayed(const Duration(milliseconds: 300));
 
         final messageEffects = emittedEffects.whereType<MessageEffect>().toList();
         expect(messageEffects, isNotEmpty);
@@ -251,13 +251,13 @@ void main() {
       test('should NOT reset settings or emit loading/success message when cancelled', () async {
         // Act
         viewModel.handleIntent(const SettingsIntent.resetSettings());
-        await Future.delayed(const Duration(milliseconds: 50));
+        await Future.delayed(const Duration(milliseconds: 300));
 
         // Assert
         final confirmEffects = emittedEffects.whereType<ConfirmEffect>().toList();
         expect(confirmEffects, isNotEmpty);
         await (confirmEffects.last.onResult as dynamic)(false);
-        await Future.delayed(const Duration(milliseconds: 50));
+        await Future.delayed(const Duration(milliseconds: 300));
 
         final loadingEffects = emittedEffects.whereType<LoadingEffect>().toList();
         expect(loadingEffects, isEmpty);

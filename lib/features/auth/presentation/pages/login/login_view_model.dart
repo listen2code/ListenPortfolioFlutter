@@ -93,7 +93,7 @@ class LoginViewModel extends _$LoginViewModel with ViewModelMixin<LoginState, Lo
     }
 
     await call<UserModel?>(
-      ref.execute(
+      ref.execute<UserModel?, LoginRequestModel>(
         loginUseCaseProvider,
         param: LoginRequestModel(userName: state.username, password: state.password),
       ),

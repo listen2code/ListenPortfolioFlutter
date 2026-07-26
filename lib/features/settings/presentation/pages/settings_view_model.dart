@@ -201,7 +201,12 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
   }
 
   Future<void> _handleVersionCheckResult(VersionModel versionModel) async {
-    if (_isNewerVersion(Core.packageInfo.version, versionModel.version)) {
+    final currentVer = Core.packageInfo.version;
+    final remoteVer = versionModel.version;
+    final currentBuild = int.tryParse(Core.packageInfo.buildNumber) ?? 0;
+    final remoteBuild = versionModel.buildNumber;
+
+    if (_isNewerVersion(currentVer, currentBuild, remoteVer, remoteBuild)) {
       final localeCode = settingManager.language.locale.languageCode;
       final changelogText = versionModel.changelog[localeCode] ?? versionModel.changelog['en'] ?? '';
 
@@ -222,10 +227,10 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
     }
   }
 
-  bool _isNewerVersion(String currentVer, String remoteVer) {
+  bool _isNewerVersion(String currentVer, int currentBuild, String remoteVer, int remoteBuild) {
     final currentCode = _calculateVersionCode(currentVer);
     final remoteCode = _calculateVersionCode(remoteVer);
-    return remoteCode > currentCode;
+    return remoteCode > currentCode || (remoteCode == currentCode && remoteBuild > currentBuild);
   }
 
   int _calculateVersionCode(String versionName) {
