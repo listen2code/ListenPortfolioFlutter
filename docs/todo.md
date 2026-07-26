@@ -218,7 +218,7 @@
 ### 暂时降级的想法池条目
 
 - switch env: input url / separate mock / config each api
-- apm: layout check / lag check / app launch / apk size / net inspector / FPS / CPU / memory
+- apm: layout check / lag check / app launch / apk size / FPS / CPU / memory
 - `if (!widget.useScaffold)` 等零散页面能力想法
 - IDE plugin：json 模型转换、asset 资源生成到 `R.dart`
 - 剔除部分三方pub，能自定义实现的，尽量自己实现，学习目的
