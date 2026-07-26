@@ -38,6 +38,27 @@ class NavigationProviderImpl extends BaseProvider<NavigationEffect<dynamic>> {
   const NavigationProviderImpl();
 
   @override
+  // 💡 DESIGN NOTE: Function Parameter Contravariance & Implicit Downcasting
+  // Why do we use `(effect as dynamic).onResult` instead of `effect.onResult`?
+  //
+  // 1. Type Conflict:
+  //    The page callback passed (e.g. `onResult: (LoginState? state) {}`) has a
+  //    concrete runtime type of `void Function(LoginState?)`. However, since
+  //    `effect` is statically typed as `NavigationEffect<dynamic>` here, its
+  //    `onResult` getter is statically expected to return `void Function(dynamic)?`.
+  //
+  // 2. Contravariance Restriction:
+  //    In Dart, a function expecting a specific parameter type (narrow) cannot be
+  //    assigned to a variable expecting a general parameter type (wide/dynamic),
+  //    because it would be unsafe if someone invoked the variable with a different
+  //    type (e.g. calling it with a String). Therefore, accessing `effect.onResult`
+  //    directly causes Dart's runtime implicit downcast check to throw:
+  //    `type '(LoginState?) => void' is not a subtype of type '((dynamic) => void)?'`.
+  //
+  // 3. Solution:
+  //    Casting the entire `effect` to `dynamic` bypasses the static getter
+  //    downcast check, allowing Dart to retrieve the raw function reference via
+  //    dynamic dispatch and call it safely with the actual return value.
   void handleEffect(NavigationEffect<dynamic> effect) async {
     if (effect.isBack) {
       AppNav.back(effect.arguments);
@@ -47,14 +68,14 @@ class NavigationProviderImpl extends BaseProvider<NavigationEffect<dynamic>> {
         needLogin: effect.needLogin,
         arguments: effect.arguments as Map<String, dynamic>?,
       );
-      effect.onResult?.call(result);
+      (effect as dynamic).onResult?.call(result);
     } else if (effect.isReplaceAll) {
       final result = await AppNav.offAll(
         effect.target,
         needLogin: effect.needLogin,
         arguments: effect.arguments as Map<String, dynamic>?,
       );
-      effect.onResult?.call(result);
+      (effect as dynamic).onResult?.call(result);
     } else {
       final result = await AppNav.to(
         effect.target,
@@ -62,7 +83,7 @@ class NavigationProviderImpl extends BaseProvider<NavigationEffect<dynamic>> {
         arguments: effect.arguments,
         replaceIfExists: effect.replaceIfExists,
       );
-      effect.onResult?.call(result);
+      (effect as dynamic).onResult?.call(result);
     }
   }
 }

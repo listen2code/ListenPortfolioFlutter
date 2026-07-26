@@ -8,6 +8,7 @@ class CommonWebViewPage extends StatelessWidget {
   final void Function(String? url)? onLoadStop;
   final bool Function(String url)? shouldOverrideUrlLoading;
   final Map<String, dynamic Function(List<dynamic> args)>? javascriptHandlers;
+  final bool preventSwipeBack;
 
   const CommonWebViewPage({
     super.key,
@@ -17,6 +18,7 @@ class CommonWebViewPage extends StatelessWidget {
     this.onLoadStop,
     this.shouldOverrideUrlLoading,
     this.javascriptHandlers,
+    this.preventSwipeBack = true,
   });
 
   @override
@@ -26,6 +28,7 @@ class CommonWebViewPage extends StatelessWidget {
       initialUrl: url,
       showAppBar: true,
       shrinkWrap: false,
+      preventSwipeBack: preventSwipeBack,
       onLoadStart: onLoadStart,
       onLoadStop: onLoadStop,
       shouldOverrideUrlLoading: shouldOverrideUrlLoading,
