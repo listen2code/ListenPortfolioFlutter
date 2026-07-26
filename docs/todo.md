@@ -133,6 +133,9 @@
 ### 2. Auth 与缓存策略增强
 
 - ✅ `BaseRepository` 缓存与数据降级策略设计规范文档化（已完成 TTL 缓存与 SWR 后台静默刷新模式规约，详见 [设计与实现文档](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/docs/repository_caching_strategy.md)）
+- [ ] 数据库动态内容国际化 (更倾向方案 B：后端多语言字段设计)
+  - [ ] Flutter 端在 `LoggingInterceptor` 或 API 网络请求拦截器中自动注入当前语言请求头 `Accept-Language`
+  - [ ] 去除所有临时或过渡的前端 `.tr` 映射，统一通过数据源直接下发目标语言文本
 
 ### 3. 文档与展示补强
 
