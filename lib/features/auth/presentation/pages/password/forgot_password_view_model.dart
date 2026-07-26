@@ -20,7 +20,7 @@ class ForgotPasswordViewModel extends _$ForgotPasswordViewModel
     return intent.when<FutureOr<void>>(
       emailChanged: (email) => updateState(state.copyWith(email: email, emailError: null)),
       submitReset: _onSubmitReset,
-      navigateToLogin: () => emitEffect(NavigationEffect.back()),
+      navigateToLogin: () => emitEffect(NavigationEffect<void>.back()),
     );
   }
 
@@ -39,12 +39,15 @@ class ForgotPasswordViewModel extends _$ForgotPasswordViewModel
 
     // 2. Real Reset Link Request via UseCase
     await call<void>(
-      ref.execute<void, ForgotPasswordRequestModel>(forgotPasswordUseCaseProvider, param: ForgotPasswordRequestModel(email: state.email)),
+      ref.execute<void, ForgotPasswordRequestModel>(
+        forgotPasswordUseCaseProvider,
+        param: ForgotPasswordRequestModel(email: state.email),
+      ),
       showLoading: true,
       onSuccess: (_) {
         // Show success message and go back to login
         emitEffect(MessageEffect('${I18nKeys.resetLinkSent.tr} ${state.email}'));
-        emitEffect(NavigationEffect.back());
+        emitEffect(NavigationEffect<void>.back());
       },
     );
   }

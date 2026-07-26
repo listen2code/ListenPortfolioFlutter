@@ -1,13 +1,13 @@
 import 'dart:async';
 
-import '../../../data/models/signup_request_model.dart';
-import 'sign_up_intent.dart';
-import '../../provider/auth_provider.dart';
-import '../../../../../shared/shared.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import 'sign_up_state.dart';
+import '../../../../../shared/shared.dart';
+import '../../../data/models/signup_request_model.dart';
+import '../../provider/auth_provider.dart';
 import '../login/login_state.dart';
+import 'sign_up_intent.dart';
+import 'sign_up_state.dart';
 
 part 'sign_up_view_model.g.dart';
 
@@ -23,13 +23,14 @@ class SignUpViewModel extends _$SignUpViewModel with ViewModelMixin<SignUpState,
   @override
   FutureOr<void> onIntent(SignUpIntent intent) {
     return intent.when<FutureOr<void>>(
-      fullNameChanged: (name) => updateState(state.copyWith(fullName: name, fullNameError: null)),
-      emailChanged: (email) => updateState(state.copyWith(email: email, emailError: null)),
-      passwordChanged: (password) => updateState(state.copyWith(password: password, passwordError: null)),
+      fullNameChanged: (name) => updateState(state.copyWith(fullName: name.trim(), fullNameError: null)),
+      emailChanged: (email) => updateState(state.copyWith(email: email.trim(), emailError: null)),
+      passwordChanged: (password) =>
+          updateState(state.copyWith(password: password.trim(), passwordError: null)),
       confirmPasswordChanged: (password) =>
-          updateState(state.copyWith(confirmPassword: password, confirmPasswordError: null)),
+          updateState(state.copyWith(confirmPassword: password.trim(), confirmPasswordError: null)),
       submitSignUp: _onSubmitSignUp,
-      navigateToLogin: () => emitEffect(NavigationEffect.back()),
+      navigateToLogin: () => emitEffect(NavigationEffect<void>.back()),
     );
   }
 
@@ -78,10 +79,11 @@ class SignUpViewModel extends _$SignUpViewModel with ViewModelMixin<SignUpState,
       showLoading: true,
       onSuccess: (_) {
         emitEffect(MessageEffect(I18nKeys.registrationSuccess.tr));
-        emitEffect(NavigationEffect<LoginState>.back(result: LoginState(
-          username: state.fullName,
-          password: state.password,
-        )));
+        emitEffect(
+          NavigationEffect<LoginState>.back(
+            result: LoginState(username: state.fullName, password: state.password),
+          ),
+        );
       },
     );
   }

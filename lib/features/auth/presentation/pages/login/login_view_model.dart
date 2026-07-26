@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import '../../../data/models/login_request_model.dart';
-import '../../../data/models/user_model.dart';
-import 'login_intent.dart';
-import '../../provider/auth_provider.dart';
-import '../../../../../shared/shared.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../../shared/shared.dart';
+import '../../../data/models/login_request_model.dart';
+import '../../../data/models/user_model.dart';
+import '../../provider/auth_provider.dart';
+import 'login_intent.dart';
 import 'login_state.dart';
 
 part 'login_view_model.g.dart';
@@ -52,17 +52,17 @@ class LoginViewModel extends _$LoginViewModel with ViewModelMixin<LoginState, Lo
         ),
       ),
       navigateToForgotPassword: () => emitEffect(NavigationEffect<void>(target: Routes.forgotPassword)),
-      skipLogin: () => emitEffect(NavigationEffect.back(result: false)),
+      skipLogin: () => emitEffect(NavigationEffect<void>.back(result: false)),
     );
   }
 
   Future<void> _onUsernameChanged(String username) async {
-    updateState(state.copyWith(username: username, usernameError: null));
+    updateState(state.copyWith(username: username.trim(), usernameError: null));
     if (state.rememberMe) await _saveOrClearCredentials();
   }
 
   Future<void> _onPasswordChanged(String password) async {
-    updateState(state.copyWith(password: password, passwordError: null));
+    updateState(state.copyWith(password: password.trim(), passwordError: null));
     if (state.rememberMe) await _saveOrClearCredentials();
   }
 
@@ -101,7 +101,7 @@ class LoginViewModel extends _$LoginViewModel with ViewModelMixin<LoginState, Lo
       onSuccess: (user) async {
         authManager.login(user);
         emitEffect(MessageEffect(I18nKeys.loginSuccess.tr));
-        emitEffect(NavigationEffect.back(result: true));
+        emitEffect(NavigationEffect<void>.back(result: true));
       },
     );
   }
