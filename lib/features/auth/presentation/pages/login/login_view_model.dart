@@ -101,10 +101,9 @@ class LoginViewModel extends _$LoginViewModel with ViewModelMixin<LoginState, Lo
       onSuccess: (user) async {
         authManager.login(user);
         emitEffect(MessageEffect(I18nKeys.loginSuccess.tr));
+        emitEffect(NavigationEffect<bool>.back(result: true));
       },
-    ).then((_) {
-      emitEffect(NavigationEffect<bool>.back(result: true));
-    });
+    );
   }
 
   /// Load the saved password from secure storage and update the state.

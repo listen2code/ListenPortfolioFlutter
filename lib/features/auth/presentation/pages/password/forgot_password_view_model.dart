@@ -47,9 +47,8 @@ class ForgotPasswordViewModel extends _$ForgotPasswordViewModel
       onSuccess: (_) {
         // Show success message and go back to login
         emitEffect(MessageEffect('${I18nKeys.resetLinkSent.tr} ${state.email}'));
+        emitEffect(NavigationEffect<void>.back());
       },
-    ).then((_) {
-      emitEffect(NavigationEffect<void>.back());
-    });
+    );
   }
 }
