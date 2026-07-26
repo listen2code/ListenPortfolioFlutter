@@ -222,23 +222,22 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
     }
   }
 
-  bool _isNewerVersion(String current, String remote) {
+  bool _isNewerVersion(String currentVer, String remoteVer) {
+    final currentCode = _calculateVersionCode(currentVer);
+    final remoteCode = _calculateVersionCode(remoteVer);
+    return remoteCode > currentCode;
+  }
+
+  int _calculateVersionCode(String versionName) {
     try {
-      final currentParts = current.split('.').map(int.parse).toList();
-      final remoteParts = remote.split('.').map(int.parse).toList();
-
-      final length = currentParts.length > remoteParts.length ? currentParts.length : remoteParts.length;
-      for (var i = 0; i < length; i++) {
-        final currentVal = i < currentParts.length ? currentParts[i] : 0;
-        final remoteVal = i < remoteParts.length ? remoteParts[i] : 0;
-
-        if (remoteVal > currentVal) return true;
-        if (currentVal > remoteVal) return false;
-      }
-    } catch (e) {
-      return remote.compareTo(current) > 0;
+      final parts = versionName.trim().split('.');
+      final major = parts.isNotEmpty ? (int.tryParse(parts[0]) ?? 0) : 0;
+      final minor = parts.length > 1 ? (int.tryParse(parts[1]) ?? 0) : 0;
+      final patch = parts.length > 2 ? (int.tryParse(parts[2]) ?? 0) : 0;
+      return major * 10000 + minor * 100 + patch;
+    } catch (_) {
+      return 0;
     }
-    return false;
   }
 
   void _onShowEnvDialog() {

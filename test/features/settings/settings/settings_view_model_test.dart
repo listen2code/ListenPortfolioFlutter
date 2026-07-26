@@ -330,11 +330,16 @@ void main() {
 
     group('Check Updates Intent', () {
       setUp(() {
-        Core.packageInfo = DummyPackageInfo('1.0.0');
+        try {
+          Core.packageInfo = DummyPackageInfo('1.0.0');
+        } catch (_) {
+          DummyPackageInfo('1.0.0');
+        }
       });
 
       test('should emit LoadingEffect(true) then LoadingEffect(false)', () async {
         // Arrange
+        DummyPackageInfo('1.0.0', '1');
         when(() => mockSettingsRepository.getLatestVersion()).thenAnswer(
           (_) async => const Right(
             VersionModel(
@@ -358,6 +363,78 @@ void main() {
         expect(loadingEffects.first.show, isTrue);
         expect(loadingEffects.first.message, I18nKeys.checkingUpdates.tr);
         expect(loadingEffects.last.show, isFalse);
+      });
+
+      test('should emit ConfirmEffect when remote version is newer (e.g. 1.0.98 to 1.1.0)', () async {
+        // Arrange
+        DummyPackageInfo('1.0.98', '1');
+        when(() => mockSettingsRepository.getLatestVersion()).thenAnswer(
+          (_) async => const Right(
+            VersionModel(
+              version: '1.1.0',
+              buildNumber: 1,
+              url: 'https://example.com',
+              changelog: {'en': 'New features'},
+            ),
+          ),
+        );
+
+        // Act
+        await viewModel.handleIntent(const SettingsIntent.checkUpdates());
+        await Future.delayed(const Duration(milliseconds: 150));
+
+        // Assert
+        final confirmEffects = emittedEffects.whereType<ConfirmEffect>().toList();
+        expect(confirmEffects, isNotEmpty);
+        expect(confirmEffects.last.title, I18nKeys.checkUpdates.tr);
+      });
+
+      test('should emit ConfirmEffect when remote build number is newer (e.g. 1.1.0+2 vs 1.1.0+1)', () async {
+        // Arrange
+        DummyPackageInfo('1.1.0', '1');
+        when(() => mockSettingsRepository.getLatestVersion()).thenAnswer(
+          (_) async => const Right(
+            VersionModel(
+              version: '1.1.0',
+              buildNumber: 2,
+              url: 'https://example.com',
+              changelog: {'en': 'Bug fixes'},
+            ),
+          ),
+        );
+
+        // Act
+        await viewModel.handleIntent(const SettingsIntent.checkUpdates());
+        await Future.delayed(const Duration(milliseconds: 150));
+
+        // Assert
+        final confirmEffects = emittedEffects.whereType<ConfirmEffect>().toList();
+        expect(confirmEffects, isNotEmpty);
+      });
+
+      test('should emit MessageEffect (latest version) when remote version is older', () async {
+        // Arrange
+        DummyPackageInfo('1.1.0', '2');
+        when(() => mockSettingsRepository.getLatestVersion()).thenAnswer(
+          (_) async => const Right(
+            VersionModel(
+              version: '1.0.98',
+              buildNumber: 1,
+              url: 'https://example.com',
+              changelog: {'en': 'Old release'},
+            ),
+          ),
+        );
+
+        // Act
+        await viewModel.handleIntent(const SettingsIntent.checkUpdates());
+        await Future.delayed(const Duration(milliseconds: 150));
+
+        // Assert
+        final messageEffects = emittedEffects.whereType<MessageEffect>().toList();
+        expect(messageEffects, isNotEmpty);
+        expect(messageEffects.last.title, I18nKeys.checkUpdates.tr);
+        expect(messageEffects.last.message, I18nKeys.latestVersion.tr);
       });
     });
 
@@ -447,8 +524,13 @@ void main() {
 }
 
 class DummyPackageInfo implements IPackageInfo {
-  final String _version;
-  DummyPackageInfo([this._version = '1.0.0']);
+  static String mockVersion = '1.0.0';
+  static String mockBuildNumber = '1';
+
+  DummyPackageInfo([String? version, String? buildNumber]) {
+    if (version != null) mockVersion = version;
+    if (buildNumber != null) mockBuildNumber = buildNumber;
+  }
 
   @override
   String get appName => 'dummy_app';
@@ -457,13 +539,13 @@ class DummyPackageInfo implements IPackageInfo {
   String get packageName => 'com.dummy.app';
 
   @override
-  String get version => _version;
+  String get version => mockVersion;
 
   @override
-  String get buildNumber => '1';
+  String get buildNumber => mockBuildNumber;
 
   @override
-  String get fullVersion => '$_version+1';
+  String get fullVersion => '$version+$buildNumber';
 
   @override
   Map<String, String> toHeaderMap() => {};
