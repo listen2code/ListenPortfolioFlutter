@@ -1,11 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../features/home/presentation/pages/home_state.dart';
-import '../../features/home/presentation/pages/overview/overview_view_model.dart';
-import '../../features/home/presentation/pages/about_me/about_me_view_model.dart';
-import '../../features/home/presentation/pages/projects/projects_view_model.dart';
-import '../../features/home/presentation/pages/resume/resume_view_model.dart';
-import '../shared.dart';
 import 'package:listen_uikit/uikit.dart';
+
+import '../../features/home/presentation/pages/home_state.dart';
+import '../shared.dart';
 
 /// Concrete implementation for handling [LogoutEffect].
 /// Performs session cleanup and redirects the user to the login screen while keeping Home in stack.
@@ -41,13 +38,5 @@ class LogoutProviderImpl extends BaseProvider<LogoutEffect> {
         ),
       );
     }
-
-    // 5. Invalidate Riverpod view models safely AFTER navigation has settled,
-    // to clear in-memory user states without interfering with active route lifecycles.
-    container
-      ..invalidate(overviewViewModelProvider)
-      ..invalidate(aboutMeViewModelProvider)
-      ..invalidate(projectsViewModelProvider)
-      ..invalidate(resumeViewModelProvider);
   }
 }
