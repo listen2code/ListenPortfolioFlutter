@@ -52,7 +52,7 @@ class LoginViewModel extends _$LoginViewModel with ViewModelMixin<LoginState, Lo
         ),
       ),
       navigateToForgotPassword: () => emitEffect(NavigationEffect<void>(target: Routes.forgotPassword)),
-      skipLogin: () => emitEffect(NavigationEffect<void>.back(result: false)),
+      skipLogin: () => emitEffect(NavigationEffect<bool>.back(result: false)),
     );
   }
 
@@ -101,7 +101,7 @@ class LoginViewModel extends _$LoginViewModel with ViewModelMixin<LoginState, Lo
       onSuccess: (user) async {
         authManager.login(user);
         emitEffect(MessageEffect(I18nKeys.loginSuccess.tr));
-        emitEffect(NavigationEffect<void>.back(result: true));
+        emitEffect(NavigationEffect<bool>.back(result: true));
       },
     );
   }

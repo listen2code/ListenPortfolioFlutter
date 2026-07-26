@@ -27,6 +27,9 @@ class AuthRepositoryImpl with BaseRepository implements AuthRepository {
         if (response.token != null) {
           await localDataSource.cacheAuthToken(response.token!);
         }
+        if (response.refreshToken != null) {
+          await localDataSource.cacheRefreshToken(response.refreshToken!);
+        }
       },
     );
   }
@@ -97,9 +100,7 @@ class AuthRepositoryImpl with BaseRepository implements AuthRepository {
   @override
   Future<Either<Failure, UserModel?>> uploadAvatar({required String base64Data}) async {
     return await safeCall<UserModel>(
-      call: () => remoteDataSource.uploadAvatar(
-        UploadAvatarRequestModel(avatar: base64Data),
-      ),
+      call: () => remoteDataSource.uploadAvatar(UploadAvatarRequestModel(avatar: base64Data)),
     );
   }
 }

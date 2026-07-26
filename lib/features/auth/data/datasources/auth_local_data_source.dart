@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-
 import '../../../../shared/shared.dart';
 import '../models/user_model.dart';
 
@@ -11,7 +10,7 @@ class AuthLocalDataSource implements CacheDataSource<UserModel> {
 
   /// Cache authentication token securely.
   Future<void> cacheAuthToken(String? token) async {
-    appLogger.d('AuthLocalDataSource: Starting to cache auth token');
+    appLogger.d('AuthLocalDataSource: Starting to cache auth token=$token');
     try {
       await SecureStorageUtil.put(AppConstants.authTokenKey, token);
       appLogger.d('AuthLocalDataSource: Auth token cached successfully');
@@ -23,7 +22,7 @@ class AuthLocalDataSource implements CacheDataSource<UserModel> {
 
   /// Cache refresh token securely.
   Future<void> cacheRefreshToken(String? token) async {
-    appLogger.d('AuthLocalDataSource: Starting to cache refresh token');
+    appLogger.d('AuthLocalDataSource: Starting to cache refresh token=$token');
     try {
       await SecureStorageUtil.put(AppConstants.refreshTokenKey, token);
       appLogger.d('AuthLocalDataSource: Refresh token cached successfully');
@@ -38,7 +37,7 @@ class AuthLocalDataSource implements CacheDataSource<UserModel> {
     try {
       final token = await SecureStorageUtil.get(AppConstants.authTokenKey);
       if (token != null) {
-        appLogger.d('AuthLocalDataSource: Auth token retrieved successfully');
+        appLogger.d('AuthLocalDataSource: Auth token retrieved successfully=$token');
       } else {
         appLogger.d('AuthLocalDataSource: No auth token found in secure storage');
       }
@@ -55,7 +54,7 @@ class AuthLocalDataSource implements CacheDataSource<UserModel> {
     try {
       final token = await SecureStorageUtil.get(AppConstants.refreshTokenKey);
       if (token != null) {
-        appLogger.d('AuthLocalDataSource: Refresh token retrieved successfully');
+        appLogger.d('AuthLocalDataSource: Refresh token retrieved successfully=$token');
       } else {
         appLogger.d('AuthLocalDataSource: No refresh token found in secure storage');
       }
