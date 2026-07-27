@@ -188,7 +188,7 @@ class _LogsInspectorTabState extends State<_LogsInspectorTab> {
                 ),
                 recognizer: TapGestureRecognizer()
                   ..onTap = () {
-                    widget.onNavigateToPerf(traceId);
+                    LogOverlayManager.traceFilterNotifier.value = traceId;
                   },
               ),
               const TextSpan(
