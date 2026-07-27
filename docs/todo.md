@@ -217,7 +217,7 @@
 
 ### 暂时降级的想法池条目
 
-- switch env: input url / separate mock / config each api
+- switch env: separate mock / config each api
 - apm: layout check / lag check / app launch / apk size / FPS / CPU / memory
 - `if (!widget.useScaffold)` 等零散页面能力想法
 - IDE plugin：json 模型转换、asset 资源生成到 `R.dart`
@@ -226,3 +226,4 @@
 但是希望新注册的用户也可以看到本人的账户（userId=1）的概览，履历，项目信息，毕竟都是展示我的经历，
 而不是各自注册用户自己的经历，不过之类可能要一些权限控制，比如aboutMe画面，除了本人账户以外，无法修改头像和简历信息，只能查看
 - 401的时候，没有发出refreshToken，自动刷新token的流程没有继续走下去
+- 
