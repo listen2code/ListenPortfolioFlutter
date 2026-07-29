@@ -13,7 +13,17 @@ part 'resume_view_model.g.dart';
 @riverpod
 class ResumeViewModel extends _$ResumeViewModel with ViewModelMixin<ResumeState, ResumeIntent> {
   @override
-  ResumeState build() => const ResumeState();
+  ResumeState build() {
+    authManager.addListener(_onAuthStatusChanged);
+    ref.onDispose(() {
+      authManager.removeListener(_onAuthStatusChanged);
+    });
+    return const ResumeState();
+  }
+
+  void _onAuthStatusChanged() {
+    updateState(const ResumeState());
+  }
 
   @override
   void onVisible() {

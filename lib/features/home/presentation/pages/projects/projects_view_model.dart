@@ -13,7 +13,17 @@ part 'projects_view_model.g.dart';
 @riverpod
 class ProjectsViewModel extends _$ProjectsViewModel with ViewModelMixin<ProjectsState, ProjectsIntent> {
   @override
-  ProjectsState build() => const ProjectsState();
+  ProjectsState build() {
+    authManager.addListener(_onAuthStatusChanged);
+    ref.onDispose(() {
+      authManager.removeListener(_onAuthStatusChanged);
+    });
+    return const ProjectsState();
+  }
+
+  void _onAuthStatusChanged() {
+    updateState(const ProjectsState());
+  }
 
   @override
   void onVisible() {

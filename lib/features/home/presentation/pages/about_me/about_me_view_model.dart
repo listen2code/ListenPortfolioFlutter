@@ -24,7 +24,17 @@ part 'about_me_view_model.g.dart';
 class AboutMeViewModel extends _$AboutMeViewModel with ViewModelMixin<AboutMeState, AboutMeIntent> {
   /// Initialize with default empty state
   @override
-  AboutMeState build() => const AboutMeState();
+  AboutMeState build() {
+    authManager.addListener(_onAuthStatusChanged);
+    ref.onDispose(() {
+      authManager.removeListener(_onAuthStatusChanged);
+    });
+    return const AboutMeState();
+  }
+
+  void _onAuthStatusChanged() {
+    updateState(const AboutMeState());
+  }
 
   /// Lifecycle hook called when the widget becomes visible
   /// Triggers initial data load if not already loaded

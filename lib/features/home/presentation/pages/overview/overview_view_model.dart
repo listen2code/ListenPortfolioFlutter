@@ -15,7 +15,17 @@ part 'overview_view_model.g.dart';
 @riverpod
 class OverviewViewModel extends _$OverviewViewModel with ViewModelMixin<OverviewState, OverviewIntent> {
   @override
-  OverviewState build() => const OverviewState();
+  OverviewState build() {
+    authManager.addListener(_onAuthStatusChanged);
+    ref.onDispose(() {
+      authManager.removeListener(_onAuthStatusChanged);
+    });
+    return const OverviewState();
+  }
+
+  void _onAuthStatusChanged() {
+    updateState(const OverviewState());
+  }
 
   @override
   void onVisible() {
