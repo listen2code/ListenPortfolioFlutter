@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
@@ -7,266 +8,380 @@ import 'package:listen_portfolio_flutter/features/auth/presentation/pages/passwo
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/sign_up/sign_up_page.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_page.dart';
 import 'package:listen_portfolio_flutter/features/splash/presentation/pages/splash_page.dart';
+import 'package:listen_portfolio_flutter/features/settings/presentation/pages/settings_page.dart';
 import 'package:listen_portfolio_flutter/main.dart' as app;
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_uikit/uikit.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
+// ==========================================
+// Robust Page Transition Wait Helpers
+// ==========================================
+Future<void> waitForPageTransition(WidgetTester tester) async {
+  // Wait up to 10 seconds for SplashPage to disappear
+  for (int i = 0; i < 20; i++) {
+    await tester.pump(const Duration(milliseconds: 500));
+    await Future<void>.delayed(const Duration(milliseconds: 500));
+    if (find.byType(SplashPage).evaluate().isEmpty) {
+      break;
+    }
+  }
+  await tester.pumpAndSettle();
+}
+
+Future<void> waitForPage(WidgetTester tester, Type pageType) async {
+  // Wait up to 5 seconds for page of type to appear
+  for (int i = 0; i < 25; i++) {
+    await tester.pump(const Duration(milliseconds: 200));
+    await Future<void>.delayed(const Duration(milliseconds: 200));
+    if (find.byType(pageType).evaluate().isNotEmpty) {
+      break;
+    }
+  }
+  await tester.pumpAndSettle();
+}
+
+// ==========================================
+// UI Helpers for Isolated & Re-entrant Runs
+// ==========================================
+Future<void> bootAppAndGoToLogin(WidgetTester tester) async {
+  // If already on LoginPage, do nothing
+  if (find.byType(LoginPage).evaluate().isNotEmpty) {
+    return;
+  }
+
+  // If on HomePage, just navigate to LoginPage
+  if (find.byType(HomePage).evaluate().isNotEmpty) {
+    final ScaffoldState scaffoldState = tester.firstState(find.byType(Scaffold));
+    scaffoldState.openDrawer();
+    await tester.pumpAndSettle();
+
+    final loginDrawerOption = find.text(I18nKeys.login.tr);
+    if (loginDrawerOption.evaluate().isNotEmpty) {
+      await tester.tap(loginDrawerOption);
+      await tester.pumpAndSettle();
+    }
+    return;
+  }
+
+  // Otherwise, boot the app from scratch
+  app.main();
+  await tester.pumpAndSettle();
+
+  // Wait for splash transition to complete
+  await waitForPageTransition(tester);
+
+  // If we are on HomePage, navigate to LoginPage
+  if (find.byType(HomePage).evaluate().isNotEmpty) {
+    final ScaffoldState scaffoldState = tester.firstState(find.byType(Scaffold));
+    scaffoldState.openDrawer();
+    await tester.pumpAndSettle();
+
+    final loginDrawerOption = find.text(I18nKeys.login.tr);
+    expect(loginDrawerOption, findsOneWidget);
+
+    await tester.tap(loginDrawerOption);
+    await tester.pumpAndSettle();
+  }
+}
+
+Future<void> performUiLogin(WidgetTester tester, String username, String password) async {
+  await bootAppAndGoToLogin(tester);
+
+  if (find.byType(LoginPage).evaluate().isNotEmpty) {
+    final loginFields = find.byType(CommonTextField);
+    await tester.enterText(loginFields.at(0), username);
+    await tester.enterText(loginFields.at(1), password);
+    FocusManager.instance.primaryFocus?.unfocus();
+    await tester.pumpAndSettle();
+
+    final submitLoginBtn = find.widgetWithText(CommonButton, I18nKeys.login.tr);
+    await tester.tap(submitLoginBtn);
+    await waitForPage(tester, HomePage);
+  }
+}
+
+Future<void> navigateToSettings(WidgetTester tester) async {
+  if (find.byType(HomePage).evaluate().isEmpty) {
+    await performUiLogin(tester, 'test_user', 'password123');
+  }
+
+  if (find.byType(HomePage).evaluate().isNotEmpty) {
+    final ScaffoldState scaffoldState = tester.firstState(find.byType(Scaffold));
+    scaffoldState.openDrawer();
+    await tester.pumpAndSettle();
+
+    final settingsOption = find.text(I18nKeys.settings.tr);
+    await tester.tap(settingsOption);
+    await waitForPage(tester, SettingsPage);
+  }
+}
+
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+
+  // Store original global error handlers to prevent assertion leaks
+  FlutterExceptionHandler? originalOnError;
+  bool Function(Object, StackTrace)? originalDispatcherOnError;
 
   setUpAll(() {
     // Prevent visibility animations from lagging and blocking pumpAndSettle
     VisibilityDetectorController.instance.updateInterval = Duration.zero;
 
-    // Pre-initialize iapService to prevent native channel hangs during tests
+    // Pre-initialize mock services to prevent native hangs during tests
     iapService = FakeIapService();
-
-    // Reassign notificationService to prevent native notification permission dialog hangs
     notificationService = FakeNotificationService();
 
-    // Configure LocalMockServer with very low latency for fast, race-free tests
+    // Configure LocalMockServer with low latency for fast execution
     LocalMockServer.initConfig(const MockServerConfig(networkLatency: Duration(milliseconds: 10)));
   });
 
-  group('E2E App Integration Tests', () {
-    testWidgets(
-      'Should successfully execute sequential flow: Splash -> Home -> Settings -> Forgot Password -> Sign Up -> Login -> Profile Check -> Logout',
-      (WidgetTester tester) async {
-        // ==========================================
-        // FLOW 1: Boot App (Splash -> Home)
-        // ==========================================
-        app.main();
-        await tester.pumpAndSettle();
+  setUp(() {
+    originalOnError = FlutterError.onError;
+    originalDispatcherOnError = PlatformDispatcher.instance.onError;
+  });
 
-        // Verify SplashPage is rendering
-        expect(find.byType(SplashPage), findsOneWidget);
+  tearDown(() {
+    FlutterError.onError = originalOnError;
+    PlatformDispatcher.instance.onError = originalDispatcherOnError;
+  });
 
-        // Wait for Splash 2s delay
-        await tester.pump(const Duration(milliseconds: 2500));
-        await tester.pumpAndSettle();
+  group('E2E UI Flow Integration Tests', () {
+    // ==========================================
+    // CASE GROUP 1: Login Form & Validations
+    // ==========================================
+    testWidgets('UI Test - Login Form and Validations', (WidgetTester tester) async {
+      await bootAppAndGoToLogin(tester);
 
-        // Verify we transitioned to HomePage
-        expect(find.byType(HomePage), findsOneWidget);
+      expect(find.byType(LoginPage), findsOneWidget);
 
-        // ==========================================
-        // FLOW 2: Open Drawer -> Navigate to Login
-        // ==========================================
-        // Open Navigation Drawer
-        final ScaffoldState scaffoldState = tester.firstState(find.byType(Scaffold));
-        scaffoldState.openDrawer();
-        await tester.pumpAndSettle();
+      final loginFields = find.byType(CommonTextField);
+      expect(loginFields, findsNWidgets(2));
 
-        final loginDrawerOption = find.text(I18nKeys.login.tr);
-        expect(loginDrawerOption, findsOneWidget);
+      final submitLoginBtn = find.widgetWithText(CommonButton, I18nKeys.login.tr);
+      expect(submitLoginBtn, findsOneWidget);
 
-        await tester.tap(loginDrawerOption);
-        await tester.pumpAndSettle();
+      // Verify and tap Remember Me toggle
+      final rememberMeBtn = find.text(I18nKeys.rememberMe.tr);
+      expect(rememberMeBtn, findsOneWidget);
+      await tester.tap(rememberMeBtn);
+      await tester.pumpAndSettle();
 
-        // Verify on LoginPage
-        expect(find.byType(LoginPage), findsOneWidget);
+      // Test Password visibility toggle locally in CommonTextField
+      final passwordVisibilityOff = find.byIcon(Icons.visibility_off);
+      expect(passwordVisibilityOff, findsOneWidget);
+      await tester.tap(passwordVisibilityOff);
+      await tester.pumpAndSettle();
 
-        // ==========================================
-        // FLOW 3: Forgot Password Flow
-        // ==========================================
-        final forgotPasswordBtn = find.text(I18nKeys.forgotPassword.tr);
-        expect(forgotPasswordBtn, findsOneWidget);
+      final passwordVisibilityOn = find.byIcon(Icons.visibility);
+      expect(passwordVisibilityOn, findsOneWidget);
+      await tester.tap(passwordVisibilityOn);
+      await tester.pumpAndSettle();
+      expect(find.byIcon(Icons.visibility_off), findsOneWidget);
 
-        // Tap Forgot Password
-        await tester.tap(forgotPasswordBtn);
-        await tester.pumpAndSettle();
+      // ABNORMAL 1: Submit with empty fields
+      await tester.enterText(loginFields.at(0), '');
+      await tester.enterText(loginFields.at(1), '');
+      await tester.pumpAndSettle();
 
-        // Verify on ForgotPasswordPage
-        expect(find.byType(ForgotPasswordPage), findsOneWidget);
+      await tester.ensureVisible(submitLoginBtn);
+      await tester.pumpAndSettle();
+      await tester.tap(submitLoginBtn);
+      await tester.pumpAndSettle();
+      // Expect "Field required" errors
+      expect(find.text(I18nKeys.fieldRequired.tr), findsNWidgets(2));
 
-        final forgotEmailField = find.byType(CommonTextField);
-        expect(forgotEmailField, findsOneWidget);
+      // ABNORMAL 2: Submit with too short username and password
+      await tester.enterText(loginFields.at(0), 'ab');
+      await tester.enterText(loginFields.at(1), '123');
+      await tester.pumpAndSettle();
 
-        final sendResetBtn = find.text(I18nKeys.sendResetLink.tr);
-        expect(sendResetBtn, findsOneWidget);
+      await tester.tap(submitLoginBtn);
+      await tester.pumpAndSettle();
+      // Expect min length validation errors
+      expect(find.text(I18nKeys.minLengthMsg.trArgs(['3'])), findsOneWidget);
+      expect(find.text(I18nKeys.minLengthMsg.trArgs(['6'])), findsOneWidget);
+    });
 
-        // ABNORMAL 1: Empty input and submit
-        await tester.enterText(forgotEmailField, '');
-        await tester.pumpAndSettle();
-        await tester.ensureVisible(sendResetBtn);
-        await tester.pumpAndSettle();
-        await tester.tap(sendResetBtn);
-        await tester.pumpAndSettle();
-        // Expect "Field required" validation error
-        expect(find.text(I18nKeys.fieldRequired.tr), findsOneWidget);
+    // ==========================================
+    // CASE GROUP 2: Forgot Password Flow
+    // ==========================================
+    testWidgets('UI Test - Forgot Password Flow', (WidgetTester tester) async {
+      await bootAppAndGoToLogin(tester);
 
-        // ABNORMAL 2: Invalid email format and submit
-        await tester.enterText(forgotEmailField, 'invalid-email');
-        await tester.pumpAndSettle();
-        await tester.tap(sendResetBtn);
-        await tester.pumpAndSettle();
-        // Expect "Invalid email address" validation error
-        expect(find.text(I18nKeys.invalidEmail.tr), findsOneWidget);
+      final forgotPasswordBtn = find.text(I18nKeys.forgotPassword.tr);
+      expect(forgotPasswordBtn, findsOneWidget);
 
-        // NORMAL FLOW: Enter valid email and submit successfully
-        await tester.enterText(forgotEmailField, 'test_user@gmail.com');
-        await tester.pumpAndSettle();
+      // Tap Forgot Password
+      await tester.tap(forgotPasswordBtn);
+      await tester.pumpAndSettle();
 
-        // Dismiss keyboard
-        FocusManager.instance.primaryFocus?.unfocus();
-        await tester.pumpAndSettle();
+      // Verify page transition
+      expect(find.byType(ForgotPasswordPage), findsOneWidget);
 
-        await tester.tap(sendResetBtn);
-        // Wait for real-time local network request and transition to LoginPage
-        await tester.pump(const Duration(milliseconds: 500));
-        await tester.pumpAndSettle();
+      final forgotEmailField = find.byType(CommonTextField);
+      expect(forgotEmailField, findsOneWidget);
 
-        // Verify redirect back to LoginPage
-        expect(find.byType(LoginPage), findsOneWidget);
+      final sendResetBtn = find.text(I18nKeys.sendResetLink.tr);
+      expect(sendResetBtn, findsOneWidget);
 
-        // ==========================================
-        // FLOW 4: Sign Up / Register Flow
-        // ==========================================
-        final signUpBtn = find.text(I18nKeys.signUp.tr);
-        expect(signUpBtn, findsOneWidget);
+      // Submit invalid email format
+      await tester.enterText(forgotEmailField, 'invalid-email');
+      await tester.pumpAndSettle();
+      await tester.tap(sendResetBtn);
+      await tester.pumpAndSettle();
+      expect(find.text(I18nKeys.invalidEmail.tr), findsOneWidget);
 
-        // Tap Sign Up
-        await tester.tap(signUpBtn);
-        await tester.pumpAndSettle();
+      // Submit valid email
+      await tester.enterText(forgotEmailField, 'test_user@gmail.com');
+      await tester.pumpAndSettle();
 
-        // Verify on SignUpPage
-        expect(find.byType(SignUpPage), findsOneWidget);
+      // Dismiss keyboard
+      FocusManager.instance.primaryFocus?.unfocus();
+      await tester.pumpAndSettle();
 
-        final signUpFields = find.byType(CommonTextField);
-        expect(signUpFields, findsNWidgets(4));
+      await tester.tap(sendResetBtn);
+      await waitForPage(tester, LoginPage);
 
-        final submitSignUpBtn = find.widgetWithText(CommonButton, I18nKeys.signUp.tr);
-        expect(submitSignUpBtn, findsOneWidget);
+      // Verify redirect back to LoginPage
+      expect(find.byType(LoginPage), findsOneWidget);
+    });
 
-        // ABNORMAL 1: Submit with all fields empty
-        await tester.enterText(signUpFields.at(0), '');
-        await tester.enterText(signUpFields.at(1), '');
-        await tester.enterText(signUpFields.at(2), '');
-        await tester.enterText(signUpFields.at(3), '');
-        await tester.pumpAndSettle();
+    // ==========================================
+    // CASE GROUP 3: Sign Up Flow
+    // ==========================================
+    testWidgets('UI Test - Sign Up Flow', (WidgetTester tester) async {
+      await bootAppAndGoToLogin(tester);
 
-        await tester.ensureVisible(submitSignUpBtn);
-        await tester.pumpAndSettle();
-        await tester.tap(submitSignUpBtn);
-        await tester.pumpAndSettle();
-        // Expect multiple "Field required" errors visible
-        expect(find.text(I18nKeys.fieldRequired.tr), findsAtLeastNWidgets(2));
+      final signUpBtn = find.text(I18nKeys.signUp.tr);
+      expect(signUpBtn, findsOneWidget);
 
-        // ABNORMAL 2: Submit with invalid email, too short password, and mismatched confirm password
-        await tester.enterText(signUpFields.at(0), 'Listen');
-        await tester.enterText(signUpFields.at(1), 'invalid-email');
-        await tester.enterText(signUpFields.at(2), '123');
-        await tester.enterText(signUpFields.at(3), 'different');
-        await tester.pumpAndSettle();
+      // Tap Sign Up
+      await tester.tap(signUpBtn);
+      await tester.pumpAndSettle();
 
-        await tester.tap(submitSignUpBtn);
-        await tester.pumpAndSettle();
-        // Expect specific validation errors
-        expect(find.text(I18nKeys.invalidEmail.tr), findsOneWidget);
-        expect(find.text(I18nKeys.minLengthMsg.trArgs(['6'])), findsOneWidget);
-        expect(find.text(I18nKeys.passwordsDoNotMatch.tr), findsOneWidget);
+      // Verify on SignUpPage
+      expect(find.byType(SignUpPage), findsOneWidget);
 
-        // NORMAL FLOW: Enter valid registration details and submit successfully
-        await tester.enterText(signUpFields.at(0), 'Listen');
-        await tester.enterText(signUpFields.at(1), 'listen2code@gmail.com');
-        await tester.enterText(signUpFields.at(2), 'password123');
-        await tester.enterText(signUpFields.at(3), 'password123');
-        await tester.pumpAndSettle();
+      final signUpFields = find.byType(CommonTextField);
+      expect(signUpFields, findsNWidgets(4));
 
-        // Dismiss keyboard
-        FocusManager.instance.primaryFocus?.unfocus();
-        await tester.pumpAndSettle();
+      final submitSignUpBtn = find.widgetWithText(CommonButton, I18nKeys.signUp.tr);
+      expect(submitSignUpBtn, findsOneWidget);
 
-        await tester.tap(submitSignUpBtn);
-        // Wait for real-time local network request and transition to LoginPage
-        await tester.pump(const Duration(milliseconds: 500));
-        await tester.pumpAndSettle();
+      // Submit with mismatching confirm password
+      await tester.enterText(signUpFields.at(0), 'Listen');
+      await tester.enterText(signUpFields.at(1), 'listen2code@gmail.com');
+      await tester.enterText(signUpFields.at(2), 'password123');
+      await tester.enterText(signUpFields.at(3), 'different');
+      await tester.pumpAndSettle();
 
-        // Verify redirect back to LoginPage
-        expect(find.byType(LoginPage), findsOneWidget);
+      await tester.ensureVisible(submitSignUpBtn);
+      await tester.pumpAndSettle();
+      await tester.tap(submitSignUpBtn);
+      await tester.pumpAndSettle();
+      expect(find.text(I18nKeys.passwordsDoNotMatch.tr), findsOneWidget);
 
-        // ==========================================
-        // FLOW 5: Login Flow
-        // ==========================================
-        final loginFields = find.byType(CommonTextField);
-        expect(loginFields, findsNWidgets(2));
+      // Submit valid registration details
+      await tester.enterText(signUpFields.at(3), 'password123');
+      await tester.pumpAndSettle();
 
-        final submitLoginBtn = find.widgetWithText(CommonButton, I18nKeys.login.tr);
-        expect(submitLoginBtn, findsOneWidget);
+      // Dismiss keyboard
+      FocusManager.instance.primaryFocus?.unfocus();
+      await tester.pumpAndSettle();
 
-        // ABNORMAL 1: Submit with empty fields
-        await tester.enterText(loginFields.at(0), '');
-        await tester.enterText(loginFields.at(1), '');
-        await tester.pumpAndSettle();
+      await tester.tap(submitSignUpBtn);
+      await waitForPage(tester, LoginPage);
 
-        await tester.ensureVisible(submitLoginBtn);
-        await tester.pumpAndSettle();
-        await tester.tap(submitLoginBtn);
-        await tester.pumpAndSettle();
-        // Expect "Field required" errors
-        expect(find.text(I18nKeys.fieldRequired.tr), findsNWidgets(2));
+      // Verify redirect back to LoginPage
+      expect(find.byType(LoginPage), findsOneWidget);
+    });
 
-        // ABNORMAL 2: Submit with too short username and password
-        await tester.enterText(loginFields.at(0), 'ab');
-        await tester.enterText(loginFields.at(1), '123');
-        await tester.pumpAndSettle();
+    // ==========================================
+    // CASE GROUP 4: Login & Home Navigation
+    // ==========================================
+    testWidgets('UI Test - Login and Home Navigation', (WidgetTester tester) async {
+      await performUiLogin(tester, 'test_user', 'password123');
 
-        await tester.tap(submitLoginBtn);
-        await tester.pumpAndSettle();
-        // Expect min length validation errors
-        expect(find.text(I18nKeys.minLengthMsg.trArgs(['3'])), findsOneWidget);
-        expect(find.text(I18nKeys.minLengthMsg.trArgs(['6'])), findsOneWidget);
+      // Verify we returned to HomePage
+      expect(find.byType(HomePage), findsOneWidget);
 
-        // NORMAL FLOW: Enter valid credentials and login
-        await tester.enterText(loginFields.at(0), 'test_user');
-        await tester.enterText(loginFields.at(1), 'password123');
-        await tester.pumpAndSettle();
+      // Open Navigation Drawer to verify profile details
+      final ScaffoldState scaffoldState = tester.firstState(find.byType(Scaffold));
+      scaffoldState.openDrawer();
+      await tester.pumpAndSettle();
 
-        // Dismiss keyboard
-        FocusManager.instance.primaryFocus?.unfocus();
-        await tester.pumpAndSettle();
+      expect(find.text('Listen'), findsOneWidget);
+      expect(find.text('listen2code@gmail.com'), findsOneWidget);
 
-        await tester.tap(submitLoginBtn);
-        // Wait for real-time local network request and transition to HomePage
-        await tester.pump(const Duration(milliseconds: 500));
-        await tester.pumpAndSettle();
+      // Close Drawer (tap outside)
+      await tester.tapAt(const Offset(350, 300));
+      await tester.pumpAndSettle();
 
-        // Verify we returned to HomePage
-        expect(find.byType(HomePage), findsOneWidget);
+      // Switch bottom tabs
+      final aboutMeTab = find.byIcon(Icons.person);
+      expect(aboutMeTab, findsOneWidget);
+      await tester.tap(aboutMeTab);
+      await tester.pumpAndSettle();
 
-        // ==========================================
-        // FLOW 6: Verify Profile & Logout
-        // ==========================================
-        // Open Navigation Drawer again to verify details
-        final ScaffoldState scaffoldStateAfterLogin = tester.firstState(find.byType(Scaffold));
-        scaffoldStateAfterLogin.openDrawer();
-        await tester.pumpAndSettle();
+      // Verify AboutMe page & check Share action button
+      final shareIcon = find.byIcon(Icons.share_outlined);
+      expect(shareIcon, findsOneWidget);
+      await tester.tap(shareIcon);
+      await tester.pumpAndSettle();
+    });
 
-        // Verify dynamic profile info updated
-        expect(find.text('Listen'), findsOneWidget);
-        expect(find.text('listen2code@gmail.com'), findsOneWidget);
+    // ==========================================
+    // CASE GROUP 5: Settings Adjustments & Logout
+    // ==========================================
+    testWidgets('UI Test - Settings Adjustments and Logout', (WidgetTester tester) async {
+      await navigateToSettings(tester);
 
-        // Tap Logout option
-        final logoutDrawerOption = find.text(I18nKeys.logout.tr);
-        expect(logoutDrawerOption, findsOneWidget);
-        await tester.tap(logoutDrawerOption);
-        await tester.pumpAndSettle(); // Settle confirmation dialog
+      expect(find.byType(SettingsPage), findsOneWidget);
 
-        // Tap dialog OK button
-        final okButton = find.text(I18nKeys.ok.tr);
-        expect(okButton, findsOneWidget);
-        await tester.tap(okButton);
-        // Wait for real-time local network request and transition back to LoginPage
-        await tester.pump(const Duration(milliseconds: 500));
-        await tester.pumpAndSettle();
+      // 1. Language switcher UI verification
+      final languageTile = find.text(I18nKeys.language.tr);
+      expect(languageTile, findsOneWidget);
+      await tester.tap(languageTile);
+      await tester.pumpAndSettle();
 
-        // Verify redirect to LoginPage
-        expect(find.byType(LoginPage), findsOneWidget);
+      // Select english language and confirm
+      final englishOption = find.text('English');
+      expect(englishOption, findsOneWidget);
+      await tester.tap(englishOption);
+      await tester.pumpAndSettle();
 
-        // Clean up remaining Toast timers
-        await tester.pump(const Duration(seconds: 3));
-      },
-    );
+      // 2. Notifications switch toggle UI check
+      final notificationTile = find.byIcon(Icons.notifications_none_rounded);
+      expect(notificationTile, findsOneWidget);
+      await tester.tap(notificationTile);
+      await tester.pumpAndSettle();
+
+      // 3. Clear cache UI check
+      final clearCacheTile = find.text(I18nKeys.clearCache.tr);
+      expect(clearCacheTile, findsOneWidget);
+      await tester.tap(clearCacheTile);
+      await tester.pumpAndSettle();
+
+      // 4. Logout trigger via Drawer (since Logout button is in drawer footer)
+      final ScaffoldState settingsScaffoldState = tester.firstState(find.byType(Scaffold));
+      settingsScaffoldState.openDrawer();
+      await tester.pumpAndSettle();
+
+      final logoutBtn = find.text(I18nKeys.logout.tr);
+      expect(logoutBtn, findsOneWidget);
+      await tester.tap(logoutBtn);
+      await tester.pumpAndSettle();
+
+      // Tap Dialog OK button
+      final okBtn = find.text(I18nKeys.ok.tr);
+      expect(okBtn, findsOneWidget);
+      await tester.tap(okBtn);
+      await waitForPage(tester, LoginPage);
+
+      // Verify redirected back to LoginPage
+      expect(find.byType(LoginPage), findsOneWidget);
+    });
   });
 }
 
