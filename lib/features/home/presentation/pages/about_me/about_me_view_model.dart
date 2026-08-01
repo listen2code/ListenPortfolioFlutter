@@ -171,7 +171,7 @@ class AboutMeViewModel extends _$AboutMeViewModel with ViewModelMixin<AboutMeSta
   }
 
   void _onPreviewAvatar() {
-    final avatarUrl = authManager.state.user?.avatarUrl;
+    final avatarUrl = state.data?.avatarUrl;
     emitEffect(
       PreviewImageEffect(
         imageUrl: state.imageFile == null ? avatarUrl : null,
