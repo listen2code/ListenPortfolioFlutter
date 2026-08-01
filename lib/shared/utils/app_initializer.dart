@@ -91,7 +91,7 @@ class AppInitializer {
         languageCodeProvider: () => settingManager.locale.languageCode,
         // Navigation & Auth Interception Logic
         routes: Routes.routes,
-        schemes: const ['listen'],
+        schemes: const [AppConstants.deepLinkScheme],
         isGuestCheck: () => authManager.state.isGuest,
         onLoginRedirect: (context) async {
           final result = await AppNav.to(Routes.login);
