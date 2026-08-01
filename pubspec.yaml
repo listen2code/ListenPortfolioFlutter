@@ -4,8 +4,8 @@ publish_to: 'none'
 
 version: 1.1.5
 desc: "AboutMe id=1"
-desc_zh: ""
-desc_ja: ""
+desc_zh: "关于我 id=1"
+desc_ja: "私について id=1"
 
 environment:
   sdk: ^3.12.1
