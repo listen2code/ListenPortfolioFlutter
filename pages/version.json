@@ -1,10 +1,10 @@
 {
-  "version": "1.1.5",
+  "version": "1.1.6",
   "buildNumber": 1,
   "url": "https://play.google.com/store/apps/details?id=com.listen.portfolio.listen_portfolio_flutter",
   "changelog": {
-    "zh": "关于我 id=1",
-    "en": "AboutMe id=1",
-    "ja": "私について id=1"
+    "zh": "",
+    "en": "Daily Build",
+    "ja": ""
   }
 }
