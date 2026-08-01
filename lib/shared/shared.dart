@@ -24,6 +24,7 @@ export 'base/show_licenses_provider_impl.dart';
 export 'base/show_tape_details_provider_impl.dart';
 export 'base/switch_dialog_provider_impl.dart';
 export 'base/view_log_provider_impl.dart';
+export 'constants/api_endpoints.dart';
 export 'constants/app_constants.dart';
 export 'constants/env_config.dart';
 export 'extensions/ref_extension.dart';

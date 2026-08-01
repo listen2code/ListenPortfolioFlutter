@@ -106,13 +106,7 @@ class AppInitializer {
           return result == true;
         },
         networkConfig: const NetworkConfig(
-          visitorPaths: [
-            '/v1/auth/signUp',
-            '/v1/auth/login',
-            '/v1/auth/forgot-password',
-            '/v1/auth/refresh',
-            '/v1/projects',
-          ],
+          visitorPaths: ApiEndpoints.visitorPaths,
         ),
       ),
     );

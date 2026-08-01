@@ -9,6 +9,7 @@ import '../models/signup_request_model.dart';
 import '../models/user_model.dart';
 import '../models/upload_avatar_request_model.dart';
 import 'package:retrofit/retrofit.dart';
+import '../../../../shared/shared.dart';
 
 part 'auth_remote_data_source.g.dart';
 
@@ -16,30 +17,30 @@ part 'auth_remote_data_source.g.dart';
 abstract class AuthRemoteDataSource {
   factory AuthRemoteDataSource(Dio dio, {String baseUrl}) = _AuthRemoteDataSource;
 
-  @POST('/v1/auth/login')
+  @POST(ApiEndpoints.login)
   Future<BaseResponseModel<LoginModel>> login(@Body() LoginRequestModel? request);
 
-  @POST('/v1/auth/signUp')
+  @POST(ApiEndpoints.signUp)
   Future<BaseResponseModel<void>> signUp(@Body() SignupRequestModel? request);
 
-  @POST('/v1/auth/forgot-password')
+  @POST(ApiEndpoints.forgotPassword)
   Future<BaseResponseModel<void>> forgotPassword(@Body() ForgotPasswordRequestModel? request);
 
-  @POST('/v1/auth/refresh')
+  @POST(ApiEndpoints.refreshToken)
   Future<BaseResponseModel<LoginModel>> refreshToken(@Query('refreshToken') String refreshToken);
 
-  @POST('/v1/user/logout')
+  @POST(ApiEndpoints.logout)
   Future<BaseResponseModel<void>> logout();
 
-  @POST('/v1/user/change-password')
+  @POST(ApiEndpoints.changePassword)
   Future<BaseResponseModel<void>> changePassword(@Body() ChangePasswordRequestModel? request);
 
-  @DELETE('/v1/user/delete-account')
+  @DELETE(ApiEndpoints.deleteAccount)
   Future<BaseResponseModel<void>> deleteAccount(@Body() DeleteAccountRequestModel? request);
 
-  @GET('/v1/user')
+  @GET(ApiEndpoints.getUser)
   Future<BaseResponseModel<UserModel>> getUserById(@Query('id') String id);
 
-  @POST('/v1/user/upload-avatar')
+  @POST(ApiEndpoints.uploadAvatar)
   Future<BaseResponseModel<UserModel>> uploadAvatar(@Body() UploadAvatarRequestModel? request);
 }
