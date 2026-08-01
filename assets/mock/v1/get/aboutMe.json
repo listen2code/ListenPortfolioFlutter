@@ -3,6 +3,8 @@
   "messageId": "",
   "message": "",
   "body": {
+    "name": "Listen",
+    "avatarUrl": "https://api.dicebear.com/7.x/avataaars/png?seed=Listen",
     "status": "available",
     "jobTitle": "Senior Android / Flutter Engineer",
     "bio": "Senior Android Engineer with 11+ years of mobile development experience and 3+ years in Flutter. Expertise in client architecture (componentization, plugin systems), performance optimization, and APM infrastructure. Key achievements include reducing Feed timeout rates from 1.5% to 0.3%, building full-stack APM monitoring platforms, and leading Flutter app development for securities trading at Rakuten. JLPT N1, BJT J2 certified, currently based in Tokyo, Japan.",

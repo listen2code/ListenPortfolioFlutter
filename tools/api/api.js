@@ -6,6 +6,7 @@ const url = require('url');
 
 const port = 9898;
 const readFileAsync = util.promisify(fs.readFile);
+const mockBaseDir = path.join(__dirname, '..', '..', 'assets', 'mock');
 
 // Supported image types and their MIME types
 const mimeTypes = {
@@ -57,10 +58,10 @@ async function handleRequest(req, res, requestBody) {
         if (mimeTypes[ext]) {
             // Updated Path Logic:
             // URL: /v1/images/project1.jpg
-            // Physical Path: tools/api/images/project1.jpg
+            // Physical Path: assets/mock/images/project1.jpg
             // We strip the version prefix (e.g., /v1) to match the physical directory structure
             const relativePath = pathname.replace(/^\/v\d+/, '');
-            const filePath = path.join(__dirname, relativePath);
+            const filePath = path.join(mockBaseDir, relativePath);
 
             if (fs.existsSync(filePath)) {
                 const data = await readFileAsync(filePath);
@@ -153,7 +154,7 @@ async function handleRequest(req, res, requestBody) {
         versionDir = pathParts[0];
     }
 
-    const baseDir = path.join(__dirname, 'json', versionDir);
+    const baseDir = path.join(mockBaseDir, versionDir);
 
     // 修改点：不再仅仅依赖 matchedApiName，而是直接从 pathname 中提取资源路径
     // 移除版本号前缀 (例如 /v1) 和开头的斜杠
