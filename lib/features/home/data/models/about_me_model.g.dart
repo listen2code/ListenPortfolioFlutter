@@ -11,6 +11,8 @@ _AboutMeModel _$AboutMeModelFromJson(Map json) => $checkedCreate(
   json,
   ($checkedConvert) {
     final val = _AboutMeModel(
+      name: $checkedConvert('name', (v) => v as String?),
+      avatarUrl: $checkedConvert('avatarUrl', (v) => v as String?),
       status: $checkedConvert('status', (v) => v as String?),
       jobTitle: $checkedConvert('jobTitle', (v) => v as String?),
       bio: $checkedConvert('bio', (v) => v as String?),
@@ -89,6 +91,8 @@ _AboutMeModel _$AboutMeModelFromJson(Map json) => $checkedCreate(
 
 Map<String, dynamic> _$AboutMeModelToJson(_AboutMeModel instance) =>
     <String, dynamic>{
+      'name': instance.name,
+      'avatarUrl': instance.avatarUrl,
       'status': instance.status,
       'jobTitle': instance.jobTitle,
       'bio': instance.bio,

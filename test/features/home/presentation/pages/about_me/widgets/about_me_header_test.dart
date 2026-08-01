@@ -15,13 +15,15 @@ void main() {
 
   group('AboutMeHeader Widget Tests', () {
     final testUser = UserModel(
-      id: 'user_123',
+      id: '1',
       name: 'John Doe',
       email: 'john.doe@example.com',
       avatarUrl: 'https://example.com/avatar.jpg',
     );
 
     final testAboutMeData = AboutMeModel(
+      name: 'John Doe',
+      avatarUrl: 'https://example.com/avatar.jpg',
       status: 'Software Engineer',
       jobTitle: 'Senior Flutter Developer',
       bio: 'Passionate developer',

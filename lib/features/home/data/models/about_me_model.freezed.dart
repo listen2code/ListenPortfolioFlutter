@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AboutMeModel {
 
- String? get status; String? get jobTitle; String? get bio; String? get graduationYear; String? get major; String? get github; List<String> get certifications; List<AboutMeStatModel> get stats; List<ExperienceItemModel> get experiences; List<EducationItemModel> get education; List<SkillCategoryModel> get skills; List<LanguageItemModel> get languages;
+ String? get name; String? get avatarUrl; String? get status; String? get jobTitle; String? get bio; String? get graduationYear; String? get major; String? get github; List<String> get certifications; List<AboutMeStatModel> get stats; List<ExperienceItemModel> get experiences; List<EducationItemModel> get education; List<SkillCategoryModel> get skills; List<LanguageItemModel> get languages;
 /// Create a copy of AboutMeModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $AboutMeModelCopyWith<AboutMeModel> get copyWith => _$AboutMeModelCopyWithImpl<A
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AboutMeModel&&(identical(other.status, status) || other.status == status)&&(identical(other.jobTitle, jobTitle) || other.jobTitle == jobTitle)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.graduationYear, graduationYear) || other.graduationYear == graduationYear)&&(identical(other.major, major) || other.major == major)&&(identical(other.github, github) || other.github == github)&&const DeepCollectionEquality().equals(other.certifications, certifications)&&const DeepCollectionEquality().equals(other.stats, stats)&&const DeepCollectionEquality().equals(other.experiences, experiences)&&const DeepCollectionEquality().equals(other.education, education)&&const DeepCollectionEquality().equals(other.skills, skills)&&const DeepCollectionEquality().equals(other.languages, languages));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AboutMeModel&&(identical(other.name, name) || other.name == name)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.status, status) || other.status == status)&&(identical(other.jobTitle, jobTitle) || other.jobTitle == jobTitle)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.graduationYear, graduationYear) || other.graduationYear == graduationYear)&&(identical(other.major, major) || other.major == major)&&(identical(other.github, github) || other.github == github)&&const DeepCollectionEquality().equals(other.certifications, certifications)&&const DeepCollectionEquality().equals(other.stats, stats)&&const DeepCollectionEquality().equals(other.experiences, experiences)&&const DeepCollectionEquality().equals(other.education, education)&&const DeepCollectionEquality().equals(other.skills, skills)&&const DeepCollectionEquality().equals(other.languages, languages));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,status,jobTitle,bio,graduationYear,major,github,const DeepCollectionEquality().hash(certifications),const DeepCollectionEquality().hash(stats),const DeepCollectionEquality().hash(experiences),const DeepCollectionEquality().hash(education),const DeepCollectionEquality().hash(skills),const DeepCollectionEquality().hash(languages));
+int get hashCode => Object.hash(runtimeType,name,avatarUrl,status,jobTitle,bio,graduationYear,major,github,const DeepCollectionEquality().hash(certifications),const DeepCollectionEquality().hash(stats),const DeepCollectionEquality().hash(experiences),const DeepCollectionEquality().hash(education),const DeepCollectionEquality().hash(skills),const DeepCollectionEquality().hash(languages));
 
 @override
 String toString() {
-  return 'AboutMeModel(status: $status, jobTitle: $jobTitle, bio: $bio, graduationYear: $graduationYear, major: $major, github: $github, certifications: $certifications, stats: $stats, experiences: $experiences, education: $education, skills: $skills, languages: $languages)';
+  return 'AboutMeModel(name: $name, avatarUrl: $avatarUrl, status: $status, jobTitle: $jobTitle, bio: $bio, graduationYear: $graduationYear, major: $major, github: $github, certifications: $certifications, stats: $stats, experiences: $experiences, education: $education, skills: $skills, languages: $languages)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $AboutMeModelCopyWith<$Res>  {
   factory $AboutMeModelCopyWith(AboutMeModel value, $Res Function(AboutMeModel) _then) = _$AboutMeModelCopyWithImpl;
 @useResult
 $Res call({
- String? status, String? jobTitle, String? bio, String? graduationYear, String? major, String? github, List<String> certifications, List<AboutMeStatModel> stats, List<ExperienceItemModel> experiences, List<EducationItemModel> education, List<SkillCategoryModel> skills, List<LanguageItemModel> languages
+ String? name, String? avatarUrl, String? status, String? jobTitle, String? bio, String? graduationYear, String? major, String? github, List<String> certifications, List<AboutMeStatModel> stats, List<ExperienceItemModel> experiences, List<EducationItemModel> education, List<SkillCategoryModel> skills, List<LanguageItemModel> languages
 });
 
 
@@ -65,9 +65,11 @@ class _$AboutMeModelCopyWithImpl<$Res>
 
 /// Create a copy of AboutMeModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? status = freezed,Object? jobTitle = freezed,Object? bio = freezed,Object? graduationYear = freezed,Object? major = freezed,Object? github = freezed,Object? certifications = null,Object? stats = null,Object? experiences = null,Object? education = null,Object? skills = null,Object? languages = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? name = freezed,Object? avatarUrl = freezed,Object? status = freezed,Object? jobTitle = freezed,Object? bio = freezed,Object? graduationYear = freezed,Object? major = freezed,Object? github = freezed,Object? certifications = null,Object? stats = null,Object? experiences = null,Object? education = null,Object? skills = null,Object? languages = null,}) {
   return _then(_self.copyWith(
-status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String?,avatarUrl: freezed == avatarUrl ? _self.avatarUrl : avatarUrl // ignore: cast_nullable_to_non_nullable
+as String?,status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String?,jobTitle: freezed == jobTitle ? _self.jobTitle : jobTitle // ignore: cast_nullable_to_non_nullable
 as String?,bio: freezed == bio ? _self.bio : bio // ignore: cast_nullable_to_non_nullable
 as String?,graduationYear: freezed == graduationYear ? _self.graduationYear : graduationYear // ignore: cast_nullable_to_non_nullable
@@ -164,10 +166,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? status,  String? jobTitle,  String? bio,  String? graduationYear,  String? major,  String? github,  List<String> certifications,  List<AboutMeStatModel> stats,  List<ExperienceItemModel> experiences,  List<EducationItemModel> education,  List<SkillCategoryModel> skills,  List<LanguageItemModel> languages)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? name,  String? avatarUrl,  String? status,  String? jobTitle,  String? bio,  String? graduationYear,  String? major,  String? github,  List<String> certifications,  List<AboutMeStatModel> stats,  List<ExperienceItemModel> experiences,  List<EducationItemModel> education,  List<SkillCategoryModel> skills,  List<LanguageItemModel> languages)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AboutMeModel() when $default != null:
-return $default(_that.status,_that.jobTitle,_that.bio,_that.graduationYear,_that.major,_that.github,_that.certifications,_that.stats,_that.experiences,_that.education,_that.skills,_that.languages);case _:
+return $default(_that.name,_that.avatarUrl,_that.status,_that.jobTitle,_that.bio,_that.graduationYear,_that.major,_that.github,_that.certifications,_that.stats,_that.experiences,_that.education,_that.skills,_that.languages);case _:
   return orElse();
 
 }
@@ -185,10 +187,10 @@ return $default(_that.status,_that.jobTitle,_that.bio,_that.graduationYear,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? status,  String? jobTitle,  String? bio,  String? graduationYear,  String? major,  String? github,  List<String> certifications,  List<AboutMeStatModel> stats,  List<ExperienceItemModel> experiences,  List<EducationItemModel> education,  List<SkillCategoryModel> skills,  List<LanguageItemModel> languages)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? name,  String? avatarUrl,  String? status,  String? jobTitle,  String? bio,  String? graduationYear,  String? major,  String? github,  List<String> certifications,  List<AboutMeStatModel> stats,  List<ExperienceItemModel> experiences,  List<EducationItemModel> education,  List<SkillCategoryModel> skills,  List<LanguageItemModel> languages)  $default,) {final _that = this;
 switch (_that) {
 case _AboutMeModel():
-return $default(_that.status,_that.jobTitle,_that.bio,_that.graduationYear,_that.major,_that.github,_that.certifications,_that.stats,_that.experiences,_that.education,_that.skills,_that.languages);case _:
+return $default(_that.name,_that.avatarUrl,_that.status,_that.jobTitle,_that.bio,_that.graduationYear,_that.major,_that.github,_that.certifications,_that.stats,_that.experiences,_that.education,_that.skills,_that.languages);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -205,10 +207,10 @@ return $default(_that.status,_that.jobTitle,_that.bio,_that.graduationYear,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? status,  String? jobTitle,  String? bio,  String? graduationYear,  String? major,  String? github,  List<String> certifications,  List<AboutMeStatModel> stats,  List<ExperienceItemModel> experiences,  List<EducationItemModel> education,  List<SkillCategoryModel> skills,  List<LanguageItemModel> languages)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? name,  String? avatarUrl,  String? status,  String? jobTitle,  String? bio,  String? graduationYear,  String? major,  String? github,  List<String> certifications,  List<AboutMeStatModel> stats,  List<ExperienceItemModel> experiences,  List<EducationItemModel> education,  List<SkillCategoryModel> skills,  List<LanguageItemModel> languages)?  $default,) {final _that = this;
 switch (_that) {
 case _AboutMeModel() when $default != null:
-return $default(_that.status,_that.jobTitle,_that.bio,_that.graduationYear,_that.major,_that.github,_that.certifications,_that.stats,_that.experiences,_that.education,_that.skills,_that.languages);case _:
+return $default(_that.name,_that.avatarUrl,_that.status,_that.jobTitle,_that.bio,_that.graduationYear,_that.major,_that.github,_that.certifications,_that.stats,_that.experiences,_that.education,_that.skills,_that.languages);case _:
   return null;
 
 }
@@ -220,9 +222,11 @@ return $default(_that.status,_that.jobTitle,_that.bio,_that.graduationYear,_that
 @JsonSerializable()
 
 class _AboutMeModel implements AboutMeModel {
-  const _AboutMeModel({this.status, this.jobTitle, this.bio, this.graduationYear, this.major, this.github, final  List<String> certifications = const [], final  List<AboutMeStatModel> stats = const [], final  List<ExperienceItemModel> experiences = const [], final  List<EducationItemModel> education = const [], final  List<SkillCategoryModel> skills = const [], final  List<LanguageItemModel> languages = const []}): _certifications = certifications,_stats = stats,_experiences = experiences,_education = education,_skills = skills,_languages = languages;
+  const _AboutMeModel({this.name, this.avatarUrl, this.status, this.jobTitle, this.bio, this.graduationYear, this.major, this.github, final  List<String> certifications = const [], final  List<AboutMeStatModel> stats = const [], final  List<ExperienceItemModel> experiences = const [], final  List<EducationItemModel> education = const [], final  List<SkillCategoryModel> skills = const [], final  List<LanguageItemModel> languages = const []}): _certifications = certifications,_stats = stats,_experiences = experiences,_education = education,_skills = skills,_languages = languages;
   factory _AboutMeModel.fromJson(Map<String, dynamic> json) => _$AboutMeModelFromJson(json);
 
+@override final  String? name;
+@override final  String? avatarUrl;
 @override final  String? status;
 @override final  String? jobTitle;
 @override final  String? bio;
@@ -285,16 +289,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AboutMeModel&&(identical(other.status, status) || other.status == status)&&(identical(other.jobTitle, jobTitle) || other.jobTitle == jobTitle)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.graduationYear, graduationYear) || other.graduationYear == graduationYear)&&(identical(other.major, major) || other.major == major)&&(identical(other.github, github) || other.github == github)&&const DeepCollectionEquality().equals(other._certifications, _certifications)&&const DeepCollectionEquality().equals(other._stats, _stats)&&const DeepCollectionEquality().equals(other._experiences, _experiences)&&const DeepCollectionEquality().equals(other._education, _education)&&const DeepCollectionEquality().equals(other._skills, _skills)&&const DeepCollectionEquality().equals(other._languages, _languages));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AboutMeModel&&(identical(other.name, name) || other.name == name)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.status, status) || other.status == status)&&(identical(other.jobTitle, jobTitle) || other.jobTitle == jobTitle)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.graduationYear, graduationYear) || other.graduationYear == graduationYear)&&(identical(other.major, major) || other.major == major)&&(identical(other.github, github) || other.github == github)&&const DeepCollectionEquality().equals(other._certifications, _certifications)&&const DeepCollectionEquality().equals(other._stats, _stats)&&const DeepCollectionEquality().equals(other._experiences, _experiences)&&const DeepCollectionEquality().equals(other._education, _education)&&const DeepCollectionEquality().equals(other._skills, _skills)&&const DeepCollectionEquality().equals(other._languages, _languages));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,status,jobTitle,bio,graduationYear,major,github,const DeepCollectionEquality().hash(_certifications),const DeepCollectionEquality().hash(_stats),const DeepCollectionEquality().hash(_experiences),const DeepCollectionEquality().hash(_education),const DeepCollectionEquality().hash(_skills),const DeepCollectionEquality().hash(_languages));
+int get hashCode => Object.hash(runtimeType,name,avatarUrl,status,jobTitle,bio,graduationYear,major,github,const DeepCollectionEquality().hash(_certifications),const DeepCollectionEquality().hash(_stats),const DeepCollectionEquality().hash(_experiences),const DeepCollectionEquality().hash(_education),const DeepCollectionEquality().hash(_skills),const DeepCollectionEquality().hash(_languages));
 
 @override
 String toString() {
-  return 'AboutMeModel(status: $status, jobTitle: $jobTitle, bio: $bio, graduationYear: $graduationYear, major: $major, github: $github, certifications: $certifications, stats: $stats, experiences: $experiences, education: $education, skills: $skills, languages: $languages)';
+  return 'AboutMeModel(name: $name, avatarUrl: $avatarUrl, status: $status, jobTitle: $jobTitle, bio: $bio, graduationYear: $graduationYear, major: $major, github: $github, certifications: $certifications, stats: $stats, experiences: $experiences, education: $education, skills: $skills, languages: $languages)';
 }
 
 
@@ -305,7 +309,7 @@ abstract mixin class _$AboutMeModelCopyWith<$Res> implements $AboutMeModelCopyWi
   factory _$AboutMeModelCopyWith(_AboutMeModel value, $Res Function(_AboutMeModel) _then) = __$AboutMeModelCopyWithImpl;
 @override @useResult
 $Res call({
- String? status, String? jobTitle, String? bio, String? graduationYear, String? major, String? github, List<String> certifications, List<AboutMeStatModel> stats, List<ExperienceItemModel> experiences, List<EducationItemModel> education, List<SkillCategoryModel> skills, List<LanguageItemModel> languages
+ String? name, String? avatarUrl, String? status, String? jobTitle, String? bio, String? graduationYear, String? major, String? github, List<String> certifications, List<AboutMeStatModel> stats, List<ExperienceItemModel> experiences, List<EducationItemModel> education, List<SkillCategoryModel> skills, List<LanguageItemModel> languages
 });
 
 
@@ -322,9 +326,11 @@ class __$AboutMeModelCopyWithImpl<$Res>
 
 /// Create a copy of AboutMeModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? status = freezed,Object? jobTitle = freezed,Object? bio = freezed,Object? graduationYear = freezed,Object? major = freezed,Object? github = freezed,Object? certifications = null,Object? stats = null,Object? experiences = null,Object? education = null,Object? skills = null,Object? languages = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? name = freezed,Object? avatarUrl = freezed,Object? status = freezed,Object? jobTitle = freezed,Object? bio = freezed,Object? graduationYear = freezed,Object? major = freezed,Object? github = freezed,Object? certifications = null,Object? stats = null,Object? experiences = null,Object? education = null,Object? skills = null,Object? languages = null,}) {
   return _then(_AboutMeModel(
-status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String?,avatarUrl: freezed == avatarUrl ? _self.avatarUrl : avatarUrl // ignore: cast_nullable_to_non_nullable
+as String?,status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String?,jobTitle: freezed == jobTitle ? _self.jobTitle : jobTitle // ignore: cast_nullable_to_non_nullable
 as String?,bio: freezed == bio ? _self.bio : bio // ignore: cast_nullable_to_non_nullable
 as String?,graduationYear: freezed == graduationYear ? _self.graduationYear : graduationYear // ignore: cast_nullable_to_non_nullable

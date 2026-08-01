@@ -42,7 +42,7 @@ final class CoffeePurchaseViewModelProvider
 }
 
 String _$coffeePurchaseViewModelHash() =>
-    r'3114e4692bd2746c27a40a936207301f942dc5f1';
+    r'e128423b62afeb4d3c7eddaca4acd7573d948f27';
 
 abstract class _$CoffeePurchaseViewModel
     extends $Notifier<CoffeePurchaseState> {

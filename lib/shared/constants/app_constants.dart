@@ -40,6 +40,7 @@ class AppConstants {
   // Common keys
   static const String appName = 'lPortfolio';
   static const String author = 'Listen';
+  static const String authorId = '1';
   static const String date = '2026';
   static const String mail = 'listen2code@gmail.com';
   static const String github = 'https://github.com/listen2code';

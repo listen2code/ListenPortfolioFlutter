@@ -41,7 +41,7 @@ class AboutMeHeader extends StatelessWidget {
                             semanticLabel: I18nKeys.profilePhotoSemanticLabel.tr,
                           )
                         : Visibility(
-                            visible: authManager.state.user?.avatarUrl?.isNotEmpty == true,
+                            visible: state.data?.avatarUrl?.isNotEmpty == true,
                             replacement: Container(
                               width: 120.f,
                               height: 120.f,
@@ -49,7 +49,7 @@ class AboutMeHeader extends StatelessWidget {
                               child: Icon(Icons.person, size: 35.f, color: Colors.white70),
                             ),
                             child: CommonImage.url(
-                              authManager.state.user?.avatarUrl ?? '',
+                              state.data?.avatarUrl ?? '',
                               width: 120.f,
                               height: 120.f,
                               borderRadius: 60.f,
@@ -59,29 +59,30 @@ class AboutMeHeader extends StatelessWidget {
                   ),
                 ),
               ),
-              Positioned(
-                bottom: 0,
-                right: 0,
-                child: Material(
-                  color: accentColor,
-                  shape: const CircleBorder(),
-                  elevation: 4.f,
-                  child: CommonClickable(
-                    onTap: onTapCamera,
-                    borderRadius: BorderRadius.circular(20.f),
-                    semanticLabel: I18nKeys.changeProfilePhoto.tr,
-                    child: Padding(
-                      padding: EdgeInsets.all(8.f),
-                      child: Icon(Icons.camera_alt, color: Colors.white, size: 20.f),
+              if (authManager.state.user?.id == AppConstants.authorId)
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: Material(
+                    color: accentColor,
+                    shape: const CircleBorder(),
+                    elevation: 4.f,
+                    child: CommonClickable(
+                      onTap: onTapCamera,
+                      borderRadius: BorderRadius.circular(20.f),
+                      semanticLabel: I18nKeys.changeProfilePhoto.tr,
+                      child: Padding(
+                        padding: EdgeInsets.all(8.f),
+                        child: Icon(Icons.camera_alt, color: Colors.white, size: 20.f),
+                      ),
                     ),
                   ),
                 ),
-              ),
             ],
           ),
           SizedBox(height: 16.f),
           CommonText(
-            authManager.state.user?.name ?? AppConstants.author,
+            state.data?.name ?? AppConstants.author,
             style: context.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
           ),
           CommonText(

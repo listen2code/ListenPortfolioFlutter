@@ -7,6 +7,8 @@ part 'about_me_model.g.dart';
 @freezed
 abstract class AboutMeModel with _$AboutMeModel {
   const factory AboutMeModel({
+    String? name,
+    String? avatarUrl,
     String? status,
     String? jobTitle,
     String? bio,
