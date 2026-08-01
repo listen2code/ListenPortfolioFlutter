@@ -211,6 +211,7 @@ class I18nKeys {
 
   // General terms
   static const String account = 'Account';
+  static const String apiError = 'API Error';
 
   // Extracted UI Terms
   static const String detailedCv = 'Detailed CV';

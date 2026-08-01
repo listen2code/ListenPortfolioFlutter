@@ -53,3 +53,10 @@ pubspec_overrides.yaml
 
 # Firebase service account private key
 firebase-service-account.json
+
+# Personal / Local developer files
+devtools_options.yaml
+.cursor/
+apkOutput/
+advice2026.md
+resume.md

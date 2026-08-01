@@ -144,6 +144,7 @@ final Map<String, String> ja = {
   I18nKeys.privacyPolicy: 'プライバシーポリシー',
   I18nKeys.termsOfService: '利用規約',
   I18nKeys.account: 'アカウント',
+  I18nKeys.apiError: 'APIエラー',
   I18nKeys.deleteAccount: 'アカウント削除',
   I18nKeys.deleteAccountConfirmTitle: 'アカウントを削除しますか？',
   I18nKeys.deleteAccountConfirmContent: 'この操作は取り消しできません。すべての個人データが削除されます。',
