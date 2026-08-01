@@ -222,8 +222,5 @@
 - `if (!widget.useScaffold)` 等零散页面能力想法
 - IDE plugin：json 模型转换、asset 资源生成到 `R.dart`
 - 剔除部分三方pub，能自定义实现的，尽量自己实现，学习目的
-- 目前的功能，可以注册新账户，可是新账户并没有概览，简历等信息，我虽然觉得可以保留注册功能，
-但是希望新注册的用户也可以看到本人的账户（userId=1）的概览，履历，项目信息，毕竟都是展示我的经历，
-而不是各自注册用户自己的经历，不过之类可能要一些权限控制，比如aboutMe画面，除了本人账户以外，无法修改头像和简历信息，只能查看
 - 401的时候，没有发出refreshToken，自动刷新token的流程没有继续走下去
 - 切换账户后，4个tab的刷新问题，LogoutProviderImpl是否要invalidate(overviewViewModelProvider)等代码？
