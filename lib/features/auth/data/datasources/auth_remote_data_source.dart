@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:listen_core/core.dart';
 import '../models/change_password_request_model.dart';
 import '../models/delete_account_request_model.dart';
 import '../models/forgot_password_request_model.dart';
