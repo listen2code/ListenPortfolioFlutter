@@ -222,6 +222,5 @@
 - `if (!widget.useScaffold)` 等零散页面能力想法
 - IDE plugin：json 模型转换、asset 资源生成到 `R.dart`
 - 剔除部分三方pub，能自定义实现的，尽量自己实现，学习目的
-- 401的时候，没有发出refreshToken，自动刷新token的流程没有继续走下去
 - 切换账户后，4个tab的刷新问题，LogoutProviderImpl是否要invalidate(overviewViewModelProvider)等代码？
 - ios release
