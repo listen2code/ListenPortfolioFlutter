@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/settings_intent.dart';
@@ -38,7 +39,9 @@ void main() {
 
     setUp(() async {
       SharedPreferences.setMockInitialValues({});
+      FlutterSecureStorage.setMockInitialValues({});
       await SpUtil.init(prefix: 'test_');
+      await SecureStorageUtil.init(prefix: 'test_');
       await setupTestEnvironment();
       await AppEnv.setEnvironment(AppEnvironment.mock);
 
