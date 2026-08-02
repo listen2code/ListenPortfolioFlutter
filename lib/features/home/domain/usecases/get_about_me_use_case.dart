@@ -1,4 +1,3 @@
-import 'package:fpdart/fpdart.dart';
 import 'package:listen_core/core.dart';
 import '../../data/models/about_me_model.dart';
 import '../repositories/about_me_repository.dart';

@@ -1,4 +1,3 @@
-import 'package:fpdart/fpdart.dart';
 import 'package:listen_core/core.dart';
 import '../datasources/projects_local_data_source.dart';
 import '../datasources/projects_remote_data_source.dart';

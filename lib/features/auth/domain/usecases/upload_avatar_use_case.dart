@@ -1,4 +1,3 @@
-import 'package:fpdart/fpdart.dart';
 import 'package:listen_core/core.dart';
 import '../../data/models/user_model.dart';
 import '../repositories/auth_repository.dart';

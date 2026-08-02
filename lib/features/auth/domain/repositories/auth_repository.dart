@@ -1,4 +1,3 @@
-import 'package:fpdart/fpdart.dart';
 import 'package:listen_core/core.dart';
 import '../../data/models/change_password_request_model.dart';
 import '../../data/models/delete_account_request_model.dart';

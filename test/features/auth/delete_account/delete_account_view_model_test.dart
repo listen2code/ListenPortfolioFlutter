@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:fpdart/fpdart.dart';
 import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/delete_account_request_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';

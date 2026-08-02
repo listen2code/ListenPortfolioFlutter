@@ -1,4 +1,3 @@
-import 'package:fpdart/fpdart.dart';
 import 'package:listen_core/core.dart';
 import '../../data/models/change_password_request_model.dart';
 import '../repositories/auth_repository.dart';

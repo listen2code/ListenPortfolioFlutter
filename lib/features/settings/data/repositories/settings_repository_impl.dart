@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:fpdart/fpdart.dart';
 import 'package:listen_core/core.dart';
 import '../datasources/settings_remote_data_source.dart';
 import '../models/version_model.dart';

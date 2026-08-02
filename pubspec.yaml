@@ -16,7 +16,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  listen_core: ^0.0.47
+  listen_core: ^0.0.48
   listen_uikit: ^0.0.25
   dynamic_color: ^1.8.1
 
@@ -44,9 +44,6 @@ dependencies:
   # Networking
   dio: ^5.9.1
   retrofit: ^4.9.2
-
-  # Functional Programming
-  fpdart: ^1.1.0
 
   # Storage
   shared_preferences: ^2.5.4

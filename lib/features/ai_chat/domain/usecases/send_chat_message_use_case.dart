@@ -1,4 +1,3 @@
-import 'package:fpdart/fpdart.dart';
 import 'package:listen_core/core.dart';
 import '../../data/models/ai_chat_request_model.dart';
 import '../../data/models/ai_chat_response_model.dart';

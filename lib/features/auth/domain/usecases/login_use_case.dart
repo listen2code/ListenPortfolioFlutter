@@ -1,4 +1,3 @@
-import 'package:fpdart/fpdart.dart';
 import 'package:listen_core/core.dart';
 import '../../data/models/get_current_user_request_model.dart';
 import '../../data/models/login_request_model.dart';

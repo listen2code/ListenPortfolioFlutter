@@ -1,4 +1,3 @@
-import 'package:fpdart/fpdart.dart';
 import 'package:listen_core/core.dart';
 import '../../data/models/playback_step.dart';
 import '../../data/models/playback_tape_metadata.dart';

@@ -1,4 +1,3 @@
-import 'package:fpdart/fpdart.dart';
 import 'package:listen_core/core.dart';
 import '../datasources/ai_chat_remote_data_source.dart';
 import '../datasources/ai_chat_local_data_source.dart';

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:fpdart/fpdart.dart';
 import 'package:listen_core/core.dart';
 import '../../../../shared/constants/app_constants.dart';
 import '../../domain/repositories/playback_tape_repository.dart';
