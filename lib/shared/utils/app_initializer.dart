@@ -179,6 +179,9 @@ class _ApiAuthHandlerImpl implements IApiInterceptorDelegate {
     if (token != null && token.isNotEmpty) {
       options.headers['Authorization'] = 'Bearer $token';
     }
+    final langLabel = SpUtil.getString(AppConstants.languageKey);
+    final languageCode = AppLanguage.fromLabel(langLabel).locale.languageCode;
+    options.headers['Accept-Language'] = languageCode;
   }
 
   @override
