@@ -28,6 +28,8 @@ final Map<String, String> ja = {
   I18nKeys.large: '大',
   I18nKeys.selectLanguage: '言語選択',
   I18nKeys.switchEnv: '環境切替',
+  I18nKeys.switchEnvLogoutPrompt: '環境を切り替えるとログアウトされますが、よろしいですか？',
+  I18nKeys.switchEnvLogoutSuccessTips: '環境を{0}に切り替え、ログアウトしました。再ログインしてください。',
   I18nKeys.envMock: 'デモ(Mock)',
   I18nKeys.envDev: '開発用',
   I18nKeys.envProd: '本番用',

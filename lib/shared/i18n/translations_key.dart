@@ -26,6 +26,8 @@ class I18nKeys {
   static const String large = 'Large';
   static const String selectLanguage = 'Select Language';
   static const String switchEnv = 'Switch Environment';
+  static const String switchEnvLogoutPrompt = 'Switching the environment will log out the current user. Do you want to continue?';
+  static const String switchEnvLogoutSuccessTips = 'Successfully switched to {0} and logged out. Please log in again.';
   static const String envMock = 'Mock';
   static const String envDev = 'Development';
   static const String envProd = 'Production';

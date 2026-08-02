@@ -28,6 +28,8 @@ final Map<String, String> zh = {
   I18nKeys.large: '大号',
   I18nKeys.selectLanguage: '选择语言',
   I18nKeys.switchEnv: '切换环境',
+  I18nKeys.switchEnvLogoutPrompt: '切换环境会退出当前登录状态，是否继续？',
+  I18nKeys.switchEnvLogoutSuccessTips: '已成功切换至{0}并已退出登录，请重新登录。',
   I18nKeys.envMock: '模拟环境(Mock)',
   I18nKeys.envDev: '开发环境',
   I18nKeys.envProd: '正式环境',

@@ -176,9 +176,38 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
   }
 
   Future<void> _onSwitchEnv(AppEnvironment env) async {
-    await AppEnv.setEnvironment(env);
-    updateState(state.copyWith(currentEnv: env));
-    emitEffect(NavigationEffect<void>.back());
+    if (env == state.currentEnv) return;
+
+    final bool isUserLoggedIn = !authManager.state.isGuest;
+
+    Future<void> performSwitch() async {
+      await AppEnv.setEnvironment(env);
+      updateState(state.copyWith(currentEnv: env));
+      if (isUserLoggedIn) {
+        authManager.logout();
+        emitEffect(MessageEffect.info(I18nKeys.switchEnvLogoutSuccessTips.trArgs([_getEnvLabel(env)])));
+      }
+      emitEffect(NavigationEffect<void>.back());
+    }
+
+    if (isUserLoggedIn) {
+      emitEffect(
+        ConfirmEffect(
+          title: I18nKeys.switchEnv.tr,
+          message: I18nKeys.switchEnvLogoutPrompt.tr,
+          onResult: (confirmed) async {
+            if (confirmed) {
+              await performSwitch();
+            } else {
+              // Revert the check state on UI by closing the SwitchDialog
+              emitEffect(NavigationEffect<void>.back());
+            }
+          },
+        ),
+      );
+    } else {
+      await performSwitch();
+    }
   }
 
   void _onToggleLogOverlay(bool enabled) {

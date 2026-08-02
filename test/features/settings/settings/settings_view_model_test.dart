@@ -8,6 +8,7 @@ import 'package:listen_portfolio_flutter/features/settings/domain/repositories/s
 import 'package:listen_portfolio_flutter/features/settings/presentation/provider/settings_provider.dart';
 import 'package:listen_portfolio_flutter/features/settings/data/models/version_model.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mocktail/mocktail.dart';
 import '../../../test_helpers/test_setup.dart';
@@ -39,6 +40,7 @@ void main() {
       SharedPreferences.setMockInitialValues({});
       await SpUtil.init(prefix: 'test_');
       await setupTestEnvironment();
+      await AppEnv.setEnvironment(AppEnvironment.mock);
 
       mockSettingsRepository = MockSettingsRepository();
       mockNotificationService = MockNotificationService();
@@ -266,20 +268,89 @@ void main() {
     });
 
     group('Switch Env Intent', () {
-      test('should update currentEnv and verify AppEnv changes', () async {
-        // Act
+      test('should prompt with confirm dialog when logged in, switch env and logout on confirmation, but stay on settings screen', () async {
+        // Arrange - mock login state
+        authManager.login(const UserModel(id: 'test_user', email: 'test@email.com'));
+        expect(authManager.state.isGuest, isFalse);
+
+        // Act - try to switch to dev
+        viewModel.handleIntent(const SettingsIntent.switchEnv(AppEnvironment.dev));
+        await Future.delayed(const Duration(milliseconds: 100));
+
+        // Assert - should NOT have switched yet because we haven't confirmed
+        expect(container.read(settingsViewModelProvider).currentEnv, AppEnvironment.mock);
+        expect(authManager.state.isGuest, isFalse);
+
+        // Assert - a ConfirmEffect was emitted
+        final confirmEffects = emittedEffects.whereType<ConfirmEffect>().toList();
+        expect(confirmEffects, isNotEmpty);
+        final confirmEffect = confirmEffects.last;
+        expect(confirmEffect.title, I18nKeys.switchEnv.tr);
+        expect(confirmEffect.message, I18nKeys.switchEnvLogoutPrompt.tr);
+
+        // Act - confirm the dialog
+        confirmEffect.onResult(true);
+        await Future.delayed(const Duration(milliseconds: 100));
+
+        // Assert - switch environment and logout successfully
+        expect(container.read(settingsViewModelProvider).currentEnv, AppEnvironment.dev);
+        expect(AppEnv.currentEnv, AppEnvironment.dev);
+        expect(authManager.state.isGuest, isTrue); // Logged out!
+
+        // Assert - success MessageEffect was emitted
+        final messageEffects = emittedEffects.whereType<MessageEffect>().toList();
+        expect(messageEffects, isNotEmpty);
+        final lastMsg = messageEffects.last;
+        expect(lastMsg.message, I18nKeys.switchEnvLogoutSuccessTips.trArgs([I18nKeys.envDev.tr]));
+
+        // Assert - no home navigation was emitted
+        final navEffects = emittedEffects.whereType<NavigationEffect<void>>().toList();
+        expect(navEffects.where((e) => e.target == Routes.home), isEmpty);
+      });
+
+      test('should not switch env, not logout, and emit back effect when confirmation is cancelled', () async {
+        // Arrange - mock login state
+        authManager.login(const UserModel(id: 'test_user', email: 'test@email.com'));
+        expect(authManager.state.isGuest, isFalse);
+
+        // Act - try to switch to dev
+        viewModel.handleIntent(const SettingsIntent.switchEnv(AppEnvironment.dev));
+        await Future.delayed(const Duration(milliseconds: 100));
+
+        // Assert - ConfirmEffect emitted
+        final confirmEffects = emittedEffects.whereType<ConfirmEffect>().toList();
+        expect(confirmEffects, isNotEmpty);
+        final confirmEffect = confirmEffects.last;
+
+        // Act - cancel/dismiss confirm dialog
+        confirmEffect.onResult(false);
+        await Future.delayed(const Duration(milliseconds: 100));
+
+        // Assert - did NOT switch env or logout
+        expect(container.read(settingsViewModelProvider).currentEnv, AppEnvironment.mock);
+        expect(AppEnv.currentEnv, AppEnvironment.mock);
+        expect(authManager.state.isGuest, isFalse);
+
+        // Assert - emitted back navigation effect to revert UI Dialog check state
+        final navEffects = emittedEffects.whereType<NavigationEffect<void>>().toList();
+        expect(navEffects, isNotEmpty);
+        final lastNav = navEffects.last;
+        expect(lastNav.isBack, isTrue);
+      });
+
+      test('should switch env directly without dialog when not logged in (guest)', () async {
+        // Arrange - ensure guest state
+        authManager.logout();
+        expect(authManager.state.isGuest, isTrue);
+
+        // Act - switch from mock (current) to dev
         await viewModel.handleIntent(const SettingsIntent.switchEnv(AppEnvironment.dev));
         await Future.delayed(const Duration(milliseconds: 100));
 
-        // Assert
+        // Assert - switched directly
         expect(container.read(settingsViewModelProvider).currentEnv, AppEnvironment.dev);
         expect(AppEnv.currentEnv, AppEnvironment.dev);
-
-        // Switch back to mock environment
-        await viewModel.handleIntent(const SettingsIntent.switchEnv(AppEnvironment.mock));
-        await Future.delayed(const Duration(milliseconds: 100));
-        expect(container.read(settingsViewModelProvider).currentEnv, AppEnvironment.mock);
-        expect(AppEnv.currentEnv, AppEnvironment.mock);
+        expect(emittedEffects.whereType<ConfirmEffect>(), isEmpty);
       });
     });
 
