@@ -72,6 +72,11 @@ class I18nKeys {
   static const String cropImage = 'Crop Image';
   static const String cropFailed = 'Failed to crop image';
 
+  // Debug & Simulation
+  static const String simulateTokenExpired = 'Simulate Session Expired';
+  static const String simulateTokenExpiredSubtitle = 'Invalidate access token to test auto-refresh';
+  static const String tokenInvalidatedMessage = 'Access Token invalidated! Next API call will test auto-refresh.';
+
   // Login Page
   static const String welcomeBack = 'Welcome Back!';
   static const String signInToContinue = 'Sign in to continue';

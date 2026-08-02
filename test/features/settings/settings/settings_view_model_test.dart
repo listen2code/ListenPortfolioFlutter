@@ -590,6 +590,24 @@ void main() {
         );
       });
     });
+
+    group('Simulate Token Expired Intent', () {
+      test('should invalidate auth token in secure storage and emit MessageEffect', () async {
+        // Act
+        viewModel.handleIntent(const SettingsIntent.simulateTokenExpired());
+        await Future.delayed(const Duration(milliseconds: 100));
+
+        // Assert
+        final storedToken = await SecureStorageUtil.get(AppConstants.authTokenKey);
+        expect(storedToken, equals('invalid_expired_token_for_testing'));
+        expect(
+          emittedEffects.any(
+            (effect) => effect is MessageEffect && effect.message == I18nKeys.tokenInvalidatedMessage.tr,
+          ),
+          isTrue,
+        );
+      });
+    });
   });
 }
 

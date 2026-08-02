@@ -67,6 +67,7 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
       toPrivacyPolicy: () => emitEffect(NavigationEffect<void>(target: Routes.privacyPolicy)),
       toTermsOfService: () => emitEffect(NavigationEffect<void>(target: Routes.termsOfService)),
       toWebViewTest: () => emitEffect(NavigationEffect<void>(target: Routes.webViewTest)),
+      simulateTokenExpired: _onSimulateTokenExpired,
       confirmOpenSettings: () => emitEffect(OpenAppSettingsEffect()),
       confirmDownloadUpdate: (url) => emitEffect(LaunchUrlEffect(url)),
     );
@@ -337,5 +338,10 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
     updateState(state.copyWith(isDeveloperMode: true));
     await SpUtil.put(AppConstants.developerModeKey, true);
     emitEffect(MessageEffect.info(I18nKeys.developerModeEnabled.tr));
+  }
+
+  Future<void> _onSimulateTokenExpired() async {
+    await SecureStorageUtil.put(AppConstants.authTokenKey, 'invalid_expired_token_for_testing');
+    emitEffect(MessageEffect.info(I18nKeys.tokenInvalidatedMessage.tr));
   }
 }

@@ -140,13 +140,20 @@ class SettingsPage extends ConsumerWidget {
                         }
                       },
                     ),
-                  if (kDebugMode || state.isDeveloperMode)
+                  if (kDebugMode || state.isDeveloperMode) ...[
                     CommonSettingsTile(
                       icon: Icons.html,
                       title: 'WebView Test',
                       subtitle: 'WebView Dialog',
                       onTap: () => viewModel.handleIntent(const SettingsIntent.toWebViewTest()),
                     ),
+                    CommonSettingsTile(
+                      icon: Icons.timer_off_outlined,
+                      title: I18nKeys.simulateTokenExpired.tr,
+                      subtitle: I18nKeys.simulateTokenExpiredSubtitle.tr,
+                      onTap: () => viewModel.handleIntent(const SettingsIntent.simulateTokenExpired()),
+                    ),
+                  ],
                 ],
               ),
 
