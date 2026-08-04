@@ -31,20 +31,22 @@ ListenPortfolioFlutter 是一个基于 Flutter 构建的个人技术作品集应
 - **作品集展示**：Overview、AboutMe（右上角支持分享当前应用）、Projects、Architecture 页面
 - **设置中心**：主题、语言、环境切换、缓存清理、崩溃日志入口、检查更新（显示多语言日志并引导至下载或应用商店）、分享当前应用
 - **推送通知**：基于 FCM 的推送通知接入，支持前台横幅、后台唤醒、冷启动深度跳转；Settings 中可开关通知并联动系统权限引导
-- **多语言切换**：中 / 英 / 日运行时切换，无需重启
+- **多语言切换**：中 / 英 / 日运行时切换，无需重启；**数据库动态内容国际化**（支持拦截器注入 `Accept-Language` 请求头，由 Backend / `LocalMockServer` 直发目标语言 JSON 数据，前端移除 UI 模型上的过渡性 `.tr` 映射）
 - **主题切换**：浅色 / 深色 / 跟随系统 + 强调色 / 字号持久化 + **Material You 动态取色** (Android 12+ 平台下支持跟随系统壁纸色调自动变色)
 
 ### 架构与基础设施
 
 - **MVI 基础骨架**：`BaseViewModel`、`BaseState`、`BaseEffect`、`BaseLifecyclePage`
 - **网络层**：`ApiClient` + `BaseRepository.safeCall()` + `Either<Failure, T>`
+- **安全注销与 Token 防泄露**：登出前进行 JWT 载荷时间戳校验，已过期则触发静默刷新后再通知服务端注销会话，确保后端 Session 彻底销毁与客户端本地状态无缝抹除
 - **版本更新自动流**：基于 `pubspec.yaml` 的描述在 CI 构建时自动提取多语言描述生成并托管 `version.json`；App 端在所有环境下均通过 Retrofit 免签拉取静态配置文件并在 repository 层手工解码（规避 GitHub 静态资源的 Content-Type 匹配与认证 Token 冲突问题）
 - **401 自动刷新**：刷新期间并发请求排队，刷新成功后自动重试
 - **环境切换**：支持 `mock / dev / test / prod`
-- **本地 MockServer**：`APP_ENV=mock` 时提供本地 JSON / 图片资源
+- **本地 MockServer**：`APP_ENV=mock` 时提供本地 JSON / 图片资源，支持 `Accept-Language` 多语言资产路径自动路由与回退机制
 - **Zone tracing**：Intent / 页面 / 请求链路支持 `traceId` 和阶段打点
 - **Crash Safe Mode**：快速崩溃保护与本地 crash log 持久化
 - **日志浮窗**：当前项目内置开发调试窗口，可分类查看 App / Server / Perf 日志
+- **零告警工程质量**：全量单元与集成测试套件覆盖，且代码通过静态分析零告警验证（`No issues found!`）
 
 ### 更能代表当前项目取向的能力
 

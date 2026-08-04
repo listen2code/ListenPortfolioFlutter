@@ -42,10 +42,20 @@ v2/     ← 开发中版本（可选）
 ```
 assets/mock/v1/get/
 ├── user.json              # 获取用户信息
-├── aboutMe.json           # 获取关于我信息
-├── projects.json          # 获取项目列表
+├── aboutMe.json           # 获取关于我信息 (英文默认)
+├── aboutMe_zh.json        # 获取关于我信息 (中文版)
+├── aboutMe_ja.json        # 获取关于我信息 (日文版)
+├── projects.json          # 获取项目列表 (英文默认)
+├── projects_zh.json       # 获取项目列表 (中文版)
+├── projects_ja.json       # 获取项目列表 (日文版)
+├── preset-qa.json         # AI 助手预设问答 (中文默认)
+├── preset-qa_en.json      # AI 助手预设问答 (英文版)
+├── preset-qa_ja.json      # AI 助手预设问答 (日文版)
 └── {endpoint}.json        # 其他 GET 接口
 ```
+
+> **💡 动态语言自动路由规范 (LocalMockServer)**：  
+> `ListenCore` 的 `LocalMockServer` 会自动解析 HTTP 请求头中的 `Accept-Language`。当包含 `zh` 或 `ja` 时，优先查找带 `_zh` / `_ja` 后缀的文件（如 `aboutMe_zh.json`），若找不到则自动优雅回退至无后缀的默认文件（如 `aboutMe.json`）。前端直接渲染下发的目标语言字符串，无需再在 UI 模型属性上过度追加 `.tr`。
 
 ### 📤 POST 请求 (`post/`)
 

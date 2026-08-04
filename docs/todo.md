@@ -133,9 +133,11 @@
 ### 2. Auth 与缓存策略增强
 
 - ✅ `BaseRepository` 缓存与数据降级策略设计规范文档化（已完成 TTL 缓存与 SWR 后台静默刷新模式规约，详见 [设计与实现文档](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/docs/repository_caching_strategy.md)）
-- [ ] 数据库动态内容国际化 (更倾向方案 B：后端多语言字段设计)
-  - [ ] Flutter 端在 `LoggingInterceptor` 或 API 网络请求拦截器中自动注入当前语言请求头 `Accept-Language`
-  - [ ] 去除所有临时或过渡的前端 `.tr` 映射，统一通过数据源直接下发目标语言文本
+- [x] 数据库动态内容国际化 (已于 2026-08-04 完成)
+  - [x] Flutter 端在 `AuthInterceptor` 请求拦截器中自动注入当前语言请求头 `Accept-Language`，`LocalMockServer` 自动解析并优先匹配多语言资产（`_zh.json` / `_ja.json`）
+  - [x] 彻底去除 UI 模型属性上的过渡性 `.tr` 静态翻译映射（`label`、`tag`、`major`、`certifications`），统一由数据源下发对应目标语言文本
+- [x] 静态代码分析警告清理 (已于 2026-08-04 完成)
+  - [x] 修复全部 14 个 `cascade_invocations` 与 `one_member_abstracts` 等 `info` 级别代码风格警告，实现全项目 0 警告 (`No issues found!`)
 - [x] 优化 Logout 流程防止 Session 泄露 (已于 2026-08-04 完成)
   - [x] 当 Access Token 过期时，在客户端登出前先执行静默刷新（Silent Refresh）拿到新 Token，再发起 Logout API 请求，确保后端能成功销毁服务端的 Refresh Token。
 
