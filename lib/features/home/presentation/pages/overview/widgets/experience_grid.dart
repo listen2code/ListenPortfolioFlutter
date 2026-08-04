@@ -84,7 +84,7 @@ class ExperienceGrid extends StatelessWidget {
         _buildHighlightStatCard(
           context,
           '${mainExp.year}${I18nKeys.yearsShort.tr}+',
-          mainExp.label?.tr ?? '',
+          mainExp.label ?? '',
           mainExpType.icon,
           mainExpType.color,
           tags: mainExp.tags,
@@ -112,7 +112,7 @@ class ExperienceGrid extends StatelessWidget {
     return _buildStatCard(
       context,
       '${model.year}${I18nKeys.yearsShort.tr}+',
-      model.label?.tr ?? '',
+      model.label ?? '',
       expType.icon,
       expType.color,
     );
@@ -167,7 +167,7 @@ class ExperienceGrid extends StatelessWidget {
                   .map(
                     (tag) => Padding(
                       padding: EdgeInsets.only(bottom: 4.f),
-                      child: _buildTag(tag.tr, iconColor),
+                      child: _buildTag(tag, iconColor),
                     ),
                   )
                   .toList(),

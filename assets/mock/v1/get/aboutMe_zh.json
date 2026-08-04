@@ -1,0 +1,165 @@
+{
+  "result": "0",
+  "messageId": "",
+  "message": "",
+  "body": {
+    "name": "Listen",
+    "avatarUrl": "https://api.dicebear.com/7.x/avataaars/png?seed=Listen",
+    "status": "available",
+    "jobTitle": "资深 Android / Flutter 研发专家",
+    "bio": "11年以上移动开发经验（精通Android系统机制、核心组件分层及APM体系设计），3年以上Flutter跨平台开发实战经验。具备日本乐天证券交易App架构改修、FIDO2免密安全认证及Flutter大版本升级落地经验。独立开发多款中大型项目，具备跨端自走交付与高颜值设计能力。持有JLPT N1、BJT J2认证，目前常驻日本东京，支持日文无障碍技术提案与协作沟通。",
+    "graduationYear": "2013",
+    "github": "https://github.com/listen2code",
+    "major": "软件工程",
+    "certifications": [
+      "JLPT N1 证书",
+      "BJT J2 证书"
+    ],
+    "stats": [
+      {
+        "id": "1",
+        "businessId": "android",
+        "year": "11",
+        "label": "Android 经验",
+        "tags": [
+          "架构设计",
+          "性能优化",
+          "组件化"
+        ]
+      },
+      {
+        "id": "2",
+        "businessId": "flutter",
+        "year": "3",
+        "label": "Flutter 经验",
+        "tags": [
+          "干净架构",
+          "状态管理",
+          "Riverpod"
+        ]
+      },
+      {
+        "id": "3",
+        "businessId": "java_web",
+        "year": "1",
+        "label": "Java Web 经验",
+        "tags": [
+          "Spring Boot",
+          "RESTful API"
+        ]
+      }
+    ],
+    "experiences": [
+      {
+        "id": "1",
+        "title": "Android / Flutter 资深研发工程师",
+        "company": "LYC 株式会社会社 (乐天证券 App 项目组)",
+        "period": "2023.02 - 至今",
+        "description": "主导新版乐天证券交易 App 的架构设计与核心框架搭建。负责 FIDO2 生物免密安全认证落地、网络/状态层底层升级以及 Flutter 大版本重构。持续维护原有 Android 原生股票交易应用，编写日文设计提案并为团队成员提供 Code Review 指导。"
+      },
+      {
+        "id": "2",
+        "title": "Android 架构师 — 移动端基础架构部",
+        "company": "有赞网络科技",
+        "period": "2021.10 - 2022.07",
+        "description": "自研轻量级移动端 APM 卡顿/ANR 监测 SDK，优化数据上报策略与服务端秒级聚合算法。主导开发 APM 可视化看板（React 前端 + Spring Boot 后端 REST API）。参与有赞零售 App 的 Redux 架构重构与优化。"
+      },
+      {
+        "id": "3",
+        "title": "Android 核心研发工程师",
+        "company": "多录网络科技",
+        "period": "2019.11 - 2021.10",
+        "description": "建立 Feed 流网络监测系统，使请求超时率从 1.5% 降至 0.3%，首屏耗时缩减 40% 以上。推行组件化（module + module_api + module_run）升级，并基于 Shadow 容器框架实现插件化动态插拔。编写 AirTest 自动化测试用例，覆盖 Feed 流核心场景。"
+      },
+      {
+        "id": "4",
+        "title": "Android 研发工程师",
+        "company": "骑呗科技 (共享单车平台)",
+        "period": "2016.09 - 2019.08",
+        "description": "负责骑呗单车、叮嗒出行等多款 App 在 Android 端的迭代研发。引入 Tinker 热修复及 Matrix 性能检测工具，并精简 Gradle 依赖使构建时延缩短 30% 以上。搭建 Jenkins CI 构建管道，支持多环境打包与真机无线部署。"
+      },
+      {
+        "id": "5",
+        "title": "Android 开发工程师",
+        "company": "百度 (外卖配送线)",
+        "period": "2014.12 - 2016.06",
+        "description": "独立负责百度外卖骑士端 App（v1.4 - v2.9）的系统维护。设计高精度低能耗的动态 GPS 过滤上传策略，降低 10%+ 冗余流量消耗。独立封装骑士 PassSDK，基于 JNI 与 AES 保证 B 端登录与令牌的安全传输。设计配送 scaffolding 脚手架框架。"
+      },
+      {
+        "id": "6",
+        "title": "Java 后端研发工程师",
+        "company": "新大陆软件工程",
+        "period": "2013.05 - 2014.09",
+        "description": "使用 J2EE、S2SH 架构与 Oracle 数据库，参与中国移动业务运营支撑系统（BOSS）报表分析与系统核心模块的研发。"
+      }
+    ],
+    "education": [
+      {
+        "id": "1",
+        "degree": "软件工程学士学位",
+        "school": "福建工程学院",
+        "period": "2011.09 - 2013.06",
+        "description": "优秀毕业论文奖：《基于智能评估系统的企业客户关系管理系统设计与实现》"
+      },
+      {
+        "id": "2",
+        "degree": "计算机应用技术大专学位",
+        "school": "福建师范大学 (软件学院)",
+        "period": "2008.09 - 2011.06",
+        "description": "省级优秀毕业生、一等奖学金、优秀学生干部"
+      }
+    ],
+    "languages": [
+      { "id": "1", "name": "日语", "level": "JLPT N1 (131分), BJT J2 (512分)" },
+      { "id": "2", "name": "中文", "level": "母语" },
+      { "id": "3", "name": "英语", "level": "CET-4 (大学英语四级)" }
+    ],
+    "skills": [
+      {
+        "id": "1",
+        "category": "移动端开发",
+        "items": [
+          "Flutter",
+          "Android 原生",
+          "Dart",
+          "Kotlin",
+          "Java"
+        ]
+      },
+      {
+        "id": "2",
+        "category": "系统架构设计",
+        "items": [
+          "Clean Architecture",
+          "组件化开发",
+          "插件化架构",
+          "MVI 模式",
+          "MVVM 模式",
+          "SOLID 原则"
+        ]
+      },
+      {
+        "id": "3",
+        "category": "性能调优与 APM",
+        "items": [
+          "CPU & 内存 Profile",
+          "卡顿/内存调优",
+          "Feed流性能监控",
+          "Systrace 分析",
+          "LeakCanary 内存泄露检测"
+        ]
+      },
+      {
+        "id": "4",
+        "category": "后端与 DevOps",
+        "items": [
+          "Spring Boot",
+          "MySQL 数据库",
+          "Redis 缓存",
+          "Docker 容器化",
+          "CI/CD 自动化构建"
+        ]
+      }
+    ]
+  }
+}

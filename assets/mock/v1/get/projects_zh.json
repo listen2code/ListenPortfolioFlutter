@@ -1,0 +1,57 @@
+{
+  "result": "0",
+  "messageId": "",
+  "message": "",
+  "body": [
+    {
+      "id": "1",
+      "businessId": "lportfolio-flutter",
+      "title": "lPortfolio 个人展示项目",
+      "subtitle": "当前项目",
+      "desc": "我的个人作品集展示 App（即本项目）。在 Flutter 中演示了干净架构（Clean Architecture）、MVI 模式以及高级 Riverpod 状态管理。",
+      "imageUrl": "localhost/images/project1.jpg",
+      "githubUrl": "https://github.com/listen2code/ListenPortfolioFlutter",
+      "techStack": ["Flutter", "Riverpod", "Clean Architecture", "MVI"]
+    },
+    {
+      "id": "2",
+      "businessId": "listen-core-flutter",
+      "title": "Listen Core 核心底座",
+      "subtitle": "框架/库",
+      "desc": "专为 Flutter 打造的企业级业务无关底座框架，提供 MVI 基类、标准化网络封装（Dio）以及统一路由与生命周期管理。",
+      "imageUrl": "localhost/images/project2.jpg",
+      "githubUrl": "https://github.com/listen2code/ListenCoreFlutter",
+      "techStack": ["Dart", "Riverpod", "Dio", "Architecture"]
+    },
+    {
+      "id": "3",
+      "businessId": "listen-ui-kit",
+      "title": "Listen UI 组件库",
+      "subtitle": "公用组件库",
+      "desc": "一套完整的高颜值 UI 组件库，主打流光暗黑极简风格，用于保障多款 App 之间的一致性体验与快速开发。",
+      "imageUrl": "localhost/images/project3.jpg",
+      "githubUrl": "https://github.com/listen2code/ListenUikitFlutter",
+      "techStack": ["Flutter", "Design System", "CustomPainter"]
+    },
+    {
+      "id": "4",
+      "businessId": "portfolio-backend",
+      "title": "Portfolio 后端系统",
+      "subtitle": "云端基础设施",
+      "desc": "为本项目提供数据支撑的后端服务，负责管理用户数据、项目列表以及动态配置。",
+      "imageUrl": "localhost/images/project4.jpg",
+      "githubUrl": "https://github.com/listen2code/ListenPortfolioBackend",
+      "techStack": ["Spring Boot", "MySQL", "Redis", "Docker"]
+    },
+    {
+      "id": "5",
+      "businessId": "tech-knowledge-base",
+      "title": "技术知识库",
+      "subtitle": "文章与文档",
+      "desc": "收录了我过去 10 年来的技术文章、架构随笔以及开发心得，旨在沉淀和分享知识。",
+      "imageUrl": "localhost/images/project5.jpg",
+      "githubUrl": "https://github.com/listen2code/article",
+      "techStack": ["Markdown", "Documentation", "Knowledge Sharing"]
+    }
+  ]
+}

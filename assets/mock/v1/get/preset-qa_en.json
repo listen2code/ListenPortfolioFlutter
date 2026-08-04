@@ -1,0 +1,77 @@
+{
+  "result": "0",
+  "messageId": "",
+  "message": "success",
+  "body": {
+    "global": [
+      {
+        "question": "What main tech stack is used in this project?",
+        "answer": "This project features a full-stack solution: the mobile client is built on Flutter 3.22+, utilizing Riverpod 3 for state management, Clean Architecture, and ListenUiKit components. The backend runs on Spring Boot 4.0.1 with Flyway database migration and MySQL, containerized via Docker and deployed on AWS."
+      },
+      {
+        "question": "How can I contact the developer Listen?",
+        "answer": "You can reach me via email at listen2code@gmail.com, or check out my GitHub profile at: https://github.com/listen2code."
+      },
+      {
+        "question": "What are ListenCore and ListenUiKit?",
+        "answer": "ListenCore is a business-agnostic foundation framework built specifically for Flutter projects, including page lifecycles, Dio client wrappers, and global route events. ListenUiKit is a companion custom UI component library featuring a futuristic dark-glowing design style."
+      }
+    ],
+    "/home?tab=overview": [
+      {
+        "question": "What is the core focus of this Overview page?",
+        "answer": "The Overview page highlights the core positioning of a 'Senior Android & Flutter Expert' vertically expanded with Spring Boot backend and AWS cloud capabilities. It showcases key moats: APM monitoring design, high-fidelity UI design, and autonomous delivery."
+      },
+      {
+        "question": "How was the glowing splash screen implemented?",
+        "answer": "It is built with ListenUiKit's dark-glowing micro-animation background, combined with MediaQuery dynamic sizing and an adaptive card layout to create a high-fidelity personal profile card."
+      }
+    ],
+    "/home?tab=aboutMe": [
+      {
+        "question": "How many years of experience does Listen have?",
+        "answer": "Listen has 11+ years of experience in Android native development (deep knowledge of AMS, WMS, Binder, and profiling), and several years in Flutter cross-platform and Spring Boot backend development, representing a comprehensive mobile full-stack expert."
+      },
+      {
+        "question": "How is Listen's Japanese communication capability?",
+        "answer": "Listen holds JLPT N1 and BJT J2 certifications. He can communicate fluently in professional settings, write Japanese technical design documentation, participate in code reviews, and collaborate effectively in local Japanese development teams."
+      }
+    ],
+    "/home?tab=projects": [
+      {
+        "question": "What projects are listed here?",
+        "answer": "It includes three primary open-source repositories showing full-stack delivery: ListenCore (foundational base), ListenUiKit (UI components), and ListenPortfolioBackend (Spring Boot REST service)."
+      },
+      {
+        "question": "What does the 'TODO' status on project cards mean?",
+        "answer": "It indicates that the project is currently in the conceptual design or active development phase, showcasing continuous integration and expansion of the portfolio ecosystem."
+      }
+    ],
+    "/home?tab=resume": [
+      {
+        "question": "How is this resume page rendered?",
+        "answer": "It uses the flutter_markdown_plus library to parse local/remote Markdown files into an aesthetic page with clickable links and code block syntax highlighting, supporting PDF export via the AppBar."
+      },
+      {
+        "question": "How do I export this resume to PDF?",
+        "answer": "Click the PDF export icon in the top right corner. The app will convert the Markdown layout into a printer-friendly layout, enabling system print preview or saving as a local PDF file."
+      }
+    ],
+    "/settings": [
+      {
+        "question": "What interactive options are available on this Settings page?",
+        "answer": "It supports toggling theme mode (Light/Dark), selecting app language (Simplified Chinese/English/Japanese), enabling Material 3 dynamic color scheme, and turning on the APM developer overlay."
+      },
+      {
+        "question": "What is the Performance Dashboard?",
+        "answer": "It is an APM performance tool built into the ListenCore foundation framework. It plots real-time FPS charts, records main thread build/raster latency, and parses HTTP logs (payload sizes, roundtrip times)."
+      }
+    ],
+    "/crash_logs": [
+      {
+        "question": "How are exception logs captured in Flutter?",
+        "answer": "Through the global Core.run runner, which registers PlatformDispatcher.onError and FlutterError.onError callbacks. When uncaught exceptions occur, it saves telemetry files to sandbox storage for easy retrieval."
+      }
+    ]
+  }
+}

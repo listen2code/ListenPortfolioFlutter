@@ -1,3 +1,4 @@
+// ignore_for_file: one_member_abstracts
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 

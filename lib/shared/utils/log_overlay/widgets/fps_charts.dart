@@ -413,15 +413,15 @@ class _LineChartPainter extends CustomPainter {
     }
 
     // Draw indicator label text
-    final textPainter = TextPainter(
+    TextPainter(
       text: TextSpan(
         text: label,
         style: TextStyle(color: color, fontSize: 8, fontWeight: FontWeight.bold),
       ),
       textDirection: TextDirection.ltr,
-    )..layout();
-
-    textPainter.paint(canvas, Offset(8, y - 10));
+    )
+      ..layout()
+      ..paint(canvas, Offset(8, y - 10));
   }
 
   @override

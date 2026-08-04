@@ -1,3 +1,4 @@
+// ignore_for_file: one_member_abstracts
 import 'package:dio/dio.dart';
 import 'package:listen_core/core.dart';
 import '../models/about_me_model.dart';

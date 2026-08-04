@@ -52,8 +52,7 @@ Future<void> bootAppAndGoToLogin(WidgetTester tester) async {
 
   // If on HomePage, just navigate to LoginPage
   if (find.byType(HomePage).evaluate().isNotEmpty) {
-    final ScaffoldState scaffoldState = tester.firstState(find.byType(Scaffold));
-    scaffoldState.openDrawer();
+    tester.firstState<ScaffoldState>(find.byType(Scaffold)).openDrawer();
     await tester.pumpAndSettle();
 
     final loginDrawerOption = find.text(I18nKeys.login.tr);
@@ -73,8 +72,7 @@ Future<void> bootAppAndGoToLogin(WidgetTester tester) async {
 
   // If we are on HomePage, navigate to LoginPage
   if (find.byType(HomePage).evaluate().isNotEmpty) {
-    final ScaffoldState scaffoldState = tester.firstState(find.byType(Scaffold));
-    scaffoldState.openDrawer();
+    tester.firstState<ScaffoldState>(find.byType(Scaffold)).openDrawer();
     await tester.pumpAndSettle();
 
     final loginDrawerOption = find.text(I18nKeys.login.tr);
@@ -107,8 +105,7 @@ Future<void> navigateToSettings(WidgetTester tester) async {
   }
 
   if (find.byType(HomePage).evaluate().isNotEmpty) {
-    final ScaffoldState scaffoldState = tester.firstState(find.byType(Scaffold));
-    scaffoldState.openDrawer();
+    tester.firstState<ScaffoldState>(find.byType(Scaffold)).openDrawer();
     await tester.pumpAndSettle();
 
     final settingsOption = find.text(I18nKeys.settings.tr);
@@ -307,8 +304,7 @@ void main() {
       expect(find.byType(HomePage), findsOneWidget);
 
       // Open Navigation Drawer to verify profile details
-      final ScaffoldState scaffoldState = tester.firstState(find.byType(Scaffold));
-      scaffoldState.openDrawer();
+      tester.firstState<ScaffoldState>(find.byType(Scaffold)).openDrawer();
       await tester.pumpAndSettle();
 
       expect(find.text('Listen'), findsOneWidget);
@@ -364,8 +360,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // 4. Logout trigger via Drawer (since Logout button is in drawer footer)
-      final ScaffoldState settingsScaffoldState = tester.firstState(find.byType(Scaffold));
-      settingsScaffoldState.openDrawer();
+      tester.firstState<ScaffoldState>(find.byType(Scaffold)).openDrawer();
       await tester.pumpAndSettle();
 
       final logoutBtn = find.text(I18nKeys.logout.tr);

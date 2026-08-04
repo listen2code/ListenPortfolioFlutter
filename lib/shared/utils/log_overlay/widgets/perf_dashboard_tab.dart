@@ -682,12 +682,13 @@ class _PerfDashboardTabState extends State<_PerfDashboardTab> {
             final buffer = StringBuffer('=== PERFORMANCE APM SUMMARY ===\n');
             final snapshot = FrameMonitor.instance.snapshot.value;
             if (snapshot != null) {
-              buffer.writeln('FPS: ${snapshot.fps.toStringAsFixed(1)}');
-              buffer.writeln('Janks: ${snapshot.jankCount} (Severe: ${snapshot.severeJankCount})');
-              buffer.writeln(
-                'Worst Frame: ${(snapshot.worstFrameUs / 1000.0).toStringAsFixed(1)} ms',
-              );
-              buffer.writeln('Memory RSS: ${snapshot.memoryMB} MB');
+              buffer
+                ..writeln('FPS: ${snapshot.fps.toStringAsFixed(1)}')
+                ..writeln('Janks: ${snapshot.jankCount} (Severe: ${snapshot.severeJankCount})')
+                ..writeln(
+                  'Worst Frame: ${(snapshot.worstFrameUs / 1000.0).toStringAsFixed(1)} ms',
+                )
+                ..writeln('Memory RSS: ${snapshot.memoryMB} MB');
             }
             Clipboard.setData(ClipboardData(text: buffer.toString()));
             CommonToast.show(I18nKeys.copiedToClipboard.tr);

@@ -21,7 +21,7 @@ class WelcomeHeader extends StatelessWidget {
     final String name = userModel?.name ?? AppConstants.author;
     final String jobTitle = state.aboutMe?.jobTitle ?? 'Senior Android / Flutter Engineer';
     final String graduationYear = state.aboutMe?.graduationYear ?? '2013';
-    final String major = state.aboutMe?.major?.tr ?? I18nKeys.softwareEngineering.tr;
+    final String major = state.aboutMe?.major ?? 'Software Engineering';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,9 +60,9 @@ class WelcomeHeader extends StatelessWidget {
           Wrap(
             spacing: 8.f,
             runSpacing: 8.f,
-            children: (state.aboutMe?.certifications ?? [I18nKeys.jlptN1, I18nKeys.bjtJ2])
+            children: (state.aboutMe?.certifications ?? ['JLPT N1', 'BJT J2'])
                 .map(
-                  (certKey) => _buildCertBadge(accentColor, certKey.tr),
+                  (cert) => _buildCertBadge(accentColor, cert),
                 )
                 .toList(),
           ),

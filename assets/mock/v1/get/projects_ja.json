@@ -1,0 +1,57 @@
+{
+  "result": "0",
+  "messageId": "",
+  "message": "",
+  "body": [
+    {
+      "id": "1",
+      "businessId": "lportfolio-flutter",
+      "title": "lPortfolio モバイルアプリ",
+      "subtitle": "現在のプロジェクト",
+      "desc": "開発者自身のポートフォリオアプリ（本アプリ）。Flutterにおけるクリーンアーキテクチャ、MVIパターン、および高度なRiverpod状態管理の実装例を示しています。",
+      "imageUrl": "localhost/images/project1.jpg",
+      "githubUrl": "https://github.com/listen2code/ListenPortfolioFlutter",
+      "techStack": ["Flutter", "Riverpod", "Clean Architecture", "MVI"]
+    },
+    {
+      "id": "2",
+      "businessId": "listen-core-flutter",
+      "title": "Listen Core 基盤フレームワーク",
+      "subtitle": "フレームワーク/ライブラリ",
+      "desc": "Flutterプロジェクト共通のコア基盤。MVIの基底クラス、標準化されたDioネットワークラッパー、および統一されたライフサイクル・ルーター管理を提供します。",
+      "imageUrl": "localhost/images/project2.jpg",
+      "githubUrl": "https://github.com/listen2code/ListenCoreFlutter",
+      "techStack": ["Dart", "Riverpod", "Dio", "Architecture"]
+    },
+    {
+      "id": "3",
+      "businessId": "listen-ui-kit",
+      "title": "Listen UI コンポーネント群",
+      "subtitle": "共通UIライブラリ",
+      "desc": "ダークテーマに最適化されたスタイリッシュなUIコンポーネントライブラリ。一貫したブランドデザインとマルチアプリ間での迅速なUI構築を実現します。",
+      "imageUrl": "localhost/images/project3.jpg",
+      "githubUrl": "https://github.com/listen2code/ListenUikitFlutter",
+      "techStack": ["Flutter", "Design System", "CustomPainter"]
+    },
+    {
+      "id": "4",
+      "businessId": "portfolio-backend",
+      "title": "Portfolio バックエンドサービス",
+      "subtitle": "クラウドインフラ",
+      "desc": "本ポートフォリオを支えるサーバーサイドシステム。ユーザープロフィール、プロジェクトデータ、および動的構成ファイルの配信・管理を担当します。",
+      "imageUrl": "localhost/images/project4.jpg",
+      "githubUrl": "https://github.com/listen2code/ListenPortfolioBackend",
+      "techStack": ["Spring Boot", "MySQL", "Redis", "Docker"]
+    },
+    {
+      "id": "5",
+      "businessId": "tech-knowledge-base",
+      "title": "技術ナレッジベース",
+      "subtitle": "技術ドキュメント",
+      "desc": "過去10年以上にわたる開発経験から得た技術記事、アーキテクチャメモ、および開発ログを公開・共有するためのドキュメントリポジトリ。",
+      "imageUrl": "localhost/images/project5.jpg",
+      "githubUrl": "https://github.com/listen2code/article",
+      "techStack": ["Markdown", "Documentation", "Knowledge Sharing"]
+    }
+  ]
+}

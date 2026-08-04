@@ -1,0 +1,77 @@
+{
+  "result": "0",
+  "messageId": "",
+  "message": "success",
+  "body": {
+    "global": [
+      {
+        "question": "このプロジェクトでは主にどのような技術スタックを使用していますか？",
+        "answer": "本プロジェクトのフルスタック技術：モバイルクライアントは Flutter 3.22+、Riverpod 3（状態管理）、Clean Architecture、および ListenUiKit カスタムコンポーネントを使用しています。バックエンドは Spring Boot 4.0.1、Flyway DBバージョン管理、MySQLを使用し、Dockerでコンテナ化してAWS上で稼働しています。"
+      },
+      {
+        "question": "開発者の Listen へ連絡を取る方法は？",
+        "answer": "メールアドレス listen2code@gmail.com または GitHub プロフィールページ（https://github.com/listen2code）からお問い合わせください。"
+      },
+      {
+        "question": "ListenCore と ListenUiKit とは？",
+        "answer": "ListenCore は Flutter プロジェクト専用に開発された業務非依存の基盤フレームワークで、ライフサイクル、Dioクライアントラッパー、グローバルルーターイベントを提供します。ListenUiKit は、近未来的なダーク・グローイングスタイルのUIコンポーネントライブラリです。"
+      }
+    ],
+    "/home?tab=overview": [
+      {
+        "question": "この総覧（Overview）ページの核心的な位置づけは何ですか？",
+        "answer": "総覧（Overview）は「シニア Android & Flutter モバイルエンジニア」を核とし、バックエンド（Spring Boot）と AWS クラウド機能へ垂直展開するフルスタック開発者の能力を示します。APM性能モニタリング、高精度UI設計、自律的なデリバリーを可視化しています。"
+      },
+      {
+        "question": "クールな光り輝く背景アニメーションはどのように実現していますか？",
+        "answer": "ListenUiKit が提供するダーク・グローイング微細アニメーション背景と MediaQuery による動的サイズ調整、アダプティブカードレイアウトを組み合わせて近未来的なプロフィールカードを実現しています。"
+      }
+    ],
+    "/home?tab=aboutMe": [
+      {
+        "question": "Listen の開発年数や実績について教えてください？",
+        "answer": "Listen は Android ネイティブ開発で11年以上の経験（AMS、WMS、Binder、プロファイリングに精通）を持ち、数年の Flutter クロスプラットフォーム開発および Spring Boot バックエンド開発の実績を兼ね備えた、モバイルフルスタックエンジニアです。"
+      },
+      {
+        "question": "Listen の日本語でのコミュニケーション能力は？",
+        "answer": "JLPT N1、BJT J2 を取得しており、日本語での設計書作成、コードレビュー、リファクタリング提案、日系チームでの円滑なコラボレーションに対応できます。"
+      }
+    ],
+    "/home?tab=projects": [
+      {
+        "question": "ここにはどのようなプロジェクトが掲載されていますか？",
+        "answer": "フルスタック開発を体現する3つの主要リポジトリ：ListenCore（基盤フレームワーク）、ListenUiKit（UIコンポーネント）、ListenPortfolioBackend（SpringBoot RESTサービス）が含まれています。"
+      },
+      {
+        "question": "プロジェクト卡片（カード）の 'TODO' ステータスとは何ですか？",
+        "answer": "そのプロジェクトが現在設計段階または開発フェーズにあることを示し、継続的な統合（CI）とポートフォリオ拡張を示しています。"
+      }
+    ],
+    "/home?tab=resume": [
+      {
+        "question": "この履歴書ページはどのようにレンダリングされていますか？",
+        "answer": "flutter_markdown_plus ライブラリを用いて、ローカル/リモートの Markdown ファイルを解析し、インタラクティブリンクやソースコードハイライトを備えた美しいページを表示します。AppBarからPDF出力も可能です。"
+      },
+      {
+        "question": "この履歴書を PDF として出力するには？",
+        "answer": "画面右上の PDF 出力アイコンをクリックすると、Markdown のレイアウトが印刷用スタイルに変換され、システムの印刷プレビューまたはローカル PDF ファイルとしての保存が可能です。"
+      }
+    ],
+    "/settings": [
+      {
+        "question": "この設定ページではどのような操作が可能ですか？",
+        "answer": "テーマモード（ライト/ダーク）の切り替え、アプリ言語（簡体字中国語/英語/日本語）の選択、Material 3 動的カラーパレットの適用、および APM 性能開発者オーバーレイの起動に対応しています。"
+      },
+      {
+        "question": "性能監視看板 (Performance Dashboard) とは？",
+        "answer": "ListenCore 基盤フレームワークに組み込まれた APM 性能可視化ツールです。リアルタイムの FPS 波形、メインスレッドの描画遅延、HTTP 通信ログ（ヘッダー、サイズ、遅延時間）を分析表示します。"
+      }
+    ],
+    "/crash_logs": [
+      {
+        "question": "Flutter における例外ログの収集方法について？",
+        "answer": "ListenCore のグローバルな Core.run ランナーにより、PlatformDispatcher.onError と FlutterError.onError を自動的にフックします。未捕捉の例外が発生すると、テレメトリファイルを生成してサンドボックスに保存します。"
+      }
+    ]
+  }
+}
