@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:listen_core/core.dart';
@@ -215,6 +216,82 @@ void main() {
         verify(
           () => mockLocalDataSource.cacheRefreshToken(testNewRefreshToken),
         ).called(1);
+      },
+    );
+  });
+
+  group('AuthRepositoryImpl - logout', () {
+    String createMockJwt(int expSeconds) {
+      final header = base64Url.encode(utf8.encode(json.encode({'alg': 'HS256', 'typ': 'JWT'})));
+      final payload = base64Url.encode(utf8.encode(json.encode({'exp': expSeconds})));
+      return '$header.$payload.signature';
+    }
+
+    test(
+      'should call API logout and clear cache when access token is valid (not expired)',
+      () async {
+        final validToken = createMockJwt(DateTime.now().millisecondsSinceEpoch ~/ 1000 + 3600);
+        when(() => mockLocalDataSource.getAuthToken()).thenAnswer((_) async => validToken);
+        when(() => mockRemoteDataSource.logout()).thenAnswer((_) async => BaseResponseModel(result: ApiResult.success));
+        when(() => mockLocalDataSource.clearAuthData()).thenAnswer((_) async => {});
+
+        final result = await repository.logout();
+
+        expect(result.isRight(), true);
+        verify(() => mockRemoteDataSource.logout()).called(1);
+        verify(() => mockLocalDataSource.clearAuthData()).called(1);
+      },
+    );
+
+    test(
+      'should perform silent refresh successfully, call API logout, and clear cache when access token is expired',
+      () async {
+        final expiredToken = createMockJwt(DateTime.now().millisecondsSinceEpoch ~/ 1000 - 100);
+        final oldRefreshToken = 'old_refresh_token';
+        final newAccessToken = createMockJwt(DateTime.now().millisecondsSinceEpoch ~/ 1000 + 3600);
+        final newRefreshToken = 'new_refresh_token';
+
+        when(() => mockLocalDataSource.getAuthToken()).thenAnswer((_) async => expiredToken);
+        when(() => mockLocalDataSource.getRefreshToken()).thenAnswer((_) async => oldRefreshToken);
+        when(() => mockRemoteDataSource.refreshToken(oldRefreshToken)).thenAnswer(
+          (_) async => BaseResponseModel(
+            result: ApiResult.success,
+            body: LoginModel(token: newAccessToken, refreshToken: newRefreshToken),
+          ),
+        );
+        when(() => mockLocalDataSource.cacheAuthToken(newAccessToken)).thenAnswer((_) async => {});
+        when(() => mockLocalDataSource.cacheRefreshToken(newRefreshToken)).thenAnswer((_) async => {});
+        when(() => mockRemoteDataSource.logout()).thenAnswer((_) async => BaseResponseModel(result: ApiResult.success));
+        when(() => mockLocalDataSource.clearAuthData()).thenAnswer((_) async => {});
+
+        final result = await repository.logout();
+
+        expect(result.isRight(), true);
+        verify(() => mockRemoteDataSource.refreshToken(oldRefreshToken)).called(1);
+        verify(() => mockRemoteDataSource.logout()).called(1);
+        verify(() => mockLocalDataSource.clearAuthData()).called(1);
+      },
+    );
+
+    test(
+      'should force clear cache and return success when access token is expired and silent refresh fails',
+      () async {
+        final expiredToken = createMockJwt(DateTime.now().millisecondsSinceEpoch ~/ 1000 - 100);
+        final oldRefreshToken = 'old_refresh_token';
+
+        when(() => mockLocalDataSource.getAuthToken()).thenAnswer((_) async => expiredToken);
+        when(() => mockLocalDataSource.getRefreshToken()).thenAnswer((_) async => oldRefreshToken);
+        when(() => mockRemoteDataSource.refreshToken(oldRefreshToken)).thenAnswer(
+          (_) async => BaseResponseModel(result: ApiResult.serverError, message: 'Invalid refresh token'),
+        );
+        when(() => mockLocalDataSource.clearAuthData()).thenAnswer((_) async => {});
+
+        final result = await repository.logout();
+
+        expect(result.isRight(), true);
+        verify(() => mockRemoteDataSource.refreshToken(oldRefreshToken)).called(1);
+        verifyNever(() => mockRemoteDataSource.logout());
+        verify(() => mockLocalDataSource.clearAuthData()).called(1);
       },
     );
   });

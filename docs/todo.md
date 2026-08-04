@@ -136,8 +136,8 @@
 - [ ] 数据库动态内容国际化 (更倾向方案 B：后端多语言字段设计)
   - [ ] Flutter 端在 `LoggingInterceptor` 或 API 网络请求拦截器中自动注入当前语言请求头 `Accept-Language`
   - [ ] 去除所有临时或过渡的前端 `.tr` 映射，统一通过数据源直接下发目标语言文本
-- [ ] 优化 Logout 流程防止 Session 泄露
-  - [ ] 当 Access Token 过期时，在客户端登出前先执行静默刷新（Silent Refresh）拿到新 Token，再发起 Logout API 请求，确保后端能成功销毁服务端的 Refresh Token。
+- [x] 优化 Logout 流程防止 Session 泄露 (已于 2026-08-04 完成)
+  - [x] 当 Access Token 过期时，在客户端登出前先执行静默刷新（Silent Refresh）拿到新 Token，再发起 Logout API 请求，确保后端能成功销毁服务端的 Refresh Token。
 
 ### 3. 文档与展示补强
 
