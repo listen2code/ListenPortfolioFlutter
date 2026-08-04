@@ -96,6 +96,11 @@ class _ApiAuthHandlerImpl implements IApiInterceptorDelegate {
   void onInjectTraceHeader(RequestOptions options, String traceId) {
     options.headers['X-Trace-Id'] = traceId;
   }
+
+  @override
+  void onInjectCommonHeaders(RequestOptions options) {
+    options.headers['Accept-Language'] = 'en';
+  }
 }
 
 class TestAppInitializer {

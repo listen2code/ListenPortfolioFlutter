@@ -190,5 +190,32 @@ void main() {
       expect(state.isPurchasing, isFalse);
       expect(emittedEffects.any((e) => e is MessageEffect && e.type == MessageType.error), isTrue);
     });
+
+    test('AppResumed after dispose does not throw exception', () async {
+      final p1 = MockProductDetails();
+      when(() => p1.id).thenReturn('coffee1');
+      when(() => p1.rawPrice).thenReturn(1.99);
+      when(() => mockIapService.queryProducts(any())).thenAnswer((_) async => [p1]);
+      when(() => mockIapService.buyProduct(any())).thenAnswer((_) async => true);
+
+      initViewModel();
+
+      // Wait for initialization to complete
+      await Future<void>.delayed(const Duration(milliseconds: 10));
+
+      await viewModel.handleIntent(const CoffeePurchaseIntent.buyProduct('coffee1'));
+
+      // Trigger appResumed
+      final future = viewModel.handleIntent(const CoffeePurchaseIntent.appResumed());
+
+      // Dispose the container immediately
+      subscription.close();
+      container.dispose();
+
+      // Wait for appResumed async gap delay (1000ms) to complete
+      // If it throws an exception, this test will fail.
+      // We expect it to complete normally without any exceptions.
+      await expectLater(future, completes);
+    });
   });
 }
