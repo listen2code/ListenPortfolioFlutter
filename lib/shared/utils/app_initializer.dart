@@ -39,10 +39,8 @@ class AppInitializer {
 
     // Register authentication delegates for ViewModel intent protection
     ViewModelMixin.isUserAuthenticated = () => !authManager.state.isGuest;
-    ViewModelMixin.triggerLogin = ({required onSuccess, onFail}) => AppNav.tryLogin(
-      onSuccess: onSuccess,
-      onFail: onFail,
-    );
+    ViewModelMixin.triggerLogin = ({required onSuccess, onFail}) =>
+        AppNav.tryLogin(onSuccess: onSuccess, onFail: onFail);
 
     // 1. Centralized Core Initialization (Encapsulates Storage, Bus, Net, Crash, I18n, Nav, Error)
     await Core.init(
@@ -105,9 +103,7 @@ class AppInitializer {
           );
           return result == true;
         },
-        networkConfig: const NetworkConfig(
-          visitorPaths: ApiEndpoints.visitorPaths,
-        ),
+        networkConfig: const NetworkConfig(visitorPaths: ApiEndpoints.visitorPaths),
       ),
     );
 
@@ -155,7 +151,7 @@ class AppInitializer {
 }
 
 /// Private implementation of the API authentication and tracing handler.
-class _ApiAuthHandlerImpl implements IApiInterceptorDelegate {
+class _ApiAuthHandlerImpl extends DefaultApiDelegate {
   final ProviderContainer container;
 
   _ApiAuthHandlerImpl(this.container);
@@ -186,10 +182,5 @@ class _ApiAuthHandlerImpl implements IApiInterceptorDelegate {
     final langLabel = SpUtil.getString(AppConstants.languageKey);
     final languageCode = AppLanguage.fromLabel(langLabel).locale.languageCode;
     options.headers['Accept-Language'] = languageCode;
-  }
-
-  @override
-  void onInjectTraceHeader(RequestOptions options, String traceId) {
-    options.headers['X-Trace-Id'] = traceId;
   }
 }
