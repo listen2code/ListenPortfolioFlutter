@@ -227,3 +227,12 @@
 - 切换账户后，4个tab的刷新问题，LogoutProviderImpl是否要invalidate(overviewViewModelProvider)等代码？
 - 编译，发布一个web版本，可以通过浏览器查看
 - 发布到ios市场
+- 注册账户的时候，如果使用的邮箱是已经存在的情况下，服务端会返回internal error的错误
+- 基于现在最新代码，更新ArchitectureViewModel里面写死的架构设计的内容
+- 如果当前登录的是userId=1的用户，则所有信息以第一人称，比如“关于我”，如果非userId=1的用户，则使用第三人才，比如“关于作者”
+- 非userId登录的时候，侧边栏和关于我的默认头像都是裂开的图
+- ColorPickerProviderImpl的2个button会非常小
+- 自动执行integration_test的时候，我希望每步操作都对屏幕进行截图（主要是intent操作），并保存到当前手机的sd卡目录
+- 如果用户禁用push通知后，如何引导用户重新去打开
+- 发布正式包到Google play
+- 点击overView底部的某个项目卡片的时候，跳转到项目列表画面，并定位到这个项目卡片
