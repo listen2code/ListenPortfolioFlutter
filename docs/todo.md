@@ -236,7 +236,6 @@
 - 如果用户禁用push通知后，如何引导用户重新去打开
 - 发布正式包到Google play，还需要哪些准备工作
 - 点击overView底部的某个项目卡片的时候，跳转到项目列表画面，并定位到这个项目卡片
-- 检查下哪些lib已经废弃，或者很久不更新，或者有功能相同，但是更稳定和更多人用的lib可以替换
 - 用patrol替换integration_test
 - 通过firebase_ai或Firebase Genkit实现AI智能助手
 - 试用talker_flutter，device_preview，storybook_flutter，pubviz，shorebird_code_push 

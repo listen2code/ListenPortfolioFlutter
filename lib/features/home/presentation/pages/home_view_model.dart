@@ -19,6 +19,7 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
   void onReady() {
     super.onReady();
     handleIntent(const HomeIntent.init());
+    _checkShorebirdPatchUpdate();
 
     // Subscribe to unified deep link event via core EventBus
     subscribeEvent<CommonEvent<Uri>>(
@@ -30,6 +31,19 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
       key: DeepLinkManager.deepLinkEventKey,
       sticky: true,
     );
+  }
+
+  void _checkShorebirdPatchUpdate() {
+    Future<void>.microtask(() async {
+      if (!shorebirdService.isAvailable) return;
+      final hasUpdate = await shorebirdService.checkForUpdate();
+      if (hasUpdate) {
+        final downloaded = await shorebirdService.downloadUpdate();
+        if (downloaded) {
+          emitEffect(MessageEffect(I18nKeys.shorebirdPatchReadyMsg.tr, type: MessageType.info));
+        }
+      }
+    });
   }
 
   @override

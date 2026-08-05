@@ -247,6 +247,9 @@ final Map<String, String> ja = {
       '新しいバージョン %s が利用可能です。アップデートしますか？\n（注：Google Playストアへの反映に時間がかかる場合があります。更新ボタンが表示されない場合は、しばらく経ってから再度お試しください）',
   I18nKeys.update: 'アップデート',
   I18nKeys.updateCheckFailed: 'アップデートの確認に失敗しました。後でもう一度お試しください。',
+  I18nKeys.shorebirdPatchReadyMsg: '新しいパッチが準備できました。次回アプリ起動時に反映されます。',
+  I18nKeys.shorebirdCheckUpdates: 'ホットパッチを確認',
+  I18nKeys.shorebirdUpToDate: '最新のパッチバージョンです。',
 
   // Notification Permission
   I18nKeys.notificationPermissionTitle: '通知の許可が必要です',

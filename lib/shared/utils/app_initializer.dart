@@ -146,6 +146,13 @@ class AppInitializer {
     } catch (e, stackTrace) {
       appLogger.e('AppInitializer: In-App Purchase initialization failed.', error: e, stackTrace: stackTrace);
     }
+
+    // 5. Initialize Shorebird OTA Code Push Service
+    try {
+      shorebirdService = ShorebirdServiceImpl();
+    } catch (e, stackTrace) {
+      appLogger.e('AppInitializer: Shorebird Code Push initialization failed.', error: e, stackTrace: stackTrace);
+    }
     LaunchMonitor.recordInitEnd();
   }
 }

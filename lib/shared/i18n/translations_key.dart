@@ -291,6 +291,9 @@ class I18nKeys {
       'A new version %s is available. Would you like to update?\n(Note: App store updates may take some time to propagate. If you do not see the update button, please try again in a few minutes.)';
   static const String update = 'Update';
   static const String updateCheckFailed = 'Failed to check for updates. Please try again later.';
+  static const String shorebirdPatchReadyMsg = 'A new patch update is ready and will take effect on next app restart.';
+  static const String shorebirdCheckUpdates = 'Check Hot Fix Updates';
+  static const String shorebirdUpToDate = 'Your app is up to date with latest patch.';
 
   // Notification Permission
   static const String notificationPermissionTitle = 'Notification Permission Required';

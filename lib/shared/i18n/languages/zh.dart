@@ -244,6 +244,9 @@ final Map<String, String> zh = {
   I18nKeys.updateAvailable: '检测到新版本 %s，是否更新？\n（注：应用商店发布可能有延迟，若未看见更新，请稍候几分钟再试）',
   I18nKeys.update: '更新',
   I18nKeys.updateCheckFailed: '检查更新失败，请稍后重试。',
+  I18nKeys.shorebirdPatchReadyMsg: '新版热更新补丁已准备就绪，下次重启应用后生效。',
+  I18nKeys.shorebirdCheckUpdates: '检查热更新补丁',
+  I18nKeys.shorebirdUpToDate: '当前已是最新热更新补丁版本。',
 
   // Notification Permission
   I18nKeys.notificationPermissionTitle: '需要通知权限',

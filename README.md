@@ -148,6 +148,7 @@ dart tools/dependency_rules.dart --graph
 - `docs/push_notification_specification.md`：推送通知设计与集成规格
 - `docs/fido2_implementation_design.md`：FIDO2 / Passkey 免密认证设计方案
 - `docs/intent_effect_playback_spec.md`：Intent & Effect 录制与回放设计方案
+- `docs/shorebird_code_push_guide.md`：Shorebird OTA Code Push 热更新集成与使用指南
 - `docs/todo.md`：后续执行路线图
 
 ## 🎯 目标态（明确未全部实现）

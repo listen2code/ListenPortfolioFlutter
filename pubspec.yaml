@@ -2,8 +2,8 @@ name: listen_portfolio_flutter
 description: "Portfolio of Listen"
 publish_to: 'none'
 
-version: 1.1.10
-desc: "device_preview"
+version: 1.1.11
+desc: "shorebird_code_push"
 desc_zh: ""
 desc_ja: ""
 
@@ -28,6 +28,9 @@ dependencies:
 
   # In-App Purchase
   in_app_purchase: ^3.2.0
+
+  # Code Push / OTA Updates
+  shorebird_code_push: ^2.0.7
 
   # UI
   cupertino_icons: ^1.0.8
