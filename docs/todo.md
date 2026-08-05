@@ -225,4 +225,5 @@
 - IDE plugin：json 模型转换、asset 资源生成到 `R.dart`
 - 剔除部分三方pub，能自定义实现的，尽量自己实现，学习目的
 - 切换账户后，4个tab的刷新问题，LogoutProviderImpl是否要invalidate(overviewViewModelProvider)等代码？
-- ios release
+- 编译，发布一个web版本，可以通过浏览器查看
+- 发布到ios市场
