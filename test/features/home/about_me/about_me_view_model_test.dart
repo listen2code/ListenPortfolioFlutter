@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:listen_core/core.dart';
+import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.dart';
 import 'package:listen_portfolio_flutter/features/auth/domain/usecases/upload_avatar_use_case.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/provider/auth_provider.dart';
 import 'package:listen_portfolio_flutter/features/home/data/models/about_me_model.dart';
@@ -143,6 +144,7 @@ void main() async {
       // Keep provider alive during async operations to prevent auto-dispose
       container.listen(aboutMeViewModelProvider, (_, __) {}, fireImmediately: false);
 
+      authManager.login(const UserModel(id: '1', name: 'Test User'));
       viewModel = container.read(aboutMeViewModelProvider.notifier);
       emittedEffects.clear();
       viewModel.onBindEffect((effect) => emittedEffects.add(effect));

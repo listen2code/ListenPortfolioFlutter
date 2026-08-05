@@ -20,6 +20,12 @@ class OverviewViewModel extends _$OverviewViewModel with ViewModelMixin<Overview
     ref.onDispose(() {
       authManager.removeListener(_onAuthStatusChanged);
     });
+
+    subscribeEvent<CommonEvent<AppLanguage>>(
+      (_) => updateState(state.copyWith(isInitialLoaded: false)),
+      key: AppConstants.languageChangedEventKey,
+    );
+
     return const OverviewState();
   }
 

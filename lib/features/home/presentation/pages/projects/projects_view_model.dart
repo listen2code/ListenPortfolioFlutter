@@ -18,6 +18,12 @@ class ProjectsViewModel extends _$ProjectsViewModel with ViewModelMixin<Projects
     ref.onDispose(() {
       authManager.removeListener(_onAuthStatusChanged);
     });
+
+    subscribeEvent<CommonEvent<AppLanguage>>(
+      (_) => updateState(state.copyWith(isInitialLoaded: false)),
+      key: AppConstants.languageChangedEventKey,
+    );
+
     return const ProjectsState();
   }
 

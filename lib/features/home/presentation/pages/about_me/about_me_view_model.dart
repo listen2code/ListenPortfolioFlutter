@@ -29,6 +29,12 @@ class AboutMeViewModel extends _$AboutMeViewModel with ViewModelMixin<AboutMeSta
     ref.onDispose(() {
       authManager.removeListener(_onAuthStatusChanged);
     });
+
+    subscribeEvent<CommonEvent<AppLanguage>>(
+      (_) => updateState(state.copyWith(isInitialLoaded: false)),
+      key: AppConstants.languageChangedEventKey,
+    );
+
     return const AboutMeState();
   }
 

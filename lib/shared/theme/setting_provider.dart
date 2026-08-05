@@ -107,6 +107,9 @@ class SettingManager extends ChangeNotifier {
     _language = lang;
     notifyListeners();
     await SpUtil.put(AppConstants.languageKey, lang.label);
+    
+    // Broadcast language change event via EventBus to refresh remote localized data
+    eventBus.fire(CommonEvent<AppLanguage>(AppConstants.languageChangedEventKey, data: lang));
   }
 
   Future<void> setUseDynamicColor(bool use) async {
