@@ -17,12 +17,14 @@ fi
 if [ "$TARGET_TYPE" == "bundle" ]; then
     echo ">>> Building App Bundle (.aab) for [$ENV] environment (Shorebird: $USE_SHOREBIRD)"
     build_cmd="appbundle"
+    shorebird_artifact="aab"
     from="build/app/outputs/bundle/release"
     file_name="app-release.aab"
     output_ext="aab"
 else
     echo ">>> Building APK (.apk) for [$ENV] environment (Shorebird: $USE_SHOREBIRD)"
     build_cmd="apk"
+    shorebird_artifact="apk"
     from="build/app/outputs/flutter-apk"
     file_name="app-release.apk"
     output_ext="apk"
@@ -43,7 +45,7 @@ echo ">>> build $TARGET_TYPE [$ENV] version [$APP_VERSION] (Shorebird: $USE_SHOR
 
 if [ "$USE_SHOREBIRD" == "true" ] && command -v shorebird &> /dev/null; then
     echo ">>> Executing Shorebird Release Build..."
-    shorebird release android --artifact=$build_cmd \
+    shorebird release android --artifact=$shorebird_artifact \
         -- \
         --obfuscate --split-debug-info=apkOutput \
         --extra-gen-snapshot-options=--save-obfuscation-map=apkOutput/mapping.json,--strip \
