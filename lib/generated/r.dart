@@ -9,6 +9,12 @@ class R {
   static const String get_AboutMe = 'assets/mock/v1/get/aboutMe.json';
   static const String get_Projects = 'assets/mock/v1/get/projects.json';
   static const String get_PresetQa = 'assets/mock/v1/get/preset-qa.json';
+  static const String get_AboutMeJa = 'assets/mock/v1/get/aboutMe_ja.json';
+  static const String get_AboutMeZh = 'assets/mock/v1/get/aboutMe_zh.json';
+  static const String get_ProjectsJa = 'assets/mock/v1/get/projects_ja.json';
+  static const String get_ProjectsZh = 'assets/mock/v1/get/projects_zh.json';
+  static const String get_PresetQaEn = 'assets/mock/v1/get/preset-qa_en.json';
+  static const String get_PresetQaJa = 'assets/mock/v1/get/preset-qa_ja.json';
   static const String authLogin = 'assets/mock/v1/post/auth/login.json';
   static const String authSignUp = 'assets/mock/v1/post/auth/signUp.json';
   static const String authRefresh = 'assets/mock/v1/post/auth/refresh.json';

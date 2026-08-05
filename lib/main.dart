@@ -1,12 +1,14 @@
+import 'package:device_preview/device_preview.dart';
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:dynamic_color/dynamic_color.dart';
-import 'features/settings/presentation/provider/playback_provider.dart';
-import 'features/settings/data/models/playback_tape_metadata.dart';
-import 'shared/shared.dart';
 import 'package:listen_uikit/uikit.dart';
+
+import 'features/settings/data/models/playback_tape_metadata.dart';
+import 'features/settings/presentation/provider/playback_provider.dart';
+import 'shared/shared.dart';
 
 void main() {
   LaunchMonitor.recordMainStart();
@@ -30,7 +32,12 @@ void main() {
         );
       };
 
-      runApp(UncontrolledProviderScope(container: container, child: const MyApp()));
+      runApp(
+        DevicePreview(
+          enabled: !kReleaseMode,
+          builder: (context) => UncontrolledProviderScope(container: container, child: const MyApp()),
+        ),
+      );
     },
     onAppError: (logPath, error, stack) async {
       if (logPath != null) {
@@ -87,6 +94,8 @@ class MyApp extends StatelessWidget {
               // also passes through AppNav.onGenerateRoute and ZoneManager.runPage.
               initialRoute: Routes.root,
               builder: (context, child) {
+                // Integrate DevicePreview builder
+                child = DevicePreview.appBuilder(context, child);
                 // Temporarily bypass AI Chat Overlay while preserving the code
                 return child!;
                 // return GlobalAiChatOverlay(child: child!);

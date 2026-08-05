@@ -2,8 +2,8 @@ name: listen_portfolio_flutter
 description: "Portfolio of Listen"
 publish_to: 'none'
 
-version: 1.1.9
-desc: "Daily Build"
+version: 1.1.10
+desc: "device_preview"
 desc_zh: ""
 desc_ja: ""
 
@@ -59,6 +59,7 @@ dependencies:
   package_info_plus: ^10.1.0
   flutter_inappwebview: ^6.1.5
   in_app_review: ^2.0.9
+  device_preview: ^1.3.1
 
   # Routing
   path_provider: ^2.1.5
