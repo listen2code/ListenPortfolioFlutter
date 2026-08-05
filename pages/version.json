@@ -1,10 +1,10 @@
 {
-  "version": "1.1.10",
+  "version": "1.1.11",
   "buildNumber": 1,
   "url": "https://play.google.com/store/apps/details?id=com.listen.portfolio.listen_portfolio_flutter",
   "changelog": {
     "zh": "",
-    "en": "device_preview",
+    "en": "shorebird_code_push",
     "ja": ""
   }
 }
