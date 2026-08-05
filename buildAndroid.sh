@@ -41,7 +41,7 @@ APP_VERSION=$(grep '^version: ' pubspec.yaml | cut -d ' ' -f 2 | cut -d '+' -f 1
 
 echo ">>> build $TARGET_TYPE [$ENV] version [$APP_VERSION] (Shorebird: $USE_SHOREBIRD)"
 
-if [ "$USE_SHOREBIRD" == "true" ]; then
+if [ "$USE_SHOREBIRD" == "true" ] && command -v shorebird &> /dev/null; then
     echo ">>> Executing Shorebird Release Build..."
     shorebird release android --artifact=$build_cmd \
         -- \
@@ -50,7 +50,12 @@ if [ "$USE_SHOREBIRD" == "true" ]; then
         --dart-define=APP_ENV=$ENV \
         --dart-define=APP_VERSION=$APP_VERSION
 else
-    echo ">>> Executing Standard Flutter Release Build..."
+    if [ "$USE_SHOREBIRD" == "true" ]; then
+        echo ">>> Warning: USE_SHOREBIRD=true was requested, but 'shorebird' CLI command was not found in PATH."
+        echo ">>> Automatically falling back to standard Flutter Release Build..."
+    else
+        echo ">>> Executing Standard Flutter Release Build..."
+    fi
     flutter build $build_cmd --release \
         --obfuscate --split-debug-info=apkOutput \
         --extra-gen-snapshot-options=--save-obfuscation-map=apkOutput/mapping.json,--strip \

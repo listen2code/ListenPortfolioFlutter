@@ -128,6 +128,11 @@ jobs:
           flutter-version: '3.44.1'
           cache: 'true'
 
+      - name: Setup Shorebird
+        uses: shorebirdtech/setup-shorebird@v1
+        with:
+          shorebird-token: ${{ secrets.SHOREBIRD_TOKEN }}
+
       - name: Install dependencies
         run: flutter pub get
 
@@ -368,6 +373,11 @@ jobs:
         with:
           flutter-version: '3.44.1'
           cache: 'true'
+
+      - name: Setup Shorebird
+        uses: shorebirdtech/setup-shorebird@v1
+        with:
+          shorebird-token: ${{ secrets.SHOREBIRD_TOKEN }}
 
       - name: Install dependencies
         run: flutter pub get
