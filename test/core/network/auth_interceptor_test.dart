@@ -3,7 +3,6 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:http_mock_adapter/http_mock_adapter.dart';
 import 'package:listen_core/core.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -44,7 +43,7 @@ class _SequentialMockAdapter implements HttpClientAdapter {
     if (queue == null || queue.isEmpty) {
       throw DioException(
         requestOptions: options,
-        message: 'No queued mock response for \${options.path}',
+        message: 'No queued mock response for ${options.path}',
         type: DioExceptionType.unknown,
       );
     }
@@ -64,7 +63,6 @@ class _SequentialMockAdapter implements HttpClientAdapter {
 
 void main() {
   late Dio dio;
-  late DioAdapter dioAdapter;
   late MockApiInterceptorDelegate mockDelegate;
 
   // Mock success response following business specifications.
@@ -97,8 +95,6 @@ void main() {
     // Initialize ApiClient with mock delegate.
     ApiClient.init(mockDelegate);
     dio = ApiClient.dio;
-    // Use DioAdapter to mock network responses for Dio instance.
-    dioAdapter = DioAdapter(dio: dio);
 
     // Register fallback RequestOptions for mocktail matching.
     registerFallbackValue(RequestOptions(path: ''));
@@ -147,7 +143,10 @@ void main() {
       when(() => mockDelegate.onRefreshToken()).thenAnswer((_) async => true);
 
       // Mock server failure: always return 401 regardless of retry.
-      dioAdapter.onGet(path, (server) => server.reply(401, mock401Response));
+      final mockAdapter = _SequentialMockAdapter()
+        ..enqueue(path, 401, mock401Response)
+        ..enqueue(path, 401, mock401Response);
+      dio.httpClientAdapter = mockAdapter;
 
       try {
         await dio.get(path);

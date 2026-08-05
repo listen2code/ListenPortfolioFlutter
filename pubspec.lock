@@ -894,14 +894,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.6.0"
-  http_mock_adapter:
-    dependency: "direct dev"
-    description:
-      name: http_mock_adapter
-      sha256: "46399c78bd4a0af071978edd8c502d7aeeed73b5fb9860bca86b5ed647a63c1b"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.6.1"
   http_multi_server:
     dependency: transitive
     description:
@@ -999,7 +991,7 @@ packages:
     source: hosted
     version: "3.3.0"
   in_app_purchase_android:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: in_app_purchase_android
       sha256: eb8f551039481d1b265f12fa54f5ab5dd4f13ec5444a468b85a3793517a37fda
@@ -1202,7 +1194,7 @@ packages:
     source: hosted
     version: "2.0.0"
   mockito:
-    dependency: "direct dev"
+    dependency: transitive
     description:
       name: mockito
       sha256: eff30d002f0c8bf073b6f929df4483b543133fcafce056870163587b03f1d422

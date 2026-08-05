@@ -28,7 +28,6 @@ dependencies:
 
   # In-App Purchase
   in_app_purchase: ^3.2.0
-  in_app_purchase_android: ^0.5.1
 
   # UI
   cupertino_icons: ^1.0.8
@@ -83,7 +82,6 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   flutter_lints: ^6.0.0
-  mockito: ^5.4.4
   flutter_launcher_icons: ^0.14.4
   
   # Documentation
@@ -103,7 +101,6 @@ dev_dependencies:
 
   # Testing
   mocktail: ^1.0.3
-  http_mock_adapter: ^0.6.1
 
 flutter_launcher_icons:
   android: "ic_launcher"

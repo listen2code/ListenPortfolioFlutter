@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:http_mock_adapter/http_mock_adapter.dart' hide Matcher;
 import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/provider/auth_provider.dart';
 import 'package:listen_portfolio_flutter/main.dart';
@@ -20,6 +19,40 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 import '../test_helpers/test_setup.dart';
+
+class _MapMockAdapter implements HttpClientAdapter {
+  final Map<String, dynamic> _responses = {};
+
+  void register(String path, dynamic data) {
+    _responses[path] = data;
+  }
+
+  @override
+  Future<ResponseBody> fetch(
+    RequestOptions options,
+    Stream<Uint8List>? requestStream,
+    Future<void>? cancelFuture,
+  ) async {
+    final path = options.path;
+    if (_responses.containsKey(path)) {
+      return ResponseBody.fromString(
+        jsonEncode(_responses[path]),
+        200,
+        headers: {
+          Headers.contentTypeHeader: [Headers.jsonContentType],
+        },
+      );
+    }
+    throw DioException(
+      requestOptions: options,
+      message: 'No mock response for $path',
+      type: DioExceptionType.unknown,
+    );
+  }
+
+  @override
+  void close({bool force = false}) {}
+}
 
 class DummyDeviceInfo implements IDeviceInfo {
   @override
@@ -240,9 +273,6 @@ void main() {
     // 3. Prevent visibility animations from lagging and blocking pumpAndSettle
     VisibilityDetectorController.instance.updateInterval = Duration.zero;
 
-    // 4. Intercept network requests via DioAdapter for test stability
-    final dioAdapter = DioAdapter(dio: ApiClient.dio, matcher: const UrlRequestMatcher());
-
     // Read projects, user, and aboutMe json files directly from local mock assets
     final userJson = jsonDecode(File('assets/mock/v1/get/user.json').readAsStringSync());
     final projectsJson = jsonDecode(File('assets/mock/v1/get/projects.json').readAsStringSync());
@@ -251,12 +281,14 @@ void main() {
     final loginJson = jsonDecode(File('assets/mock/v1/post/auth/login.json').readAsStringSync());
     final logoutJson = jsonDecode(File('assets/mock/v1/post/user/logout.json').readAsStringSync());
 
-    // Setup network mock returns
-    dioAdapter.onGet('/v1/user', (server) => server.reply(200, userJson));
-    dioAdapter.onGet('/v1/projects', (server) => server.reply(200, projectsJson));
-    dioAdapter.onGet('/v1/aboutMe', (server) => server.reply(200, aboutMeJson));
-    dioAdapter.onPost('/v1/auth/login', (server) => server.reply(200, loginJson));
-    dioAdapter.onPost('/v1/user/logout', (server) => server.reply(200, logoutJson));
+    // Intercept network requests via _MapMockAdapter for test stability
+    final mockAdapter = _MapMockAdapter()
+      ..register('/v1/user', userJson)
+      ..register('/v1/projects', projectsJson)
+      ..register('/v1/aboutMe', aboutMeJson)
+      ..register('/v1/auth/login', loginJson)
+      ..register('/v1/user/logout', logoutJson);
+    ApiClient.dio.httpClientAdapter = mockAdapter;
   });
 
   group('Mock E2E Integration Flow Tests', () {
