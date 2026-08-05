@@ -85,6 +85,8 @@ graph TD
   * **原理解耦**：在 APM 全局架构下，主日志系统的日志格式都会打印当前执行 Zone 的 Trace ID（例如：`💡 [trace-id-xxxx] Logs...`）。
   * **联动机制**：抓包 Tab（`_NetworkInspectorTab`）中的每个请求行记录都携带有该次网络调用发生时所在的 Trace ID。点击 **“Drill Logs”** 时，系统将该请求的 Trace ID 赋值给 `TextEditingController` 的文本内容，并切回 `Logs` Tab。主日志渲染视图在接收到文本变更后，会自动利用 `log.message.contains(traceFilter)` 进行布尔计算，只向屏幕输出包含该 Trace ID 的日志条目，实现了从网络抓包到逻辑日志上下文的无缝快速溯源。
 
+> **注意**：点击日志中的 **TraceId** 只会在 **Log Tab** 中进行过滤，**不会** 自动切换到 **Performance Tab**。
+
 ### 2.7 崩溃日志（Crash Log）与 TraceId / Logs 一键联动下钻原理
 * **上下文元数据注入**：修改底层 `CrashManager.saveCrashLog`。当 App 发生未捕获异常或受管理异常被写入落盘日志（`.log`）时，自动从 `ZoneManager.currentTraceId` 提取当前 Zone 正在追踪的 `Trace ID`，并结合 `AppNav.currentRouteName` 记录下发生崩溃那一刻的页面路由，并统一写入崩溃日志头部。
 * **全局联动（LogOverlayManager 消息中枢）**：

@@ -17,12 +17,30 @@
   test/
   ├── core/
   │   ├── network/auth_interceptor_test.dart
-  │   └── validators_test.dart
+  │   ├── validators_test.dart
+  │   ├── crash_manager_test.dart
+  │   ├── frame_monitor_test.dart
+  │   ├── ring_buffer_test.dart
+  │   ├── network_inspector_store_test.dart
+  │   ├── launch_monitor_test.dart
+  │   ├── lifecycle_route_filtering_test.dart
+  │   ├── app_nav_test.dart
+  │   ├── error_mapper_test.dart
+  │   └── i18n_test.dart
   ├── features/
   │   ├── auth/
   │   ├── home/
   │   ├── settings/
   │   └── splash/
+  ├── shared/
+  │   ├── mock_data_consistency_test.dart
+  │   └── utils/playback_test.dart
+  ├── utilities/
+  │   ├── mock_helpers.dart
+  │   └── widget_test_setup.dart
+  ├── widget/
+  │   ├── coffee_product_card_test.dart
+  │   └── coffee_purchase_bottom_sheet_test.dart
   └── test_helpers/
       └── test_setup.dart
   ```
@@ -283,7 +301,19 @@ lcov --summary coverage/lcov.info
 - **文件**：`integration_test/app_test.dart`
 - **内容**：在真实的模拟器或手机设备上进行 Splash 启动 ➡️ 进入首页 ➡️ Drawer 路由跳转 ➡️ 输入校验（覆盖空校验、非法邮箱校验、过短文本校验、密码不一致校验等异常提示）➡️ 正常表单提交 ➡️ 登录账号验证 ➡️ Drawer 侧边栏动态 Profile 信息校验 ➡️ Logout 对话框登出整条业务链的闭环自动化控制。
 
-## 🛠️ 测试环境
+### 5. APM 核心算法测试
+- **文件组**：`test/core/ring_buffer_test.dart`、`test/core/frame_monitor_test.dart`、`test/core/network_inspector_store_test.dart`、`test/core/launch_monitor_test.dart`
+- **内容**：验证环形队列越界防护、自适应高刷 Budget Jank 检测、物理时钟 FPS 计算、网络抓包内存队列、冷启动性能退化警报算法等。
+
+### 6. 路由与生命周期测试
+- **文件**：`test/core/app_nav_test.dart`、`test/core/lifecycle_route_filtering_test.dart`
+- **内容**：验证强类型路由解析、Deep Link Scheme 剥离、生命周期路由过滤逻辑。
+
+### 7. IAP 购买流程 Widget 测试
+- **文件组**：`test/widget/coffee_product_card_test.dart`、`test/widget/coffee_purchase_bottom_sheet_test.dart`、`test/features/settings/widgets/coffee_purchase_view_model_test.dart`
+- **内容**：验证咖啡购买卡片渲染、BottomSheet 交互、ViewModel 状态机转换。
+
+  ## 🛠️ 测试环境
 
 ### 测试环境设置 (`test/test_helpers/test_setup.dart`)
 ```dart
@@ -450,6 +480,6 @@ flutter test --debug
 
 ---
 
-**最后更新**: 2026年4月5日  
+**最后更新**: 2026年8月5日  
 **维护者**: Flutter 开发团队  
 **文件说明**: 本文档是当前仓库中的集中测试指南；如与测试代码或 CI workflow 冲突，以实际实现为准

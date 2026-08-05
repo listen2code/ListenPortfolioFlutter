@@ -170,7 +170,9 @@ class _CircularDependencyLint extends DartLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    // TODO: Implement circular dependency detection
+    // [Placeholder] Circular dependency detection is registered but not yet
+    // implemented. This rule currently reports no violations.
+    // See: docs/custom_lint_rules.md for status.
   }
 }
 

@@ -32,13 +32,11 @@ class QuickActionsManager {
       ShortcutItem(
         type: _actionSettings,
         localizedTitle: I18nKeys.settings.tr,
-        // todo ios/Runner/Assets.xcassets/
         icon: 'ic_setting',
       ),
       ShortcutItem(
         type: _actionContact,
         localizedTitle: I18nKeys.contactMe.tr,
-        // todo ios/Runner/Assets.xcassets/
         icon: 'ic_contact',
       ),
     ]);

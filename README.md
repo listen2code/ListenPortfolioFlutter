@@ -96,7 +96,6 @@ lib/
 - **文档与实现刚开始收口**：部分历史文档会比代码更理想化，正在逐步收敛
 
 - **调试能力尚未模块化**：日志浮窗仍属于当前 App 的 `shared`，目标态会拆到独立调试模块
-- **路由参数类型安全不足**：当前路由参数仍以动态对象和 Map 为主
 - **`listen_core` 边界仍在收紧**：部分适合 App 装配层的能力，历史上放置位置并不完全理想
 
 ## 🚀 快速开始
@@ -139,7 +138,8 @@ dart tools/dependency_rules.dart --graph
 - `docs/project_development_guide.md`：项目开发指南
 - `docs/testing_guide.md`：测试策略与执行说明
 - `docs/error_codes_reference.md`：错误码设计参考（当前仍以设计为主）
-- `docs/performance_panel_spec.md`：性能面板规格说明（未完全落地）
+- `docs/performance_panel_spec.md`：性能面板原始设计方案（已实现，最新请参考 `apm_performance_monitoring_design.md`）
+- `docs/apm_performance_monitoring_design.md`：APM 性能监控面板设计与实现文档
 - `docs/ai_intro_assistant_spec.md`：AI 助手规格说明（规划中）
 - `docs/listencore_audit.md`：`listen_core` 架构审计报告
 - `docs/event_bus_vs_base_effect.md`：EventBus 与 BaseEffect 架构通信设计规范
@@ -154,10 +154,8 @@ dart tools/dependency_rules.dart --graph
 
 以下内容是我希望后续逐步完成的方向，不代表已经全部落地：
 
-- 统一错误码与 `messageId` 错误契约
-- 类型安全路由参数与深链路支持
 - `LogOverlay / PerformancePanel / NetInspector` 独立调试模块化
-- 更完整的测试覆盖与 Golden / Integration tests
+- Golden Tests 补齐
 - PDF 简历导出、技能图表、AI 助手等展示能力
 
 ## 🧾 待删除备份区

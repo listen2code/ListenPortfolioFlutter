@@ -83,13 +83,13 @@
 
 | 优先级 | 任务 | 预估时间 | 说明 |
 |--------|------|----------|------|
-| P0 | **测试覆盖率 → 60%+** | 20h | 补充 ViewModel、Repository、UseCase 单测。你已有 31 个测试文件，扩展覆盖率 |
+| P0 | **测试覆盖率 → 60%+** | 20h | 补充 ViewModel、Repository、UseCase 单测。你已有 50 个测试文件，扩展覆盖率 |
 | P0 | **ADR 文档** | 8h | 记录 3-5 个关键架构决策（Zone tracing、SafeMode、MockServer、依赖治理、MVI 选型）。面试时的谈资 |
 | P1 | **Architecture Mermaid 图** | 4h | 模块依赖图、数据流图、网络请求链路图。放到 README 和 docs 中 |
-| P1 | **Firebase Push 推送通知** | 12h | 接入 FCM/APNs，并结合 EventBus 实现 Deep Linking 唤醒与路由跳转 |
+| P1 | ~~**Firebase Push 推送通知**~~ | 12h | ✅ 已完成（todo.md Now §6）。接入 FCM/APNs，并结合 EventBus 实现 Deep Linking 唤醒与路由跳转 |
 | P1 | **listen_core / listen_uikit 版本升级** | 8h | 完善 pub.dev 包，补充 README、example、changelog |
-| P2 | **Net Inspector 面板** | 12h | 请求列表、耗时、payload 展示。DevTools 级别的功能，面试谈资 |
-| P2 | **Integration Tests** | 10h | 端到端测试，mock 环境下跑通主流程 |
+| P2 | ~~**Net Inspector 面板**~~ | 12h | ✅ 已完成。请求列表、耗时、payload 展示。DevTools 级别的功能，面试谈资 |
+| P2 | ~~**Integration Tests**~~ | 10h | ✅ 已完成。端到端测试，mock 环境下跑通主流程 |
 
 **Phase 4 交付物：**
 - 测试覆盖率 60%+ 且 CI 可见

@@ -12,7 +12,7 @@
 
 | 规则名称 (Code Name) | 违规场景说明 | 推荐解决方案 / 自动修复行为 | 自动修复支持 |
 |---|---|---|:---:|
-| `dependency_boundary_violation` | 跨特征模块 (features) 间非法循环导入；核心层核心组件 (core) 向上依赖特征层或共享层 (shared)。 | 重新梳理依赖拓扑结构，降低耦合度。 | ❌ |
+| `dependency_boundary_violation` | 跨特征模块 (features) 间非法循环导入；核心层核心组件 (core) 向上依赖特征层或共享层 (shared)。 | 重新梳理依赖拓扑结构，降低耦合度。 | ❌ (**占位规则，检测逻辑尚未实现**) |
 | `implementation_import` | UI 或 Domain 层直接导入了 Data 层的私有实现类 (`_impl.dart` 或 `impl/` 目录)。 | 改为导入抽象接口类。 | ❌ |
 | `cross_feature_relative_import` | 跨 Feature 目录使用了相对路径导入 (如 `../../other_feature/xxx.dart`)。 | 必须使用以 `package:` 路径开头的全局导入。 | ❌ |
 | `view_model_context_isolation` | 在 ViewModel 中引用或保存 `BuildContext`。 | ViewModel 中不可访问 UI 上下文，应使用 `emitEffect` 代替。 | ❌ |

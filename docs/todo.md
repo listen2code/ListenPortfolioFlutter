@@ -170,10 +170,10 @@
 
 ### 3. 调试与观测扩展
 
-- 性能指标面板 MVP：基于 `FrameMonitor + PerfTraceStore` 展示 FPS、jank、内存趋势、页面首帧与 Intent traces
-- `traceId` 钻取能力：日志浮窗支持更稳定的 trace 过滤、定位与回看路径
-- Crash / error / trace 关联：让 crash log、`messageId`、请求链路能形成最小闭环，而不是分散在不同入口
-- 轻量 Net Inspector：先完成请求时间线、状态码、错误体、traceId 的最小可视化，而不是一次做成抓包平台
+- ✅ 性能指标面板 MVP：基于 `FrameMonitor + PerfTraceStore` 展示 FPS、jank、内存趋势、页面首帧与 Intent traces（已合并至 Now §5）
+- ✅ `traceId` 钻取能力：日志浮窗支持 trace 过滤、定位与回看路径（已合并至 Now §5）
+- ✅ Crash / error / trace 关联：crash log、`messageId`、请求链路形成闭环（已合并至 Now §5）
+- ✅ 轻量 Net Inspector：请求时间线、状态码、错误体、traceId 可视化（已合并至 Now §5）
 
 ### 4. 更能体现个人强项的增强项
 

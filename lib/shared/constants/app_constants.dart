@@ -63,8 +63,8 @@ class AppConstants {
     if (Platform.isAndroid) {
       return 'com.listen.portfolio.listen_portfolio_flutter';
     } else if (Platform.isIOS) {
-      // todo appStore id
-      return 'xxxxx';
+      // iOS App Store ID — 发布至 App Store 后需填入真实 ID
+      return '';
     }
     return '';
   }

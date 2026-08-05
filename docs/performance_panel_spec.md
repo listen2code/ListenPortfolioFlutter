@@ -657,9 +657,9 @@ Phase 3 + 4 在 ListenPortfolioFlutter 中完成，纯 UI。
 
 | 升级项 | 触发条件 | 改动 |
 |--------|----------|------|
-| 首帧耗时持久化 | 想在面试中展示"回归检测" | SP 存 `Map<String, List<int>>`，半天 |
+| 首帧耗时持久化 | ✅ 已实现 | `LaunchMonitor` 50 条 FIFO 基线 + 25%+150ms 退化检测，详见 `apm_performance_monitoring_design.md` §2.8 |
 | Platform Channel 原生指标 | 需要精确 CPU/内存 | 增加 Android/iOS 原生代码 |
-| Network Inspector 集成 | todo 中另一项需求 | 复用 Perf Dashboard Tab 架构 |
+| Network Inspector 集成 | ✅ 已实现 | `NetworkInspectorStore` + `_NetworkInspectorTab`，详见 `apm_performance_monitoring_design.md` §2.6 |
 | CI 性能基准测试 | CI 就绪后 | `flutter test --profile` + benchmark |
 
 ---
@@ -667,4 +667,4 @@ Phase 3 + 4 在 ListenPortfolioFlutter 中完成，纯 UI。
 **文档版本**: v1.0
 **决策参与者**: Listen + Cascade
 **创建日期**: 2026-04-07
-**状态**: 待执行
+**状态**: 已实现（最新实现文档请参考 [APM 性能监控面板设计与实现文档](apm_performance_monitoring_design.md)）

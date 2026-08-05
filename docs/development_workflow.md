@@ -135,9 +135,11 @@ Log Overlay 是一个浮窗调试工具，在应用界面上实时显示日志�
 ### 功能特性
 
 - 📱 **实时显示**：应用日志实时浮窗显示
-- 🎯 **源类型过滤**：支持 All / Server / App / Perf 分类过滤
+- 🎯 **多 Tab 调试面板**：支持 Logs / Perf Dashboard / Network Inspector 三个 Tab
 - 🔍 **Trace ID 过滤**：点击日志中的 Trace ID 自动过滤关联请求链路
-- � **日志复制**：一键复制所有日志到剪贴板
+- 📊 **性能监控**：FPS/Jank 实时折线图、内存趋势、页面首帧 Trace、Intent 耗时树
+- 🌐 **网络抓包**：Dio HTTP 流量完整拦截与审计，支持 TraceId Drill Logs 联动
+- 📋 **日志复制**：一键复制所有日志到剪贴板
 - 🎨 **可调整窗口**：支持拖拽移动、四角及底边缩放
 
 ### 启用 Log Overlay
@@ -347,9 +349,13 @@ flutter run --dart-define=APP_ENV=mock
 - [Mock 数据维护规范](mock_data_specification.md)
 - [项目开发指南](project_development_guide.md)
 - [文档生成指南](documentation_generation.md)
+- [APM 性能监控面板设计与实现](apm_performance_monitoring_design.md)
+- [强类型路由与 Deep Link 设计](deep_link_routing_design.md)
+- [自定义 Lint 规则设计与实现](custom_lint_rules.md)
+- [测试指南](testing_guide.md)
 
 ---
 
-**更新日期**: 2026-04-03  
+**更新日期**: 2026-08-05  
 **维护者**: 开发团队  
-**版本**: 1.0.0
+**版本**: 1.1.0
