@@ -234,5 +234,11 @@
 - ColorPickerProviderImpl的2个button会非常小
 - 自动执行integration_test的时候，我希望每步操作都对屏幕进行截图（主要是intent操作），并保存到当前手机的sd卡目录
 - 如果用户禁用push通知后，如何引导用户重新去打开
-- 发布正式包到Google play
+- 发布正式包到Google play，还需要哪些准备工作
 - 点击overView底部的某个项目卡片的时候，跳转到项目列表画面，并定位到这个项目卡片
+- 检查下哪些lib已经废弃，或者很久不更新，或者有功能相同，但是更稳定和更多人用的lib可以替换
+- 用patrol替换integration_test
+- 通过firebase_ai或Firebase Genkit实现AI智能助手
+- 试用talker_flutter，device_preview，storybook_flutter，pubviz，shorebird_code_push 
+- 数据库中简历内容的翻译校准
+- aboutMe中真实简历pdf的审核，下载
