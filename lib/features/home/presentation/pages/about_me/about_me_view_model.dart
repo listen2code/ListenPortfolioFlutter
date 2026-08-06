@@ -39,7 +39,12 @@ class AboutMeViewModel extends _$AboutMeViewModel with ViewModelMixin<AboutMeSta
   }
 
   void _onAuthStatusChanged() {
-    updateState(const AboutMeState());
+    if (authManager.state.isGuest) {
+      updateState(const AboutMeState());
+    } else if (authManager.state.user?.avatarUrl != null && state.data != null) {
+      final updatedData = state.data!.copyWith(avatarUrl: authManager.state.user!.avatarUrl);
+      updateState(state.copyWith(data: updatedData));
+    }
   }
 
   /// Lifecycle hook called when the widget becomes visible
@@ -138,10 +143,9 @@ class AboutMeViewModel extends _$AboutMeViewModel with ViewModelMixin<AboutMeSta
       loadingMessage: I18nKeys.uploading.tr,
       onSuccess: (userModel) {
         if (userModel != null) {
-          // Update authManager state globally
+          final updatedData = state.data?.copyWith(avatarUrl: userModel.avatarUrl);
+          updateState(state.copyWith(imageFile: null, data: updatedData));
           authManager.login(userModel);
-          // Reset imageFile to null so the screen renders from authManager.state.user.avatarUrl
-          updateState(state.copyWith(imageFile: null));
           emitEffect(MessageEffect.info(I18nKeys.avatarUploadSuccess.tr));
         }
       },
