@@ -60,19 +60,49 @@ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 iwr -UseBasicParsing 'https://raw.githubusercontent.com/shorebirdtech/install/main/install.ps1' | iex
 ```
 
-### 2. 初始化项目（首次使用）
-在项目根目录运行：
+### 2. 本地项目前置配置（仅首次，必须在本地终端执行）
+
+为了让 Shorebird 识别您的应用并允许 CI/CD 自动构建，请依次在本地完成以下 3 个关键前置步骤：
+
+#### 步骤 A：本地终端登录授权 (`shorebird login`)
+在本地电脑终端运行：
+```bash
+shorebird login
+```
+终端会自动打开浏览器，使用您的 Google 或 GitHub 账号完成授权登录。
+
+#### 步骤 B：初始化项目并提交配置文件 (`shorebird init`)
+在 Flutter 项目根目录运行：
 ```bash
 shorebird init
 ```
-CLI 会自动在项目根目录生成 `shorebird.yaml` 文件，并给项目分配唯一的 Shorebird App ID。
+- CLI 会在项目根目录自动生成 `shorebird.yaml` 文件，并分配唯一的 Shorebird App ID。
+- ⚠️ **必须将 `shorebird.yaml` 提交至 Git 仓库**（否则云端/CI 编译时无法识别 App ID 导致失败）：
+  ```bash
+  git add shorebird.yaml
+  git commit -m "chore: initialize shorebird configuration"
+  git push
+  ```
+
+#### 步骤 C：获取 CI/CD 所需的 `SHOREBIRD_TOKEN` API 密钥
+为使 GitHub Actions CI 流水线获得发布/热修权限：
+1. 登录 Shorebird 官方控制台 ➔ [https://console.shorebird.dev](https://console.shorebird.dev)
+2. 进入 **Account** ➔ **API Keys** ➔ 点击 **Create API Key**。
+3. 给 Key 命名（如 `GitHub-Actions`），复制生成的密钥。
+4. 打开 GitHub 项目仓库 ➔ **Settings** ➔ **Secrets and variables** ➔ **Actions** ➔ 点击 **New repository secret**：
+   - **Name**: `SHOREBIRD_TOKEN`
+   - **Secret**: 粘贴刚才复制的 API 密钥。
+
+*(注：旧版的 `shorebird login:ci` 命令已被 Shorebird 官方废弃，请使用控制台生成的 API Keys)*
+
+---
 
 ### 3. 构建发布“基准包” (Release)
-提交到 App Store / Google Play 的版本必须使用 `shorebird release` 构建：
+提交到 App Store / Google Play 的版本必须使用 `shorebird release` 或运行 `./buildAndroid.sh bundle prod true`：
 
 - **Android 发布包**：
   ```bash
-  shorebird release android
+  shorebird release android --artifact=aab
   ```
 - **iOS 发布包**：
   ```bash
@@ -80,15 +110,25 @@ CLI 会自动在项目根目录生成 `shorebird.yaml` 文件，并给项目分�
   ```
 
 ### 4. 推送“热更新补丁” (Patch)
-当修改了 Dart 代码后，无需重新发布完整的 APK/IPA，直接运行 Patch 指令：
+当修改了 Dart 代码后，无需重新发布完整的 APK/IPA：
 
-- **推送 Android 补丁**：
+- **方式 1：通过 Git Commit 消息自动触发 CI 推送（推荐）**
+  在提交代码时，提交信息包含 `[patch]`、`[hotfix]` 或 `[shorebird-patch]` 关键字：
+  ```bash
+  git commit -m "fix(auth): 修复登录崩溃 [patch]"
+  git push origin develop
+  ```
+  GitHub Actions CI 检测到关键字后会自动为您构建并推送热更新 Patch 至 Shorebird 云端。
+
+- **方式 2：在 GitHub Actions 手动面板触发**
+  进入 GitHub 仓库 **Actions** ➔ **CI and APK Build** ➔ **Run workflow**：
+  - **Build Action**: 选择 `patch`
+  - **Environment**: 选择目标环境 (`prod` / `dev`)
+
+- **方式 3：开发者本地命令行推送**
+  在本地终端运行：
   ```bash
   shorebird patch android
-  ```
-- **推送 iOS 补丁**：
-  ```bash
-  shorebird patch ios
   ```
 
 ---

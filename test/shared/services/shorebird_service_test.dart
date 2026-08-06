@@ -74,5 +74,21 @@ void main() {
       expect(success, isFalse);
       expect(service.status, ShorebirdCodePushStatus.error);
     });
+
+    test('getFormattedVersion appends Patch # when running a patch', () async {
+      when(() => mockUpdater.isAvailable).thenReturn(true);
+      when(() => mockUpdater.readCurrentPatch()).thenAnswer((_) async => const Patch(number: 3));
+
+      expect(await service.isRunningPatch, isTrue);
+      expect(await service.getFormattedVersion('1.1.11+1'), '1.1.11+1 (Patch #3)');
+    });
+
+    test('getFormattedVersion returns base version when no patch installed', () async {
+      when(() => mockUpdater.isAvailable).thenReturn(true);
+      when(() => mockUpdater.readCurrentPatch()).thenAnswer((_) async => null);
+
+      expect(await service.isRunningPatch, isFalse);
+      expect(await service.getFormattedVersion('1.1.11+1'), '1.1.11+1');
+    });
   });
 }

@@ -125,6 +125,7 @@ flutter:
     - assets/mock/v1/post/ai/
     - assets/mock/images/
     - assets/html/
+    - shorebird.yaml
 flutter_assets_generator:
   output_dir: generated/
   output_filename: r

@@ -15,6 +15,23 @@ class SettingsVersionTile extends StatefulWidget {
 class _SettingsVersionTileState extends State<SettingsVersionTile> {
   int _clickCount = 0;
   DateTime? _lastClickTime;
+  String _versionDisplay = '${I18nKeys.appVersion.tr} ${AppConstants.appVersion}';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadVersionInfo();
+  }
+
+  Future<void> _loadVersionInfo() async {
+    final base = '${I18nKeys.appVersion.tr} ${AppConstants.appVersion}';
+    final formatted = await shorebirdService.getFormattedVersion(base);
+    if (mounted) {
+      setState(() {
+        _versionDisplay = formatted;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +39,7 @@ class _SettingsVersionTileState extends State<SettingsVersionTile> {
       dense: true,
       title: Center(
         child: CommonText(
-          '${I18nKeys.appVersion.tr} ${AppConstants.appVersion}',
+          _versionDisplay,
           style: context.textTheme.labelSmall?.copyWith(color: Colors.grey),
         ),
       ),

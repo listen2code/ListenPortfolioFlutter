@@ -7,6 +7,14 @@ on:
     branches: [ main, develop ]
   workflow_dispatch:
     inputs:
+      build_action:
+        description: 'Build Action (build = Release App, patch = Hotfix Patch)'
+        required: true
+        default: 'build'
+        type: choice
+        options:
+          - build
+          - patch
       environment:
         description: 'Build environment'
         required: true
@@ -28,6 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       should_build_apk: ${{ steps.check.outputs.should_build_apk }}
+      should_patch_shorebird: ${{ steps.check.outputs.should_patch_shorebird }}
       environment: ${{ steps.check.outputs.environment }}
     steps:
       - name: Checkout code
@@ -100,15 +109,24 @@ jobs:
               echo "No previous build found"
             fi
           fi
-          
+
+          # Check for Shorebird Patch triggers
+          SHOULD_PATCH_SHOREBIRD="false"
+          COMMIT_MSG=$(git log -1 --pretty=format:"%s")
+          if [[ "${{ github.event.inputs.build_action }}" == "patch" ]] || [[ "$COMMIT_MSG" == *"[patch]"* ]] || [[ "$COMMIT_MSG" == *"[hotfix]"* ]] || [[ "$COMMIT_MSG" == *"[shorebird-patch]"* ]]; then
+            SHOULD_PATCH_SHOREBIRD="true"
+            echo "Shorebird patch trigger found"
+          fi
+
           echo "should_build_apk=$SHOULD_BUILD_APK" >> $GITHUB_OUTPUT
+          echo "should_patch_shorebird=$SHOULD_PATCH_SHOREBIRD" >> $GITHUB_OUTPUT
           echo "environment=$ENVIRONMENT" >> $GITHUB_OUTPUT
-          echo "Build condition result: $SHOULD_BUILD_APK"
+          echo "Build condition result: should_build_apk=$SHOULD_BUILD_APK, should_patch_shorebird=$SHOULD_PATCH_SHOREBIRD"
 
 
   build-apk:
     needs: [check-conditions]
-    if: needs.check-conditions.outputs.should_build_apk == 'true'
+    if: needs.check-conditions.outputs.should_build_apk == 'true' && needs.check-conditions.outputs.should_patch_shorebird != 'true'
     runs-on: ubuntu-latest
 
     steps:
@@ -190,6 +208,8 @@ jobs:
           echo "$GOOGLE_SERVICES_JSON_BASE64" | base64 --decode > android/app/google-services.json
 
       - name: Build APK via script
+        env:
+          SHOREBIRD_TOKEN: ${{ secrets.SHOREBIRD_TOKEN }}
         run: |
           sed -i 's/\r$//' buildAndroid.sh
           chmod +x buildAndroid.sh
@@ -443,6 +463,8 @@ jobs:
 
       - name: Build Release AAB via script
         if: steps.check_version.outputs.should_deploy == 'true'
+        env:
+          SHOREBIRD_TOKEN: ${{ secrets.SHOREBIRD_TOKEN }}
         run: |
           sed -i 's/\r$//' buildAndroid.sh
           chmod +x buildAndroid.sh
@@ -483,3 +505,65 @@ jobs:
           echo "1. Add [build-apk], [apk], or [deploy] to commit message"
           echo "2. Wait 2+ hours since last build"
           echo "3. Use manual workflow dispatch"
+
+  shorebird-patch:
+    name: Shorebird Patch Hotfix
+    needs: [check-conditions]
+    if: needs.check-conditions.outputs.should_patch_shorebird == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.1'
+          cache: 'true'
+
+      - name: Setup Shorebird
+        uses: shorebirdtech/setup-shorebird@v1
+        with:
+          shorebird-token: ${{ secrets.SHOREBIRD_TOKEN }}
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Create Keystore Directory
+        run: mkdir -p android/keystore
+
+      - name: Decode Keystore
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android/keystore/key.jks
+
+      - name: Create keystore.properties
+        run: |
+          cat > android/keystore/keystore.properties << EOF
+          storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}
+          keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}
+          storeFile=key.jks
+          EOF
+
+      - name: Set up google-services.json
+        env:
+          GOOGLE_SERVICES_JSON_BASE64: ${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}
+        run: |
+          if [ -n "$GOOGLE_SERVICES_JSON_BASE64" ]; then
+            echo "$GOOGLE_SERVICES_JSON_BASE64" | base64 --decode > android/app/google-services.json
+          fi
+
+      - name: Deploy Shorebird Patch via script
+        env:
+          SHOREBIRD_TOKEN: ${{ secrets.SHOREBIRD_TOKEN }}
+        run: |
+          sed -i 's/\r$//' buildAndroid.sh
+          chmod +x buildAndroid.sh
+          ./buildAndroid.sh patch ${{ needs.check-conditions.outputs.environment }}

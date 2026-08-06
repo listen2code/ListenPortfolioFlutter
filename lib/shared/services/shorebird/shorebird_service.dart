@@ -20,6 +20,12 @@ abstract class IShorebirdService {
   /// Gets current installed patch number or null if running base release.
   Future<int?> getCurrentPatchNumber();
 
+  /// Whether current running app is executing an OTA Patch.
+  Future<bool> get isRunningPatch;
+
+  /// Formats version string with patch status (e.g. "1.1.11+1 (Patch #2)" or "1.1.11+1").
+  Future<String> getFormattedVersion(String baseVersion);
+
   /// Checks if a new patch is available on Shorebird server.
   Future<bool> checkForUpdate();
 
@@ -53,6 +59,21 @@ class ShorebirdServiceImpl implements IShorebirdService {
       appLogger.e('Failed to read Shorebird current patch', error: e, stackTrace: stack);
       return null;
     }
+  }
+
+  @override
+  Future<bool> get isRunningPatch async {
+    final patchNum = await getCurrentPatchNumber();
+    return patchNum != null && patchNum > 0;
+  }
+
+  @override
+  Future<String> getFormattedVersion(String baseVersion) async {
+    final patchNum = await getCurrentPatchNumber();
+    if (patchNum != null && patchNum > 0) {
+      return '$baseVersion (Patch #$patchNum)';
+    }
+    return baseVersion;
   }
 
   @override
