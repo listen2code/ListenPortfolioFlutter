@@ -15,7 +15,7 @@ class SettingsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return BaseRefreshPage<SettingsViewModel, SettingsState>(
-      title: "Setting0806",
+      title: I18nKeys.settings.tr,
       provider: settingsViewModelProvider,
       body: (context, child, viewModel, state) {
         return SingleChildScrollView(
