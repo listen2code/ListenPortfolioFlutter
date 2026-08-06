@@ -4,7 +4,7 @@
   "message": "",
   "body": {
     "name": "Listen",
-    "avatarUrl": "https://api.dicebear.com/7.x/avataaars/png?seed=Listen",
+    "avatarUrl": "https://api.dicebear.com/10.x/bottts/svg?seed=Listen",
     "status": "available",
     "jobTitle": "シニア Android / Flutter エンジニア",
     "bio": "11年以上のモバイル開発経験（Androidシステム内部メカニズム、コンポーネント化、APMインフラ設計に精通）と3年以上のFlutter実務経験を持つモバイルエキスパート。楽天証券向け新規Flutterアプリのアーキテクチャ設計、FIDO2認証の実装、およびFlutterバージョンアップの推進実績あり。JLPT N1、BJT J2 取得。現在東京在住、日本語での技術提案や円滑なチームコラボレーションに対応可能。",

@@ -229,12 +229,11 @@
 - 发布到ios市场
 - [x] 基于现在最新代码，更新ArchitectureViewModel里面写死的架构设计的内容
 - 如果当前登录的是userId=1的用户，则所有信息以第一人称，比如“关于我”，如果非userId=1的用户，则使用第三人才，比如“关于作者”
-- 非userId登录的时候，侧边栏和关于我的默认头像都是裂开的图
 - 自动执行patrol的时候，我希望每步操作都对屏幕进行截图（主要是intent操作），并保存到当前手机的sd卡目录
 - 如果用户禁用push通知后，如何引导用户重新去打开
 - 发布正式包到Google play，还需要哪些准备工作
 - 点击overView底部的某个项目卡片的时候，跳转到项目列表画面，并定位到这个项目卡片
 - 通过firebase_ai或Firebase Genkit实现AI智能助手
-- 试用talker_flutter，device_preview，storybook_flutter，pubviz 
+- 试用talker_flutter，storybook_flutter，pubviz 
 - 数据库中简历内容的翻译校准
 - aboutMe中真实简历pdf的审核，下载

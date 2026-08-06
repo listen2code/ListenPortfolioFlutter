@@ -169,6 +169,15 @@ class HomePage extends ConsumerWidget {
       }
     }
 
+    Widget buildDefaultAvatar() {
+      return CommonAvatar(
+        size: 70.f,
+        iconSize: 35.f,
+        backgroundColor: Colors.white24,
+        iconColor: Colors.white70,
+      );
+    }
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.only(top: 60.f, bottom: 30.f, left: 20.f, right: 20.f),
@@ -198,12 +207,7 @@ class HomePage extends ConsumerWidget {
                     ),
                     child: Visibility(
                       visible: isLoggedIn && authManager.state.user?.avatarUrl?.isNotEmpty == true,
-                      replacement: Container(
-                        width: 70.f,
-                        height: 70.f,
-                        decoration: const BoxDecoration(color: Colors.white24, shape: BoxShape.circle),
-                        child: Icon(Icons.person, size: 35.f, color: Colors.white70),
-                      ),
+                      replacement: buildDefaultAvatar(),
                       child: Hero(
                         tag: 'drawer_avatar_preview',
                         child: CommonImage.url(
@@ -212,6 +216,7 @@ class HomePage extends ConsumerWidget {
                           height: 70.f,
                           borderRadius: 35.f,
                           excludeFromSemantics: true,
+                          errorWidget: buildDefaultAvatar(),
                         ),
                       ),
                     ),

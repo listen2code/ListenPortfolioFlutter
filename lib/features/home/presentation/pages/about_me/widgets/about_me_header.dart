@@ -16,46 +16,54 @@ class AboutMeHeader extends StatelessWidget {
     final accentColor = context.accentColor;
     final imageFile = state.imageFile;
 
+    Widget buildDefaultAvatar() {
+      return CommonAvatar(
+        size: 120.f,
+        iconSize: 60.f,
+        backgroundColor: accentColor.withValues(alpha: 0.1),
+        iconColor: accentColor,
+      );
+    }
+
     return Center(
       child: Column(
         children: [
           Stack(
             children: [
-              CommonClickable(
-                ripple: false,
-                onTap: onTapAvatar,
-                child: Container(
-                  padding: EdgeInsets.all(3.f),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: accentColor, width: 2.f),
-                  ),
-                  child: Hero(
-                    tag: 'avatar_preview',
-                    child: imageFile != null
-                        ? CommonImage.file(
-                            imageFile,
-                            width: 120.f,
-                            height: 120.f,
-                            borderRadius: 60.f,
-                            semanticLabel: I18nKeys.profilePhotoSemanticLabel.tr,
-                          )
-                        : Visibility(
-                            visible: state.data?.avatarUrl?.isNotEmpty == true,
-                            replacement: Container(
-                              width: 120.f,
-                              height: 120.f,
-                              decoration: const BoxDecoration(color: Colors.white24, shape: BoxShape.circle),
-                              child: Icon(Icons.person, size: 35.f, color: Colors.white70),
-                            ),
-                            child: CommonImage.url(
-                              state.data?.avatarUrl ?? '',
+              Semantics(
+                label: I18nKeys.profilePhotoSemanticLabel.tr,
+                image: true,
+                child: CommonClickable(
+                  ripple: false,
+                  onTap: onTapAvatar,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: accentColor, width: 2.f),
+                    ),
+                    child: Hero(
+                      tag: 'avatar_preview',
+                      child: imageFile != null
+                          ? CommonImage.file(
+                              imageFile,
                               width: 120.f,
                               height: 120.f,
                               borderRadius: 60.f,
                               semanticLabel: I18nKeys.profilePhotoSemanticLabel.tr,
+                            )
+                          : Visibility(
+                              visible: state.data?.avatarUrl?.isNotEmpty == true,
+                              replacement: buildDefaultAvatar(),
+                              child: CommonImage.url(
+                                state.data?.avatarUrl ?? '',
+                                width: 120.f,
+                                height: 120.f,
+                                borderRadius: 60.f,
+                                semanticLabel: I18nKeys.profilePhotoSemanticLabel.tr,
+                                errorWidget: buildDefaultAvatar(),
+                              ),
                             ),
-                          ),
+                    ),
                   ),
                 ),
               ),

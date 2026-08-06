@@ -274,7 +274,7 @@ flutter:
     "id": "1001",
     "name": "John Doe",
     "email": "john.doe@example.com",
-    "avatarUrl": "https://api.dicebear.com/7.x/avataaars/png?seed=JohnDoe",
+    "avatarUrl": "https://api.dicebear.com/10.x/bottts/svg?seed=JohnDoe",
     "location": "Tokyo, Japan",
     "bio": "Flutter Developer with 5 years of experience"
   }
@@ -403,7 +403,7 @@ class MockUserGenerator {
         "id": id ?? "1001",
         "name": name ?? "Test User",
         "email": email ?? "test@example.com",
-        "avatarUrl": "https://api.dicebear.com/7.x/avataaars/png?seed=${name ?? 'Test'}",
+        "avatarUrl": "https://api.dicebear.com/10.x/bottts/svg?seed=${name ?? 'Test'}",
         "location": "Tokyo, Japan",
         "createdAt": "2023-01-01T00:00:00Z",
         "updatedAt": "2023-12-01T00:00:00Z",
