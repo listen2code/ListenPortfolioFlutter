@@ -38,11 +38,7 @@ APP_VERSION=$(grep '^version: ' pubspec.yaml | cut -d ' ' -f 2 | cut -d '+' -f 1
 if [ "$TARGET_TYPE" == "patch" ]; then
     echo ">>> Executing Shorebird Patch Android for [$ENV] environment (Version: $APP_VERSION)..."
     if command -v shorebird &> /dev/null; then
-        TOKEN_ARG=""
-        if [ -n "$SHOREBIRD_TOKEN" ]; then
-            TOKEN_ARG="--token=$SHOREBIRD_TOKEN"
-        fi
-        shorebird patch android $TOKEN_ARG \
+        shorebird patch android \
             -- \
             --obfuscate --split-debug-info=apkOutput \
             --extra-gen-snapshot-options=--save-obfuscation-map=apkOutput/mapping.json,--strip \
@@ -74,35 +70,22 @@ fi
 
 echo ">>> build $TARGET_TYPE [$ENV] version [$APP_VERSION] (Shorebird: $USE_SHOREBIRD)"
 
-if [ "$USE_SHOREBIRD" == "true" ] && command -v shorebird &> /dev/null; then
-    echo ">>> Attempting Shorebird Release Build..."
-    TOKEN_ARG=""
-    if [ -n "$SHOREBIRD_TOKEN" ]; then
-        TOKEN_ARG="--token=$SHOREBIRD_TOKEN"
-    fi
-    if shorebird release android --artifact=$shorebird_artifact $TOKEN_ARG \
-        -- \
-        --obfuscate --split-debug-info=apkOutput \
-        --extra-gen-snapshot-options=--save-obfuscation-map=apkOutput/mapping.json,--strip \
-        --dart-define=APP_ENV=$ENV \
-        --dart-define=APP_VERSION=$APP_VERSION; then
-        echo ">>> Shorebird Release Build completed successfully!"
-    else
-        echo ">>> Warning: Shorebird Release Build failed (e.g. unauthenticated or missing SHOREBIRD_TOKEN)."
-        echo ">>> Automatically falling back to standard Flutter Release Build..."
-        flutter build $build_cmd --release \
+if [ "$USE_SHOREBIRD" == "true" ]; then
+    if command -v shorebird &> /dev/null; then
+        echo ">>> Executing Strict Shorebird Release Build..."
+        shorebird release android --artifact=$shorebird_artifact \
+            -- \
             --obfuscate --split-debug-info=apkOutput \
             --extra-gen-snapshot-options=--save-obfuscation-map=apkOutput/mapping.json,--strip \
             --dart-define=APP_ENV=$ENV \
             --dart-define=APP_VERSION=$APP_VERSION
+        echo ">>> Shorebird Release Build completed successfully!"
+    else
+        echo ">>> Error: USE_SHOREBIRD=true requested, but 'shorebird' CLI command was not found in PATH!"
+        exit 1
     fi
 else
-    if [ "$USE_SHOREBIRD" == "true" ]; then
-        echo ">>> Warning: USE_SHOREBIRD=true requested, but 'shorebird' CLI command was not found in PATH."
-        echo ">>> Automatically falling back to standard Flutter Release Build..."
-    else
-        echo ">>> Executing Standard Flutter Release Build..."
-    fi
+    echo ">>> Executing Standard Flutter Release Build (Shorebird disabled)..."
     flutter build $build_cmd --release \
         --obfuscate --split-debug-info=apkOutput \
         --extra-gen-snapshot-options=--save-obfuscation-map=apkOutput/mapping.json,--strip \
