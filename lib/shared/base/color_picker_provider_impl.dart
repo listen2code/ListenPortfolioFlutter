@@ -41,7 +41,8 @@ class ColorPickerProviderImpl extends BaseProvider<ColorPickerEffect> {
           type: ButtonType.text,
           foregroundColor: Colors.grey,
           isFullWidth: false,
-          height: 36,
+          padding: EdgeInsets.symmetric(horizontal: 16.f, vertical: 8.f),
+          height: 44.f,
         ),
         CommonButton(
           text: I18nKeys.ok.tr,
@@ -51,7 +52,8 @@ class ColorPickerProviderImpl extends BaseProvider<ColorPickerEffect> {
           },
           type: ButtonType.text,
           isFullWidth: false,
-          height: 36,
+          padding: EdgeInsets.symmetric(horizontal: 16.f, vertical: 8.f),
+          height: 44.f,
         ),
       ],
     );
