@@ -138,6 +138,13 @@ class I18nKeys {
 
   // Overview Page
   static const String hello = "Hello, I'm %s";
+  static const String welcomeToPortfolio = "Welcome to %s's Portfolio";
+  static const String downloadMyResume = 'Download My Resume';
+  static const String downloadAuthorResume = "Download Author's Resume";
+  static const String myFeaturedProjects = 'My Featured Projects';
+  static const String authorFeaturedProjects = "Author's Featured Projects";
+  static const String myExperienceAndSkills = 'My Experience & Skills';
+  static const String authorExperienceAndSkills = "Author's Experience & Skills";
   static const String availableStatus = 'Available for high-impact roles';
   static const String androidExp = 'Android Exp';
   static const String flutterExp = 'Flutter Exp';

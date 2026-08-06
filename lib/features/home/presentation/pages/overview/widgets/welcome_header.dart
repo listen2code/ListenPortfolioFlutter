@@ -18,7 +18,7 @@ class WelcomeHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final accentColor = context.accentColor;
-    final String name = userModel?.name ?? AppConstants.author;
+    final String authorName = state.aboutMe?.name ?? AppConstants.author;
     final String jobTitle = state.aboutMe?.jobTitle ?? 'Senior Android / Flutter Engineer';
     final String graduationYear = state.aboutMe?.graduationYear ?? '2013';
     final String major = state.aboutMe?.major ?? 'Software Engineering';
@@ -27,7 +27,9 @@ class WelcomeHeader extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonText(
-          I18nKeys.hello.trArgs([name]),
+          authManager.state.isAuthor
+              ? I18nKeys.hello.trArgs([authorName])
+              : I18nKeys.welcomeToPortfolio.trArgs([authorName]),
           style: context.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
           maxLines: 1,
         ),

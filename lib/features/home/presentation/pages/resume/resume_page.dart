@@ -14,7 +14,7 @@ class ResumePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return BaseRefreshPage<ResumeViewModel, ResumeState>(
-      title: I18nKeys.resume.tr,
+      title: authManager.state.isAuthor ? I18nKeys.resume.tr : I18nKeys.authorResume.tr,
       provider: resumeViewModelProvider,
       onRefresh: (viewModel, state) async {
         viewModel.handleIntent(const ResumeIntent.init());

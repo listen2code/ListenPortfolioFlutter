@@ -107,7 +107,7 @@ class HomePage extends ConsumerWidget {
                   _buildDrawerItem(
                     context,
                     icon: Icons.person_search_outlined,
-                    label: I18nKeys.aboutMe.tr,
+                    label: authManager.state.isAuthor ? I18nKeys.aboutMe.tr : I18nKeys.aboutAuthor.tr,
                     blurLevel: AuthBlurLevel.low,
                     isSelected: state.currentTab == HomeTab.aboutMe,
                     onTap: () => viewModel.handleIntent(
@@ -117,7 +117,7 @@ class HomePage extends ConsumerWidget {
                   _buildDrawerItem(
                     context,
                     icon: Icons.rocket_launch_outlined,
-                    label: I18nKeys.featuredProjects.tr,
+                    label: authManager.state.isAuthor ? I18nKeys.projects.tr : I18nKeys.authorProjects.tr,
                     isSelected: state.currentTab == HomeTab.projects,
                     onTap: () => viewModel.handleIntent(
                       const HomeIntent.tabChanged(HomeTab.projects, closeDrawer: true),
@@ -192,32 +192,19 @@ class HomePage extends ConsumerWidget {
           ? Colors.amber.withValues(alpha: 0.25)
           : (isGuest ? Colors.white12 : Colors.white24);
       final Color textColor = isAuthor ? Colors.amberAccent : Colors.white;
+      final Color borderColor = isAuthor ? Colors.amberAccent.withValues(alpha: 0.5) : Colors.white30;
 
-      return Container(
-        padding: EdgeInsets.symmetric(horizontal: 8.f, vertical: 2.f),
-        decoration: BoxDecoration(
-          color: bgColor,
-          borderRadius: BorderRadius.circular(12.f),
-          border: Border.all(
-            color: isAuthor ? Colors.amberAccent.withValues(alpha: 0.5) : Colors.white30,
-            width: 1.f,
-          ),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(iconData, size: 12.f, color: textColor),
-            SizedBox(width: 4.f),
-            Text(
-              label,
-              style: TextStyle(
-                color: textColor,
-                fontSize: 10.f,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
+      return CommonBadge(
+        text: label,
+        icon: iconData,
+        iconSize: 12.f,
+        color: bgColor,
+        textColor: textColor,
+        borderColor: borderColor,
+        borderWidth: 1.f,
+        borderRadius: 12.f,
+        fontSize: 10.f,
+        padding: EdgeInsets.symmetric(horizontal: 8.f, vertical: 3.f),
       );
     }
 
@@ -268,8 +255,10 @@ class HomePage extends ConsumerWidget {
               ),
               SizedBox(height: 15.f),
               Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Flexible(
+                    fit: FlexFit.loose,
                     child: CommonAuthText(
                       authManager.state.user?.name ?? AppConstants.author,
                       style: context.textTheme.titleLarge?.copyWith(
@@ -280,7 +269,10 @@ class HomePage extends ConsumerWidget {
                     ),
                   ),
                   SizedBox(width: 8.f),
-                  buildRoleBadge(),
+                  Padding(
+                    padding: EdgeInsets.only(top: 2.f),
+                    child: buildRoleBadge(),
+                  ),
                 ],
               ),
               CommonAuthText(

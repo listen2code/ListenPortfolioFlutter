@@ -43,7 +43,7 @@ class BioSection extends StatelessWidget {
                   SizedBox(width: 8.f),
                   Flexible(
                     child: CommonText(
-                      I18nKeys.viewFullResume.tr,
+                      authManager.state.isAuthor ? I18nKeys.viewFullResume.tr : I18nKeys.authorResume.tr,
                       style: context.textTheme.labelMedium?.copyWith(
                         color: context.accentColor,
                         fontWeight: FontWeight.bold,

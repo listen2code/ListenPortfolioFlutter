@@ -25,7 +25,7 @@ class FeaturedProjectsSection extends StatelessWidget {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 20.f),
           child: CommonSectionHeader(
-            title: I18nKeys.featuredProjects.tr,
+            title: authManager.state.isAuthor ? I18nKeys.myFeaturedProjects.tr : I18nKeys.authorFeaturedProjects.tr,
             trailing: CommonButton(
               text: I18nKeys.viewAll.tr,
               type: ButtonType.text,
