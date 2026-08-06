@@ -44,15 +44,32 @@ class ArchitectureViewModel extends _$ArchitectureViewModel
         content: I18nKeys.cleanMviDesc.tr,
       ),
       ArchitectureSection(
+        title: I18nKeys.modularArchTitle.tr,
+        icon: Icons.view_module_outlined,
+        content: I18nKeys.descModularArch.tr,
+      ),
+      ArchitectureSection(
         title: I18nKeys.coreLibrariesTitle.tr,
         icon: Icons.library_books_outlined,
-        content: '', // Container for libs
+        content: '',
         libs: [
           ArchitectureLibItem(name: 'Riverpod', desc: I18nKeys.descRiverpod.tr),
           ArchitectureLibItem(name: 'Freezed', desc: I18nKeys.descFreezed.tr),
+          ArchitectureLibItem(name: 'Shorebird Code Push', desc: I18nKeys.descShorebird.tr),
           ArchitectureLibItem(name: 'Dio & Retrofit', desc: I18nKeys.descDioRetrofit.tr),
           ArchitectureLibItem(name: 'Fpdart', desc: I18nKeys.descFpdart.tr),
+          ArchitectureLibItem(name: 'Firebase & FCM', desc: I18nKeys.descFirebase.tr),
         ],
+      ),
+      ArchitectureSection(
+        title: I18nKeys.ciDevOpsTitle.tr,
+        icon: Icons.auto_awesome_outlined,
+        content: I18nKeys.descCiDevOps.tr,
+      ),
+      ArchitectureSection(
+        title: I18nKeys.backendDevOpsTitle.tr,
+        icon: Icons.cloud_done_outlined,
+        content: I18nKeys.backendDevOpsDesc.tr,
       ),
       ArchitectureSection(
         title: I18nKeys.openSourceTitle.tr,
@@ -60,11 +77,6 @@ class ArchitectureViewModel extends _$ArchitectureViewModel
         content: I18nKeys.openSourceDesc.tr,
         linkLabel: AppConstants.github,
         linkUrl: AppConstants.github,
-      ),
-      ArchitectureSection(
-        title: I18nKeys.backendDevOpsTitle.tr,
-        icon: Icons.cloud_done_outlined,
-        content: I18nKeys.backendDevOpsDesc.tr,
       ),
     ];
 

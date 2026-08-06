@@ -211,10 +211,17 @@ final Map<String, String> ja = {
       'このアプリは、クリーンアーキテクチャの原則に従い、データ層、ドメイン層、プレゼンテーション層に関心を分離しています。プレゼンテーション層では、MVI（Model-View-Intent）パターンにより単方向データフローを保証します。',
   I18nKeys.descRiverpod: '状態管理と依存性注入',
   I18nKeys.descFreezed: '不変状態のためのコード生成',
-  I18nKeys.descDioRetrofit: '型安全なネットワーク',
+  I18nKeys.descShorebird: 'OTAコード熱更新（バックグラウンド静默更新とパッチ番号表示）',
+  I18nKeys.descDioRetrofit: '型安全なネットワークリクエストとインターセプター',
   I18nKeys.descFpdart: '関数型プログラミング (Either/Option)',
-  I18nKeys.backendDevOpsDesc:
-      'バックエンドサービスは、サーバーレスアプローチを使用してAWS上にデプロイされています。主なサービスには、Lambda、API Gateway、DynamoDBなどがあります。',
+  I18nKeys.descFirebase: 'FCM プッシュ通知、フォアグラウンドバナーとトピック購読',
+  I18nKeys.modularArchTitle: 'モジュール化 Monorepo アーキテクチャ',
+  I18nKeys.descModularArch:
+      'ListenCore（基盤ユーティリティとネットワーク）、ListenUiKit（アトミックデザインと共通UI）、ListenPortfolioFlutter（アプリ本体）、ListenPortfolioBackend（Goバックエンド）に分離。',
+  I18nKeys.ciDevOpsTitle: 'CI/CD 自動化とマルチ環境',
+  I18nKeys.descCiDevOps:
+      'GitHub Actions による静的解析、テスト、ビルド自動化に加え、Commitメッセージ連動の Shorebird パッチ自動配信を統合。mock/dev/test/prod のマルチ環境対応。',
+  I18nKeys.backendDevOpsDesc: 'バックエンドは Go 言語による高性能 API サービス (ListenPortfolioBackend) とクラウドインフラで構築されています。',
   I18nKeys.logoutSuccess: 'ログアウト成功！',
   I18nKeys.sessionExpired: 'セッションの期限が切れました',
   I18nKeys.appLogs: 'アプリログ',

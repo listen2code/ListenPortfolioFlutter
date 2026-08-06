@@ -231,10 +231,18 @@ class I18nKeys {
       'The app follows Clean Architecture principles to separate concerns into Data, Domain, and Presentation layers. On the Presentation layer, the MVI (Model-View-Intent) pattern ensures unidirectional data flow.';
   static const String descRiverpod = 'State management & DI';
   static const String descFreezed = 'Code generation for immutable states';
+  static const String descShorebird = 'OTA Code Push hotupdate service for silent background updates';
   static const String descDioRetrofit = 'Type-safe networking';
   static const String descFpdart = 'Functional programming (Either/Option)';
+  static const String descFirebase = 'Push notifications (FCM), foreground banners & topic subscriptions';
+  static const String modularArchTitle = 'Modular Monorepo Architecture';
+  static const String descModularArch =
+      'Decoupled into ListenCore (base utils & networking), ListenUiKit (atomic design system & components), ListenPortfolioFlutter (mobile client), and ListenPortfolioBackend (Go server).';
+  static const String ciDevOpsTitle = 'CI/CD Automation & Multi-Env';
+  static const String descCiDevOps =
+      'GitHub Actions automates linting, testing, release builds (AAB/APK), and automated Shorebird OTA patch deployments triggered by commit messages. Dynamic environment matrix for mock/dev/test/prod.';
   static const String backendDevOpsDesc =
-      'The backend services are deployed on AWS using a serverless approach. Key services include Lambda, API Gateway, and DynamoDB.';
+      'The backend service is powered by Go (ListenPortfolioBackend) along with cloud API infrastructure.';
   static const String logoutSuccess = 'Logout Success!';
   static const String sessionExpired = 'Session expired';
   static const String appLogs = 'App Logs';
