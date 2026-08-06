@@ -51,12 +51,16 @@ class ShorebirdServiceImpl implements IShorebirdService {
 
   @override
   Future<int?> getCurrentPatchNumber() async {
-    if (!isAvailable) return null;
+    if (!isAvailable) {
+      appLogger.w('[Shorebird] getCurrentPatchNumber: Shorebird is not available.');
+      return null;
+    }
     try {
       final patch = await _updater.readCurrentPatch();
+      appLogger.i('[Shorebird] Current patch info: ${patch != null ? "Patch #${patch.number}" : "Base release (No patch)"}');
       return patch?.number;
     } catch (e, stack) {
-      appLogger.e('Failed to read Shorebird current patch', error: e, stackTrace: stack);
+      appLogger.e('[Shorebird] Failed to read current patch', error: e, stackTrace: stack);
       return null;
     }
   }
@@ -80,43 +84,52 @@ class ShorebirdServiceImpl implements IShorebirdService {
   Future<bool> checkForUpdate() async {
     if (!isAvailable) {
       _status = ShorebirdCodePushStatus.unavailable;
+      appLogger.w('[Shorebird] checkForUpdate: Shorebird is not available on this device/build.');
       return false;
     }
 
     _status = ShorebirdCodePushStatus.checking;
+    appLogger.i('[Shorebird] Checking for patch updates from Shorebird Cloud...');
     try {
       final updateStatus = await _updater.checkForUpdate();
+      appLogger.i('[Shorebird] Check update response: $updateStatus');
       if (updateStatus == UpdateStatus.outdated) {
         _status = ShorebirdCodePushStatus.updateAvailable;
+        appLogger.i('[Shorebird] New patch AVAILABLE!');
         return true;
       } else {
         _status = ShorebirdCodePushStatus.upToDate;
+        appLogger.i('[Shorebird] App is UP TO DATE with latest patch.');
         return false;
       }
     } catch (e, stack) {
       _status = ShorebirdCodePushStatus.error;
-      appLogger.e('Shorebird update check failed', error: e, stackTrace: stack);
+      appLogger.e('[Shorebird] Update check failed with error', error: e, stackTrace: stack);
       return false;
     }
   }
 
   @override
   Future<bool> downloadUpdate() async {
-    if (!isAvailable) return false;
+    if (!isAvailable) {
+      appLogger.w('[Shorebird] downloadUpdate: Shorebird is not available.');
+      return false;
+    }
 
     _status = ShorebirdCodePushStatus.downloading;
+    appLogger.i('[Shorebird] Downloading patch from Shorebird Cloud...');
     try {
       await _updater.update();
       _status = ShorebirdCodePushStatus.patchDownloaded;
-      appLogger.i('Shorebird patch downloaded successfully. Patch will apply on next app restart.');
+      appLogger.i('[Shorebird] Patch downloaded successfully. Will apply on next app restart.');
       return true;
     } on UpdateException catch (e, stack) {
       _status = ShorebirdCodePushStatus.error;
-      appLogger.e('Shorebird update download failed: ${e.message}', error: e, stackTrace: stack);
+      appLogger.e('[Shorebird] Patch download failed: ${e.message} (reason: ${e.reason})', error: e, stackTrace: stack);
       return false;
     } catch (e, stack) {
       _status = ShorebirdCodePushStatus.error;
-      appLogger.e('Unexpected error during Shorebird update download', error: e, stackTrace: stack);
+      appLogger.e('[Shorebird] Unexpected error during patch download', error: e, stackTrace: stack);
       return false;
     }
   }

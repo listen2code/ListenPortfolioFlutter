@@ -131,6 +131,21 @@ shorebird init
   shorebird patch android
   ```
 
+### 5. 查看发布状态与补丁列表 (Status Inspection)
+发布 Release 或推送 Patch 后，可通过以下 CLI 命令在终端实时查询云端备案状态：
+
+- **查看所有在云端备案的 Release 基准包**：
+  ```bash
+  shorebird releases list
+  ```
+  *(用于确认 CI 或本地是否成功上传并注册了新的 Release 基准包)*
+
+- **查看特定 Release 版本下的所有 Patch 补丁**：
+  ```bash
+  shorebird patches list --release-version 1.1.11+1
+  ```
+  *(用于查看指定基准包（如 `1.1.11+1`）当前挂载的 Patch 补丁列表、创建时间及激活状态)*
+
 ---
 
 ## 💻 四、 代码中使用 ShorebirdService

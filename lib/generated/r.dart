@@ -33,4 +33,5 @@ class R {
   static const String imagesProject9 = 'assets/mock/images/project9.jpg';
   static const String imagesProject10 = 'assets/mock/images/project10.jpg';
   static const String htmlTest = 'assets/html/test.html';
+  static const String listenPortfolioFlutterShorebird = 'shorebird.yaml';
 }
