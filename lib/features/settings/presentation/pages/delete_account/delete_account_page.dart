@@ -19,6 +19,8 @@ class DeleteAccountPage extends ConsumerWidget {
       provider: deleteAccountViewModelProvider,
       padding: EdgeInsets.all(24.f),
       body: (context, child, viewModel, state) {
+        final bool isAuthor = authManager.state.isAuthor;
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -27,37 +29,59 @@ class DeleteAccountPage extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(Icons.warning_amber_rounded, size: 64.f, color: Colors.red),
+                    Icon(
+                      isAuthor ? Icons.shield_outlined : Icons.warning_amber_rounded,
+                      size: 64.f,
+                      color: isAuthor ? Colors.orange : Colors.red,
+                    ),
                     SizedBox(height: 24.f),
                     CommonText(
-                      I18nKeys.deleteAccountConfirmTitle.tr,
-                      style: context.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
-                      maxLines: 1,
+                      isAuthor ? I18nKeys.cannotDeleteAuthorAccount.tr : I18nKeys.deleteAccountConfirmTitle.tr,
+                      style: context.textTheme.headlineSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: isAuthor ? Colors.orange : null,
+                      ),
+                      maxLines: 2,
                     ),
                     SizedBox(height: 16.f),
                     CommonText(
-                      I18nKeys.deleteAccountConfirmContent.tr,
+                      isAuthor
+                          ? I18nKeys.cannotDeleteAuthorAccount.tr
+                          : I18nKeys.deleteAccountConfirmContent.tr,
                       style: context.textTheme.bodyMedium?.copyWith(color: Colors.grey, height: 1.6),
                       useFittedBox: false,
                     ),
                     SizedBox(height: 32.f),
-                    DeleteAccountWarningList(
-                      warnings: [
-                        I18nKeys.deleteAccountWarningDataWiped.tr,
-                        I18nKeys.deleteAccountWarningIrreversible.tr,
-                        I18nKeys.deleteAccountWarningSubscriptions.tr,
-                      ],
-                    ),
+                    if (!isAuthor)
+                      DeleteAccountWarningList(
+                        warnings: [
+                          I18nKeys.deleteAccountWarningDataWiped.tr,
+                          I18nKeys.deleteAccountWarningIrreversible.tr,
+                          I18nKeys.deleteAccountWarningSubscriptions.tr,
+                        ],
+                      ),
                   ],
                 ),
               ),
             ),
             SizedBox(height: 16.f),
-            DeleteAccountConfirmActions(
-              isConfirmed: state.isConfirmed,
-              onToggleConfirm: () => viewModel.handleIntent(const DeleteAccountIntent.toggleConfirm()),
-              onDeleteAccount: () => viewModel.handleIntent(const DeleteAccountIntent.deleteAccount()),
-            ),
+            if (!isAuthor)
+              DeleteAccountConfirmActions(
+                isConfirmed: state.isConfirmed,
+                onToggleConfirm: () => viewModel.handleIntent(const DeleteAccountIntent.toggleConfirm()),
+                onDeleteAccount: () => viewModel.handleIntent(const DeleteAccountIntent.deleteAccount()),
+              )
+            else
+              Opacity(
+                opacity: 0.6,
+                child: CommonButton(
+                  text: I18nKeys.cannotDeleteAuthorAccount.tr,
+                  onPressed: () => viewModel.handleIntent(const DeleteAccountIntent.deleteAccount()),
+                  backgroundColor: Colors.grey,
+                  foregroundColor: Colors.white,
+                  isFullWidth: true,
+                ),
+              ),
             SizedBox(height: 20.f),
           ],
         );

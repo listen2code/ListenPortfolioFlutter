@@ -24,6 +24,11 @@ class AuthState<T> {
   bool get isGuest => status == AuthStatus.loggedOut;
 }
 
+extension AuthUserX on AuthState<UserModel> {
+  /// Whether the current logged-in user is the author root account (userId == "1")
+  bool get isAuthor => user?.id == '1';
+}
+
 /// A generic Singleton manager for handling user sessions in memory
 class BaseAuthManager<T> extends ChangeNotifier {
   AuthState<T> _state = AuthState<T>.loggedOut();

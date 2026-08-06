@@ -178,6 +178,49 @@ class HomePage extends ConsumerWidget {
       );
     }
 
+    Widget buildRoleBadge() {
+      final bool isAuthor = authManager.state.isAuthor;
+      final bool isGuest = authManager.state.isGuest;
+
+      final String label = isAuthor
+          ? I18nKeys.roleAuthor.tr
+          : (isGuest ? I18nKeys.roleGuest.tr : I18nKeys.roleMember.tr);
+      final IconData iconData = isAuthor
+          ? Icons.verified_rounded
+          : (isGuest ? Icons.visibility_outlined : Icons.person_outline_rounded);
+      final Color bgColor = isAuthor
+          ? Colors.amber.withValues(alpha: 0.25)
+          : (isGuest ? Colors.white12 : Colors.white24);
+      final Color textColor = isAuthor ? Colors.amberAccent : Colors.white;
+
+      return Container(
+        padding: EdgeInsets.symmetric(horizontal: 8.f, vertical: 2.f),
+        decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: BorderRadius.circular(12.f),
+          border: Border.all(
+            color: isAuthor ? Colors.amberAccent.withValues(alpha: 0.5) : Colors.white30,
+            width: 1.f,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(iconData, size: 12.f, color: textColor),
+            SizedBox(width: 4.f),
+            Text(
+              label,
+              style: TextStyle(
+                color: textColor,
+                fontSize: 10.f,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.only(top: 60.f, bottom: 30.f, left: 20.f, right: 20.f),
@@ -224,13 +267,21 @@ class HomePage extends ConsumerWidget {
                 ),
               ),
               SizedBox(height: 15.f),
-              CommonAuthText(
-                authManager.state.user?.name ?? AppConstants.author,
-                style: context.textTheme.titleLarge?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-                blurLevel: AuthBlurLevel.medium,
+              Row(
+                children: [
+                  Flexible(
+                    child: CommonAuthText(
+                      authManager.state.user?.name ?? AppConstants.author,
+                      style: context.textTheme.titleLarge?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      blurLevel: AuthBlurLevel.medium,
+                    ),
+                  ),
+                  SizedBox(width: 8.f),
+                  buildRoleBadge(),
+                ],
               ),
               CommonAuthText(
                 authManager.state.user?.email ?? AppConstants.mail,

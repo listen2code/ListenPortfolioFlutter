@@ -18,7 +18,10 @@ class BioSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CommonSectionHeader(title: I18nKeys.aboutMe.tr, showVerticalBar: true),
+        CommonSectionHeader(
+          title: authManager.state.isAuthor ? I18nKeys.aboutMe.tr : I18nKeys.aboutAuthor.tr,
+          showVerticalBar: true,
+        ),
         SizedBox(height: 12.f),
         CommonText(bio, style: context.textTheme.bodyMedium?.copyWith(height: 1.6), useFittedBox: false),
         SizedBox(height: 16.f),

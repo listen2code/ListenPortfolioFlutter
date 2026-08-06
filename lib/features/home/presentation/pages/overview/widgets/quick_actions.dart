@@ -26,7 +26,7 @@ class QuickActions extends StatelessWidget {
           children: [
             _buildActionCard(
               context,
-              I18nKeys.aboutMe.tr,
+              authManager.state.isAuthor ? I18nKeys.aboutMe.tr : I18nKeys.aboutAuthor.tr,
               Icons.person_outline_rounded,
               accentColor,
               onTapAboutMe,
@@ -57,7 +57,7 @@ class QuickActions extends StatelessWidget {
             SizedBox(width: 12.f),
             _buildActionButton(
               context,
-              I18nKeys.contactMe.tr,
+              authManager.state.isAuthor ? I18nKeys.contactMe.tr : I18nKeys.contactAuthor.tr,
               Icons.alternate_email_rounded,
               Colors.grey,
               onTapContactMe,

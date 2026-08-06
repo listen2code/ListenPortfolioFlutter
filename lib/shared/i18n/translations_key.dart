@@ -124,6 +124,14 @@ class I18nKeys {
   static const String projects = 'Projects';
   static const String overview = 'Overview';
   static const String aboutMe = 'About Me';
+  static const String aboutAuthor = 'About Author';
+  static const String authorResume = "Author's Resume";
+  static const String authorProjects = "Author's Projects";
+  static const String contactAuthor = 'Contact Author';
+  static const String roleAuthor = 'Author';
+  static const String roleMember = 'Member';
+  static const String roleGuest = 'Guest';
+  static const String cannotDeleteAuthorAccount = 'Author root account cannot be deleted.';
   static const String architecture = 'Architecture';
   static const String logout = 'Logout';
   static const String logoutTips = 'Are you sure you want to log out?';

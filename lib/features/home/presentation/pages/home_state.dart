@@ -16,9 +16,9 @@ abstract class HomeState extends BaseState with _$HomeState {
   String get title {
     switch (currentTab) {
       case HomeTab.aboutMe:
-        return I18nKeys.aboutMe.tr;
+        return authManager.state.isAuthor ? I18nKeys.aboutMe.tr : I18nKeys.aboutAuthor.tr;
       case HomeTab.projects:
-        return I18nKeys.featuredProjects.tr;
+        return authManager.state.isAuthor ? I18nKeys.projects.tr : I18nKeys.authorProjects.tr;
       case HomeTab.architecture:
         return I18nKeys.architecture.tr;
       case HomeTab.overview:

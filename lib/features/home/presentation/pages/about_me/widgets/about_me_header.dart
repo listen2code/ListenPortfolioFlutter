@@ -67,7 +67,7 @@ class AboutMeHeader extends StatelessWidget {
                   ),
                 ),
               ),
-              if (authManager.state.user?.id == AppConstants.authorId)
+              if (authManager.state.isAuthor)
                 Positioned(
                   bottom: 0,
                   right: 0,

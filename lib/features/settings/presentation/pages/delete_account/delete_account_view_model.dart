@@ -31,6 +31,10 @@ class DeleteAccountViewModel extends _$DeleteAccountViewModel
   }
 
   Future<void> _onDeleteAccount() async {
+    if (authManager.state.isAuthor) {
+      emitEffect(MessageEffect.info(I18nKeys.cannotDeleteAuthorAccount.tr));
+      return;
+    }
     if (!state.isConfirmed) return;
 
     emitEffect(
