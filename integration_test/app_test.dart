@@ -2,7 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
-import 'package:integration_test/integration_test.dart';
+import 'package:patrol/patrol.dart';
+import 'package:patrol_finders/patrol_finders.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_page.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/password/forgot_password_page.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/sign_up/sign_up_page.dart';
@@ -17,11 +18,11 @@ import 'package:visibility_detector/visibility_detector.dart';
 // ==========================================
 // Robust Page Transition Wait Helpers
 // ==========================================
-Future<void> waitForPageTransition(WidgetTester tester) async {
+Future<void> waitForPageTransition(PatrolTester $) async {
+  final tester = $.tester;
   // Wait up to 10 seconds for SplashPage to disappear
   for (int i = 0; i < 20; i++) {
     await tester.pump(const Duration(milliseconds: 500));
-    await Future<void>.delayed(const Duration(milliseconds: 500));
     if (find.byType(SplashPage).evaluate().isEmpty) {
       break;
     }
@@ -29,11 +30,11 @@ Future<void> waitForPageTransition(WidgetTester tester) async {
   await tester.pumpAndSettle();
 }
 
-Future<void> waitForPage(WidgetTester tester, Type pageType) async {
+Future<void> waitForPage(PatrolTester $, Type pageType) async {
+  final tester = $.tester;
   // Wait up to 5 seconds for page of type to appear
   for (int i = 0; i < 25; i++) {
     await tester.pump(const Duration(milliseconds: 200));
-    await Future<void>.delayed(const Duration(milliseconds: 200));
     if (find.byType(pageType).evaluate().isNotEmpty) {
       break;
     }
@@ -44,7 +45,8 @@ Future<void> waitForPage(WidgetTester tester, Type pageType) async {
 // ==========================================
 // UI Helpers for Isolated & Re-entrant Runs
 // ==========================================
-Future<void> bootAppAndGoToLogin(WidgetTester tester) async {
+Future<void> bootAppAndGoToLogin(PatrolTester $) async {
+  final tester = $.tester;
   if (find.byType(LoginPage).evaluate().isNotEmpty) {
     return;
   }
@@ -64,7 +66,7 @@ Future<void> bootAppAndGoToLogin(WidgetTester tester) async {
       final okBtn = find.text(I18nKeys.ok.tr);
       if (okBtn.evaluate().isNotEmpty) {
         await tester.tap(okBtn);
-        await waitForPage(tester, LoginPage);
+        await waitForPage($, LoginPage);
       }
       return;
     }
@@ -75,7 +77,7 @@ Future<void> bootAppAndGoToLogin(WidgetTester tester) async {
     );
     if (loginBtn.evaluate().isNotEmpty) {
       await tester.tap(loginBtn);
-      await waitForPage(tester, LoginPage);
+      await waitForPage($, LoginPage);
       return;
     }
   }
@@ -85,7 +87,7 @@ Future<void> bootAppAndGoToLogin(WidgetTester tester) async {
   await tester.pumpAndSettle();
 
   // Wait for splash transition to complete
-  await waitForPageTransition(tester);
+  await waitForPageTransition($);
 
   if (find.byType(LoginPage).evaluate().isNotEmpty) {
     return;
@@ -105,7 +107,7 @@ Future<void> bootAppAndGoToLogin(WidgetTester tester) async {
       final okBtn = find.text(I18nKeys.ok.tr);
       if (okBtn.evaluate().isNotEmpty) {
         await tester.tap(okBtn);
-        await waitForPage(tester, LoginPage);
+        await waitForPage($, LoginPage);
       }
       return;
     }
@@ -116,18 +118,19 @@ Future<void> bootAppAndGoToLogin(WidgetTester tester) async {
     );
     if (loginBtn.evaluate().isNotEmpty) {
       await tester.tap(loginBtn);
-      await waitForPage(tester, LoginPage);
+      await waitForPage($, LoginPage);
       return;
     }
   }
 }
 
-Future<void> performUiLogin(WidgetTester tester, String username, String password) async {
+Future<void> performUiLogin(PatrolTester $, String username, String password) async {
+  final tester = $.tester;
   if (find.byType(HomePage).evaluate().isNotEmpty && !authManager.state.isGuest) {
     return;
   }
 
-  await bootAppAndGoToLogin(tester);
+  await bootAppAndGoToLogin($);
 
   if (find.byType(LoginPage).evaluate().isNotEmpty) {
     final loginFields = find.byType(CommonTextField);
@@ -138,13 +141,14 @@ Future<void> performUiLogin(WidgetTester tester, String username, String passwor
 
     final submitLoginBtn = find.widgetWithText(CommonButton, I18nKeys.login.tr);
     await tester.tap(submitLoginBtn);
-    await waitForPage(tester, HomePage);
+    await waitForPage($, HomePage);
   }
 }
 
-Future<void> navigateToSettings(WidgetTester tester) async {
+Future<void> navigateToSettings(PatrolTester $) async {
+  final tester = $.tester;
   if (find.byType(HomePage).evaluate().isEmpty) {
-    await performUiLogin(tester, 'test_user', 'password123');
+    await performUiLogin($, 'test_user', 'password123');
   }
 
   if (find.byType(HomePage).evaluate().isNotEmpty) {
@@ -156,13 +160,11 @@ Future<void> navigateToSettings(WidgetTester tester) async {
       matching: find.text(I18nKeys.settings.tr),
     );
     await tester.tap(settingsOption);
-    await waitForPage(tester, SettingsPage);
+    await waitForPage($, SettingsPage);
   }
 }
 
 void main() {
-  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-
   // Store original global error handlers to prevent assertion leaks
   FlutterExceptionHandler? originalOnError;
   bool Function(Object, StackTrace)? originalDispatcherOnError;
@@ -190,12 +192,13 @@ void main() {
     PlatformDispatcher.instance.onError = originalDispatcherOnError;
   });
 
-  group('E2E UI Flow Integration Tests', () {
+  group('E2E UI Flow Integration Tests (Patrol)', () {
     // ==========================================
     // CASE GROUP 1: Login Form & Validations
     // ==========================================
-    testWidgets('UI Test - Login Form and Validations', (WidgetTester tester) async {
-      await bootAppAndGoToLogin(tester);
+    patrolWidgetTest('UI Test - Login Form and Validations', ($) async {
+      final tester = $.tester;
+      await bootAppAndGoToLogin($);
 
       expect(find.byType(LoginPage), findsOneWidget);
 
@@ -250,8 +253,9 @@ void main() {
     // ==========================================
     // CASE GROUP 2: Forgot Password Flow
     // ==========================================
-    testWidgets('UI Test - Forgot Password Flow', (WidgetTester tester) async {
-      await bootAppAndGoToLogin(tester);
+    patrolWidgetTest('UI Test - Forgot Password Flow', ($) async {
+      final tester = $.tester;
+      await bootAppAndGoToLogin($);
 
       final forgotPasswordBtn = find.text(I18nKeys.forgotPassword.tr);
       expect(forgotPasswordBtn, findsOneWidget);
@@ -285,7 +289,7 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.tap(sendResetBtn);
-      await waitForPage(tester, LoginPage);
+      await waitForPage($, LoginPage);
 
       // Verify redirect back to LoginPage
       expect(find.byType(LoginPage), findsOneWidget);
@@ -294,8 +298,9 @@ void main() {
     // ==========================================
     // CASE GROUP 3: Sign Up Flow
     // ==========================================
-    testWidgets('UI Test - Sign Up Flow', (WidgetTester tester) async {
-      await bootAppAndGoToLogin(tester);
+    patrolWidgetTest('UI Test - Sign Up Flow', ($) async {
+      final tester = $.tester;
+      await bootAppAndGoToLogin($);
 
       final signUpBtn = find.text(I18nKeys.signUp.tr);
       expect(signUpBtn, findsOneWidget);
@@ -335,7 +340,7 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.tap(submitSignUpBtn);
-      await waitForPage(tester, LoginPage);
+      await waitForPage($, LoginPage);
 
       // Verify redirect back to LoginPage
       expect(find.byType(LoginPage), findsOneWidget);
@@ -344,8 +349,9 @@ void main() {
     // ==========================================
     // CASE GROUP 4: Login & Home Navigation
     // ==========================================
-    testWidgets('UI Test - Login and Home Navigation', (WidgetTester tester) async {
-      await performUiLogin(tester, 'test_user', 'password123');
+    patrolWidgetTest('UI Test - Login and Home Navigation', ($) async {
+      final tester = $.tester;
+      await performUiLogin($, 'test_user', 'password123');
 
       // Verify we returned to HomePage
       expect(find.byType(HomePage), findsOneWidget);
@@ -383,8 +389,9 @@ void main() {
     // ==========================================
     // CASE GROUP 5: Settings Adjustments & Logout
     // ==========================================
-    testWidgets('UI Test - Settings Adjustments and Logout', (WidgetTester tester) async {
-      await navigateToSettings(tester);
+    patrolWidgetTest('UI Test - Settings Adjustments and Logout', ($) async {
+      final tester = $.tester;
+      await navigateToSettings($);
 
       expect(find.byType(SettingsPage), findsOneWidget);
 
@@ -441,7 +448,7 @@ void main() {
       final okBtn = find.text(I18nKeys.ok.tr);
       expect(okBtn, findsOneWidget);
       await tester.tap(okBtn);
-      await waitForPage(tester, LoginPage);
+      await waitForPage($, LoginPage);
 
       // Verify redirected back to LoginPage
       expect(find.byType(LoginPage), findsOneWidget);
