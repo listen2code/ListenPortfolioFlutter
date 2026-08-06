@@ -201,7 +201,7 @@ final formattedVersion = await shorebirdService.getFormattedVersion('1.1.11+1');
 
 5. **必须使用 `--no-tree-shake-icons` 构建 Patch (避免 Icon 字体哈希冲突)**：
    - **原因**：Flutter 默认在 Release 构建时会自动开启图标摇树优化（Icon Tree-Shaking）。如果在 Patch 补丁代码中引入了之前基准包未用到的新 `Icons.xxx` 图标，编译器重新剪裁生成的 `MaterialIcons-Regular.otf` 字体哈希将与基准包不一致，触发 Shorebird 抛出 `UnpatchableChangeException` 保护异常并拦截发布。
-   - **解决方式**：所有 Patch 打包命令必须追加 `--no-tree-shake-icons` 参数（例：`shorebird patch android --no-tree-shake-icons`）。
+   - **解决方式**：由于 `--no-tree-shake-icons` 属于底层 `flutter` 参数而非 `shorebird` CLI 参数，必须放在 `--` 分隔符后面（例：`shorebird patch android -- --no-tree-shake-icons`）。
 
 6. **静态图片资源 (`assets/`) 限制与最佳实践**：
    - **原理限制**：Shorebird 热更引擎针对的是 Dart AOT 编译代码（`libapp.so`），**无法推送或更新打包在本地 `assets/` 目录下的静态图片与资源文件**（如新增 `assets/images/xx.png` 会导致 Patch 构建失败或运行时破图）。
