@@ -17,10 +17,16 @@ class ShareEffect extends BaseEffect {
 
 /// Concrete implementation for handling [ShareEffect] using [SharePlus].
 class ShareProviderImpl extends BaseProvider<ShareEffect> {
+  static bool skipShareForTesting = false;
+
   const ShareProviderImpl();
 
   @override
   void handleEffect(ShareEffect effect) {
+    if (skipShareForTesting) {
+      return;
+    }
+
     if (effect.files?.isNotEmpty == true) {
       SharePlus.instance.share(
         ShareParams(

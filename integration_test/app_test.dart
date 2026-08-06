@@ -45,22 +45,39 @@ Future<void> waitForPage(WidgetTester tester, Type pageType) async {
 // UI Helpers for Isolated & Re-entrant Runs
 // ==========================================
 Future<void> bootAppAndGoToLogin(WidgetTester tester) async {
-  // If already on LoginPage, do nothing
   if (find.byType(LoginPage).evaluate().isNotEmpty) {
     return;
   }
 
-  // If on HomePage, just navigate to LoginPage
+  // If on HomePage, navigate to LoginPage
   if (find.byType(HomePage).evaluate().isNotEmpty) {
     tester.firstState<ScaffoldState>(find.byType(Scaffold)).openDrawer();
     await tester.pumpAndSettle();
 
-    final loginDrawerOption = find.text(I18nKeys.login.tr);
-    if (loginDrawerOption.evaluate().isNotEmpty) {
-      await tester.tap(loginDrawerOption);
+    final logoutBtn = find.descendant(
+      of: find.byType(Drawer),
+      matching: find.text(I18nKeys.logout.tr),
+    );
+    if (logoutBtn.evaluate().isNotEmpty) {
+      await tester.tap(logoutBtn);
       await tester.pumpAndSettle();
+      final okBtn = find.text(I18nKeys.ok.tr);
+      if (okBtn.evaluate().isNotEmpty) {
+        await tester.tap(okBtn);
+        await waitForPage(tester, LoginPage);
+      }
+      return;
     }
-    return;
+
+    final loginBtn = find.descendant(
+      of: find.byType(Drawer),
+      matching: find.text(I18nKeys.login.tr),
+    );
+    if (loginBtn.evaluate().isNotEmpty) {
+      await tester.tap(loginBtn);
+      await waitForPage(tester, LoginPage);
+      return;
+    }
   }
 
   // Otherwise, boot the app from scratch
@@ -70,20 +87,46 @@ Future<void> bootAppAndGoToLogin(WidgetTester tester) async {
   // Wait for splash transition to complete
   await waitForPageTransition(tester);
 
-  // If we are on HomePage, navigate to LoginPage
+  if (find.byType(LoginPage).evaluate().isNotEmpty) {
+    return;
+  }
+
   if (find.byType(HomePage).evaluate().isNotEmpty) {
     tester.firstState<ScaffoldState>(find.byType(Scaffold)).openDrawer();
     await tester.pumpAndSettle();
 
-    final loginDrawerOption = find.text(I18nKeys.login.tr);
-    expect(loginDrawerOption, findsOneWidget);
+    final logoutBtn = find.descendant(
+      of: find.byType(Drawer),
+      matching: find.text(I18nKeys.logout.tr),
+    );
+    if (logoutBtn.evaluate().isNotEmpty) {
+      await tester.tap(logoutBtn);
+      await tester.pumpAndSettle();
+      final okBtn = find.text(I18nKeys.ok.tr);
+      if (okBtn.evaluate().isNotEmpty) {
+        await tester.tap(okBtn);
+        await waitForPage(tester, LoginPage);
+      }
+      return;
+    }
 
-    await tester.tap(loginDrawerOption);
-    await tester.pumpAndSettle();
+    final loginBtn = find.descendant(
+      of: find.byType(Drawer),
+      matching: find.text(I18nKeys.login.tr),
+    );
+    if (loginBtn.evaluate().isNotEmpty) {
+      await tester.tap(loginBtn);
+      await waitForPage(tester, LoginPage);
+      return;
+    }
   }
 }
 
 Future<void> performUiLogin(WidgetTester tester, String username, String password) async {
+  if (find.byType(HomePage).evaluate().isNotEmpty && !authManager.state.isGuest) {
+    return;
+  }
+
   await bootAppAndGoToLogin(tester);
 
   if (find.byType(LoginPage).evaluate().isNotEmpty) {
@@ -108,7 +151,10 @@ Future<void> navigateToSettings(WidgetTester tester) async {
     tester.firstState<ScaffoldState>(find.byType(Scaffold)).openDrawer();
     await tester.pumpAndSettle();
 
-    final settingsOption = find.text(I18nKeys.settings.tr);
+    final settingsOption = find.descendant(
+      of: find.byType(Drawer),
+      matching: find.text(I18nKeys.settings.tr),
+    );
     await tester.tap(settingsOption);
     await waitForPage(tester, SettingsPage);
   }
@@ -128,6 +174,7 @@ void main() {
     // Pre-initialize mock services to prevent native hangs during tests
     iapService = FakeIapService();
     notificationService = FakeNotificationService();
+    ShareProviderImpl.skipShareForTesting = true;
 
     // Configure LocalMockServer with low latency for fast execution
     LocalMockServer.initConfig(const MockServerConfig(networkLatency: Duration(milliseconds: 10)));
@@ -314,10 +361,16 @@ void main() {
       await tester.tapAt(const Offset(350, 300));
       await tester.pumpAndSettle();
 
-      // Switch bottom tabs
-      final aboutMeTab = find.byIcon(Icons.person);
-      expect(aboutMeTab, findsOneWidget);
-      await tester.tap(aboutMeTab);
+      // Switch to About Me tab via Drawer
+      tester.firstState<ScaffoldState>(find.byType(Scaffold)).openDrawer();
+      await tester.pumpAndSettle();
+
+      final aboutMeOption = find.descendant(
+        of: find.byType(Drawer),
+        matching: find.text(I18nKeys.aboutMe.tr),
+      );
+      expect(aboutMeOption, findsOneWidget);
+      await tester.tap(aboutMeOption);
       await tester.pumpAndSettle();
 
       // Verify AboutMe page & check Share action button
@@ -359,11 +412,27 @@ void main() {
       await tester.tap(clearCacheTile);
       await tester.pumpAndSettle();
 
-      // 4. Logout trigger via Drawer (since Logout button is in drawer footer)
+      // 4. Pop back from SettingsPage to HomePage before opening drawer for logout
+      final backButton = find.byType(BackButton);
+      if (backButton.evaluate().isNotEmpty) {
+        await tester.tap(backButton);
+        await tester.pumpAndSettle();
+      } else {
+        final backIcon = find.byIcon(Icons.arrow_back);
+        if (backIcon.evaluate().isNotEmpty) {
+          await tester.tap(backIcon);
+          await tester.pumpAndSettle();
+        }
+      }
+
+      // Logout trigger via HomePage Drawer (since Logout button is in drawer footer)
       tester.firstState<ScaffoldState>(find.byType(Scaffold)).openDrawer();
       await tester.pumpAndSettle();
 
-      final logoutBtn = find.text(I18nKeys.logout.tr);
+      final logoutBtn = find.descendant(
+        of: find.byType(Drawer),
+        matching: find.text(I18nKeys.logout.tr),
+      );
       expect(logoutBtn, findsOneWidget);
       await tester.tap(logoutBtn);
       await tester.pumpAndSettle();
