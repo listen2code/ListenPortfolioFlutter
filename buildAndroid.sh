@@ -38,7 +38,7 @@ APP_VERSION=$(grep '^version: ' pubspec.yaml | cut -d ' ' -f 2 | cut -d '+' -f 1
 if [ "$TARGET_TYPE" == "patch" ]; then
     echo ">>> Executing Shorebird Patch Android for [$ENV] environment (Version: $APP_VERSION)..."
     if command -v shorebird &> /dev/null; then
-        shorebird patch android \
+        shorebird patch android --allow-asset-diffs \
             -- \
             --no-tree-shake-icons \
             --obfuscate --split-debug-info=apkOutput \
