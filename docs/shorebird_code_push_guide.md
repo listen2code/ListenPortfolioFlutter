@@ -198,3 +198,14 @@ final formattedVersion = await shorebirdService.getFormattedVersion('1.1.11+1');
 4. **不能修改原生代码**：
    - Shorebird 热更新仅支持 **Dart 语言级别**的修改（逻辑、UI、ViewModel、网络请求等）。
    - 如果修补修改了 `android/` 或 `ios/` 原生 C++/Java/Swift 代码、或者增删了含有原生代码的 Pub 插件，则必须发布全新的 Release 包，不能使用 Patch 热更新。
+
+5. **必须使用 `--no-tree-shake-icons` 构建 Patch (避免 Icon 字体哈希冲突)**：
+   - **原因**：Flutter 默认在 Release 构建时会自动开启图标摇树优化（Icon Tree-Shaking）。如果在 Patch 补丁代码中引入了之前基准包未用到的新 `Icons.xxx` 图标，编译器重新剪裁生成的 `MaterialIcons-Regular.otf` 字体哈希将与基准包不一致，触发 Shorebird 抛出 `UnpatchableChangeException` 保护异常并拦截发布。
+   - **解决方式**：所有 Patch 打包命令必须追加 `--no-tree-shake-icons` 参数（例：`shorebird patch android --no-tree-shake-icons`）。
+
+6. **静态图片资源 (`assets/`) 限制与最佳实践**：
+   - **原理限制**：Shorebird 热更引擎针对的是 Dart AOT 编译代码（`libapp.so`），**无法推送或更新打包在本地 `assets/` 目录下的静态图片与资源文件**（如新增 `assets/images/xx.png` 会导致 Patch 构建失败或运行时破图）。
+   - **最佳实践**：
+     - **网络图片（推荐）**：在 Patch 中新增图片应统一采用网络 URL（CDN / HTTPS），如 `CommonImage.url(...)`。
+     - **代码内嵌矢量图**：对于极小的图标，可转为 SVG 文本或 Base64 字符串直接作为 String 变量内嵌在 Dart 代码中。
+     - **本地静态图片**：若必须新增大型本地 `assets/` 文件，则必须通过发布全量新版本（`shorebird release`）来更新。

@@ -38,14 +38,19 @@ APP_VERSION=$(grep '^version: ' pubspec.yaml | cut -d ' ' -f 2 | cut -d '+' -f 1
 if [ "$TARGET_TYPE" == "patch" ]; then
     echo ">>> Executing Shorebird Patch Android for [$ENV] environment (Version: $APP_VERSION)..."
     if command -v shorebird &> /dev/null; then
-        shorebird patch android \
+        shorebird patch android --no-tree-shake-icons \
             -- \
             --obfuscate --split-debug-info=apkOutput \
             --extra-gen-snapshot-options=--save-obfuscation-map=apkOutput/mapping.json,--strip \
             --dart-define=APP_ENV=$ENV \
             --dart-define=APP_VERSION=$APP_VERSION
-        echo ">>> Shorebird Patch Android deployed successfully for [$ENV]!"
-        exit 0
+        if [ $? -eq 0 ]; then
+            echo ">>> Shorebird Patch Android deployed successfully for [$ENV]!"
+            exit 0
+        else
+            echo ">>> Error: Shorebird Patch deployment failed with non-zero exit code!"
+            exit 1
+        fi
     else
         echo ">>> Error: 'shorebird' CLI command was not found in PATH. Cannot deploy patch."
         exit 1
