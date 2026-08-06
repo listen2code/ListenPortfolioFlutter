@@ -90,5 +90,22 @@ void main() {
       expect(await service.isRunningPatch, isFalse);
       expect(await service.getFormattedVersion('1.1.11+1'), '1.1.11+1');
     });
+
+    test('checkAndInstallPatch checks, downloads and executes callback when update available', () async {
+      when(() => mockUpdater.isAvailable).thenReturn(true);
+      when(() => mockUpdater.checkForUpdate()).thenAnswer((_) async => UpdateStatus.outdated);
+      when(() => mockUpdater.update()).thenAnswer((_) async {});
+
+      bool callbackInvoked = false;
+      final result = await service.checkAndInstallPatch(
+        onPatchDownloaded: () {
+          callbackInvoked = true;
+        },
+      );
+
+      expect(result, isTrue);
+      expect(callbackInvoked, isTrue);
+      expect(service.status, ShorebirdCodePushStatus.patchDownloaded);
+    });
   });
 }

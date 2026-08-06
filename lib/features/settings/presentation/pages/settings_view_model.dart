@@ -253,7 +253,15 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
         ),
       );
     } else {
-      emitEffect(MessageEffect.dialog(I18nKeys.latestVersion.tr, title: I18nKeys.checkUpdates.tr));
+      // Primary native version is up to date, check and install Shorebird OTA patch
+      final patchInstalled = await shorebirdService.checkAndInstallPatch(
+        onPatchDownloaded: () {
+          emitEffect(MessageEffect.dialog(I18nKeys.shorebirdPatchReadyMsg.tr, title: I18nKeys.checkUpdates.tr));
+        },
+      );
+      if (!patchInstalled) {
+        emitEffect(MessageEffect.dialog(I18nKeys.latestVersion.tr, title: I18nKeys.checkUpdates.tr));
+      }
     }
   }
 

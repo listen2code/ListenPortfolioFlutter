@@ -35,22 +35,11 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
 
   void _checkShorebirdPatchUpdate() {
     Future<void>.microtask(() async {
-      appLogger.i('[HomeViewModel] Triggering Shorebird OTA Patch update check...');
-      if (!shorebirdService.isAvailable) {
-        appLogger.w('[HomeViewModel] Shorebird is NOT available in current build/environment.');
-        return;
-      }
-      final hasUpdate = await shorebirdService.checkForUpdate();
-      if (hasUpdate) {
-        appLogger.i('[HomeViewModel] New Shorebird patch found! Starting background download...');
-        final downloaded = await shorebirdService.downloadUpdate();
-        if (downloaded) {
-          appLogger.i('[HomeViewModel] Shorebird patch downloaded. Emitting toast message effect.');
+      await shorebirdService.checkAndInstallPatch(
+        onPatchDownloaded: () {
           emitEffect(MessageEffect(I18nKeys.shorebirdPatchReadyMsg.tr, type: MessageType.info));
-        }
-      } else {
-        appLogger.i('[HomeViewModel] Shorebird check completed - no new patch available.');
-      }
+        },
+      );
     });
   }
 

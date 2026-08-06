@@ -32,6 +32,11 @@ abstract class IShorebirdService {
   /// Downloads and installs the latest patch in the background.
   Future<bool> downloadUpdate();
 
+  /// Encapsulates checking for updates and downloading if available.
+  /// If a new patch is downloaded, triggers [onPatchDownloaded] callback.
+  /// Returns `true` if a new patch was downloaded, `false` otherwise.
+  Future<bool> checkAndInstallPatch({void Function()? onPatchDownloaded});
+
   /// Current status of the code push lifecycle.
   ShorebirdCodePushStatus get status;
 }
@@ -130,6 +135,38 @@ class ShorebirdServiceImpl implements IShorebirdService {
     } catch (e, stack) {
       _status = ShorebirdCodePushStatus.error;
       appLogger.e('[Shorebird] Unexpected error during patch download', error: e, stackTrace: stack);
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> checkAndInstallPatch({void Function()? onPatchDownloaded}) async {
+    appLogger.i('[Shorebird] checkAndInstallPatch: Starting full patch update workflow...');
+    if (!isAvailable) {
+      appLogger.w('[Shorebird] checkAndInstallPatch: Shorebird is not available on this device/build.');
+      return false;
+    }
+
+    final hasUpdate = await checkForUpdate();
+    if (!hasUpdate) {
+      appLogger.i('[Shorebird] checkAndInstallPatch: App is already up to date. No patch needed.');
+      return false;
+    }
+
+    appLogger.i('[Shorebird] checkAndInstallPatch: New patch available! Starting background download...');
+    final downloaded = await downloadUpdate();
+    if (downloaded) {
+      appLogger.i('[Shorebird] checkAndInstallPatch: Patch downloaded successfully! Triggering onPatchDownloaded callback...');
+      if (onPatchDownloaded != null) {
+        try {
+          onPatchDownloaded();
+        } catch (e, stack) {
+          appLogger.e('[Shorebird] checkAndInstallPatch: Error executing onPatchDownloaded callback', error: e, stackTrace: stack);
+        }
+      }
+      return true;
+    } else {
+      appLogger.e('[Shorebird] checkAndInstallPatch: Patch download failed.');
       return false;
     }
   }

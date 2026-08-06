@@ -33,9 +33,11 @@ dependencies:
 - **状态查询**：
   - `isAvailable`：判定当前设备构建是否支持 Shorebird 引擎。
   - `getCurrentPatchNumber()`：获取当前生效的 Patch 补丁序号（基准包返回 null）。
+  - `getFormattedVersion(baseVersion)`：拼接格式化版本号（如 `v1.1.11+1 (Patch #1)`）。
 - **热更新控制**：
   - `checkForUpdate()`：向 Shorebird 服务器检查是否有最新 Patch。
   - `downloadUpdate()`：在后台非阻塞下载 Patch 补丁。
+  - **`checkAndInstallPatch({onPatchDownloaded})`**：高阶封装全流程，静默检查并下载 Patch，并在成功后触发回调。
 
 ### 3. 应用初始化 ([`app_initializer.dart`](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/shared/utils/app_initializer.dart))
 在组合根 `AppInitializer` 中安全完成全局单例装配：
@@ -152,50 +154,47 @@ shorebird init
 
 在业务逻辑中，您可以通过全局单例 `shorebirdService` 轻松控制更新：
 
-### 1. 检查并提示用户更新补丁
+### 1. 检查并提示用户更新补丁 (推荐方式)
+使用高阶封装方法 `checkAndInstallPatch`，配合 `Future<void>.microtask` 在 ViewModel / 页面就绪后非阻塞触发：
+
 ```dart
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 
-Future<void> checkAppPatchUpdate() async {
-  // 1. 检查当前设备环境是否支持 Shorebird
-  if (!shorebirdService.isAvailable) {
-    appLogger.i('Shorebird is not available in current environment.');
-    return;
-  }
-
-  // 2. 检查是否有新补丁
-  final hasUpdate = await shorebirdService.checkForUpdate();
-  if (hasUpdate) {
-    appLogger.i('New patch available, downloading in background...');
-    
-    // 3. 后台下载补丁
-    final success = await shorebirdService.downloadUpdate();
-    if (success) {
-      // 提示用户下次重启应用生效
-      CommonToast.show('新版补丁已准备就绪，下次重启应用后生效');
-    }
-  }
+void checkAppPatchUpdate() {
+  // 使用 Future<void>.microtask 避开 Flutter 帧渲染 pass，防止 setState during build 异常
+  Future<void>.microtask(() async {
+    await shorebirdService.checkAndInstallPatch(
+      onPatchDownloaded: () {
+        // 补丁下载成功回调：提示用户下次重启后生效
+        emitEffect(MessageEffect(I18nKeys.shorebirdPatchReadyMsg.tr, type: MessageType.info));
+      },
+    );
+  });
 }
 ```
 
-### 2. 读取当前 Patch 版本号
+### 2. 读取当前 Patch 版本号 (设置页面展示)
 ```dart
 final patchNumber = await shorebirdService.getCurrentPatchNumber();
-if (patchNumber != null) {
-  print('Current patch version: v$patchNumber');
-} else {
-  print('Running base release version');
-}
+final formattedVersion = await shorebirdService.getFormattedVersion('1.1.11+1');
+// 输出: "1.1.11+1 (Patch #1)" 或 "1.1.11+1"
 ```
 
 ---
 
 ## ⚠️ 五、 注意事项与最佳实践
 
-1. **避免阻塞应用启动**：
-   - **切勿**在 `main()` 函数或 `SplashPage` 中同步 `await checkForUpdate()`，否则在弱网环境下会导致应用被卡在启动页。建议在应用进入 HomePage 后异步无感知触发。
-2. **补丁生效时机**：
-   - 补丁在客户端下载成功后，必须要等**应用被完全关闭并重新打开（App Restart）** 后，新的 Dart 逻辑才会正式生效。
-3. **不能修改原生代码**：
+1. **为什么使用 `Future<void>.microtask` 触发检测**：
+   - **避免 `setState during build` 报错**：在 ViewModel 初始化（如 `onReady`）时直接同步操作 UI 会导致 Flutter 框架报错。使用 `microtask` 可以将补丁检测推迟到当前 UI 渲染完毕后的第一时间执行。
+   - **确保 View 监听器就绪**：保证 Effect 监听器已被 Flutter 视图层完整挂载，防止丢失弹窗提示。
+   - **高优先级非阻塞**：比普通 `Future.delayed` 响应更快，比同步代码更平滑无感。
+
+2. **避免阻塞应用启动**：
+   - **切勿**在 `main()` 函数或 `SplashPage` 中同步 `await checkAndInstallPatch()`，否则在弱网环境下会导致应用卡在启动页。
+
+3. **补丁生效时机（冷启动生效）**：
+   - 补丁在客户端下载成功后，必须要等**应用被完全关闭并重新打开（App Restart / 冷启动）** 后，新的 Dart 逻辑才会正式生效。
+
+4. **不能修改原生代码**：
    - Shorebird 热更新仅支持 **Dart 语言级别**的修改（逻辑、UI、ViewModel、网络请求等）。
    - 如果修补修改了 `android/` 或 `ios/` 原生 C++/Java/Swift 代码、或者增删了含有原生代码的 Pub 插件，则必须发布全新的 Release 包，不能使用 Patch 热更新。
