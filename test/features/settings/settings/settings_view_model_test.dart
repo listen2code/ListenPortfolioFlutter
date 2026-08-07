@@ -53,6 +53,18 @@ void main() {
       when(() => mockNotificationService.subscribeToTopic(any())).thenAnswer((_) async {});
       when(() => mockNotificationService.unsubscribeFromTopic(any())).thenAnswer((_) async {});
 
+      // Stub default repository behaviors
+      when(() => mockSettingsRepository.getLatestVersion()).thenAnswer(
+        (_) async => const Right(
+          VersionModel(
+            version: '1.0.0',
+            buildNumber: 1,
+            url: 'https://example.com',
+            changelog: {'en': 'Initial release'},
+          ),
+        ),
+      );
+
       notificationService = mockNotificationService;
 
       container = ProviderContainer(

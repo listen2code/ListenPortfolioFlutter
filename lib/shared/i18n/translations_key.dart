@@ -204,6 +204,15 @@ class I18nKeys {
       'A random exception will be injected into any "dispatch" (UI interaction) that occurs after 10-20 seconds. Continue?';
   static const String startTimer = 'Start Timer';
   static const String crashScheduled = 'Crash injection scheduled!';
+  static const String pushTestTitle = 'Push Test';
+  static const String pushTestSubtitle = 'Trigger simulated foreground push notification';
+  static const String pushTestNoticeTitle = 'Foreground Push Test';
+  static const String pushTestNoticeBody = 'This is a simulated foreground push notification banner.';
+  static const String webViewTestTitle = 'WebView Test';
+  static const String webViewTestSubtitle = 'Test embedded webview rendering and dialogs';
+  static const String filterTraceId = 'Filter by Trace ID...';
+  static const String filterNetwork = 'Filter URL, status, traceId...';
+  static const String urlCopied = 'URL copied to clipboard';
   static const String uploading = 'Uploading...';
   static const String uploadSuccess = 'Crash report uploaded successfully';
   static const String uploadFailed = 'Upload failed';

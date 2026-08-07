@@ -259,7 +259,7 @@ class _LogsInspectorTabState extends State<_LogsInspectorTab> {
                     ),
                     child: CommonTextField(
                       controller: widget.traceController,
-                      hintText: 'Filter by Trace ID...',
+                      hintText: I18nKeys.filterTraceId.tr,
                     ),
                   ),
                 ),

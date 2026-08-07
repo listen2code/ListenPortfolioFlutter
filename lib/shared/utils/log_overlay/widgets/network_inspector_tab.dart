@@ -64,7 +64,7 @@ class _NetworkInspectorTabState extends State<_NetworkInspectorTab> {
                           ),
                           child: CommonTextField(
                             controller: _searchController,
-                            hintText: 'Filter URL, status, traceId...',
+                            hintText: I18nKeys.filterNetwork.tr,
                             onChanged: (val) => setState(() => _searchQuery = val.trim().toLowerCase()),
                           ),
                         ),
@@ -340,9 +340,9 @@ class _RequestRowWidgetState extends State<_RequestRowWidget> {
                         onTap: () {
                           Clipboard.setData(ClipboardData(text: req.url));
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('URL copied to clipboard'),
-                              duration: Duration(seconds: 1),
+                            SnackBar(
+                              content: Text(I18nKeys.urlCopied.tr),
+                              duration: const Duration(seconds: 1),
                             ),
                           );
                         },

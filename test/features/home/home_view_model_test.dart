@@ -6,6 +6,8 @@ import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_s
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_view_model.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 
+import '../../test_helpers/test_setup.dart';
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -14,7 +16,8 @@ void main() {
     late HomeViewModel viewModel;
     final List<BaseEffect> emittedEffects = [];
 
-    setUp(() {
+    setUp(() async {
+      await setupTestEnvironment();
       container = ProviderContainer();
       // 1. Get the ViewModel instance
       viewModel = container.read(homeViewModelProvider.notifier);

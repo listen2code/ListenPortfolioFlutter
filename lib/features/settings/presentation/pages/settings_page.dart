@@ -125,27 +125,15 @@ class SettingsPage extends ConsumerWidget {
                   if (kDebugMode || state.isDeveloperMode)
                     CommonSettingsTile(
                       icon: Icons.notification_important_outlined,
-                      title: 'Push Test',
-                      subtitle: '触发前台推送通知横幅模拟',
-                      onTap: () async {
-                        await notificationService.requestPermission();
-                        final service = notificationService;
-                        if (service is FirebaseNotificationServiceImpl) {
-                          service.simulateMessageReceived(
-                            const NotificationPayload(
-                              title: '前台测试通知',
-                              body: '这是一个在前台接收的推送通知横幅模拟。',
-                              data: {'type': 'test'},
-                            ),
-                          );
-                        }
-                      },
+                      title: I18nKeys.pushTestTitle.tr,
+                      subtitle: I18nKeys.pushTestSubtitle.tr,
+                      onTap: () => _triggerPushTest(),
                     ),
                   if (kDebugMode || state.isDeveloperMode) ...[
                     CommonSettingsTile(
                       icon: Icons.html,
-                      title: 'WebView Test',
-                      subtitle: 'WebView Dialog',
+                      title: I18nKeys.webViewTestTitle.tr,
+                      subtitle: I18nKeys.webViewTestSubtitle.tr,
                       onTap: () => viewModel.handleIntent(const SettingsIntent.toWebViewTest()),
                     ),
                     CommonSettingsTile(
@@ -220,5 +208,19 @@ class SettingsPage extends ConsumerWidget {
         );
       },
     );
+  }
+
+  Future<void> _triggerPushTest() async {
+    await notificationService.requestPermission();
+    final service = notificationService;
+    if (service is FirebaseNotificationServiceImpl) {
+      service.simulateMessageReceived(
+        NotificationPayload(
+          title: I18nKeys.pushTestNoticeTitle.tr,
+          body: I18nKeys.pushTestNoticeBody.tr,
+          data: const {'type': 'test'},
+        ),
+      );
+    }
   }
 }

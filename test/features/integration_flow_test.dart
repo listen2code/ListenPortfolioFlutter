@@ -229,6 +229,7 @@ class TestAppInitializer {
     QuickActionsManager.init();
     settingManager.loadSettings();
     UIKitConfig.init(stringProvider: (key) => key.tr);
+    shorebirdService = ShorebirdServiceImpl();
   }
 }
 
@@ -375,7 +376,7 @@ void main() {
         expect(loginDrawerOption, findsOneWidget);
 
         // 8. Click "Login" in drawer and verify navigating to LoginPage
-        await tester.tap(loginDrawerOption);
+        await tester.tap(loginDrawerOption, warnIfMissed: false);
         await tester.pumpAndSettle();
         expect(find.byType(LoginPage), findsOneWidget);
 
