@@ -29,7 +29,7 @@ final Map<String, String> ja = {
   I18nKeys.selectLanguage: '言語選択',
   I18nKeys.switchEnv: '環境切替',
   I18nKeys.switchEnvLogoutPrompt: '環境を切り替えるとログアウトされますが、よろしいですか？',
-  I18nKeys.switchEnvLogoutSuccessTips: '環境を{0}に切り替え、ログアウトしました。再ログインしてください。',
+  I18nKeys.switchEnvLogoutSuccessTips: '環境を%sに切り替え、ログアウトしました。再ログインしてください。',
   I18nKeys.envMock: 'デモ(Mock)',
   I18nKeys.envDev: '開発用',
   I18nKeys.envProd: '本番用',
@@ -241,11 +241,12 @@ final Map<String, String> ja = {
   I18nKeys.descFirebase: 'FCM プッシュ通知、フォアグラウンドバナーとトピック購読',
   I18nKeys.modularArchTitle: 'モジュール化 Monorepo アーキテクチャ',
   I18nKeys.descModularArch:
-      'ListenCore（基盤ユーティリティとネットワーク）、ListenUiKit（アトミックデザインと共通UI）、ListenPortfolioFlutter（アプリ本体）、ListenPortfolioBackend（Goバックエンド）に分離。',
+      'ListenCore（基盤ユーティリティとネットワーク）、ListenUiKit（アトミックデザインと共通UI）、ListenPortfolioFlutter（アプリ本体）、ListenPortfolioBackend（Spring Bootバックエンド）に分離。',
   I18nKeys.ciDevOpsTitle: 'CI/CD 自動化とマルチ環境',
   I18nKeys.descCiDevOps:
       'GitHub Actions による静的解析、テスト、ビルド自動化に加え、Commitメッセージ連動の Shorebird パッチ自動配信を統合。mock/dev/test/prod のマルチ環境対応。',
-  I18nKeys.backendDevOpsDesc: 'バックエンドは Go 言語による高性能 API サービス (ListenPortfolioBackend) とクラウドインフラで構築されています。',
+  I18nKeys.backendDevOpsDesc:
+      'バックエンドは Spring Boot 3 (Java 17) + MySQL + Redis + Docker による高性能 API サービス (ListenPortfolioBackend) とクラウドインフラで構築されています。',
   I18nKeys.logoutSuccess: 'ログアウト成功！',
   I18nKeys.sessionExpired: 'セッションの期限が切れました',
   I18nKeys.appLogs: 'アプリログ',

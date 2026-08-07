@@ -53,7 +53,7 @@
       {
         "id": "1",
         "title": "Android / Flutter 资深研发工程师",
-        "company": "LYC 株式会社会社 (乐天证券 App 项目组)",
+        "company": "LYC 株式会社 (乐天证券 App 项目组)",
         "period": "2023.02 - 至今",
         "description": "主导新版乐天证券交易 App 的架构设计与核心框架搭建。负责 FIDO2 生物免密安全认证落地、网络/状态层底层升级以及 Flutter 大版本重构。持续维护原有 Android 原生股票交易应用，编写日文设计提案并为团队成员提供 Code Review 指导。"
       },
@@ -67,7 +67,7 @@
       {
         "id": "3",
         "title": "Android 核心研发工程师",
-        "company": "多录网络科技",
+        "company": "多鹿（因爱网络科技）",
         "period": "2019.11 - 2021.10",
         "description": "建立 Feed 流网络监测系统，使请求超时率从 1.5% 降至 0.3%，首屏耗时缩减 40% 以上。推行组件化（module + module_api + module_run）升级，并基于 Shadow 容器框架实现插件化动态插拔。编写 AirTest 自动化测试用例，覆盖 Feed 流核心场景。"
       },

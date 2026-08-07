@@ -29,7 +29,7 @@ final Map<String, String> zh = {
   I18nKeys.selectLanguage: '选择语言',
   I18nKeys.switchEnv: '切换环境',
   I18nKeys.switchEnvLogoutPrompt: '切换环境会退出当前登录状态，是否继续？',
-  I18nKeys.switchEnvLogoutSuccessTips: '已成功切换至{0}并已退出登录，请重新登录。',
+  I18nKeys.switchEnvLogoutSuccessTips: '已成功切换至%s并已退出登录，请重新登录。',
   I18nKeys.envMock: '模拟环境(Mock)',
   I18nKeys.envDev: '开发环境',
   I18nKeys.envProd: '正式环境',
@@ -240,11 +240,12 @@ final Map<String, String> zh = {
   I18nKeys.descFirebase: 'FCM 消息推送、前台通知横幅与主题订阅',
   I18nKeys.modularArchTitle: '模块化 Monorepo 架构',
   I18nKeys.descModularArch:
-      '解耦拆分为 ListenCore（核心基础件与网络）、ListenUiKit（原子设计系统与通用组件）、ListenPortfolioFlutter（Flutter 客户端）与 ListenPortfolioBackend（Go 后端）。',
+      '解耦拆分为 ListenCore（核心基础件与网络）、ListenUiKit（原子设计系统与通用组件）、ListenPortfolioFlutter（Flutter 客户端）与 ListenPortfolioBackend（Spring Boot 后端）。',
   I18nKeys.ciDevOpsTitle: 'CI/CD 自动化构建与多环境',
   I18nKeys.descCiDevOps:
       'GitHub Actions 自动化流水线集成语法校验、单元测试、AAB/APK 打包发布，以及通过 Commit 消息自动部署 Shorebird 热修复 Patch。支持 mock/dev/test/prod 多环境无缝切换。',
-  I18nKeys.backendDevOpsDesc: '后端服务基于 Go 语言构建高性能 API 架构 (ListenPortfolioBackend)，配合现代化云端容器/API 服务。',
+  I18nKeys.backendDevOpsDesc:
+      '后端服务基于 Spring Boot 3 (Java 17) + MySQL + Redis + Docker 构建高性能 API 架构 (ListenPortfolioBackend)，配合现代化云端容器/API 服务。',
   I18nKeys.logoutSuccess: '登出成功！',
   I18nKeys.sessionExpired: '会话已过期',
   I18nKeys.appLogs: '应用日志',

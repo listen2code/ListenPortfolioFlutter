@@ -236,3 +236,4 @@
 - 试用talker_flutter，storybook_flutter，pubviz 
 - 数据库中简历内容的翻译校准
 - aboutMe中真实简历pdf的审核，下载
+- 更新我简历的内容

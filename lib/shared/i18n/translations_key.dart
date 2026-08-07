@@ -29,7 +29,7 @@ class I18nKeys {
   static const String switchEnvLogoutPrompt =
       'Switching the environment will log out the current user. Do you want to continue?';
   static const String switchEnvLogoutSuccessTips =
-      'Successfully switched to {%s} and logged out. Please log in again.';
+      'Successfully switched to %s and logged out. Please log in again.';
   static const String envMock = 'Mock';
   static const String envDev = 'Development';
   static const String envProd = 'Production';
@@ -264,12 +264,12 @@ class I18nKeys {
   static const String descFirebase = 'Push notifications (FCM), foreground banners & topic subscriptions';
   static const String modularArchTitle = 'Modular Monorepo Architecture';
   static const String descModularArch =
-      'Decoupled into ListenCore (base utils & networking), ListenUiKit (atomic design system & components), ListenPortfolioFlutter (mobile client), and ListenPortfolioBackend (Go server).';
+      'Decoupled into ListenCore (base utils & networking), ListenUiKit (atomic design system & components), ListenPortfolioFlutter (mobile client), and ListenPortfolioBackend (Spring Boot server).';
   static const String ciDevOpsTitle = 'CI/CD Automation & Multi-Env';
   static const String descCiDevOps =
       'GitHub Actions automates linting, testing, release builds (AAB/APK), and automated Shorebird OTA patch deployments triggered by commit messages. Dynamic environment matrix for mock/dev/test/prod.';
   static const String backendDevOpsDesc =
-      'The backend service is powered by Go (ListenPortfolioBackend) along with cloud API infrastructure.';
+      'The backend service is powered by Spring Boot 3 (Java 17) + MySQL + Redis + Docker (ListenPortfolioBackend) along with cloud API infrastructure.';
   static const String logoutSuccess = 'Logout Success!';
   static const String sessionExpired = 'Session expired';
   static const String appLogs = 'App Logs';
