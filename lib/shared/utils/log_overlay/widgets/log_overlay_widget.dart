@@ -179,7 +179,15 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
       top: isExpanded ? safeWindowY : safeButtonY,
       child: Material(
         color: Colors.transparent,
-        child: isExpanded ? _buildExpandedViewWithHandles(screenSize) : _buildFloatingButton(screenSize),
+        child: Stack(
+          children: [
+            Offstage(
+              offstage: !isExpanded,
+              child: _buildExpandedViewWithHandles(screenSize),
+            ),
+            if (!isExpanded) _buildFloatingButton(screenSize),
+          ],
+        ),
       ),
     );
   }
@@ -189,10 +197,7 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
     await CommonDialog.showCustom<void>(
       title: I18nKeys.saveTape.tr,
       barrierDismissible: false,
-      body: CommonTextField(
-        controller: controller,
-        hintText: I18nKeys.enterTapeName.tr,
-      ),
+      body: CommonTextField(controller: controller, hintText: I18nKeys.enterTapeName.tr),
       actions: [
         CommonButton(
           text: I18nKeys.discard.tr,
@@ -452,27 +457,30 @@ class _LogOverlayWidgetState extends State<_LogOverlayWidget> {
 
           // Tab Content
           Expanded(
-            child: currentTab == OverlayTab.logs
-                ? _LogsInspectorTab(
-                    traceController: _traceController,
-                    onNavigateToPerf: (traceId) {
-                      setState(() {
-                        currentTab = OverlayTab.perf;
-                        _traceController.text = traceId;
-                      });
-                    },
-                  )
-                : (currentTab == OverlayTab.perf
-                      ? _PerfDashboardTab(traceFilter: _traceController.text)
-                      : _NetworkInspectorTab(
-                          traceController: _traceController,
-                          onNavigateToLogs: (traceId) {
-                            setState(() {
-                              _traceController.text = traceId;
-                              currentTab = OverlayTab.logs;
-                            });
-                          },
-                        )),
+            child: IndexedStack(
+              index: currentTab.index,
+              children: [
+                _LogsInspectorTab(
+                  traceController: _traceController,
+                  onNavigateToPerf: (traceId) {
+                    setState(() {
+                      currentTab = OverlayTab.perf;
+                      _traceController.text = traceId;
+                    });
+                  },
+                ),
+                _PerfDashboardTab(traceFilter: _traceController.text),
+                _NetworkInspectorTab(
+                  traceController: _traceController,
+                  onNavigateToLogs: (traceId) {
+                    setState(() {
+                      _traceController.text = traceId;
+                      currentTab = OverlayTab.logs;
+                    });
+                  },
+                ),
+              ],
+            ),
           ),
         ],
       ),

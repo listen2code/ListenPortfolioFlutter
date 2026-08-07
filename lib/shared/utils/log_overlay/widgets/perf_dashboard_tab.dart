@@ -591,14 +591,16 @@ class _PerfDashboardTabState extends State<_PerfDashboardTab> {
                         highlightColor: Colors.transparent,
                         splashColor: Colors.transparent,
                       ),
-                      child: ExpansionTile(
-                        tilePadding: EdgeInsets.zero,
-                        childrenPadding: EdgeInsets.zero,
-                        title: CommonText(
-                          I18nKeys.appLogs.tr == '日志' ? '历史启动数据统计' : 'Launch History Statistics',
-                          style: const TextStyle(color: Colors.white38, fontSize: 10, fontWeight: FontWeight.bold),
-                        ),
-                        children: [
+                      child: Material(
+                        color: Colors.transparent,
+                        child: ExpansionTile(
+                          tilePadding: EdgeInsets.zero,
+                          childrenPadding: EdgeInsets.zero,
+                          title: CommonText(
+                            I18nKeys.appLogs.tr == '日志' ? '历史启动数据统计' : 'Launch History Statistics',
+                            style: const TextStyle(color: Colors.white38, fontSize: 10, fontWeight: FontWeight.bold),
+                          ),
+                          children: [
                           const SizedBox(height: 8),
                           ListView.builder(
                             shrinkWrap: true,
@@ -631,7 +633,8 @@ class _PerfDashboardTabState extends State<_PerfDashboardTab> {
                         ],
                       ),
                     ),
-                  ],
+                  ),
+                ],
                 ],
               ),
             ),
