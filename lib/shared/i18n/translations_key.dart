@@ -26,13 +26,15 @@ class I18nKeys {
   static const String large = 'Large';
   static const String selectLanguage = 'Select Language';
   static const String switchEnv = 'Switch Environment';
-  static const String switchEnvLogoutPrompt = 'Switching the environment will log out the current user. Do you want to continue?';
-  static const String switchEnvLogoutSuccessTips = 'Successfully switched to {0} and logged out. Please log in again.';
+  static const String switchEnvLogoutPrompt =
+      'Switching the environment will log out the current user. Do you want to continue?';
+  static const String switchEnvLogoutSuccessTips =
+      'Successfully switched to {%s} and logged out. Please log in again.';
   static const String envMock = 'Mock';
   static const String envDev = 'Development';
   static const String envProd = 'Production';
   static const String currentlyActive = 'Currently Active';
-  static const String envSwitched = 'Environment switched to:';
+  static String get envSwitched => 'Environment switched to:';
   static const String noEmailApp = 'No email apps installed';
   static const String loading = 'loading';
 
@@ -75,7 +77,8 @@ class I18nKeys {
   // Debug & Simulation
   static const String simulateTokenExpired = 'Simulate Session Expired';
   static const String simulateTokenExpiredSubtitle = 'Invalidate access token to test auto-refresh';
-  static const String tokenInvalidatedMessage = 'Access Token invalidated! Next API call will test auto-refresh.';
+  static const String tokenInvalidatedMessage =
+      'Access Token invalidated! Next API call will test auto-refresh.';
 
   // Login Page
   static const String welcomeBack = 'Welcome Back!';
@@ -323,7 +326,8 @@ class I18nKeys {
       'A new version %s is available. Would you like to update?\n(Note: App store updates may take some time to propagate. If you do not see the update button, please try again in a few minutes.)';
   static const String update = 'Update';
   static const String updateCheckFailed = 'Failed to check for updates. Please try again later.';
-  static const String shorebirdPatchReadyMsg = 'A new patch update is ready and will take effect on next app restart.';
+  static const String shorebirdPatchReadyMsg =
+      'A new patch update is ready and will take effect on next app restart.';
   static const String shorebirdCheckUpdates = 'Check Hot Fix Updates';
   static const String shorebirdUpToDate = 'Your app is up to date with latest patch.';
 
