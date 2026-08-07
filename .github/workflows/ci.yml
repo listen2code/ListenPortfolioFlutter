@@ -480,6 +480,43 @@ jobs:
           tracks: internal
           status: completed
 
+      - name: Build Flutter Web Release
+        if: steps.check_version.outputs.should_deploy == 'true'
+        run: flutter build web --release
+
+      - name: Configure SSH Private Key for AWS
+        if: steps.check_version.outputs.should_deploy == 'true'
+        env:
+          SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
+        run: |
+          if [ -n "$SSH_KEY" ] && [ -n "${{ secrets.AWS_HOST }}" ]; then
+            mkdir -p ~/.ssh
+            echo "$SSH_KEY" > ~/.ssh/id_rsa
+            chmod 600 ~/.ssh/id_rsa
+            cat >> ~/.ssh/config <<EOF
+            Host *
+              StrictHostKeyChecking no
+              UserKnownHostsFile /dev/null
+            EOF
+          else
+            echo "AWS_SSH_KEY or AWS_HOST is not configured, skipping AWS SSH setup."
+          fi
+
+      - name: Deploy Flutter Web to AWS EC2
+        if: steps.check_version.outputs.should_deploy == 'true'
+        env:
+          AWS_HOST: ${{ secrets.AWS_HOST }}
+        run: |
+          if [ -f ~/.ssh/id_rsa ] && [ -n "$AWS_HOST" ]; then
+            echo "Preparing Remote Web Directory on EC2..."
+            ssh -i ~/.ssh/id_rsa ec2-user@$AWS_HOST "sudo mkdir -p /var/www/listen_portfolio_web && sudo chown -R ec2-user:ec2-user /var/www/listen_portfolio_web"
+            echo "Uploading Flutter Web Build Artifacts to EC2..."
+            scp -i ~/.ssh/id_rsa -r build/web/* ec2-user@$AWS_HOST:/var/www/listen_portfolio_web/
+            echo "Successfully deployed Flutter Web to AWS EC2!"
+          else
+            echo "AWS SSH Key or Host not available, skipping deployment."
+          fi
+
       - name: Send Version Update Push Notification
         if: steps.check_version.outputs.should_deploy == 'true'
         env:
