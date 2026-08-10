@@ -480,6 +480,76 @@ jobs:
           tracks: internal
           status: completed
 
+      - name: Send Version Update Push Notification
+        if: steps.check_version.outputs.should_deploy == 'true'
+        env:
+          FIREBASE_SERVICE_ACCOUNT_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
+        run: |
+          node tools/send_push_notification.js --link listen://settings?check_update=true
+
+
+  deploy-to-aws-web:
+    needs: [check-conditions, update-version-json]
+    if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop') && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    environment: ${{ needs.check-conditions.outputs.environment }}
+    env:
+      ENVIRONMENT: ${{ needs.check-conditions.outputs.environment }}
+
+    steps:
+      - name: Checkout code (with latest version.json)
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.1'
+          cache: 'true'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Check if Version Already Uploaded
+        id: check_version
+        env:
+          PLAY_SERVICE_ACCOUNT_KEY: ${{ secrets.PLAY_SERVICE_ACCOUNT_KEY }}
+        run: |
+          # Get latest version code from Google Play
+          LATEST_VERSION_CODE=$(node tools/get_play_version.js)
+          echo "Latest version code on Google Play: $LATEST_VERSION_CODE"
+          NEXT_VERSION_CODE=$(( LATEST_VERSION_CODE + 1 ))
+          echo "Next Version Code required by Google Play: $NEXT_VERSION_CODE"
+          
+          # Get version name from pubspec.yaml
+          VNAME=$(grep '^version: ' pubspec.yaml | cut -d ' ' -f 2 | cut -d '+' -f 1)
+          echo "Version name in pubspec.yaml: $VNAME"
+          
+          # Calculate project version code (major*10000 + minor*100 + patch)
+          IFS='.' read -r -a parts <<< "$VNAME"
+          major=${parts[0]:-0}
+          minor=${parts[1]:-0}
+          patch=$(echo "${parts[2]:-0}" | tr -cd '0-9')
+          PROJECT_VERSION_CODE=$(( major * 10000 + minor * 100 + patch ))
+          echo "Calculated Project Version Code: $PROJECT_VERSION_CODE"
+          
+          if [ $PROJECT_VERSION_CODE -lt $NEXT_VERSION_CODE ]; then
+            echo "Current version code $PROJECT_VERSION_CODE has already been used on Google Play (latest is $LATEST_VERSION_CODE)."
+            echo "Skipping deployment..."
+            echo "should_deploy=false" >> $GITHUB_OUTPUT
+          else
+            echo "Current version code $PROJECT_VERSION_CODE is valid."
+            echo "should_deploy=true" >> $GITHUB_OUTPUT
+          fi
+
       - name: Build Flutter Web Release
         if: steps.check_version.outputs.should_deploy == 'true'
         run: flutter build web --release
@@ -512,13 +582,6 @@ jobs:
           else
             echo "AWS SSH Key or Host not available, skipping deployment."
           fi
-
-      - name: Send Version Update Push Notification
-        if: steps.check_version.outputs.should_deploy == 'true'
-        env:
-          FIREBASE_SERVICE_ACCOUNT_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
-        run: |
-          node tools/send_push_notification.js --link listen://settings?check_update=true
 
 
   skip-build:
