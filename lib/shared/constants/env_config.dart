@@ -19,7 +19,7 @@ enum EnvConfigs implements BaseEnvConfig {
   ),
   prod(
     env: AppEnvironment.prod,
-    baseUrl: 'http://13.218.192.181:8080',
+    baseUrl: 'http://13.218.192.181/api',
     apiTimeout: 60000,
     connectTimeout: 30000,
     receiveTimeout: 30000,
