@@ -1145,7 +1145,7 @@ packages:
       path: "../ListenUiKit"
       relative: true
     source: path
-    version: "0.0.31"
+    version: "0.0.32"
   logger:
     dependency: "direct main"
     description:

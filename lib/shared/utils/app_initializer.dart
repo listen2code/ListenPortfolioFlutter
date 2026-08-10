@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../features/auth/presentation/provider/auth_provider.dart';
@@ -18,14 +19,20 @@ class AppInitializer {
   /// [container] is the Riverpod container to be used for dependency resolution.
   static Future<void> init(ProviderContainer container) async {
     LaunchMonitor.recordInitStart();
-    // 0. Initialize MVI Playback Registry
-    initMviPlaybackRegistry();
+    try {
+      // 0. Initialize MVI Playback Registry
+      initMviPlaybackRegistry();
 
-    // 1. Initialize Infrastructure & Core Module (Including Nav & Error Hooks)
-    await _initCore(container);
+      // 1. Initialize Infrastructure & Core Module (Including Nav & Error Hooks)
+      await _initCore(container);
 
-    // 2. Initialize Deep Link Handling (after all dependencies are registered)
-    await DeepLinkManager.instance.init();
+      // 2. Initialize Deep Link Handling (after all dependencies are registered)
+      if (!kIsWeb) {
+        await DeepLinkManager.instance.init();
+      }
+    } catch (e, stackTrace) {
+      appLogger.e('AppInitializer.init error: $e', error: e, stackTrace: stackTrace);
+    }
   }
 
   /// Initializes infrastructure and the centralized ListenCore module.
@@ -108,50 +115,60 @@ class AppInitializer {
     );
 
     // 2. Shared Layer Services Initialization
-    QuickActionsManager.init();
+    if (!kIsWeb) {
+      QuickActionsManager.init();
+    }
     settingManager.loadSettings();
     UIKitConfig.init(stringProvider: (key) => key.tr);
-    ReviewService().logAppLaunch();
+    if (!kIsWeb) {
+      ReviewService().logAppLaunch();
+    }
 
     // 3. Initialize push notification service & configure deep link routing listeners
     // Run push notification initialization asynchronously so slow/blocked
     // network or platform behaviors in release (Play signing, network latency,
     // permission dialogs) won't delay or clutter app startup. Errors and
     // timing will still be logged for diagnosis.
-    Future<void>.microtask(() async {
-      final start = DateTime.now();
-      try {
-        await notificationService.initialize().timeout(const Duration(seconds: 30));
-        final dur = DateTime.now().difference(start);
-        appLogger.i('AppInitializer: notificationService.initialize completed in ${dur.inMilliseconds}ms');
-      } on TimeoutException catch (e, stackTrace) {
-        appLogger.e(
-          'AppInitializer: Push notification initialization timed out after 30s.',
-          error: e,
-          stackTrace: stackTrace,
-        );
-      } catch (e, stackTrace) {
-        appLogger.e(
-          'AppInitializer: Push notification initialization failed.',
-          error: e,
-          stackTrace: stackTrace,
-        );
-      }
-    });
+    if (!kIsWeb) {
+      Future<void>.microtask(() async {
+        final start = DateTime.now();
+        try {
+          await notificationService.initialize().timeout(const Duration(seconds: 30));
+          final dur = DateTime.now().difference(start);
+          appLogger.i('AppInitializer: notificationService.initialize completed in ${dur.inMilliseconds}ms');
+        } on TimeoutException catch (e, stackTrace) {
+          appLogger.e(
+            'AppInitializer: Push notification initialization timed out after 30s.',
+            error: e,
+            stackTrace: stackTrace,
+          );
+        } catch (e, stackTrace) {
+          appLogger.e(
+            'AppInitializer: Push notification initialization failed.',
+            error: e,
+            stackTrace: stackTrace,
+          );
+        }
+      });
+    }
 
     // 4. Initialize in-app purchase service
-    try {
-      iapService = IapServiceImpl();
-      await iapService.initialize();
-    } catch (e, stackTrace) {
-      appLogger.e('AppInitializer: In-App Purchase initialization failed.', error: e, stackTrace: stackTrace);
+    if (!kIsWeb) {
+      try {
+        iapService = IapServiceImpl();
+        await iapService.initialize();
+      } catch (e, stackTrace) {
+        appLogger.e('AppInitializer: In-App Purchase initialization failed.', error: e, stackTrace: stackTrace);
+      }
     }
 
     // 5. Initialize Shorebird OTA Code Push Service
-    try {
-      shorebirdService = ShorebirdServiceImpl();
-    } catch (e, stackTrace) {
-      appLogger.e('AppInitializer: Shorebird Code Push initialization failed.', error: e, stackTrace: stackTrace);
+    if (!kIsWeb) {
+      try {
+        shorebirdService = ShorebirdServiceImpl();
+      } catch (e, stackTrace) {
+        appLogger.e('AppInitializer: Shorebird Code Push initialization failed.', error: e, stackTrace: stackTrace);
+      }
     }
     LaunchMonitor.recordInitEnd();
   }
