@@ -493,11 +493,7 @@ jobs:
             mkdir -p ~/.ssh
             echo "$SSH_KEY" > ~/.ssh/id_rsa
             chmod 600 ~/.ssh/id_rsa
-            cat >> ~/.ssh/config <<EOF
-            Host *
-              StrictHostKeyChecking no
-              UserKnownHostsFile /dev/null
-            EOF
+            printf "Host *\n  StrictHostKeyChecking no\n  UserKnownHostsFile /dev/null\n" >> ~/.ssh/config
           else
             echo "AWS_SSH_KEY or AWS_HOST is not configured, skipping AWS SSH setup."
           fi
