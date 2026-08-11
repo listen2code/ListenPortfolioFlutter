@@ -100,7 +100,7 @@ shorebird init
 ---
 
 ### 3. 构建发布“基准包” (Release)
-提交到 App Store / Google Play 的版本必须使用 `shorebird release` 或运行 `./buildAndroid.sh bundle prod true`：
+提交到 App Store / Google Play 的版本必须使用 `shorebird release` 或运行 `./buildModule.sh bundle prod true`：
 
 - **Android 发布包**：
   ```bash

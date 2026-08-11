@@ -494,10 +494,10 @@ fi
 
 ### 构建脚本
 
-项目根目录存在 `buildAndroid.sh`，但当前 GitHub Actions 工作流中的 APK 构建步骤是直接执行 `flutter build apk --debug --target-platform android-arm64 ...`，并不是通过该脚本调用。
+项目根目录存在 `buildModule.sh`，但当前 GitHub Actions 工作流中的 APK 构建步骤是直接执行 `flutter build apk --debug --target-platform android-arm64 ...`，并不是通过该脚本调用。
 
 ```bash
-./buildAndroid.sh apk {environment}
+./buildModule.sh apk {environment}
 ```
 
 支持的环境：
@@ -692,7 +692,7 @@ import '../../domain/usecases/login_use_case.dart';
 
 #### APK 构建失败
 
-1. 检查 `buildAndroid.sh` 脚本
+1. 检查 `buildModule.sh` 脚本
 2. 确认环境配置正确
 3. 查看构建日志
 
@@ -831,7 +831,7 @@ context.registry.addImportDirective((node) {
 - `tools/dependency_rules.dart` - 主要依赖边界分析工具
 - `tools/lint_rules/lib/src/dependency_boundary_lint.dart` - 自定义 Lint 规则实现（当前未接入主工程默认分析配置）
 - `tools/lint_rules/pubspec.yaml` - Lint包配置
-- `buildAndroid.sh` - APK构建脚本
+- `buildModule.sh` - APK构建脚本
 - `.github/workflows/ci.yml` - 统一CI/CD工作流
 
 ---

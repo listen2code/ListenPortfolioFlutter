@@ -10,7 +10,8 @@
 在 Flutter 前端项目根目录下执行以下标准发布构建命令：
 
 ```bash
-flutter build web --release --dart-define=APP_ENV=prod
+./buildModule.sh web prod
+# 或直接调用底层命令：flutter build web --release --dart-define=APP_ENV=prod
 ```
 
 ### 1.2 关键构建参数解析
@@ -45,7 +46,7 @@ ssh -i tool/listen.pem -o StrictHostKeyChecking=no ec2-user@13.218.192.181 "
 ### 2.2 GitHub Actions CI/CD 自动化部署
 在 [`.github/workflows/ci.yml`](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/.github/workflows/ci.yml) 中配置了独立部署 Job `deploy-to-aws-web`：
 - **版本校验**：与 `deploy-to-google-play` 平级，共享 `tools/get_play_version.js` 的构建触发逻辑。
-- **自动编译**：自动执行 `flutter build web --release --dart-define=APP_ENV=prod`。
+- **自动编译**：通过 `./buildModule.sh web prod` 统一执行编译。
 - **自动上云**：通过 SSH Key 一键上传并应用 Linux 755 权限。
 
 ---

@@ -66,7 +66,7 @@ jobs:
             # Check for build triggers using simple string operations
             if [[ "$COMMIT_MSG" == *"[build-apk]"* ]] || [[ "$COMMIT_MSG" == *"[apk]"* ]] || [[ "$COMMIT_MSG" == *"[deploy]"* ]]; then
               SHOULD_BUILD_APK="true"
-              echo "Build trigger found in commit message"
+              echo "Buibuildld trigger found in commit message"
             fi
           fi
           
@@ -211,9 +211,9 @@ jobs:
         env:
           SHOREBIRD_TOKEN: ${{ secrets.SHOREBIRD_TOKEN }}
         run: |
-          sed -i 's/\r$//' buildAndroid.sh
-          chmod +x buildAndroid.sh
-          ./buildAndroid.sh apk ${{ steps.env.outputs.environment }}
+          sed -i 's/\r$//' buildModule.sh
+          chmod +x buildModule.sh
+          ./buildModule.sh apk ${{ steps.env.outputs.environment }}
 
       - name: Get APK info
         id: apk_info
@@ -466,9 +466,9 @@ jobs:
         env:
           SHOREBIRD_TOKEN: ${{ secrets.SHOREBIRD_TOKEN }}
         run: |
-          sed -i 's/\r$//' buildAndroid.sh
-          chmod +x buildAndroid.sh
-          ./buildAndroid.sh bundle ${{ env.ENVIRONMENT }}
+          sed -i 's/\r$//' buildModule.sh
+          chmod +x buildModule.sh
+          ./buildModule.sh bundle ${{ env.ENVIRONMENT }}
 
       - name: Upload to Google Play Internal
         if: steps.check_version.outputs.should_deploy == 'true'
@@ -550,9 +550,12 @@ jobs:
             echo "should_deploy=true" >> $GITHUB_OUTPUT
           fi
 
-      - name: Build Flutter Web Release
+      - name: Build Flutter Web Release via script
         if: steps.check_version.outputs.should_deploy == 'true'
-        run: flutter build web --release --dart-define=APP_ENV=prod
+        run: |
+          sed -i 's/\r$//' buildModule.sh
+          chmod +x buildModule.sh
+          ./buildModule.sh web prod
 
       - name: Configure SSH Private Key for AWS
         if: steps.check_version.outputs.should_deploy == 'true'
@@ -662,6 +665,6 @@ jobs:
         env:
           SHOREBIRD_TOKEN: ${{ secrets.SHOREBIRD_TOKEN }}
         run: |
-          sed -i 's/\r$//' buildAndroid.sh
-          chmod +x buildAndroid.sh
-          ./buildAndroid.sh patch ${{ needs.check-conditions.outputs.environment }}
+          sed -i 's/\r$//' buildModule.sh
+          chmod +x buildModule.sh
+          ./buildModule.sh patch ${{ needs.check-conditions.outputs.environment }}

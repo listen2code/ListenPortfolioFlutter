@@ -1,12 +1,27 @@
 #!/bin/bash
-# sample:
-# ./buildAndroid.sh apk dev      (dev APK)
-# ./buildAndroid.sh bundle prod  (prod Bundle)
+# Unified Build Script for ListenPortfolio Flutter
+# Sample usage:
+# ./buildModule.sh apk dev      (dev APK)
+# ./buildModule.sh bundle prod  (prod App Bundle)
+# ./buildModule.sh patch prod   (Shorebird Patch)
+# ./buildModule.sh web prod     (prod Flutter Web)
 
 # Default values
-TARGET_TYPE=${1:-"apk"}     # First argument: apk, bundle, or patch
+TARGET_TYPE=${1:-"apk"}     # First argument: apk, bundle, patch, or web
 ENV=${2:-"dev"}             # Second argument: mock, dev, test, prod
 USE_SHOREBIRD_ARG=$3
+
+# Validate target type
+if [[ ! "$TARGET_TYPE" =~ ^(apk|bundle|patch|web)$ ]]; then
+    echo ">>> Error: Invalid target type '$TARGET_TYPE'. Must be one of: apk, bundle, patch, web"
+    exit 1
+fi
+
+# Validate environment
+if [[ ! "$ENV" =~ ^(mock|dev|test|prod)$ ]]; then
+    echo ">>> Error: Invalid environment '$ENV'. Must be one of: mock, dev, test, prod"
+    exit 1
+fi
 
 # Smart detection for Shorebird release mode
 if [ -n "$USE_SHOREBIRD_ARG" ]; then
@@ -17,24 +32,33 @@ else
     USE_SHOREBIRD="false"
 fi
 
-# Validate environment
-if [[ ! "$ENV" =~ ^(mock|dev|test|prod)$ ]]; then
-    echo ">>> Error: Invalid environment '$ENV'. Must be one of: mock, dev, test, prod"
-    exit 1
-fi
-
-echo ">>> clean cache"
+echo ">>> Cleaning cache"
 rm -rf apkOutput
-mkdir apkOutput
+mkdir -p apkOutput
 flutter clean
 
-echo ">>> flutter pub get"
+echo ">>> Fetching dependencies (flutter pub get)"
 flutter pub get
 
 echo ">>> Extracting version from pubspec.yaml"
 APP_VERSION=$(grep '^version: ' pubspec.yaml | cut -d ' ' -f 2 | cut -d '+' -f 1)
 
-# Handle Shorebird Patch execution
+# Handle Web Release Build
+if [ "$TARGET_TYPE" == "web" ]; then
+    echo ">>> Building Flutter Web Release for [$ENV] environment (Version: $APP_VERSION)..."
+    flutter build web --release \
+        --dart-define=APP_ENV=$ENV \
+        --dart-define=APP_VERSION=$APP_VERSION
+    if [ $? -eq 0 ]; then
+        echo ">>> Web build completed successfully. Output: build/web"
+        exit 0
+    else
+        echo ">>> Error: Web build failed!"
+        exit 1
+    fi
+fi
+
+# Handle Shorebird Patch execution (Android)
 if [ "$TARGET_TYPE" == "patch" ]; then
     echo ">>> Executing Shorebird Patch Android for [$ENV] environment (Version: $APP_VERSION)..."
     if command -v shorebird &> /dev/null; then
@@ -58,6 +82,7 @@ if [ "$TARGET_TYPE" == "patch" ]; then
     fi
 fi
 
+# Handle Android App Bundle or APK
 if [ "$TARGET_TYPE" == "bundle" ]; then
     echo ">>> Building App Bundle (.aab) for [$ENV] environment (Shorebird: $USE_SHOREBIRD)"
     build_cmd="appbundle"
@@ -74,7 +99,7 @@ else
     output_ext="apk"
 fi
 
-echo ">>> build $TARGET_TYPE [$ENV] version [$APP_VERSION] (Shorebird: $USE_SHOREBIRD)"
+echo ">>> Building $TARGET_TYPE [$ENV] version [$APP_VERSION] (Shorebird: $USE_SHOREBIRD)"
 
 if [ "$USE_SHOREBIRD" == "true" ]; then
     if command -v shorebird &> /dev/null; then
