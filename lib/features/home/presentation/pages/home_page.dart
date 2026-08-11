@@ -71,10 +71,12 @@ class HomePage extends ConsumerWidget {
         return IndexedStack(
           index: state.currentTab.index,
           children: [
-            OverviewWidget(active: state.currentTab == HomeTab.overview, homeViewModel: viewModel),
-            AboutMeWidget(active: state.currentTab == HomeTab.aboutMe),
-            ProjectsWidget(active: state.currentTab == HomeTab.projects),
-            ArchitectureWidget(active: state.currentTab == HomeTab.architecture),
+            RepaintBoundary(
+              child: OverviewWidget(active: state.currentTab == HomeTab.overview, homeViewModel: viewModel),
+            ),
+            RepaintBoundary(child: AboutMeWidget(active: state.currentTab == HomeTab.aboutMe)),
+            RepaintBoundary(child: ProjectsWidget(active: state.currentTab == HomeTab.projects)),
+            RepaintBoundary(child: ArchitectureWidget(active: state.currentTab == HomeTab.architecture)),
           ],
         );
       },
