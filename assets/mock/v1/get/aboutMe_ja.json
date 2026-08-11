@@ -7,23 +7,23 @@
     "avatarUrl": "https://api.dicebear.com/10.x/bottts/svg?seed=Listen",
     "status": "available",
     "jobTitle": "シニア Android / Flutter エンジニア",
-    "bio": "11年以上のモバイル開発経験（Androidシステム内部メカニズム、コンポーネント化、APMインフラ設計に精通）と3年以上のFlutter実務経験を持つモバイルエキスパート。楽天証券向け新規Flutterアプリのアーキテクチャ設計、FIDO2認証の実装、およびFlutterバージョンアップの推進実績あり。JLPT N1、BJT J2 取得。現在東京在住、日本語での技術提案や円滑なチームコラボレーションに対応可能。",
+    "bio": "11年以上のモバイル開発経験と3年以上のFlutter経験を持つシニアエンジニア。クライアントアーキテクチャ（コンポーネント化、プラグイン構造）、パフォーマンス最適化、APMインフラに精通。Feedタイムアウト率を1.5%から0.3%に削減、フルスタックAPM監視プラットフォームの構築、楽天での証券取引Flutterアプリ開発をリード。JLPT N1、BJT J2取得、東京在住。",
     "graduationYear": "2013",
     "github": "https://github.com/listen2code",
     "major": "ソフトウェア工学",
     "certifications": [
-      "JLPT N1 合格证书",
-      "BJT J2 認定証"
+      "JLPT N1 認定",
+      "BJT J2 認定"
     ],
     "stats": [
       {
         "id": "1",
         "businessId": "android",
         "year": "11",
-        "label": "Android 開発歴",
+        "label": "Android 経験",
         "tags": [
-          "アーキテクチャ設計",
-          "性能最適化",
+          "設計",
+          "最適化",
           "コンポーネント化"
         ]
       },
@@ -31,9 +31,9 @@
         "id": "2",
         "businessId": "flutter",
         "year": "3",
-        "label": "Flutter 開発歴",
+        "label": "Flutter 経験",
         "tags": [
-          "クリーンアーキテクチャ",
+          "Clean Architecture",
           "状態管理",
           "Riverpod"
         ]
@@ -42,7 +42,7 @@
         "id": "3",
         "businessId": "java_web",
         "year": "1",
-        "label": "Java Web 開発歴",
+        "label": "Java Web 経験",
         "tags": [
           "Spring Boot",
           "RESTful API"
@@ -52,67 +52,67 @@
     "experiences": [
       {
         "id": "1",
-        "title": "Android / Flutter シニアエンジニア",
-        "company": "LYC 株式会社 (楽天証券アプリ開発プロジェクト)",
+        "title": "Android / Flutter エンジニア",
+        "company": "LYC 株式会社（楽天証券プロジェクト）",
         "period": "2023.02 - 現在",
-        "description": "新規証券取引Flutterアプリのアーキテクチャ設計、共有基盤構築、FIDO2生体認証機能の実装、およびFlutter最新バージョンへのアップグレードを担当。既存Androidネイティブ株取引アプリの保守とチームメンバーへのコードレビューをリード。"
+        "description": "新規楽天証券Flutterアプリの主導開発者（60人現場）：先行技術調査、アーキテクチャ設計、基盤開発、FIDO2認証統合、Flutterバージョンアップを推進。Android株取引アプリの保守およびコードレビューを担当。"
       },
       {
         "id": "2",
-        "title": "Android アーキテクト — モバイルインフラ部",
-        "company": "Youzanテクノロジー (有賛科技)",
+        "title": "Android インフラエンジニア",
+        "company": "杭州有賛科技有限公司",
         "period": "2021.10 - 2022.07",
-        "description": "モバイルAPMのスタッターおよびANR検出SDKを自社開発。データ報告と秒級集計アルゴリズムを最適化。ReactフロントエンドとSpringBootバックエンドを用いた統合型APMダッシュボードを構築。"
+        "description": "モバイルAPMのUIカクつき・ANR検知SDKを構築、データ上報・集計を最適化。フルスタック監視ダッシュボード（React + Spring Boot）を開発。商品SDKのReduxパターンリファクタリングに参加。"
       },
       {
         "id": "3",
-        "title": "Android コアエンジニア",
-        "company": "Duolu（因愛ネットワーク）",
+        "title": "Android エンジニア",
+        "company": "杭州因愛ネットワーク（Duolu）",
         "period": "2019.11 - 2021.10",
-        "description": "Feed流の性能・遅延監視システムを構築し、APIタイムアウト率を1.5%から0.3%に低減。大規模アプリのコンポーネント化（module_api導入）およびShadowフレームワークを用いた動的プラグインアーキテクチャを推進。"
+        "description": "Feedタイムアウト率を1.5%から0.3%へ、レイテンシを40%+削減する監視システムを確立。コンポーネント化およびプラグイン構造（Shadow）を主導。開発期パフォーマンス測定ツールと自動テスト（AirTest 44ケース）を構築。"
       },
       {
         "id": "4",
         "title": "Android エンジニア",
-        "company": "Qibeiテクノロジー (シェアサイクル事業部)",
+        "company": "杭州騎唄テクノロジー",
         "period": "2016.09 - 2019.08",
-        "description": "Qibei Bike等のAndroidアプリの開発と保守を担当。Tinkerを用いたオンラインホットフィックスおよびMatrixによるパフォーマンス監視を導入。Gradleの最適化によりビルド時間を30%以上削減。"
+        "description": "シェアサイクルアプリ（Qibei Bike、Dingda Transit、魯班運用）の4つ以上のメジャーバージョンを開発。Tinker熱修正、Matrix監視を導入し、Gradle最適化でビルド時間を30%+削減。Jenkins CIパイプラインと無線ADB自動インストールを構築。"
       },
       {
         "id": "5",
-        "title": "Android 開発者",
-        "company": "Baidu (デリバリー事業部)",
+        "title": "Android エンジニア",
+        "company": "北京百度時代ネットワーク（Baidu Waimai）",
         "period": "2014.12 - 2016.06",
-        "description": "配達員アプリ（Xiaodu Knight v1.4 - v2.9）の保守と改修を独立して担当。省電力GPS動的フィルタリングアルゴリズムを開発し、不要な通信を10%削減。JNIとAES暗号化による認証SDKを構築。"
+        "description": "配達員アプリ（小度騎士 v1.4-2.9）を独立保守。動的GPS追跡戦略を設計し冗余アップロードを10%+削減。B端統一認証PassSDK（AES/JNI暗号化）および物流開発フレームワークを構築。"
       },
       {
         "id": "6",
-        "title": "Java バックエンド開発者",
-        "company": "NewLandソフトウェアエンジニアリング",
+        "title": "Java ソフトウェアエンジニア",
+        "company": "福州新大陸ソフトウェア",
         "period": "2013.05 - 2014.09",
-        "description": "J2EE、S2SH、Oracleを用いて、中国移動（China Mobile）の業務運営支援システム（BOSS）の分析バッチおよび中核モジュールの設計と開発。"
+        "description": "中国移動（China Mobile）サポートシステム（BOSS）の業務管理および分析モジュールをJ2EE、S2SH、Oracleデータベースを用いて開発。"
       }
     ],
     "education": [
       {
         "id": "1",
-        "degree": "ソフトウェア工学 学士号",
+        "degree": "ソフトウェア工学 学士",
         "school": "福建工程学院",
         "period": "2011.09 - 2013.06",
-        "description": "優秀卒業論文賞受賞：『知能評価システムに基づくエンタープライズCRMの設計と実装』"
+        "description": "優秀卒業論文：『インテリジェント評価システムに基づくCRMシステムの実装と設計』"
       },
       {
         "id": "2",
-        "degree": "コンピュータ応用技術 準学士号",
-        "school": "福建師範大学 (ソフトウェア学院)",
+        "degree": "コンピュータ応用 専門士",
+        "school": "福建師範大学 (IT学院)",
         "period": "2008.09 - 2011.06",
-        "description": "省級優秀卒業生、一等奨学金、優秀学生幹部"
+        "description": "福建省級優秀学生、大学優秀卒業生、一等・二等奨学金、優秀学生幹部"
       }
     ],
     "languages": [
       { "id": "1", "name": "日本語", "level": "JLPT N1 (131点), BJT J2 (512点)" },
-      { "id": "2", "name": "中国語", "level": "ネイティブ" },
-      { "id": "3", "name": "英語", "level": "CET-4 (日常会話レベル)" }
+      { "id": "2", "name": "中国語", "level": "母国語" },
+      { "id": "3", "name": "英語", "level": "CET-4" }
     ],
     "skills": [
       {
@@ -120,7 +120,7 @@
         "category": "モバイル開発",
         "items": [
           "Flutter",
-          "Android ネイティブ",
+          "Android Native",
           "Dart",
           "Kotlin",
           "Java"
@@ -128,36 +128,36 @@
       },
       {
         "id": "2",
-        "category": "システム設計",
+        "category": "設計・アーキテクチャ",
         "items": [
-          "クリーンアーキテクチャ",
+          "Clean Architecture",
           "コンポーネント化",
-          "プラグインアーキテクチャ",
-          "MVI パターン",
-          "MVVM パターン",
-          "SOLID 原則"
+          "プラグイン構造",
+          "MVI",
+          "MVVM",
+          "SOLID"
         ]
       },
       {
         "id": "3",
-        "category": "パフォーマンス & APM",
+        "category": "パフォーマンス最適化",
         "items": [
-          "CPU/メモリ プロファイリング",
-          "メモリリーク最適化",
-          "Feed流性能モニタリング",
-          "Systrace 分析",
-          "LeakCanary 検出"
+          "Profiling",
+          "メモリ最適化",
+          "Feed流監視",
+          "Systrace",
+          "LeakCanary"
         ]
       },
       {
         "id": "4",
-        "category": "バックエンド & DevOps",
+        "category": "バックエンド・DevOps",
         "items": [
           "Spring Boot",
-          "MySQL データベース",
-          "Redis キャッシュ",
-          "Docker コンテナ化",
-          "CI/CD パイプライン"
+          "MySQL",
+          "Redis",
+          "Docker",
+          "CI/CD"
         ]
       }
     ]
