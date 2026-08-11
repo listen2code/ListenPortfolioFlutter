@@ -552,7 +552,7 @@ jobs:
 
       - name: Build Flutter Web Release
         if: steps.check_version.outputs.should_deploy == 'true'
-        run: flutter build web --release
+        run: flutter build web --release --dart-define=APP_ENV=prod
 
       - name: Configure SSH Private Key for AWS
         if: steps.check_version.outputs.should_deploy == 'true'
