@@ -225,8 +225,8 @@
 - IDE plugin：json 模型转换、asset 资源生成到 `R.dart`
 - 剔除部分三方pub，能自定义实现的，尽量自己实现，学习目的
 - 切换账户后，4个tab的刷新问题，LogoutProviderImpl是否要invalidate(overviewViewModelProvider)等代码？
-- 编译，发布一个web版本，可以通过浏览器查看
 - 发布到ios市场
+- 跑通web版本的基本功能
 - [x] 基于现在最新代码，更新ArchitectureViewModel里面写死的架构设计的内容
 - 自动执行patrol的时候，我希望每步操作都对屏幕进行截图（主要是intent操作），并保存到当前手机的sd卡目录
 - 如果用户禁用push通知后，如何引导用户重新去打开
@@ -237,3 +237,4 @@
 - 数据库中简历内容的翻译校准
 - aboutMe中真实简历pdf的审核，下载
 - 更新我简历的内容
+- 熟悉性能面版的功能和数据如何使用
