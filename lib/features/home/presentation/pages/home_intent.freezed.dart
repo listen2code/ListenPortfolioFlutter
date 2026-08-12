@@ -140,10 +140,10 @@ return previewAvatar(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( HomeTab tab,  bool closeDrawer)?  tabChanged,TResult Function()?  logout,TResult Function()?  confirmLogout,TResult Function()?  toSettings,TResult Function()?  toAppearance,TResult Function( Uri uri)?  handleDeepLink,TResult Function()?  init,TResult Function()?  previewAvatar,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( HomeTab tab,  String? targetProjectBusinessId,  bool closeDrawer)?  tabChanged,TResult Function()?  logout,TResult Function()?  confirmLogout,TResult Function()?  toSettings,TResult Function()?  toAppearance,TResult Function( Uri uri)?  handleDeepLink,TResult Function()?  init,TResult Function()?  previewAvatar,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TabChanged() when tabChanged != null:
-return tabChanged(_that.tab,_that.closeDrawer);case _Logout() when logout != null:
+return tabChanged(_that.tab,_that.targetProjectBusinessId,_that.closeDrawer);case _Logout() when logout != null:
 return logout();case _ConfirmLogout() when confirmLogout != null:
 return confirmLogout();case _ToSettings() when toSettings != null:
 return toSettings();case _ToAppearance() when toAppearance != null:
@@ -168,10 +168,10 @@ return previewAvatar();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( HomeTab tab,  bool closeDrawer)  tabChanged,required TResult Function()  logout,required TResult Function()  confirmLogout,required TResult Function()  toSettings,required TResult Function()  toAppearance,required TResult Function( Uri uri)  handleDeepLink,required TResult Function()  init,required TResult Function()  previewAvatar,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( HomeTab tab,  String? targetProjectBusinessId,  bool closeDrawer)  tabChanged,required TResult Function()  logout,required TResult Function()  confirmLogout,required TResult Function()  toSettings,required TResult Function()  toAppearance,required TResult Function( Uri uri)  handleDeepLink,required TResult Function()  init,required TResult Function()  previewAvatar,}) {final _that = this;
 switch (_that) {
 case _TabChanged():
-return tabChanged(_that.tab,_that.closeDrawer);case _Logout():
+return tabChanged(_that.tab,_that.targetProjectBusinessId,_that.closeDrawer);case _Logout():
 return logout();case _ConfirmLogout():
 return confirmLogout();case _ToSettings():
 return toSettings();case _ToAppearance():
@@ -195,10 +195,10 @@ return previewAvatar();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( HomeTab tab,  bool closeDrawer)?  tabChanged,TResult? Function()?  logout,TResult? Function()?  confirmLogout,TResult? Function()?  toSettings,TResult? Function()?  toAppearance,TResult? Function( Uri uri)?  handleDeepLink,TResult? Function()?  init,TResult? Function()?  previewAvatar,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( HomeTab tab,  String? targetProjectBusinessId,  bool closeDrawer)?  tabChanged,TResult? Function()?  logout,TResult? Function()?  confirmLogout,TResult? Function()?  toSettings,TResult? Function()?  toAppearance,TResult? Function( Uri uri)?  handleDeepLink,TResult? Function()?  init,TResult? Function()?  previewAvatar,}) {final _that = this;
 switch (_that) {
 case _TabChanged() when tabChanged != null:
-return tabChanged(_that.tab,_that.closeDrawer);case _Logout() when logout != null:
+return tabChanged(_that.tab,_that.targetProjectBusinessId,_that.closeDrawer);case _Logout() when logout != null:
 return logout();case _ConfirmLogout() when confirmLogout != null:
 return confirmLogout();case _ToSettings() when toSettings != null:
 return toSettings();case _ToAppearance() when toAppearance != null:
@@ -217,10 +217,11 @@ return previewAvatar();case _:
 
 
 class _TabChanged extends HomeIntent {
-  const _TabChanged(this.tab, {this.closeDrawer = false}): super._();
+  const _TabChanged(this.tab, {this.targetProjectBusinessId, this.closeDrawer = false}): super._();
   
 
  final  HomeTab tab;
+ final  String? targetProjectBusinessId;
 @JsonKey() final  bool closeDrawer;
 
 /// Create a copy of HomeIntent
@@ -233,16 +234,16 @@ _$TabChangedCopyWith<_TabChanged> get copyWith => __$TabChangedCopyWithImpl<_Tab
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TabChanged&&(identical(other.tab, tab) || other.tab == tab)&&(identical(other.closeDrawer, closeDrawer) || other.closeDrawer == closeDrawer));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TabChanged&&(identical(other.tab, tab) || other.tab == tab)&&(identical(other.targetProjectBusinessId, targetProjectBusinessId) || other.targetProjectBusinessId == targetProjectBusinessId)&&(identical(other.closeDrawer, closeDrawer) || other.closeDrawer == closeDrawer));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,tab,closeDrawer);
+int get hashCode => Object.hash(runtimeType,tab,targetProjectBusinessId,closeDrawer);
 
 @override
 String toString() {
-  return 'HomeIntent.tabChanged(tab: $tab, closeDrawer: $closeDrawer)';
+  return 'HomeIntent.tabChanged(tab: $tab, targetProjectBusinessId: $targetProjectBusinessId, closeDrawer: $closeDrawer)';
 }
 
 
@@ -253,7 +254,7 @@ abstract mixin class _$TabChangedCopyWith<$Res> implements $HomeIntentCopyWith<$
   factory _$TabChangedCopyWith(_TabChanged value, $Res Function(_TabChanged) _then) = __$TabChangedCopyWithImpl;
 @useResult
 $Res call({
- HomeTab tab, bool closeDrawer
+ HomeTab tab, String? targetProjectBusinessId, bool closeDrawer
 });
 
 
@@ -270,10 +271,11 @@ class __$TabChangedCopyWithImpl<$Res>
 
 /// Create a copy of HomeIntent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? tab = null,Object? closeDrawer = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? tab = null,Object? targetProjectBusinessId = freezed,Object? closeDrawer = null,}) {
   return _then(_TabChanged(
 null == tab ? _self.tab : tab // ignore: cast_nullable_to_non_nullable
-as HomeTab,closeDrawer: null == closeDrawer ? _self.closeDrawer : closeDrawer // ignore: cast_nullable_to_non_nullable
+as HomeTab,targetProjectBusinessId: freezed == targetProjectBusinessId ? _self.targetProjectBusinessId : targetProjectBusinessId // ignore: cast_nullable_to_non_nullable
+as String?,closeDrawer: null == closeDrawer ? _self.closeDrawer : closeDrawer // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }

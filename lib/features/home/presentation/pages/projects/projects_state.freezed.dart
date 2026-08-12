@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ProjectsState {
 
- List<ProjectModel> get projects; bool get isInitialLoaded;
+ List<ProjectModel> get projects; bool get isInitialLoaded; String? get targetBusinessId;
 /// Create a copy of ProjectsState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $ProjectsStateCopyWith<ProjectsState> get copyWith => _$ProjectsStateCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProjectsState&&const DeepCollectionEquality().equals(other.projects, projects)&&(identical(other.isInitialLoaded, isInitialLoaded) || other.isInitialLoaded == isInitialLoaded));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProjectsState&&const DeepCollectionEquality().equals(other.projects, projects)&&(identical(other.isInitialLoaded, isInitialLoaded) || other.isInitialLoaded == isInitialLoaded)&&(identical(other.targetBusinessId, targetBusinessId) || other.targetBusinessId == targetBusinessId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(projects),isInitialLoaded);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(projects),isInitialLoaded,targetBusinessId);
 
 @override
 String toString() {
-  return 'ProjectsState(projects: $projects, isInitialLoaded: $isInitialLoaded)';
+  return 'ProjectsState(projects: $projects, isInitialLoaded: $isInitialLoaded, targetBusinessId: $targetBusinessId)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $ProjectsStateCopyWith<$Res>  {
   factory $ProjectsStateCopyWith(ProjectsState value, $Res Function(ProjectsState) _then) = _$ProjectsStateCopyWithImpl;
 @useResult
 $Res call({
- List<ProjectModel> projects, bool isInitialLoaded
+ List<ProjectModel> projects, bool isInitialLoaded, String? targetBusinessId
 });
 
 
@@ -62,11 +62,12 @@ class _$ProjectsStateCopyWithImpl<$Res>
 
 /// Create a copy of ProjectsState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? projects = null,Object? isInitialLoaded = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? projects = null,Object? isInitialLoaded = null,Object? targetBusinessId = freezed,}) {
   return _then(_self.copyWith(
 projects: null == projects ? _self.projects : projects // ignore: cast_nullable_to_non_nullable
 as List<ProjectModel>,isInitialLoaded: null == isInitialLoaded ? _self.isInitialLoaded : isInitialLoaded // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,targetBusinessId: freezed == targetBusinessId ? _self.targetBusinessId : targetBusinessId // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -151,10 +152,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<ProjectModel> projects,  bool isInitialLoaded)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<ProjectModel> projects,  bool isInitialLoaded,  String? targetBusinessId)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ProjectsState() when $default != null:
-return $default(_that.projects,_that.isInitialLoaded);case _:
+return $default(_that.projects,_that.isInitialLoaded,_that.targetBusinessId);case _:
   return orElse();
 
 }
@@ -172,10 +173,10 @@ return $default(_that.projects,_that.isInitialLoaded);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<ProjectModel> projects,  bool isInitialLoaded)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<ProjectModel> projects,  bool isInitialLoaded,  String? targetBusinessId)  $default,) {final _that = this;
 switch (_that) {
 case _ProjectsState():
-return $default(_that.projects,_that.isInitialLoaded);case _:
+return $default(_that.projects,_that.isInitialLoaded,_that.targetBusinessId);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -192,10 +193,10 @@ return $default(_that.projects,_that.isInitialLoaded);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<ProjectModel> projects,  bool isInitialLoaded)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<ProjectModel> projects,  bool isInitialLoaded,  String? targetBusinessId)?  $default,) {final _that = this;
 switch (_that) {
 case _ProjectsState() when $default != null:
-return $default(_that.projects,_that.isInitialLoaded);case _:
+return $default(_that.projects,_that.isInitialLoaded,_that.targetBusinessId);case _:
   return null;
 
 }
@@ -207,7 +208,7 @@ return $default(_that.projects,_that.isInitialLoaded);case _:
 
 
 class _ProjectsState extends ProjectsState {
-  const _ProjectsState({final  List<ProjectModel> projects = const [], this.isInitialLoaded = false}): _projects = projects,super._();
+  const _ProjectsState({final  List<ProjectModel> projects = const [], this.isInitialLoaded = false, this.targetBusinessId}): _projects = projects,super._();
   
 
  final  List<ProjectModel> _projects;
@@ -218,6 +219,7 @@ class _ProjectsState extends ProjectsState {
 }
 
 @override@JsonKey() final  bool isInitialLoaded;
+@override final  String? targetBusinessId;
 
 /// Create a copy of ProjectsState
 /// with the given fields replaced by the non-null parameter values.
@@ -229,16 +231,16 @@ _$ProjectsStateCopyWith<_ProjectsState> get copyWith => __$ProjectsStateCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProjectsState&&const DeepCollectionEquality().equals(other._projects, _projects)&&(identical(other.isInitialLoaded, isInitialLoaded) || other.isInitialLoaded == isInitialLoaded));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProjectsState&&const DeepCollectionEquality().equals(other._projects, _projects)&&(identical(other.isInitialLoaded, isInitialLoaded) || other.isInitialLoaded == isInitialLoaded)&&(identical(other.targetBusinessId, targetBusinessId) || other.targetBusinessId == targetBusinessId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_projects),isInitialLoaded);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_projects),isInitialLoaded,targetBusinessId);
 
 @override
 String toString() {
-  return 'ProjectsState(projects: $projects, isInitialLoaded: $isInitialLoaded)';
+  return 'ProjectsState(projects: $projects, isInitialLoaded: $isInitialLoaded, targetBusinessId: $targetBusinessId)';
 }
 
 
@@ -249,7 +251,7 @@ abstract mixin class _$ProjectsStateCopyWith<$Res> implements $ProjectsStateCopy
   factory _$ProjectsStateCopyWith(_ProjectsState value, $Res Function(_ProjectsState) _then) = __$ProjectsStateCopyWithImpl;
 @override @useResult
 $Res call({
- List<ProjectModel> projects, bool isInitialLoaded
+ List<ProjectModel> projects, bool isInitialLoaded, String? targetBusinessId
 });
 
 
@@ -266,11 +268,12 @@ class __$ProjectsStateCopyWithImpl<$Res>
 
 /// Create a copy of ProjectsState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? projects = null,Object? isInitialLoaded = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? projects = null,Object? isInitialLoaded = null,Object? targetBusinessId = freezed,}) {
   return _then(_ProjectsState(
 projects: null == projects ? _self._projects : projects // ignore: cast_nullable_to_non_nullable
 as List<ProjectModel>,isInitialLoaded: null == isInitialLoaded ? _self.isInitialLoaded : isInitialLoaded // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,targetBusinessId: freezed == targetBusinessId ? _self.targetBusinessId : targetBusinessId // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

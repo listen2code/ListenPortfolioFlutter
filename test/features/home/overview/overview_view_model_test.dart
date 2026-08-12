@@ -136,7 +136,7 @@ void main() async {
       // Then - State updated with projects
       final state = container.read(overviewViewModelProvider);
       expect(state.isInitialLoaded, isTrue);
-      expect(state.featuredProjects.length, equals(2)); // ViewModel takes 2
+      expect(state.featuredProjects.length, equals(3)); // ViewModel takes 2
     });
 
     test('Should respect onVisible lifecycle', () async {
@@ -152,7 +152,7 @@ void main() async {
       // Then - Should have triggered refresh and loaded projects
       final state = container.read(overviewViewModelProvider);
       expect(state.isInitialLoaded, isTrue);
-      expect(state.featuredProjects.length, equals(2));
+      expect(state.featuredProjects.length, equals(3));
     });
   });
 }

@@ -7,11 +7,13 @@ import '../../../../data/models/project_model.dart';
 class FeaturedProjectsSection extends StatelessWidget {
   final List<ProjectModel> projects;
   final VoidCallback onViewAllPressed;
+  final ValueChanged<ProjectModel>? onProjectTap;
 
   const FeaturedProjectsSection({
     super.key,
     required this.projects,
     required this.onViewAllPressed,
+    this.onProjectTap,
   });
 
   @override
@@ -47,12 +49,17 @@ class FeaturedProjectsSection extends StatelessWidget {
               final project = entry.value;
               return Padding(
                 padding: EdgeInsets.only(right: index == projects.length - 1 ? 0 : 16.f),
-                child: _buildProjectCard(
-                  context,
-                  project.title ?? '',
-                  project.subtitle ?? '',
-                  Icons.rocket_launch_rounded, // Default icon for projects
-                  accentColor,
+                child: CommonClickable(
+                  onTap: () => onProjectTap?.call(project),
+                  borderRadius: BorderRadius.circular(24.f),
+                  semanticLabel: project.title ?? '',
+                  child: _buildProjectCard(
+                    context,
+                    project.title ?? '',
+                    project.subtitle ?? '',
+                    Icons.rocket_launch_rounded, // Default icon for projects
+                    accentColor,
+                  ),
                 ),
               );
             }).toList(),

@@ -5,6 +5,8 @@ import '../../../../shared/shared.dart';
 import '../../../auth/presentation/provider/auth_provider.dart';
 import 'home_intent.dart';
 import 'home_state.dart';
+import 'projects/projects_intent.dart';
+import 'projects/projects_view_model.dart';
 
 part 'home_view_model.g.dart';
 
@@ -45,7 +47,7 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
 
   @override
   bool checkNeedLogin(HomeIntent intent) {
-    return intent.maybeWhen(tabChanged: (tab, _) => tab == HomeTab.aboutMe, orElse: () => false);
+    return intent.maybeWhen(tabChanged: (tab, _, __) => tab == HomeTab.aboutMe, orElse: () => false);
   }
 
   @override
@@ -66,10 +68,11 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
     // 1. Handle home tab navigation via deep link directly to avoid full page replacement
     if (uri.host == AppConstants.deepLinkHostHome) {
       final tabName = uri.queryParameters[AppConstants.deepLinkParamTab];
+      final targetProjectBusinessId = uri.queryParameters['targetProjectBusinessId'];
       final targetTab = HomeTab.values.firstWhereOrNull((t) => t.name == tabName);
       if (targetTab != null) {
-        if (state.currentTab != targetTab) {
-          _onTabChanged(targetTab, false);
+        if (state.currentTab != targetTab || targetProjectBusinessId != null) {
+          _onTabChanged(targetTab, targetProjectBusinessId, false);
         }
         return;
       }
@@ -80,14 +83,21 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
     emitEffect(NavigationEffect<void>(target: uri.toString(), replaceIfExists: true));
   }
 
-  void _onTabChanged(HomeTab tab, bool closeDrawer) {
+  void _onTabChanged(HomeTab tab, String? targetProjectBusinessId, bool closeDrawer) {
+    void performSwitch() {
+      updateState(state.copyWith(currentTab: tab));
+      if (tab == HomeTab.projects && targetProjectBusinessId != null && targetProjectBusinessId.isNotEmpty) {
+        ref.read(projectsViewModelProvider.notifier).handleIntent(
+              ProjectsIntent.scrollToProject(targetProjectBusinessId),
+            );
+      }
+    }
+
     if (closeDrawer) {
       emitEffect(NavigationEffect<void>.back());
-      Future.delayed(const Duration(milliseconds: 100), () {
-        updateState(state.copyWith(currentTab: tab));
-      });
+      Future.delayed(const Duration(milliseconds: 100), performSwitch);
     } else {
-      updateState(state.copyWith(currentTab: tab));
+      performSwitch();
     }
   }
 
@@ -117,7 +127,7 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
       showLoading: true,
       onSuccess: (_) async {
         if (state.currentTab == HomeTab.aboutMe) {
-          _onTabChanged(HomeTab.overview, false);
+          _onTabChanged(HomeTab.overview, null, false);
         }
         emitEffect(LogoutEffect(to: Routes.login, message: I18nKeys.logoutSuccess.tr));
       },

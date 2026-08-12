@@ -9,6 +9,7 @@ abstract class ProjectsState extends BaseState with _$ProjectsState {
   const factory ProjectsState({
     @Default([]) List<ProjectModel> projects,
     @Default(false) bool isInitialLoaded,
+    String? targetBusinessId,
   }) = _ProjectsState;
 
   const ProjectsState._();

@@ -44,7 +44,21 @@ class ProjectsViewModel extends _$ProjectsViewModel with ViewModelMixin<Projects
     return intent.when<FutureOr<void>>(
       refresh: () => _onRefresh(),
       launchURL: (url) => emitEffect(LaunchUrlEffect(url)),
+      scrollToProject: _onScrollToProject,
     );
+  }
+
+  void _onScrollToProject(String businessId) {
+    if (state.projects.isEmpty) {
+      updateState(state.copyWith(targetBusinessId: businessId));
+    } else {
+      final index = state.projects.indexWhere(
+        (p) => p.businessId == businessId || p.id?.toString() == businessId,
+      );
+      if (index != -1) {
+        emitEffect(ScrollToProjectEffect(index: index, businessId: businessId));
+      }
+    }
   }
 
   Future<void> _onRefresh() async {
@@ -53,7 +67,16 @@ class ProjectsViewModel extends _$ProjectsViewModel with ViewModelMixin<Projects
       showLoading: true,
       loadingType: LoadingType.page,
       onSuccess: (projects) {
-        updateState(state.copyWith(projects: projects, isInitialLoaded: true));
+        final targetId = state.targetBusinessId;
+        updateState(state.copyWith(projects: projects, isInitialLoaded: true, targetBusinessId: null));
+        if (targetId != null) {
+          final index = projects.indexWhere(
+            (p) => p.businessId == targetId || p.id?.toString() == targetId,
+          );
+          if (index != -1) {
+            emitEffect(ScrollToProjectEffect(index: index, businessId: targetId));
+          }
+        }
       },
     );
   }

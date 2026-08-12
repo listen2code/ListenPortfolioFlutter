@@ -72,6 +72,8 @@ class BaseRefreshPage<V extends BaseViewModel<dynamic>, S extends BaseState> ext
   /// Optional UI-layer lifecycle listener.
   final PageLifecycle? lifecycle;
 
+  final ScrollController? scrollController;
+
   const BaseRefreshPage({
     super.key,
     this.body,
@@ -96,6 +98,7 @@ class BaseRefreshPage<V extends BaseViewModel<dynamic>, S extends BaseState> ext
     this.useScaffold = true,
     this.expandBody = true,
     this.drawerEnableOpenDragGesture = true,
+    this.scrollController,
     required this.provider,
     this.onEffect,
     this.onLoading,
@@ -129,6 +132,7 @@ class BaseRefreshPage<V extends BaseViewModel<dynamic>, S extends BaseState> ext
     if (onRefresh != null) {
       if (itemBuilder != null && effectiveItems != null) {
         content = CommonRefreshList(
+          controller: scrollController,
           onRefresh: () => onRefresh!(effectiveViewModel, state),
           itemBuilder: (context, item, index) {
             return itemBuilder!(context, effectiveViewModel, state, item, index);
@@ -139,6 +143,7 @@ class BaseRefreshPage<V extends BaseViewModel<dynamic>, S extends BaseState> ext
         // Fix: If content is null (meaning empty state), provide a fallback scrollable widget
         // so that the RefreshIndicator in CommonRefreshList doesn't crash and still works.
         content = CommonRefreshList<dynamic>(
+          controller: scrollController,
           onRefresh: () => onRefresh!(effectiveViewModel, state),
           child: content ?? const CommonEmptyView(),
         );

@@ -69,6 +69,14 @@ class OverviewWidget extends StatelessWidget {
               projects: state.featuredProjects,
               onViewAllPressed: () =>
                   homeViewModel.handleIntent(const HomeIntent.tabChanged(HomeTab.projects)),
+              onProjectTap: (project) {
+                homeViewModel.handleIntent(
+                  HomeIntent.tabChanged(
+                    HomeTab.projects,
+                    targetProjectBusinessId: project.businessId ?? project.id?.toString(),
+                  ),
+                );
+              },
             ),
             SizedBox(height: 30.f),
           ],

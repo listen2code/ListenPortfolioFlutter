@@ -59,9 +59,8 @@ class OverviewViewModel extends _$OverviewViewModel with ViewModelMixin<Overview
       showLoading: true,
       loadingType: LoadingType.page,
       onSuccess: (results) {
-        final projects = (results[0] as List<ProjectModel>).take(2).toList();
         final aboutMe = !authManager.state.isGuest ? (results[1] as AboutMeModel?) : null;
-        updateState(state.copyWith(featuredProjects: projects, aboutMe: aboutMe, isInitialLoaded: true));
+        updateState(state.copyWith(featuredProjects: results[0] as List<ProjectModel>, aboutMe: aboutMe, isInitialLoaded: true));
       },
     );
   }

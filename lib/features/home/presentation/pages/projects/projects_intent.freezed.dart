@@ -55,12 +55,13 @@ extension ProjectsIntentPatterns on ProjectsIntent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Refresh value)?  refresh,TResult Function( _LaunchURL value)?  launchURL,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Refresh value)?  refresh,TResult Function( _LaunchURL value)?  launchURL,TResult Function( _ScrollToProject value)?  scrollToProject,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Refresh() when refresh != null:
 return refresh(_that);case _LaunchURL() when launchURL != null:
-return launchURL(_that);case _:
+return launchURL(_that);case _ScrollToProject() when scrollToProject != null:
+return scrollToProject(_that);case _:
   return orElse();
 
 }
@@ -78,12 +79,13 @@ return launchURL(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Refresh value)  refresh,required TResult Function( _LaunchURL value)  launchURL,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Refresh value)  refresh,required TResult Function( _LaunchURL value)  launchURL,required TResult Function( _ScrollToProject value)  scrollToProject,}){
 final _that = this;
 switch (_that) {
 case _Refresh():
 return refresh(_that);case _LaunchURL():
-return launchURL(_that);case _:
+return launchURL(_that);case _ScrollToProject():
+return scrollToProject(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -100,12 +102,13 @@ return launchURL(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Refresh value)?  refresh,TResult? Function( _LaunchURL value)?  launchURL,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Refresh value)?  refresh,TResult? Function( _LaunchURL value)?  launchURL,TResult? Function( _ScrollToProject value)?  scrollToProject,}){
 final _that = this;
 switch (_that) {
 case _Refresh() when refresh != null:
 return refresh(_that);case _LaunchURL() when launchURL != null:
-return launchURL(_that);case _:
+return launchURL(_that);case _ScrollToProject() when scrollToProject != null:
+return scrollToProject(_that);case _:
   return null;
 
 }
@@ -122,11 +125,12 @@ return launchURL(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  refresh,TResult Function( String url)?  launchURL,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  refresh,TResult Function( String url)?  launchURL,TResult Function( String businessId)?  scrollToProject,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Refresh() when refresh != null:
 return refresh();case _LaunchURL() when launchURL != null:
-return launchURL(_that.url);case _:
+return launchURL(_that.url);case _ScrollToProject() when scrollToProject != null:
+return scrollToProject(_that.businessId);case _:
   return orElse();
 
 }
@@ -144,11 +148,12 @@ return launchURL(_that.url);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  refresh,required TResult Function( String url)  launchURL,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  refresh,required TResult Function( String url)  launchURL,required TResult Function( String businessId)  scrollToProject,}) {final _that = this;
 switch (_that) {
 case _Refresh():
 return refresh();case _LaunchURL():
-return launchURL(_that.url);case _:
+return launchURL(_that.url);case _ScrollToProject():
+return scrollToProject(_that.businessId);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -165,11 +170,12 @@ return launchURL(_that.url);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  refresh,TResult? Function( String url)?  launchURL,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  refresh,TResult? Function( String url)?  launchURL,TResult? Function( String businessId)?  scrollToProject,}) {final _that = this;
 switch (_that) {
 case _Refresh() when refresh != null:
 return refresh();case _LaunchURL() when launchURL != null:
-return launchURL(_that.url);case _:
+return launchURL(_that.url);case _ScrollToProject() when scrollToProject != null:
+return scrollToProject(_that.businessId);case _:
   return null;
 
 }
@@ -268,6 +274,72 @@ class __$LaunchURLCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') $Res call({Object? url = null,}) {
   return _then(_LaunchURL(
 null == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _ScrollToProject extends ProjectsIntent {
+  const _ScrollToProject(this.businessId): super._();
+  
+
+ final  String businessId;
+
+/// Create a copy of ProjectsIntent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ScrollToProjectCopyWith<_ScrollToProject> get copyWith => __$ScrollToProjectCopyWithImpl<_ScrollToProject>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ScrollToProject&&(identical(other.businessId, businessId) || other.businessId == businessId));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,businessId);
+
+@override
+String toString() {
+  return 'ProjectsIntent.scrollToProject(businessId: $businessId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ScrollToProjectCopyWith<$Res> implements $ProjectsIntentCopyWith<$Res> {
+  factory _$ScrollToProjectCopyWith(_ScrollToProject value, $Res Function(_ScrollToProject) _then) = __$ScrollToProjectCopyWithImpl;
+@useResult
+$Res call({
+ String businessId
+});
+
+
+
+
+}
+/// @nodoc
+class __$ScrollToProjectCopyWithImpl<$Res>
+    implements _$ScrollToProjectCopyWith<$Res> {
+  __$ScrollToProjectCopyWithImpl(this._self, this._then);
+
+  final _ScrollToProject _self;
+  final $Res Function(_ScrollToProject) _then;
+
+/// Create a copy of ProjectsIntent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? businessId = null,}) {
+  return _then(_ScrollToProject(
+null == businessId ? _self.businessId : businessId // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
