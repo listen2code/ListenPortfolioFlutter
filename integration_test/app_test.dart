@@ -10,6 +10,10 @@ import 'package:listen_portfolio_flutter/features/auth/presentation/pages/sign_u
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_page.dart';
 import 'package:listen_portfolio_flutter/features/splash/presentation/pages/splash_page.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/settings_page.dart';
+import 'package:listen_portfolio_flutter/features/settings/presentation/pages/appearance/appearance_page.dart';
+import 'package:listen_portfolio_flutter/features/settings/presentation/pages/widgets/settings_version_tile.dart';
+import 'package:listen_portfolio_flutter/features/ai_chat/presentation/pages/global_ai_chat_overlay.dart';
+import 'package:listen_portfolio_flutter/features/ai_chat/presentation/widgets/ai_chat_panel.dart';
 import 'package:listen_portfolio_flutter/main.dart' as app;
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_uikit/uikit.dart';
@@ -142,6 +146,10 @@ Future<void> performUiLogin(PatrolTester $, String username, String password) as
     final submitLoginBtn = find.widgetWithText(CommonButton, I18nKeys.login.tr);
     await tester.tap(submitLoginBtn);
     await waitForPage($, HomePage);
+
+    // Dismiss floating CommonToast overlay so bottom navigation bar is not blocked
+    CommonToast.hide();
+    await tester.pumpAndSettle();
   }
 }
 
@@ -452,6 +460,163 @@ void main() {
 
       // Verify redirected back to LoginPage
       expect(find.byType(LoginPage), findsOneWidget);
+    });
+
+    // ==========================================
+    // CASE GROUP 6: AI Chat Assistant Interactivity
+    // ==========================================
+    patrolWidgetTest('UI Test - AI Chat Floating Sheet and Interaction', ($) async {
+      final tester = $.tester;
+      await performUiLogin($, 'test_user', 'password123');
+
+      expect(find.byType(HomePage), findsOneWidget);
+
+      // Find and tap the AI Assistant Floating Action Button
+      final aiFab = find.byType(FloatingActionButton);
+      if (aiFab.evaluate().isNotEmpty) {
+        await tester.tap(aiFab);
+        await tester.pumpAndSettle();
+
+        // Verify transition to AiChatPanel
+        expect(find.byType(AiChatPanel), findsOneWidget);
+
+        // Find input textfield in AI Chat
+        final chatInputField = find.byType(TextField);
+        if (chatInputField.evaluate().isNotEmpty) {
+          await tester.enterText(chatInputField.first, 'Tell me about Flutter Architecture');
+          await tester.pumpAndSettle();
+
+          // Find send button
+          final sendBtn = find.byIcon(Icons.send_rounded);
+          if (sendBtn.evaluate().isNotEmpty) {
+            await tester.tap(sendBtn);
+            await tester.pumpAndSettle();
+          }
+        }
+
+        // Pop back to HomePage
+        final backButton = find.byType(BackButton);
+        if (backButton.evaluate().isNotEmpty) {
+          await tester.tap(backButton);
+          await tester.pumpAndSettle();
+        } else {
+          final closeIcon = find.byIcon(Icons.close);
+          if (closeIcon.evaluate().isNotEmpty) {
+            await tester.tap(closeIcon.first);
+            await tester.pumpAndSettle();
+          }
+        }
+      }
+    });
+
+    // ==========================================
+    // CASE GROUP 7: Home Bottom Navigation & Sub-Views Tour
+    // ==========================================
+    patrolWidgetTest('UI Test - Home Bottom Navigation and All Sub-Views', ($) async {
+      final tester = $.tester;
+      await performUiLogin($, 'test_user', 'password123');
+
+      expect(find.byType(HomePage), findsOneWidget);
+
+      // 1. Overview Tab
+      final overviewTab = find.byIcon(Icons.space_dashboard_outlined);
+      if (overviewTab.evaluate().isNotEmpty) {
+        await tester.tap(overviewTab);
+        await tester.pumpAndSettle();
+      }
+
+      // 2. Projects Tab
+      final projectsTab = find.byIcon(Icons.folder_special_outlined);
+      if (projectsTab.evaluate().isNotEmpty) {
+        await tester.tap(projectsTab);
+        await tester.pumpAndSettle();
+      }
+
+      // 3. Architecture Tab
+      final architectureTab = find.byIcon(Icons.account_tree_outlined);
+      if (architectureTab.evaluate().isNotEmpty) {
+        await tester.tap(architectureTab);
+        await tester.pumpAndSettle();
+      }
+
+      // 4. About Me Tab
+      final aboutMeTab = find.byIcon(Icons.person_outline_rounded);
+      if (aboutMeTab.evaluate().isNotEmpty) {
+        await tester.tap(aboutMeTab);
+        await tester.pumpAndSettle();
+      }
+    });
+
+    // ==========================================
+    // CASE GROUP 8: Settings Theme & Font Size Adjustments
+    // ==========================================
+    patrolWidgetTest('UI Test - Settings Theme and Font Size Adjustments', ($) async {
+      final tester = $.tester;
+      await navigateToSettings($);
+
+      expect(find.byType(SettingsPage), findsOneWidget);
+
+      // Navigate to Appearance Page
+      final appearanceOption = find.text(I18nKeys.appearance.tr);
+      if (appearanceOption.evaluate().isNotEmpty) {
+        await tester.tap(appearanceOption);
+        await tester.pumpAndSettle();
+
+        expect(find.byType(AppearancePage), findsOneWidget);
+
+        // Switch Theme Mode (Dark Mode)
+        final darkModeTile = find.text(I18nKeys.dark.tr);
+        if (darkModeTile.evaluate().isNotEmpty) {
+          await tester.tap(darkModeTile);
+          await tester.pumpAndSettle();
+        }
+
+        // Switch Theme Mode (Light Mode)
+        final lightModeTile = find.text(I18nKeys.light.tr);
+        if (lightModeTile.evaluate().isNotEmpty) {
+          await tester.tap(lightModeTile);
+          await tester.pumpAndSettle();
+        }
+
+        // Pop back to SettingsPage
+        final backBtn = find.byType(BackButton);
+        if (backBtn.evaluate().isNotEmpty) {
+          await tester.tap(backBtn);
+          await tester.pumpAndSettle();
+        }
+      }
+    });
+
+    // ==========================================
+    // CASE GROUP 9: Developer Mode & Settings Extra Actions
+    // ==========================================
+    patrolWidgetTest('UI Test - Developer Mode and Settings Extra Actions', ($) async {
+      final tester = $.tester;
+      await navigateToSettings($);
+
+      expect(find.byType(SettingsPage), findsOneWidget);
+
+      // Scroll to version tile & trigger developer mode if present
+      final versionTile = find.byType(SettingsVersionTile);
+      if (versionTile.evaluate().isNotEmpty) {
+        await tester.ensureVisible(versionTile);
+        await tester.pumpAndSettle();
+        await tester.tap(versionTile);
+        await tester.pumpAndSettle();
+      }
+
+      // Check Buy me a coffee tile in settings
+      final coffeeTile = find.text(I18nKeys.buyMeCoffee.tr);
+      if (coffeeTile.evaluate().isNotEmpty) {
+        await tester.tap(coffeeTile);
+        await tester.pumpAndSettle();
+
+        final cancelBtn = find.text(I18nKeys.cancel.tr);
+        if (cancelBtn.evaluate().isNotEmpty) {
+          await tester.tap(cancelBtn);
+          await tester.pumpAndSettle();
+        }
+      }
     });
   });
 }
