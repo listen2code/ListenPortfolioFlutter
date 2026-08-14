@@ -490,7 +490,7 @@ jobs:
 
   deploy-to-aws-web:
     needs: [check-conditions, update-version-json]
-    if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop') && github.event_name == 'push'
+    if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop') && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     environment: ${{ needs.check-conditions.outputs.environment }}
     env:
