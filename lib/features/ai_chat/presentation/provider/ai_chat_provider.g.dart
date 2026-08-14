@@ -9,6 +9,53 @@ part of 'ai_chat_provider.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
+@ProviderFor(firebaseAiService)
+final firebaseAiServiceProvider = FirebaseAiServiceProvider._();
+
+final class FirebaseAiServiceProvider
+    extends
+        $FunctionalProvider<
+          FirebaseAiService,
+          FirebaseAiService,
+          FirebaseAiService
+        >
+    with $Provider<FirebaseAiService> {
+  FirebaseAiServiceProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'firebaseAiServiceProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$firebaseAiServiceHash();
+
+  @$internal
+  @override
+  $ProviderElement<FirebaseAiService> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  FirebaseAiService create(Ref ref) {
+    return firebaseAiService(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(FirebaseAiService value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<FirebaseAiService>(value),
+    );
+  }
+}
+
+String _$firebaseAiServiceHash() => r'1a029965d20858bfc56beb648896bceef8f01ed0';
+
 @ProviderFor(aiChatRemoteDataSource)
 final aiChatRemoteDataSourceProvider = AiChatRemoteDataSourceProvider._();
 

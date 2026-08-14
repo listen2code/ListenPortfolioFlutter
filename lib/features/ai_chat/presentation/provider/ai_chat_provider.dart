@@ -1,6 +1,7 @@
 import 'package:listen_core/core.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../data/datasources/firebase_ai_service.dart';
 import '../../data/datasources/ai_chat_remote_data_source.dart';
 import '../../data/datasources/ai_chat_local_data_source.dart';
 import '../../data/repositories/ai_chat_repository_impl.dart';
@@ -13,6 +14,13 @@ part 'ai_chat_provider.g.dart';
 // ============================================================================
 // Data Source Providers
 // ============================================================================
+
+@riverpod
+FirebaseAiService firebaseAiService(Ref ref) {
+  final service = FirebaseAiService();
+  service.initialize();
+  return service;
+}
 
 @riverpod
 AiChatRemoteDataSource aiChatRemoteDataSource(Ref ref) {

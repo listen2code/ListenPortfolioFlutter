@@ -66,9 +66,11 @@ class _AiChatPanelState extends ConsumerState<AiChatPanel> {
       chatViewModel.updatePresetQuestions();
     });
 
-    return BackdropFilter(
-      filter: ImageFilter.blur(sigmaX: 8.0, sigmaY: 8.0),
-      child: Container(
+    return Material(
+      color: Colors.transparent,
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 8.0, sigmaY: 8.0),
+        child: Container(
         color: Colors.black54,
         child: SafeArea(
           child: Padding(
@@ -111,8 +113,9 @@ class _AiChatPanelState extends ConsumerState<AiChatPanel> {
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildHeader(ThemeData theme, AiChatViewModel chatViewModel, AiChatState chatState) {
     return Row(
@@ -246,7 +249,12 @@ class _AiChatPanelState extends ConsumerState<AiChatPanel> {
               children: [
                 CommonText(
                   msg.content,
-                  style: const TextStyle(color: Colors.white, height: 1.4),
+                  useFittedBox: false,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 14.0,
+                    height: 1.5,
+                  ),
                 ),
                 Visibility(
                   visible: msg.isFailed,

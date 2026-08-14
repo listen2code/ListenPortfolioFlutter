@@ -41,7 +41,7 @@ final class AiChatViewModelProvider
   }
 }
 
-String _$aiChatViewModelHash() => r'c6af344e031abe3fee8b4259cfeaa65f6ef26e60';
+String _$aiChatViewModelHash() => r'423529d2569c056a40e4e3442bf2bc6db8330ef2';
 
 abstract class _$AiChatViewModel extends $Notifier<AiChatState> {
   AiChatState build();

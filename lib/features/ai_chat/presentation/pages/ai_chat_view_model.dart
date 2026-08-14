@@ -106,10 +106,10 @@ class AiChatViewModel extends _$AiChatViewModel with ViewModelMixin<AiChatState,
 
     updateState(state.copyWith(messages: [...state.messages, userMsg], isLoading: true));
 
-    // 2. Check local preset QA knowledge base for matches to save token usage
+    // 2. Check local preset QA knowledge base for matches to save token usage & latency
     final localReply = _matchLocalPresetQA(text);
     if (localReply != null) {
-      await Future<void>.delayed(const Duration(milliseconds: 600)); // Simulated typing animation
+      await Future<void>.delayed(const Duration(milliseconds: 500)); // Simulated typing animation
       final modelMsg = ChatMessage(
         id: _uuid.v4(),
         role: 'model',
@@ -120,10 +120,49 @@ class AiChatViewModel extends _$AiChatViewModel with ViewModelMixin<AiChatState,
       return;
     }
 
-    // 3. Fallback to API call (targets remote datasource / LocalMockServer in developer mode)
+    // 3. Try Firebase Vertex AI (Gemini Flash) with streaming response
+    final firebaseAi = ref.read(firebaseAiServiceProvider);
+    if (firebaseAi.isAvailable) {
+      try {
+        final modelMsgId = _uuid.v4();
+        var modelMsg = ChatMessage(
+          id: modelMsgId,
+          role: 'model',
+          content: '',
+          timestamp: DateTime.now(),
+        );
+
+        // Add initial empty placeholder message
+        updateState(state.copyWith(
+          messages: [...state.messages, modelMsg],
+          isLoading: true,
+        ));
+
+        final stream = firebaseAi.sendMessageStream(text, history: state.messages, mode: state.mode);
+        var fullText = '';
+        await for (final chunk in stream) {
+          fullText += chunk;
+          modelMsg = modelMsg.copyWith(content: fullText);
+          updateState(state.copyWith(
+            messages: state.messages.map((m) => m.id == modelMsgId ? modelMsg : m).toList(),
+          ));
+        }
+
+        updateState(state.copyWith(isLoading: false));
+        return;
+      } catch (e) {
+        appLogger.w('Firebase AI stream failed or unavailable, using API fallback: $e');
+        // Remove the empty placeholder message if stream errored early
+        updateState(state.copyWith(
+          messages: state.messages.where((m) => m.content.isNotEmpty).toList(),
+        ));
+      }
+    }
+
+    // 4. Fallback to REST API call (targets remote datasource / LocalMockServer in dev mode)
     final request = AiChatRequestModel(
       message: text,
-      history: state.messages.take(state.messages.length - 1).toList(), // Exclude the last message
+      history: state.messages.take(state.messages.length - 1).toList(),
       resumeContext: state.resumeContent,
       mode: state.mode,
     );
@@ -162,6 +201,9 @@ class AiChatViewModel extends _$AiChatViewModel with ViewModelMixin<AiChatState,
 
   void _onChangeMode(String newMode) {
     if (state.mode == newMode) return;
+    try {
+      ref.read(firebaseAiServiceProvider).resetChatSession();
+    } catch (_) {}
     updateState(
       state.copyWith(
         mode: newMode,

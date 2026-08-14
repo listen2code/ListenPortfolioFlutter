@@ -138,27 +138,13 @@ class FirebaseNotificationServiceImpl implements INotificationService {
         }
       }
 
-      // 7. Sync subscription to the version updates topic based on settings
+      // 7. Sync subscription to the version updates topic based on settings (non-blocking)
       final isEnabled = SpUtil.getBool(AppConstants.notificationsKey, defaultValue: true);
-      appLogger.i('FirebaseNotificationService: subscribeToTopic=$isEnabled');
+      appLogger.i('FirebaseNotificationService: sync topic subscription=$isEnabled');
       if (isEnabled) {
-        await subscribeToTopic(AppConstants.versionUpdatesTopic).timeout(
-          _kNetworkTimeout,
-          onTimeout: () {
-            appLogger.e(
-              'FirebaseNotificationService: subscribeToTopic timed out during initialize after $_kNetworkTimeout',
-            );
-          },
-        );
+        unawaited(subscribeToTopic(AppConstants.versionUpdatesTopic));
       } else {
-        await unsubscribeFromTopic(AppConstants.versionUpdatesTopic).timeout(
-          _kNetworkTimeout,
-          onTimeout: () {
-            appLogger.e(
-              'FirebaseNotificationService: unsubscribeFromTopic timed out during initialize after $_kNetworkTimeout',
-            );
-          },
-        );
+        unawaited(unsubscribeFromTopic(AppConstants.versionUpdatesTopic));
       }
     } catch (e) {
       appLogger.e('FirebaseNotificationService: Failed to setup FCM handlers: $e');
@@ -230,7 +216,7 @@ class FirebaseNotificationServiceImpl implements INotificationService {
           .timeout(
             _kPermissionTimeout,
             onTimeout: () {
-              appLogger.e(
+              appLogger.w(
                 'FirebaseNotificationService: requestPermission timed out after $_kPermissionTimeout',
               );
               throw TimeoutException('requestPermission', _kPermissionTimeout);
@@ -250,7 +236,7 @@ class FirebaseNotificationServiceImpl implements INotificationService {
       return await _fcm.getToken().timeout(
         _kNetworkTimeout,
         onTimeout: () {
-          appLogger.e('FirebaseNotificationService: getToken timed out after $_kNetworkTimeout');
+          appLogger.w('FirebaseNotificationService: getToken timed out after $_kNetworkTimeout');
           return null;
         },
       );
@@ -276,21 +262,20 @@ class FirebaseNotificationServiceImpl implements INotificationService {
   Future<void> subscribeToTopic(String topic) async {
     if (!_isFirebaseInitialized) return;
     try {
-      appLogger.i('FirebaseNotificationService: subscribeToTopic start...');
+      appLogger.i('FirebaseNotificationService: subscribeToTopic start for "$topic"...');
       await _fcm
           .subscribeToTopic(topic)
           .timeout(
             _kNetworkTimeout,
             onTimeout: () {
-              appLogger.e(
-                'FirebaseNotificationService: subscribeToTopic("$topic") timed out after $_kNetworkTimeout',
+              appLogger.w(
+                'FirebaseNotificationService: subscribeToTopic("$topic") timed out after $_kNetworkTimeout (Google Play / FCM network unreachable).',
               );
-              throw TimeoutException('subscribeToTopic', _kNetworkTimeout);
             },
           );
       appLogger.i('FirebaseNotificationService: Subscribed to topic "$topic".');
     } catch (e) {
-      appLogger.e('FirebaseNotificationService: Failed to subscribe to topic "$topic": $e');
+      appLogger.w('FirebaseNotificationService: Failed to subscribe to topic "$topic": $e');
     }
   }
 
@@ -298,21 +283,20 @@ class FirebaseNotificationServiceImpl implements INotificationService {
   Future<void> unsubscribeFromTopic(String topic) async {
     if (!_isFirebaseInitialized) return;
     try {
-      appLogger.i('FirebaseNotificationService: unsubscribeFromTopic start...');
+      appLogger.i('FirebaseNotificationService: unsubscribeFromTopic start for "$topic"...');
       await _fcm
           .unsubscribeFromTopic(topic)
           .timeout(
             _kNetworkTimeout,
             onTimeout: () {
-              appLogger.e(
-                'FirebaseNotificationService: unsubscribeFromTopic("$topic") timed out after $_kNetworkTimeout',
+              appLogger.w(
+                'FirebaseNotificationService: unsubscribeFromTopic("$topic") timed out after $_kNetworkTimeout (Google Play / FCM network unreachable).',
               );
-              throw TimeoutException('unsubscribeFromTopic', _kNetworkTimeout);
             },
           );
       appLogger.i('FirebaseNotificationService: Unsubscribed from topic "$topic".');
     } catch (e) {
-      appLogger.e('FirebaseNotificationService: Failed to unsubscribe from topic "$topic": $e');
+      appLogger.w('FirebaseNotificationService: Failed to unsubscribe from topic "$topic": $e');
     }
   }
 

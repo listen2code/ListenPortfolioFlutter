@@ -53,10 +53,10 @@ class _GlobalAiChatOverlayState extends ConsumerState<GlobalAiChatOverlay> {
 
   // Check if current route should show the floating AI button
   bool _shouldShowButton() {
-    if (_currentRoute == null ||
-        _currentRoute == Routes.root ||
-        _currentRoute == Routes.login ||
-        _currentRoute == Routes.signUp) {
+    final route = _currentRoute ?? AppNav.currentRouteName;
+    if (route == Routes.root ||
+        route == Routes.login ||
+        route == Routes.signUp) {
       return false;
     }
     return true;
@@ -77,71 +77,81 @@ class _GlobalAiChatOverlayState extends ConsumerState<GlobalAiChatOverlay> {
     final theme = Theme.of(context);
     final primaryColor = theme.colorScheme.primary;
 
-    // Initialize button coordinates to bottom-right of screen
-    if (_posX == null || _posY == null) {
-      _posX = screenWidth - _buttonSize - 16.0;
-      _posY = screenHeight - _buttonSize - 96.0; // Avoid standard navigation bars
+    // Initialize button coordinates to bottom-right of screen once valid screen dimensions are available
+    if (screenWidth > 0 && screenHeight > 0) {
+      if (_posX == null || _posX! < 0 || _posX! > screenWidth - _buttonSize) {
+        _posX = screenWidth - _buttonSize - 16.0;
+      }
+      if (_posY == null || _posY! < 0 || _posY! > screenHeight - _buttonSize) {
+        _posY = screenHeight - _buttonSize - 96.0;
+      }
     }
 
-    return Stack(
-      children: [
-        // 1. Underlay (The main app Navigator)
-        widget.child,
+    return Overlay(
+      initialEntries: [
+        OverlayEntry(
+          builder: (context) => Stack(
+            children: [
+              // 1. Underlay (The main app Navigator)
+              widget.child,
 
-        // 2. Floating AI Assistant Button (Draggable)
-        if (showButton && !_isPanelOpen)
-          Positioned(
-            left: _posX,
-            top: _posY,
-            child: GestureDetector(
-              onPanUpdate: (details) {
-                setState(() {
-                  _posX = (_posX! + details.delta.dx).clamp(16.0, screenWidth - _buttonSize - 16.0);
-                  _posY = (_posY! + details.delta.dy).clamp(
-                    mediaQuery.padding.top + 16.0,
-                    screenHeight - _buttonSize - mediaQuery.padding.bottom - 16.0,
-                  );
-                });
-              },
-              onTap: _togglePanel,
-              child: Container(
-                width: _buttonSize,
-                height: _buttonSize,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: primaryColor.withValues(alpha: 0.85),
-                  boxShadow: [
-                    BoxShadow(
-                      color: primaryColor.withValues(alpha: 0.4),
-                      blurRadius: 16.0,
-                      spreadRadius: 2.0,
-                    ),
-                  ],
-                  border: Border.all(color: Colors.white24, width: 1.5),
-                ),
-                child: ClipOval(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-                    child: Center(
-                      child: Icon(
-                        Icons.smart_toy_outlined,
-                        color: theme.colorScheme.onPrimary,
-                        size: 28.0,
+              // 2. Floating AI Assistant Button (Draggable)
+              if (showButton && !_isPanelOpen)
+                Positioned(
+                  left: _posX,
+                  top: _posY,
+                  child: GestureDetector(
+                    onPanUpdate: (details) {
+                      setState(() {
+                        _posX = (_posX! + details.delta.dx).clamp(16.0, screenWidth - _buttonSize - 16.0);
+                        _posY = (_posY! + details.delta.dy).clamp(
+                          mediaQuery.padding.top + 16.0,
+                          screenHeight - _buttonSize - mediaQuery.padding.bottom - 16.0,
+                        );
+                      });
+                    },
+                    onTap: _togglePanel,
+                    child: Container(
+                      width: _buttonSize,
+                      height: _buttonSize,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: primaryColor.withValues(alpha: 0.85),
+                        boxShadow: [
+                          BoxShadow(
+                            color: primaryColor.withValues(alpha: 0.4),
+                            blurRadius: 16.0,
+                            spreadRadius: 2.0,
+                          ),
+                        ],
+                        border: Border.all(color: Colors.white24, width: 1.5),
+                      ),
+                      child: ClipOval(
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                          child: Center(
+                            child: Icon(
+                              Icons.smart_toy_outlined,
+                              color: theme.colorScheme.onPrimary,
+                              size: 28.0,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ),
-          ),
 
-        // 3. Sliding Full-Screen AI Panel Overlay
-        if (_isPanelOpen)
-          Positioned.fill(
-            child: AiChatPanel(
-              onClose: _togglePanel,
-            ),
+              // 3. Sliding Full-Screen AI Panel Overlay
+              if (_isPanelOpen)
+                Positioned.fill(
+                  child: AiChatPanel(
+                    onClose: _togglePanel,
+                  ),
+                ),
+            ],
           ),
+        ),
       ],
     );
   }
