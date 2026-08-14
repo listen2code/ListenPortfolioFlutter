@@ -231,10 +231,8 @@
 - 自动执行patrol的时候，我希望每步操作都对屏幕进行截图（主要是intent操作），并保存到当前手机的sd卡目录
 - 如果用户禁用push通知后，如何引导用户重新去打开
 - 发布正式包到Google play，还需要哪些准备工作
-- 点击overView底部的某个项目卡片的时候，跳转到项目列表画面，并定位到这个项目卡片
 - 通过firebase_ai或Firebase Genkit实现AI智能助手
 - 试用talker_flutter，storybook_flutter，pubviz 
-- 数据库中简历内容的翻译校准
+- 更新我简历的内容，数据库中简历内容的翻译校准
 - aboutMe中真实简历pdf的审核，下载
-- 更新我简历的内容
 - 熟悉性能面版的功能和数据如何使用
