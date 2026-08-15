@@ -149,6 +149,7 @@
 - ✅ 一篇“为什么这个项目优先做可观测性与稳定性”的短文档已沉淀，用于对外解释项目选型与质量取向（详见 [设计与实现文档](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/docs/project_philosophy.md)）
 - Screen capture / GIF：Overview、Login、Settings、CrashLogs
 - Tech stack 选型说明
+- AI 助手 Token 用量与提问次数展示：基于 Gemini `countTokens` API 及本地统计，在 `ai_chat` 浮窗面板顶部添加 Token 消耗与提问次数 Badge 展示
 
 ### 4. 质量与工程化
 
