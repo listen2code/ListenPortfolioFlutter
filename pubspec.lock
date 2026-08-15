@@ -1214,16 +1214,18 @@ packages:
   listen_core:
     dependency: "direct main"
     description:
-      path: "../ListenCore"
-      relative: true
-    source: path
+      name: listen_core
+      sha256: d2008a5bab5bfebde9c3fa57448947b51682719cefe959e3f9f1c0a3e032082b
+      url: "https://pub.dev"
+    source: hosted
     version: "0.0.52"
   listen_uikit:
     dependency: "direct main"
     description:
-      path: "../ListenUiKit"
-      relative: true
-    source: path
+      name: listen_uikit
+      sha256: "6b9fe7fc62b71ed24c7f4747f2a0fb4e83c057c4fa4d0e4fdaaad6c458f7b397"
+      url: "https://pub.dev"
+    source: hosted
     version: "0.0.32"
   logger:
     dependency: "direct main"
