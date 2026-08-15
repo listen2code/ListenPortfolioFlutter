@@ -35,28 +35,24 @@ class AiChatInputBar extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.only(top: 8.0),
         decoration: BoxDecoration(
-          color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.15),
+          color: Colors.white.withValues(alpha: 0.12),
           borderRadius: BorderRadius.circular(24.0),
-          border: Border.all(color: theme.colorScheme.onSurface.withValues(alpha: 0.1)),
+          border: Border.all(color: Colors.white24),
         ),
         child: Row(
           children: [
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: TextField(
+                child: CommonTextField(
                   controller: controller,
-                  decoration: InputDecoration(
-                    hintText: I18nKeys.aiChatInputPlaceholder.tr,
-                    hintStyle: TextStyle(
-                      color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
-                      fontSize: 14,
-                    ),
-                    border: InputBorder.none,
-                  ),
-                  style: TextStyle(color: theme.colorScheme.onSurface),
+                  hintText: I18nKeys.aiChatInputPlaceholder.tr,
                   textInputAction: TextInputAction.send,
-                  onSubmitted: (_) => _submit(),
+                  onChanged: (val) {
+                    if (val.endsWith('\n')) {
+                      _submit();
+                    }
+                  },
                 ),
               ),
             ),

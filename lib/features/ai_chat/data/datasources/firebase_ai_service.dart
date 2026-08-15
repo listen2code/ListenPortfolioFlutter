@@ -1,11 +1,9 @@
-// ignore_for_file: deprecated_member_use
-
-import 'package:firebase_vertexai/firebase_vertexai.dart';
+import 'package:firebase_ai/firebase_ai.dart';
 import 'package:listen_core/core.dart';
 
 import '../../domain/entities/chat_message.dart';
 
-/// Firebase AI (Vertex AI Gemini) Service for interactive portfolio Q&A via direct client SDK.
+/// Firebase AI (Gemini) Service for interactive portfolio Q&A via direct client SDK.
 class FirebaseAiService {
   GenerativeModel? _model;
   ChatSession? _chatSession;
@@ -39,7 +37,7 @@ Context & Guidelines:
    - If unsure about specific personal details, politely invite the user to check the "Projects" or "About Me" tab, or contact Listen via email.
 ''';
 
-  /// Initialize Firebase Vertex AI Gemini model
+  /// Initialize Firebase AI Gemini model
   void initialize({
     String modelName = 'gemini-1.5-flash',
     String? systemPrompt,
@@ -48,7 +46,7 @@ Context & Guidelines:
     try {
       _currentMode = mode;
       final fullPrompt = '$systemPrompt\n[Active Mode: $mode]\n$_defaultSystemPrompt';
-      _model = FirebaseVertexAI.instance.generativeModel(
+      _model = FirebaseAI.vertexAI().generativeModel(
         model: modelName,
         systemInstruction: Content.system(fullPrompt),
       );

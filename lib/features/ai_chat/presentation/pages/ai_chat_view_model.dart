@@ -155,11 +155,12 @@ class AiChatViewModel extends _$AiChatViewModel with ViewModelMixin<AiChatState,
         // Remove the empty placeholder message if stream errored early
         updateState(state.copyWith(
           messages: state.messages.where((m) => m.content.isNotEmpty).toList(),
+          isLoading: false,
         ));
       }
     }
 
-    // 4. Fallback to REST API call (targets remote datasource / LocalMockServer in dev mode)
+    // 4. Fallback to REST API call or Intelligent Preset Answer
     final request = AiChatRequestModel(
       message: text,
       history: state.messages.take(state.messages.length - 1).toList(),
@@ -167,18 +168,21 @@ class AiChatViewModel extends _$AiChatViewModel with ViewModelMixin<AiChatState,
       mode: state.mode,
     );
 
+    updateState(state.copyWith(isLoading: true));
+
     await call<AiChatResponseModel?>(
       ref.execute<AiChatResponseModel?, AiChatRequestModel>(sendChatMessageUseCaseProvider, param: request),
       onSuccess: (response) {
-        if (response != null) {
-          final modelMsg = ChatMessage(
-            id: _uuid.v4(),
-            role: 'model',
-            content: response.reply,
-            timestamp: DateTime.now(),
-          );
-          updateState(state.copyWith(messages: [...state.messages, modelMsg], isLoading: false));
-        }
+        final replyText = (response != null && response.reply.isNotEmpty)
+            ? response.reply
+            : 'I am Listen\'s AI Assistant. You can explore the preset questions below or check out Listen\'s "Projects" and "About Me" tabs for detailed information!';
+        final modelMsg = ChatMessage(
+          id: _uuid.v4(),
+          role: 'model',
+          content: replyText,
+          timestamp: DateTime.now(),
+        );
+        updateState(state.copyWith(messages: [...state.messages, modelMsg], isLoading: false));
       },
       onFailure: (failure) {
         final failedMsg = userMsg.copyWith(isFailed: true);

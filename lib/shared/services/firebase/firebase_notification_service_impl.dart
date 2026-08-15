@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import '../../shared.dart';
@@ -48,6 +50,16 @@ class FirebaseNotificationServiceImpl implements INotificationService {
       }
       _isFirebaseInitialized = true;
       appLogger.i('FirebaseNotificationService: Firebase initialized successfully.');
+
+      try {
+        await FirebaseAppCheck.instance.activate(
+          androidProvider: kDebugMode ? AndroidProvider.debug : AndroidProvider.playIntegrity,
+          appleProvider: kDebugMode ? AppleProvider.debug : AppleProvider.deviceCheck,
+        );
+        appLogger.i('FirebaseNotificationService: FirebaseAppCheck activated successfully.');
+      } catch (appCheckError) {
+        appLogger.w('FirebaseNotificationService: FirebaseAppCheck activation skipped/error: $appCheckError');
+      }
     } catch (e) {
       appLogger.w(
         'FirebaseNotificationService: Firebase initialization failed. '
