@@ -1,13 +1,16 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:firebase_vertexai/firebase_vertexai.dart';
 import 'package:listen_core/core.dart';
 
 import '../../domain/entities/chat_message.dart';
 
-/// Firebase AI (Vertex AI Gemini) Service for interactive portfolio Q&A.
+/// Firebase AI (Vertex AI Gemini) Service for interactive portfolio Q&A via direct client SDK.
 class FirebaseAiService {
   GenerativeModel? _model;
   ChatSession? _chatSession;
   bool _initialized = false;
+  String _currentMode = 'visitor';
 
   static const String _defaultSystemPrompt = '''
 You are the AI Intelligent Assistant for Listen's Interactive Portfolio App (lPortfolio).
@@ -37,15 +40,21 @@ Context & Guidelines:
 ''';
 
   /// Initialize Firebase Vertex AI Gemini model
-  void initialize({String modelName = 'gemini-1.5-flash', String? systemPrompt}) {
+  void initialize({
+    String modelName = 'gemini-1.5-flash',
+    String? systemPrompt,
+    String mode = 'visitor',
+  }) {
     try {
+      _currentMode = mode;
+      final fullPrompt = '$systemPrompt\n[Active Mode: $mode]\n$_defaultSystemPrompt';
       _model = FirebaseVertexAI.instance.generativeModel(
         model: modelName,
-        systemInstruction: Content.system(systemPrompt ?? _defaultSystemPrompt),
+        systemInstruction: Content.system(fullPrompt),
       );
       _chatSession = _model!.startChat();
       _initialized = true;
-      appLogger.i('FirebaseAiService initialized successfully with model: $modelName');
+      appLogger.i('FirebaseAiService initialized successfully (model: $modelName, mode: $mode)');
     } catch (e, stack) {
       _initialized = false;
       appLogger.e('Failed to initialize FirebaseAiService: $e', error: e, stackTrace: stack);
@@ -55,14 +64,26 @@ Context & Guidelines:
   /// Whether Firebase AI service is ready for queries
   bool get isAvailable => _initialized && _model != null;
 
-  /// Send message to Gemini model and stream response tokens
-  Stream<String> sendMessageStream(String prompt, {List<ChatMessage>? history, String? mode}) async* {
+  /// Send message to Gemini model and stream response tokens with multi-turn history support
+  Stream<String> sendMessageStream(
+    String prompt, {
+    List<ChatMessage>? history,
+    String? mode,
+  }) async* {
     if (!isAvailable) {
-      initialize();
+      initialize(mode: mode ?? _currentMode);
     }
 
     if (!isAvailable) {
       throw StateError('FirebaseAiService is not available.');
+    }
+
+    // Re-initialize chat session with history if mode changed or session expired
+    if (mode != null && mode != _currentMode) {
+      _currentMode = mode;
+      resetChatSession(history: history);
+    } else if (_chatSession == null) {
+      resetChatSession(history: history);
     }
 
     try {
@@ -82,10 +103,28 @@ Context & Guidelines:
     }
   }
 
-  /// Reset or start a new chat session (e.g., when switching interviewer/visitor mode)
-  void resetChatSession() {
+  /// Reset or start a new chat session with optional multi-turn history
+  void resetChatSession({List<ChatMessage>? history}) {
     if (_model != null) {
-      _chatSession = _model!.startChat();
+      final formattedHistory = _convertHistory(history);
+      _chatSession = _model!.startChat(history: formattedHistory);
     }
   }
+
+  /// Convert ChatMessage list into Gemini Content list for multi-turn history
+  List<Content>? _convertHistory(List<ChatMessage>? history) {
+    if (history == null || history.isEmpty) return null;
+
+    final List<Content> contents = [];
+    for (final msg in history) {
+      if (msg.content.trim().isEmpty) continue;
+      if (msg.role == 'user') {
+        contents.add(Content('user', [TextPart(msg.content)]));
+      } else if (msg.role == 'model') {
+        contents.add(Content('model', [TextPart(msg.content)]));
+      }
+    }
+    return contents.isEmpty ? null : contents;
+  }
 }
+

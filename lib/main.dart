@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:listen_uikit/uikit.dart';
 
+import 'features/ai_chat/presentation/pages/global_ai_chat_overlay.dart';
 import 'features/settings/data/models/playback_tape_metadata.dart';
 import 'features/settings/presentation/provider/playback_provider.dart';
 import 'shared/shared.dart';
@@ -96,9 +97,7 @@ class MyApp extends StatelessWidget {
               builder: (context, child) {
                 // Integrate DevicePreview builder
                 child = DevicePreview.appBuilder(context, child);
-                // Temporarily bypass AI Chat Overlay while preserving the code
-                return child!;
-                // return GlobalAiChatOverlay(child: child!);
+                return GlobalAiChatOverlay(child: child);
               },
             );
           },

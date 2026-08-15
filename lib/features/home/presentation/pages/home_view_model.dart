@@ -47,7 +47,7 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
 
   @override
   bool checkNeedLogin(HomeIntent intent) {
-    return intent.maybeWhen(tabChanged: (tab, _, __) => tab == HomeTab.aboutMe, orElse: () => false);
+    return intent.maybeWhen(tabChanged: (tab, _, _) => tab == HomeTab.aboutMe, orElse: () => false);
   }
 
   @override

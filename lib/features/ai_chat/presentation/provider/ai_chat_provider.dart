@@ -17,9 +17,7 @@ part 'ai_chat_provider.g.dart';
 
 @riverpod
 FirebaseAiService firebaseAiService(Ref ref) {
-  final service = FirebaseAiService();
-  service.initialize();
-  return service;
+  return FirebaseAiService()..initialize();
 }
 
 @riverpod
