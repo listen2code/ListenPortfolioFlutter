@@ -142,11 +142,28 @@ class _GlobalAiChatOverlayState extends ConsumerState<GlobalAiChatOverlay> {
                   ),
                 ),
 
-              // 3. Sliding Full-Screen AI Panel Overlay
+              // 3. Sliding Full-Screen AI Panel Overlay with PopScope & Swipe-to-Dismiss
               if (_isPanelOpen)
                 Positioned.fill(
-                  child: AiChatPanel(
-                    onClose: _togglePanel,
+                  child: PopScope(
+                    canPop: !_isPanelOpen,
+                    onPopInvokedWithResult: (didPop, result) {
+                      if (!didPop && _isPanelOpen) {
+                        _togglePanel();
+                      }
+                    },
+                    child: GestureDetector(
+                      onHorizontalDragEnd: (details) {
+                        // Swipe right (> 200 velocity) or left (< -200 velocity) to close panel
+                        final velocity = details.primaryVelocity ?? 0;
+                        if (velocity.abs() > 200) {
+                          _togglePanel();
+                        }
+                      },
+                      child: AiChatPanel(
+                        onClose: _togglePanel,
+                      ),
+                    ),
                   ),
                 ),
             ],
