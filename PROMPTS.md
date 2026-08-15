@@ -79,7 +79,9 @@ ListenPortfolioFlutter 不是单纯的“简历展示 App”。
 - 敏感数据优先使用安全存储；普通本地键值遵循现有常量与封装规则。
 - 网络层优先沿用现有 `ApiClient`、拦截器链、`Either<Failure, T>` 与既有错误收敛方式。
 - 状态管理优先沿用当前的 Riverpod + MVI + `freezed` 约定。
-- 新增功能或行为变化时，优先补与改动直接相关的测试，而不是泛泛宣称“后续再补”。
+- **共通能力优先复用 (Core & UIKit First)**：禁止在业务 Feature 层重复造轮子或直接使用 SDK 原生 UI 控件（如原生 `Text`、`ElevatedButton`、`GestureDetector`、`TextField` 等），必须优先使用 `listen_uikit` 提供的规范组件（`CommonText`、`CommonButton`、`CommonClickable`、`CommonTextField` 等）及 `listen_core` 的扩展属性（如 `context.theme`、`context.colorScheme`、`context.mediaQuery`）。
+- **界面组件化与单文件粒度控制**：UI 画面与 View 层代码需保持短小精悍，复杂或可复用的子 UI 模块必须按单一职责抽取至当前 Feature 的 `widgets/` 目录下（如 Header、ModeSelector、InputBar、MessageBubble 等），避免单文件超长逻辑堆叠。
+- **静态分析与依赖边界严格收口**：编码过程中与提交前必须主动检查 Custom Lint 规则（如禁止 ViewModel 包含 BuildContext、禁止 ViewModel 内直接赋值 state、禁止非组件库硬编码 raw Color）及依赖边界规则（`dart tools/dependency_rules.dart`），积极清理 Warning 与 Info，保持全项目 `No issues found!` 质量基线。
 - **响应式布局与防溢出规则**：在 `Row` / `Flex` 容器中嵌套动态文本（如 `CommonText` / `CommonAuthText`）或可伸缩按钮时，**必须**使用 `Expanded` 或 `Flexible` 进行限宽包裹，并启用 `TextOverflow.ellipsis` 防止 RenderFlex 右侧溢出；对多个卡片、标签（Badge / Chip）的展示，应首选 `Wrap` 替换 `Row` 以支持自适应折行；按钮操作栏在小屏幕或小窗口下应使用横向 `SingleChildScrollView` 保护。
 - 引入外部依赖/第三方库时，优先选择行业主流、使用人数最多、且近期持续维护更新的活跃库；严禁引入已废弃（Deprecated）、停止维护或技术方案陈旧的第三方依赖。
 

@@ -1,7 +1,7 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../widgets/ai_chat_floating_button.dart';
 import '../widgets/ai_chat_panel.dart';
 import '../../../../shared/shared.dart';
 
@@ -17,7 +17,7 @@ class GlobalAiChatOverlay extends ConsumerStatefulWidget {
 class _GlobalAiChatOverlayState extends ConsumerState<GlobalAiChatOverlay> {
   bool _isPanelOpen = false;
   String? _currentRoute;
-  
+
   // Drag coordinates for the floating button
   double? _posX;
   double? _posY;
@@ -71,11 +71,9 @@ class _GlobalAiChatOverlayState extends ConsumerState<GlobalAiChatOverlay> {
   @override
   Widget build(BuildContext context) {
     final showButton = _shouldShowButton();
-    final mediaQuery = MediaQuery.of(context);
+    final mediaQuery = context.mediaQuery;
     final screenWidth = mediaQuery.size.width;
     final screenHeight = mediaQuery.size.height;
-    final theme = Theme.of(context);
-    final primaryColor = theme.colorScheme.primary;
 
     // Initialize button coordinates to bottom-right of screen once valid screen dimensions are available
     if (screenWidth > 0 && screenHeight > 0) {
@@ -96,50 +94,21 @@ class _GlobalAiChatOverlayState extends ConsumerState<GlobalAiChatOverlay> {
               widget.child,
 
               // 2. Floating AI Assistant Button (Draggable)
-              if (showButton && !_isPanelOpen)
-                Positioned(
-                  left: _posX,
-                  top: _posY,
-                  child: GestureDetector(
-                    onPanUpdate: (details) {
-                      setState(() {
-                        _posX = (_posX! + details.delta.dx).clamp(16.0, screenWidth - _buttonSize - 16.0);
-                        _posY = (_posY! + details.delta.dy).clamp(
-                          mediaQuery.padding.top + 16.0,
-                          screenHeight - _buttonSize - mediaQuery.padding.bottom - 16.0,
-                        );
-                      });
-                    },
-                    onTap: _togglePanel,
-                    child: Container(
-                      width: _buttonSize,
-                      height: _buttonSize,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: primaryColor.withValues(alpha: 0.85),
-                        boxShadow: [
-                          BoxShadow(
-                            color: primaryColor.withValues(alpha: 0.4),
-                            blurRadius: 16.0,
-                            spreadRadius: 2.0,
-                          ),
-                        ],
-                        border: Border.all(color: Colors.white24, width: 1.5),
-                      ),
-                      child: ClipOval(
-                        child: BackdropFilter(
-                          filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-                          child: Center(
-                            child: Icon(
-                              Icons.smart_toy_outlined,
-                              color: theme.colorScheme.onPrimary,
-                              size: 28.0,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+              if (showButton && !_isPanelOpen && _posX != null && _posY != null)
+                AiChatFloatingButton(
+                  posX: _posX!,
+                  posY: _posY!,
+                  size: _buttonSize,
+                  onPanUpdate: (details) {
+                    setState(() {
+                      _posX = (_posX! + details.delta.dx).clamp(16.0, screenWidth - _buttonSize - 16.0);
+                      _posY = (_posY! + details.delta.dy).clamp(
+                        mediaQuery.padding.top + 16.0,
+                        screenHeight - _buttonSize - mediaQuery.padding.bottom - 16.0,
+                      );
+                    });
+                  },
+                  onTap: _togglePanel,
                 ),
 
               // 3. Sliding Full-Screen AI Panel Overlay with PopScope & Swipe-to-Dismiss

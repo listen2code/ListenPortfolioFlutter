@@ -21,6 +21,7 @@ class AiPresetQuestions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (chatState.presetQuestions.isEmpty) return const SizedBox.shrink();
+    final theme = context.theme;
 
     return Container(
       width: double.infinity,
@@ -30,7 +31,11 @@ class AiPresetQuestions extends StatelessWidget {
         children: [
           CommonText(
             I18nKeys.aiPresetQuestions.tr,
-            style: const TextStyle(color: Colors.grey, fontSize: 11, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+              fontSize: 11,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           const SizedBox(height: 6),
           SizedBox(
@@ -43,12 +48,15 @@ class AiPresetQuestions extends StatelessWidget {
                 return Padding(
                   padding: const EdgeInsets.only(right: 8.0),
                   child: ActionChip(
-                    label: Text(
+                    label: CommonText(
                       question,
-                      style: const TextStyle(fontSize: 12, color: Colors.white70),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: theme.colorScheme.onSurface.withValues(alpha: 0.85),
+                      ),
                     ),
-                    backgroundColor: Colors.white.withValues(alpha: 0.05),
-                    side: const BorderSide(color: Colors.white24, width: 0.5),
+                    backgroundColor: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.2),
+                    side: BorderSide(color: theme.colorScheme.onSurface.withValues(alpha: 0.12), width: 0.5),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                     onPressed: () {
                       chatViewModel.handleIntent(AiChatIntent.sendMessage(question));
