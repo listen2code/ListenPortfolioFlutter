@@ -49,13 +49,14 @@ Context & Guidelines:
       _currentMode = mode;
       final fullPrompt = '$systemPrompt\n[Active Mode: $mode]\n$_defaultSystemPrompt';
       final appCheck = FirebaseAppCheck.instance;
-      _model = FirebaseAI.vertexAI(appCheck: appCheck).generativeModel(
+      // Use FirebaseAI.googleAI (Google AI Studio Developer API) for 100% FREE access without enabling GCP Billing Account
+      _model = FirebaseAI.googleAI(appCheck: appCheck).generativeModel(
         model: modelName,
         systemInstruction: Content.system(fullPrompt),
       );
       _chatSession = _model!.startChat();
       _initialized = true;
-      appLogger.i('[FirebaseAiService] Initialized successfully with VertexAI backend.');
+      appLogger.i('[FirebaseAiService] Initialized successfully with 100% Free GoogleAI backend.');
     } catch (e, stack) {
       _initialized = false;
       appLogger.e('[FirebaseAiService] Failed to initialize FirebaseAiService: $e', error: e, stackTrace: stack);
