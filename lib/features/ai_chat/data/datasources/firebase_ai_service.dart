@@ -1,4 +1,5 @@
 import 'package:firebase_ai/firebase_ai.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:listen_core/core.dart';
 
 import '../../domain/entities/chat_message.dart';
@@ -42,17 +43,22 @@ Context & Guidelines:
     String modelName = 'gemini-2.5-flash',
     String? systemPrompt,
     String mode = 'visitor',
+    bool useVertex = true,
   }) {
     try {
       _currentMode = mode;
       final fullPrompt = '$systemPrompt\n[Active Mode: $mode]\n$_defaultSystemPrompt';
-      _model = FirebaseAI.vertexAI().generativeModel(
+      final appCheck = FirebaseAppCheck.instance;
+      final aiInstance = useVertex
+          ? FirebaseAI.vertexAI(appCheck: appCheck)
+          : FirebaseAI.googleAI(appCheck: appCheck);
+      _model = aiInstance.generativeModel(
         model: modelName,
         systemInstruction: Content.system(fullPrompt),
       );
       _chatSession = _model!.startChat();
       _initialized = true;
-      appLogger.i('FirebaseAiService initialized successfully (model: $modelName, mode: $mode)');
+      appLogger.i('FirebaseAiService initialized successfully (model: $modelName, mode: $mode, vertex: $useVertex)');
     } catch (e, stack) {
       _initialized = false;
       appLogger.e('Failed to initialize FirebaseAiService: $e', error: e, stackTrace: stack);
@@ -97,6 +103,21 @@ Context & Guidelines:
       }
     } catch (e, stack) {
       appLogger.e('FirebaseAiService.sendMessageStream error: $e', error: e, stackTrace: stack);
+
+      // Handle App Check invalid token gracefully by falling back to googleAI backend
+      final errStr = e.toString();
+      if (errStr.contains('App Check') || errStr.contains('app-check') || errStr.contains('invalid')) {
+        appLogger.w('App Check verification failed on VertexAI, falling back to GoogleAI backend...');
+        initialize(mode: mode ?? _currentMode, useVertex: false);
+        if (_chatSession != null) {
+          await for (final response in _chatSession!.sendMessageStream(Content.text(prompt))) {
+            if (response.text != null && response.text!.isNotEmpty) {
+              yield response.text!;
+            }
+          }
+          return;
+        }
+      }
       rethrow;
     }
   }
