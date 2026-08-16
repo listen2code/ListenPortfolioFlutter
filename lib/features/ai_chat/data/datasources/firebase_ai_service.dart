@@ -43,23 +43,19 @@ Context & Guidelines:
     String modelName = 'gemini-2.5-flash',
     String? systemPrompt,
     String mode = 'visitor',
-    bool useVertex = true,
   }) {
-    appLogger.i('[FirebaseAiService] Initializing Gemini SDK: model=$modelName, mode=$mode, useVertex=$useVertex');
+    appLogger.i('[FirebaseAiService] Initializing Gemini SDK: model=$modelName, mode=$mode');
     try {
       _currentMode = mode;
       final fullPrompt = '$systemPrompt\n[Active Mode: $mode]\n$_defaultSystemPrompt';
       final appCheck = FirebaseAppCheck.instance;
-      final aiInstance = useVertex
-          ? FirebaseAI.vertexAI(appCheck: appCheck)
-          : FirebaseAI.googleAI(appCheck: appCheck);
-      _model = aiInstance.generativeModel(
+      _model = FirebaseAI.vertexAI(appCheck: appCheck).generativeModel(
         model: modelName,
         systemInstruction: Content.system(fullPrompt),
       );
       _chatSession = _model!.startChat();
       _initialized = true;
-      appLogger.i('[FirebaseAiService] Initialized successfully. Model instance & ChatSession ready.');
+      appLogger.i('[FirebaseAiService] Initialized successfully with VertexAI backend.');
     } catch (e, stack) {
       _initialized = false;
       appLogger.e('[FirebaseAiService] Failed to initialize FirebaseAiService: $e', error: e, stackTrace: stack);
@@ -124,21 +120,6 @@ Context & Guidelines:
       appLogger.i('[FirebaseAiService] Stream Finished Success | chunks=$chunkCount | totalChars=$totalCharCount | elapsed=${totalMs}ms');
     } catch (e, stack) {
       appLogger.e('[FirebaseAiService] Stream Error | type=${e.runtimeType} | error=$e', error: e, stackTrace: stack);
-
-      // Handle App Check invalid token gracefully by falling back to googleAI backend if specifically needed
-      final errStr = e.toString();
-      if (errStr.contains('app-check-failed') || errStr.contains('App Check token is invalid')) {
-        appLogger.w('[FirebaseAiService] App Check verification failed on VertexAI, falling back to GoogleAI backend...');
-        initialize(mode: mode ?? _currentMode, useVertex: false);
-        if (_chatSession != null) {
-          await for (final response in _chatSession!.sendMessageStream(Content.text(prompt))) {
-            if (response.text != null && response.text!.isNotEmpty) {
-              yield response.text!;
-            }
-          }
-          return;
-        }
-      }
       rethrow;
     }
   }
