@@ -40,7 +40,7 @@ Context & Guidelines:
 
   /// Initialize Firebase AI Gemini model
   void initialize({
-    String modelName = 'gemini-2.0-flash',
+    String modelName = 'gemini-2.5-flash-lite',
     String? systemPrompt,
     String mode = 'visitor',
   }) {
