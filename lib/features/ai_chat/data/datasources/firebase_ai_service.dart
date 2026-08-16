@@ -45,6 +45,7 @@ Context & Guidelines:
     String mode = 'visitor',
     bool useVertex = true,
   }) {
+    appLogger.i('[FirebaseAiService] Initializing Gemini SDK: model=$modelName, mode=$mode, useVertex=$useVertex');
     try {
       _currentMode = mode;
       final fullPrompt = '$systemPrompt\n[Active Mode: $mode]\n$_defaultSystemPrompt';
@@ -58,10 +59,10 @@ Context & Guidelines:
       );
       _chatSession = _model!.startChat();
       _initialized = true;
-      appLogger.i('FirebaseAiService initialized successfully (model: $modelName, mode: $mode, vertex: $useVertex)');
+      appLogger.i('[FirebaseAiService] Initialized successfully. Model instance & ChatSession ready.');
     } catch (e, stack) {
       _initialized = false;
-      appLogger.e('Failed to initialize FirebaseAiService: $e', error: e, stackTrace: stack);
+      appLogger.e('[FirebaseAiService] Failed to initialize FirebaseAiService: $e', error: e, stackTrace: stack);
     }
   }
 
@@ -75,20 +76,31 @@ Context & Guidelines:
     String? mode,
   }) async* {
     if (!isAvailable) {
+      appLogger.w('[FirebaseAiService] Service not initialized, triggering auto-initialize...');
       initialize(mode: mode ?? _currentMode);
     }
 
     if (!isAvailable) {
+      appLogger.e('[FirebaseAiService] Initialization failed. Cannot send message.');
       throw StateError('FirebaseAiService is not available.');
     }
 
     // Re-initialize chat session with history if mode changed or session expired
     if (mode != null && mode != _currentMode) {
+      appLogger.i('[FirebaseAiService] Mode changed from "$_currentMode" to "$mode", resetting session...');
       _currentMode = mode;
       resetChatSession(history: history);
     } else if (_chatSession == null) {
+      appLogger.i('[FirebaseAiService] ChatSession was null, creating new session with history...');
       resetChatSession(history: history);
     }
+
+    final promptSnippet = prompt.length > 40 ? '${prompt.substring(0, 40)}...' : prompt;
+    appLogger.i('[FirebaseAiService] Stream Request Started | mode=$_currentMode | prompt="$promptSnippet" | historyLength=${history?.length ?? 0}');
+
+    final startTime = DateTime.now();
+    int chunkCount = 0;
+    int totalCharCount = 0;
 
     try {
       final contentPrompt = Content.text(prompt);
@@ -98,16 +110,25 @@ Context & Guidelines:
 
       await for (final response in responseStream) {
         if (response.text != null && response.text!.isNotEmpty) {
+          chunkCount++;
+          totalCharCount += response.text!.length;
+          if (chunkCount == 1) {
+            final firstChunkMs = DateTime.now().difference(startTime).inMilliseconds;
+            appLogger.i('[FirebaseAiService] First token chunk received in ${firstChunkMs}ms');
+          }
           yield response.text!;
         }
       }
-    } catch (e, stack) {
-      appLogger.e('FirebaseAiService.sendMessageStream error: $e', error: e, stackTrace: stack);
 
-      // Handle App Check invalid token gracefully by falling back to googleAI backend
+      final totalMs = DateTime.now().difference(startTime).inMilliseconds;
+      appLogger.i('[FirebaseAiService] Stream Finished Success | chunks=$chunkCount | totalChars=$totalCharCount | elapsed=${totalMs}ms');
+    } catch (e, stack) {
+      appLogger.e('[FirebaseAiService] Stream Error | type=${e.runtimeType} | error=$e', error: e, stackTrace: stack);
+
+      // Handle App Check invalid token gracefully by falling back to googleAI backend if specifically needed
       final errStr = e.toString();
-      if (errStr.contains('App Check') || errStr.contains('app-check') || errStr.contains('invalid')) {
-        appLogger.w('App Check verification failed on VertexAI, falling back to GoogleAI backend...');
+      if (errStr.contains('app-check-failed') || errStr.contains('App Check token is invalid')) {
+        appLogger.w('[FirebaseAiService] App Check verification failed on VertexAI, falling back to GoogleAI backend...');
         initialize(mode: mode ?? _currentMode, useVertex: false);
         if (_chatSession != null) {
           await for (final response in _chatSession!.sendMessageStream(Content.text(prompt))) {
@@ -126,6 +147,8 @@ Context & Guidelines:
   void resetChatSession({List<ChatMessage>? history}) {
     if (_model != null) {
       final formattedHistory = _convertHistory(history);
+      final historyCount = formattedHistory?.length ?? 0;
+      appLogger.i('[FirebaseAiService] Resetting chat session with $historyCount history items.');
       _chatSession = _model!.startChat(history: formattedHistory);
     }
   }
