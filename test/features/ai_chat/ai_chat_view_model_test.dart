@@ -128,16 +128,13 @@ void main() {
       sub.close();
     });
 
-    test('Should fallback to SendChatMessageUseCase for unmatched custom queries', () async {
+    test('Should process unmatched custom queries directly via Firebase AI Client SDK', () async {
       final sub = container.listen(aiChatViewModelProvider, (_, __) {});
       viewModel.onInit();
       await Future<void>.delayed(const Duration(milliseconds: 100));
 
-      // Given - Mock usecase response
+      // Given - Send custom question
       const customQuery = '你觉得 Listen 写的代码怎么样？';
-      const mockReply = 'Listen 的编码规范非常高，完美贴合 Clean Architecture 和 MVI 架构。';
-      when(() => mockSendChatMessageUseCase.call(param: any(named: 'param')))
-          .thenAnswer((_) async => const Right(AiChatResponseModel(reply: mockReply)));
 
       // When - Send custom question
       await viewModel.handleIntent(const AiChatIntent.sendMessage(customQuery));
@@ -147,7 +144,8 @@ void main() {
 
       final state = container.read(aiChatViewModelProvider);
       expect(state.messages, hasLength(3));
-      expect(state.messages[2].content, mockReply);
+      expect(state.messages[1].role, 'user');
+      expect(state.messages[2].role, 'model');
 
       sub.close();
     });

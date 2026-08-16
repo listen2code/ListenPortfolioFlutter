@@ -4,8 +4,6 @@ import 'package:uuid/uuid.dart';
 
 import '../../../../shared/shared.dart';
 import '../../../home/presentation/pages/home_view_model.dart';
-import '../../data/models/ai_chat_request_model.dart';
-import '../../data/models/ai_chat_response_model.dart';
 import '../../data/models/ai_preset_qa_response_model.dart';
 import '../../domain/entities/chat_message.dart';
 import '../provider/ai_chat_provider.dart';
@@ -53,9 +51,7 @@ class AiChatViewModel extends _$AiChatViewModel with ViewModelMixin<AiChatState,
         }
       },
       onFailure: (failure) {
-        updateState(state.copyWith(
-          errorMessage: I18nKeys.aiChatLoadFailed.trArgs([failure.message]),
-        ));
+        updateState(state.copyWith(errorMessage: I18nKeys.aiChatLoadFailed.trArgs([failure.message])));
       },
     );
   }
@@ -120,87 +116,55 @@ class AiChatViewModel extends _$AiChatViewModel with ViewModelMixin<AiChatState,
       return;
     }
 
-    // 3. Try Firebase Vertex AI (Gemini Flash) with streaming response
+    // 3. Complete Client-Direct Firebase AI SDK Mode (No Server API calls)
     final firebaseAi = ref.read(firebaseAiServiceProvider);
-    if (firebaseAi.isAvailable) {
-      try {
-        final modelMsgId = _uuid.v4();
-        var modelMsg = ChatMessage(
-          id: modelMsgId,
-          role: 'model',
-          content: '',
-          timestamp: DateTime.now(),
-        );
-
-        // Add initial empty placeholder message
-        updateState(state.copyWith(
-          messages: [...state.messages, modelMsg],
-          isLoading: true,
-        ));
-
-        final stream = firebaseAi.sendMessageStream(text, history: state.messages, mode: state.mode);
-        var fullText = '';
-        await for (final chunk in stream) {
-          fullText += chunk;
-          modelMsg = modelMsg.copyWith(content: fullText);
-          updateState(state.copyWith(
-            messages: state.messages.map((m) => m.id == modelMsgId ? modelMsg : m).toList(),
-          ));
-        }
-
-        updateState(state.copyWith(isLoading: false));
-        return;
-      } catch (e) {
-        appLogger.w('Firebase AI stream failed or unavailable, using API fallback: $e');
-        // Remove the empty placeholder message if stream errored early
-        updateState(state.copyWith(
-          messages: state.messages.where((m) => m.content.isNotEmpty).toList(),
-          isLoading: false,
-        ));
-      }
+    if (!firebaseAi.isAvailable) {
+      firebaseAi.initialize(mode: state.mode);
     }
 
-    // 4. Fallback to REST API call or Intelligent Preset Answer
-    final request = AiChatRequestModel(
-      message: text,
-      history: state.messages.take(state.messages.length - 1).toList(),
-      resumeContext: state.resumeContent,
-      mode: state.mode,
-    );
+    final modelMsgId = _uuid.v4();
+    var modelMsg = ChatMessage(id: modelMsgId, role: 'model', content: '', timestamp: DateTime.now());
 
-    updateState(state.copyWith(isLoading: true));
+    // Add initial empty placeholder message for streaming
+    updateState(state.copyWith(messages: [...state.messages, modelMsg], isLoading: true));
 
-    await call<AiChatResponseModel?>(
-      ref.execute<AiChatResponseModel?, AiChatRequestModel>(sendChatMessageUseCaseProvider, param: request),
-      onSuccess: (response) {
-        final replyText = (response != null && response.reply.isNotEmpty)
-            ? response.reply
-            : 'I am Listen\'s AI Assistant. You can explore the preset questions below or check out Listen\'s "Projects" and "About Me" tabs for detailed information!';
-        final modelMsg = ChatMessage(
-          id: _uuid.v4(),
-          role: 'model',
-          content: replyText,
-          timestamp: DateTime.now(),
-        );
-        updateState(state.copyWith(messages: [...state.messages, modelMsg], isLoading: false));
-      },
-      onFailure: (failure) {
-        final failedMsg = userMsg.copyWith(isFailed: true);
-        final modelErrorMsg = ChatMessage(
-          id: _uuid.v4(),
-          role: 'model',
-          content: I18nKeys.aiChatNetworkError.trArgs([failure.message]),
-          timestamp: DateTime.now(),
-        );
+    try {
+      final stream = firebaseAi.sendMessageStream(text, history: state.messages, mode: state.mode);
+      var fullText = '';
+      await for (final chunk in stream) {
+        fullText += chunk;
+        modelMsg = modelMsg.copyWith(content: fullText);
         updateState(
-          state.copyWith(
-            messages:
-                state.messages.map((m) => m.id == userMsg.id ? failedMsg : m).toList() + [modelErrorMsg],
-            isLoading: false,
-          ),
+          state.copyWith(messages: state.messages.map((m) => m.id == modelMsgId ? modelMsg : m).toList()),
         );
-      },
-    );
+      }
+
+      updateState(state.copyWith(isLoading: false));
+    } catch (e, stack) {
+      appLogger.e('Firebase AI direct SDK stream error: $e', error: e, stackTrace: stack);
+
+      // Clean up placeholder message and return friendly error message without calling server API
+      final failedMsg = userMsg.copyWith(isFailed: true);
+      final modelErrorMsg = ChatMessage(
+        id: _uuid.v4(),
+        role: 'model',
+        content:
+            'I am Listen\'s AI Assistant. Currently unable to reach Firebase Gemini AI. Please check your network or try again later!',
+        timestamp: DateTime.now(),
+      );
+
+      updateState(
+        state.copyWith(
+          messages:
+              state.messages
+                  .where((m) => m.id != modelMsgId && m.content.isNotEmpty)
+                  .map((m) => m.id == userMsg.id ? failedMsg : m)
+                  .toList() +
+              [modelErrorMsg],
+          isLoading: false,
+        ),
+      );
+    }
   }
 
   void _onChangeMode(String newMode) {
@@ -271,7 +235,7 @@ class AiChatViewModel extends _$AiChatViewModel with ViewModelMixin<AiChatState,
   }
 
   List<String> _extractKeywords(String text) {
-    final cleanText = text.replaceAll(RegExp(r'[？\?！!。，,、]'), '');
+    final cleanText = text.replaceAll(RegExp(r'[？?！!。，,、]'), '');
     final parts = cleanText.split(RegExp(r'\s+'));
     final List<String> keywords = [];
 
