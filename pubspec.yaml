@@ -2,8 +2,8 @@ name: listen_portfolio_flutter
 description: "Portfolio of Listen"
 publish_to: 'none'
 
-version: 1.1.33
-desc: "FirebaseAI.googleAI"
+version: 1.1.34
+desc: "Gemini 2.0"
 desc_zh: ""
 desc_ja: ""
 
