@@ -85,7 +85,22 @@ ListenPortfolioFlutter 不是单纯的“简历展示 App”。
 - **响应式布局与防溢出规则**：在 `Row` / `Flex` 容器中嵌套动态文本（如 `CommonText` / `CommonAuthText`）或可伸缩按钮时，**必须**使用 `Expanded` 或 `Flexible` 进行限宽包裹，并启用 `TextOverflow.ellipsis` 防止 RenderFlex 右侧溢出；对多个卡片、标签（Badge / Chip）的展示，应首选 `Wrap` 替换 `Row` 以支持自适应折行；按钮操作栏在小屏幕或小窗口下应使用横向 `SingleChildScrollView` 保护。
 - 引入外部依赖/第三方库时，优先选择行业主流、使用人数最多、且近期持续维护更新的活跃库；严禁引入已废弃（Deprecated）、停止维护或技术方案陈旧的第三方依赖。
 
-## 8. 阅读顺序建议
+## 8. AI 助手（AI Intro Assistant）Prompt 体系与开发规则
+
+AI 助手基于官方 Firebase AI SDK (`FirebaseAI.googleAI`) + Google Gemini `gemini-3.7-flash` 模型，遵循以下 Prompt 工程与架构规范：
+
+- **模型版本规范**：当前标准模型为 **`gemini-3.7-flash`**（旧版 1.5/2.0/2.5 已被 Google AI 弃用下线，严禁回退旧模型名）。
+- **角色定位与 Persona 矩阵**：
+  - **Visitor（普通访客）**：亲和生动，以易懂的语言介绍 Listen 的个人项目、技术亮点与背景。
+  - **Recruiter（招聘官 / HR）**：结构化总结核心技能标签、工作年限、项目业绩与工程深度，突出岗位匹配度。
+  - **Architect（技术架构师 / 面试官）**：深入剖析 MVI 架构、`listen_core` 基础设施、Zone tracing、APM 监控、401 并发重试队列、双层缓存策略等硬核设计。
+- **页面感知与动态上下文注入**：
+  - 系统根据当前活动路由与 Tab（`AppNav.currentRouteName` / `homeViewModelProvider`）动态拼接 Context（如 `currentRoute`、`resumeContent`）。
+  - 提问前优先模糊匹配本地预设问答库（FAQ），命中则 0 延迟、0 Token 消耗秒级返回本地标准答案；未命中时才构建完整上下文 Prompt 发送给 Gemini。
+- **安全与防护（App Check）**：
+  - 必须绑定 `FirebaseAppCheck.instance` 校验设备合法性（Play Integrity / App Attest / Debug Token），杜绝 API 滥用与恶意刷量。
+
+## 9. 阅读顺序建议
 
 如果你刚进入新会话，或者上下文刚被清空，请先执行以下最小启动步骤：
 
@@ -108,7 +123,7 @@ ListenPortfolioFlutter 不是单纯的“简历展示 App”。
 - mock 数据
 - Backend DTO / controller / response contract
 
-## 9. 输出要求
+## 10. 输出要求
 
 你的回答应尽量具备以下特征：
 
@@ -118,7 +133,7 @@ ListenPortfolioFlutter 不是单纯的“简历展示 App”。
 - 对多步任务给出可执行的下一步建议
 - 如果可以直接落地，就不要只停留在概念建议
 
-## 10. 你最需要避免的行为
+## 11. 你最需要避免的行为
 
 - 把 spec、目标态、想法池内容当成已实现能力
 - 为了显示聪明而过度反问，阻塞本可直接完成的任务

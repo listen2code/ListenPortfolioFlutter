@@ -1,36 +1,40 @@
 # AI Intro Assistant — 实现方案说明书
 
-**Status**: `Partially Implemented (Frontend Complete, Backend Mocked)`
+**Status**: `Fully Implemented (Direct Client Firebase Google AI SDK with App Check Enforcement)`
 
-> 本文档描述了已落地的前端 AI 模块功能实现及底层数据流，并保留了后端 RAG 规划，供后续后端实际接入时参考。目前前端已具备完整的本地 Q&A 匹配、模式切换、多语言本地化和缓存系统，并通过 mock API 数据完成集成测试。
+> 本文档描述了已落地的 AI 智能架构与技术咨询助手模块设计及底层数据流。目前已完全落地官方 `firebase_ai` SDK 直连模式，选用 Google Gemini 最新标准模型 **`gemini-3.7-flash`**，基于 Firebase App Check 实现强安全防刷保护，搭配全局可拖拽防抖悬浮球与独立 `AiChatPage` 页面，具备毫秒级本地预设 Q&A 模糊匹配、多模式切换与全生命周期路由返回手势支持。
 
 ## 1. 概述
 
 ### 1.1 产品定位
 
-**架构知识库问答助手**：面试官在面试前通过 AI 助手了解本 App 的架构设计和功能实现细节，获得对候选人技术能力的初步认知。
+**架构知识库与技术介绍助手**：面试官与访客通过 AI 助手快速了解本 App 的架构设计（MVI、Zone tracing、APM、401 并发队列等）和功能实现细节，获得对候选人技术能力的深度认知。
 
 ### 1.2 核心决策摘要
 
 | 决策项 | 选择 | 理由 |
 |--------|------|------|
-| 产品形态 | 架构知识库 Q&A | 面试官关心的是技术深度，不是 App 导览 |
-| 知识注入 | RAG（检索增强生成） | 学习目的 + 可扩展 + 面试亮点 |
-| LLM 提供商 | Gemini 1.5 Flash | 免费额度充足、官方 Flutter SDK、成本最低 |
-| API Key 架构 | 后端代理（Spring Boot） | 安全、可控、复用现有限流体系 |
-| FAQ/LLM 切换 | 关键词匹配优先，未命中走 LLM | 平衡成本与体验 |
-| 向量存储 | 内存 HashMap（后续可升级 MySQL/Qdrant） | 先理解原理，数据量小无需重型方案 |
-| 月预算 | $0（Gemini 免费额度） | 15 RPM / 100 万 tokens/月，Portfolio 场景足够 |
+| 产品形态 | 架构知识库与个人作品 Q&A | 直击技术深度与工程亮点 |
+| 知识注入 | 本地多路由 FAQ 检索 + 动态 Prompt 注入 | 0 Token 毫秒级命中常见问答，复杂提问走云端 LLM |
+| LLM 提供商 | Google Gemini **`gemini-3.7-flash`** | Google AI 最新官方标准，响应迅速，成本低 |
+| SDK 与通道 | Direct Client SDK (`FirebaseAI.googleAI`) | 纯原生直连体验，免去自建代理服务开销与延迟 |
+| 安全与防护 | Firebase App Check (Play Integrity / Debug Token) | 强制设备真实性证明，杜绝 API Key 被非法逆向盗刷 |
+| FAQ/LLM 切换 | 本地模糊关键词优先匹配，未命中走 Gemini | 极致节省 Token 与网络开销 |
+| UI 与路由 | 全局拖拽悬浮球 (`GlobalAiChatOverlay`) + 独立页面 (`AiChatPage`) | 100% 兼容 Android Predictive Back / iOS 原生侧滑返回手势 |
+| 月预算 | $0（Google AI Developer 免费层） | 充足的免费 RPM 额度，完美满足作品集演示场景 |
 
 ### 1.3 用户场景
 
 ```
-面试官收到简历 → 下载/打开 Portfolio App → 打开 AI 助手
-→ 看到当前页面关联的预设热门问题列表（FAQ）
-→ 点击预设问题 → 立即匹配本地问答库返回答案（本地匹配，无延迟）
-→ 输入自定义问题 "你的 AuthInterceptor 并发队列怎么实现的？"
-→ 后端检索相关文档片段 → 拼入 prompt → Gemini 生成回答
-→ 面试官看到详细的技术解答（2-3 秒延迟）
+面试官/访客打开 Portfolio App → 点击右下角可拖拽 AI 悬浮图标
+→ 页面平滑推入 AiChatPage
+→ 自动感知当前处于的页面与 Tab（如 Overview / Resume）并推荐关联的精选预设问题
+→ 点击预设问题 → 立即匹配本地问答库返回权威解答（0 延迟、0 Token 消耗）
+→ 输入自定义复杂问题 "你的 AuthInterceptor 并发队列和 401 刷新怎么实现的？"
+→ 客户端动态拼装当前页面上下文与角色 System Prompt
+→ 直连 Google Gemini 3.7 Flash 模型（受 Firebase App Check 安全防护）
+→ 返回结构化 Markdown 技术解析（流式或秒级响应）
+→ 侧滑或点击顶部返回，平滑退出并保留浏览状态
 ```
 
 ---
@@ -194,48 +198,44 @@
 
 ### 3.2 前端新增（Flutter）
 
-### Phase 3：前端 — Flutter Chat UI（已完成）
+### 3.2 前端新增（Flutter）
+
+### Phase 3：前端 — Flutter 独立页面与组件化架构（已完全落地）
 
 目前前端架构已根据 Clean Architecture + MVI 设计模式完全落实：
 
 | 模块 | 功能 | 落地文件 |
 |------|------|----------|
-| **State** | 对话状态（消息列表、模式切换、预设推荐、错误处理等） | [ai_chat_state.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/presentation/pages/ai_chat_state.dart) |
-| **Intent** | 动作声明（初始化、发送消息、切换模式、清除历史） | [ai_chat_intent.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/presentation/pages/ai_chat_intent.dart) |
-| **ViewModel** | 处理 MVI Intents、匹配本地预设问答库（FAQ）以节省 token、派发业务逻辑 | [ai_chat_view_model.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/presentation/pages/ai_chat_view_model.dart) |
-| **Data Sources** | 远程 REST/Mock 请求获取推荐问答与对话内容；本地双层缓存（SP 缓存与 SecureStorage） | [ai_chat_remote_data_source.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/data/datasources/ai_chat_remote_data_source.dart)<br>[ai_chat_local_data_source.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/data/datasources/ai_chat_local_data_source.dart) |
-| **Repository** | 数据仓库（继承自 `safeCall` 机制，绑定 `cacheDataSource`） | [ai_chat_repository_impl.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/data/repositories/ai_chat_repository_impl.dart) |
-| **Decoupled UI** | UI 表现层解耦为**悬浮控制层**与**问答看板层** | [global_ai_chat_overlay.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/presentation/pages/global_ai_chat_overlay.dart)（拖拽定位及显示控制）<br>[ai_chat_panel.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/presentation/widgets/ai_chat_panel.dart)（对话流展示与输入交互） |
+| **Page Route** | AI 对话独立页面，承载 `Scaffold` 并原生支持 Android Predictive Back 与 iOS 边缘滑动返回 | [ai_chat_page.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/presentation/pages/ai_chat_page.dart) (`Routes.aiChat`) |
+| **Global Overlay** | 全局可拖拽悬浮入口（智能防抖识别点击/拖拽，并感知路由动态隐藏/显示） | [global_ai_chat_overlay.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/presentation/pages/global_ai_chat_overlay.dart) |
+| **Floating Button** | 磨砂毛玻璃圆形悬浮球，支持触摸位移防抖判断与平滑拖曳 | [ai_chat_floating_button.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/presentation/widgets/ai_chat_floating_button.dart) |
+| **AI Panel** | 对话面板主体（包含状态监听、自动滚动与主题自适应） | [ai_chat_panel.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/presentation/widgets/ai_chat_panel.dart) |
+| **Header & Mode** | 顶部栏（支持长文本标题截断防护、清除历史）与三种 Persona 模式切换器 | [ai_chat_header.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/presentation/widgets/ai_chat_header.dart)<br>[ai_chat_mode_selector.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/presentation/widgets/ai_chat_mode_selector.dart) |
+| **Chat Stream & FAQ** | 消息气泡列表（Markdown 高亮渲染、重发逻辑）与页面级预设 FAQ 推荐 | [ai_chat_message_list.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/presentation/widgets/ai_chat_message_list.dart)<br>[ai_preset_questions.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/presentation/widgets/ai_preset_questions.dart) |
+| **Input Bar** | 底部消息输入与发送控制条 | [ai_chat_input_bar.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/presentation/widgets/ai_chat_input_bar.dart) |
+| **State & Intent** | MVI 状态与意图（消息列表、三种模式、加载/失败状态、FAQ 字典） | [ai_chat_state.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/presentation/pages/ai_chat_state.dart)<br>[ai_chat_intent.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/presentation/pages/ai_chat_intent.dart) |
+| **ViewModel** | 状态机分发、本地 FAQ 模糊快速检索、Firebase AI 远程交互编排 | [ai_chat_view_model.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/presentation/pages/ai_chat_view_model.dart) |
+| **Firebase AI Service** | 官方 `firebase_ai` SDK 直连驱动 (`FirebaseAI.googleAI` + `gemini-3.7-flash`) | [firebase_ai_service.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/data/datasources/firebase_ai_service.dart) |
 
 #### 3.8 核心机制与设计考量
 
-##### 3.8.1 前端 UI 表现层完全解耦
-为避免单个 Widget 文件过大（原先超 460 行），我们将其进行了清晰的职责分工：
-* `GlobalAiChatOverlay` 作为全画面的顶层 Widget，仅管理 AI 机器人的浮动位置（支持平滑的拖放手势控制）、面板开关状态机 `_isPanelOpen` 以及与路由通知器的生命周期监听。
-* `AiChatPanel` 包含所有的输入框、滑动列表、局部控制和输入管理（`ScrollController` 与 `TextEditingController`），只有在展开状态下才会挂载，从而极大地优化了首帧的渲染速度与内存占用。
+##### 3.8.1 独立页面路由与原生返回手势支持
+为彻底解决多平台系统级边缘滑动返回（如 Android 13/14+ Predictive Back 与 iOS 侧滑手势）被浮层事件吞噬的问题，我们将展开后的 AI Chat 升级为独立的二级标准页面 `AiChatPage` (`Routes.aiChat = '/ai_chat'`):
+* 浮层 `GlobalAiChatOverlay` 仅负责悬浮球的可拖拽交互和页面唤起。
+* 点击悬浮球调用标准路由 `AppNav.to(Routes.aiChat)`。
+* 物理返回键、系统预测性手势、iOS 边缘滑动均由 Flutter 路由栈原生安全接管。
 
-##### 3.8.2 全局路由联动与定向重建
-AI 悬浮框需要感知用户的当前页面，并在用户处于 `/splash`（启动页）或 `/login`/`/signUp`（认证页）时**不显示**，在其他项目主页面时展示：
-* 我们在底层 `AppNav` 模块中提供了 `routeChangeNotifier`，并在 `GlobalAiChatOverlay` 中对其进行了监听。
-* 使用 `addPostFrameCallback` 避免了在 Flutter Widget 树排版过程中调用 `setState()` 引起的冲突错误。
-* 当页面切换完成，组件会更新对应的路由属性并精确刷新，极大地确保了路由监听重建的性能与可靠度。
+##### 3.8.2 悬浮球手势智能防抖
+针对真机触摸屏上微小手指抖动可能导致 `GestureDetector.onPanUpdate` 吞掉 `onTap` 的问题，在 `AiChatFloatingButton` 中加入了智能位移判定（位移 < 6.0px 视为点击），确保 100% 灵敏触发跳转。
 
-##### 3.8.3 本地预设 QA 机制与 Token 防刷保护
-为防止过度消耗 API 额度：
-1. **启动时拉取 QAs**：客户端在初始化时会获取一份覆盖所有路由的预设问答集 `portfolio_qa.json` 缓存在本地。
-2. **Tab 动态关联**：当处于 `/home?tab=resume` 时，AI 助手会自动切换到关联该 Tab 的预设问题集。
-3. **模糊关键词匹配**：在用户发起自由提问时，ViewModel 会通过提取关键字，在本地问答库中搜索高匹配度的条目。如果高度匹配，直接在本地输出回答，从而彻底杜绝了频繁调用云端 API 导致的 Token 超量。
+##### 3.8.3 本地预设 QA 机制与 0-Token 防刷保护
+* **本地快速匹配**：启动时获取全量预设问答 `portfolio_qa.json` 缓存在本地。
+* **Tab 动态联动**：自动感知用户浏览到的路由与 Tab（如 `/home?tab=resume`），实时刷新当前页面专属的热门问题。
+* **模糊关键词命中**：用户自由提问时，优先检索本地 QA 库，命中即刻返回，0 延迟且 0 Token 消耗。
 
-##### 3.8.4 临时开关控制（代码保留）
-为了平滑地调整样式并允许未来一键启用，我们在 **[main.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/main.dart)** 中保留了 `GlobalAiChatOverlay` 组件，但通过在 `builder` 中短路返回 `child!` 的方式，在现阶段默认隐藏了 AI 悬浮入口。
-
-```dart
-              builder: (context, child) {
-                // 暂时短路返回以隐藏 AI 悬浮框，在此处恢复以重新显示
-                return child!;
-                // return GlobalAiChatOverlay(child: child!);
-              },
-```
+##### 3.8.4 Direct Client + Firebase App Check 安全
+* 使用官方 `firebase_ai` 的 `FirebaseAI.googleAI` 直接向 Google Gemini `gemini-3.7-flash` 发起请求。
+* 结合 Firebase App Check（Play Integrity / App Attest / Debug Token）对请求设备进行合法性背书，防止 API 凭证被逆向滥用。
 
 ### 3.3 环境变量新增
 

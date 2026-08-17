@@ -217,6 +217,7 @@
 - 隐私政策与服务条款落地（基于 `CommonWebView` 加载并适配了全新的 HSL 暗黑/浅色自适应主题，完善了 FCM 及 Billing 声明）
 - Google Play 合规性网页端数据注销页面落地（提供 `delete_account.html` 交互表单并完美支持邮件客户端唤起与剪贴板复制降级方案）
 - App 内评分引导服务集成（基于 `in_app_review` 封装了 `ReviewService`，支持启动计数与 90 天控流，且在赞助成功后黄金时机强制拉起评价）
+- AI 智能技术咨询助手落地（基于官方 `firebase_ai` 的 `FirebaseAI.googleAI` + Google Gemini `gemini-3.7-flash` 模型，集成 Firebase App Check 强安全防护；全局可拖拽防误触悬浮球 + 独立 `AiChatPage` 页面；支持多模式切换、页面上下文/Tab 智能感知及本地预设 FAQ 零延迟零 Token 问答，已通过全量单元测试与静态检查）
 
 ### 暂时降级的想法池条目
 
@@ -232,7 +233,7 @@
 - 自动执行patrol的时候，我希望每步操作都对屏幕进行截图（主要是intent操作），并保存到当前手机的sd卡目录
 - 如果用户禁用push通知后，如何引导用户重新去打开
 - 发布正式包到Google play，还需要哪些准备工作
-- 通过firebase_ai或Firebase Genkit实现AI智能助手
+- [x] 通过firebase_ai或Firebase Genkit实现AI智能助手（已于 2026-08-18 使用官方 `firebase_ai` + `gemini-3.7-flash` + App Check 完整落地）
 - 试用talker_flutter，storybook_flutter，pubviz 
 - 更新我简历的内容，数据库中简历内容的翻译校准
 - aboutMe中真实简历pdf的审核，下载

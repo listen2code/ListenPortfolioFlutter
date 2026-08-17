@@ -33,6 +33,7 @@ ListenPortfolioFlutter 是一个基于 Flutter 构建的个人技术作品集应
 - **推送通知**：基于 FCM 的推送通知接入，支持前台横幅、后台唤醒、冷启动深度跳转；Settings 中可开关通知并联动系统权限引导
 - **多语言切换**：中 / 英 / 日运行时切换，无需重启；**数据库动态内容国际化**（支持拦截器注入 `Accept-Language` 请求头，由 Backend / `LocalMockServer` 直发目标语言 JSON 数据，前端移除 UI 模型上的过渡性 `.tr` 映射）
 - **主题切换**：浅色 / 深色 / 跟随系统 + 强调色 / 字号持久化 + **Material You 动态取色** (Android 12+ 平台下支持跟随系统壁纸色调自动变色)
+- **AI 架构与技术介绍助手**：基于官方 Firebase AI SDK (`FirebaseAI.googleAI`) + Google Gemini `gemini-3.7-flash` 模型打造的智能技术咨询助手；集成 Firebase App Check 强安全防护；全局可拖拽悬浮球 + 独立 `AiChatPage` 页面；支持多模式（访客/招聘官/架构师）切换、页面上下文/Tab 智能感知及本地预设 FAQ 零延迟零 Token 问答
 
 ### 架构与基础设施
 
@@ -140,7 +141,7 @@ dart tools/dependency_rules.dart --graph
 - `docs/error_codes_reference.md`：错误码设计参考（当前仍以设计为主）
 - `docs/performance_panel_spec.md`：性能面板原始设计方案（已实现，最新请参考 `apm_performance_monitoring_design.md`）
 - `docs/apm_performance_monitoring_design.md`：APM 性能监控面板设计与实现文档
-- `docs/ai_intro_assistant_spec.md`：AI 助手规格说明（规划中）
+- `docs/ai_intro_assistant_spec.md`：AI 助手规格说明与架构设计（已实现）
 - `docs/listencore_audit.md`：`listen_core` 架构审计报告
 - `docs/event_bus_vs_base_effect.md`：EventBus 与 BaseEffect 架构通信设计规范
 - `docs/repository_caching_strategy.md`：BaseRepository 二级缓存与数据降级规范
@@ -157,7 +158,7 @@ dart tools/dependency_rules.dart --graph
 
 - `LogOverlay / PerformancePanel / NetInspector` 独立调试模块化
 - Golden Tests 补齐
-- PDF 简历导出、技能图表、AI 助手等展示能力
+- PDF 简历导出、技能图表等展示能力拓展
 
 ## 🧾 待删除备份区
 
