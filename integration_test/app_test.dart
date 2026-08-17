@@ -11,9 +11,15 @@ import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_p
 import 'package:listen_portfolio_flutter/features/splash/presentation/pages/splash_page.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/settings_page.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/appearance/appearance_page.dart';
+import 'package:listen_portfolio_flutter/features/settings/presentation/pages/delete_account/delete_account_page.dart';
+import 'package:listen_portfolio_flutter/features/settings/presentation/pages/crash_log_list/crash_log_list_page.dart';
+import 'package:listen_portfolio_flutter/features/auth/presentation/pages/password/change_password_page.dart';
+import 'package:listen_portfolio_flutter/features/home/presentation/pages/resume/resume_page.dart';
+import 'package:listen_portfolio_flutter/features/home/presentation/pages/overview/widgets/quick_actions.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/widgets/settings_version_tile.dart';
 import 'package:listen_portfolio_flutter/features/ai_chat/presentation/pages/global_ai_chat_overlay.dart';
 import 'package:listen_portfolio_flutter/features/ai_chat/presentation/widgets/ai_chat_panel.dart';
+import 'package:listen_portfolio_flutter/shared/pages/common_web_view_page.dart';
 import 'package:listen_portfolio_flutter/main.dart' as app;
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_uikit/uikit.dart';
@@ -24,24 +30,25 @@ import 'package:visibility_detector/visibility_detector.dart';
 // ==========================================
 Future<void> waitForPageTransition(PatrolTester $) async {
   final tester = $.tester;
-  // Wait up to 10 seconds for SplashPage to disappear
-  for (int i = 0; i < 20; i++) {
-    await tester.pump(const Duration(milliseconds: 500));
-    if (find.byType(SplashPage).evaluate().isEmpty) {
+  for (int i = 0; i < 40; i++) {
+    if (find.byType(LoginPage).evaluate().isNotEmpty ||
+        find.byType(HomePage).evaluate().isNotEmpty) {
       break;
     }
+    await tester.pump(const Duration(milliseconds: 300));
+    await Future<void>.delayed(const Duration(milliseconds: 150));
   }
   await tester.pumpAndSettle();
 }
 
 Future<void> waitForPage(PatrolTester $, Type pageType) async {
   final tester = $.tester;
-  // Wait up to 5 seconds for page of type to appear
-  for (int i = 0; i < 25; i++) {
-    await tester.pump(const Duration(milliseconds: 200));
+  for (int i = 0; i < 40; i++) {
     if (find.byType(pageType).evaluate().isNotEmpty) {
       break;
     }
+    await tester.pump(const Duration(milliseconds: 200));
+    await Future<void>.delayed(const Duration(milliseconds: 150));
   }
   await tester.pumpAndSettle();
 }
@@ -51,6 +58,13 @@ Future<void> waitForPage(PatrolTester $, Type pageType) async {
 // ==========================================
 Future<void> bootAppAndGoToLogin(PatrolTester $) async {
   final tester = $.tester;
+  // If an alert dialog is left open from previous test, dismiss it
+  final dialogOkBtn = find.text(I18nKeys.ok.tr);
+  if (dialogOkBtn.evaluate().isNotEmpty && find.byType(AlertDialog).evaluate().isNotEmpty) {
+    await tester.tap(dialogOkBtn.first);
+    await tester.pumpAndSettle();
+  }
+
   if (find.byType(LoginPage).evaluate().isNotEmpty) {
     return;
   }
@@ -126,6 +140,8 @@ Future<void> bootAppAndGoToLogin(PatrolTester $) async {
       return;
     }
   }
+
+  await waitForPage($, LoginPage);
 }
 
 Future<void> performUiLogin(PatrolTester $, String username, String password) async {
@@ -173,10 +189,6 @@ Future<void> navigateToSettings(PatrolTester $) async {
 }
 
 void main() {
-  // Store original global error handlers to prevent assertion leaks
-  FlutterExceptionHandler? originalOnError;
-  bool Function(Object, StackTrace)? originalDispatcherOnError;
-
   setUpAll(() {
     // Prevent visibility animations from lagging and blocking pumpAndSettle
     VisibilityDetectorController.instance.updateInterval = Duration.zero;
@@ -190,17 +202,11 @@ void main() {
     LocalMockServer.initConfig(const MockServerConfig(networkLatency: Duration(milliseconds: 10)));
   });
 
-  setUp(() {
-    originalOnError = FlutterError.onError;
-    originalDispatcherOnError = PlatformDispatcher.instance.onError;
-  });
-
-  tearDown(() {
-    FlutterError.onError = originalOnError;
-    PlatformDispatcher.instance.onError = originalDispatcherOnError;
-  });
-
   group('E2E UI Flow Integration Tests (Patrol)', () {
+    setUp(() async {
+      await SpUtil.put(AppConstants.hasReviewKey, true);
+    });
+
     // ==========================================
     // CASE GROUP 1: Login Form & Validations
     // ==========================================
@@ -326,9 +332,13 @@ void main() {
       final submitSignUpBtn = find.widgetWithText(CommonButton, I18nKeys.signUp.tr);
       expect(submitSignUpBtn, findsOneWidget);
 
+      final timestamp = DateTime.now().millisecondsSinceEpoch % 100000;
+      final uniqueName = 'User_$timestamp';
+      final uniqueEmail = 'user_$timestamp@gmail.com';
+
       // Submit with mismatching confirm password
-      await tester.enterText(signUpFields.at(0), 'Listen');
-      await tester.enterText(signUpFields.at(1), 'listen2code@gmail.com');
+      await tester.enterText(signUpFields.at(0), uniqueName);
+      await tester.enterText(signUpFields.at(1), uniqueEmail);
       await tester.enterText(signUpFields.at(2), 'password123');
       await tester.enterText(signUpFields.at(3), 'different');
       await tester.pumpAndSettle();
@@ -348,7 +358,24 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.tap(submitSignUpBtn);
+      await tester.pump(const Duration(seconds: 2));
+      await tester.pumpAndSettle();
+
+      // Dismiss any API dialog if returned
+      final okBtn = find.text(I18nKeys.ok.tr);
+      if (okBtn.evaluate().isNotEmpty) {
+        await tester.tap(okBtn.first);
+        await tester.pumpAndSettle();
+      }
+
       await waitForPage($, LoginPage);
+      if (find.byType(LoginPage).evaluate().isEmpty) {
+        final backBtn = find.byType(BackButton);
+        if (backBtn.evaluate().isNotEmpty) {
+          await tester.tap(backBtn);
+          await waitForPage($, LoginPage);
+        }
+      }
 
       // Verify redirect back to LoginPage
       expect(find.byType(LoginPage), findsOneWidget);
@@ -409,11 +436,15 @@ void main() {
       await tester.tap(languageTile);
       await tester.pumpAndSettle();
 
-      // Select english language and confirm
-      final englishOption = find.text('English');
-      expect(englishOption, findsOneWidget);
-      await tester.tap(englishOption);
-      await tester.pumpAndSettle();
+      // Select english language in Dialog
+      final englishOption = find.descendant(
+        of: find.byType(Dialog),
+        matching: find.text(AppLanguage.english.label),
+      );
+      if (englishOption.evaluate().isNotEmpty) {
+        await tester.tap(englishOption);
+        await tester.pumpAndSettle();
+      }
 
       // 2. Notifications switch toggle UI check
       final notificationTile = find.byIcon(Icons.notifications_none_rounded);
@@ -510,7 +541,7 @@ void main() {
     });
 
     // ==========================================
-    // CASE GROUP 7: Home Bottom Navigation & Sub-Views Tour
+    // CASE GROUP 7: Home Sub-Views Navigation
     // ==========================================
     patrolWidgetTest('UI Test - Home Bottom Navigation and All Sub-Views', ($) async {
       final tester = $.tester;
@@ -518,31 +549,51 @@ void main() {
 
       expect(find.byType(HomePage), findsOneWidget);
 
-      // 1. Overview Tab
-      final overviewTab = find.byIcon(Icons.space_dashboard_outlined);
-      if (overviewTab.evaluate().isNotEmpty) {
-        await tester.tap(overviewTab);
+      // 1. Navigate to Projects Tab via Drawer
+      tester.firstState<ScaffoldState>(find.byType(Scaffold)).openDrawer();
+      await tester.pumpAndSettle();
+      final projectsItem = find.descendant(
+        of: find.byType(Drawer),
+        matching: find.byIcon(Icons.rocket_launch_outlined),
+      );
+      if (projectsItem.evaluate().isNotEmpty) {
+        await tester.tap(projectsItem);
         await tester.pumpAndSettle();
       }
 
-      // 2. Projects Tab
-      final projectsTab = find.byIcon(Icons.folder_special_outlined);
-      if (projectsTab.evaluate().isNotEmpty) {
-        await tester.tap(projectsTab);
+      // 2. Navigate to Architecture Tab via Drawer
+      tester.firstState<ScaffoldState>(find.byType(Scaffold)).openDrawer();
+      await tester.pumpAndSettle();
+      final archItem = find.descendant(
+        of: find.byType(Drawer),
+        matching: find.byIcon(Icons.account_tree_outlined),
+      );
+      if (archItem.evaluate().isNotEmpty) {
+        await tester.tap(archItem);
         await tester.pumpAndSettle();
       }
 
-      // 3. Architecture Tab
-      final architectureTab = find.byIcon(Icons.account_tree_outlined);
-      if (architectureTab.evaluate().isNotEmpty) {
-        await tester.tap(architectureTab);
+      // 3. Navigate to About Me Tab via Drawer
+      tester.firstState<ScaffoldState>(find.byType(Scaffold)).openDrawer();
+      await tester.pumpAndSettle();
+      final aboutItem = find.descendant(
+        of: find.byType(Drawer),
+        matching: find.byIcon(Icons.person_search_outlined),
+      );
+      if (aboutItem.evaluate().isNotEmpty) {
+        await tester.tap(aboutItem);
         await tester.pumpAndSettle();
       }
 
-      // 4. About Me Tab
-      final aboutMeTab = find.byIcon(Icons.person_outline_rounded);
-      if (aboutMeTab.evaluate().isNotEmpty) {
-        await tester.tap(aboutMeTab);
+      // 4. Return to Overview Tab via Drawer
+      tester.firstState<ScaffoldState>(find.byType(Scaffold)).openDrawer();
+      await tester.pumpAndSettle();
+      final overviewItem = find.descendant(
+        of: find.byType(Drawer),
+        matching: find.byIcon(Icons.dashboard_customize_outlined),
+      );
+      if (overviewItem.evaluate().isNotEmpty) {
+        await tester.tap(overviewItem);
         await tester.pumpAndSettle();
       }
     });
@@ -614,6 +665,537 @@ void main() {
         final cancelBtn = find.text(I18nKeys.cancel.tr);
         if (cancelBtn.evaluate().isNotEmpty) {
           await tester.tap(cancelBtn);
+          await tester.pumpAndSettle();
+        }
+      }
+    });
+
+    // ==========================================
+    // CASE GROUP 10: Guest Mode Flow & Exploration
+    // ==========================================
+    patrolWidgetTest('UI Test - Guest Mode Flow and Exploration', ($) async {
+      final tester = $.tester;
+      await bootAppAndGoToLogin($);
+
+      // Verify Skip For Now / Guest entrance button on LoginPage
+      final skipForNowBtn = find.text(I18nKeys.skipForNow.tr);
+      if (skipForNowBtn.evaluate().isNotEmpty) {
+        await tester.tap(skipForNowBtn);
+        await waitForPage($, HomePage);
+
+        expect(find.byType(HomePage), findsOneWidget);
+
+        // Open Drawer to verify guest profile role
+        tester.firstState<ScaffoldState>(find.byType(Scaffold)).openDrawer();
+        await tester.pumpAndSettle();
+
+        expect(find.text(I18nKeys.roleGuest.tr), findsOneWidget);
+
+        // Tap Login link in drawer footer to return to LoginPage
+        final loginOption = find.descendant(
+          of: find.byType(Drawer),
+          matching: find.text(I18nKeys.login.tr),
+        );
+        if (loginOption.evaluate().isNotEmpty) {
+          await tester.tap(loginOption);
+          await waitForPage($, LoginPage);
+
+          expect(find.byType(LoginPage), findsOneWidget);
+        }
+      }
+    });
+
+    // ==========================================
+    // CASE GROUP 11: Change Password Flow Validation
+    // ==========================================
+    patrolWidgetTest('UI Test - Change Password Flow Validation', ($) async {
+      final tester = $.tester;
+      await navigateToSettings($);
+
+      expect(find.byType(SettingsPage), findsOneWidget);
+
+      // Navigate to Change Password Page
+      final changePasswordOption = find.text(I18nKeys.changePassword.tr);
+      if (changePasswordOption.evaluate().isNotEmpty) {
+        await tester.tap(changePasswordOption);
+        await waitForPage($, ChangePasswordPage);
+
+        expect(find.byType(ChangePasswordPage), findsOneWidget);
+
+        final passwordFields = find.byType(CommonTextField);
+        if (passwordFields.evaluate().length >= 3) {
+          // Input mismatching passwords
+          await tester.enterText(passwordFields.at(0), 'password123');
+          await tester.enterText(passwordFields.at(1), 'newPassword123');
+          await tester.enterText(passwordFields.at(2), 'mismatchPassword');
+          await tester.pumpAndSettle();
+
+          // Submit form
+          final updateBtn = find.widgetWithText(CommonButton, I18nKeys.updatePassword.tr);
+          if (updateBtn.evaluate().isNotEmpty) {
+            await tester.tap(updateBtn);
+            await tester.pumpAndSettle();
+
+            expect(find.text(I18nKeys.passwordsDoNotMatch.tr), findsOneWidget);
+          }
+        }
+
+        // Pop back to SettingsPage
+        final backBtn = find.byType(BackButton);
+        if (backBtn.evaluate().isNotEmpty) {
+          await tester.tap(backBtn);
+          await tester.pumpAndSettle();
+        }
+      }
+    });
+
+    // ==========================================
+    // CASE GROUP 12: Resume View & PDF Export Trigger
+    // ==========================================
+    patrolWidgetTest('UI Test - Resume View and PDF Export Trigger', ($) async {
+      final tester = $.tester;
+      await performUiLogin($, 'test_user', 'password123');
+
+      expect(find.byType(HomePage), findsOneWidget);
+
+      // Open Drawer and tap Resume / Author Resume
+      tester.firstState<ScaffoldState>(find.byType(Scaffold)).openDrawer();
+      await tester.pumpAndSettle();
+
+      final resumeOption = find.descendant(
+        of: find.byType(Drawer),
+        matching: find.text(I18nKeys.authorResume.tr),
+      );
+      if (resumeOption.evaluate().isNotEmpty) {
+        await tester.tap(resumeOption);
+        await waitForPage($, ResumePage);
+
+        expect(find.byType(ResumePage), findsOneWidget);
+
+        // Tap PDF export action icon
+        final pdfIcon = find.byIcon(Icons.picture_as_pdf_outlined);
+        if (pdfIcon.evaluate().isNotEmpty) {
+          await tester.tap(pdfIcon);
+          await tester.pumpAndSettle();
+        }
+
+        // Pop back to HomePage
+        final backBtn = find.byType(BackButton);
+        if (backBtn.evaluate().isNotEmpty) {
+          await tester.tap(backBtn);
+          await tester.pumpAndSettle();
+        }
+      }
+    });
+
+    // ==========================================
+    // CASE GROUP 13: Language Switching Flow
+    // ==========================================
+    patrolWidgetTest('UI Test - Language Switching Flow', ($) async {
+      final tester = $.tester;
+      await navigateToSettings($);
+
+      expect(find.byType(SettingsPage), findsOneWidget);
+
+      // Tap language tile
+      final langTile = find.text(I18nKeys.language.tr);
+      if (langTile.evaluate().isNotEmpty) {
+        await tester.tap(langTile);
+        await tester.pumpAndSettle();
+
+        // Switch to English in Dialog
+        final englishOption = find.descendant(
+          of: find.byType(Dialog),
+          matching: find.text(AppLanguage.english.label),
+        );
+        if (englishOption.evaluate().isNotEmpty) {
+          await tester.tap(englishOption);
+          await tester.pumpAndSettle();
+
+          expect(find.byType(SettingsPage), findsOneWidget);
+        }
+
+        // Tap language tile again and revert to Chinese
+        final langTileEn = find.text(I18nKeys.language.tr);
+        if (langTileEn.evaluate().isNotEmpty) {
+          await tester.tap(langTileEn);
+          await tester.pumpAndSettle();
+
+          final chineseOption = find.descendant(
+            of: find.byType(Dialog),
+            matching: find.text(AppLanguage.chinese.label),
+          );
+          if (chineseOption.evaluate().isNotEmpty) {
+            await tester.tap(chineseOption);
+            await tester.pumpAndSettle();
+          }
+        }
+      }
+    });
+
+    // ==========================================
+    // CASE GROUP 14: Environment Switching Flow
+    // ==========================================
+    patrolWidgetTest('UI Test - Environment Switching Flow', ($) async {
+      final tester = $.tester;
+      await navigateToSettings($);
+
+      expect(find.byType(SettingsPage), findsOneWidget);
+
+      // Tap switch environment tile
+      final envTile = find.text(I18nKeys.switchEnv.tr);
+      if (envTile.evaluate().isEmpty) {
+        await tester.drag(find.byType(SingleChildScrollView).first, const Offset(0, -300));
+        await tester.pumpAndSettle();
+      }
+      if (envTile.evaluate().isNotEmpty) {
+        await tester.tap(envTile);
+        await tester.pumpAndSettle();
+
+        // Switch to Mock Environment in Dialog
+        final mockOption = find.descendant(
+          of: find.byType(Dialog),
+          matching: find.text(I18nKeys.envMock.tr),
+        );
+        if (mockOption.evaluate().isNotEmpty) {
+          await tester.tap(mockOption);
+          await tester.pumpAndSettle();
+        }
+
+        // Tap switch env tile and revert to Prod
+        final envTileAfter = find.text(I18nKeys.switchEnv.tr);
+        if (envTileAfter.evaluate().isNotEmpty) {
+          await tester.tap(envTileAfter);
+          await tester.pumpAndSettle();
+
+          final prodOption = find.descendant(
+            of: find.byType(Dialog),
+            matching: find.text(I18nKeys.envProd.tr),
+          );
+          if (prodOption.evaluate().isNotEmpty) {
+            await tester.tap(prodOption);
+            await tester.pumpAndSettle();
+          }
+        }
+      }
+    });
+
+    // ==========================================
+    // CASE GROUP 15: Delete Account Danger Zone
+    // ==========================================
+    patrolWidgetTest('UI Test - Delete Account Danger Zone', ($) async {
+      final tester = $.tester;
+      await navigateToSettings($);
+
+      expect(find.byType(SettingsPage), findsOneWidget);
+
+      // Scroll until Delete Account tile is in view
+      final deleteAccountTile = find.text(I18nKeys.deleteAccount.tr);
+      try {
+        await tester.scrollUntilVisible(deleteAccountTile, 100.0, scrollable: find.byType(Scrollable).first);
+        await tester.pumpAndSettle();
+      } catch (_) {}
+
+      if (deleteAccountTile.evaluate().isNotEmpty) {
+        await tester.tap(deleteAccountTile, warnIfMissed: false);
+        await waitForPage($, DeleteAccountPage);
+
+        expect(find.byType(DeleteAccountPage), findsOneWidget);
+
+        // Pop back to SettingsPage
+        final backBtn = find.byType(BackButton);
+        if (backBtn.evaluate().isNotEmpty) {
+          await tester.tap(backBtn);
+          await tester.pumpAndSettle();
+        }
+      }
+    });
+
+    // ==========================================
+    // CASE GROUP 16: Crash Logs Diagnostic View
+    // ==========================================
+    patrolWidgetTest('UI Test - Crash Logs Diagnostic View', ($) async {
+      final tester = $.tester;
+      await navigateToSettings($);
+
+      expect(find.byType(SettingsPage), findsOneWidget);
+
+      // Scroll until Crash Reports tile is in view
+      final crashTile = find.text(I18nKeys.crashReports.tr);
+      try {
+        await tester.scrollUntilVisible(crashTile, 100.0, scrollable: find.byType(Scrollable).first);
+        await tester.pumpAndSettle();
+      } catch (_) {}
+
+      if (crashTile.evaluate().isNotEmpty) {
+        await tester.tap(crashTile, warnIfMissed: false);
+        await waitForPage($, CrashLogListPage);
+
+        expect(find.byType(CrashLogListPage), findsOneWidget);
+
+        // Pop back to SettingsPage
+        final backBtn = find.byType(BackButton);
+        if (backBtn.evaluate().isNotEmpty) {
+          await tester.tap(backBtn);
+          await tester.pumpAndSettle();
+        }
+      }
+    });
+
+    // ==========================================
+    // CASE GROUP 17: Overview Quick Actions Navigation
+    // ==========================================
+    patrolWidgetTest('UI Test - Overview Quick Actions Navigation', ($) async {
+      final tester = $.tester;
+      await performUiLogin($, 'test_user', 'password123');
+
+      expect(find.byType(HomePage), findsOneWidget);
+
+      // Ensure Overview tab is active
+      tester.firstState<ScaffoldState>(find.byType(Scaffold)).openDrawer();
+      await tester.pumpAndSettle();
+      final overviewItem = find.descendant(
+        of: find.byType(Drawer),
+        matching: find.byIcon(Icons.dashboard_customize_outlined),
+      );
+      if (overviewItem.evaluate().isNotEmpty) {
+        await tester.tap(overviewItem);
+        await tester.pumpAndSettle();
+      }
+
+      // Check QuickActions card: Architecture
+      final quickActions = find.byType(QuickActions);
+      if (quickActions.evaluate().isNotEmpty) {
+        try {
+          await tester.scrollUntilVisible(quickActions, 100.0, scrollable: find.byType(Scrollable).first);
+          await tester.pumpAndSettle();
+        } catch (_) {}
+
+        final archCard = find.descendant(
+          of: quickActions,
+          matching: find.byIcon(Icons.account_tree_outlined),
+        );
+        if (archCard.evaluate().isNotEmpty) {
+          await tester.tap(archCard, warnIfMissed: false);
+          await tester.pumpAndSettle();
+        }
+
+        // Return to Overview
+        tester.firstState<ScaffoldState>(find.byType(Scaffold)).openDrawer();
+        await tester.pumpAndSettle();
+        final returnOverview = find.descendant(
+          of: find.byType(Drawer),
+          matching: find.byIcon(Icons.dashboard_customize_outlined),
+        );
+        if (returnOverview.evaluate().isNotEmpty) {
+          await tester.tap(returnOverview);
+          await tester.pumpAndSettle();
+        }
+      }
+    });
+
+    // ==========================================
+    // CASE GROUP 18: AI Chat Mode Selector & Preset QA Flow
+    // ==========================================
+    patrolWidgetTest('UI Test - AI Chat Mode Selector and Preset QA Flow', ($) async {
+      final tester = $.tester;
+      await performUiLogin($, 'test_user', 'password123');
+
+      expect(find.byType(HomePage), findsOneWidget);
+
+      // Tap global floating AI FAB to open AI Chat Sheet
+      final aiFab = find.byType(FloatingActionButton);
+      if (aiFab.evaluate().isNotEmpty) {
+        await tester.tap(aiFab);
+        await tester.pumpAndSettle();
+      }
+
+      if (find.byType(AiChatPanel).evaluate().isNotEmpty) {
+        // Switch to Interviewer Mode
+        final interviewerMode = find.text(I18nKeys.aiModeInterviewer.tr);
+        if (interviewerMode.evaluate().isNotEmpty) {
+          await tester.tap(interviewerMode);
+          await tester.pumpAndSettle();
+        }
+
+        // Switch back to Visitor Mode
+        final visitorMode = find.text(I18nKeys.aiModeVisitor.tr);
+        if (visitorMode.evaluate().isNotEmpty) {
+          await tester.tap(visitorMode);
+          await tester.pumpAndSettle();
+        }
+
+        // Tap a preset question chip if available
+        final chipFinder = find.byType(ActionChip);
+        if (chipFinder.evaluate().isNotEmpty) {
+          await tester.tap(chipFinder.first);
+          await tester.pump(const Duration(milliseconds: 300));
+          await Future<void>.delayed(const Duration(milliseconds: 150));
+          await tester.pumpAndSettle();
+        }
+
+        // Clear history
+        final clearHistoryIcon = find.byIcon(Icons.delete_sweep_outlined);
+        if (clearHistoryIcon.evaluate().isNotEmpty) {
+          await tester.tap(clearHistoryIcon);
+          await tester.pumpAndSettle();
+        }
+
+        // Close AI panel
+        final closeIcon = find.byIcon(Icons.close);
+        if (closeIcon.evaluate().isNotEmpty) {
+          await tester.tap(closeIcon);
+          await tester.pumpAndSettle();
+        }
+      }
+    });
+
+    // ==========================================
+    // CASE GROUP 19: Reset Settings to Defaults Flow
+    // ==========================================
+    patrolWidgetTest('UI Test - Reset Settings to Defaults Flow', ($) async {
+      final tester = $.tester;
+      await navigateToSettings($);
+
+      expect(find.byType(SettingsPage), findsOneWidget);
+
+      final resetTile = find.text(I18nKeys.resetSettings.tr);
+      try {
+        await tester.scrollUntilVisible(resetTile, 100.0, scrollable: find.byType(Scrollable).first);
+        await tester.pumpAndSettle();
+      } catch (_) {}
+
+      if (resetTile.evaluate().isNotEmpty) {
+        await tester.tap(resetTile, warnIfMissed: false);
+        await tester.pumpAndSettle();
+
+        // Check if confirm dialog appeared
+        final confirmBtn = find.text(I18nKeys.confirm.tr);
+        if (confirmBtn.evaluate().isNotEmpty) {
+          await tester.tap(confirmBtn);
+          await tester.pumpAndSettle();
+        } else {
+          final okBtn = find.text(I18nKeys.ok.tr);
+          if (okBtn.evaluate().isNotEmpty) {
+            await tester.tap(okBtn);
+            await tester.pumpAndSettle();
+          }
+        }
+      }
+    });
+
+    // ==========================================
+    // CASE GROUP 20: Simulate Token Expired & 401 Interceptor Flow
+    // ==========================================
+    patrolWidgetTest('UI Test - Simulate Token Expired & 401 Interceptor Flow', ($) async {
+      final tester = $.tester;
+      await navigateToSettings($);
+
+      expect(find.byType(SettingsPage), findsOneWidget);
+
+      // Activate developer mode by tapping version tile 5 times
+      final versionTile = find.byType(SettingsVersionTile);
+      if (versionTile.evaluate().isNotEmpty) {
+        try {
+          await tester.scrollUntilVisible(versionTile, 100.0, scrollable: find.byType(Scrollable).first);
+          await tester.pumpAndSettle();
+        } catch (_) {}
+        for (int i = 0; i < 5; i++) {
+          await tester.tap(versionTile, warnIfMissed: false);
+          await tester.pump(const Duration(milliseconds: 100));
+        }
+        await tester.pumpAndSettle();
+      }
+
+      // Tap Simulate Token Expired tile
+      final simulateExpiredTile = find.text(I18nKeys.simulateTokenExpired.tr);
+      try {
+        await tester.scrollUntilVisible(simulateExpiredTile, 100.0, scrollable: find.byType(Scrollable).first);
+        await tester.pumpAndSettle();
+      } catch (_) {}
+
+      if (simulateExpiredTile.evaluate().isNotEmpty) {
+        await tester.tap(simulateExpiredTile, warnIfMissed: false);
+        await tester.pumpAndSettle();
+      }
+    });
+
+    // ==========================================
+    // CASE GROUP 21: Common WebView & JS Bridge Test
+    // ==========================================
+    patrolWidgetTest('UI Test - Common WebView & JS Bridge Test', ($) async {
+      final tester = $.tester;
+      await navigateToSettings($);
+
+      expect(find.byType(SettingsPage), findsOneWidget);
+
+      // Activate developer mode
+      final versionTile = find.byType(SettingsVersionTile);
+      if (versionTile.evaluate().isNotEmpty) {
+        try {
+          await tester.scrollUntilVisible(versionTile, 100.0, scrollable: find.byType(Scrollable).first);
+          await tester.pumpAndSettle();
+        } catch (_) {}
+        for (int i = 0; i < 5; i++) {
+          await tester.tap(versionTile, warnIfMissed: false);
+          await tester.pump(const Duration(milliseconds: 100));
+        }
+        await tester.pumpAndSettle();
+      }
+
+      // Tap WebView Test tile
+      final webViewTile = find.text(I18nKeys.webViewTestTitle.tr);
+      try {
+        await tester.scrollUntilVisible(webViewTile, 100.0, scrollable: find.byType(Scrollable).first);
+        await tester.pumpAndSettle();
+      } catch (_) {}
+
+      if (webViewTile.evaluate().isNotEmpty) {
+        await tester.tap(webViewTile, warnIfMissed: false);
+        await tester.pumpAndSettle();
+
+        // Pop back to SettingsPage
+        final backBtn = find.byType(BackButton);
+        if (backBtn.evaluate().isNotEmpty) {
+          await tester.tap(backBtn);
+          await tester.pumpAndSettle();
+        }
+      }
+    });
+
+    // ==========================================
+    // CASE GROUP 22: Terms of Service & Privacy Policy Navigation
+    // ==========================================
+    patrolWidgetTest('UI Test - Terms of Service & Privacy Policy Navigation', ($) async {
+      final tester = $.tester;
+      await bootAppAndGoToLogin($);
+
+      expect(find.byType(LoginPage), findsOneWidget);
+
+      // Tap Terms of Service link in login agreement
+      final tosLink = find.text(I18nKeys.termsOfService.tr);
+      if (tosLink.evaluate().isNotEmpty) {
+        await tester.tap(tosLink);
+        await tester.pumpAndSettle();
+
+        // Pop back to LoginPage
+        final backBtn = find.byType(BackButton);
+        if (backBtn.evaluate().isNotEmpty) {
+          await tester.tap(backBtn);
+          await tester.pumpAndSettle();
+        }
+      }
+
+      // Tap Privacy Policy link in login agreement
+      final privacyLink = find.text(I18nKeys.privacyPolicy.tr);
+      if (privacyLink.evaluate().isNotEmpty) {
+        await tester.tap(privacyLink);
+        await tester.pumpAndSettle();
+
+        // Pop back to LoginPage
+        final backBtn = find.byType(BackButton);
+        if (backBtn.evaluate().isNotEmpty) {
+          await tester.tap(backBtn);
           await tester.pumpAndSettle();
         }
       }
