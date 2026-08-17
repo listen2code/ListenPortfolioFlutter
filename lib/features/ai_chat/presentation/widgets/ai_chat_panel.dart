@@ -1,6 +1,6 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:listen_core/core.dart';
 
 import '../../../home/presentation/pages/home_view_model.dart';
 import '../pages/ai_chat_view_model.dart';
@@ -60,37 +60,37 @@ class _AiChatPanelState extends ConsumerState<AiChatPanel> {
       chatViewModel.updatePresetQuestions();
     });
 
+    final theme = context.theme;
+
     return Material(
-      color: Colors.transparent,
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 8.0, sigmaY: 8.0),
-        child: Container(
-          color: Colors.black54,
-          child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: Column(
-                children: [
-                  AiChatHeader(chatViewModel: chatViewModel, chatState: chatState, onClose: widget.onClose),
-                  const SizedBox(height: 12),
-                  AiChatModeSelector(chatViewModel: chatViewModel, chatState: chatState),
-                  const SizedBox(height: 12),
-                  Expanded(
-                    child: AiChatMessageList(scrollController: _scrollController, chatState: chatState),
-                  ),
-                  AiPresetQuestions(
-                    chatViewModel: chatViewModel,
-                    chatState: chatState,
-                    onSelectQuestion: _scrollToBottom,
-                  ),
-                  AiChatInputBar(
-                    controller: _inputController,
-                    chatViewModel: chatViewModel,
-                    onSend: _scrollToBottom,
-                  ),
-                ],
+      color: theme.scaffoldBackgroundColor,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          child: Column(
+            children: [
+              AiChatHeader(chatViewModel: chatViewModel, chatState: chatState, onClose: widget.onClose),
+              const SizedBox(height: 12),
+              AiChatModeSelector(chatViewModel: chatViewModel, chatState: chatState),
+              const SizedBox(height: 12),
+              Expanded(
+                child: AiChatMessageList(scrollController: _scrollController, chatState: chatState),
               ),
-            ),
+              AiPresetQuestions(
+                chatViewModel: chatViewModel,
+                chatState: chatState,
+                onSelectQuestion: _scrollToBottom,
+              ),
+              AiChatInputBar(
+                controller: _inputController,
+                chatViewModel: chatViewModel,
+                onSend: _scrollToBottom,
+              ),
+            ],
           ),
         ),
       ),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../widgets/ai_chat_floating_button.dart';
-import '../widgets/ai_chat_panel.dart';
 import '../../../../shared/shared.dart';
 
 class GlobalAiChatOverlay extends ConsumerStatefulWidget {
@@ -15,7 +14,6 @@ class GlobalAiChatOverlay extends ConsumerStatefulWidget {
 }
 
 class _GlobalAiChatOverlayState extends ConsumerState<GlobalAiChatOverlay> {
-  bool _isPanelOpen = false;
   String? _currentRoute;
 
   // Drag coordinates for the floating button
@@ -56,16 +54,15 @@ class _GlobalAiChatOverlayState extends ConsumerState<GlobalAiChatOverlay> {
     final route = _currentRoute ?? AppNav.currentRouteName;
     if (route == Routes.root ||
         route == Routes.login ||
-        route == Routes.signUp) {
+        route == Routes.signUp ||
+        route == Routes.aiChat) {
       return false;
     }
     return true;
   }
 
-  void _togglePanel() {
-    setState(() {
-      _isPanelOpen = !_isPanelOpen;
-    });
+  void _openAiChatPage() {
+    AppNav.to(Routes.aiChat);
   }
 
   @override
@@ -85,59 +82,28 @@ class _GlobalAiChatOverlayState extends ConsumerState<GlobalAiChatOverlay> {
       }
     }
 
-    return Overlay(
-      initialEntries: [
-        OverlayEntry(
-          builder: (context) => Stack(
-            children: [
-              // 1. Underlay (The main app Navigator)
-              widget.child,
+    return Stack(
+      children: [
+        // 1. Main app Navigator
+        widget.child,
 
-              // 2. Floating AI Assistant Button (Draggable)
-              if (showButton && !_isPanelOpen && _posX != null && _posY != null)
-                AiChatFloatingButton(
-                  posX: _posX!,
-                  posY: _posY!,
-                  size: _buttonSize,
-                  onPanUpdate: (details) {
-                    setState(() {
-                      _posX = (_posX! + details.delta.dx).clamp(16.0, screenWidth - _buttonSize - 16.0);
-                      _posY = (_posY! + details.delta.dy).clamp(
-                        mediaQuery.padding.top + 16.0,
-                        screenHeight - _buttonSize - mediaQuery.padding.bottom - 16.0,
-                      );
-                    });
-                  },
-                  onTap: _togglePanel,
-                ),
-
-              // 3. Sliding Full-Screen AI Panel Overlay with PopScope & Swipe-to-Dismiss
-              if (_isPanelOpen)
-                Positioned.fill(
-                  child: PopScope(
-                    canPop: !_isPanelOpen,
-                    onPopInvokedWithResult: (didPop, result) {
-                      if (!didPop && _isPanelOpen) {
-                        _togglePanel();
-                      }
-                    },
-                    child: GestureDetector(
-                      onHorizontalDragEnd: (details) {
-                        // Swipe right (> 200 velocity) or left (< -200 velocity) to close panel
-                        final velocity = details.primaryVelocity ?? 0;
-                        if (velocity.abs() > 200) {
-                          _togglePanel();
-                        }
-                      },
-                      child: AiChatPanel(
-                        onClose: _togglePanel,
-                      ),
-                    ),
-                  ),
-                ),
-            ],
+        // 2. Floating AI Assistant Button (Draggable, navigates to Routes.aiChat on tap)
+        if (showButton && _posX != null && _posY != null)
+          AiChatFloatingButton(
+            posX: _posX!,
+            posY: _posY!,
+            size: _buttonSize,
+            onPanUpdate: (details) {
+              setState(() {
+                _posX = (_posX! + details.delta.dx).clamp(16.0, screenWidth - _buttonSize - 16.0);
+                _posY = (_posY! + details.delta.dy).clamp(
+                  mediaQuery.padding.top + 16.0,
+                  screenHeight - _buttonSize - mediaQuery.padding.bottom - 16.0,
+                );
+              });
+            },
+            onTap: _openAiChatPage,
           ),
-        ),
       ],
     );
   }

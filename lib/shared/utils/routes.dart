@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:listen_uikit/uikit.dart';
 
+import '../../features/ai_chat/presentation/pages/ai_chat_page.dart';
 import '../../features/auth/presentation/pages/login/login_page.dart';
 import '../../features/auth/presentation/pages/password/change_password_page.dart';
 import '../../features/auth/presentation/pages/password/forgot_password_page.dart';
@@ -34,6 +35,7 @@ class Routes {
   // Route Path Constants
   static const String root = '/splash';
   static const String home = '/home';
+  static const String aiChat = '/ai_chat';
   static const String login = '/login';
   static const String signUp = '/signUp';
   static const String forgotPassword = '/forgot_password';
@@ -57,6 +59,7 @@ class Routes {
   static Map<String, RoutePageBuilder> get routes => {
     root: () => const SplashPage(),
     home: () => const HomePage(),
+    aiChat: () => const AiChatPage(),
 
     /// login
     login: () => const LoginPage(),

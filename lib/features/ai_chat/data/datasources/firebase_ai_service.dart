@@ -1,5 +1,6 @@
 import 'package:firebase_ai/firebase_ai.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
+import 'package:flutter/foundation.dart';
 import 'package:listen_core/core.dart';
 
 import '../../domain/entities/chat_message.dart';
@@ -40,23 +41,22 @@ Context & Guidelines:
 
   /// Initialize Firebase AI Gemini model
   void initialize({
-    String modelName = 'gemini-2.5-flash',
+    String modelName = 'gemini-3.7-flash',
     String? systemPrompt,
     String mode = 'visitor',
   }) {
-    appLogger.i('[FirebaseAiService] Initializing Gemini SDK: model=$modelName, mode=$mode');
+    appLogger.i('[FirebaseAiService] Initializing Gemini SDK: model=$modelName, mode=$mode, releaseMode=$kReleaseMode');
     try {
       _currentMode = mode;
       final fullPrompt = '$systemPrompt\n[Active Mode: $mode]\n$_defaultSystemPrompt';
       final appCheck = FirebaseAppCheck.instance;
-      // Google AI Studio backend via FirebaseAI.googleAI
       _model = FirebaseAI.googleAI(appCheck: appCheck).generativeModel(
         model: modelName,
         systemInstruction: Content.system(fullPrompt),
       );
       _chatSession = _model!.startChat();
       _initialized = true;
-      appLogger.i('[FirebaseAiService] Initialized successfully with GoogleAI backend ($modelName).');
+      appLogger.i('[FirebaseAiService] Initialized successfully with GoogleAI backend ($modelName) and AppCheck.');
     } catch (e, stack) {
       _initialized = false;
       appLogger.e('[FirebaseAiService] Failed to initialize FirebaseAiService: $e', error: e, stackTrace: stack);

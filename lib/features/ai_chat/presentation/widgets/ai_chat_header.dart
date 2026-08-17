@@ -25,28 +25,37 @@ class AiChatHeader extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          children: [
-            Icon(Icons.smart_toy, color: theme.colorScheme.primary, size: 28),
-            const SizedBox(width: 8),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CommonText(
-                  I18nKeys.aiChatTitle.tr,
-                  style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+        Expanded(
+          child: Row(
+            children: [
+              Icon(Icons.smart_toy, color: theme.colorScheme.primary, size: 28),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CommonText(
+                      I18nKeys.aiChatTitle.tr,
+                      style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    CommonText(
+                      I18nKeys.aiChatSubtitle.tr,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ),
-                CommonText(
-                  I18nKeys.aiChatSubtitle.tr,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-                  ),
-                ),
-              ],
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
+        const SizedBox(width: 8),
         Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
             CommonIconButton(
               icon: Icon(

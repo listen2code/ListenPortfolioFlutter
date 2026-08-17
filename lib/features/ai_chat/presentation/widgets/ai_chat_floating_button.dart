@@ -2,7 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:listen_core/core.dart';
 
-class AiChatFloatingButton extends StatelessWidget {
+class AiChatFloatingButton extends StatefulWidget {
   final double posX;
   final double posY;
   final double size;
@@ -19,19 +19,38 @@ class AiChatFloatingButton extends StatelessWidget {
   });
 
   @override
+  State<AiChatFloatingButton> createState() => _AiChatFloatingButtonState();
+}
+
+class _AiChatFloatingButtonState extends State<AiChatFloatingButton> {
+  Offset _dragDelta = Offset.zero;
+
+  @override
   Widget build(BuildContext context) {
     final theme = context.theme;
     final primaryColor = theme.colorScheme.primary;
 
     return Positioned(
-      left: posX,
-      top: posY,
+      left: widget.posX,
+      top: widget.posY,
       child: GestureDetector(
-        onPanUpdate: onPanUpdate,
-        onTap: onTap,
+        behavior: HitTestBehavior.opaque,
+        onPanStart: (_) {
+          _dragDelta = Offset.zero;
+        },
+        onPanUpdate: (details) {
+          _dragDelta += details.delta;
+          widget.onPanUpdate(details);
+        },
+        onPanEnd: (_) {
+          if (_dragDelta.distance < 6.0) {
+            widget.onTap();
+          }
+        },
+        onTap: widget.onTap,
         child: Container(
-          width: size,
-          height: size,
+          width: widget.size,
+          height: widget.size,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: primaryColor.withValues(alpha: 0.85),
