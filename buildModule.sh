@@ -23,6 +23,11 @@ if [[ ! "$ENV" =~ ^(mock|dev|test|prod)$ ]]; then
     exit 1
 fi
 
+# Ensure Shorebird is available in PATH if installed in standard directory
+if [ -d "$HOME/.shorebird/bin" ]; then
+    export PATH="$HOME/.shorebird/bin:$PATH"
+fi
+
 # Smart detection for Shorebird release mode
 if [ -n "$USE_SHOREBIRD_ARG" ]; then
     USE_SHOREBIRD="$USE_SHOREBIRD_ARG"
