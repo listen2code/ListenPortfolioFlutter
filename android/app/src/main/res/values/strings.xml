@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Listen Portfolio</string>
+    <!-- Firebase App Check Debug Token registered in Firebase Console -->
+    <string name="app_check_debug_token">FA3D26E8-C1ED-420F-B9F5-4235B983689A</string>
+</resources>
