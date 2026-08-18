@@ -148,11 +148,18 @@ jobs:
 
       - name: Setup Shorebird
         run: |
+          set -e
+          SHOREBIRD_DIR=$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.shorebird" || printf %s "${XDG_CONFIG_HOME}/shorebird")
           curl --proto '=https' --tlsv1.2 https://raw.githubusercontent.com/shorebirdtech/install/main/install.sh --retry 5 --retry-delay 3 --retry-all-errors -sSf | bash -s -- --force
+          echo "$SHOREBIRD_DIR/bin" >> $GITHUB_PATH
           echo "$HOME/.shorebird/bin" >> $GITHUB_PATH
+          echo "$HOME/.config/shorebird/bin" >> $GITHUB_PATH
+          echo "PATH=$SHOREBIRD_DIR/bin:$HOME/.shorebird/bin:$HOME/.config/shorebird/bin:$PATH" >> $GITHUB_ENV
           if [ -n "${{ secrets.SHOREBIRD_TOKEN }}" ]; then
             echo "SHOREBIRD_TOKEN=${{ secrets.SHOREBIRD_TOKEN }}" >> $GITHUB_ENV
           fi
+          export PATH="$SHOREBIRD_DIR/bin:$HOME/.shorebird/bin:$HOME/.config/shorebird/bin:$PATH"
+          shorebird --version
 
       - name: Install dependencies
         run: flutter pub get
@@ -399,11 +406,18 @@ jobs:
 
       - name: Setup Shorebird
         run: |
+          set -e
+          SHOREBIRD_DIR=$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.shorebird" || printf %s "${XDG_CONFIG_HOME}/shorebird")
           curl --proto '=https' --tlsv1.2 https://raw.githubusercontent.com/shorebirdtech/install/main/install.sh --retry 5 --retry-delay 3 --retry-all-errors -sSf | bash -s -- --force
+          echo "$SHOREBIRD_DIR/bin" >> $GITHUB_PATH
           echo "$HOME/.shorebird/bin" >> $GITHUB_PATH
+          echo "$HOME/.config/shorebird/bin" >> $GITHUB_PATH
+          echo "PATH=$SHOREBIRD_DIR/bin:$HOME/.shorebird/bin:$HOME/.config/shorebird/bin:$PATH" >> $GITHUB_ENV
           if [ -n "${{ secrets.SHOREBIRD_TOKEN }}" ]; then
             echo "SHOREBIRD_TOKEN=${{ secrets.SHOREBIRD_TOKEN }}" >> $GITHUB_ENV
           fi
+          export PATH="$SHOREBIRD_DIR/bin:$HOME/.shorebird/bin:$HOME/.config/shorebird/bin:$PATH"
+          shorebird --version
 
       - name: Install dependencies
         run: flutter pub get
@@ -637,11 +651,18 @@ jobs:
 
       - name: Setup Shorebird
         run: |
+          set -e
+          SHOREBIRD_DIR=$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.shorebird" || printf %s "${XDG_CONFIG_HOME}/shorebird")
           curl --proto '=https' --tlsv1.2 https://raw.githubusercontent.com/shorebirdtech/install/main/install.sh --retry 5 --retry-delay 3 --retry-all-errors -sSf | bash -s -- --force
+          echo "$SHOREBIRD_DIR/bin" >> $GITHUB_PATH
           echo "$HOME/.shorebird/bin" >> $GITHUB_PATH
+          echo "$HOME/.config/shorebird/bin" >> $GITHUB_PATH
+          echo "PATH=$SHOREBIRD_DIR/bin:$HOME/.shorebird/bin:$HOME/.config/shorebird/bin:$PATH" >> $GITHUB_ENV
           if [ -n "${{ secrets.SHOREBIRD_TOKEN }}" ]; then
             echo "SHOREBIRD_TOKEN=${{ secrets.SHOREBIRD_TOKEN }}" >> $GITHUB_ENV
           fi
+          export PATH="$SHOREBIRD_DIR/bin:$HOME/.shorebird/bin:$HOME/.config/shorebird/bin:$PATH"
+          shorebird --version
 
       - name: Install dependencies
         run: flutter pub get
