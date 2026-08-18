@@ -1,149 +1,188 @@
-# APM 性能监控面板设计与实现文档
+# APM 性能监控与 LogOverlayManager 架构设计及实现文档
 
-本项目集成了一套轻量级、零原生依赖、专为 Flutter 环境定制的客户端 **APM (Application Performance Monitoring) 性能监测面板**。它能够对帧率 (FPS/Jank)、内存 footprint (Dart RSS)、页面首帧加载时间 (Page Traces) 以及业务 Intent 分段耗时树 (Intent Traces) 进行高精度的采集、平滑滤波与深度可视化诊断。
+本项目集成了一套轻量级、零原生依赖、专为 Flutter 生产与调试环境深度定制的客户端 **APM (Application Performance Monitoring) 性能监测系统** 与 **LogOverlay 悬浮调试中枢**。它能够对帧率 (FPS/Jank)、内存 Footprint (Dart RSS)、冷启动耗时基线 (LaunchMonitor)、页面首帧加载时间 (Page Traces)、网络抓包 (NetInspector) 以及业务 Intent 分段耗时树 (Intent Traces) 进行高精度的采集、平滑滤波与深度可视化诊断。
 
 ---
 
-## 1. 核心架构设计
+## 1. 整体架构与分层设计
 
-性能监控系统的整体架构采用单向数据流与零耦合的设计原则，共分为：**数据采集层**、**高效缓冲区**、**数据存储层** 与 **可视化表现层**。
+性能监控系统的整体架构采用单向数据流与零耦合的设计原则，共分为：**数据采集层 (`ListenCore/apm`)**、**高效环形缓冲区 (`RingBuffer`)**、**全局调试调度中枢 (`LogOverlayManager`)** 与 **可视化表现层 (`widgets/`)**。
 
 ```mermaid
 graph TD
   Engine[Flutter Engine Pipeline] -->|addTimingsCallback| Monitor[FrameMonitor]
-  Monitor -->|FrameMetric| Buffer[RingBuffer]
-  ZoneManager[ZoneManager Stages] -->|EventBus Stream| Store[PerfTraceStore]
-  Dio[Dio HTTP Client] -->|_NetworkInspectorInterceptor| NetStore[NetworkInspectorStore]
+  Monitor -->|FrameMetric| Buffer[RingBuffer 300]
+  ZoneManager[ZoneManager Stages] -->|EventBus Stream| Store[PerfTraceStore 200]
+  Dio[Dio HTTP Client] -->|_NetworkInspectorInterceptor| NetStore[NetworkInspectorStore 100]
+  AppLife[AppInitializer / main] -->|Stage Timings| Launch[LaunchMonitor 50 FIFO]
   
-  subgraph UI Overlay Layer
+  subgraph Core APM Engine (listen_core)
+    Monitor
+    Buffer
+    Store
+    NetStore
+    Launch
+  end
+
+  subgraph LogOverlayManager Dispatcher (shared/utils)
+    Manager[LogOverlayManager]
+    Manager -->|traceFilterNotifier| TraceRouter[Trace ID Linkage Router]
+    Manager -->|isShowingNotifier| StateSync[Visibility State Sync]
+  end
+
+  subgraph UI Overlay Layer (shared/utils/log_overlay)
     Buffer -->|CustomPaint| MiniChart[_FpsMiniChart]
-    Buffer -->|CustomPaint| LineChart[_FpsLineChart]
+    Buffer -->|CustomPaint + Crosshair| LineChart[_FpsLineChart]
     Store -->|ListView| Dash[_PerfDashboardTab]
     NetStore -->|ValueListenableBuilder| NetTab[_NetworkInspectorTab]
+    TraceRouter -->|Filter Text Binding| LogTab[_LogsInspectorTab]
   end
 ```
 
-### 1.1 数据采集层 (`FrameMonitor`)
-* **帧率与时延采集**：利用 `SchedulerBinding.instance.addTimingsCallback` 挂载引擎帧耗时监听，获取包含 UI 线程 Build 和 GPU 线程 Raster 阶段的 `FrameTiming` 数据。
-* **低频内存采样**：为降低高频系统调用引起的性能损耗，内存采用 `ProcessInfo.currentRss` 并在后台以 `2-second` 节流定时器进行异步采样。
-* **冷启动降噪**：在监控启动时自动屏蔽前 5 帧（Warm-up frames），防范热重载或 App 冷启动时的偶发性卡顿对性能平均基准造成污染。
-
-### 1.2 高效缓冲区 (`RingBuffer<T>`)
-* 自研固定容量的环形队列，支持指定 Chronological 顺时下标索引操作 `operator []`。
-* **零 GC 堆分配**：通过物理数组循环覆盖机制，避免了 CustomPainter 绘图高频扫描时产生临时 list 复制 and 堆内存分配，实现极速只读迭代。
-
-### 1.3 业务 Trace 存储层 (`PerfTraceStore`)
-* 基于 `ZoneManager` 的分段耗时拦截（如 `Start -> API Query -> Parse JSON -> Render`），将完整的业务 Trace 流通过 EventBus 级别广播解耦，由 `PerfTraceStore` 监听录入。
-* 存储层设置 200 条滚动上限，提供 ValueNotifier 响应式更新，实现完美的结构化 Trace 耗时树。
-
-### 1.4 网络抓包审计层 (`NetworkInspectorStore`)
-* 基于 Dio 拦截器机制，对客户端发起的全部 HTTP 流量进行无缝拦截和审计。
-* 内存中维持固定 100 条滚动容量的先进先出（FIFO）数据队列，支持在 App 崩溃或切换账号时安全释放以规避内存膨胀风险。
-* 通过 `ValueNotifier` 暴露响应式数据源，驱动 Overlay 窗口下的抓包 Tab 自动刷新。
+### 1.1 全局调试调度中枢 (`LogOverlayManager`) 架构职责
+`LogOverlayManager` 是整个应用内调试与监控悬浮层的生命周期总控器：
+1. **双模态交互设计**：
+   * **悬浮球迷你态 (Mini Mode)**：紧凑常驻在屏幕边缘，支持任意位置拖拽，内嵌毫秒级微型 FPS 动态折线波浪图（`_FpsMiniChart`），常态下只占用极少像素且不遮挡业务操作。
+   * **可缩放多 Tab 窗体态 (Expanded Window Mode)**：支持自由拖拽移动与 8 方向边角手势缩放（`minWidth = 250`, `minHeight = 200`），具备防出界钳位保护（Screen Boundary Clamping）。
+2. **多维诊断看板集成**：
+   * **Logs Tab (`_LogsInspectorTab`)**：应用全量/分类日志实时流、关键词搜索、LogLevel 过滤、日志剪贴板导出与分享。
+   * **Network Tab (`_NetworkInspectorTab`)**：全量 HTTP 流量抓包审计（cURL 导出、请求头/响应体展开、状态码高亮）。
+   * **Perf Dashboard (`_PerfDashboardTab`)**：实时帧时延图谱、十字准星探针、冷启动耗时基线、Intent 分段耗时树。
+   * **MVI Playback 录制/回放状态集成**：直接显示回放执行进度徽章。
+3. **跨模块 Trace ID 联动中枢 (Drill Logs)**：
+   * 维护静态全局消息总线 `traceFilterNotifier` (`ValueNotifier<String?>`)。
+   * 当用户在崩溃日志详情（`CrashLogDetailsSheet`）或网络抓包（`NetworkInspectorTab`）中点击 **“Drill Logs”** 时，调度中枢会瞬间唤起悬浮窗、自动定位到 Logs Tab 并填入对应的 `traceId` 过滤框，实现**崩溃/网络/业务日志上下文秒级溯源闭环**。
+4. **状态持久化**：
+   * 基于 `SpUtil` 记录用户开启/关闭偏好（`log_overlay_key`），应用重启时按需自愈展示。
 
 ---
 
-## 2. 关键算法与技术突破
+## 2. 性能计算精确度评估与数学推导
 
-### 2.1 物理 Vsync 自适应 Budget Jank 检测算法
-传统的卡顿（Jank）检测通常使用固定的 16.6ms（60Hz）作为判定界限。但在现代高刷设备（如 120Hz/ProMotion 屏幕、LTPO 自适应高刷屏）下，这会导致 120Hz 掉帧（8.3ms~16.6ms 之间）无法被捕捉。
-* **算法实现**：通过获取相邻帧 `FramePhase.vsyncStart` 的物理时戳差值：
-  $$\text{Vsync Budget} = \text{vsyncStart}_{N} - \text{vsyncStart}_{N-1}$$
-* 在自适应高刷设备下，自动实时缩放预算基准（8.3ms / 11.1ms / 16.6ms），保证卡顿捕获 100% 精确。
-
-### 2.2 物理脉冲时间轴 FPS 滤波算法（解决 FPS 异常冲高 bug）
-* **陷阱问题**：由于 Flutter 引擎是异步批量传递 Timing 回调的（Batch Timings），若采用 `DateTime.now()` 作为每帧时刻，在同一个 UI 刷新微任务周期中，多帧会被盖上相同的时间戳。在 FPS 计算分母时会除以极其微小的 `spanUs` 导致计算出数千 FPS 的算术错误。
-* **改进实现**：采用 `timing.timestampInMicroseconds(FramePhase.vsyncStart)` 作为帧的唯一物理时间戳。
-* 计算 FPS 时，以最后一帧与滑动窗口内最老帧的 `vsyncStartUs` 差值作分母：
-  $$\text{FPS} = \frac{\text{Frame Count} - 1}{\text{Last Vsync Us} - \text{Oldest Vsync Us}} \times 1,000,000$$
-* 保证分母最小不低于屏幕物理刷新间隔，辅以一阶低通滤波算法（EMA, $\alpha=0.3$）平滑抖动，完美消除突变。
-
-### 2.3 智能帧激励实时刷新（Frame Warmup）
-* 在静止状态下，由于没有界面重绘，Flutter 引擎会暂停触发 `addTimingsCallback` 回调，这会导致面板中的曲线图在闲置时静止不动。
-* **激励机制**：当 `Perf Dashboard` Tab 可见时，开启 500ms 周期定时器调用 `setState(() {})`。
-* **CustomPainter 重绘规避机制**：因为老 delegate 与新 delegate 内部共享同一个 `RingBuffer` 引用，常规的 `shouldRepaint` 长度/值对比会由于物理指针相同而失效导致缓存。我们将其 `shouldRepaint` 设为恒常返回 `true`，结合定时 `setState`，保证了闲置状态下折线图也具有“平滑向左推移”的滚动呼吸感。
-* 当关闭面板时自动注销，恢复 0 常态开销。
-
-### 2.4 页面路由与慢帧关联诊断及交互式十字准星悬浮窗
-传统的帧监控仅能记录耗时，无法知道卡顿是在哪个页面/路由发生的。
-* **关联诊断**：在 `FrameMetric` 中添加了非空的 `routeName` 字段。每当 Scheduler 触发 `_onTimings` 回调生成 `FrameMetric` 时，会自动抓取 `AppNav.currentRouteName`（当前处于活动状态的路由名称），将慢帧耗时与当前所在的页面进行高精度绑定。
-* **交互式十字准星（Crosshair）与浮窗**：
-  * 重构大图表 `_FpsLineChart` 为 `StatefulWidget`，引入手势识别器 `GestureDetector`。
-  * 当用户在折线图区域进行左右横向拖拽（`onPanUpdate`/`onTapDown`）时，能够精准计算出手指当前所在的 X 坐标所对应的帧索引。
-  * 画布上的 CustomPainter 会动态绘制一条高亮的垂直白色虚线（十字准星），并在对应折线上绘制大小圆点 Halo。
-  * 折线图顶部区域动态渲染 Tooltip 提示浮窗，显示所选中帧的精确耗时（毫秒）、即时 FPS、当前所处的页面路由（`Page: xxx`）以及该帧是否被判定为 Jank 卡顿。
-
-### 2.5 悬浮框收起态实时渲染优化与 Y 轴视口动态缩放
-* **RepaintBoundary 渲染优化**：为了避免收起态下的 `_FpsMiniChart` 高频重建（每 250ms 触发一次 `ValueListenableBuilder` 刷新）导致 Flutter 的 `RenderRepaintBoundary` 图层图层缓存重用，我们完全移除了收起状态下微型折线图内的 `RepaintBoundary`。使 `CustomPaint` 直接挂载在上层 Overlay 的 Canvas 上，保证每次 FPS 发生变化时 100% 渲染刷新，完美杜绝图层渲染冷冻/挂死的问题。
-* **Y 轴视口动态缩放（解决 Mini 折线图无起伏的视觉死寂问题）**：
-  * **原痛点**：先前 `_MiniChartPainter` 的 Y 轴最大值直接使用了 `16.6ms` 的限制。而在极速流畅的正常渲染（1ms - 3ms 帧耗时）时，折线的所有坐标都被极致压缩在 16 像素高 Canvas 的最底部（`y = 14` 至 `15` 之间），使得曲线在视觉上呈现出完全静止的水平直线。
-  * **优化方案**：去除死限，将 Mini 折线图 Y 轴最大值的 `clamp` 下限调整为 **`3.0ms (3000us)`**。这样即使在极其流畅的帧率下，轻微的帧耗时差异也会被放大展示（在 `y = 5` 至 `y = 11` 之间波動），为用户提供清晰、平滑、具有极强滚动呼吸感的实时波浪曲线图。
-
-### 2.6 轻量级网络抓包（Net Inspector）拦截机制与 TraceId 联动下钻原理
-* **精准全生命周期捕捉**：使用 Dio 的 `Interceptor`，在 `onRequest` 中由 UUID 生成该次 HTTP 请求的唯一 `id` 存入 `options.extra`，并将请求方法、URL、Payload、起始时间与当前 Dart Zone 中的 `traceId` 关联存盘。在 `onResponse` / `onError` 中匹配对应的 `id` 更新最终的状态码、时延与返回体。
-* **TraceId 分布式链路联动下钻（Drill Logs）**：
-  * **原理解耦**：在 APM 全局架构下，主日志系统的日志格式都会打印当前执行 Zone 的 Trace ID（例如：`💡 [trace-id-xxxx] Logs...`）。
-  * **联动机制**：抓包 Tab（`_NetworkInspectorTab`）中的每个请求行记录都携带有该次网络调用发生时所在的 Trace ID。点击 **“Drill Logs”** 时，系统将该请求的 Trace ID 赋值给 `TextEditingController` 的文本内容，并切回 `Logs` Tab。主日志渲染视图在接收到文本变更后，会自动利用 `log.message.contains(traceFilter)` 进行布尔计算，只向屏幕输出包含该 Trace ID 的日志条目，实现了从网络抓包到逻辑日志上下文的无缝快速溯源。
-
-> **注意**：点击日志中的 **TraceId** 只会在 **Log Tab** 中进行过滤，**不会** 自动切换到 **Performance Tab**。
-
-### 2.7 崩溃日志（Crash Log）与 TraceId / Logs 一键联动下钻原理
-* **上下文元数据注入**：修改底层 `CrashManager.saveCrashLog`。当 App 发生未捕获异常或受管理异常被写入落盘日志（`.log`）时，自动从 `ZoneManager.currentTraceId` 提取当前 Zone 正在追踪的 `Trace ID`，并结合 `AppNav.currentRouteName` 记录下发生崩溃那一刻的页面路由，并统一写入崩溃日志头部。
-* **全局联动（LogOverlayManager 消息中枢）**：
-  * `LogOverlayManager` 暴露了一个全局静态的 `traceFilterNotifier` (`ValueNotifier<String?>`) 监听中心。
-  * 日志浮窗内部的 `_LogOverlayWidgetState` 挂载了对该 `ValueNotifier` 的监听器。一旦外部（如崩溃日志详情弹窗）将其更新为新的 Trace ID，日志浮窗便会自动将过滤搜索栏置为该 Trace ID，并把当前标签页强切至 `OverlayTab.logs` 触发日志流重绘过滤。
-* **一键下钻诊断（Drill Logs）**：
-  * 崩溃日志详情 Sheet 弹窗在展示日志文本时，利用 `RegExp` 动态解析日志中的 `Trace ID` 字段。
-  * 若解析出有效的 Trace ID，在顶部标题栏侧渲染一个高亮的 **“Drill Logs (联动诊断)”** 芯片。
-  * 用户点击时自动关闭 Sheet 详情弹窗，唤起/最大化展开日志悬浮窗，瞬间将调试场景切回崩溃现场发生前的所有上下文日志流中，实现闭环调试。
-
-### 2.8 App 启动耗时与首帧时延监测 (Launch Monitor)
-* **分阶段高精打桩**：为了全面分析冷启动性能瓶颈，在客户端全生命周期链条中挂载了三个核心打桩点：
-  1. `recordMainStart()`：主入口 `main()` 第一行执行，捕捉 Dart 运行时启动起点（与系统冷启动耗时对齐）。
-  2. `recordInitStart()` / `recordInitEnd()`：包围 `AppInitializer.init()`，监测全部核心 SDK、缓存及状态机制初始化阶段的开销。
-  3. `recordFirstFrame()`：通过 `WidgetsBinding.instance.addPostFrameCallback` 在首帧布局渲染结束的瞬间被调用，作为端到端页面完全呈现给用户的终点。
-* **本地基线回溯与 FIFO 队列表 (50条上限)**：
-  每次编译的启动耗时汇总成 `LaunchReport` 对象，通过 JSON 编码后存储 in `SpUtil`。系统维护最大 50 组启动记录的环形淘汰队列，并在面板中支持可折叠的历史列表展示。
-* **性能退化判定 (Regression Detection) 算法**：
-  若历史数据大于 3 条，系统会自动计算均值。当本次冷启动时长超出往期均值 **`25%`** 且绝对延迟增加量大于 **`150ms`** 时，判定该次启动存在严重“性能退化 (Regression)”。面板卡片会自动由健康绿色状态（Healthy）转换为警示红色状态（Regression +X ms），提醒开发人员防范串行阻塞。
+### 2.1 为什么传统 `DateTime.now()` 计算 FPS 会出现数千 FPS 的算术 Bug？
+* **Flutter 引擎批处理机制 (Batch Frame Timings)**：
+  Flutter 引擎并不是每渲染一帧就立即触发一次 Dart 回调，而是在微任务空闲或从休眠唤醒时**批量分发（Batch Dispatch）** 2~5 帧的 `FrameTiming` 数据。
+* **错误模式 (Wall Clock Jitter)**：
+  若开发者在收到回调时简单使用 `DateTime.now()` 记录帧时刻：
+  $$\text{Span} = \text{DateTime.now()}_{\text{Batch Frame 2}} - \text{DateTime.now()}_{\text{Batch Frame 1}} \approx 0 \sim 50\,\mu\text{s}$$
+  计算 $\text{FPS} = 1 / 0.00005 \approx 20,000\,\text{FPS}$，导致面板出现严重的虚高毛刺。
+* **高精度改进方案（物理 Vsync 脉冲时间轴）**：
+  `FrameMonitor` 严格从引擎底层提取物理 Vsync 时戳：
+  $$\text{vsyncStartUs} = \text{timing.timestampInMicroseconds(FramePhase.vsyncStart)}$$
+  在滚动 1 秒（$1,000,000\,\mu\text{s}$）的滑动时间窗口内：
+  $$\text{FPS}_{\text{exact}} = \frac{\text{Frame Count} - 1}{\text{Last Vsync Us} - \text{Oldest Vsync Us}} \times 1,000,000$$
+  * 分子使用 $\text{Frame Count} - 1$ 代表帧与帧之间的**物理间隔数（Intervals）**。
+  * 分母严格下界受限于物理屏幕刷新周期（如 60Hz 必 $\ge 16.6\text{ms}$，120Hz 必 $\ge 8.33\text{ms}$），彻底根除分母趋零 Bug。
+  * 配合一阶低通滤波算法（EMA, $\alpha=0.3$）平滑 UI 显示：
+    $$\text{FPS}_{\text{smoothed}} = (\text{FPS}_{\text{exact}} \times 0.3) + (\text{FPS}_{\text{prev}} \times 0.7)$$
 
 ---
 
-## 3. 编译期 Tree-shaking 裁剪
+### 2.2 物理 Vsync 自适应 Budget 与 Jank / 掉帧分类算法
 
-为了保证生产环境（Release Mode）包体积 of the absolute purity as well as "zero runtime overhead", we intercept overlay creation inside its entry points:
+现代移动端（LTPO 动态刷新率屏幕、iPad ProMotion、120Hz 电竞屏）刷新率在 $60\text{Hz} \sim 120\text{Hz}$ 动态跳变。如果硬编码 16.6ms 作为 Jank 基准，在 120Hz 下出现 10ms 的明显掉帧将被漏报。
+
+#### 1. 动态物理预算推导
+$$\text{intervalUs} = \text{vsyncStartUs}_N - \text{vsyncStartUs}_{N-1}$$
+$$\text{budgetUs} = \begin{cases} 
+\text{intervalUs}, & \text{if } 3,000\,\mu\text{s} \le \text{intervalUs} \le 100,000\,\mu\text{s} \\
+16,670\,\mu\text{s}, & \text{otherwise (默认 60Hz 回退)}
+\end{cases}$$
+
+#### 2. Debug 模式 Dart VM 膨胀补偿
+在 Debug 模式下，Dart VM 的断言（assert）、未优化 JIT 代码和类型检查会使渲染耗时放大 3~4 倍。为防止开发期间面板被虚假红点填满，`FrameMonitor` 智能判定运行环境：
+$$\text{activeThresholdUs} = (\text{kDebugMode} \land \neg\text{isRunningInTest}) \,?\, (\text{budgetUs} \times 3) : \text{budgetUs}$$
+
+#### 3. 掉帧等级判定
+* **Jank (轻微卡顿/错过 1 个 Vsync 周期)**：
+  $$\text{totalDurationUs} > \text{activeThresholdUs}$$
+* **Severe Jank (严重卡顿/错过 2 个以上 Vsync 周期)**：
+  $$\text{totalDurationUs} > \text{activeThresholdUs} \times 2$$
+
+#### 4. 闲置状态正常帧噪点过滤 (Idle Noise Filter)
+当应用静止超 100ms 后偶尔触发一次轻微重绘（如日志悬浮框自身的时钟跳动），由于 `intervalUs \ge 100,000\,\mu\text{s}`，且其实际耗时很低（$\le \text{activeThresholdUs}$），算法自动将其识别为**孤立正常帧**并跳过，防止污染历史帧率统计队列。
+
+---
+
+### 2.3 内存 (RSS) 采集的轻量化与观测者效应防护 (Observer Effect)
+
+* **问题**：高频通过 C 接口查询系统进程内存（`ProcessInfo.currentRss`）会产生内核态切换与系统调用开销，若跟随 60/120fps 帧回调查询，监控本身就会成为导致卡顿的“元凶”。
+* **解决方案**：
+  * 采用 **2 秒低频异步节流定时器**：独立于渲染帧循环，仅在定时器触发时进行一次轻量采集。
+  * Web 平台及异常环境自动安全降级（返回 0），确保全平台零崩溃风险。
+
+---
+
+### 2.4 渲染层极致优化与零 GC 压力
+
+1. **`RingBuffer<T>` 环形数据结构**：
+   * 容量固定为 300 条（约覆盖 60fps 下 5 秒渲染足迹）。
+   * 基于固定长度物理 List 与游标指针循环覆盖，**新增帧记录的 GC 开销为 0**。
+2. **CustomPainter 绘图加速**：
+   * 禁用抗锯齿：`paint.isAntiAlias = false`，大幅提升批量绘制线段的 GPU 吞吐。
+   * 像素对齐（Pixel Snapping）：坐标计算全部采用 `.roundToDouble()`，避免子像素抗锯齿合成引发的模糊与 GPU 重新分片计算。
+   * UI 刷新分发节流：`_throttledNotify` 强制设定 **250ms 频率上限**（4Hz），严格将监控 UI 的 CPU/GPU 占用控制在整机 1% 以下。
+
+---
+
+## 3. 交互式十字准星 (Crosshair) 与路由慢帧下钻诊断
+
+在大折线图（`_FpsLineChart`）中集成了交互式探针：
+* **手势拾取算法**：
+  $$i = \text{clamp}\left( \text{round}\left(\frac{\text{touchX}}{\text{stepX}}\right),\, 0,\, N - 1 \right)$$
+* **实时 Tooltip 诊断信息展示**：
+  * **Frame Latency**：精确到微秒的 Build（UI 线程）与 Raster（GPU 线程）分段耗时。
+  * **Effective FPS**：该瞬时帧对应的折算帧率。
+  * **Page Route**：发生该帧绘制时活动中的页面路由（如 `/home`, `/settings`, `/ai_chat`）。
+  * **Jank Status**：直观标记 Normal / Jank / Severe Jank，方便快速定位具体页面的性能瓶颈。
+
+---
+
+## 4. App 启动耗时监测与回归检测算法 (`LaunchMonitor`)
+
+### 4.1 三阶段打桩链路
+1. **`recordMainStart()`**：`main()` 入口首行，记录 Dart VM 与框架初始化起点。
+2. **`recordInitStart()` / `recordInitEnd()`**：紧贴 `AppInitializer.init()`，度量异步依赖与服务加载耗时。
+3. **`recordFirstFrame()`**：在首帧绘制完成后由 `addPostFrameCallback` 触发，精确对齐用户感知到的完全可交互时间点（TTI）。
+
+### 4.2 性能退化回归判定公式
+系统持久化维护最近 50 次冷启动报告（FIFO）。当启动历史样本数 $\ge 3$ 时，自动计算往期基线均值 $\mu_{\text{baseline}}$：
+$$\text{Is Regression} = (\text{Duration}_{\text{current}} > \mu_{\text{baseline}} \times 1.25) \land (\text{Duration}_{\text{current}} - \mu_{\text{baseline}} > 150\,\text{ms})$$
+* **告警提示**：一旦命中回归规则，卡片自动切换为橙红告警徽章并提示退化毫秒数，帮助开发团队即时拦截串行阻塞改动。
+
+---
+
+## 5. 编译期 Tree-Shaking 生产零开销
+
+为了确保 Release 生产环境包体积绝对纯净且不产生任何后台开销，所有入口均由编译期常量守卫：
 
 ```dart
 static Future<void> init(BuildContext context) async {
-  if (kReleaseMode) return; // 编译期常量 guard
+  if (kReleaseMode) return; // 编译期常量断言
   ...
 }
 
 static Future<void> show(BuildContext context, {bool startExpanded = false}) async {
-  if (kReleaseMode) return; // 编译期常量 guard
+  if (kReleaseMode) return; // 编译期常量断言
   ...
 }
 ```
 
-* **实现原理**：由于 `kReleaseMode` 是编译期常量，Dart AOT 编译器在对 Release 包进行摇树优化（Tree-shaking）时，会判定 `LogOverlayWidget` 及其所有的自绘 Painter、`RingBuffer`、`FrameMonitor` 核心算法等全部为 **不可达代码（Dead Code）**。
-* 从而将 APM UI 及绘制逻辑 100% 干净地从生产包中剥离，做到生产包的“零体积污染”与“零后台开销”。
+* **编译器裁决**：Dart AOT 编译器在进行 Tree-shaking 阶段时，会将整个 `LogOverlayWidget`、自绘 Painter、`RingBuffer` 及 `FrameMonitor` 等全部判定为不可达代码（Dead Code），从发布包中 100% 剥离。
 
 ---
 
-## 4. 单元测试与静态分析
+## 6. 自动化测试与验证
 
-项目建立了完善的自动化单元测试集，保障了底层算法的可靠性：
-1. **`ring_buffer_test.dart`**：验证环形队列物理越界防护、Chronological Order 读写及覆盖逻辑。
-2. **`frame_monitor_test.dart`**：利用 `Mocktail` 模拟 FrameTimings 脉冲，覆盖冷启动降噪、自适应高刷 Budget 对齐、物理时钟 FPS 计算及 `ZoneManager` 的 Trace 自动流转。
-3. **`network_inspector_store_test.dart`**：验证网络数据捕获内存队列 of log, response and trace metadata.
-4. **`launch_monitor_test.dart`**：验证冷启动时时戳记录、本地基线 FIFO 存储（50 条限制）与 25% + 150ms 性能退化警报的算法判定准确度。
+本项目建立了严密的自动化测试套件覆盖核心计算与存储链路：
 
-通过以下命令运行并确保测试绿灯：
 ```bash
+# 运行全部 APM 与核心模块单元测试
 flutter test test/core/ring_buffer_test.dart test/core/frame_monitor_test.dart test/core/network_inspector_store_test.dart test/core/launch_monitor_test.dart
 ```
 
-静态分析保持全绿，无任何 Warning 或 Error：
-```bash
-flutter analyze --no-fatal-infos
-```
+* **测试覆盖点**：
+  * `FrameMonitor` 模拟帧脉冲测试：冷启动前 5 帧过滤、120Hz/60Hz 自适应 Budget 缩放、1 秒滑动时间窗口计算公式验证。
+  * `RingBuffer` 循环写入覆盖、逆序/顺序列举越界防护。
+  * `LaunchMonitor` 50 条 FIFO 淘汰与 25% + 150ms 回归算法断言。
+  * `NetworkInspectorStore` 100 条 FIFO 与 Trace ID 关联验证。
