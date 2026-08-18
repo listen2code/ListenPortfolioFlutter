@@ -54,7 +54,7 @@ final class FirebaseAiServiceProvider
   }
 }
 
-String _$firebaseAiServiceHash() => r'1a029965d20858bfc56beb648896bceef8f01ed0';
+String _$firebaseAiServiceHash() => r'65f95eafe1a6cbd8dd5d40ed0e1695683e63ec95';
 
 @ProviderFor(aiChatRemoteDataSource)
 final aiChatRemoteDataSourceProvider = AiChatRemoteDataSourceProvider._();
