@@ -77,13 +77,19 @@ ListenPortfolioFlutter 不是单纯的“简历展示 App”。
 
 - 国际化相关改动，需要同步到项目实际使用的翻译入口与 key 定义。
 - 敏感数据优先使用安全存储；普通本地键值遵循现有常量与封装规则。
-- 网络层优先沿用现有 `ApiClient`、拦截器链、`Either<Failure, T>` 与既有错误收敛方式。
-- 状态管理优先沿用当前的 Riverpod + MVI + `freezed` 约定。
+- **MVI 与 Clean Architecture 分层守则**：
+  - **Domain 层纯粹性**：必须为纯 Dart 代码，严禁依赖 `package:flutter/...`；所有业务用例必须继承 `UseCase<T, Param>` 并返回 `Future<Either<Failure, T>>`。
+  - **Presentation 层单向数据流**：`ViewModel` 必须继承 `_$ViewModel with ViewModelMixin<State, Intent>`；严禁在 ViewModel 中注入或持有 `BuildContext`；状态变更必须通过 `updateState(state.copyWith(...))` 触发；单次瞬态 UI 动作（Toast、弹窗、导航、底部面板）必须通过 `emitEffect(BaseEffect)` 发送。
+  - **Data 层收敛**：`RepositoryImpl` 必须继承 `BaseRepository`，所有网络 IO 统一收口至 `safeCall()` 实现错误自动映射与缓存回退；禁止 Presentation 层跨层直接访问 `DataSource`。
 - **共通能力优先复用 (Core & UIKit First)**：禁止在业务 Feature 层重复造轮子或直接使用 SDK 原生 UI 控件（如原生 `Text`、`ElevatedButton`、`GestureDetector`、`TextField` 等），必须优先使用 `listen_uikit` 提供的规范组件（`CommonText`、`CommonButton`、`CommonClickable`、`CommonTextField` 等）及 `listen_core` 的扩展属性（如 `context.theme`、`context.colorScheme`、`context.mediaQuery`）。
+- **全动态主题与 Token 取色 (Zero Raw Color)**：严禁在业务代码中直接硬编码 `Colors.black`、`Colors.white` 或裸 Hex 色值；所有背景、文本、边框与图标颜色必须通过 `context.colorScheme`（如 `onSurface`、`surfaceContainerHighest`、`primary`、`outline`）或 `context.theme` 动态获取，确保浅色/深色主题无缝自适应。
 - **界面组件化与单文件粒度控制**：UI 画面与 View 层代码需保持短小精悍，复杂或可复用的子 UI 模块必须按单一职责抽取至当前 Feature 的 `widgets/` 目录下（如 Header、ModeSelector、InputBar、MessageBubble 等），避免单文件超长逻辑堆叠。
+- **生命周期安全与防内存泄漏**：所有 `TextEditingController`、`ScrollController`、`AnimationController` 以及全局监听（`authManager.addListener`、`subscribeEvent`、`StreamSubscription`）必须在 `dispose` / `onDispose` 中成对释放与注销；异步操作结束后更新状态需确保生命周期安全（避免已销毁组件回调）。
 - **静态分析与依赖边界严格收口**：编码过程中与提交前必须主动检查 Custom Lint 规则（如禁止 ViewModel 包含 BuildContext、禁止 ViewModel 内直接赋值 state、禁止非组件库硬编码 raw Color）及依赖边界规则（`dart tools/dependency_rules.dart`），积极清理 Warning 与 Info，保持全项目 `No issues found!` 质量基线。
 - **响应式布局与防溢出规则**：在 `Row` / `Flex` 容器中嵌套动态文本（如 `CommonText` / `CommonAuthText`）或可伸缩按钮时，**必须**使用 `Expanded` 或 `Flexible` 进行限宽包裹，并启用 `TextOverflow.ellipsis` 防止 RenderFlex 右侧溢出；对多个卡片、标签（Badge / Chip）的展示，应首选 `Wrap` 替换 `Row` 以支持自适应折行；按钮操作栏在小屏幕或小窗口下应使用横向 `SingleChildScrollView` 保护。
 - **严禁 String 字符串硬编码 (Zero Hardcoded String)**：所有面向用户可见的文本（包括页面标题、副标题、按钮文本、输入框 Placeholder/Hint、Toast 提示、Dialog 确认文案、欢迎语、错误提示等）必须全部收口至 `lib/shared/i18n/translations_key.dart`（`I18nKeys` 常量定义），并同步在 `zh.dart`（中文）与 `ja.dart`（日文）中配置完整的多语言翻译映射；在 UI 与 ViewModel 层必须统一调用 `.tr` 或 `.trArgs([...])` 进行国际化转换，严禁在代码中直接书写裸中英文字符串常量。
+- **跨平台兼容与权限收口**：涉及文件 IO、平台特性的功能需做好 Web 与 Mobile 端的平台分支保护；涉及相机、相册、网络、通知等敏感能力需同步补齐 `AndroidManifest.xml` 与 `Info.plist` 权限与隐私描述。
+- **测试守则与质量基线**：涉及核心业务逻辑、ViewModel 状态流转或 APM 计算算法的改动，必须同步维护对应的单元测试；提交前确保 `flutter test` 与 `dart tools/dependency_rules.dart` 保持全绿，Mock 数据统一使用 `mocktail`。
 - 引入外部依赖/第三方库时，优先选择行业主流、使用人数最多、且近期持续维护更新的活跃库；严禁引入已废弃（Deprecated）、停止维护或技术方案陈旧的第三方依赖。
 
 ## 8. AI 助手（AI Intro Assistant）Prompt 体系与开发规则
@@ -141,4 +147,4 @@ AI 助手基于官方 Firebase AI SDK (`FirebaseAI.googleAI`) + Google Gemini `g
 - 在未核对代码前，直接相信旧文档里的架构或功能描述
 - 把 App 层的调试能力误归类为 `listen_core` 已稳定提供的能力
 - 输出听起来完整、实际却缺乏代码或文档依据的结论
-- 简单改动的情况下，不需要执行单测
+- 避免在涉及核心状态流转与用例逻辑时遗漏单元测试；简单一句话纯注释/纯文档微调才可免跑测试
