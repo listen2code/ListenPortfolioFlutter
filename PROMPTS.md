@@ -83,6 +83,7 @@ ListenPortfolioFlutter 不是单纯的“简历展示 App”。
 - **界面组件化与单文件粒度控制**：UI 画面与 View 层代码需保持短小精悍，复杂或可复用的子 UI 模块必须按单一职责抽取至当前 Feature 的 `widgets/` 目录下（如 Header、ModeSelector、InputBar、MessageBubble 等），避免单文件超长逻辑堆叠。
 - **静态分析与依赖边界严格收口**：编码过程中与提交前必须主动检查 Custom Lint 规则（如禁止 ViewModel 包含 BuildContext、禁止 ViewModel 内直接赋值 state、禁止非组件库硬编码 raw Color）及依赖边界规则（`dart tools/dependency_rules.dart`），积极清理 Warning 与 Info，保持全项目 `No issues found!` 质量基线。
 - **响应式布局与防溢出规则**：在 `Row` / `Flex` 容器中嵌套动态文本（如 `CommonText` / `CommonAuthText`）或可伸缩按钮时，**必须**使用 `Expanded` 或 `Flexible` 进行限宽包裹，并启用 `TextOverflow.ellipsis` 防止 RenderFlex 右侧溢出；对多个卡片、标签（Badge / Chip）的展示，应首选 `Wrap` 替换 `Row` 以支持自适应折行；按钮操作栏在小屏幕或小窗口下应使用横向 `SingleChildScrollView` 保护。
+- **严禁 String 字符串硬编码 (Zero Hardcoded String)**：所有面向用户可见的文本（包括页面标题、副标题、按钮文本、输入框 Placeholder/Hint、Toast 提示、Dialog 确认文案、欢迎语、错误提示等）必须全部收口至 `lib/shared/i18n/translations_key.dart`（`I18nKeys` 常量定义），并同步在 `zh.dart`（中文）与 `ja.dart`（日文）中配置完整的多语言翻译映射；在 UI 与 ViewModel 层必须统一调用 `.tr` 或 `.trArgs([...])` 进行国际化转换，严禁在代码中直接书写裸中英文字符串常量。
 - 引入外部依赖/第三方库时，优先选择行业主流、使用人数最多、且近期持续维护更新的活跃库；严禁引入已废弃（Deprecated）、停止维护或技术方案陈旧的第三方依赖。
 
 ## 8. AI 助手（AI Intro Assistant）Prompt 体系与开发规则

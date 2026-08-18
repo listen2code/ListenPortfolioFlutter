@@ -215,7 +215,7 @@
 | **Input Bar** | 底部消息输入与发送控制条 | [ai_chat_input_bar.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/presentation/widgets/ai_chat_input_bar.dart) |
 | **State & Intent** | MVI 状态与意图（消息列表、三种模式、加载/失败状态、FAQ 字典） | [ai_chat_state.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/presentation/pages/ai_chat_state.dart)<br>[ai_chat_intent.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/presentation/pages/ai_chat_intent.dart) |
 | **ViewModel** | 状态机分发、本地 FAQ 模糊快速检索、Firebase AI 远程交互编排 | [ai_chat_view_model.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/presentation/pages/ai_chat_view_model.dart) |
-| **Firebase AI Service** | 官方 `firebase_ai` SDK 直连驱动 (`FirebaseAI.googleAI` + `gemini-3.7-flash`) | [firebase_ai_service.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/data/datasources/firebase_ai_service.dart) |
+| **Firebase AI Service** | 官方 `firebase_ai` SDK 直连驱动 (`FirebaseAI.googleAI` + `gemini-3.7-flash`) | [firebase_ai_service.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/shared/services/firebase/firebase_ai_service.dart) |
 
 #### 3.8 核心机制与设计考量
 

@@ -48,6 +48,7 @@ final Map<String, String> ja = {
   I18nKeys.aiChatLoadFailed: '質問データベースの読み込みに失敗しました：%s',
   I18nKeys.aiChatSendFailed: '送信失敗',
   I18nKeys.aiChatNetworkError: '申し訳ありません、ネットワークエラーが発生しました：%s。質問をタップして再試行するか、推奨されるプリセット質問からオフラインで回答を取得してください。',
+  I18nKeys.aiChatServiceUnavailable: '私はListenのAIアシスタントです。現在Firebase Gemini AIに接続できません。ネットワークをご確認の上、しばらくしてからもう一度お試しください。',
   I18nKeys.customColor: 'カスタムカラー',
   I18nKeys.selectColor: 'カラー選択',
   I18nKeys.share: '共有',

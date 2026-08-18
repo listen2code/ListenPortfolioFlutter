@@ -48,6 +48,7 @@ final Map<String, String> zh = {
   I18nKeys.aiChatLoadFailed: '加载问题库失败：%s',
   I18nKeys.aiChatSendFailed: '发送失败',
   I18nKeys.aiChatNetworkError: '抱歉，网络连接失败：%s。您可以点击刚才的问题重试，或尝试使用预设推荐问题获取离线回答。',
+  I18nKeys.aiChatServiceUnavailable: '我是 Listen 的 AI 助理。当前暂时无法连接至 Firebase Gemini AI 服务，请检查网络或稍后再试！',
   I18nKeys.customColor: '自定义颜色',
   I18nKeys.selectColor: '选择颜色',
   I18nKeys.share: '分享',

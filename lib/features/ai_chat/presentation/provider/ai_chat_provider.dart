@@ -1,7 +1,7 @@
 import 'package:listen_core/core.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../data/datasources/firebase_ai_service.dart';
+import '../../../../shared/shared.dart';
 import '../../data/datasources/ai_chat_remote_data_source.dart';
 import '../../data/datasources/ai_chat_local_data_source.dart';
 import '../../data/repositories/ai_chat_repository_impl.dart';

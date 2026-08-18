@@ -119,7 +119,7 @@ class AiChatViewModel extends _$AiChatViewModel with ViewModelMixin<AiChatState,
     // 3. Complete Client-Direct Firebase AI SDK Mode (No Server API calls)
     final firebaseAi = ref.read(firebaseAiServiceProvider);
     if (!firebaseAi.isAvailable) {
-      firebaseAi.initialize(mode: state.mode);
+      firebaseAi.initialize();
     }
 
     final modelMsgId = _uuid.v4();
@@ -129,7 +129,7 @@ class AiChatViewModel extends _$AiChatViewModel with ViewModelMixin<AiChatState,
     updateState(state.copyWith(messages: [...state.messages, modelMsg], isLoading: true));
 
     try {
-      final stream = firebaseAi.sendMessageStream(text, history: state.messages, mode: state.mode);
+      final stream = firebaseAi.sendMessageStream(text, history: state.messages);
       var fullText = '';
       await for (final chunk in stream) {
         fullText += chunk;
@@ -148,8 +148,7 @@ class AiChatViewModel extends _$AiChatViewModel with ViewModelMixin<AiChatState,
       final modelErrorMsg = ChatMessage(
         id: _uuid.v4(),
         role: 'model',
-        content:
-            'I am Listen\'s AI Assistant. Currently unable to reach Firebase Gemini AI. Please check your network or try again later!',
+        content: I18nKeys.aiChatServiceUnavailable.tr,
         timestamp: DateTime.now(),
       );
 

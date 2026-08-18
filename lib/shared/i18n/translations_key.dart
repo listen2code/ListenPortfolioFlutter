@@ -53,6 +53,8 @@ class I18nKeys {
   static const String aiChatSendFailed = 'Failed to send';
   static const String aiChatNetworkError =
       'Sorry, network connection failed: %s. You can click the question to retry, or try recommended preset questions for offline answers.';
+  static const String aiChatServiceUnavailable =
+      'I am Listen\'s AI Assistant. Currently unable to reach Firebase Gemini AI. Please check your network or try again later!';
 
   // Custom Color
   static const String customColor = 'Custom Color';

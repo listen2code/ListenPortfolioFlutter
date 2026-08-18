@@ -3,14 +3,16 @@ import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:flutter/foundation.dart';
 import 'package:listen_core/core.dart';
 
-import '../../domain/entities/chat_message.dart';
+import '../../../features/ai_chat/domain/entities/chat_message.dart';
 
 /// Firebase AI (Gemini) Service for interactive portfolio Q&A via direct client SDK.
+///
+/// Operates in a unified intelligent assistant mode covering candidate profile,
+/// technical architecture, projects, and contact info.
 class FirebaseAiService {
   GenerativeModel? _model;
   ChatSession? _chatSession;
   bool _initialized = false;
-  String _currentMode = 'visitor';
 
   static const String _defaultSystemPrompt = '''
 You are the AI Intelligent Assistant for Listen's Interactive Portfolio App (lPortfolio).
@@ -30,25 +32,23 @@ Context & Guidelines:
 2. Interaction Rules:
    - Response Tone: Professional, friendly, technical, helpful, and concise.
    - Language Adaptation: Always respond in the exact language used by the user (English, Chinese, or Japanese).
-   - Mode Adaptation:
-     * If mode is "interviewer": Focus on Listen's technical leadership, architectural decisions, code quality, performance achievements, and engineering management experience.
-     * If mode is "visitor": Focus on app features, project highlights, interactive demos, and contact info (GitHub/Email).
+   - Knowledge Depth: You can explain architecture decisions, system design, performance metrics, app features, project highlights, and contact info.
    - Privacy Rule: Do NOT mention any real names other than "Listen".
 
 3. Fallback:
-   - If unsure about specific personal details, politely invite the user to check the "Projects" or "About Me" tab, or contact Listen via email.
+   - If unsure about specific personal details, politely invite the user to check the "Projects", "Architecture", or "About Me" tab, or contact Listen via email.
 ''';
 
   /// Initialize Firebase AI Gemini model
   void initialize({
     String modelName = 'gemini-3.7-flash',
     String? systemPrompt,
-    String mode = 'visitor',
   }) {
-    appLogger.i('[FirebaseAiService] Initializing Gemini SDK: model=$modelName, mode=$mode, releaseMode=$kReleaseMode');
+    appLogger.i('[FirebaseAiService] Initializing Gemini SDK: model=$modelName, releaseMode=$kReleaseMode');
     try {
-      _currentMode = mode;
-      final fullPrompt = '$systemPrompt\n[Active Mode: $mode]\n$_defaultSystemPrompt';
+      final fullPrompt = systemPrompt != null
+          ? '$systemPrompt\n$_defaultSystemPrompt'
+          : _defaultSystemPrompt;
       final appCheck = FirebaseAppCheck.instance;
       _model = FirebaseAI.googleAI(appCheck: appCheck).generativeModel(
         model: modelName,
@@ -70,11 +70,10 @@ Context & Guidelines:
   Stream<String> sendMessageStream(
     String prompt, {
     List<ChatMessage>? history,
-    String? mode,
   }) async* {
     if (!isAvailable) {
       appLogger.w('[FirebaseAiService] Service not initialized, triggering auto-initialize...');
-      initialize(mode: mode ?? _currentMode);
+      initialize();
     }
 
     if (!isAvailable) {
@@ -82,18 +81,13 @@ Context & Guidelines:
       throw StateError('FirebaseAiService is not available.');
     }
 
-    // Re-initialize chat session with history if mode changed or session expired
-    if (mode != null && mode != _currentMode) {
-      appLogger.i('[FirebaseAiService] Mode changed from "$_currentMode" to "$mode", resetting session...');
-      _currentMode = mode;
-      resetChatSession(history: history);
-    } else if (_chatSession == null) {
+    if (_chatSession == null) {
       appLogger.i('[FirebaseAiService] ChatSession was null, creating new session with history...');
       resetChatSession(history: history);
     }
 
     final promptSnippet = prompt.length > 40 ? '${prompt.substring(0, 40)}...' : prompt;
-    appLogger.i('[FirebaseAiService] Stream Request Started | mode=$_currentMode | prompt="$promptSnippet" | historyLength=${history?.length ?? 0}');
+    appLogger.i('[FirebaseAiService] Stream Request Started | prompt="$promptSnippet" | historyLength=${history?.length ?? 0}');
 
     final startTime = DateTime.now();
     int chunkCount = 0;
@@ -151,4 +145,3 @@ Context & Guidelines:
     return contents.isEmpty ? null : contents;
   }
 }
-
