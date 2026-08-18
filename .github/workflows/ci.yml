@@ -147,7 +147,7 @@ jobs:
           cache: 'true'
 
       - name: Setup Shorebird
-        run: |
+·        run: |
           curl --proto '=https' --tlsv1.2 https://raw.githubusercontent.com/shorebirdtech/install/main/install.sh --retry 5 --retry-delay 3 --retry-all-errors -sSf | bash -s -- --force
           echo "$HOME/.shorebird/bin" >> $GITHUB_PATH
           if [ -n "${{ secrets.SHOREBIRD_TOKEN }}" ]; then
