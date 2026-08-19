@@ -35,7 +35,7 @@ class FaultExecutionConsole extends StatelessWidget {
       ),
       padding: EdgeInsets.all(14.f),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // Console Top Bar: Title + Trace Actions + Clear Button
           Row(

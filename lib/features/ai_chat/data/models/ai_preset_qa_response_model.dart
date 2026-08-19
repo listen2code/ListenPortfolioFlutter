@@ -20,11 +20,14 @@ class AiPresetQaResponseModel {
   const AiPresetQaResponseModel({required this.qas});
 
   factory AiPresetQaResponseModel.fromJson(Map<String, dynamic> json) {
+    final rawMap = json.containsKey('qas') && json['qas'] is Map<String, dynamic>
+        ? json['qas'] as Map<String, dynamic>
+        : (json.containsKey('qas') && json['qas'] is Map ? Map<String, dynamic>.from(json['qas'] as Map) : json);
     final Map<String, List<PresetQaItem>> parsedQas = {};
-    json.forEach((key, value) {
+    rawMap.forEach((key, value) {
       if (value is List) {
         parsedQas[key] = value
-            .map((item) => PresetQaItem.fromJson(item as Map<String, dynamic>))
+            .map((item) => PresetQaItem.fromJson(Map<String, dynamic>.from(item as Map)))
             .toList();
       }
     });

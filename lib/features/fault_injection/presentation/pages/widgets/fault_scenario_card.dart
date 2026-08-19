@@ -41,7 +41,7 @@ class FaultScenarioCard extends StatelessWidget {
       ),
       padding: EdgeInsets.all(16.f),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // Header: Category Badge + Status Badge + Latency
           Row(
@@ -126,6 +126,7 @@ class FaultScenarioCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               CommonButton(
+                isFullWidth: false,
                 height: 38.f,
                 width: 120.f,
                 isLoading: isRunning,

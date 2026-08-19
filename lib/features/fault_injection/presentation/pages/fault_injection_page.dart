@@ -11,6 +11,8 @@ import 'widgets/fault_category_selector.dart';
 import 'widgets/fault_execution_console.dart';
 import 'widgets/fault_scenario_card.dart';
 
+/// Playground Page for interactive fault injection, self-healing observation,
+/// and live trace log correlation.
 class FaultInjectionPage extends ConsumerWidget {
   const FaultInjectionPage({super.key});
 
@@ -19,6 +21,7 @@ class FaultInjectionPage extends ConsumerWidget {
     return BaseRefreshPage<FaultInjectionViewModel, FaultInjectionState>(
       title: I18nKeys.faultInjectionPlayground.tr,
       provider: faultInjectionViewModelProvider,
+      padding: const EdgeInsets.all(16),
       actions: [
         CommonIconButton(
           icon: const Icon(Icons.restart_alt_rounded),
@@ -36,7 +39,6 @@ class FaultInjectionPage extends ConsumerWidget {
             : state.scenarios.where((s) => s.category == state.selectedCategory).toList();
 
         return SingleChildScrollView(
-          padding: EdgeInsets.all(16.f),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -45,7 +47,7 @@ class FaultInjectionPage extends ConsumerWidget {
 
               SizedBox(height: 16.f),
 
-              // 2. Category Filter Tabs
+              // 2. Category Filter Selector
               FaultCategorySelector(
                 selectedCategory: state.selectedCategory,
                 onCategoryChanged: (cat) {
@@ -56,28 +58,20 @@ class FaultInjectionPage extends ConsumerWidget {
               SizedBox(height: 16.f),
 
               // 3. Scenario Cards List
-              ListView.separated(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: filteredScenarios.length,
-                separatorBuilder: (_, _) => SizedBox(height: 12.f),
-                itemBuilder: (context, index) {
-                  final scenario = filteredScenarios[index];
-                  final isRunning = state.runningType == scenario.type;
-
-                  return FaultScenarioCard(
-                    scenario: scenario,
-                    isRunning: isRunning,
-                    onRun: () {
-                      viewModel.handleIntent(FaultInjectionIntent.runScenario(scenario.type));
-                    },
-                  );
-                },
-              ),
+              for (final scenario in filteredScenarios) ...[
+                FaultScenarioCard(
+                  scenario: scenario,
+                  isRunning: state.runningType == scenario.type,
+                  onRun: () {
+                    viewModel.handleIntent(FaultInjectionIntent.runScenario(scenario.type));
+                  },
+                ),
+                SizedBox(height: 12.f),
+              ],
 
               SizedBox(height: 20.f),
 
-              // 4. Live Execution Console & Trace Inspector
+              // 4. Interactive Execution Console
               FaultExecutionConsole(
                 logs: state.consoleLogs,
                 activeTraceId: state.activeTraceId,
@@ -126,9 +120,9 @@ class FaultInjectionPage extends ConsumerWidget {
           Row(
             children: [
               Icon(
-                Icons.health_and_safety_outlined,
+                Icons.security_update_good_rounded,
                 color: context.colorScheme.primary,
-                size: 22.f,
+                size: 20.f,
               ),
               SizedBox(width: 8.f),
               Expanded(
@@ -202,8 +196,6 @@ class FaultInjectionPage extends ConsumerWidget {
           style: context.textTheme.labelSmall?.copyWith(
             color: context.colorScheme.onSurfaceVariant,
           ),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
         ),
       ],
     );

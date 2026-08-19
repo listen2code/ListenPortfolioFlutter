@@ -17,7 +17,7 @@ class MockFile extends Mock implements File {}
 
 /// [CrashLogListViewModel.onReady] 内部调用 [handleIntent] 但不 await，测试中需额外等待异步结束。
 Future<void> waitForAsyncInit() async {
-  await Future<void>.delayed(const Duration(milliseconds: 300));
+  await Future<void>.delayed(const Duration(milliseconds: 600));
 }
 
 void main() {

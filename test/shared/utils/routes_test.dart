@@ -1,55 +1,79 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:listen_portfolio_flutter/shared/constants/app_constants.dart';
-import 'package:listen_portfolio_flutter/shared/utils/routes.dart';
+import 'package:listen_portfolio_flutter/shared/shared.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
+  setUpAll(() async {
+    SharedPreferences.setMockInitialValues({});
+    await SpUtil.init();
+  });
+
   group('Routes Utility Tests', () {
-    test('makeHomeTabDeepLink generates valid URI with scheme and tab name', () {
-      final uri = Routes.makeHomeTabDeepLink('architecture');
+    test('makeHomeTabDeepLink produces expected Uri scheme, host, and tab parameter', () {
+      final uri = Routes.makeHomeTabDeepLink('projects');
       expect(uri.scheme, AppConstants.deepLinkScheme);
       expect(uri.host, AppConstants.deepLinkHostHome);
-      expect(uri.queryParameters[AppConstants.deepLinkParamTab], 'architecture');
+      expect(uri.queryParameters[AppConstants.deepLinkParamTab], 'projects');
     });
 
-    test('routes map contains all required screen builders', () {
-      final routesMap = Routes.routes;
+    test('Route constants are distinct and formatted correctly', () {
+      final routeList = [
+        Routes.root,
+        Routes.home,
+        Routes.aiChat,
+        Routes.login,
+        Routes.signUp,
+        Routes.forgotPassword,
+        Routes.changePassword,
+        Routes.settings,
+        Routes.appearance,
+        Routes.deleteAccount,
+        Routes.crashLogs,
+        Routes.termsOfService,
+        Routes.privacyPolicy,
+        Routes.webViewTest,
+        Routes.resume,
+        Routes.playbackTapeList,
+        Routes.faultInjection,
+      ];
 
-      expect(routesMap.containsKey(Routes.root), isTrue);
-      expect(routesMap.containsKey(Routes.home), isTrue);
-      expect(routesMap.containsKey(Routes.aiChat), isTrue);
-      expect(routesMap.containsKey(Routes.login), isTrue);
-      expect(routesMap.containsKey(Routes.signUp), isTrue);
-      expect(routesMap.containsKey(Routes.forgotPassword), isTrue);
-      expect(routesMap.containsKey(Routes.changePassword), isTrue);
-      expect(routesMap.containsKey(Routes.settings), isTrue);
-      expect(routesMap.containsKey(Routes.appearance), isTrue);
-      expect(routesMap.containsKey(Routes.deleteAccount), isTrue);
-      expect(routesMap.containsKey(Routes.crashLogs), isTrue);
-      expect(routesMap.containsKey(Routes.termsOfService), isTrue);
-      expect(routesMap.containsKey(Routes.privacyPolicy), isTrue);
-      expect(routesMap.containsKey(Routes.resume), isTrue);
-      expect(routesMap.containsKey(Routes.playbackTapeList), isTrue);
-      expect(routesMap.containsKey(Routes.webViewTest), isTrue);
+      // Verify all routes are unique
+      expect(routeList.toSet().length, routeList.length);
 
-      // Verify widget instance creation from builders
-      expect(routesMap[Routes.root]!(), isNotNull);
-      expect(routesMap[Routes.home]!(), isNotNull);
-      expect(routesMap[Routes.aiChat]!(), isNotNull);
-      expect(routesMap[Routes.login]!(), isNotNull);
-      expect(routesMap[Routes.signUp]!(), isNotNull);
-      expect(routesMap[Routes.forgotPassword]!(), isNotNull);
-      expect(routesMap[Routes.changePassword]!(), isNotNull);
-      expect(routesMap[Routes.settings]!(), isNotNull);
-      expect(routesMap[Routes.appearance]!(), isNotNull);
-      expect(routesMap[Routes.deleteAccount]!(), isNotNull);
-      expect(routesMap[Routes.crashLogs]!(), isNotNull);
-      expect(routesMap[Routes.termsOfService]!(), isNotNull);
-      expect(routesMap[Routes.privacyPolicy]!(), isNotNull);
-      expect(routesMap[Routes.resume]!(), isNotNull);
-      expect(routesMap[Routes.playbackTapeList]!(), isNotNull);
-      expect(routesMap[Routes.webViewTest]!(), isNotNull);
+      // Verify all start with '/'
+      for (final r in routeList) {
+        expect(r.startsWith('/'), isTrue);
+      }
+    });
+
+    test('Routes.routes map contains builders for all declared routes', () {
+      final map = Routes.routes;
+
+      expect(map.containsKey(Routes.root), isTrue);
+      expect(map.containsKey(Routes.home), isTrue);
+      expect(map.containsKey(Routes.aiChat), isTrue);
+      expect(map.containsKey(Routes.login), isTrue);
+      expect(map.containsKey(Routes.signUp), isTrue);
+      expect(map.containsKey(Routes.forgotPassword), isTrue);
+      expect(map.containsKey(Routes.changePassword), isTrue);
+      expect(map.containsKey(Routes.settings), isTrue);
+      expect(map.containsKey(Routes.appearance), isTrue);
+      expect(map.containsKey(Routes.deleteAccount), isTrue);
+      expect(map.containsKey(Routes.crashLogs), isTrue);
+      expect(map.containsKey(Routes.termsOfService), isTrue);
+      expect(map.containsKey(Routes.privacyPolicy), isTrue);
+      expect(map.containsKey(Routes.resume), isTrue);
+      expect(map.containsKey(Routes.playbackTapeList), isTrue);
+      expect(map.containsKey(Routes.faultInjection), isTrue);
+      expect(map.containsKey(Routes.webViewTest), isTrue);
+
+      // Ensure each synchronous builder returns a non-null Widget
+      for (final entry in map.entries) {
+        final widget = entry.value();
+        expect(widget, isNotNull);
+      }
     });
   });
 }
