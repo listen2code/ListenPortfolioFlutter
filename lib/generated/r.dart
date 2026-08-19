@@ -20,6 +20,7 @@ class R {
   static const String authRefresh = 'assets/mock/v1/post/auth/refresh.json';
   static const String authForgotPassword = 'assets/mock/v1/post/auth/forgot-password.json';
   static const String userLogout = 'assets/mock/v1/post/user/logout.json';
+  static const String userUploadAvatar = 'assets/mock/v1/post/user/upload-avatar.json';
   static const String userChangePassword = 'assets/mock/v1/post/user/change-password.json';
   static const String aiChat = 'assets/mock/v1/post/ai/chat.json';
   static const String imagesProject1 = 'assets/mock/images/project1.jpg';

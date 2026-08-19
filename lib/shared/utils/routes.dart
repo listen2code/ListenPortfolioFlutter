@@ -19,6 +19,7 @@ import '../../features/settings/presentation/pages/settings_page.dart';
 import '../../features/settings/presentation/pages/playback_tape_list/playback_tape_list_page.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
 import '../../features/home/presentation/pages/resume/resume_page.dart';
+import '../../features/fault_injection/presentation/pages/fault_injection_page.dart';
 
 /// Centralized route definitions and registry for the application.
 class Routes {
@@ -49,6 +50,7 @@ class Routes {
   static const String webViewTest = '/webview_test';
   static const String resume = '/resume';
   static const String playbackTapeList = '/playback_tape_list';
+  static const String faultInjection = '/fault_injection';
 
   // Argument Keys - Enforce consistency between caller and receiver
   static const String argName = 'name';
@@ -82,6 +84,7 @@ class Routes {
     ),
     resume: () => const ResumePage(),
     playbackTapeList: () => const PlaybackTapeListPage(),
+    faultInjection: () => const FaultInjectionPage(),
     webViewTest: () => FutureBuilder<String>(
       future: rootBundle.loadString('assets/html/test.html'),
       builder: (context, snapshot) {

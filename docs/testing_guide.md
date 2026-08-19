@@ -28,11 +28,14 @@
   │   ├── error_mapper_test.dart
   │   └── i18n_test.dart
   ├── features/
+  │   ├── ai_chat/
   │   ├── auth/
+  │   ├── fault_injection/
   │   ├── home/
   │   ├── settings/
   │   └── splash/
   ├── shared/
+  │   ├── extensions/
   │   ├── mock_data_consistency_test.dart
   │   └── utils/playback_test.dart
   ├── utilities/
@@ -45,8 +48,8 @@
       └── test_setup.dart
   ```
 
-  当前仓库中已补齐并运行着 **336 个**单元与组件测试用例，覆盖 `core`、`auth`、`home`、`settings`、`splash` 等模块。
-  当前仓库已包含 `integration_test/app_test.dart` 集成测试，支持端到端（E2E）模拟器与真机上的自动化流程验证。
+  当前仓库中已补齐并运行着 **491 个** 单元、组件与集成测试用例，覆盖 `core`、`ai_chat`、`auth`、`fault_injection`、`home`、`settings`、`splash`、`shared` 等全部模块，测试通过率保持 **100% 绿灯**。
+  当前仓库已包含 `integration_test/app_test.dart` 集成测试，支持端到端（E2E）模拟器与真机上的自动化流程验证，并配有针对 MVI Playback 录制/回放的反序列化反射校验测试 (`test/shared/utils/playback_test.dart`)。
 
   > 测试相关的模拟数据主要由本地 `LocalMockServer` 以及 `assets/mock/` 中的 JSON 结构提供，测试行为可通过 PowerShell 脚本或 Bash 脚本一键启动。
 

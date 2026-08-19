@@ -165,7 +165,7 @@
 
 ### 2. 体验与平台能力
 
-- Error metrics / fault injection 的可视化验证入口
+- ✅ Error metrics / fault injection 的可视化验证入口（已在 Fault Injection Playground 中完整落地，详见 [fault_injection_playground_spec.md](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/docs/fault_injection_playground_spec.md)）
 - 布局检查
 - APK/AAB size 监控与拆包分析
 
@@ -181,7 +181,7 @@
 - 一页式 Performance Case Study：展示一次卡顿 / 异常排查从现象、trace、日志到修复的完整链路
 - Resume / Portfolio 数据联动：把项目经历、架构判断、性能与稳定性案例做成可浏览内容，而不是只放静态简介
 - Interview QA / Architecture FAQ 页面：沉淀对架构、观测、稳定性方案的可检索回答
-- 故障注入演示页：用最小可控场景展示错误契约、重试、降级与恢复路径
+- ✅ 故障注入演示页（Fault Injection Playground）：已完整落地 7 大受控演练场景（401 并发队列、500 异常契约、网络超时、畸形 HTML 防崩溃、Zone 异步异常落盘、Safe Mode 熔断与主线程 Jank 卡顿 APM 监测），支持实时终端日志输出与一键 LogOverlay Trace 下钻闭环（已全量通过单元测试）
 
 ### 5. 工程化扩展
 

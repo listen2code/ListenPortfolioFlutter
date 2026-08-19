@@ -28,6 +28,7 @@ class SettingsIntent extends BaseIntent with _$SettingsIntent {
   const factory SettingsIntent.toPrivacyPolicy() = _ToPrivacyPolicy;
   const factory SettingsIntent.toTermsOfService() = _ToTermsOfService;
   const factory SettingsIntent.toWebViewTest() = _ToWebViewTest;
+  const factory SettingsIntent.toFaultInjection() = _ToFaultInjection;
   const factory SettingsIntent.simulateTokenExpired() = _SimulateTokenExpired;
   const factory SettingsIntent.confirmOpenSettings() = _ConfirmOpenSettings;
   const factory SettingsIntent.confirmDownloadUpdate(String url) = _ConfirmDownloadUpdate;
@@ -140,6 +141,11 @@ class SettingsIntent extends BaseIntent with _$SettingsIntent {
       'SettingsIntent',
       'toWebViewTest',
       (args) => const SettingsIntent.toWebViewTest(),
+    );
+    MviPlaybackRegistry.register(
+      'SettingsIntent',
+      'toFaultInjection',
+      (args) => const SettingsIntent.toFaultInjection(),
     );
     MviPlaybackRegistry.register(
       'SettingsIntent',

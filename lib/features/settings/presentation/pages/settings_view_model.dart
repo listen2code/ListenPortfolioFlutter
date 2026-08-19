@@ -67,6 +67,7 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
       toPrivacyPolicy: () => emitEffect(NavigationEffect<void>(target: Routes.privacyPolicy)),
       toTermsOfService: () => emitEffect(NavigationEffect<void>(target: Routes.termsOfService)),
       toWebViewTest: () => emitEffect(NavigationEffect<void>(target: Routes.webViewTest)),
+      toFaultInjection: () => emitEffect(NavigationEffect<void>(target: Routes.faultInjection)),
       simulateTokenExpired: _onSimulateTokenExpired,
       confirmOpenSettings: () => emitEffect(OpenAppSettingsEffect()),
       confirmDownloadUpdate: (url) => emitEffect(LaunchUrlEffect(url)),

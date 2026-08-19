@@ -34,6 +34,7 @@ ListenPortfolioFlutter 是一个基于 Flutter 构建的个人技术作品集应
 - **多语言切换**：中 / 英 / 日运行时切换，无需重启；**数据库动态内容国际化**（支持拦截器注入 `Accept-Language` 请求头，由 Backend / `LocalMockServer` 直发目标语言 JSON 数据，前端移除 UI 模型上的过渡性 `.tr` 映射）
 - **主题切换**：浅色 / 深色 / 跟随系统 + 强调色 / 字号持久化 + **Material You 动态取色** (Android 12+ 平台下支持跟随系统壁纸色调自动变色)
 - **AI 架构与技术介绍助手**：基于官方 Firebase AI SDK (`FirebaseAI.googleAI`) + Google Gemini `gemini-3.7-flash` 模型打造的智能技术咨询助手；集成 Firebase App Check 强安全防护；全局可拖拽悬浮球 + 独立 `AiChatPage` 页面；支持多模式（访客/招聘官/架构师）切换、页面上下文/Tab 智能感知及本地预设 FAQ 零延迟零 Token 问答
+- **故障注入与韧性演练中心 (Fault Injection Playground)**：用于直观验证与展示高可用架构的受控演练平台；内置 **7 大受控演练场景**（401 并发静默重试队列、500 异常契约收敛、网络超时降级、畸形 HTML 网关防崩保护、Zone 异步异常落盘、Safe Mode 连续崩溃熔断自愈、主线程 Jank 卡顿 APM 检测）；配备毫秒级实时终端控制台、`traceId` 一键复制与下钻联动 `LogOverlay` 浮窗调试闭环
 
 ### 架构与基础设施
 
@@ -41,13 +42,13 @@ ListenPortfolioFlutter 是一个基于 Flutter 构建的个人技术作品集应
 - **网络层**：`ApiClient` + `BaseRepository.safeCall()` + `Either<Failure, T>`
 - **安全注销与 Token 防泄露**：登出前进行 JWT 载荷时间戳校验，已过期则触发静默刷新后再通知服务端注销会话，确保后端 Session 彻底销毁与客户端本地状态无缝抹除
 - **版本更新自动流**：基于 `pubspec.yaml` 的描述在 CI 构建时自动提取多语言描述生成并托管 `version.json`；App 端在所有环境下均通过 Retrofit 免签拉取静态配置文件并在 repository 层手工解码（规避 GitHub 静态资源的 Content-Type 匹配与认证 Token 冲突问题）
-- **401 自动刷新**：刷新期间并发请求排队，刷新成功后自动重试
+- **401 自动刷新与并发重试队列**：Token 失效期间并发发起的请求自动挂起排队，触发 1 次静默刷新后自动批量重发
 - **环境切换**：支持 `mock / dev / test / prod`
 - **本地 MockServer**：`APP_ENV=mock` 时提供本地 JSON / 图片资源，支持 `Accept-Language` 多语言资产路径自动路由与回退机制
 - **Zone tracing**：Intent / 页面 / 请求链路支持 `traceId` 和阶段打点
-- **Crash Safe Mode**：快速崩溃保护与本地 crash log 持久化
-- **日志浮窗**：当前项目内置开发调试窗口，可分类查看 App / Server / Perf 日志
-- **零告警工程质量**：全量单元与集成测试套件覆盖，且代码通过静态分析零告警验证（`No issues found!`）
+- **Crash Safe Mode**：快速连续崩溃防护、自动熔断自愈与本地 crash log 持久化
+- **日志浮窗与 APM 性能监控**：内置开发调试窗口（LogOverlay），支持实时帧率/Jank 监测、Net Inspector 抓包、按 `traceId` 过滤全链路日志
+- **零告警工程质量与全量测试套件**：**491 项** 单元与集成测试用例 100% 绿灯通过，内置 MVI Playback 反射自检，代码通过静态分析（`No issues found!`）与架构依赖边界检查（`dependency_rules.dart`）双重零违规验证
 
 ### 更能代表当前项目取向的能力
 
@@ -141,6 +142,7 @@ dart tools/dependency_rules.dart --graph
 - `docs/error_codes_reference.md`：错误码设计参考（当前仍以设计为主）
 - `docs/performance_panel_spec.md`：性能面板原始设计方案（已实现，最新请参考 `apm_performance_monitoring_design.md`）
 - `docs/apm_performance_monitoring_design.md`：APM 性能监控面板设计与实现文档
+- `docs/fault_injection_playground_spec.md`：故障注入与韧性演练中心设计与实现文档（已实现）
 - `docs/ai_intro_assistant_spec.md`：AI 助手规格说明与架构设计（已实现）
 - `docs/listencore_audit.md`：`listen_core` 架构审计报告
 - `docs/event_bus_vs_base_effect.md`：EventBus 与 BaseEffect 架构通信设计规范

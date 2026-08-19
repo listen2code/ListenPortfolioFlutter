@@ -137,6 +137,12 @@ class SettingsPage extends ConsumerWidget {
                       onTap: () => viewModel.handleIntent(const SettingsIntent.toWebViewTest()),
                     ),
                     CommonSettingsTile(
+                      icon: Icons.electrical_services_rounded,
+                      title: I18nKeys.faultInjectionPlayground.tr,
+                      subtitle: I18nKeys.faultInjectionSubtitle.tr,
+                      onTap: () => viewModel.handleIntent(const SettingsIntent.toFaultInjection()),
+                    ),
+                    CommonSettingsTile(
                       icon: Icons.timer_off_outlined,
                       title: I18nKeys.simulateTokenExpired.tr,
                       subtitle: I18nKeys.simulateTokenExpiredSubtitle.tr,

@@ -55,7 +55,7 @@ extension SettingsIntentPatterns on SettingsIntent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Init value)?  init,TResult Function( _ToggleNotifications value)?  toggleNotifications,TResult Function( _ClearCache value)?  clearCache,TResult Function( _ResetSettings value)?  resetSettings,TResult Function( _ConfirmReset value)?  confirmReset,TResult Function( _SwitchLanguage value)?  switchLanguage,TResult Function( _SwitchEnv value)?  switchEnv,TResult Function( _ToggleLogOverlay value)?  toggleLogOverlay,TResult Function( _CheckUpdates value)?  checkUpdates,TResult Function( _BuyMeCoffee value)?  buyMeCoffee,TResult Function( _ShowEnvDialog value)?  showEnvDialog,TResult Function( _ShowLanguageDialog value)?  showLanguageDialog,TResult Function( _ShareApp value)?  shareApp,TResult Function( _EnableDeveloperMode value)?  enableDeveloperMode,TResult Function( _RateApp value)?  rateApp,TResult Function( _ShowLicenses value)?  showLicenses,TResult Function( _ToAppearance value)?  toAppearance,TResult Function( _ToChangePassword value)?  toChangePassword,TResult Function( _ToDeleteAccount value)?  toDeleteAccount,TResult Function( _ToCrashLogs value)?  toCrashLogs,TResult Function( _ToPrivacyPolicy value)?  toPrivacyPolicy,TResult Function( _ToTermsOfService value)?  toTermsOfService,TResult Function( _ToWebViewTest value)?  toWebViewTest,TResult Function( _SimulateTokenExpired value)?  simulateTokenExpired,TResult Function( _ConfirmOpenSettings value)?  confirmOpenSettings,TResult Function( _ConfirmDownloadUpdate value)?  confirmDownloadUpdate,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Init value)?  init,TResult Function( _ToggleNotifications value)?  toggleNotifications,TResult Function( _ClearCache value)?  clearCache,TResult Function( _ResetSettings value)?  resetSettings,TResult Function( _ConfirmReset value)?  confirmReset,TResult Function( _SwitchLanguage value)?  switchLanguage,TResult Function( _SwitchEnv value)?  switchEnv,TResult Function( _ToggleLogOverlay value)?  toggleLogOverlay,TResult Function( _CheckUpdates value)?  checkUpdates,TResult Function( _BuyMeCoffee value)?  buyMeCoffee,TResult Function( _ShowEnvDialog value)?  showEnvDialog,TResult Function( _ShowLanguageDialog value)?  showLanguageDialog,TResult Function( _ShareApp value)?  shareApp,TResult Function( _EnableDeveloperMode value)?  enableDeveloperMode,TResult Function( _RateApp value)?  rateApp,TResult Function( _ShowLicenses value)?  showLicenses,TResult Function( _ToAppearance value)?  toAppearance,TResult Function( _ToChangePassword value)?  toChangePassword,TResult Function( _ToDeleteAccount value)?  toDeleteAccount,TResult Function( _ToCrashLogs value)?  toCrashLogs,TResult Function( _ToPrivacyPolicy value)?  toPrivacyPolicy,TResult Function( _ToTermsOfService value)?  toTermsOfService,TResult Function( _ToWebViewTest value)?  toWebViewTest,TResult Function( _ToFaultInjection value)?  toFaultInjection,TResult Function( _SimulateTokenExpired value)?  simulateTokenExpired,TResult Function( _ConfirmOpenSettings value)?  confirmOpenSettings,TResult Function( _ConfirmDownloadUpdate value)?  confirmDownloadUpdate,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Init() when init != null:
@@ -81,7 +81,8 @@ return toDeleteAccount(_that);case _ToCrashLogs() when toCrashLogs != null:
 return toCrashLogs(_that);case _ToPrivacyPolicy() when toPrivacyPolicy != null:
 return toPrivacyPolicy(_that);case _ToTermsOfService() when toTermsOfService != null:
 return toTermsOfService(_that);case _ToWebViewTest() when toWebViewTest != null:
-return toWebViewTest(_that);case _SimulateTokenExpired() when simulateTokenExpired != null:
+return toWebViewTest(_that);case _ToFaultInjection() when toFaultInjection != null:
+return toFaultInjection(_that);case _SimulateTokenExpired() when simulateTokenExpired != null:
 return simulateTokenExpired(_that);case _ConfirmOpenSettings() when confirmOpenSettings != null:
 return confirmOpenSettings(_that);case _ConfirmDownloadUpdate() when confirmDownloadUpdate != null:
 return confirmDownloadUpdate(_that);case _:
@@ -102,7 +103,7 @@ return confirmDownloadUpdate(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Init value)  init,required TResult Function( _ToggleNotifications value)  toggleNotifications,required TResult Function( _ClearCache value)  clearCache,required TResult Function( _ResetSettings value)  resetSettings,required TResult Function( _ConfirmReset value)  confirmReset,required TResult Function( _SwitchLanguage value)  switchLanguage,required TResult Function( _SwitchEnv value)  switchEnv,required TResult Function( _ToggleLogOverlay value)  toggleLogOverlay,required TResult Function( _CheckUpdates value)  checkUpdates,required TResult Function( _BuyMeCoffee value)  buyMeCoffee,required TResult Function( _ShowEnvDialog value)  showEnvDialog,required TResult Function( _ShowLanguageDialog value)  showLanguageDialog,required TResult Function( _ShareApp value)  shareApp,required TResult Function( _EnableDeveloperMode value)  enableDeveloperMode,required TResult Function( _RateApp value)  rateApp,required TResult Function( _ShowLicenses value)  showLicenses,required TResult Function( _ToAppearance value)  toAppearance,required TResult Function( _ToChangePassword value)  toChangePassword,required TResult Function( _ToDeleteAccount value)  toDeleteAccount,required TResult Function( _ToCrashLogs value)  toCrashLogs,required TResult Function( _ToPrivacyPolicy value)  toPrivacyPolicy,required TResult Function( _ToTermsOfService value)  toTermsOfService,required TResult Function( _ToWebViewTest value)  toWebViewTest,required TResult Function( _SimulateTokenExpired value)  simulateTokenExpired,required TResult Function( _ConfirmOpenSettings value)  confirmOpenSettings,required TResult Function( _ConfirmDownloadUpdate value)  confirmDownloadUpdate,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Init value)  init,required TResult Function( _ToggleNotifications value)  toggleNotifications,required TResult Function( _ClearCache value)  clearCache,required TResult Function( _ResetSettings value)  resetSettings,required TResult Function( _ConfirmReset value)  confirmReset,required TResult Function( _SwitchLanguage value)  switchLanguage,required TResult Function( _SwitchEnv value)  switchEnv,required TResult Function( _ToggleLogOverlay value)  toggleLogOverlay,required TResult Function( _CheckUpdates value)  checkUpdates,required TResult Function( _BuyMeCoffee value)  buyMeCoffee,required TResult Function( _ShowEnvDialog value)  showEnvDialog,required TResult Function( _ShowLanguageDialog value)  showLanguageDialog,required TResult Function( _ShareApp value)  shareApp,required TResult Function( _EnableDeveloperMode value)  enableDeveloperMode,required TResult Function( _RateApp value)  rateApp,required TResult Function( _ShowLicenses value)  showLicenses,required TResult Function( _ToAppearance value)  toAppearance,required TResult Function( _ToChangePassword value)  toChangePassword,required TResult Function( _ToDeleteAccount value)  toDeleteAccount,required TResult Function( _ToCrashLogs value)  toCrashLogs,required TResult Function( _ToPrivacyPolicy value)  toPrivacyPolicy,required TResult Function( _ToTermsOfService value)  toTermsOfService,required TResult Function( _ToWebViewTest value)  toWebViewTest,required TResult Function( _ToFaultInjection value)  toFaultInjection,required TResult Function( _SimulateTokenExpired value)  simulateTokenExpired,required TResult Function( _ConfirmOpenSettings value)  confirmOpenSettings,required TResult Function( _ConfirmDownloadUpdate value)  confirmDownloadUpdate,}){
 final _that = this;
 switch (_that) {
 case _Init():
@@ -128,7 +129,8 @@ return toDeleteAccount(_that);case _ToCrashLogs():
 return toCrashLogs(_that);case _ToPrivacyPolicy():
 return toPrivacyPolicy(_that);case _ToTermsOfService():
 return toTermsOfService(_that);case _ToWebViewTest():
-return toWebViewTest(_that);case _SimulateTokenExpired():
+return toWebViewTest(_that);case _ToFaultInjection():
+return toFaultInjection(_that);case _SimulateTokenExpired():
 return simulateTokenExpired(_that);case _ConfirmOpenSettings():
 return confirmOpenSettings(_that);case _ConfirmDownloadUpdate():
 return confirmDownloadUpdate(_that);case _:
@@ -148,7 +150,7 @@ return confirmDownloadUpdate(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Init value)?  init,TResult? Function( _ToggleNotifications value)?  toggleNotifications,TResult? Function( _ClearCache value)?  clearCache,TResult? Function( _ResetSettings value)?  resetSettings,TResult? Function( _ConfirmReset value)?  confirmReset,TResult? Function( _SwitchLanguage value)?  switchLanguage,TResult? Function( _SwitchEnv value)?  switchEnv,TResult? Function( _ToggleLogOverlay value)?  toggleLogOverlay,TResult? Function( _CheckUpdates value)?  checkUpdates,TResult? Function( _BuyMeCoffee value)?  buyMeCoffee,TResult? Function( _ShowEnvDialog value)?  showEnvDialog,TResult? Function( _ShowLanguageDialog value)?  showLanguageDialog,TResult? Function( _ShareApp value)?  shareApp,TResult? Function( _EnableDeveloperMode value)?  enableDeveloperMode,TResult? Function( _RateApp value)?  rateApp,TResult? Function( _ShowLicenses value)?  showLicenses,TResult? Function( _ToAppearance value)?  toAppearance,TResult? Function( _ToChangePassword value)?  toChangePassword,TResult? Function( _ToDeleteAccount value)?  toDeleteAccount,TResult? Function( _ToCrashLogs value)?  toCrashLogs,TResult? Function( _ToPrivacyPolicy value)?  toPrivacyPolicy,TResult? Function( _ToTermsOfService value)?  toTermsOfService,TResult? Function( _ToWebViewTest value)?  toWebViewTest,TResult? Function( _SimulateTokenExpired value)?  simulateTokenExpired,TResult? Function( _ConfirmOpenSettings value)?  confirmOpenSettings,TResult? Function( _ConfirmDownloadUpdate value)?  confirmDownloadUpdate,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Init value)?  init,TResult? Function( _ToggleNotifications value)?  toggleNotifications,TResult? Function( _ClearCache value)?  clearCache,TResult? Function( _ResetSettings value)?  resetSettings,TResult? Function( _ConfirmReset value)?  confirmReset,TResult? Function( _SwitchLanguage value)?  switchLanguage,TResult? Function( _SwitchEnv value)?  switchEnv,TResult? Function( _ToggleLogOverlay value)?  toggleLogOverlay,TResult? Function( _CheckUpdates value)?  checkUpdates,TResult? Function( _BuyMeCoffee value)?  buyMeCoffee,TResult? Function( _ShowEnvDialog value)?  showEnvDialog,TResult? Function( _ShowLanguageDialog value)?  showLanguageDialog,TResult? Function( _ShareApp value)?  shareApp,TResult? Function( _EnableDeveloperMode value)?  enableDeveloperMode,TResult? Function( _RateApp value)?  rateApp,TResult? Function( _ShowLicenses value)?  showLicenses,TResult? Function( _ToAppearance value)?  toAppearance,TResult? Function( _ToChangePassword value)?  toChangePassword,TResult? Function( _ToDeleteAccount value)?  toDeleteAccount,TResult? Function( _ToCrashLogs value)?  toCrashLogs,TResult? Function( _ToPrivacyPolicy value)?  toPrivacyPolicy,TResult? Function( _ToTermsOfService value)?  toTermsOfService,TResult? Function( _ToWebViewTest value)?  toWebViewTest,TResult? Function( _ToFaultInjection value)?  toFaultInjection,TResult? Function( _SimulateTokenExpired value)?  simulateTokenExpired,TResult? Function( _ConfirmOpenSettings value)?  confirmOpenSettings,TResult? Function( _ConfirmDownloadUpdate value)?  confirmDownloadUpdate,}){
 final _that = this;
 switch (_that) {
 case _Init() when init != null:
@@ -174,7 +176,8 @@ return toDeleteAccount(_that);case _ToCrashLogs() when toCrashLogs != null:
 return toCrashLogs(_that);case _ToPrivacyPolicy() when toPrivacyPolicy != null:
 return toPrivacyPolicy(_that);case _ToTermsOfService() when toTermsOfService != null:
 return toTermsOfService(_that);case _ToWebViewTest() when toWebViewTest != null:
-return toWebViewTest(_that);case _SimulateTokenExpired() when simulateTokenExpired != null:
+return toWebViewTest(_that);case _ToFaultInjection() when toFaultInjection != null:
+return toFaultInjection(_that);case _SimulateTokenExpired() when simulateTokenExpired != null:
 return simulateTokenExpired(_that);case _ConfirmOpenSettings() when confirmOpenSettings != null:
 return confirmOpenSettings(_that);case _ConfirmDownloadUpdate() when confirmDownloadUpdate != null:
 return confirmDownloadUpdate(_that);case _:
@@ -194,7 +197,7 @@ return confirmDownloadUpdate(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  init,TResult Function( bool enabled)?  toggleNotifications,TResult Function()?  clearCache,TResult Function()?  resetSettings,TResult Function()?  confirmReset,TResult Function( AppLanguage language)?  switchLanguage,TResult Function( AppEnvironment env)?  switchEnv,TResult Function( bool enabled)?  toggleLogOverlay,TResult Function()?  checkUpdates,TResult Function()?  buyMeCoffee,TResult Function()?  showEnvDialog,TResult Function()?  showLanguageDialog,TResult Function()?  shareApp,TResult Function()?  enableDeveloperMode,TResult Function()?  rateApp,TResult Function()?  showLicenses,TResult Function()?  toAppearance,TResult Function()?  toChangePassword,TResult Function()?  toDeleteAccount,TResult Function()?  toCrashLogs,TResult Function()?  toPrivacyPolicy,TResult Function()?  toTermsOfService,TResult Function()?  toWebViewTest,TResult Function()?  simulateTokenExpired,TResult Function()?  confirmOpenSettings,TResult Function( String url)?  confirmDownloadUpdate,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  init,TResult Function( bool enabled)?  toggleNotifications,TResult Function()?  clearCache,TResult Function()?  resetSettings,TResult Function()?  confirmReset,TResult Function( AppLanguage language)?  switchLanguage,TResult Function( AppEnvironment env)?  switchEnv,TResult Function( bool enabled)?  toggleLogOverlay,TResult Function()?  checkUpdates,TResult Function()?  buyMeCoffee,TResult Function()?  showEnvDialog,TResult Function()?  showLanguageDialog,TResult Function()?  shareApp,TResult Function()?  enableDeveloperMode,TResult Function()?  rateApp,TResult Function()?  showLicenses,TResult Function()?  toAppearance,TResult Function()?  toChangePassword,TResult Function()?  toDeleteAccount,TResult Function()?  toCrashLogs,TResult Function()?  toPrivacyPolicy,TResult Function()?  toTermsOfService,TResult Function()?  toWebViewTest,TResult Function()?  toFaultInjection,TResult Function()?  simulateTokenExpired,TResult Function()?  confirmOpenSettings,TResult Function( String url)?  confirmDownloadUpdate,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Init() when init != null:
 return init();case _ToggleNotifications() when toggleNotifications != null:
@@ -219,7 +222,8 @@ return toDeleteAccount();case _ToCrashLogs() when toCrashLogs != null:
 return toCrashLogs();case _ToPrivacyPolicy() when toPrivacyPolicy != null:
 return toPrivacyPolicy();case _ToTermsOfService() when toTermsOfService != null:
 return toTermsOfService();case _ToWebViewTest() when toWebViewTest != null:
-return toWebViewTest();case _SimulateTokenExpired() when simulateTokenExpired != null:
+return toWebViewTest();case _ToFaultInjection() when toFaultInjection != null:
+return toFaultInjection();case _SimulateTokenExpired() when simulateTokenExpired != null:
 return simulateTokenExpired();case _ConfirmOpenSettings() when confirmOpenSettings != null:
 return confirmOpenSettings();case _ConfirmDownloadUpdate() when confirmDownloadUpdate != null:
 return confirmDownloadUpdate(_that.url);case _:
@@ -240,7 +244,7 @@ return confirmDownloadUpdate(_that.url);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  init,required TResult Function( bool enabled)  toggleNotifications,required TResult Function()  clearCache,required TResult Function()  resetSettings,required TResult Function()  confirmReset,required TResult Function( AppLanguage language)  switchLanguage,required TResult Function( AppEnvironment env)  switchEnv,required TResult Function( bool enabled)  toggleLogOverlay,required TResult Function()  checkUpdates,required TResult Function()  buyMeCoffee,required TResult Function()  showEnvDialog,required TResult Function()  showLanguageDialog,required TResult Function()  shareApp,required TResult Function()  enableDeveloperMode,required TResult Function()  rateApp,required TResult Function()  showLicenses,required TResult Function()  toAppearance,required TResult Function()  toChangePassword,required TResult Function()  toDeleteAccount,required TResult Function()  toCrashLogs,required TResult Function()  toPrivacyPolicy,required TResult Function()  toTermsOfService,required TResult Function()  toWebViewTest,required TResult Function()  simulateTokenExpired,required TResult Function()  confirmOpenSettings,required TResult Function( String url)  confirmDownloadUpdate,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  init,required TResult Function( bool enabled)  toggleNotifications,required TResult Function()  clearCache,required TResult Function()  resetSettings,required TResult Function()  confirmReset,required TResult Function( AppLanguage language)  switchLanguage,required TResult Function( AppEnvironment env)  switchEnv,required TResult Function( bool enabled)  toggleLogOverlay,required TResult Function()  checkUpdates,required TResult Function()  buyMeCoffee,required TResult Function()  showEnvDialog,required TResult Function()  showLanguageDialog,required TResult Function()  shareApp,required TResult Function()  enableDeveloperMode,required TResult Function()  rateApp,required TResult Function()  showLicenses,required TResult Function()  toAppearance,required TResult Function()  toChangePassword,required TResult Function()  toDeleteAccount,required TResult Function()  toCrashLogs,required TResult Function()  toPrivacyPolicy,required TResult Function()  toTermsOfService,required TResult Function()  toWebViewTest,required TResult Function()  toFaultInjection,required TResult Function()  simulateTokenExpired,required TResult Function()  confirmOpenSettings,required TResult Function( String url)  confirmDownloadUpdate,}) {final _that = this;
 switch (_that) {
 case _Init():
 return init();case _ToggleNotifications():
@@ -265,7 +269,8 @@ return toDeleteAccount();case _ToCrashLogs():
 return toCrashLogs();case _ToPrivacyPolicy():
 return toPrivacyPolicy();case _ToTermsOfService():
 return toTermsOfService();case _ToWebViewTest():
-return toWebViewTest();case _SimulateTokenExpired():
+return toWebViewTest();case _ToFaultInjection():
+return toFaultInjection();case _SimulateTokenExpired():
 return simulateTokenExpired();case _ConfirmOpenSettings():
 return confirmOpenSettings();case _ConfirmDownloadUpdate():
 return confirmDownloadUpdate(_that.url);case _:
@@ -285,7 +290,7 @@ return confirmDownloadUpdate(_that.url);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  init,TResult? Function( bool enabled)?  toggleNotifications,TResult? Function()?  clearCache,TResult? Function()?  resetSettings,TResult? Function()?  confirmReset,TResult? Function( AppLanguage language)?  switchLanguage,TResult? Function( AppEnvironment env)?  switchEnv,TResult? Function( bool enabled)?  toggleLogOverlay,TResult? Function()?  checkUpdates,TResult? Function()?  buyMeCoffee,TResult? Function()?  showEnvDialog,TResult? Function()?  showLanguageDialog,TResult? Function()?  shareApp,TResult? Function()?  enableDeveloperMode,TResult? Function()?  rateApp,TResult? Function()?  showLicenses,TResult? Function()?  toAppearance,TResult? Function()?  toChangePassword,TResult? Function()?  toDeleteAccount,TResult? Function()?  toCrashLogs,TResult? Function()?  toPrivacyPolicy,TResult? Function()?  toTermsOfService,TResult? Function()?  toWebViewTest,TResult? Function()?  simulateTokenExpired,TResult? Function()?  confirmOpenSettings,TResult? Function( String url)?  confirmDownloadUpdate,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  init,TResult? Function( bool enabled)?  toggleNotifications,TResult? Function()?  clearCache,TResult? Function()?  resetSettings,TResult? Function()?  confirmReset,TResult? Function( AppLanguage language)?  switchLanguage,TResult? Function( AppEnvironment env)?  switchEnv,TResult? Function( bool enabled)?  toggleLogOverlay,TResult? Function()?  checkUpdates,TResult? Function()?  buyMeCoffee,TResult? Function()?  showEnvDialog,TResult? Function()?  showLanguageDialog,TResult? Function()?  shareApp,TResult? Function()?  enableDeveloperMode,TResult? Function()?  rateApp,TResult? Function()?  showLicenses,TResult? Function()?  toAppearance,TResult? Function()?  toChangePassword,TResult? Function()?  toDeleteAccount,TResult? Function()?  toCrashLogs,TResult? Function()?  toPrivacyPolicy,TResult? Function()?  toTermsOfService,TResult? Function()?  toWebViewTest,TResult? Function()?  toFaultInjection,TResult? Function()?  simulateTokenExpired,TResult? Function()?  confirmOpenSettings,TResult? Function( String url)?  confirmDownloadUpdate,}) {final _that = this;
 switch (_that) {
 case _Init() when init != null:
 return init();case _ToggleNotifications() when toggleNotifications != null:
@@ -310,7 +315,8 @@ return toDeleteAccount();case _ToCrashLogs() when toCrashLogs != null:
 return toCrashLogs();case _ToPrivacyPolicy() when toPrivacyPolicy != null:
 return toPrivacyPolicy();case _ToTermsOfService() when toTermsOfService != null:
 return toTermsOfService();case _ToWebViewTest() when toWebViewTest != null:
-return toWebViewTest();case _SimulateTokenExpired() when simulateTokenExpired != null:
+return toWebViewTest();case _ToFaultInjection() when toFaultInjection != null:
+return toFaultInjection();case _SimulateTokenExpired() when simulateTokenExpired != null:
 return simulateTokenExpired();case _ConfirmOpenSettings() when confirmOpenSettings != null:
 return confirmOpenSettings();case _ConfirmDownloadUpdate() when confirmDownloadUpdate != null:
 return confirmDownloadUpdate(_that.url);case _:
@@ -1185,6 +1191,38 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'SettingsIntent.toWebViewTest()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _ToFaultInjection extends SettingsIntent {
+  const _ToFaultInjection(): super._();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ToFaultInjection);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'SettingsIntent.toFaultInjection()';
 }
 
 

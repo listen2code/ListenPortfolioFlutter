@@ -395,4 +395,40 @@ class I18nKeys {
   static const String memoryUsage = 'memoryUsage';
   static const String noTraceRecords = 'noTraceRecords';
   static const String pressBackAgainToExit = 'Press back again to exit';
+
+  // Fault Injection Playground
+  static const String faultInjectionPlayground = 'faultInjectionPlayground';
+  static const String faultInjectionSubtitle = 'faultInjectionSubtitle';
+  static const String faultAllCategories = 'faultAllCategories';
+  static const String faultCategoryNetwork = 'faultCategoryNetwork';
+  static const String faultCategoryStability = 'faultCategoryStability';
+  static const String faultCategoryPerformance = 'faultCategoryPerformance';
+  static const String faultRunScenario = 'faultRunScenario';
+  static const String faultRunning = 'faultRunning';
+  static const String faultSuccess = 'faultSuccess';
+  static const String faultRecovered = 'faultRecovered';
+  static const String faultFailed = 'faultFailed';
+  static const String faultConsoleTitle = 'faultConsoleTitle';
+  static const String faultClearConsole = 'faultClearConsole';
+  static const String faultCopyTrace = 'faultCopyTrace';
+  static const String faultDrillTrace = 'faultDrillTrace';
+  static const String faultTraceCopied = 'faultTraceCopied';
+  static const String faultExecutionDuration = 'faultExecutionDuration';
+  static const String faultStatusIdle = 'faultStatusIdle';
+  static const String faultScenario401Title = 'faultScenario401Title';
+  static const String faultScenario401Desc = 'faultScenario401Desc';
+  static const String faultScenario500Title = 'faultScenario500Title';
+  static const String faultScenario500Desc = 'faultScenario500Desc';
+  static const String faultScenarioTimeoutTitle = 'faultScenarioTimeoutTitle';
+  static const String faultScenarioTimeoutDesc = 'faultScenarioTimeoutDesc';
+  static const String faultScenarioMalformedTitle = 'faultScenarioMalformedTitle';
+  static const String faultScenarioMalformedDesc = 'faultScenarioMalformedDesc';
+  static const String faultScenarioZoneCrashTitle = 'faultScenarioZoneCrashTitle';
+  static const String faultScenarioZoneCrashDesc = 'faultScenarioZoneCrashDesc';
+  static const String faultScenarioSafeModeTitle = 'faultScenarioSafeModeTitle';
+  static const String faultScenarioSafeModeDesc = 'faultScenarioSafeModeDesc';
+  static const String faultScenarioJankTitle = 'faultScenarioJankTitle';
+  static const String faultScenarioJankDesc = 'faultScenarioJankDesc';
+  static const String faultResetAll = 'faultResetAll';
+  static const String faultNoLogsYet = 'faultNoLogsYet';
 }

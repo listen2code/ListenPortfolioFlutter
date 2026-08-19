@@ -18,6 +18,7 @@ import '../../features/settings/presentation/pages/playback_tape_list/playback_t
 import '../../features/splash/presentation/pages/splash_intent.dart';
 import '../../features/ai_chat/presentation/pages/ai_chat_intent.dart';
 import '../../features/settings/presentation/pages/widgets/coffee_purchase/coffee_purchase_intent.dart';
+import '../../features/fault_injection/presentation/pages/fault_injection_intent.dart';
 
 /// Initializes the MVI Playback registry with deserializers by delegating to each specific Intent class.
 void initMviPlaybackRegistry() {
@@ -39,6 +40,7 @@ void initMviPlaybackRegistry() {
   SplashIntent.registerPlayback();
   AiChatIntent.registerPlayback();
   CoffeePurchaseIntent.registerPlayback();
+  FaultInjectionIntent.registerPlayback();
 }
 
 /// Static deserializer registry to reconstruct Intent instances in a reflectionless Flutter environment.
