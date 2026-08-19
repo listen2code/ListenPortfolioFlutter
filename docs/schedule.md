@@ -28,7 +28,7 @@
 | P0 | **截图 / GIF 录制** | 4h | Overview、Login、Settings、LogOverlay、CrashLogs、Architecture 页面。放到 README 顶部。**没有截图的 Portfolio = 不存在** |
 | P0 | **Mock 数据真实化** | 3h | [aboutMe.json](../assets/mock/v1/get/aboutMe.json) 替换为真实履历（公司可脱敏）；[projects.json](../assets/mock/v1/get/projects.json) 后端技术栈改为 Spring Boot；[user.json](../assets/mock/v1/get/user.json) 补 `messageId` |
 | P0 | **README 精简优化** | 4h | 当前 692 行太长。顶部加截图 → 一句话定位 → 技术亮点（5 条）→ 架构图 → Quick Start → 详细说明折叠 |
-| P1 | ~~**CI 加 flutter test**~~ | 2h | ✅ 已在 CI 工作流中集成测试步骤，全绿跑通 290 项测试用例，包含覆盖率分析 |
+| P1 | ~~**CI 加 flutter test**~~ | 2h | ✅ 已在 CI 工作流中集成测试步骤，全绿跑通 491 项测试用例，包含覆盖率分析 |
 | P1 | ~~**Release APK 签名**~~ | 3h | ✅ 已在 CI 流程中配置 keystore 解密，成功实现 Release 签名构建 |
 
 **Phase 1 交付物：**
