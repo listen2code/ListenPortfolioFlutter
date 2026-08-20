@@ -1,8 +1,8 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import 'package:listen_core/core.dart';
 import 'package:listen_uikit/uikit.dart';
 
+import '../../../../../../shared/shared.dart';
 import '../../../../data/models/about_me_model.dart';
 
 class SkillsRadarChart extends StatelessWidget {
@@ -81,7 +81,7 @@ class SkillsRadarChart extends StatelessWidget {
       angle += 2 * math.pi;
     }
 
-    int index = (angle / sliceAngle).round() % count;
+    final int index = (angle / sliceAngle).round() % count;
     if (index >= 0 && index < count && index != selectedIndex) {
       onSelectDimension(index);
     }
@@ -278,12 +278,14 @@ class _SkillsRadarPainter extends CustomPainter {
 
       if (i == selectedIndex) {
         // Outer pulsing glow for active dimension
-        canvas.drawCircle(point, 9.0 * animationValue, selectedGlowPaint);
-        canvas.drawCircle(point, 5.0, dotInnerPaint);
-        canvas.drawCircle(point, 5.0, dotOuterPaint);
+        canvas
+          ..drawCircle(point, 9.0 * animationValue, selectedGlowPaint)
+          ..drawCircle(point, 5.0, dotInnerPaint)
+          ..drawCircle(point, 5.0, dotOuterPaint);
       } else {
-        canvas.drawCircle(point, 3.5, dotInnerPaint);
-        canvas.drawCircle(point, 3.5, dotOuterPaint);
+        canvas
+          ..drawCircle(point, 3.5, dotInnerPaint)
+          ..drawCircle(point, 3.5, dotOuterPaint);
       }
     }
   }
@@ -319,24 +321,23 @@ class _SkillsRadarPainter extends CustomPainter {
         text: span,
         textAlign: TextAlign.center,
         textDirection: TextDirection.ltr,
-      );
-      tp.layout();
+      )..layout();
 
       // Compute badge position aligned by angle quadrant
-      double badgeX = x - tp.width / 2;
-      double badgeY = y - tp.height / 2;
+      double calculatedBadgeX = x - tp.width / 2;
+      final double badgeY = y - tp.height / 2;
 
       // Alignment tweaks based on direction
       if (angle > -math.pi / 4 && angle < math.pi / 4) {
         // Right side
-        badgeX = x - 4.f;
+        calculatedBadgeX = x - 4.f;
       } else if (angle > 3 * math.pi / 4 || angle < -3 * math.pi / 4) {
         // Left side
-        badgeX = x - tp.width + 4.f;
+        calculatedBadgeX = x - tp.width + 4.f;
       }
 
       final Rect badgeRect = Rect.fromLTWH(
-        badgeX - 6.f,
+        calculatedBadgeX - 6.f,
         badgeY - 3.f,
         tp.width + 12.f,
         tp.height + 6.f,
@@ -360,10 +361,11 @@ class _SkillsRadarPainter extends CustomPainter {
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1.0;
 
-      canvas.drawRRect(badgeRRect, bgPaint);
-      canvas.drawRRect(badgeRRect, borderPaint);
+      canvas
+        ..drawRRect(badgeRRect, bgPaint)
+        ..drawRRect(badgeRRect, borderPaint);
 
-      tp.paint(canvas, Offset(badgeX, badgeY));
+      tp.paint(canvas, Offset(calculatedBadgeX, badgeY));
     }
   }
 
