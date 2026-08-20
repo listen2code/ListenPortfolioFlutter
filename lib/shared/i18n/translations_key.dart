@@ -1,4 +1,6 @@
 class I18nKeys {
+  I18nKeys._();
+
   static const String settings = 'Settings';
   static const String appearance = 'Appearance';
   static const String appearanceSubtitle = 'Theme, colors, and fonts';

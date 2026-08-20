@@ -53,10 +53,16 @@ void main() {
           ),
         ),
       );
+      await tester.pumpAndSettle();
 
       expect(find.text(I18nKeys.coreSkills.tr), findsOneWidget);
-      expect(find.text('Mobile'), findsOneWidget);
+      expect(find.text('Mobile'), findsWidgets);
       expect(find.text('Flutter'), findsOneWidget);
+
+      // Switch to List mode to see all categories and items
+      await tester.tap(find.text(I18nKeys.viewModeList.tr));
+      await tester.pumpAndSettle();
+
       expect(find.text('Backend'), findsOneWidget);
       expect(find.text('Go'), findsOneWidget);
     });

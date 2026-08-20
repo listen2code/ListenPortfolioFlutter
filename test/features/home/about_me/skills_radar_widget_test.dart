@@ -98,6 +98,7 @@ void main() {
       // Tap on Backend & Cloud dimension chip
       final backendChip = find.text('Backend & Cloud');
       expect(backendChip, findsOneWidget);
+      await tester.ensureVisible(backendChip);
       await tester.tap(backendChip);
       await tester.pumpAndSettle();
 
