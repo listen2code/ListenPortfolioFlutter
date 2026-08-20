@@ -11,10 +11,13 @@ import 'package:listen_portfolio_flutter/features/ai_chat/domain/usecases/send_c
 import 'package:listen_portfolio_flutter/features/ai_chat/presentation/pages/ai_chat_state.dart';
 import 'package:listen_portfolio_flutter/features/ai_chat/presentation/pages/ai_chat_view_model.dart';
 import 'package:listen_portfolio_flutter/features/ai_chat/presentation/provider/ai_chat_provider.dart';
+import 'package:listen_portfolio_flutter/features/ai_chat/domain/entities/chat_message.dart';
 import 'package:listen_portfolio_flutter/features/ai_chat/presentation/widgets/ai_chat_header.dart';
 import 'package:listen_portfolio_flutter/features/ai_chat/presentation/widgets/ai_chat_input_bar.dart';
+import 'package:listen_portfolio_flutter/features/ai_chat/presentation/widgets/ai_chat_message_bubble.dart';
 import 'package:listen_portfolio_flutter/features/ai_chat/presentation/widgets/ai_chat_mode_selector.dart';
 import 'package:listen_portfolio_flutter/features/ai_chat/presentation/widgets/ai_chat_panel.dart';
+import 'package:listen_portfolio_flutter/features/ai_chat/presentation/widgets/ai_preset_questions.dart';
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_uikit/uikit.dart';
 import 'package:mocktail/mocktail.dart';
@@ -198,6 +201,75 @@ void main() {
       // Tap close button in header
       await tester.tap(find.byIcon(Icons.close_rounded));
       expect(closed, isTrue);
+    });
+
+    testWidgets('AiChatMessageBubble should render user message and model failure states', (WidgetTester tester) async {
+      final userMsg = ChatMessage(
+        id: '1',
+        role: 'user',
+        content: 'User query message',
+        timestamp: DateTime.now(),
+      );
+      final modelFailMsg = ChatMessage(
+        id: '2',
+        role: 'model',
+        content: 'Model error message',
+        timestamp: DateTime.now(),
+        isFailed: true,
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Column(
+              children: [
+                AiChatMessageBubble(message: userMsg),
+                AiChatMessageBubble(message: modelFailMsg),
+              ],
+            ),
+          ),
+        ),
+      );
+
+      expect(find.text('User query message'), findsOneWidget);
+      expect(find.text('Model error message'), findsOneWidget);
+      expect(find.byIcon(Icons.error_outline_rounded), findsOneWidget);
+    });
+
+    testWidgets('AiPresetQuestions renders horizontal chips and handles selection', (WidgetTester tester) async {
+      var selected = false;
+      final state = const AiChatState(presetQuestions: ['Question 1', 'Question 2']);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            aiChatRepositoryProvider.overrideWith((ref) => Future.value(mockRepo)),
+            sendChatMessageUseCaseProvider.overrideWith((ref) => Future.value(SendChatMessageUseCase(mockRepo))),
+            getPresetQaUseCaseProvider.overrideWith((ref) => Future.value(GetPresetQaUseCase(mockRepo))),
+          ],
+          child: Consumer(
+            builder: (context, ref, _) {
+              final viewModel = ref.read(aiChatViewModelProvider.notifier);
+              return MaterialApp(
+                home: Scaffold(
+                  body: AiPresetQuestions(
+                    chatViewModel: viewModel,
+                    chatState: state,
+                    onSelectQuestion: () => selected = true,
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      );
+
+      expect(find.text('Question 1'), findsOneWidget);
+      expect(find.text('Question 2'), findsOneWidget);
+
+      await tester.tap(find.text('Question 1'));
+      await tester.pump();
+      expect(selected, isTrue);
     });
   });
 }
