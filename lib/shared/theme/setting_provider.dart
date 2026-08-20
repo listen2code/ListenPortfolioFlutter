@@ -18,6 +18,28 @@ enum AppFontSize {
   }
 }
 
+/// Font family options for the app
+enum AppFontFamily {
+  system(I18nKeys.fontFamilySystem, null),
+  sansSerif(I18nKeys.fontFamilySansSerif, 'sans-serif'),
+  serif(I18nKeys.fontFamilySerif, 'serif'),
+  monospace(I18nKeys.fontFamilyMonospace, 'monospace'),
+  cursive(I18nKeys.fontFamilyCursive, 'cursive');
+
+  final String label;
+  final String? fontFamilyName;
+
+  const AppFontFamily(this.label, this.fontFamilyName);
+
+  static AppFontFamily fromName(String? name) {
+    if (name == null || name.isEmpty) return AppFontFamily.system;
+    return AppFontFamily.values.firstWhere(
+      (e) => e.fontFamilyName == name || e.name == name,
+      orElse: () => AppFontFamily.system,
+    );
+  }
+}
+
 class SettingManager extends ChangeNotifier {
   static List<Color> accentColors = [
     Colors.blueAccent,
@@ -37,6 +59,7 @@ class SettingManager extends ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.system;
   Color _accentColor = Colors.blueAccent;
   AppFontSize _fontSize = AppFontSize.standard;
+  AppFontFamily _fontFamily = AppFontFamily.system;
   AppLanguage _language = AppLanguage.system;
   bool _useDynamicColor = defaultTargetPlatform == TargetPlatform.android;
 
@@ -45,6 +68,8 @@ class SettingManager extends ChangeNotifier {
   Color get accentColor => _accentColor;
 
   AppFontSize get fontSize => _fontSize;
+
+  AppFontFamily get fontFamily => _fontFamily;
 
   AppLanguage get language => _language;
 
@@ -66,6 +91,10 @@ class SettingManager extends ChangeNotifier {
     // Load Font Size
     final factor = SpUtil.getDouble(AppConstants.fontSizeKey);
     _fontSize = AppFontSize.fromFactor(factor);
+
+    // Load Font Family
+    final fontName = SpUtil.getString(AppConstants.fontFamilyKey);
+    _fontFamily = AppFontFamily.fromName(fontName);
 
     // Load Language
     final langLabel = SpUtil.getString(AppConstants.languageKey);
@@ -102,6 +131,13 @@ class SettingManager extends ChangeNotifier {
     await SpUtil.put(AppConstants.fontSizeKey, size.factor);
   }
 
+  Future<void> setFontFamily(AppFontFamily family) async {
+    if (_fontFamily == family) return;
+    _fontFamily = family;
+    notifyListeners();
+    await SpUtil.put(AppConstants.fontFamilyKey, family.fontFamilyName ?? '');
+  }
+
   Future<void> setLanguage(AppLanguage lang) async {
     if (_language == lang) return;
     _language = lang;
@@ -124,6 +160,7 @@ class SettingManager extends ChangeNotifier {
     _themeMode = ThemeMode.system;
     _accentColor = accentColors.first;
     _fontSize = AppFontSize.standard;
+    _fontFamily = AppFontFamily.system;
     _language = AppLanguage.system;
     _useDynamicColor = defaultTargetPlatform == TargetPlatform.android;
     notifyListeners();
@@ -139,6 +176,7 @@ class SettingManager extends ChangeNotifier {
     await setThemeMode(_themeMode);
     await setAccentColor(_accentColor);
     await setFontSize(_fontSize);
+    await setFontFamily(_fontFamily);
     await setLanguage(_language);
     await setUseDynamicColor(_useDynamicColor);
   }

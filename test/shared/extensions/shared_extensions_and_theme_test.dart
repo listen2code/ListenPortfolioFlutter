@@ -32,6 +32,16 @@ void main() {
       expect(AppFontSize.fromFactor(99.0), AppFontSize.standard);
     });
 
+    test('AppFontFamily values and fromName conversion', () {
+      expect(AppFontFamily.fromName(null), AppFontFamily.system);
+      expect(AppFontFamily.fromName(''), AppFontFamily.system);
+      expect(AppFontFamily.fromName('sans-serif'), AppFontFamily.sansSerif);
+      expect(AppFontFamily.fromName('serif'), AppFontFamily.serif);
+      expect(AppFontFamily.fromName('monospace'), AppFontFamily.monospace);
+      expect(AppFontFamily.fromName('cursive'), AppFontFamily.cursive);
+      expect(AppFontFamily.fromName('unknown'), AppFontFamily.system);
+    });
+
     test('SettingManager update methods work correctly', () async {
       await settingManager.setThemeMode(ThemeMode.dark);
       expect(settingManager.themeMode, ThemeMode.dark);
@@ -43,6 +53,9 @@ void main() {
       expect(settingManager.fontSize, AppFontSize.large);
       expect(10.f, 13.0);
 
+      await settingManager.setFontFamily(AppFontFamily.monospace);
+      expect(settingManager.fontFamily, AppFontFamily.monospace);
+
       await settingManager.setLanguage(AppLanguage.chinese);
       expect(settingManager.language, AppLanguage.chinese);
 
@@ -52,6 +65,7 @@ void main() {
       // Reset to defaults
       await settingManager.resetSettings();
       expect(settingManager.themeMode, ThemeMode.system);
+      expect(settingManager.fontFamily, AppFontFamily.system);
     });
 
     testWidgets('BuildContextX and AppTheme integration', (WidgetTester tester) async {

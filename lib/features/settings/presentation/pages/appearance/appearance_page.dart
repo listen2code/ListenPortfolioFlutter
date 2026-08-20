@@ -8,6 +8,7 @@ import 'appearance_intent.dart';
 import 'appearance_state.dart';
 import 'appearance_view_model.dart';
 import 'widgets/accent_color_grid.dart';
+import 'widgets/font_family_option_tile.dart';
 import 'widgets/font_size_option_tile.dart';
 import 'widgets/theme_option_tile.dart';
 
@@ -91,6 +92,17 @@ class AppearancePage extends ConsumerWidget {
                   currentFontSize: state.fontSize,
                   onTap: () => viewModel.handleIntent(const AppearanceIntent.setFontSize(AppFontSize.large)),
                 ),
+              ]),
+              const SizedBox(height: 25),
+              CommonSettingsSectionTitle(title: I18nKeys.fontFamily.tr),
+              CommonSettingsCard(children: [
+                for (final family in AppFontFamily.values)
+                  FontFamilyOptionTile(
+                    label: family.label.tr,
+                    fontFamily: family,
+                    currentFontFamily: state.fontFamily,
+                    onTap: () => viewModel.handleIntent(AppearanceIntent.setFontFamily(family)),
+                  ),
               ]),
               const SizedBox(height: 40),
             ],

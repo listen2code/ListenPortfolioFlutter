@@ -19,6 +19,12 @@ class I18nKeys {
   static const String themeMode = 'Theme Mode';
   static const String accentColor = 'Accent Color';
   static const String fontSize = 'Font Size';
+  static const String fontFamily = 'Font Family';
+  static const String fontFamilySystem = 'System Default';
+  static const String fontFamilySansSerif = 'Sans-Serif';
+  static const String fontFamilySerif = 'Serif';
+  static const String fontFamilyMonospace = 'Monospace';
+  static const String fontFamilyCursive = 'Cursive';
   static const String system = 'System';
   static const String light = 'Light';
   static const String dark = 'Dark';

@@ -38,6 +38,7 @@ void main() {
       expect(state.themeMode, ThemeMode.system);
       expect(state.accentColor, isNotNull);
       expect(state.fontSize, isNotNull);
+      expect(state.fontFamily, AppFontFamily.system);
       expect(state.useDynamicColor, defaultTargetPlatform == TargetPlatform.android);
     });
 
@@ -71,6 +72,17 @@ void main() {
       expect(state.fontSize, newFontSize);
     });
 
+    test('Should update font family when setFontFamily intent is handled', () {
+      const newFontFamily = AppFontFamily.monospace;
+      const intent = AppearanceIntent.setFontFamily(newFontFamily);
+
+      viewModel.handleIntent(intent);
+
+      final state = container.read(appearanceViewModelProvider);
+      expect(state.fontFamily, newFontFamily);
+      expect(settingManager.fontFamily, newFontFamily);
+    });
+
     test('Should update useDynamicColor when setUseDynamicColor intent is handled', () {
       const intent = AppearanceIntent.setUseDynamicColor(true);
 
@@ -88,12 +100,14 @@ void main() {
       viewModel.handleIntent(const AppearanceIntent.setThemeMode(ThemeMode.dark));
       viewModel.handleIntent(const AppearanceIntent.setAccentColor(Colors.red));
       viewModel.handleIntent(const AppearanceIntent.setFontSize(AppFontSize.large));
+      viewModel.handleIntent(const AppearanceIntent.setFontFamily(AppFontFamily.serif));
       viewModel.handleIntent(const AppearanceIntent.setUseDynamicColor(true));
 
       final state = container.read(appearanceViewModelProvider);
       expect(state.themeMode, ThemeMode.dark);
       expect(state.accentColor, Colors.red);
       expect(state.fontSize, AppFontSize.large);
+      expect(state.fontFamily, AppFontFamily.serif);
       expect(state.useDynamicColor, true);
     });
   });

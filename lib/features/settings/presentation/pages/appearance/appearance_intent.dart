@@ -10,6 +10,7 @@ class AppearanceIntent extends BaseIntent with _$AppearanceIntent {
   const factory AppearanceIntent.setThemeMode(ThemeMode mode) = _SetThemeMode;
   const factory AppearanceIntent.setAccentColor(Color color) = _SetAccentColor;
   const factory AppearanceIntent.setFontSize(AppFontSize size) = _SetFontSize;
+  const factory AppearanceIntent.setFontFamily(AppFontFamily fontFamily) = _SetFontFamily;
   const factory AppearanceIntent.setUseDynamicColor(bool use) = _SetUseDynamicColor;
   const factory AppearanceIntent.showColorPicker(Color initialColor) = _ShowColorPicker;
   const AppearanceIntent._();
@@ -36,6 +37,14 @@ class AppearanceIntent extends BaseIntent with _$AppearanceIntent {
         orElse: () => AppFontSize.standard,
       );
       return AppearanceIntent.setFontSize(size);
+    });
+    MviPlaybackRegistry.register('AppearanceIntent', 'setFontFamily', (args) {
+      final familyStr = args['fontFamily'] ?? args['family'] ?? '';
+      final family = AppFontFamily.values.firstWhere(
+        (e) => e.toString().split('.').last == familyStr || e.name == familyStr || e.fontFamilyName == familyStr,
+        orElse: () => AppFontFamily.system,
+      );
+      return AppearanceIntent.setFontFamily(family);
     });
     MviPlaybackRegistry.register(
       'AppearanceIntent',

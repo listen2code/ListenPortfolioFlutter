@@ -1,14 +1,11 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:patrol/patrol.dart';
-import 'package:patrol_finders/patrol_finders.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/login/login_page.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/password/forgot_password_page.dart';
 import 'package:listen_portfolio_flutter/features/auth/presentation/pages/sign_up/sign_up_page.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/home_page.dart';
-import 'package:listen_portfolio_flutter/features/splash/presentation/pages/splash_page.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/settings_page.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/appearance/appearance_page.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/delete_account/delete_account_page.dart';
@@ -17,9 +14,7 @@ import 'package:listen_portfolio_flutter/features/auth/presentation/pages/passwo
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/resume/resume_page.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/overview/widgets/quick_actions.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/widgets/settings_version_tile.dart';
-import 'package:listen_portfolio_flutter/features/ai_chat/presentation/pages/global_ai_chat_overlay.dart';
 import 'package:listen_portfolio_flutter/features/ai_chat/presentation/widgets/ai_chat_panel.dart';
-import 'package:listen_portfolio_flutter/shared/pages/common_web_view_page.dart';
 import 'package:listen_portfolio_flutter/main.dart' as app;
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_uikit/uikit.dart';

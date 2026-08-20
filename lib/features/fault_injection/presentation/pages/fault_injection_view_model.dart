@@ -151,28 +151,28 @@ class FaultInjectionViewModel extends _$FaultInjectionViewModel
 
   Future<void> _executeConcurrent401(String traceId) async {
     _addLog('[Step 1] Invalidating active Access Token to simulate expiry...');
-    await Future.delayed(const Duration(milliseconds: 60));
+    await Future<void>.delayed(const Duration(milliseconds: 60));
 
     _addLog('[Step 2] Dispatching 5 concurrent protected requests (User, Projects, AboutMe, Overview, Resume)...');
-    await Future.delayed(const Duration(milliseconds: 120));
+    await Future<void>.delayed(const Duration(milliseconds: 120));
 
     _addLog('[Step 3] AuthInterceptor intercepted 401 on all requests.');
     _addLog('[Step 4] Queue active: Request #1 triggers silent token refresh, Requests #2-#5 queued.');
-    await Future.delayed(const Duration(milliseconds: 180));
+    await Future<void>.delayed(const Duration(milliseconds: 180));
 
     _addLog('[Step 5] Silent refresh completed! New JWT token acquired.');
     _addLog('[Step 6] Replaying all 5 queued requests with updated token...');
-    await Future.delayed(const Duration(milliseconds: 100));
+    await Future<void>.delayed(const Duration(milliseconds: 100));
 
     _addLog('[Step 7] All 5 concurrent requests returned 200 OK with zero user disruption.');
   }
 
   Future<void> _executeServerError500(String traceId) async {
     _addLog('[Step 1] Sending API request to simulated fault endpoint...');
-    await Future.delayed(const Duration(milliseconds: 70));
+    await Future<void>.delayed(const Duration(milliseconds: 70));
 
     _addLog('[Step 2] Server returned HTTP 500 (Internal Server Error).');
-    await Future.delayed(const Duration(milliseconds: 50));
+    await Future<void>.delayed(const Duration(milliseconds: 50));
 
     _addLog('[Step 3] BaseRepository.safeCall() caught DioException and mapped to ServerApiFailure.');
     _addLog('[Step 4] ErrorInterceptor bound messageId: ERR_SERVER_INTERNAL to localized translation.');
@@ -181,7 +181,7 @@ class FaultInjectionViewModel extends _$FaultInjectionViewModel
 
   Future<void> _executeNetworkTimeout(String traceId) async {
     _addLog('[Step 1] Simulating network connection timeout (100ms budget exceeded)...');
-    await Future.delayed(const Duration(milliseconds: 110));
+    await Future<void>.delayed(const Duration(milliseconds: 110));
 
     _addLog('[Step 2] ErrorInterceptor mapped DioExceptionType.connectionTimeout -> NetworkException.');
     _addLog('[Step 3] BaseRepository activated offline fallback strategy from DiskCleanupUtil/Local Cache.');
@@ -190,7 +190,7 @@ class FaultInjectionViewModel extends _$FaultInjectionViewModel
 
   Future<void> _executeMalformedGateway(String traceId) async {
     _addLog('[Step 1] Simulating Nginx proxy returning HTML 413 string instead of JSON payload...');
-    await Future.delayed(const Duration(milliseconds: 50));
+    await Future<void>.delayed(const Duration(milliseconds: 50));
 
     _addLog('[Step 2] ErrorInterceptor: data is Map type guard checked.');
     _addLog('[Step 3] BaseResponseModel.fromJson: rawJson is! Map fallback safely converted HTML string.');
@@ -199,7 +199,7 @@ class FaultInjectionViewModel extends _$FaultInjectionViewModel
 
   Future<void> _executeZoneAsyncCrash(String traceId) async {
     _addLog('[Step 1] Injected unhandled asynchronous error inside active Dart Zone...');
-    await Future.delayed(const Duration(milliseconds: 40));
+    await Future<void>.delayed(const Duration(milliseconds: 40));
 
     _addLog('[Step 2] ZoneManager caught unhandled async error and marked Trace ID: $traceId.');
     await CrashManager.saveCrashLog(
@@ -212,11 +212,11 @@ class FaultInjectionViewModel extends _$FaultInjectionViewModel
 
   Future<void> _executeConsecutiveSafeMode(String traceId) async {
     _addLog('[Step 1] Simulating rapid consecutive fatal crashes (3 times in 30 seconds)...');
-    await Future.delayed(const Duration(milliseconds: 50));
+    await Future<void>.delayed(const Duration(milliseconds: 50));
 
     for (int i = 1; i <= 3; i++) {
       _addLog('[Step 2.$i] Recording crash timestamp #$i in CrashManager...');
-      await Future.delayed(const Duration(milliseconds: 40));
+      await Future<void>.delayed(const Duration(milliseconds: 40));
     }
 
     _addLog('[Step 3] Rapid crash threshold (3) exceeded! Safe Mode automatically triggered.');

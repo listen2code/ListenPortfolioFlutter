@@ -9,6 +9,7 @@ class AppConstants {
   static const String themeKey = 'theme_mode';
   static const String accentColorKey = 'accent_color';
   static const String fontSizeKey = 'font_size';
+  static const String fontFamilyKey = 'font_family';
   static const String languageKey = 'language';
   static const String useDynamicColorKey = 'use_dynamic_color';
   static const String developerModeKey = 'developer_mode';
