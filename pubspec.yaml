@@ -2,7 +2,7 @@ name: listen_portfolio_flutter
 description: "Portfolio of Listen"
 publish_to: 'none'
 
-version: 1.1.40
+version: 1.1.41
 desc: "Daily Build"
 desc_zh: ""
 desc_ja: ""
