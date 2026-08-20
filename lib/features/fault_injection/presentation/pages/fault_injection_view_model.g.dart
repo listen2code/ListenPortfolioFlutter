@@ -42,7 +42,7 @@ final class FaultInjectionViewModelProvider
 }
 
 String _$faultInjectionViewModelHash() =>
-    r'68dae05f26a910b722f9c6885e07b6637198cb4d';
+    r'68e928a43fa3d5e4e61cf315b5dd98c0217a2f2b';
 
 abstract class _$FaultInjectionViewModel
     extends $Notifier<FaultInjectionState> {

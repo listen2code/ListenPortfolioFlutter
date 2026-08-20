@@ -219,6 +219,7 @@
 - App 内评分引导服务集成（基于 `in_app_review` 封装了 `ReviewService`，支持启动计数与 90 天控流，且在赞助成功后黄金时机强制拉起评价）
 - AI 智能技术咨询助手落地（基于官方 `firebase_ai` 的 `FirebaseAI.googleAI` + Google Gemini `gemini-3.7-flash` 模型，集成 Firebase App Check 强安全防护；全局可拖拽防误触悬浮球 + 独立 `AiChatPage` 页面；支持多模式切换、页面上下文/Tab 智能感知及本地预设 FAQ 零延迟零 Token 问答，已通过全量单元测试与静态检查）
 - 外观设置字体族动态切换（基于 `AppFontFamily` 跨平台标准通用字体矩阵，打通 `SettingManager` -> `BaseSettingPage` -> `AppTheme` 全局字体族热重构与秒级生效；内置实时 `Aa` 字体样式徽标预览，完全零硬编码与多语言支持，已全量覆盖单元测试与 Widget 测试）
+- Skills 交互式技能雷达图落地（基于 `CustomPainter` 自定义绘制 6 维度能力评估多边形、极坐标触摸拾取与探针交互，支持「雷达图/清单」双视图切换，全动态主题取色与三语国际化，已全量覆盖 Widget 测试与单元测试，详见 `docs/skills_radar_chart_design.md`）
 
 ### 暂时降级的想法池条目
 

@@ -384,4 +384,13 @@ final Map<String, String> ja = {
   I18nKeys.faultScenarioJankDesc: 'UIスレッドを250msブロック。FrameMonitorがフレーム落ち (<30 FPS) を検知しAPMマークを記録することを検証。',
   I18nKeys.faultResetAll: 'すべてのシナリオをリセット',
   I18nKeys.faultNoLogsYet: '実行されたシナリオはありません。上のカードの【実行】ボタンを押して検証を開始してください。',
+
+  // Skills Radar
+  I18nKeys.skillRadar: 'スキルレーダー',
+  I18nKeys.skillRadarSubtitle: '多面的な能力モデル評価',
+  I18nKeys.viewModeRadar: 'レーダー',
+  I18nKeys.viewModeList: 'リスト',
+  I18nKeys.skillScore: '専門スコア: %s 点',
+  I18nKeys.tapToInspectDimension: '頂点をタップして詳細を表示',
+  I18nKeys.allSkillsCount: '全 %s 項目',
 };

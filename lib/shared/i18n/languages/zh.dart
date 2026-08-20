@@ -382,4 +382,13 @@ final Map<String, String> zh = {
   I18nKeys.faultScenarioJankDesc: '人为阻塞 UI 主线程 250ms。验证 FrameMonitor 实时侦测掉帧 (<30 FPS) 并打上 APM 性能标记。',
   I18nKeys.faultResetAll: '重置所有场景状态',
   I18nKeys.faultNoLogsYet: '尚未执行任何故障演练。点击上方卡片的【开始演练】按钮触发实操验证。',
+
+  // Skills Radar
+  I18nKeys.skillRadar: '技能雷达图',
+  I18nKeys.skillRadarSubtitle: '多维度能力模型评估',
+  I18nKeys.viewModeRadar: '雷达图',
+  I18nKeys.viewModeList: '清单列表',
+  I18nKeys.skillScore: '专业评分: %s 分',
+  I18nKeys.tapToInspectDimension: '点击雷达顶点查看技能明细',
+  I18nKeys.allSkillsCount: '共 %s 项专业技能',
 };

@@ -74,6 +74,7 @@ abstract class SkillCategoryModel with _$SkillCategoryModel {
   const factory SkillCategoryModel({
     @ToStringConverter() String? id,
     String? category,
+    @Default(85) int score,
     @Default([]) List<String> items,
   }) = _SkillCategoryModel;
 

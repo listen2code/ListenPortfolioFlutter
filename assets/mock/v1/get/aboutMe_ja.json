@@ -118,46 +118,73 @@
       {
         "id": "1",
         "category": "モバイル開発",
+        "score": 96,
         "items": [
-          "Flutter",
-          "Android Native",
-          "Dart",
-          "Kotlin",
-          "Java"
+          "Android ネイティブ",
+          "Flutter クロスプラットフォーム",
+          "Kotlin & Java",
+          "Dart 言語",
+          "JNI / C++ 開発"
         ]
       },
       {
         "id": "2",
-        "category": "設計・アーキテクチャ",
+        "category": "アーキテクチャ設計",
+        "score": 93,
         "items": [
           "Clean Architecture",
-          "コンポーネント化",
-          "プラグイン構造",
-          "MVI",
-          "MVVM",
-          "SOLID"
+          "コンポーネント化開発",
+          "Shadow プラグイン",
+          "MVI / MVVM 構造",
+          "SOLID 原則"
         ]
       },
       {
         "id": "3",
-        "category": "パフォーマンス最適化",
+        "category": "性能最適化・APM",
+        "score": 95,
         "items": [
-          "Profiling",
-          "メモリ最適化",
-          "Feed流監視",
-          "Systrace",
-          "LeakCanary"
+          "Vsync フレーム計測",
+          "メモリ & GC プロファイリング",
+          "Feed カクつき最適化",
+          "Systrace & Perfetto",
+          "LeakCanary リーク検出"
         ]
       },
       {
         "id": "4",
-        "category": "バックエンド・DevOps",
+        "category": "安定性・耐障害性",
+        "score": 94,
+        "items": [
+          "Safe Mode 自動復旧",
+          "401 並行リトライキュー",
+          "Zone 例外サンドボックス",
+          "ゲートウェイ型ガード",
+          "SWR オフラインキャッシュ"
+        ]
+      },
+      {
+        "id": "5",
+        "category": "バックエンド・クラウド",
+        "score": 85,
         "items": [
           "Spring Boot",
           "MySQL",
           "Redis",
           "Docker",
-          "CI/CD"
+          "AWS (EC2/S3)"
+        ]
+      },
+      {
+        "id": "6",
+        "category": "DevOps・エンジニアリング",
+        "score": 90,
+        "items": [
+          "CI/CD パイプライン",
+          "Custom Lint 静的解析",
+          "自動テスト (500+ 件)",
+          "Gradle ビルド高速化",
+          "Shorebird コードプッシュ"
         ]
       }
     ]

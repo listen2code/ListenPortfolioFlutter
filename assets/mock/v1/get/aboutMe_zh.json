@@ -118,46 +118,73 @@
       {
         "id": "1",
         "category": "移动端开发",
+        "score": 96,
         "items": [
-          "Flutter",
           "Android 原生",
-          "Dart",
-          "Kotlin",
-          "Java"
+          "Flutter 跨端",
+          "Kotlin & Java",
+          "Dart 语言",
+          "JNI / C++ 混合开发"
         ]
       },
       {
         "id": "2",
         "category": "系统架构设计",
+        "score": 93,
         "items": [
           "Clean Architecture",
           "组件化开发",
-          "插件化架构",
-          "MVI 模式",
-          "MVVM 模式",
-          "SOLID 原则"
+          "Shadow 插件化",
+          "MVI / MVVM 架构",
+          "SOLID 设计原则"
         ]
       },
       {
         "id": "3",
         "category": "性能调优与 APM",
+        "score": 95,
         "items": [
-          "CPU & 内存 Profile",
-          "卡顿/内存调优",
-          "Feed流性能监控",
-          "Systrace 分析",
-          "LeakCanary 内存泄露检测"
+          "Vsync 物理帧率监测",
+          "内存与 GC 深度剖析",
+          "Feed 流卡顿治理",
+          "Systrace & Perfetto",
+          "LeakCanary 内存泄露排查"
         ]
       },
       {
         "id": "4",
-        "category": "后端与 DevOps",
+        "category": "稳定性与容灾防御",
+        "score": 94,
+        "items": [
+          "Safe Mode 熔断自愈",
+          "401 并发静默重试队列",
+          "Zone 异步异常沙箱",
+          "网关类型安全守卫",
+          "SWR 离线二级缓存"
+        ]
+      },
+      {
+        "id": "5",
+        "category": "后端与云原生",
+        "score": 85,
         "items": [
           "Spring Boot",
           "MySQL 数据库",
           "Redis 缓存",
           "Docker 容器化",
-          "CI/CD 自动化构建"
+          "AWS (EC2/S3)"
+        ]
+      },
+      {
+        "id": "6",
+        "category": "工程化与 DevOps",
+        "score": 90,
+        "items": [
+          "CI/CD 自动化流水线",
+          "Custom Lint 规则集",
+          "全量自动化测试 (500+)",
+          "Gradle 编译提速",
+          "Shorebird 热更新"
         ]
       }
     ]

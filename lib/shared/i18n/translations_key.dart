@@ -437,4 +437,13 @@ class I18nKeys {
   static const String faultScenarioJankDesc = 'faultScenarioJankDesc';
   static const String faultResetAll = 'faultResetAll';
   static const String faultNoLogsYet = 'faultNoLogsYet';
+
+  // Skills Radar
+  static const String skillRadar = 'Skill Radar';
+  static const String skillRadarSubtitle = 'Multi-dimensional capability assessment';
+  static const String viewModeRadar = 'Radar';
+  static const String viewModeList = 'List';
+  static const String skillScore = 'Score: %s';
+  static const String tapToInspectDimension = 'Tap vertex to view details';
+  static const String allSkillsCount = '%s Technical Skills';
 }

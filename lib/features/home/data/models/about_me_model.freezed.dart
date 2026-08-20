@@ -1184,7 +1184,7 @@ as String?,
 /// @nodoc
 mixin _$SkillCategoryModel {
 
-@ToStringConverter() String? get id; String? get category; List<String> get items;
+@ToStringConverter() String? get id; String? get category; int get score; List<String> get items;
 /// Create a copy of SkillCategoryModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1197,16 +1197,16 @@ $SkillCategoryModelCopyWith<SkillCategoryModel> get copyWith => _$SkillCategoryM
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SkillCategoryModel&&(identical(other.id, id) || other.id == id)&&(identical(other.category, category) || other.category == category)&&const DeepCollectionEquality().equals(other.items, items));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SkillCategoryModel&&(identical(other.id, id) || other.id == id)&&(identical(other.category, category) || other.category == category)&&(identical(other.score, score) || other.score == score)&&const DeepCollectionEquality().equals(other.items, items));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,category,const DeepCollectionEquality().hash(items));
+int get hashCode => Object.hash(runtimeType,id,category,score,const DeepCollectionEquality().hash(items));
 
 @override
 String toString() {
-  return 'SkillCategoryModel(id: $id, category: $category, items: $items)';
+  return 'SkillCategoryModel(id: $id, category: $category, score: $score, items: $items)';
 }
 
 
@@ -1217,7 +1217,7 @@ abstract mixin class $SkillCategoryModelCopyWith<$Res>  {
   factory $SkillCategoryModelCopyWith(SkillCategoryModel value, $Res Function(SkillCategoryModel) _then) = _$SkillCategoryModelCopyWithImpl;
 @useResult
 $Res call({
-@ToStringConverter() String? id, String? category, List<String> items
+@ToStringConverter() String? id, String? category, int score, List<String> items
 });
 
 
@@ -1234,11 +1234,12 @@ class _$SkillCategoryModelCopyWithImpl<$Res>
 
 /// Create a copy of SkillCategoryModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? category = freezed,Object? items = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? category = freezed,Object? score = null,Object? items = null,}) {
   return _then(_self.copyWith(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,category: freezed == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
-as String?,items: null == items ? _self.items : items // ignore: cast_nullable_to_non_nullable
+as String?,score: null == score ? _self.score : score // ignore: cast_nullable_to_non_nullable
+as int,items: null == items ? _self.items : items // ignore: cast_nullable_to_non_nullable
 as List<String>,
   ));
 }
@@ -1324,10 +1325,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@ToStringConverter()  String? id,  String? category,  List<String> items)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@ToStringConverter()  String? id,  String? category,  int score,  List<String> items)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SkillCategoryModel() when $default != null:
-return $default(_that.id,_that.category,_that.items);case _:
+return $default(_that.id,_that.category,_that.score,_that.items);case _:
   return orElse();
 
 }
@@ -1345,10 +1346,10 @@ return $default(_that.id,_that.category,_that.items);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@ToStringConverter()  String? id,  String? category,  List<String> items)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@ToStringConverter()  String? id,  String? category,  int score,  List<String> items)  $default,) {final _that = this;
 switch (_that) {
 case _SkillCategoryModel():
-return $default(_that.id,_that.category,_that.items);case _:
+return $default(_that.id,_that.category,_that.score,_that.items);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1365,10 +1366,10 @@ return $default(_that.id,_that.category,_that.items);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@ToStringConverter()  String? id,  String? category,  List<String> items)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@ToStringConverter()  String? id,  String? category,  int score,  List<String> items)?  $default,) {final _that = this;
 switch (_that) {
 case _SkillCategoryModel() when $default != null:
-return $default(_that.id,_that.category,_that.items);case _:
+return $default(_that.id,_that.category,_that.score,_that.items);case _:
   return null;
 
 }
@@ -1380,11 +1381,12 @@ return $default(_that.id,_that.category,_that.items);case _:
 @JsonSerializable()
 
 class _SkillCategoryModel implements SkillCategoryModel {
-  const _SkillCategoryModel({@ToStringConverter() this.id, this.category, final  List<String> items = const []}): _items = items;
+  const _SkillCategoryModel({@ToStringConverter() this.id, this.category, this.score = 85, final  List<String> items = const []}): _items = items;
   factory _SkillCategoryModel.fromJson(Map<String, dynamic> json) => _$SkillCategoryModelFromJson(json);
 
 @override@ToStringConverter() final  String? id;
 @override final  String? category;
+@override@JsonKey() final  int score;
  final  List<String> _items;
 @override@JsonKey() List<String> get items {
   if (_items is EqualUnmodifiableListView) return _items;
@@ -1406,16 +1408,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SkillCategoryModel&&(identical(other.id, id) || other.id == id)&&(identical(other.category, category) || other.category == category)&&const DeepCollectionEquality().equals(other._items, _items));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SkillCategoryModel&&(identical(other.id, id) || other.id == id)&&(identical(other.category, category) || other.category == category)&&(identical(other.score, score) || other.score == score)&&const DeepCollectionEquality().equals(other._items, _items));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,category,const DeepCollectionEquality().hash(_items));
+int get hashCode => Object.hash(runtimeType,id,category,score,const DeepCollectionEquality().hash(_items));
 
 @override
 String toString() {
-  return 'SkillCategoryModel(id: $id, category: $category, items: $items)';
+  return 'SkillCategoryModel(id: $id, category: $category, score: $score, items: $items)';
 }
 
 
@@ -1426,7 +1428,7 @@ abstract mixin class _$SkillCategoryModelCopyWith<$Res> implements $SkillCategor
   factory _$SkillCategoryModelCopyWith(_SkillCategoryModel value, $Res Function(_SkillCategoryModel) _then) = __$SkillCategoryModelCopyWithImpl;
 @override @useResult
 $Res call({
-@ToStringConverter() String? id, String? category, List<String> items
+@ToStringConverter() String? id, String? category, int score, List<String> items
 });
 
 
@@ -1443,11 +1445,12 @@ class __$SkillCategoryModelCopyWithImpl<$Res>
 
 /// Create a copy of SkillCategoryModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? category = freezed,Object? items = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? category = freezed,Object? score = null,Object? items = null,}) {
   return _then(_SkillCategoryModel(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,category: freezed == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
-as String?,items: null == items ? _self._items : items // ignore: cast_nullable_to_non_nullable
+as String?,score: null == score ? _self.score : score // ignore: cast_nullable_to_non_nullable
+as int,items: null == items ? _self._items : items // ignore: cast_nullable_to_non_nullable
 as List<String>,
   ));
 }

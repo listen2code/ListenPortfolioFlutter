@@ -118,46 +118,73 @@
       {
         "id": "1",
         "category": "Mobile",
+        "score": 96,
         "items": [
-          "Flutter",
           "Android Native",
+          "Flutter",
+          "Kotlin & Java",
           "Dart",
-          "Kotlin",
-          "Java"
+          "JNI / C++"
         ]
       },
       {
         "id": "2",
         "category": "Architecture",
+        "score": 93,
         "items": [
           "Clean Architecture",
           "Componentization",
-          "Plugin Architecture",
-          "MVI",
-          "MVVM",
-          "SOLID"
+          "Plugin System (Shadow)",
+          "MVI / MVVM",
+          "SOLID Principles"
         ]
       },
       {
         "id": "3",
         "category": "Performance & APM",
+        "score": 95,
         "items": [
-          "Profiling",
-          "Memory Optimization",
-          "Feed Monitoring",
-          "Systrace",
+          "Vsync Frame Monitor",
+          "Memory & GC Profiling",
+          "Feed Lag Optimization",
+          "Systrace & Perfetto",
           "LeakCanary"
         ]
       },
       {
         "id": "4",
-        "category": "Backend & DevOps",
+        "category": "Stability & Resilience",
+        "score": 94,
+        "items": [
+          "Crash Safe Mode",
+          "401 Retry Queue",
+          "Zone Tracing",
+          "Gateway Type Guard",
+          "SWR Offline Cache"
+        ]
+      },
+      {
+        "id": "5",
+        "category": "Backend & Cloud",
+        "score": 85,
         "items": [
           "Spring Boot",
           "MySQL",
           "Redis",
           "Docker",
-          "CI/CD"
+          "AWS (EC2/S3)"
+        ]
+      },
+      {
+        "id": "6",
+        "category": "DevOps & Engineering",
+        "score": 90,
+        "items": [
+          "CI/CD Pipeline",
+          "Custom Lint Rules",
+          "Automated Testing (500+)",
+          "Gradle Build Optimization",
+          "Shorebird Code Push"
         ]
       }
     ]

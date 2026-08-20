@@ -33,6 +33,7 @@ ListenPortfolioFlutter 是一个基于 Flutter 构建的个人技术作品集应
 - **推送通知**：基于 FCM 的推送通知接入，支持前台横幅、后台唤醒、冷启动深度跳转；Settings 中可开关通知并联动系统权限引导
 - **多语言切换**：中 / 英 / 日运行时切换，无需重启；**数据库动态内容国际化**（支持拦截器注入 `Accept-Language` 请求头，由 Backend / `LocalMockServer` 直发目标语言 JSON 数据，前端移除 UI 模型上的过渡性 `.tr` 映射）
 - **主题切换**：浅色 / 深色 / 跟随系统 + 强调色 / 字号持久化 + **Material You 动态取色** (Android 12+ 平台下支持跟随系统壁纸色调自动变色)
+- **Skills 交互式技能雷达图**：基于底层 `CustomPainter` 自定义绘制 6 大核心维度能力评估多边形（移动端开发、系统架构、性能与 APM、稳定性防御、后端与云原生、DevOps），支持极坐标手势触摸检测、雷达顶点实时交互与下钻详情卡片、多语言与「雷达图/清单」双视图无缝切换
 - **AI 架构与技术介绍助手**：基于官方 Firebase AI SDK (`FirebaseAI.googleAI`) + Google Gemini `gemini-3.7-flash` 模型打造的智能技术咨询助手；集成 Firebase App Check 强安全防护；全局可拖拽悬浮球 + 独立 `AiChatPage` 页面；支持多模式（访客/招聘官/架构师）切换、页面上下文/Tab 智能感知及本地预设 FAQ 零延迟零 Token 问答
 - **故障注入与韧性演练中心 (Fault Injection Playground)**：用于直观验证与展示高可用架构的受控演练平台；内置 **7 大受控演练场景**（401 并发静默重试队列、500 异常契约收敛、网络超时降级、畸形 HTML 网关防崩保护、Zone 异步异常落盘、Safe Mode 连续崩溃熔断自愈、主线程 Jank 卡顿 APM 检测）；配备毫秒级实时终端控制台、`traceId` 一键复制与下钻联动 `LogOverlay` 浮窗调试闭环
 
@@ -48,7 +49,7 @@ ListenPortfolioFlutter 是一个基于 Flutter 构建的个人技术作品集应
 - **Zone tracing**：Intent / 页面 / 请求链路支持 `traceId` 和阶段打点
 - **Crash Safe Mode**：快速连续崩溃防护、自动熔断自愈与本地 crash log 持久化
 - **日志浮窗与 APM 性能监控**：内置开发调试窗口（LogOverlay），支持实时帧率/Jank 监测、Net Inspector 抓包、按 `traceId` 过滤全链路日志
-- **零告警工程质量与全量测试套件**：**491 项** 单元与集成测试用例 100% 绿灯通过，内置 MVI Playback 反射自检，代码通过静态分析（`No issues found!`）与架构依赖边界检查（`dependency_rules.dart`）双重零违规验证
+- **零告警工程质量与全量测试套件**：**534 项** 单元与集成测试用例 100% 绿灯通过，内置 MVI Playback 反射自检，代码通过静态分析（`No issues found!`）与架构依赖边界检查（`dependency_rules.dart`）双重零违规验证
 
 ### 更能代表当前项目取向的能力
 
@@ -144,6 +145,7 @@ dart tools/dependency_rules.dart --graph
 - `docs/apm_performance_monitoring_design.md`：APM 性能监控面板设计与实现文档
 - `docs/fault_injection_playground_spec.md`：故障注入与韧性演练中心设计与实现文档（已实现）
 - `docs/ai_intro_assistant_spec.md`：AI 助手规格说明与架构设计（已实现）
+- `docs/skills_radar_chart_design.md`：Skills 交互式技能雷达图设计与实现文档（已实现）
 - `docs/listencore_audit.md`：`listen_core` 架构审计报告
 - `docs/event_bus_vs_base_effect.md`：EventBus 与 BaseEffect 架构通信设计规范
 - `docs/repository_caching_strategy.md`：BaseRepository 二级缓存与数据降级规范
@@ -160,7 +162,7 @@ dart tools/dependency_rules.dart --graph
 
 - `LogOverlay / PerformancePanel / NetInspector` 独立调试模块化
 - Golden Tests 补齐
-- PDF 简历导出、技能图表等展示能力拓展
+- PDF 简历导出与在线预览拓展
 
 ## 🧾 待删除备份区
 
