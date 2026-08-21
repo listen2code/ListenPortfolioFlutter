@@ -140,12 +140,16 @@
   - [x] 修复全部 14 个 `cascade_invocations` 与 `one_member_abstracts` 等 `info` 级别代码风格警告，实现全项目 0 警告 (`No issues found!`)
 - [x] 优化 Logout 流程防止 Session 泄露 (已于 2026-08-04 完成)
   - [x] 当 Access Token 过期时，在客户端登出前先执行静默刷新（Silent Refresh）拿到新 Token，再发起 Logout API 请求，确保后端能成功销毁服务端的 Refresh Token。
+- [x] 核心技能多语言全链路支持与手势联动 (已于 2026-08-21 完成)
+  - [x] 核心技能扩充至 6 大维度，根据 11 年移动+全栈真实经历差异化评分（Android 97、Flutter 93、APM 96、系统架构 94、Java后端 84、DevOps 89）
+  - [x] 服务端数据库 `skills` & `skill_items` 增加 `_zh` / `_ja` 多语言字段，客户端通过 `Accept-Language` 请求头实现动态本地化下发
+  - [x] 技能详情卡片支持 `PageView` 左右滑动翻页，并与上方维度按钮栏及雷达图高亮实现双向自动聚焦与平滑滚动联动
 
 ### 3. 文档与展示补强
 
 - Architecture 文档：模块图、状态流、网络链路图
 - 可观测性说明图：trace、log、crash、mock、backend 联调路径如何串起来
-- ADR：记录 Zone tracing、SafeMode、MockServer、401 refresh queue 等关键决策
+- ✅ ADR：记录 Zone tracing、SafeMode、MockServer、401 refresh queue、DeepLink 路由、技能雷达图自适应计算等关键决策（详见 docs 下各架构设计文档）
 - ✅ 一篇“为什么这个项目优先做可观测性与稳定性”的短文档已沉淀，用于对外解释项目选型与质量取向（详见 [设计与实现文档](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/docs/project_philosophy.md)）
 - Screen capture / GIF：Overview、Login、Settings、CrashLogs
 - Tech stack 选型说明
@@ -153,7 +157,7 @@
 
 ### 4. 质量与工程化
 
-- Widget tests：登录流程、Settings、Crash logs
+- ✅ Widget tests：登录流程、Settings、Crash logs、技能卡片左右手势滑动与正反向联动全覆盖（全量 544 项测试 100% 绿灯）
 - Golden tests：UIKit 组件与关键页面
 
 ## Later
@@ -219,7 +223,7 @@
 - App 内评分引导服务集成（基于 `in_app_review` 封装了 `ReviewService`，支持启动计数与 90 天控流，且在赞助成功后黄金时机强制拉起评价）
 - AI 智能技术咨询助手落地（基于官方 `firebase_ai` 的 `FirebaseAI.googleAI` + Google Gemini `gemini-3.7-flash` 模型，集成 Firebase App Check 强安全防护；全局可拖拽防误触悬浮球 + 独立 `AiChatPage` 页面；支持多模式切换、页面上下文/Tab 智能感知及本地预设 FAQ 零延迟零 Token 问答，已通过全量单元测试与静态检查）
 - 外观设置字体族动态切换（基于 `AppFontFamily` 跨平台标准通用字体矩阵，打通 `SettingManager` -> `BaseSettingPage` -> `AppTheme` 全局字体族热重构与秒级生效；内置实时 `Aa` 字体样式徽标预览，完全零硬编码与多语言支持，已全量覆盖单元测试与 Widget 测试）
-- Skills 交互式技能雷达图落地（基于 `CustomPainter` 自定义绘制 6 维度能力评估多边形、极坐标触摸拾取与探针交互，支持「雷达图/清单」双视图切换，全动态主题取色与三语国际化，已全量覆盖 Widget 测试与单元测试，详见 `docs/skills_radar_chart_design.md`）
+- Skills 交互式技能雷达图与滑动手势联动（基于 `CustomPainter` 自定义绘制 6 维度能力评估多边形、防截断自适应计算、极坐标触摸拾取与探针交互，支持「雷达图/清单」双视图切换，全动态主题取色与三语国际化；详情卡片支持 `PageView` 左右滑动翻页并与上方按钮栏及雷达图双向无缝联动同步；已全量覆盖 Widget 测试与单元测试，详见 `docs/skills_radar_chart_design.md`）
 
 ### 暂时降级的想法池条目
 
@@ -237,6 +241,6 @@
 - 发布正式包到Google play，还需要哪些准备工作
 - [x] 通过firebase_ai或Firebase Genkit实现AI智能助手（已于 2026-08-18 使用官方 `firebase_ai` + `gemini-3.7-flash` + App Check 完整落地）
 - 试用talker_flutter，storybook_flutter，pubviz 
-- 更新我简历的内容，数据库中简历内容的翻译校准
+- [x] 更新我简历的内容，数据库中简历内容的翻译校准（已于 2026-08-21 完成：全量真实 11 年履历数据与 6 维核心技能矩阵中英日三语校准落地并部署至云端）
 - aboutMe中真实简历pdf的审核，下载
 - 熟悉性能面版的功能和数据如何使用
