@@ -1,10 +1,10 @@
 {
-  "version": "1.1.48",
+  "version": "1.1.49",
   "buildNumber": 1,
   "url": "https://play.google.com/store/apps/details?id=com.listen.portfolio.listen_portfolio_flutter",
   "changelog": {
-    "zh": "完善跨平台字体 Fallback 回退机制并将全局字体完整渗透至全部 Material 3 组件主题",
-    "en": "Enhance cross-platform font family fallback and cascade theme fonts to all Material 3 components",
-    "ja": "クロスプラットフォームフォントのフォールバックを強化し、全Material 3コンポーネントテーマへ反映"
+    "zh": "优化技能详情紧凑布局、雷达图防闪动标签与圆角水波纹，并扩展全套原生 CJK 系统字体族",
+    "en": "Optimize skills detail layout, radar chart labels, ripple radius, and expand native CJK system font styles",
+    "ja": "スキル詳細レイアウトとレーダーチャートの最適化、波紋角丸修正、ネイティブCJKフォントの拡充"
   }
 }

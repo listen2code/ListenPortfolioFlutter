@@ -214,6 +214,7 @@ class _ComprehensiveSkillsState extends State<ComprehensiveSkills>
 
     return CommonClickable(
       onTap: onTap,
+      borderRadius: BorderRadius.circular(7.f),
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 10.f, vertical: 5.f),
         decoration: BoxDecoration(
@@ -305,6 +306,7 @@ class _ComprehensiveSkillsState extends State<ComprehensiveSkills>
                   padding: EdgeInsets.only(right: 8.f),
                   child: CommonClickable(
                     onTap: () => _onSelectDimension(i),
+                    borderRadius: BorderRadius.circular(12.f),
                     child: Container(
                       padding: EdgeInsets.symmetric(horizontal: 10.f, vertical: 6.f),
                       decoration: BoxDecoration(
@@ -360,9 +362,9 @@ class _ComprehensiveSkillsState extends State<ComprehensiveSkills>
           ),
           SizedBox(height: 14.f),
 
-          // Inspector Detail Card with Left/Right Swipe Support
+          // Inspector Detail Card with Left/Right Swipe Support (Optimized height & compact chips)
           SizedBox(
-            height: 195.f,
+            height: 215.f,
             child: PageView.builder(
               controller: _pageController,
               itemCount: widget.skills.length,
@@ -396,7 +398,7 @@ class _ComprehensiveSkillsState extends State<ComprehensiveSkills>
 
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(14.f),
+      padding: EdgeInsets.all(12.f),
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(12.f),
@@ -450,33 +452,33 @@ class _ComprehensiveSkillsState extends State<ComprehensiveSkills>
               ),
             ],
           ),
-          SizedBox(height: 8.f),
+          SizedBox(height: 6.f),
 
           // Animated Score Progress Bar
           ClipRRect(
             borderRadius: BorderRadius.circular(4.f),
             child: LinearProgressIndicator(
               value: (category.score / 100.0).clamp(0.0, 1.0),
-              minHeight: 6.f,
+              minHeight: 5.f,
               backgroundColor: colorScheme.surfaceContainerHighest,
               valueColor: AlwaysStoppedAnimation<Color>(colorScheme.primary),
             ),
           ),
-          SizedBox(height: 12.f),
+          SizedBox(height: 10.f),
 
-          // Skill Tag Chips
+          // Compact Skill Tag Chips (Multi-tag layout optimization)
           Expanded(
             child: SingleChildScrollView(
               physics: const ClampingScrollPhysics(),
               child: Wrap(
-                spacing: 8.f,
-                runSpacing: 8.f,
+                spacing: 6.f,
+                runSpacing: 6.f,
                 children: category.items.map((skillItem) {
                   return Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10.f, vertical: 5.f),
+                    padding: EdgeInsets.symmetric(horizontal: 8.f, vertical: 4.f),
                     decoration: BoxDecoration(
                       color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-                      borderRadius: BorderRadius.circular(8.f),
+                      borderRadius: BorderRadius.circular(6.f),
                       border: Border.all(
                         color: colorScheme.outlineVariant.withValues(alpha: 0.25),
                       ),
@@ -484,6 +486,7 @@ class _ComprehensiveSkillsState extends State<ComprehensiveSkills>
                     child: CommonText(
                       skillItem,
                       style: textTheme.labelSmall?.copyWith(
+                        fontSize: 10.5.f,
                         color: colorScheme.onSurface,
                         fontWeight: FontWeight.w500,
                       ),
@@ -517,7 +520,7 @@ class _ComprehensiveSkillsState extends State<ComprehensiveSkills>
 
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(14.f),
+      padding: EdgeInsets.all(12.f),
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.35),
         borderRadius: BorderRadius.circular(12.f),
@@ -556,16 +559,16 @@ class _ComprehensiveSkillsState extends State<ComprehensiveSkills>
               ),
             ],
           ),
-          SizedBox(height: 10.f),
+          SizedBox(height: 8.f),
           Wrap(
-            spacing: 8.f,
-            runSpacing: 8.f,
+            spacing: 6.f,
+            runSpacing: 6.f,
             children: category.items.map((item) {
               return Container(
-                padding: EdgeInsets.symmetric(horizontal: 10.f, vertical: 5.f),
+                padding: EdgeInsets.symmetric(horizontal: 8.f, vertical: 4.f),
                 decoration: BoxDecoration(
                   color: colorScheme.surface,
-                  borderRadius: BorderRadius.circular(8.f),
+                  borderRadius: BorderRadius.circular(6.f),
                   border: Border.all(
                     color: colorScheme.outlineVariant.withValues(alpha: 0.25),
                   ),
@@ -573,6 +576,7 @@ class _ComprehensiveSkillsState extends State<ComprehensiveSkills>
                 child: CommonText(
                   item,
                   style: textTheme.labelSmall?.copyWith(
+                    fontSize: 10.5.f,
                     color: colorScheme.onSurface,
                   ),
                 ),

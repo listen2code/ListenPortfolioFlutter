@@ -37,6 +37,10 @@ void main() {
       expect(AppFontFamily.fromName(''), AppFontFamily.system);
       expect(AppFontFamily.fromName('sans-serif'), AppFontFamily.sansSerif);
       expect(AppFontFamily.fromName('serif'), AppFontFamily.serif);
+      expect(AppFontFamily.fromName('KaiTi'), AppFontFamily.kaiti);
+      expect(AppFontFamily.fromName('kaiti'), AppFontFamily.kaiti);
+      expect(AppFontFamily.fromName('Yuanti SC'), AppFontFamily.rounded);
+      expect(AppFontFamily.fromName('rounded'), AppFontFamily.rounded);
       expect(AppFontFamily.fromName('monospace'), AppFontFamily.monospace);
       expect(AppFontFamily.fromName('cursive'), AppFontFamily.cursive);
       expect(AppFontFamily.fromName('unknown'), AppFontFamily.system);

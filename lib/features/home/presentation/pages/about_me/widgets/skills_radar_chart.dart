@@ -312,13 +312,12 @@ class _SkillsRadarPainter extends CustomPainter {
       final bool isSelected = i == selectedIndex;
 
       final String categoryName = skills[i].category ?? '';
-      final int score = skills[i].score;
-      final String labelText = '$categoryName $score';
+      final String labelText = categoryName;
 
       final TextStyle style = (textTheme.labelSmall ?? const TextStyle()).copyWith(
         color: isSelected ? colorScheme.onPrimaryContainer : colorScheme.onSurfaceVariant,
-        fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-        fontSize: 10.0,
+        fontWeight: FontWeight.w600,
+        fontSize: 10.5.f,
       );
 
       final TextSpan span = TextSpan(text: labelText, style: style);
@@ -330,7 +329,7 @@ class _SkillsRadarPainter extends CustomPainter {
         ellipsis: '...',
       )..layout(maxWidth: maxLabelWidth);
 
-      final double badgeWidth = tp.width + 10.f;
+      final double badgeWidth = tp.width + 12.f;
       final double badgeHeight = tp.height + 6.f;
 
       // Label anchor offset slightly outside outer web perimeter

@@ -23,10 +23,12 @@ class I18nKeys {
   static const String fontSize = 'Font Size';
   static const String fontFamily = 'Font Family';
   static const String fontFamilySystem = 'System Default';
-  static const String fontFamilySansSerif = 'Sans-Serif';
-  static const String fontFamilySerif = 'Serif';
-  static const String fontFamilyMonospace = 'Monospace';
-  static const String fontFamilyCursive = 'Cursive';
+  static const String fontFamilySansSerif = 'Sans-Serif / Gothic';
+  static const String fontFamilySerif = 'Serif / Mincho';
+  static const String fontFamilyKaiti = 'KaiTi / Calligraphy';
+  static const String fontFamilyRounded = 'Rounded';
+  static const String fontFamilyMonospace = 'Monospace / Code';
+  static const String fontFamilyCursive = 'Cursive / Handwriting';
   static const String system = 'System';
   static const String light = 'Light';
   static const String dark = 'Dark';

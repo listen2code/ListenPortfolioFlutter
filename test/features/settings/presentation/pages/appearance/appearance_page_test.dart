@@ -39,7 +39,7 @@ void main() {
       expect(find.byType(AccentColorGrid), findsOneWidget);
       expect(find.byType(FontSizeOptionTile), findsNWidgets(2));
       expect(find.text(I18nKeys.fontFamily.tr.toUpperCase()), findsOneWidget);
-      expect(find.byType(FontFamilyOptionTile), findsNWidgets(5));
+      expect(find.byType(FontFamilyOptionTile), findsNWidgets(AppFontFamily.values.length));
 
       // Tap dark mode tile
       await tester.tap(find.text(I18nKeys.dark.tr));
