@@ -117,74 +117,74 @@
     "skills": [
       {
         "id": "1",
-        "category": "Mobile",
-        "score": 96,
+        "category": "Android Native",
+        "score": 97,
         "items": [
-          "Android Native",
-          "Flutter",
-          "Kotlin & Java",
-          "Dart",
-          "JNI / C++"
+          "Kotlin & Java Advanced",
+          "Android SDK & Framework",
+          "JNI / C++ & NDK",
+          "Componentization Architecture",
+          "Plugin (Shadow) & Hotfix"
         ]
       },
       {
         "id": "2",
-        "category": "Architecture",
+        "category": "Flutter",
         "score": 93,
         "items": [
-          "Clean Architecture",
-          "Componentization",
-          "Plugin System (Shadow)",
-          "MVI / MVVM",
-          "SOLID Principles"
+          "Dart Core & Async",
+          "Clean Architecture + MVI",
+          "Riverpod State Management",
+          "Canvas & CustomPainter",
+          "Platform Channel & FIDO2"
         ]
       },
       {
         "id": "3",
         "category": "Performance & APM",
-        "score": 95,
+        "score": 96,
         "items": [
-          "Vsync Frame Monitor",
+          "Vsync Frame & Jank Monitor",
+          "ANR & Stutter Detection SDK",
+          "Feed Lag 40% Reduction",
           "Memory & GC Profiling",
-          "Feed Lag Optimization",
-          "Systrace & Perfetto",
-          "LeakCanary"
+          "Systrace & Perfetto Tracing"
         ]
       },
       {
         "id": "4",
-        "category": "Stability & Resilience",
+        "category": "Architecture",
         "score": 94,
         "items": [
-          "Crash Safe Mode",
-          "401 Retry Queue",
-          "Zone Tracing",
-          "Gateway Type Guard",
-          "SWR Offline Cache"
+          "Clean Architecture",
+          "MVI Unidirectional Flow",
+          "Zone Distributed Tracing",
+          "401 Concurrent Retry Queue",
+          "Crash Safe Mode Circuit Breaker"
         ]
       },
       {
         "id": "5",
-        "category": "Backend & Cloud",
-        "score": 85,
+        "category": "Java & Backend",
+        "score": 84,
         "items": [
-          "Spring Boot",
-          "MySQL",
-          "Redis",
-          "Docker",
-          "AWS (EC2/S3)"
+          "1-Yr Java Server Experience",
+          "Spring Boot Microservices",
+          "RESTful API & Contract",
+          "MySQL & Index Tuning",
+          "Redis Cache & Docker"
         ]
       },
       {
         "id": "6",
-        "category": "DevOps & Engineering",
-        "score": 90,
+        "category": "DevOps & CI/CD",
+        "score": 89,
         "items": [
-          "CI/CD Pipeline",
-          "Custom Lint Rules",
-          "Automated Testing (500+)",
-          "Gradle Build Optimization",
-          "Shorebird Code Push"
+          "CI/CD (Jenkins / GitHub Actions)",
+          "Gradle 30%+ Build Tuning",
+          "Custom Lint Rule Sets",
+          "Automated Testing (540+ Suites)",
+          "Shorebird OTA Code Push"
         ]
       }
     ]

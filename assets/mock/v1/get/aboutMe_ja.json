@@ -117,74 +117,74 @@
     "skills": [
       {
         "id": "1",
-        "category": "モバイル開発",
-        "score": 96,
+        "category": "Android ネイティブ",
+        "score": 97,
         "items": [
-          "Android ネイティブ",
-          "Flutter クロスプラットフォーム",
-          "Kotlin & Java",
-          "Dart 言語",
-          "JNI / C++ 開発"
+          "Kotlin & Java 開発",
+          "Android SDK & Framework",
+          "JNI / C++ 連携",
+          "コンポーネント化設計",
+          "Shadow プラグイン・熱修正"
         ]
       },
       {
         "id": "2",
-        "category": "アーキテクチャ設計",
+        "category": "Flutter 開発",
         "score": 93,
         "items": [
-          "Clean Architecture",
-          "コンポーネント化開発",
-          "Shadow プラグイン",
-          "MVI / MVVM 構造",
-          "SOLID 原則"
+          "Dart 言語・非同期機構",
+          "Clean Architecture + MVI",
+          "Riverpod 状態管理",
+          "Canvas & CustomPainter 描画",
+          "Platform Channel & FIDO2"
         ]
       },
       {
         "id": "3",
-        "category": "性能最適化・APM",
-        "score": 95,
+        "category": "性能改善・APM",
+        "score": 96,
         "items": [
-          "Vsync フレーム計測",
-          "メモリ & GC プロファイリング",
-          "Feed カクつき最適化",
-          "Systrace & Perfetto",
-          "LeakCanary リーク検出"
+          "Vsync フレーム・Jank計測",
+          "ANR・カクつき検知SDK",
+          "Feed レスポンス 40% 改善",
+          "メモリ・GCプロファイリング",
+          "Systrace & Perfetto 分析"
         ]
       },
       {
         "id": "4",
-        "category": "安定性・耐障害性",
+        "category": "アーキテクチャ",
         "score": 94,
         "items": [
-          "Safe Mode 自動復旧",
+          "MVI 単方向データフロー",
+          "Zone 分散トレーシング",
           "401 並行リトライキュー",
-          "Zone 例外サンドボックス",
-          "ゲートウェイ型ガード",
-          "SWR オフラインキャッシュ"
+          "Crash Safe Mode 自動復旧",
+          "SWR L2キャッシュ・フォールバック"
         ]
       },
       {
         "id": "5",
-        "category": "バックエンド・クラウド",
-        "score": 85,
+        "category": "Java バックエンド",
+        "score": 84,
         "items": [
-          "Spring Boot",
-          "MySQL",
-          "Redis",
-          "Docker",
-          "AWS (EC2/S3)"
+          "Java サーバー開発（1年）",
+          "Spring Boot マイクロサービス",
+          "RESTful API 契約管理",
+          "MySQL & インデックス設計",
+          "Redis キャッシュ & Docker"
         ]
       },
       {
         "id": "6",
-        "category": "DevOps・エンジニアリング",
-        "score": 90,
+        "category": "DevOps・CI/CD",
+        "score": 89,
         "items": [
-          "CI/CD パイプライン",
+          "CI/CD (Jenkins / GitHub Actions)",
+          "Gradle 30%+ ビルド高速化",
           "Custom Lint 静的解析",
-          "自動テスト (500+ 件)",
-          "Gradle ビルド高速化",
-          "Shorebird コードプッシュ"
+          "自動テスト (540+ 件全緑)",
+          "Shorebird OTA コードプッシュ"
         ]
       }
     ]

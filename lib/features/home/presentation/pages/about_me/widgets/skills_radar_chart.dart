@@ -32,7 +32,7 @@ class SkillsRadarChart extends StatelessWidget {
       builder: (context, constraints) {
         final double width = constraints.maxWidth;
         // Keep an adaptive aspect ratio for comfortable radar display
-        final double height = math.min(width * 0.85, 320.f);
+        final double height = math.min(width * 0.78, 290.f);
 
         return CommonClickable(
           ripple: false,
@@ -108,7 +108,13 @@ class _SkillsRadarPainter extends CustomPainter {
     if (skills.isEmpty) return;
 
     final Offset center = Offset(size.width / 2, size.height / 2);
-    final double radius = math.min(size.width, size.height) / 2 * 0.68;
+    // Dynamic radius calculation: ensure at least 68px on each side for text badges
+    final double maxHorizontalRadius = (size.width / 2) - 68.f;
+    final double maxVerticalRadius = (size.height / 2) - 34.f;
+    final double radius = math.max(
+      60.f,
+      math.min(maxHorizontalRadius, maxVerticalRadius),
+    );
     final int count = skills.length;
     final double sliceAngle = 2 * math.pi / count;
 
@@ -125,7 +131,7 @@ class _SkillsRadarPainter extends CustomPainter {
     _drawDataPoints(canvas, center, radius, count, sliceAngle);
 
     // 5. Draw axis labels with pill badges
-    _drawLabels(canvas, center, radius, count, sliceAngle);
+    _drawLabels(canvas, center, radius, count, sliceAngle, size);
   }
 
   void _drawGridWeb(
@@ -296,15 +302,14 @@ class _SkillsRadarPainter extends CustomPainter {
     double radius,
     int count,
     double sliceAngle,
+    Size size,
   ) {
+    // Restrict max width of any single badge to prevent horizontal overflow
+    final double maxLabelWidth = (size.width * 0.32).clamp(60.0, 105.0);
+
     for (int i = 0; i < count; i++) {
       final double angle = -math.pi / 2 + i * sliceAngle;
       final bool isSelected = i == selectedIndex;
-
-      // Label offset slightly outside outer web perimeter
-      final double labelRadius = radius + 22.f;
-      final double x = center.dx + labelRadius * math.cos(angle);
-      final double y = center.dy + labelRadius * math.sin(angle);
 
       final String categoryName = skills[i].category ?? '';
       final int score = skills[i].score;
@@ -313,7 +318,7 @@ class _SkillsRadarPainter extends CustomPainter {
       final TextStyle style = (textTheme.labelSmall ?? const TextStyle()).copyWith(
         color: isSelected ? colorScheme.onPrimaryContainer : colorScheme.onSurfaceVariant,
         fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-        fontSize: 10.5,
+        fontSize: 10.0,
       );
 
       final TextSpan span = TextSpan(text: labelText, style: style);
@@ -321,26 +326,47 @@ class _SkillsRadarPainter extends CustomPainter {
         text: span,
         textAlign: TextAlign.center,
         textDirection: TextDirection.ltr,
-      )..layout();
+        maxLines: 2,
+        ellipsis: '...',
+      )..layout(maxWidth: maxLabelWidth);
 
-      // Compute badge position aligned by angle quadrant
-      double calculatedBadgeX = x - tp.width / 2;
-      final double badgeY = y - tp.height / 2;
+      final double badgeWidth = tp.width + 10.f;
+      final double badgeHeight = tp.height + 6.f;
 
-      // Alignment tweaks based on direction
-      if (angle > -math.pi / 4 && angle < math.pi / 4) {
-        // Right side
-        calculatedBadgeX = x - 4.f;
-      } else if (angle > 3 * math.pi / 4 || angle < -3 * math.pi / 4) {
-        // Left side
-        calculatedBadgeX = x - tp.width + 4.f;
+      // Label anchor offset slightly outside outer web perimeter
+      final double labelRadius = radius + 12.f;
+      final double anchorX = center.dx + labelRadius * math.cos(angle);
+      final double anchorY = center.dy + labelRadius * math.sin(angle);
+
+      double rawBadgeX;
+      double rawBadgeY;
+
+      final double cosVal = math.cos(angle);
+      final double sinVal = math.sin(angle);
+
+      if (cosVal.abs() < 0.25) {
+        // Top or Bottom vertex
+        rawBadgeX = anchorX - badgeWidth / 2;
+        rawBadgeY = sinVal < 0 ? anchorY - badgeHeight : anchorY;
+      } else if (cosVal > 0) {
+        // Right side vertices
+        rawBadgeX = anchorX + 2.f;
+        rawBadgeY = anchorY - badgeHeight / 2;
+      } else {
+        // Left side vertices
+        rawBadgeX = anchorX - badgeWidth - 2.f;
+        rawBadgeY = anchorY - badgeHeight / 2;
       }
 
+      // Clamping guard: ensure badge never clips outside canvas [2.0, size.width - 2.0]
+      final double clampedBadgeX = rawBadgeX.clamp(2.0, math.max(2.0, size.width - badgeWidth - 2.0));
+      final double clampedBadgeY = rawBadgeY.clamp(2.0, math.max(2.0, size.height - badgeHeight - 2.0));
+
       final Rect badgeRect = Rect.fromLTWH(
-        calculatedBadgeX - 6.f,
-        badgeY - 3.f,
-        tp.width + 12.f,
-        tp.height + 6.f,
+        clampedBadgeX,
+        clampedBadgeY,
+        badgeWidth,
+        badgeHeight,
       );
 
       final RRect badgeRRect = RRect.fromRectAndRadius(
@@ -351,12 +377,12 @@ class _SkillsRadarPainter extends CustomPainter {
       final Paint bgPaint = Paint()
         ..color = isSelected
             ? colorScheme.primaryContainer
-            : colorScheme.surfaceContainerHighest.withValues(alpha: 0.85)
+            : colorScheme.surfaceContainerHighest.withValues(alpha: 0.88)
         ..style = PaintingStyle.fill;
 
       final Paint borderPaint = Paint()
         ..color = isSelected
-            ? colorScheme.primary.withValues(alpha: 0.6)
+            ? colorScheme.primary.withValues(alpha: 0.7)
             : colorScheme.outlineVariant.withValues(alpha: 0.3)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1.0;
@@ -365,7 +391,10 @@ class _SkillsRadarPainter extends CustomPainter {
         ..drawRRect(badgeRRect, bgPaint)
         ..drawRRect(badgeRRect, borderPaint);
 
-      tp.paint(canvas, Offset(calculatedBadgeX, badgeY));
+      // Paint text centered inside badge
+      final double textOffsetX = clampedBadgeX + (badgeWidth - tp.width) / 2;
+      final double textOffsetY = clampedBadgeY + (badgeHeight - tp.height) / 2;
+      tp.paint(canvas, Offset(textOffsetX, textOffsetY));
     }
   }
 

@@ -49,6 +49,10 @@ class AboutMeWidget extends StatelessWidget {
                   onTapResume: () => viewModel.handleIntent(const AboutMeIntent.toResume()),
                 ),
               ],
+              if (data.skills.isNotEmpty) ...[
+                SizedBox(height: 25.f),
+                ComprehensiveSkills(skills: data.skills),
+              ],
               if (data.experiences.isNotEmpty) ...[
                 SizedBox(height: 25.f),
                 DetailedExperience(experiences: data.experiences),
@@ -56,10 +60,6 @@ class AboutMeWidget extends StatelessWidget {
               if (data.education.isNotEmpty) ...[
                 SizedBox(height: 25.f),
                 EducationSection(education: data.education),
-              ],
-              if (data.skills.isNotEmpty) ...[
-                SizedBox(height: 25.f),
-                ComprehensiveSkills(skills: data.skills),
               ],
               SizedBox(height: 40.f),
             ],

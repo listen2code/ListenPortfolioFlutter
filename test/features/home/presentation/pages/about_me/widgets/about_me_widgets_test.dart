@@ -49,7 +49,9 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: ComprehensiveSkills(skills: skills),
+            body: SingleChildScrollView(
+              child: ComprehensiveSkills(skills: skills),
+            ),
           ),
         ),
       );

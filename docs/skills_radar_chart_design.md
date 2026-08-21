@@ -1,6 +1,6 @@
 # Skills 技能雷达图 (Skills Radar Chart) - 设计与实现文档
 
-**Status**: `Implemented & Verified (100% Green Test Suite - 534 Tests Passed)`
+**Status**: `Implemented & Verified (100% Green Test Suite - 543 Tests Passed)`
 
 ---
 
@@ -8,17 +8,27 @@
 
 在个人技术作品集与招聘面试场景中，如何向面试官直观展示候选人的**多维度技能深度与全栈架构广度**，是决定第一印象的关键。
 
-为了替代传统单一静态的纯文本标签堆叠，我们在 [AboutMeWidget](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/home/presentation/pages/about_me/about_me_widget.dart) 模块中设计并实现了基于 Flutter 底层绘图引擎 (`CustomPainter`) 的 **交互式技能雷达图 (Skills Radar Chart)**。
+为了替代传统单一静态的纯文本标签堆叠，我们在 [AboutMeWidget](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/home/presentation/pages/about_me/about_me_widget.dart) 模块的**顶部核心位置（紧跟个人简介之后）**设计并实现了基于 Flutter 底层绘图引擎 (`CustomPainter`) 的 **交互式技能雷达图 (Skills Radar Chart)**。
 
 ### 核心设计目标：
-1. **多维度能力模型 (6 Dimensions Capability Matrix)**：涵盖 6 大核心支柱（移动端开发、系统架构设计、性能调优与 APM、稳定性与容灾防御、后端与云原生、工程化与 DevOps），综合得分 85~96 分。
+1. **多维度能力真实模型 (6 Dimensions Capability Matrix)**：基于 11 年 Android、3 年 Flutter、1 年 Java 服务端真实履历，建立 6 大核心维度差异化评分：
+   - **Android 原生开发 (Android Native)**：**97 分**（Kotlin/Java、Framework、JNI/C++、组件化、Shadow 插件化/热修复）
+   - **Flutter 跨端开发 (Flutter)**：**93 分**（Dart 核心异步、Clean Architecture + MVI、Riverpod 状态流、CustomPainter 自绘、FIDO2/Platform Channel）
+   - **性能调优与 APM (Performance & APM)**：**96 分**（Vsync 物理帧率/Jank 监控、ANR/卡顿 SDK、Feed 流时延降 40%、内存/GC 剖析、Systrace & Perfetto）
+   - **系统架构设计 (Architecture)**：**94 分**（Clean Architecture、MVI 单向流、Zone 分布式追踪、401 并发重试队列、Safe Mode 熔断自愈）
+   - **Java 后端开发 (Java & Backend)**：**84 分**（1年真实服务端经历、Spring Boot 微服务、RESTful 契约、MySQL 索引调优、Redis & Docker）
+   - **工程化与 DevOps (DevOps & CI/CD)**：**89 分**（CI/CD 流水线、Gradle 编译提速 30%+、Custom Lint 规则集、全量 540+ 自动化测试、Shorebird OTA）
 2. **纯原生 Canvas 自定义绘制 (CustomPainter)**：使用底层 `Canvas` API 绘制多层正六边形同心网格骨架、发散轴线、动态渐变填充多边形（`LinearGradient` 着色器）与顶点数据光圈。
 3. **入场动效与平滑插值 (CurvedAnimation)**：集成 `AnimationController`，在视图展现时从中心 $(0,0)$ 呈 `Curves.easeOutCubic` 缓动展开，带来流畅高级的交互质感。
-4. **探针交互与下钻联动 (Touch Hit-Testing & Inspector Card)**：
-   * 支持雷达顶点触摸检测（通过 $\text{atan2}$ 极坐标角度映射判定最近顶点）；
-   * 点击或滑动顶点时触发高亮脉冲光圈，并动态刷新下方**技能详情卡片**（展示该维度的专业评分进度条与核心技能标签）。
-5. **双视图模式平滑切换 (Radar vs List Mode)**：支持在「📊 雷达图」与「🏷️ 清单列表」双视图之间通过 `AnimatedSwitcher` 秒级切换。
-6. **全动态主题与多语言规范 (Zero Raw Color & Zero Hardcoded String)**：100% 遵循 `context.colorScheme` / `context.theme`，所有文本收口至 `I18nKeys` 并配置中、英、日三语翻译。
+4. **全屏幕防溢出与自适应钳位 (Boundary Clamping & Adaptive Layout)**：
+   - **自适应动态半径**：雷达图半径根据容器宽度动态预留充足文字空间（$\text{radius} = \min(\text{width} \cdot 0.28, \text{height} \cdot 0.35)$）；
+   - **TextPainter 折行与限宽**：标签文字设定最大宽度约束（`maxWidth = (width * 0.32).clamp(60, 105)`），长文本自动折行；
+   - **Canvas 边界钳位**：计算徽标坐标后进行全屏边缘钳位防护（`clampedBadgeX = rawX.clamp(2.0, width - badgeWidth - 2.0)`），彻底杜绝左/右侧长文本被屏幕边缘截断的问题。
+5. **探针交互与下钻联动 (Touch Hit-Testing & Inspector Card)**：
+   - 支持雷达顶点触摸检测（通过 $\text{atan2}$ 极坐标角度映射判定最近顶点）；
+   - 点击或滑动顶点时触发高亮脉冲光圈，并动态刷新下方**技能详情卡片**（展示该维度的专业评分进度条与核心技能标签）。
+6. **双视图模式平滑切换 (Radar vs List Mode)**：支持在「📊 雷达图」与「🏷️ 清单列表」双视图之间通过 `AnimatedSwitcher` 秒级切换。
+7. **全动态主题与多语言规范 (Zero Raw Color & Zero Hardcoded String)**：100% 遵循 `context.colorScheme` / `context.theme`，所有文本收口至 `I18nKeys` 并配置中、英、日三语翻译。
 
 ---
 
@@ -85,7 +95,7 @@ $$P_i(t) = \left( c_x + R \cdot S_i \cdot t \cdot \cos\theta_i, \; c_y + R \cdot
 ## 5. 质量与测试验证
 
 - **单元与 Widget 测试**：新增 `skills_radar_widget_test.dart`（覆盖空状态、雷达模式默认渲染、维度点击切换、雷达与列表双向切换、Canvas 手势命中测试）。
-- **全量测试套件**：全工程 **534 项** 单元与集成测试用例 **100% 绿灯通过**。
+- **全量测试套件**：全工程 **543 项** 单元与集成测试用例 **100% 绿灯通过**。
 - **静态分析与依赖规则**：
   - `flutter analyze` 保持 `No issues found!` 零警告；
   - `dart tools/dependency_rules.dart` 架构单向依赖零违规。
