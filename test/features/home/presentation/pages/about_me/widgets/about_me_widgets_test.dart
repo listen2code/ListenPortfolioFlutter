@@ -68,5 +68,40 @@ void main() {
       expect(find.text('Backend'), findsOneWidget);
       expect(find.text('Go'), findsOneWidget);
     });
+
+    testWidgets('ComprehensiveSkills supports swiping detail card and synchronizes selection', (WidgetTester tester) async {
+      const skills = [
+        SkillCategoryModel(category: 'Mobile', score: 95, items: ['Flutter', 'Dart']),
+        SkillCategoryModel(category: 'Backend', score: 88, items: ['Java', 'Spring']),
+      ];
+
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: ComprehensiveSkills(skills: skills),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Initially Mobile is selected and Flutter item is visible
+      expect(find.text('Flutter'), findsOneWidget);
+
+      // Swipe left on the PageView area to go to page 1 (Backend)
+      await tester.fling(find.byType(PageView), const Offset(-500, 0), 1000);
+      await tester.pumpAndSettle();
+
+      // Now Backend details and Java item should be visible in the inspector card
+      expect(find.text('Java'), findsOneWidget);
+      expect(find.text('Spring'), findsOneWidget);
+
+      // Tap on Mobile chip to navigate back to Mobile
+      await tester.tap(find.text('Mobile').first);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Flutter'), findsOneWidget);
+    });
   });
 }

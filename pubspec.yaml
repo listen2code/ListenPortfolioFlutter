@@ -2,10 +2,10 @@ name: listen_portfolio_flutter
 description: "Portfolio of Listen"
 publish_to: 'none'
 
-version: 1.1.45
-desc: "Daily Build"
-desc_zh: ""
-desc_ja: ""
+version: 1.1.46
+desc: "Support swipeable skills detail carousel with bidirectional tab sync"
+desc_zh: "支持技能详情卡片左右滑动切换与维度按钮双向同步联动"
+desc_ja: "スキル詳細カードの左右スワイプ切り替えとタブボタンの双方向同期に対応"
 
 environment:
   sdk: ^3.12.1

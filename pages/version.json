@@ -1,10 +1,10 @@
 {
-  "version": "1.1.45",
+  "version": "1.1.46",
   "buildNumber": 1,
   "url": "https://play.google.com/store/apps/details?id=com.listen.portfolio.listen_portfolio_flutter",
   "changelog": {
-    "zh": "",
-    "en": "Daily Build",
-    "ja": ""
+    "zh": "支持技能详情卡片左右滑动切换与维度按钮双向同步联动",
+    "en": "Support swipeable skills detail carousel with bidirectional tab sync",
+    "ja": "スキル詳細カードの左右スワイプ切り替えとタブボタンの双方向同期に対応"
   }
 }

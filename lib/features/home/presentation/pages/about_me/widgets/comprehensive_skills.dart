@@ -23,6 +23,8 @@ class _ComprehensiveSkillsState extends State<ComprehensiveSkills>
     with SingleTickerProviderStateMixin {
   late final AnimationController _animController;
   late final Animation<double> _curveAnimation;
+  late final PageController _pageController;
+  final ScrollController _chipsScrollController = ScrollController();
 
   SkillsViewMode _viewMode = SkillsViewMode.radar;
   int _selectedDimensionIndex = 0;
@@ -38,6 +40,7 @@ class _ComprehensiveSkillsState extends State<ComprehensiveSkills>
       parent: _animController,
       curve: Curves.easeOutCubic,
     );
+    _pageController = PageController(initialPage: _selectedDimensionIndex);
     _animController.forward();
   }
 
@@ -46,13 +49,50 @@ class _ComprehensiveSkillsState extends State<ComprehensiveSkills>
     super.didUpdateWidget(oldWidget);
     if (oldWidget.skills != widget.skills) {
       _animController.forward(from: 0.0);
+      if (_selectedDimensionIndex >= widget.skills.length) {
+        _selectedDimensionIndex = 0;
+      }
+      if (_pageController.hasClients && _pageController.page?.round() != _selectedDimensionIndex) {
+        _pageController.jumpToPage(_selectedDimensionIndex);
+      }
     }
   }
 
   @override
   void dispose() {
     _animController.dispose();
+    _pageController.dispose();
+    _chipsScrollController.dispose();
     super.dispose();
+  }
+
+  void _onSelectDimension(int index) {
+    if (index < 0 || index >= widget.skills.length) return;
+    setState(() {
+      _selectedDimensionIndex = index;
+    });
+    if (_pageController.hasClients && _pageController.page?.round() != index) {
+      _pageController.animateToPage(
+        index,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOutCubic,
+      );
+    }
+    _scrollToChip(index);
+  }
+
+  void _scrollToChip(int index) {
+    if (!_chipsScrollController.hasClients) return;
+    const double approxChipWidth = 115.0;
+    final double targetOffset = (index * approxChipWidth - 40.0).clamp(
+      0.0,
+      _chipsScrollController.position.maxScrollExtent,
+    );
+    _chipsScrollController.animateTo(
+      targetOffset,
+      duration: const Duration(milliseconds: 280),
+      curve: Curves.easeOutCubic,
+    );
   }
 
   int get _totalSkillsCount {
@@ -247,17 +287,14 @@ class _ComprehensiveSkillsState extends State<ComprehensiveSkills>
           SkillsRadarChart(
             skills: widget.skills,
             selectedIndex: activeIndex,
-            onSelectDimension: (index) {
-              setState(() {
-                _selectedDimensionIndex = index;
-              });
-            },
+            onSelectDimension: _onSelectDimension,
             animation: _curveAnimation,
           ),
           SizedBox(height: 16.f),
 
           // Dimension Quick Switcher Chips
           SingleChildScrollView(
+            controller: _chipsScrollController,
             scrollDirection: Axis.horizontal,
             child: Row(
               children: List.generate(widget.skills.length, (i) {
@@ -267,11 +304,7 @@ class _ComprehensiveSkillsState extends State<ComprehensiveSkills>
                 return Padding(
                   padding: EdgeInsets.only(right: 8.f),
                   child: CommonClickable(
-                    onTap: () {
-                      setState(() {
-                        _selectedDimensionIndex = i;
-                      });
-                    },
+                    onTap: () => _onSelectDimension(i),
                     child: Container(
                       padding: EdgeInsets.symmetric(horizontal: 10.f, vertical: 6.f),
                       decoration: BoxDecoration(
@@ -327,25 +360,61 @@ class _ComprehensiveSkillsState extends State<ComprehensiveSkills>
           ),
           SizedBox(height: 14.f),
 
-          // Inspector Detail Card for Selected Dimension
-          Container(
-            width: double.infinity,
-            padding: EdgeInsets.all(14.f),
-            decoration: BoxDecoration(
-              color: colorScheme.surface,
-              borderRadius: BorderRadius.circular(12.f),
-              border: Border.all(color: colorScheme.outlineVariant.withValues(alpha: 0.35)),
+          // Inspector Detail Card with Left/Right Swipe Support
+          SizedBox(
+            height: 195.f,
+            child: PageView.builder(
+              controller: _pageController,
+              itemCount: widget.skills.length,
+              physics: const BouncingScrollPhysics(),
+              onPageChanged: (index) {
+                if (_selectedDimensionIndex != index) {
+                  setState(() {
+                    _selectedDimensionIndex = index;
+                  });
+                  _scrollToChip(index);
+                }
+              },
+              itemBuilder: (context, index) {
+                final category = widget.skills[index];
+                return _buildInspectorDetailCard(context, category, index);
+              },
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Header with Category Title and Score Bar
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInspectorDetailCard(
+    BuildContext context,
+    SkillCategoryModel category,
+    int index,
+  ) {
+    final colorScheme = context.colorScheme;
+    final textTheme = context.textTheme;
+
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(14.f),
+      decoration: BoxDecoration(
+        color: colorScheme.surface,
+        borderRadius: BorderRadius.circular(12.f),
+        border: Border.all(color: colorScheme.outlineVariant.withValues(alpha: 0.35)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header with Category Title, Pagination Indicator and Score Badge
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Row(
                   children: [
-                    Expanded(
+                    Flexible(
                       child: CommonText(
-                        selectedCategory.category ?? '',
+                        category.category ?? '',
                         style: textTheme.titleSmall?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: colorScheme.onSurface,
@@ -353,62 +422,75 @@ class _ComprehensiveSkillsState extends State<ComprehensiveSkills>
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    SizedBox(width: 8.f),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8.f, vertical: 3.f),
-                      decoration: BoxDecoration(
-                        color: colorScheme.primary.withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(8.f),
-                      ),
-                      child: CommonText(
-                        I18nKeys.skillScore.trArgs(['${selectedCategory.score}']),
-                        style: textTheme.labelSmall?.copyWith(
-                          color: colorScheme.primary,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    SizedBox(width: 6.f),
+                    CommonText(
+                      '(${index + 1}/${widget.skills.length})',
+                      style: textTheme.labelSmall?.copyWith(
+                        color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+                        fontSize: 10.f,
                       ),
                     ),
                   ],
                 ),
-                SizedBox(height: 8.f),
-
-                // Animated Score Progress Bar
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(4.f),
-                  child: LinearProgressIndicator(
-                    value: (selectedCategory.score / 100.0).clamp(0.0, 1.0),
-                    minHeight: 6.f,
-                    backgroundColor: colorScheme.surfaceContainerHighest,
-                    valueColor: AlwaysStoppedAnimation<Color>(colorScheme.primary),
+              ),
+              SizedBox(width: 8.f),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 8.f, vertical: 3.f),
+                decoration: BoxDecoration(
+                  color: colorScheme.primary.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(8.f),
+                ),
+                child: CommonText(
+                  I18nKeys.skillScore.trArgs(['${category.score}']),
+                  style: textTheme.labelSmall?.copyWith(
+                    color: colorScheme.primary,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 12.f),
+              ),
+            ],
+          ),
+          SizedBox(height: 8.f),
 
-                // Skill Tag Chips
-                Wrap(
-                  spacing: 8.f,
-                  runSpacing: 8.f,
-                  children: selectedCategory.items.map((skillItem) {
-                    return Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10.f, vertical: 5.f),
-                      decoration: BoxDecoration(
-                        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-                        borderRadius: BorderRadius.circular(8.f),
-                        border: Border.all(
-                          color: colorScheme.outlineVariant.withValues(alpha: 0.25),
-                        ),
+          // Animated Score Progress Bar
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4.f),
+            child: LinearProgressIndicator(
+              value: (category.score / 100.0).clamp(0.0, 1.0),
+              minHeight: 6.f,
+              backgroundColor: colorScheme.surfaceContainerHighest,
+              valueColor: AlwaysStoppedAnimation<Color>(colorScheme.primary),
+            ),
+          ),
+          SizedBox(height: 12.f),
+
+          // Skill Tag Chips
+          Expanded(
+            child: SingleChildScrollView(
+              physics: const ClampingScrollPhysics(),
+              child: Wrap(
+                spacing: 8.f,
+                runSpacing: 8.f,
+                children: category.items.map((skillItem) {
+                  return Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10.f, vertical: 5.f),
+                    decoration: BoxDecoration(
+                      color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                      borderRadius: BorderRadius.circular(8.f),
+                      border: Border.all(
+                        color: colorScheme.outlineVariant.withValues(alpha: 0.25),
                       ),
-                      child: CommonText(
-                        skillItem,
-                        style: textTheme.labelSmall?.copyWith(
-                          color: colorScheme.onSurface,
-                          fontWeight: FontWeight.w500,
-                        ),
+                    ),
+                    child: CommonText(
+                      skillItem,
+                      style: textTheme.labelSmall?.copyWith(
+                        color: colorScheme.onSurface,
+                        fontWeight: FontWeight.w500,
                       ),
-                    );
-                  }).toList(),
-                ),
-              ],
+                    ),
+                  );
+                }).toList(),
+              ),
             ),
           ),
         ],
