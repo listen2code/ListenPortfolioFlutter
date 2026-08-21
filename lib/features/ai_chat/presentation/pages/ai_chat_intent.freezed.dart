@@ -55,13 +55,12 @@ extension AiChatIntentPatterns on AiChatIntent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Init value)?  init,TResult Function( _SendMessage value)?  sendMessage,TResult Function( _ChangeMode value)?  changeMode,TResult Function( _ClearHistory value)?  clearHistory,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Init value)?  init,TResult Function( _SendMessage value)?  sendMessage,TResult Function( _ClearHistory value)?  clearHistory,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Init() when init != null:
 return init(_that);case _SendMessage() when sendMessage != null:
-return sendMessage(_that);case _ChangeMode() when changeMode != null:
-return changeMode(_that);case _ClearHistory() when clearHistory != null:
+return sendMessage(_that);case _ClearHistory() when clearHistory != null:
 return clearHistory(_that);case _:
   return orElse();
 
@@ -80,13 +79,12 @@ return clearHistory(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Init value)  init,required TResult Function( _SendMessage value)  sendMessage,required TResult Function( _ChangeMode value)  changeMode,required TResult Function( _ClearHistory value)  clearHistory,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Init value)  init,required TResult Function( _SendMessage value)  sendMessage,required TResult Function( _ClearHistory value)  clearHistory,}){
 final _that = this;
 switch (_that) {
 case _Init():
 return init(_that);case _SendMessage():
-return sendMessage(_that);case _ChangeMode():
-return changeMode(_that);case _ClearHistory():
+return sendMessage(_that);case _ClearHistory():
 return clearHistory(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -104,13 +102,12 @@ return clearHistory(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Init value)?  init,TResult? Function( _SendMessage value)?  sendMessage,TResult? Function( _ChangeMode value)?  changeMode,TResult? Function( _ClearHistory value)?  clearHistory,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Init value)?  init,TResult? Function( _SendMessage value)?  sendMessage,TResult? Function( _ClearHistory value)?  clearHistory,}){
 final _that = this;
 switch (_that) {
 case _Init() when init != null:
 return init(_that);case _SendMessage() when sendMessage != null:
-return sendMessage(_that);case _ChangeMode() when changeMode != null:
-return changeMode(_that);case _ClearHistory() when clearHistory != null:
+return sendMessage(_that);case _ClearHistory() when clearHistory != null:
 return clearHistory(_that);case _:
   return null;
 
@@ -128,12 +125,11 @@ return clearHistory(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  init,TResult Function( String text)?  sendMessage,TResult Function( String mode)?  changeMode,TResult Function()?  clearHistory,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  init,TResult Function( String text)?  sendMessage,TResult Function()?  clearHistory,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Init() when init != null:
 return init();case _SendMessage() when sendMessage != null:
-return sendMessage(_that.text);case _ChangeMode() when changeMode != null:
-return changeMode(_that.mode);case _ClearHistory() when clearHistory != null:
+return sendMessage(_that.text);case _ClearHistory() when clearHistory != null:
 return clearHistory();case _:
   return orElse();
 
@@ -152,12 +148,11 @@ return clearHistory();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  init,required TResult Function( String text)  sendMessage,required TResult Function( String mode)  changeMode,required TResult Function()  clearHistory,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  init,required TResult Function( String text)  sendMessage,required TResult Function()  clearHistory,}) {final _that = this;
 switch (_that) {
 case _Init():
 return init();case _SendMessage():
-return sendMessage(_that.text);case _ChangeMode():
-return changeMode(_that.mode);case _ClearHistory():
+return sendMessage(_that.text);case _ClearHistory():
 return clearHistory();case _:
   throw StateError('Unexpected subclass');
 
@@ -175,12 +170,11 @@ return clearHistory();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  init,TResult? Function( String text)?  sendMessage,TResult? Function( String mode)?  changeMode,TResult? Function()?  clearHistory,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  init,TResult? Function( String text)?  sendMessage,TResult? Function()?  clearHistory,}) {final _that = this;
 switch (_that) {
 case _Init() when init != null:
 return init();case _SendMessage() when sendMessage != null:
-return sendMessage(_that.text);case _ChangeMode() when changeMode != null:
-return changeMode(_that.mode);case _ClearHistory() when clearHistory != null:
+return sendMessage(_that.text);case _ClearHistory() when clearHistory != null:
 return clearHistory();case _:
   return null;
 
@@ -280,72 +274,6 @@ class __$SendMessageCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') $Res call({Object? text = null,}) {
   return _then(_SendMessage(
 null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
-as String,
-  ));
-}
-
-
-}
-
-/// @nodoc
-
-
-class _ChangeMode extends AiChatIntent {
-  const _ChangeMode(this.mode): super._();
-  
-
- final  String mode;
-
-/// Create a copy of AiChatIntent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$ChangeModeCopyWith<_ChangeMode> get copyWith => __$ChangeModeCopyWithImpl<_ChangeMode>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ChangeMode&&(identical(other.mode, mode) || other.mode == mode));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,mode);
-
-@override
-String toString() {
-  return 'AiChatIntent.changeMode(mode: $mode)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$ChangeModeCopyWith<$Res> implements $AiChatIntentCopyWith<$Res> {
-  factory _$ChangeModeCopyWith(_ChangeMode value, $Res Function(_ChangeMode) _then) = __$ChangeModeCopyWithImpl;
-@useResult
-$Res call({
- String mode
-});
-
-
-
-
-}
-/// @nodoc
-class __$ChangeModeCopyWithImpl<$Res>
-    implements _$ChangeModeCopyWith<$Res> {
-  __$ChangeModeCopyWithImpl(this._self, this._then);
-
-  final _ChangeMode _self;
-  final $Res Function(_ChangeMode) _then;
-
-/// Create a copy of AiChatIntent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? mode = null,}) {
-  return _then(_ChangeMode(
-null == mode ? _self.mode : mode // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }

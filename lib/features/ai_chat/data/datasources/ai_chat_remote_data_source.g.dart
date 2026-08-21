@@ -20,39 +20,6 @@ class _AiChatRemoteDataSource implements AiChatRemoteDataSource {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<BaseResponseModel<AiChatResponseModel>> sendChatMessage(
-    AiChatRequestModel? request,
-  ) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    queryParameters.removeWhere((k, v) => v == null);
-    final _headers = <String, dynamic>{};
-    final _data = request;
-    final _options = _setStreamType<BaseResponseModel<AiChatResponseModel>>(
-      Options(method: 'POST', headers: _headers, extra: _extra)
-          .compose(
-            _dio.options,
-            '/v1/ai/chat',
-            queryParameters: queryParameters,
-            data: _data,
-          )
-          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
-    );
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late BaseResponseModel<AiChatResponseModel> _value;
-    try {
-      _value = BaseResponseModel<AiChatResponseModel>.fromJson(
-        _result.data!,
-        (json) => AiChatResponseModel.fromJson(json as Map<String, dynamic>),
-      );
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options, response: _result);
-      rethrow;
-    }
-    return _value;
-  }
-
-  @override
   Future<BaseResponseModel<AiPresetQaResponseModel>> getPresetQAs(
     String? route,
   ) async {

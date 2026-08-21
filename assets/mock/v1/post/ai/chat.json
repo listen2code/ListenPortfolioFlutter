@@ -1,8 +1,0 @@
-{
-  "result": "0",
-  "messageId": "",
-  "message": "",
-  "body": {
-    "reply": "这是来自 AI 助理的模拟回答。在未来的版本中，当连接真实后端时，AI 将能够读取当前页面的 local docs 上下文并调用 Google Gemini API，为您提供智能的解答。当前为 Mock 模拟数据。"
-  }
-}

@@ -3,8 +3,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/features/ai_chat/data/datasources/ai_chat_remote_data_source.dart';
-import 'package:listen_portfolio_flutter/features/ai_chat/data/models/ai_chat_request_model.dart';
-import 'package:listen_portfolio_flutter/features/ai_chat/data/models/ai_chat_response_model.dart';
 import 'package:listen_portfolio_flutter/features/ai_chat/data/models/ai_preset_qa_response_model.dart';
 
 void main() {
@@ -17,38 +15,6 @@ void main() {
     setUp(() {
       dio = Dio(BaseOptions(baseUrl: 'https://api.example.com'));
       remoteDataSource = AiChatRemoteDataSource(dio);
-    });
-
-    test('sendChatMessage sends POST request with correct payload', () async {
-      dio.httpClientAdapter = _MockHttpClientAdapter((options) {
-        expect(options.path, '/v1/ai/chat');
-        expect(options.method, 'POST');
-        return ResponseBody.fromString(
-          json.encode({
-            'result': ApiResult.success,
-            'message': 'success',
-            'body': {
-              'reply': 'Hello from AI assistant!',
-            },
-          }),
-          200,
-          headers: {
-            Headers.contentTypeHeader: [Headers.jsonContentType],
-          },
-        );
-      });
-
-      final response = await remoteDataSource.sendChatMessage(
-        const AiChatRequestModel(
-          message: 'Hello',
-          history: [],
-          resumeContext: 'Flutter Engineer',
-          mode: 'visitor',
-        ),
-      );
-
-      expect(response.result, ApiResult.success);
-      expect(response.body?.reply, 'Hello from AI assistant!');
     });
 
     test('getPresetQAs sends GET request with optional route query parameter', () async {

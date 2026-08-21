@@ -6,7 +6,6 @@ import 'package:listen_portfolio_flutter/features/auth/data/models/user_model.da
 import 'package:listen_portfolio_flutter/features/auth/data/models/login_model.dart';
 import 'package:listen_portfolio_flutter/features/home/data/models/about_me_model.dart';
 import 'package:listen_portfolio_flutter/features/home/data/models/project_model.dart';
-import 'package:listen_portfolio_flutter/features/ai_chat/data/models/ai_chat_response_model.dart';
 import 'package:listen_portfolio_flutter/features/ai_chat/data/models/ai_preset_qa_response_model.dart';
 
 void main() {
@@ -71,18 +70,6 @@ void main() {
       expect(response.result, equals('0'));
       expect(response.body, isNotNull);
       expect(response.body!.qas.containsKey('global'), isTrue);
-    });
-
-    test('v1/post/ai/chat.json matches AiChatResponseModel spec', () {
-      final jsonMap = readJsonFile('assets/mock/v1/post/ai/chat.json');
-      final response = BaseResponseModel<AiChatResponseModel>.fromJson(
-        jsonMap,
-        (body) => AiChatResponseModel.fromJson(body as Map<String, dynamic>),
-      );
-
-      expect(response.result, equals('0'));
-      expect(response.body, isNotNull);
-      expect(response.body!.reply, isNotEmpty);
     });
 
     test('v1/post/auth/login.json matches LoginModel spec', () {

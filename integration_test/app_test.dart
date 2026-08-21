@@ -14,7 +14,7 @@ import 'package:listen_portfolio_flutter/features/auth/presentation/pages/passwo
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/resume/resume_page.dart';
 import 'package:listen_portfolio_flutter/features/home/presentation/pages/overview/widgets/quick_actions.dart';
 import 'package:listen_portfolio_flutter/features/settings/presentation/pages/widgets/settings_version_tile.dart';
-import 'package:listen_portfolio_flutter/features/ai_chat/presentation/widgets/ai_chat_panel.dart';
+import 'package:listen_portfolio_flutter/features/ai_chat/presentation/pages/ai_chat_page.dart';
 import 'package:listen_portfolio_flutter/main.dart' as app;
 import 'package:listen_portfolio_flutter/shared/shared.dart';
 import 'package:listen_uikit/uikit.dart';
@@ -503,8 +503,8 @@ void main() {
         await tester.tap(aiFab);
         await tester.pumpAndSettle();
 
-        // Verify transition to AiChatPanel
-        expect(find.byType(AiChatPanel), findsOneWidget);
+        // Verify transition to AiChatPage
+        expect(find.byType(AiChatPage), findsOneWidget);
 
         // Find input textfield in AI Chat
         final chatInputField = find.byType(TextField);
@@ -1005,20 +1005,7 @@ void main() {
         await tester.pumpAndSettle();
       }
 
-      if (find.byType(AiChatPanel).evaluate().isNotEmpty) {
-        // Switch to Interviewer Mode
-        final interviewerMode = find.text(I18nKeys.aiModeInterviewer.tr);
-        if (interviewerMode.evaluate().isNotEmpty) {
-          await tester.tap(interviewerMode);
-          await tester.pumpAndSettle();
-        }
-
-        // Switch back to Visitor Mode
-        final visitorMode = find.text(I18nKeys.aiModeVisitor.tr);
-        if (visitorMode.evaluate().isNotEmpty) {
-          await tester.tap(visitorMode);
-          await tester.pumpAndSettle();
-        }
+      if (find.byType(AiChatPage).evaluate().isNotEmpty) {
 
         // Tap a preset question chip if available
         final chipFinder = find.byType(ActionChip);

@@ -32,7 +32,6 @@ class AiChatViewModel extends _$AiChatViewModel with ViewModelMixin<AiChatState,
     return intent.when<FutureOr<void>>(
       init: _onInit,
       sendMessage: _onSendMessage,
-      changeMode: _onChangeMode,
       clearHistory: _onClearHistory,
     );
   }
@@ -81,8 +80,7 @@ class AiChatViewModel extends _$AiChatViewModel with ViewModelMixin<AiChatState,
   }
 
   void _addWelcomeMessage() {
-    final isVisitor = state.mode == 'visitor';
-    final welcomeText = isVisitor ? I18nKeys.aiChatWelcomeVisitor.tr : I18nKeys.aiChatWelcomeInterviewer.tr;
+    final welcomeText = I18nKeys.aiChatWelcomeVisitor.tr;
 
     final welcomeMsg = ChatMessage(
       id: _uuid.v4(),
@@ -164,20 +162,6 @@ class AiChatViewModel extends _$AiChatViewModel with ViewModelMixin<AiChatState,
         ),
       );
     }
-  }
-
-  void _onChangeMode(String newMode) {
-    if (state.mode == newMode) return;
-    try {
-      ref.read(firebaseAiServiceProvider).resetChatSession();
-    } catch (_) {}
-    updateState(
-      state.copyWith(
-        mode: newMode,
-        messages: [], // Reset history for new context
-      ),
-    );
-    _addWelcomeMessage();
   }
 
   void _onClearHistory() {

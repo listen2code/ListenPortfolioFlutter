@@ -1,13 +1,10 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/features/ai_chat/data/datasources/ai_chat_local_data_source.dart';
 import 'package:listen_portfolio_flutter/features/ai_chat/data/datasources/ai_chat_remote_data_source.dart';
-import 'package:listen_portfolio_flutter/features/ai_chat/data/models/ai_chat_request_model.dart';
-import 'package:listen_portfolio_flutter/features/ai_chat/data/models/ai_chat_response_model.dart';
 import 'package:listen_portfolio_flutter/features/ai_chat/data/models/ai_preset_qa_response_model.dart';
 import 'package:listen_portfolio_flutter/features/ai_chat/data/repositories/ai_chat_repository_impl.dart';
+import 'package:listen_core/core.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockAiChatRemoteDataSource extends Mock implements AiChatRemoteDataSource {}
@@ -19,14 +16,6 @@ void main() {
   setUpAll(() {
     registerFallbackValue(
       const AiPresetQaResponseModel(qas: {}),
-    );
-    registerFallbackValue(
-      const AiChatRequestModel(
-        message: '',
-        history: [],
-        resumeContext: '',
-        mode: '',
-      ),
     );
   });
 
@@ -49,17 +38,6 @@ void main() {
     );
   });
 
-  const mockRequest = AiChatRequestModel(
-    message: 'Tell me about Riverpod architecture',
-    history: [],
-    resumeContext: '',
-    mode: 'architect',
-  );
-
-  final mockResponse = const AiChatResponseModel(
-    reply: 'Riverpod 3 is used for uni-directional state management.',
-  );
-
   final mockPresetQas = AiPresetQaResponseModel(
     qas: {
       'global': [
@@ -72,38 +50,6 @@ void main() {
   );
 
   group('AiChatRepositoryImpl Tests', () {
-    test('sendChatMessage returns Right(AiChatResponseModel) on remote success', () async {
-      when(() => mockRemote.sendChatMessage(any()))
-          .thenAnswer((_) async => BaseResponseModel(result: ApiResult.success, message: 'success', body: mockResponse));
-
-      final result = await repository.sendChatMessage(param: mockRequest);
-
-      expect(result.isRight(), isTrue);
-      result.fold(
-        (failure) => fail('Should not return failure'),
-        (data) {
-          expect(data?.reply, mockResponse.reply);
-        },
-      );
-      verify(() => mockRemote.sendChatMessage(mockRequest)).called(1);
-    });
-
-    test('sendChatMessage returns Left(Failure) on remote exception', () async {
-      when(() => mockRemote.sendChatMessage(any()))
-          .thenThrow(DioException(
-            requestOptions: RequestOptions(path: '/v1/ai/chat'),
-            type: DioExceptionType.connectionTimeout,
-          ));
-
-      final result = await repository.sendChatMessage(param: mockRequest);
-
-      expect(result.isLeft(), isTrue);
-      result.fold(
-        (failure) => expect(failure, isA<Failure>()),
-        (_) => fail('Should not return success'),
-      );
-    });
-
     test('getPresetQAs returns Right and updates local cache on remote success', () async {
       when(() => mockRemote.getPresetQAs(any()))
           .thenAnswer((_) async => BaseResponseModel(result: ApiResult.success, message: 'success', body: mockPresetQas));

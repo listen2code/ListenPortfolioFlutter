@@ -15,8 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AiChatState {
 
- List<ChatMessage> get messages; bool get isLoading; String get mode;// "visitor" or "interviewer"
- String get resumeContent; String? get errorMessage; List<String> get presetQuestions; Map<String, List<PresetQaItem>> get allPresetQAs;
+ List<ChatMessage> get messages; bool get isLoading; String get resumeContent; String? get errorMessage; List<String> get presetQuestions; Map<String, List<PresetQaItem>> get allPresetQAs;
 /// Create a copy of AiChatState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +28,16 @@ $AiChatStateCopyWith<AiChatState> get copyWith => _$AiChatStateCopyWithImpl<AiCh
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AiChatState&&const DeepCollectionEquality().equals(other.messages, messages)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.mode, mode) || other.mode == mode)&&(identical(other.resumeContent, resumeContent) || other.resumeContent == resumeContent)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&const DeepCollectionEquality().equals(other.presetQuestions, presetQuestions)&&const DeepCollectionEquality().equals(other.allPresetQAs, allPresetQAs));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AiChatState&&const DeepCollectionEquality().equals(other.messages, messages)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.resumeContent, resumeContent) || other.resumeContent == resumeContent)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&const DeepCollectionEquality().equals(other.presetQuestions, presetQuestions)&&const DeepCollectionEquality().equals(other.allPresetQAs, allPresetQAs));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(messages),isLoading,mode,resumeContent,errorMessage,const DeepCollectionEquality().hash(presetQuestions),const DeepCollectionEquality().hash(allPresetQAs));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(messages),isLoading,resumeContent,errorMessage,const DeepCollectionEquality().hash(presetQuestions),const DeepCollectionEquality().hash(allPresetQAs));
 
 @override
 String toString() {
-  return 'AiChatState(messages: $messages, isLoading: $isLoading, mode: $mode, resumeContent: $resumeContent, errorMessage: $errorMessage, presetQuestions: $presetQuestions, allPresetQAs: $allPresetQAs)';
+  return 'AiChatState(messages: $messages, isLoading: $isLoading, resumeContent: $resumeContent, errorMessage: $errorMessage, presetQuestions: $presetQuestions, allPresetQAs: $allPresetQAs)';
 }
 
 
@@ -49,7 +48,7 @@ abstract mixin class $AiChatStateCopyWith<$Res>  {
   factory $AiChatStateCopyWith(AiChatState value, $Res Function(AiChatState) _then) = _$AiChatStateCopyWithImpl;
 @useResult
 $Res call({
- List<ChatMessage> messages, bool isLoading, String mode, String resumeContent, String? errorMessage, List<String> presetQuestions, Map<String, List<PresetQaItem>> allPresetQAs
+ List<ChatMessage> messages, bool isLoading, String resumeContent, String? errorMessage, List<String> presetQuestions, Map<String, List<PresetQaItem>> allPresetQAs
 });
 
 
@@ -66,12 +65,11 @@ class _$AiChatStateCopyWithImpl<$Res>
 
 /// Create a copy of AiChatState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? messages = null,Object? isLoading = null,Object? mode = null,Object? resumeContent = null,Object? errorMessage = freezed,Object? presetQuestions = null,Object? allPresetQAs = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? messages = null,Object? isLoading = null,Object? resumeContent = null,Object? errorMessage = freezed,Object? presetQuestions = null,Object? allPresetQAs = null,}) {
   return _then(_self.copyWith(
 messages: null == messages ? _self.messages : messages // ignore: cast_nullable_to_non_nullable
 as List<ChatMessage>,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
-as bool,mode: null == mode ? _self.mode : mode // ignore: cast_nullable_to_non_nullable
-as String,resumeContent: null == resumeContent ? _self.resumeContent : resumeContent // ignore: cast_nullable_to_non_nullable
+as bool,resumeContent: null == resumeContent ? _self.resumeContent : resumeContent // ignore: cast_nullable_to_non_nullable
 as String,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,presetQuestions: null == presetQuestions ? _self.presetQuestions : presetQuestions // ignore: cast_nullable_to_non_nullable
 as List<String>,allPresetQAs: null == allPresetQAs ? _self.allPresetQAs : allPresetQAs // ignore: cast_nullable_to_non_nullable
@@ -160,10 +158,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<ChatMessage> messages,  bool isLoading,  String mode,  String resumeContent,  String? errorMessage,  List<String> presetQuestions,  Map<String, List<PresetQaItem>> allPresetQAs)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<ChatMessage> messages,  bool isLoading,  String resumeContent,  String? errorMessage,  List<String> presetQuestions,  Map<String, List<PresetQaItem>> allPresetQAs)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AiChatState() when $default != null:
-return $default(_that.messages,_that.isLoading,_that.mode,_that.resumeContent,_that.errorMessage,_that.presetQuestions,_that.allPresetQAs);case _:
+return $default(_that.messages,_that.isLoading,_that.resumeContent,_that.errorMessage,_that.presetQuestions,_that.allPresetQAs);case _:
   return orElse();
 
 }
@@ -181,10 +179,10 @@ return $default(_that.messages,_that.isLoading,_that.mode,_that.resumeContent,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<ChatMessage> messages,  bool isLoading,  String mode,  String resumeContent,  String? errorMessage,  List<String> presetQuestions,  Map<String, List<PresetQaItem>> allPresetQAs)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<ChatMessage> messages,  bool isLoading,  String resumeContent,  String? errorMessage,  List<String> presetQuestions,  Map<String, List<PresetQaItem>> allPresetQAs)  $default,) {final _that = this;
 switch (_that) {
 case _AiChatState():
-return $default(_that.messages,_that.isLoading,_that.mode,_that.resumeContent,_that.errorMessage,_that.presetQuestions,_that.allPresetQAs);case _:
+return $default(_that.messages,_that.isLoading,_that.resumeContent,_that.errorMessage,_that.presetQuestions,_that.allPresetQAs);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -201,10 +199,10 @@ return $default(_that.messages,_that.isLoading,_that.mode,_that.resumeContent,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<ChatMessage> messages,  bool isLoading,  String mode,  String resumeContent,  String? errorMessage,  List<String> presetQuestions,  Map<String, List<PresetQaItem>> allPresetQAs)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<ChatMessage> messages,  bool isLoading,  String resumeContent,  String? errorMessage,  List<String> presetQuestions,  Map<String, List<PresetQaItem>> allPresetQAs)?  $default,) {final _that = this;
 switch (_that) {
 case _AiChatState() when $default != null:
-return $default(_that.messages,_that.isLoading,_that.mode,_that.resumeContent,_that.errorMessage,_that.presetQuestions,_that.allPresetQAs);case _:
+return $default(_that.messages,_that.isLoading,_that.resumeContent,_that.errorMessage,_that.presetQuestions,_that.allPresetQAs);case _:
   return null;
 
 }
@@ -216,7 +214,7 @@ return $default(_that.messages,_that.isLoading,_that.mode,_that.resumeContent,_t
 @JsonSerializable()
 
 class _AiChatState extends AiChatState {
-  const _AiChatState({final  List<ChatMessage> messages = const [], this.isLoading = false, this.mode = 'visitor', this.resumeContent = '', this.errorMessage, final  List<String> presetQuestions = const [], final  Map<String, List<PresetQaItem>> allPresetQAs = const {}}): _messages = messages,_presetQuestions = presetQuestions,_allPresetQAs = allPresetQAs,super._();
+  const _AiChatState({final  List<ChatMessage> messages = const [], this.isLoading = false, this.resumeContent = '', this.errorMessage, final  List<String> presetQuestions = const [], final  Map<String, List<PresetQaItem>> allPresetQAs = const {}}): _messages = messages,_presetQuestions = presetQuestions,_allPresetQAs = allPresetQAs,super._();
   factory _AiChatState.fromJson(Map<String, dynamic> json) => _$AiChatStateFromJson(json);
 
  final  List<ChatMessage> _messages;
@@ -227,8 +225,6 @@ class _AiChatState extends AiChatState {
 }
 
 @override@JsonKey() final  bool isLoading;
-@override@JsonKey() final  String mode;
-// "visitor" or "interviewer"
 @override@JsonKey() final  String resumeContent;
 @override final  String? errorMessage;
  final  List<String> _presetQuestions;
@@ -259,16 +255,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AiChatState&&const DeepCollectionEquality().equals(other._messages, _messages)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.mode, mode) || other.mode == mode)&&(identical(other.resumeContent, resumeContent) || other.resumeContent == resumeContent)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&const DeepCollectionEquality().equals(other._presetQuestions, _presetQuestions)&&const DeepCollectionEquality().equals(other._allPresetQAs, _allPresetQAs));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AiChatState&&const DeepCollectionEquality().equals(other._messages, _messages)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.resumeContent, resumeContent) || other.resumeContent == resumeContent)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&const DeepCollectionEquality().equals(other._presetQuestions, _presetQuestions)&&const DeepCollectionEquality().equals(other._allPresetQAs, _allPresetQAs));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_messages),isLoading,mode,resumeContent,errorMessage,const DeepCollectionEquality().hash(_presetQuestions),const DeepCollectionEquality().hash(_allPresetQAs));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_messages),isLoading,resumeContent,errorMessage,const DeepCollectionEquality().hash(_presetQuestions),const DeepCollectionEquality().hash(_allPresetQAs));
 
 @override
 String toString() {
-  return 'AiChatState(messages: $messages, isLoading: $isLoading, mode: $mode, resumeContent: $resumeContent, errorMessage: $errorMessage, presetQuestions: $presetQuestions, allPresetQAs: $allPresetQAs)';
+  return 'AiChatState(messages: $messages, isLoading: $isLoading, resumeContent: $resumeContent, errorMessage: $errorMessage, presetQuestions: $presetQuestions, allPresetQAs: $allPresetQAs)';
 }
 
 
@@ -279,7 +275,7 @@ abstract mixin class _$AiChatStateCopyWith<$Res> implements $AiChatStateCopyWith
   factory _$AiChatStateCopyWith(_AiChatState value, $Res Function(_AiChatState) _then) = __$AiChatStateCopyWithImpl;
 @override @useResult
 $Res call({
- List<ChatMessage> messages, bool isLoading, String mode, String resumeContent, String? errorMessage, List<String> presetQuestions, Map<String, List<PresetQaItem>> allPresetQAs
+ List<ChatMessage> messages, bool isLoading, String resumeContent, String? errorMessage, List<String> presetQuestions, Map<String, List<PresetQaItem>> allPresetQAs
 });
 
 
@@ -296,12 +292,11 @@ class __$AiChatStateCopyWithImpl<$Res>
 
 /// Create a copy of AiChatState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? messages = null,Object? isLoading = null,Object? mode = null,Object? resumeContent = null,Object? errorMessage = freezed,Object? presetQuestions = null,Object? allPresetQAs = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? messages = null,Object? isLoading = null,Object? resumeContent = null,Object? errorMessage = freezed,Object? presetQuestions = null,Object? allPresetQAs = null,}) {
   return _then(_AiChatState(
 messages: null == messages ? _self._messages : messages // ignore: cast_nullable_to_non_nullable
 as List<ChatMessage>,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
-as bool,mode: null == mode ? _self.mode : mode // ignore: cast_nullable_to_non_nullable
-as String,resumeContent: null == resumeContent ? _self.resumeContent : resumeContent // ignore: cast_nullable_to_non_nullable
+as bool,resumeContent: null == resumeContent ? _self.resumeContent : resumeContent // ignore: cast_nullable_to_non_nullable
 as String,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,presetQuestions: null == presetQuestions ? _self._presetQuestions : presetQuestions // ignore: cast_nullable_to_non_nullable
 as List<String>,allPresetQAs: null == allPresetQAs ? _self._allPresetQAs : allPresetQAs // ignore: cast_nullable_to_non_nullable

@@ -191,48 +191,6 @@ final class AiChatRepositoryProvider
 
 String _$aiChatRepositoryHash() => r'bd6ff4f617b39a38d01217c313890dc5ffa2a2db';
 
-@ProviderFor(sendChatMessageUseCase)
-final sendChatMessageUseCaseProvider = SendChatMessageUseCaseProvider._();
-
-final class SendChatMessageUseCaseProvider
-    extends
-        $FunctionalProvider<
-          AsyncValue<SendChatMessageUseCase>,
-          SendChatMessageUseCase,
-          FutureOr<SendChatMessageUseCase>
-        >
-    with
-        $FutureModifier<SendChatMessageUseCase>,
-        $FutureProvider<SendChatMessageUseCase> {
-  SendChatMessageUseCaseProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'sendChatMessageUseCaseProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$sendChatMessageUseCaseHash();
-
-  @$internal
-  @override
-  $FutureProviderElement<SendChatMessageUseCase> $createElement(
-    $ProviderPointer pointer,
-  ) => $FutureProviderElement(pointer);
-
-  @override
-  FutureOr<SendChatMessageUseCase> create(Ref ref) {
-    return sendChatMessageUseCase(ref);
-  }
-}
-
-String _$sendChatMessageUseCaseHash() =>
-    r'fd4bfb1eb6f2981783acecc8e93644ad0504e68c';
-
 @ProviderFor(getPresetQaUseCase)
 final getPresetQaUseCaseProvider = GetPresetQaUseCaseProvider._();
 

@@ -9,7 +9,6 @@ part 'ai_chat_intent.freezed.dart';
 class AiChatIntent extends BaseIntent with _$AiChatIntent {
   const factory AiChatIntent.init() = _Init;
   const factory AiChatIntent.sendMessage(String text) = _SendMessage;
-  const factory AiChatIntent.changeMode(String mode) = _ChangeMode;
   const factory AiChatIntent.clearHistory() = _ClearHistory;
 
   const AiChatIntent._();
@@ -24,11 +23,6 @@ class AiChatIntent extends BaseIntent with _$AiChatIntent {
       'AiChatIntent',
       'sendMessage',
       (args) => AiChatIntent.sendMessage(args['text'] ?? ''),
-    );
-    MviPlaybackRegistry.register(
-      'AiChatIntent',
-      'changeMode',
-      (args) => AiChatIntent.changeMode(args['mode'] ?? ''),
     );
     MviPlaybackRegistry.register(
       'AiChatIntent',

@@ -22,7 +22,6 @@ _AiChatState _$AiChatStateFromJson(
           const [],
     ),
     isLoading: $checkedConvert('isLoading', (v) => v as bool? ?? false),
-    mode: $checkedConvert('mode', (v) => v as String? ?? 'visitor'),
     resumeContent: $checkedConvert('resumeContent', (v) => v as String? ?? ''),
     errorMessage: $checkedConvert('errorMessage', (v) => v as String?),
     presetQuestions: $checkedConvert(
@@ -55,7 +54,6 @@ Map<String, dynamic> _$AiChatStateToJson(_AiChatState instance) =>
     <String, dynamic>{
       'messages': instance.messages.map((e) => e.toJson()).toList(),
       'isLoading': instance.isLoading,
-      'mode': instance.mode,
       'resumeContent': instance.resumeContent,
       'errorMessage': instance.errorMessage,
       'presetQuestions': instance.presetQuestions,

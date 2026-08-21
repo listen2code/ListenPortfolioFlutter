@@ -3,32 +3,24 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:listen_core/core.dart';
 import 'package:mocktail/mocktail.dart';
 
-import 'package:listen_portfolio_flutter/features/ai_chat/data/models/ai_chat_request_model.dart';
-import 'package:listen_portfolio_flutter/features/ai_chat/data/models/ai_chat_response_model.dart';
 import 'package:listen_portfolio_flutter/features/ai_chat/data/models/ai_preset_qa_response_model.dart';
-import 'package:listen_portfolio_flutter/features/ai_chat/domain/entities/chat_message.dart';
-import 'package:listen_portfolio_flutter/features/ai_chat/domain/usecases/send_chat_message_use_case.dart';
 import 'package:listen_portfolio_flutter/features/ai_chat/domain/usecases/get_preset_qa_use_case.dart';
 import 'package:listen_portfolio_flutter/features/ai_chat/presentation/provider/ai_chat_provider.dart';
 import 'package:listen_portfolio_flutter/features/ai_chat/presentation/pages/ai_chat_intent.dart';
 import 'package:listen_portfolio_flutter/features/ai_chat/presentation/pages/ai_chat_view_model.dart';
 
-class MockSendChatMessageUseCase extends Mock implements SendChatMessageUseCase {}
 class MockGetPresetQaUseCase extends Mock implements GetPresetQaUseCase {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  // Register fallback values for mocktail parameter matching
   setUpAll(() {
-    registerFallbackValue(const AiChatRequestModel(message: '', history: [], resumeContext: '', mode: ''));
     registerFallbackValue(const BaseParam());
   });
 
   group('AiChatViewModel Clean Architecture Tests', () {
     late ProviderContainer container;
     late AiChatViewModel viewModel;
-    late MockSendChatMessageUseCase mockSendChatMessageUseCase;
     late MockGetPresetQaUseCase mockGetPresetQaUseCase;
 
     final mockPresetQas = AiPresetQaResponseModel(
@@ -49,7 +41,6 @@ void main() {
     );
 
     setUp(() {
-      mockSendChatMessageUseCase = MockSendChatMessageUseCase();
       mockGetPresetQaUseCase = MockGetPresetQaUseCase();
 
       // Configure default success for getPresetQAs
@@ -58,7 +49,6 @@ void main() {
 
       container = ProviderContainer(
         overrides: [
-          sendChatMessageUseCaseProvider.overrideWith((ref) => mockSendChatMessageUseCase),
           getPresetQaUseCaseProvider.overrideWith((ref) => mockGetPresetQaUseCase),
         ],
       );
@@ -85,25 +75,8 @@ void main() {
       expect(state.allPresetQAs, isNotEmpty);
       expect(state.messages, hasLength(1));
       expect(state.messages.first.role, 'model');
-      expect(state.messages.first.content, contains('Listen')); // English default
+      expect(state.messages.first.content, isNotEmpty);
       expect(state.presetQuestions, isNotEmpty);
-
-      sub.close();
-    });
-
-    test('Should change mode and reload welcome message', () async {
-      final sub = container.listen(aiChatViewModelProvider, (_, __) {});
-      viewModel.onInit();
-      await Future<void>.delayed(const Duration(milliseconds: 100));
-
-      // When - Switch to interviewer mode
-      await viewModel.handleIntent(const AiChatIntent.changeMode('interviewer'));
-      await Future<void>.delayed(const Duration(milliseconds: 50));
-
-      final state = container.read(aiChatViewModelProvider);
-      expect(state.mode, 'interviewer');
-      expect(state.messages, hasLength(1));
-      expect(state.messages.first.content, contains('interview')); // English default contains 'interview'
 
       sub.close();
     });

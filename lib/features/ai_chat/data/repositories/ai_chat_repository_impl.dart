@@ -1,8 +1,6 @@
 import 'package:listen_core/core.dart';
 import '../datasources/ai_chat_remote_data_source.dart';
 import '../datasources/ai_chat_local_data_source.dart';
-import '../models/ai_chat_request_model.dart';
-import '../models/ai_chat_response_model.dart';
 import '../models/ai_preset_qa_response_model.dart';
 import '../../domain/repositories/ai_chat_repository.dart';
 
@@ -11,11 +9,6 @@ class AiChatRepositoryImpl with BaseRepository implements AiChatRepository {
   final AiChatLocalDataSource localDataSource;
 
   AiChatRepositoryImpl({required this.remoteDataSource, required this.localDataSource});
-
-  @override
-  Future<Either<Failure, AiChatResponseModel?>> sendChatMessage({required AiChatRequestModel? param}) async {
-    return await safeCall<AiChatResponseModel>(call: () => remoteDataSource.sendChatMessage(param));
-  }
 
   @override
   Future<Either<Failure, AiPresetQaResponseModel?>> getPresetQAs({String? route}) async {
