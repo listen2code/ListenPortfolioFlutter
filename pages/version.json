@@ -1,10 +1,10 @@
 {
-  "version": "1.1.47",
+  "version": "1.1.48",
   "buildNumber": 1,
   "url": "https://play.google.com/store/apps/details?id=com.listen.portfolio.listen_portfolio_flutter",
   "changelog": {
-    "zh": "统一 AI 智能助手为单一对话模式，合并 AiChatPanel 至 AiChatPage 并清理废弃接口",
-    "en": "Unify AI assistant into single intelligent mode and merge AiChatPanel into AiChatPage",
-    "ja": "AI アシスタントを単一インテリジェント対話モードに統合し、AiChatPanel を AiChatPage に統合"
+    "zh": "完善跨平台字体 Fallback 回退机制并将全局字体完整渗透至全部 Material 3 组件主题",
+    "en": "Enhance cross-platform font family fallback and cascade theme fonts to all Material 3 components",
+    "ja": "クロスプラットフォームフォントのフォールバックを強化し、全Material 3コンポーネントテーマへ反映"
   }
 }

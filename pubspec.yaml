@@ -2,10 +2,10 @@ name: listen_portfolio_flutter
 description: "Portfolio of Listen"
 publish_to: 'none'
 
-version: 1.1.47
-desc: "Unify AI assistant into single intelligent mode and merge AiChatPanel into AiChatPage"
-desc_zh: "统一 AI 智能助手为单一对话模式，合并 AiChatPanel 至 AiChatPage 并清理废弃接口"
-desc_ja: "AI アシスタントを単一インテリジェント対話モードに統合し、AiChatPanel を AiChatPage に統合"
+version: 1.1.48
+desc: "Enhance cross-platform font family fallback and cascade theme fonts to all Material 3 components"
+desc_zh: "完善跨平台字体 Fallback 回退机制并将全局字体完整渗透至全部 Material 3 组件主题"
+desc_ja: "クロスプラットフォームフォントのフォールバックを強化し、全Material 3コンポーネントテーマへ反映"
 
 environment:
   sdk: ^3.12.1

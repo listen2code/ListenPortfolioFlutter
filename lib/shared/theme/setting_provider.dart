@@ -20,16 +20,72 @@ enum AppFontSize {
 
 /// Font family options for the app
 enum AppFontFamily {
-  system(I18nKeys.fontFamilySystem, null),
-  sansSerif(I18nKeys.fontFamilySansSerif, 'sans-serif'),
-  serif(I18nKeys.fontFamilySerif, 'serif'),
-  monospace(I18nKeys.fontFamilyMonospace, 'monospace'),
-  cursive(I18nKeys.fontFamilyCursive, 'cursive');
+  system(I18nKeys.fontFamilySystem, null, null),
+  sansSerif(
+    I18nKeys.fontFamilySansSerif,
+    'sans-serif',
+    [
+      'Roboto',
+      'SF Pro Text',
+      'SF Pro',
+      '-apple-system',
+      'Segoe UI',
+      'Arial',
+      'Helvetica Neue',
+      'Helvetica',
+      'PingFang SC',
+      'Microsoft YaHei',
+      'sans-serif',
+    ],
+  ),
+  serif(
+    I18nKeys.fontFamilySerif,
+    'serif',
+    [
+      'Noto Serif',
+      'Times New Roman',
+      'Georgia',
+      'Palatino',
+      'Songti SC',
+      'SimSun',
+      'Yu Mincho',
+      'serif',
+    ],
+  ),
+  monospace(
+    I18nKeys.fontFamilyMonospace,
+    'monospace',
+    [
+      'Roboto Mono',
+      'Consolas',
+      'Menlo',
+      'Courier New',
+      'Courier',
+      'PingFang SC',
+      'monospace',
+    ],
+  ),
+  cursive(
+    I18nKeys.fontFamilyCursive,
+    'cursive',
+    [
+      'Dancing Script',
+      'Segoe Script',
+      'Snell Roundhand',
+      'Comic Sans MS',
+      'Bradley Hand',
+      'KaiTi',
+      'STKaiti',
+      'Chalkduster',
+      'cursive',
+    ],
+  );
 
   final String label;
   final String? fontFamilyName;
+  final List<String>? fontFamilyFallback;
 
-  const AppFontFamily(this.label, this.fontFamilyName);
+  const AppFontFamily(this.label, this.fontFamilyName, [this.fontFamilyFallback]);
 
   static AppFontFamily fromName(String? name) {
     if (name == null || name.isEmpty) return AppFontFamily.system;

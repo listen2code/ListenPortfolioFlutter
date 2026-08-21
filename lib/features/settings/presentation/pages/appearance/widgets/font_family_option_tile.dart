@@ -38,6 +38,7 @@ class FontFamilyOptionTile extends StatelessWidget {
           'Aa',
           style: TextStyle(
             fontFamily: fontFamily.fontFamilyName,
+            fontFamilyFallback: fontFamily.fontFamilyFallback,
             fontWeight: FontWeight.bold,
             fontSize: 14.f,
             color: isSelected ? accentColor : context.colorScheme.onSurfaceVariant,
@@ -48,6 +49,7 @@ class FontFamilyOptionTile extends StatelessWidget {
         label,
         style: TextStyle(
           fontFamily: fontFamily.fontFamilyName,
+          fontFamilyFallback: fontFamily.fontFamilyFallback,
           fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
         ),
       ),

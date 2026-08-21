@@ -10,17 +10,65 @@ class AppTheme {
     final accentColor = themeManager.accentColor;
     final fontSizeFactor = themeManager.fontSize.factor;
     final fontFamily = themeManager.fontFamily.fontFamilyName;
+    final fontFamilyFallback = themeManager.fontFamily.fontFamilyFallback;
     final effectiveAccentColor = dynamicColorScheme?.primary ?? accentColor;
 
     final theme = ThemeData(
       useMaterial3: true,
       fontFamily: fontFamily,
+      fontFamilyFallback: fontFamilyFallback,
       brightness: Brightness.light,
       colorScheme: dynamicColorScheme ?? ColorScheme.fromSeed(seedColor: accentColor, brightness: Brightness.light),
       iconTheme: IconThemeData(color: effectiveAccentColor),
       primaryIconTheme: IconThemeData(color: effectiveAccentColor),
       listTileTheme: ListTileThemeData(iconColor: effectiveAccentColor),
-      appBarTheme: const AppBarTheme(centerTitle: true, elevation: 0),
+      appBarTheme: AppBarTheme(
+        centerTitle: true,
+        elevation: 0,
+        titleTextStyle: TextStyle(
+          fontFamily: fontFamily,
+          fontFamilyFallback: fontFamilyFallback,
+          fontSize: 18 * fontSizeFactor,
+          fontWeight: FontWeight.bold,
+          color: Colors.black87,
+        ),
+      ),
+      dialogTheme: DialogThemeData(
+        titleTextStyle: TextStyle(
+          fontFamily: fontFamily,
+          fontFamilyFallback: fontFamilyFallback,
+          fontSize: 18 * fontSizeFactor,
+          fontWeight: FontWeight.bold,
+          color: Colors.black87,
+        ),
+        contentTextStyle: TextStyle(
+          fontFamily: fontFamily,
+          fontFamilyFallback: fontFamilyFallback,
+          fontSize: 14 * fontSizeFactor,
+          color: Colors.black87,
+        ),
+      ),
+      tabBarTheme: TabBarThemeData(
+        labelStyle: TextStyle(
+          fontFamily: fontFamily,
+          fontFamilyFallback: fontFamilyFallback,
+          fontSize: 14 * fontSizeFactor,
+          fontWeight: FontWeight.bold,
+        ),
+        unselectedLabelStyle: TextStyle(
+          fontFamily: fontFamily,
+          fontFamilyFallback: fontFamilyFallback,
+          fontSize: 14 * fontSizeFactor,
+          fontWeight: FontWeight.normal,
+        ),
+      ),
+      chipTheme: ChipThemeData(
+        labelStyle: TextStyle(
+          fontFamily: fontFamily,
+          fontFamilyFallback: fontFamilyFallback,
+          fontSize: 12 * fontSizeFactor,
+        ),
+      ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: Colors.white,
@@ -32,6 +80,18 @@ class AppTheme {
           borderSide: BorderSide(color: effectiveAccentColor, width: 2),
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+        hintStyle: TextStyle(
+          fontFamily: fontFamily,
+          fontFamilyFallback: fontFamilyFallback,
+          fontSize: 14 * fontSizeFactor,
+          color: Colors.grey,
+        ),
+        labelStyle: TextStyle(
+          fontFamily: fontFamily,
+          fontFamilyFallback: fontFamilyFallback,
+          fontSize: 14 * fontSizeFactor,
+          color: effectiveAccentColor,
+        ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -39,6 +99,12 @@ class AppTheme {
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(vertical: 18),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          textStyle: TextStyle(
+            fontFamily: fontFamily,
+            fontFamilyFallback: fontFamilyFallback,
+            fontSize: 16 * fontSizeFactor,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );
@@ -47,10 +113,20 @@ class AppTheme {
         .merge(Typography.material2021(platform: theme.platform).black)
         .merge(theme.textTheme);
 
+    final basePrimaryTextTheme = Typography.englishLike2021
+        .merge(Typography.material2021(platform: theme.platform).black)
+        .merge(theme.primaryTextTheme);
+
     return theme.copyWith(
       textTheme: baseTextTheme.apply(
         fontSizeFactor: fontSizeFactor,
         fontFamily: fontFamily,
+        fontFamilyFallback: fontFamilyFallback,
+      ),
+      primaryTextTheme: basePrimaryTextTheme.apply(
+        fontSizeFactor: fontSizeFactor,
+        fontFamily: fontFamily,
+        fontFamilyFallback: fontFamilyFallback,
       ),
     );
   }
@@ -60,17 +136,65 @@ class AppTheme {
     final accentColor = themeManager.accentColor;
     final fontSizeFactor = themeManager.fontSize.factor;
     final fontFamily = themeManager.fontFamily.fontFamilyName;
+    final fontFamilyFallback = themeManager.fontFamily.fontFamilyFallback;
     final effectiveAccentColor = dynamicColorScheme?.primary ?? accentColor;
 
     final theme = ThemeData(
       useMaterial3: true,
       fontFamily: fontFamily,
+      fontFamilyFallback: fontFamilyFallback,
       brightness: Brightness.dark,
       colorScheme: dynamicColorScheme ?? ColorScheme.fromSeed(seedColor: accentColor, brightness: Brightness.dark),
       iconTheme: IconThemeData(color: effectiveAccentColor),
       primaryIconTheme: IconThemeData(color: effectiveAccentColor),
       listTileTheme: ListTileThemeData(iconColor: effectiveAccentColor),
-      appBarTheme: const AppBarTheme(centerTitle: true, elevation: 0),
+      appBarTheme: AppBarTheme(
+        centerTitle: true,
+        elevation: 0,
+        titleTextStyle: TextStyle(
+          fontFamily: fontFamily,
+          fontFamilyFallback: fontFamilyFallback,
+          fontSize: 18 * fontSizeFactor,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
+      dialogTheme: DialogThemeData(
+        titleTextStyle: TextStyle(
+          fontFamily: fontFamily,
+          fontFamilyFallback: fontFamilyFallback,
+          fontSize: 18 * fontSizeFactor,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+        contentTextStyle: TextStyle(
+          fontFamily: fontFamily,
+          fontFamilyFallback: fontFamilyFallback,
+          fontSize: 14 * fontSizeFactor,
+          color: Colors.white70,
+        ),
+      ),
+      tabBarTheme: TabBarThemeData(
+        labelStyle: TextStyle(
+          fontFamily: fontFamily,
+          fontFamilyFallback: fontFamilyFallback,
+          fontSize: 14 * fontSizeFactor,
+          fontWeight: FontWeight.bold,
+        ),
+        unselectedLabelStyle: TextStyle(
+          fontFamily: fontFamily,
+          fontFamilyFallback: fontFamilyFallback,
+          fontSize: 14 * fontSizeFactor,
+          fontWeight: FontWeight.normal,
+        ),
+      ),
+      chipTheme: ChipThemeData(
+        labelStyle: TextStyle(
+          fontFamily: fontFamily,
+          fontFamilyFallback: fontFamilyFallback,
+          fontSize: 12 * fontSizeFactor,
+        ),
+      ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         prefixIconColor: effectiveAccentColor,
@@ -81,6 +205,18 @@ class AppTheme {
           borderSide: BorderSide(color: effectiveAccentColor, width: 2),
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+        hintStyle: TextStyle(
+          fontFamily: fontFamily,
+          fontFamilyFallback: fontFamilyFallback,
+          fontSize: 14 * fontSizeFactor,
+          color: Colors.white38,
+        ),
+        labelStyle: TextStyle(
+          fontFamily: fontFamily,
+          fontFamilyFallback: fontFamilyFallback,
+          fontSize: 14 * fontSizeFactor,
+          color: effectiveAccentColor,
+        ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -88,6 +224,12 @@ class AppTheme {
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(vertical: 18),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          textStyle: TextStyle(
+            fontFamily: fontFamily,
+            fontFamilyFallback: fontFamilyFallback,
+            fontSize: 16 * fontSizeFactor,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );
@@ -96,10 +238,20 @@ class AppTheme {
         .merge(Typography.material2021(platform: theme.platform).white)
         .merge(theme.textTheme);
 
+    final basePrimaryTextTheme = Typography.englishLike2021
+        .merge(Typography.material2021(platform: theme.platform).white)
+        .merge(theme.primaryTextTheme);
+
     return theme.copyWith(
       textTheme: baseTextTheme.apply(
         fontSizeFactor: fontSizeFactor,
         fontFamily: fontFamily,
+        fontFamilyFallback: fontFamilyFallback,
+      ),
+      primaryTextTheme: basePrimaryTextTheme.apply(
+        fontSizeFactor: fontSizeFactor,
+        fontFamily: fontFamily,
+        fontFamilyFallback: fontFamilyFallback,
       ),
     );
   }
