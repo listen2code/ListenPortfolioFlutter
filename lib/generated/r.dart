@@ -22,7 +22,6 @@ class R {
   static const String userLogout = 'assets/mock/v1/post/user/logout.json';
   static const String userUploadAvatar = 'assets/mock/v1/post/user/upload-avatar.json';
   static const String userChangePassword = 'assets/mock/v1/post/user/change-password.json';
-  static const String aiChat = 'assets/mock/v1/post/ai/chat.json';
   static const String imagesProject1 = 'assets/mock/images/project1.jpg';
   static const String imagesProject2 = 'assets/mock/images/project2.jpg';
   static const String imagesProject3 = 'assets/mock/images/project3.jpg';

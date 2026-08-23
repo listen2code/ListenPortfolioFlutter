@@ -157,6 +157,11 @@ ListenPortfolioFlutter 不是单纯的“简历展示 App”。
 - **依赖边界治理**：执行 `dart tools/dependency_rules.dart`，确保 Presentation -> Domain <- Data 模块边界 0 违规。
 - **测试覆盖与回归保护**：涉及核心业务逻辑、ViewModel 状态流转、手势联动或 APM 算法的改动，必须同步更新/新增单元与 Widget 测试，确保 `flutter test` **100% 绿灯通过**。
 
+### 7.11 代码重构与组件拆分规范 (Widget File Length & Refactoring Rule)
+- **单文件代码行数阈值 (>300 行原则)**：
+  - 单个 Widget 文件的总行数原则上**不得超过 300 行**；当 Widget 文件增长至 250~300 行以上时，应当主动将内部独立的 UI 模块（如卡片、切换器、表单项、弹窗卡片等）抽取为独立组件（如 `SkillCategoryCard`、`SkillsInspectorDetailCard`、`SkillsViewModeToggle` 等），保持主 Widget 的 `build()` 方法清晰展示高层布局结构与联动逻辑。
+  - 抽取出的子 Widget 需放置在对应 feature 的 `widgets/` 目录下，优先声明为 `const` 构造函数以最大化利用 Element 树复用与局部重绘隔离机制。
+
 ## 8. AI 助手（AI Intro Assistant）Prompt 体系与开发规则
 
 AI 助手基于官方 Firebase AI SDK (`FirebaseAI.googleAI`) + Google Gemini `gemini-3.7-flash` 模型，遵循以下 Prompt 工程与架构规范：

@@ -2,10 +2,10 @@ name: listen_portfolio_flutter
 description: "Portfolio of Listen"
 publish_to: 'none'
 
-version: 1.1.49
-desc: "Optimize skills detail layout, radar chart labels, ripple radius, and expand native CJK system font styles"
-desc_zh: "优化技能详情紧凑布局、雷达图防闪动标签与圆角水波纹，并扩展全套原生 CJK 系统字体族"
-desc_ja: "スキル詳細レイアウトとレーダーチャートの最適化、波紋角丸修正、ネイティブCJKフォントの拡充"
+version: 1.1.50
+desc: "Daily Build"
+desc_zh: ""
+desc_ja: ""
 
 environment:
   sdk: ^3.12.1

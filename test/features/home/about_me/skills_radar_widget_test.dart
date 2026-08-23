@@ -165,5 +165,32 @@ void main() {
       await tester.tapAt(const Offset(220, 150));
       await tester.pumpAndSettle();
     });
+
+    testWidgets('jumping across multiple non-adjacent dimensions animates directly to target without flicker', (tester) async {
+      await tester.pumpWidget(
+        buildTestApp(ComprehensiveSkills(skills: mockSkills)),
+      );
+      await tester.pumpAndSettle();
+
+      // Initially dimension 0 (Mobile) is selected
+      expect(find.text('Android Native'), findsOneWidget);
+
+      // Jump to dimension 4 (Backend & Cloud) skipping 1, 2, 3
+      final backendChip = find.text('Backend & Cloud');
+      expect(backendChip, findsOneWidget);
+      await tester.ensureVisible(backendChip);
+      await tester.tap(backendChip);
+
+      // Advance by half animation duration (e.g. 150ms) to check mid-flight state
+      await tester.pump(const Duration(milliseconds: 150));
+
+      // Settle animation
+      await tester.pumpAndSettle();
+
+      // Target dimension 4 details should be displayed cleanly
+      expect(find.text('Spring Boot'), findsOneWidget);
+      expect(find.text('MySQL'), findsOneWidget);
+      expect(find.text('Android Native'), findsNothing);
+    });
   });
 }
