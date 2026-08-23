@@ -50,6 +50,7 @@ class AppConstants {
   static const String githubPageRoot = 'https://listen2code.github.io/ListenPortfolioFlutter/pages/';
   static const String githubPageTermsOfService = '${githubPageRoot}terms_of_service.html';
   static const String githubPagePrivacyPolicy = '${githubPageRoot}privacy_policy.html';
+  static const String githubPageDeleteAccount = '${githubPageRoot}delete_account.html';
 
   static String get storeShare {
     if (Platform.isAndroid) {

@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Terms of Service - lPortfolio</title>
-    <!-- Premium Google Font -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #6366f1; /* Indigo */
@@ -16,40 +16,40 @@
             --background: #f8fafc; /* Slate 50 */
             --text: #0f172a; /* Slate 900 */
             --text-muted: #475569; /* Slate 600 */
-            --card-bg: rgba(255, 255, 255, 0.85);
+            --card-bg: rgba(255, 255, 255, 0.9);
             --card-border: rgba(99, 102, 241, 0.12);
-            --border: #e2e8f0; /* Slate 200 */
+            --border: #e2e8f0;
             --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
             --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            --max-width: 800px;
+            --max-width: 860px;
         }
 
         @media (prefers-color-scheme: dark) {
             :root {
-                --background: #0b0f19; /* Custom deep slate black */
-                --text: #f1f5f9; /* Slate 100 */
-                --text-muted: #94a3b8; /* Slate 400 */
-                --card-bg: rgba(22, 30, 46, 0.75);
-                --card-border: rgba(129, 140, 248, 0.15);
-                --border: #1e293b; /* Slate 800 */
-                --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
-                --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.15);
+                --background: #0b0f19;
+                --text: #f1f5f9;
+                --text-muted: #94a3b8;
+                --card-bg: rgba(22, 30, 46, 0.8);
+                --card-border: rgba(129, 140, 248, 0.18);
+                --border: #1e293b;
+                --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.25), 0 2px 4px -1px rgba(0, 0, 0, 0.15);
+                --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.35), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
             }
         }
 
         * {
             box-sizing: border-box;
-            transition: background-color 0.3s ease, border-color 0.3s ease;
+            transition: background-color 0.25s ease, border-color 0.25s ease;
         }
 
         body {
             font-family: var(--font-sans);
-            line-height: 1.625;
+            line-height: 1.68;
             color: var(--text);
             background-color: var(--background);
             margin: 0;
-            padding: 60px 24px;
+            padding: 40px 20px 80px;
             display: flex;
             justify-content: center;
         }
@@ -57,44 +57,100 @@
         .container {
             width: 100%;
             max-width: var(--max-width);
-            animation: fadeIn 0.8s ease-out;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Top Navigation */
+        .nav-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 32px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text);
+        }
+
+        .nav-brand-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            font-size: 0.95rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 18px;
+            font-size: 0.9rem;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--primary);
         }
 
         header {
-            margin-bottom: 50px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 24px;
+            margin-bottom: 40px;
             text-align: left;
         }
 
         h1 {
             font-size: 2.5rem;
-            font-weight: 700;
+            font-weight: 800;
             margin-top: 0;
             margin-bottom: 12px;
             background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: -0.025em;
+            letter-spacing: -0.03em;
         }
 
         h2 {
-            font-size: 1.5rem;
-            font-weight: 600;
+            font-size: 1.45rem;
+            font-weight: 700;
             margin-top: 40px;
             margin-bottom: 16px;
-            color: var(--primary);
+            color: var(--text);
             letter-spacing: -0.015em;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+        }
+
+        h2::before {
+            content: "";
+            display: inline-block;
+            width: 4px;
+            height: 20px;
+            background: linear-gradient(180deg, var(--primary) 0%, var(--accent) 100%);
+            border-radius: 2px;
         }
 
         h3 {
             font-size: 1.15rem;
             font-weight: 600;
             margin-top: 24px;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             color: var(--text);
         }
 
@@ -122,9 +178,9 @@
         .card {
             background-color: var(--card-bg);
             border: 1px solid var(--card-border);
-            border-radius: 12px;
+            border-radius: 14px;
             padding: 24px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             box-shadow: var(--shadow);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
@@ -134,13 +190,13 @@
         .card:hover {
             transform: translateY(-2px);
             box-shadow: var(--shadow-lg);
-            border-color: rgba(99, 102, 241, 0.3);
+            border-color: rgba(99, 102, 241, 0.35);
         }
 
         .card h3 {
             margin-top: 0;
             color: var(--primary);
-            font-size: 1.2rem;
+            font-size: 1.15rem;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -164,54 +220,8 @@
             background-color: var(--accent);
         }
 
-        a {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 500;
-            position: relative;
-            transition: color 0.2s ease;
-        }
-
-        a:hover {
-            color: var(--primary-hover);
-        }
-
-        a::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            transform: scaleX(0);
-            height: 1.5px;
-            bottom: -1px;
-            left: 0;
-            background-color: var(--primary-hover);
-            transform-origin: bottom right;
-            transition: transform 0.25s ease-out;
-        }
-
-        a:hover::after {
-            transform: scaleX(1);
-            transform-origin: bottom left;
-        }
-
-        .contact-info {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(6, 182, 212, 0.08) 100%);
-            border-left: 4px solid var(--primary);
-            padding: 24px;
-            border-radius: 0 16px 16px 0;
-            margin-top: 40px;
-            box-shadow: var(--shadow);
-        }
-
-        .contact-info h2 {
-            margin-top: 0;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
         .badge {
-            background-color: rgba(99, 102, 241, 0.1);
+            background-color: rgba(99, 102, 241, 0.12);
             color: var(--primary);
             padding: 4px 10px;
             border-radius: 9999px;
@@ -221,123 +231,166 @@
             margin-bottom: 12px;
         }
 
+        a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        a:hover {
+            color: var(--primary-hover);
+            text-decoration: underline;
+        }
+
+        .contact-info {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(6, 182, 212, 0.08) 100%);
+            border: 1px solid var(--card-border);
+            border-left: 4px solid var(--primary);
+            padding: 24px;
+            border-radius: 0 16px 16px 0;
+            margin-top: 40px;
+            box-shadow: var(--shadow);
+        }
+
+        .contact-info h2 {
+            margin-top: 0;
+        }
+
+        .contact-info h2::before {
+            display: none;
+        }
+
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         @media (max-width: 640px) {
-            body {
-                padding: 30px 16px;
-            }
-            h1 {
-                font-size: 2rem;
-            }
-            h2 {
-                font-size: 1.3rem;
-            }
-            .card {
-                padding: 16px;
-            }
+            body { padding: 20px 16px 60px; }
+            h1 { font-size: 2rem; }
+            .nav-links { gap: 12px; font-size: 0.82rem; }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- Top Nav -->
+        <nav class="nav-bar">
+            <a href="index.html" class="nav-brand">
+                <div class="nav-brand-icon">L</div>
+                <span>lPortfolio</span>
+            </a>
+            <div class="nav-links">
+                <a href="privacy_policy.html">Privacy Policy</a>
+                <a href="terms_of_service.html" class="active">Terms of Service</a>
+                <a href="delete_account.html">Delete Account</a>
+            </div>
+        </nav>
+
         <header>
             <h1>Terms of Service</h1>
-            <div class="last-updated">Last Updated: June 2026</div>
+            <div class="last-updated">Last Updated: August 23, 2026</div>
         </header>
 
         <section>
-            <p>Welcome to <strong>lPortfolio</strong>. These Terms of Service ("Terms") govern your access to and use of the mobile application and services (the "Service") provided by the developer, <strong>Listen</strong> ("we", "us", or "our").</p>
-            <p>Please read these Terms carefully before using the Application. By accessing or using the Service, you agree to be bound by these Terms. If you do not agree with any part of these Terms, you may not access or use the Service.</p>
+            <p>Welcome to <strong>lPortfolio</strong> (Package Name: <code>com.listen.portfolio.listen_portfolio_flutter</code>). These Terms of Service ("Terms") govern your download, installation, access to, and use of the mobile application and services (the "Service") developed and maintained by <strong>Listen</strong> ("we", "us", or "our").</p>
+            <p>Please read these Terms carefully before using the Application. By accessing or using the Service, you agree to be bound by these Terms. If you do not agree to all terms and conditions, do not install or use the Service.</p>
         </section>
 
+        <!-- 1. Eligibility & Accounts -->
         <section>
-            <h2>1. Agreement to Terms</h2>
-            <p>By downloading, installing, or using lPortfolio, you agree to comply with and be bound by these Terms of Service. These Terms apply to all users, visitors, and others who download or use the Application.</p>
+            <h2>1. User Eligibility and Accounts</h2>
+            <p>You must be at least 13 years old to use the Application. By creating an account or using the Service, you represent and warrant that you meet this age requirement.</p>
+            <p>When you register an account in the App, you agree to provide truthful and accurate information. You are solely responsible for safeguarding your login credentials (username and password) and for any activity that occurs under your account. You must notify us immediately at <a href="mailto:listen2code@gmail.com">listen2code@gmail.com</a> if you suspect unauthorized access.</p>
         </section>
 
+        <!-- 2. Services & Generative AI Assistant -->
         <section>
-            <h2>2. User Accounts</h2>
-            <p>When you create an account within the Application, you represent and warrant that the information you provide is accurate, complete, and current at all times. Inaccurate, incomplete, or obsolete information may result in the immediate termination or suspension of your account.</p>
-            <p>You are responsible for maintaining the confidentiality of your account credentials, including your password. You agree to accept responsibility for any activities or actions that occur under your account.</p>
-            <p>You must notify us immediately upon becoming aware of any breach of security or unauthorized use of your account.</p>
-        </section>
-
-        <section>
-            <h2>3. Intellectual Property</h2>
-            <p>The Application and its original content, features, layout, and functionality (excluding user-provided data) are and will remain the exclusive property of <strong>Listen</strong> and its licensors. The Service is protected by copyright, trademark, and other laws of both local and international jurisdictions.</p>
-            <p>Our trademarks and trade dress may not be used in connection with any product or service without the prior written consent of the developer.</p>
-        </section>
-
-        <section>
-            <h2>4. Prohibited Activities</h2>
-            <p>You agree not to use the Application for any unlawful purpose or in any way that violates these Terms. Prohibited activities include, but are not limited to:</p>
-            <ul>
-                <li>Attempting to reverse engineer, decompile, disassemble, or extract source code from the Application.</li>
-                <li>Engaging in any automated data extraction, web scraping, or data mining activity.</li>
-                <li>Interfering with, disrupting, or attempting to compromise the integrity or security of our servers and API networks.</li>
-                <li>Using the Service to distribute malware, viruses, or spam.</li>
-                <li>Impersonating others or creating accounts for fraudulent purposes.</li>
-            </ul>
-        </section>
-
-        <section>
-            <h2>5. Application Services, Purchases, and Support</h2>
-            <p>The Application offers voluntary contribution options (specifically, "Buy Me a Coffee" tiers) to support the development of this free application. By participating in any in-app purchase, you acknowledge and agree to the following terms:</p>
+            <h2>2. Application Services & AI Assistant Disclaimer</h2>
+            <p>The Service provides a comprehensive portfolio showcase, technical demonstrations, custom UI/UX interactions, and an interactive <strong>AI Intro Assistant</strong> powered by Google Gemini and Firebase AI.</p>
             
             <div class="card">
-                <span class="badge">In-App Purchases</span>
-                <h3>Google Play Billing & Refund Policy</h3>
+                <span class="badge">Generative AI Notice</span>
+                <h3>AI Intro Assistant Usage & Expectations</h3>
                 <ul>
-                    <li><strong>Voluntary Donations:</strong> Contributions are made on a voluntary basis. These purchases do not unlock exclusive functional features of the App unless explicitly specified. They serve as support for the developer's work.</li>
-                    <li><strong>Payment Processor:</strong> All transactions are processed securely through the Google Play Billing Library. We do not collect, process, or store any credit card numbers or financial details on our servers.</li>
-                    <li><strong>Refunds:</strong> Since all payments are handled directly by Google Play, refund requests are governed entirely by the Google Play Store standard refund policies. If you wish to request a refund, you must do so through your Google Play account purchase history.</li>
-                    <li><strong>One-Time Payments:</strong> All available "Buy Me a Coffee" options are one-time payments and do not constitute recurring subscriptions.</li>
+                    <li><strong>Informational Purpose:</strong> The AI assistant is designed to answer questions regarding the developer's experience, architecture, open-source projects, and technical skills.</li>
+                    <li><strong>No Warranty on AI Outputs:</strong> Generative AI models (Google Gemini) may occasionally produce inaccurate, incomplete, or out-of-context statements ("hallucinations"). AI responses do not constitute binding legal, commercial, or professional advice.</li>
+                    <li><strong>Acceptable AI Use:</strong> You agree not to submit prompts that are abusive, harassing, sexually explicit, defamatory, or designed to exploit/jailbreak the AI model or API infrastructure.</li>
                 </ul>
             </div>
         </section>
 
+        <!-- 3. In-App Purchases & Donations -->
         <section>
-            <h2>6. Limitation of Liability</h2>
-            <p>In no event shall the developer, <strong>Listen</strong>, be liable for any indirect, incidental, special, consequential, or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from:</p>
+            <h2>3. In-App Purchases & Developer Support ("Buy Me a Coffee")</h2>
+            <p>The Application is free to download and explore. We offer optional in-app purchase options ("Buy Me a Coffee") for users who wish to voluntarily support the ongoing development of the project.</p>
+            
+            <div class="card">
+                <span class="badge">Billing & Payments</span>
+                <h3>Google Play Billing Terms & Refunds</h3>
+                <ul>
+                    <li><strong>Voluntary Contributions:</strong> In-app purchases are voluntary tips/donations. All core showcase and portfolio features remain freely accessible without mandatory payment.</li>
+                    <li><strong>Billing Processor:</strong> All transactions are conducted exclusively through the <strong>Google Play Billing Library</strong> in accordance with Google Play Terms of Service.</li>
+                    <li><strong>No Recurring Subscriptions:</strong> All available purchase tiers are one-time non-recurring consumables.</li>
+                    <li><strong>Refund Policy:</strong> Because all transactions are processed directly by Google Play, refund requests are subject to the standard Google Play refund policy and must be submitted through your Google Play account purchase history.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 4. Intellectual Property -->
+        <section>
+            <h2>4. Intellectual Property Rights</h2>
+            <p>The Application, including its source code, design systems, logos, illustrations, documentation, radar chart implementations, and custom UI components, is the proprietary property of <strong>Listen</strong> and is protected under applicable copyright, trademark, and intellectual property laws.</p>
+            <p>Open-source libraries embedded within the App are subject to their respective open-source licenses (such as MIT, Apache 2.0, or BSD).</p>
+        </section>
+
+        <!-- 5. Prohibited Conduct -->
+        <section>
+            <h2>5. Prohibited Conduct</h2>
+            <p>While using lPortfolio, you agree not to engage in any of the following activities:</p>
             <ul>
-                <li>Your access to, use of, or inability to access or use the Service.</li>
-                <li>Any conduct or content of any third party on the Service.</li>
-                <li>Any content obtained from the Service.</li>
-                <li>Unauthorized access, use, or alteration of your transmissions or data.</li>
+                <li>Decompiling, disassembling, reverse engineering, or attempting to derive the source code of proprietary endpoints.</li>
+                <li>Circumventing or tampering with security controls, rate limiters, or <strong>Firebase App Check / Play Integrity</strong> device attestation mechanisms.</li>
+                <li>Using automated scripts, bots, spiders, or scrapers to overwhelm our backend API servers.</li>
+                <li>Using the Service for any unlawful, fraudulent, or malicious purpose.</li>
             </ul>
         </section>
 
+        <!-- 6. Account Deletion and Termination -->
         <section>
-            <h2>7. Disclaimer of Warranty</h2>
-            <p>Your use of the Service is at your sole risk. The Service is provided on an "AS IS" and "AS AVAILABLE" basis. The Service is provided without warranties of any kind, whether express or implied, including, but not limited to, implied warranties of merchantability, fitness for a particular purpose, non-infringement, or course of performance.</p>
+            <h2>6. Termination and Account Deletion</h2>
+            <p>You may terminate your relationship with the Service at any time by deleting your account through <strong>Settings &rarr; Account Management &rarr; Delete Account</strong> in the App, or by submitting a request via our <a href="delete_account.html">Web Account Deletion Portal</a>.</p>
+            <p>We reserve the right to suspend or terminate your account access immediately and without prior notice if you violate any provision of these Terms or engage in fraudulent activity.</p>
         </section>
 
+        <!-- 7. Disclaimer of Warranties -->
         <section>
-            <h2>8. Termination</h2>
-            <p>We may terminate or suspend your account and bar access to the Service immediately, without prior notice or liability, under our sole discretion, for any reason whatsoever, including without limitation a breach of these Terms.</p>
-            <p>Upon termination, your right to use the Service will immediately cease. If you wish to terminate your account, you may simply delete your account using the in-app "Delete Account" settings option or contact us for assistance.</p>
+            <h2>7. Disclaimer of Warranties</h2>
+            <p>THE SERVICE IS PROVIDED ON AN <strong>"AS IS"</strong> AND <strong>"AS AVAILABLE"</strong> BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT. WE DO NOT GUARANTEE THAT THE APPLICATION WILL BE UNINTERRUPTED, ERROR-FREE, SECURE, OR ALWAYS AVAILABLE.</p>
         </section>
 
+        <!-- 8. Limitation of Liability -->
         <section>
-            <h2>9. Changes to Terms</h2>
-            <p>We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material, we will provide at least 30 days' notice prior to any new terms taking effect. What constitutes a material change will be determined at our sole discretion.</p>
-            <p>By continuing to access or use our Service after those revisions become effective, you agree to be bound by the revised terms.</p>
+            <h2>8. Limitation of Liability</h2>
+            <p>TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL THE DEVELOPER (LISTEN) BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR ANY LOSS OF PROFITS, DATA, USE, OR GOODWILL ARISING OUT OF OR IN CONNECTION WITH YOUR USE OR INABILITY TO USE THE SERVICE.</p>
         </section>
 
+        <!-- 9. Changes to Terms -->
+        <section>
+            <h2>9. Changes to Terms of Service</h2>
+            <p>We reserve the right to revise or update these Terms at any time. When changes are made, we will update the "Last Updated" date at the top of this page. Your continued use of the Application following any updates constitutes your acceptance of the revised Terms.</p>
+        </section>
+
+        <!-- 10. Contact Us -->
         <section class="contact-info">
             <h2>Contact Us</h2>
-            <p>If you have any questions or suggestions about these Terms of Service, please contact the developer at:</p>
-            <p><strong>Email:</strong> <a href="mailto:listen2code@gmail.com">listen2code@gmail.com</a></p>
+            <p>If you have any questions or comments regarding these Terms of Service, please contact the developer at:</p>
+            <p>
+                <strong>Developer:</strong> Listen<br>
+                <strong>Email:</strong> <a href="mailto:listen2code@gmail.com">listen2code@gmail.com</a><br>
+                <strong>GitHub:</strong> <a href="https://github.com/listen2code/ListenPortfolioFlutter" target="_blank" rel="noopener">github.com/listen2code/ListenPortfolioFlutter</a>
+            </p>
         </section>
     </div>
 </body>

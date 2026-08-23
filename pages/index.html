@@ -1,140 +1,427 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Listen Portfolio Flutter - Documentation</title>
+    <title>lPortfolio - Flutter Showcase & Documentation Portal</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #6366f1; /* Indigo */
+            --primary-hover: #4f46e5;
+            --accent: #06b6d4; /* Cyan */
+            --background: #f8fafc; /* Slate 50 */
+            --text: #0f172a; /* Slate 900 */
+            --text-muted: #475569; /* Slate 600 */
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --card-border: rgba(99, 102, 241, 0.12);
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --max-width: 960px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --background: #0b0f19;
+                --text: #f1f5f9;
+                --text-muted: #94a3b8;
+                --card-bg: rgba(22, 30, 46, 0.8);
+                --card-border: rgba(129, 140, 248, 0.18);
+                --border: #1e293b;
+                --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.25), 0 2px 4px -1px rgba(0, 0, 0, 0.15);
+                --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.35), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+            transition: background-color 0.25s ease, border-color 0.25s ease;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f8f9fa;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding: 40px 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        .header h1 {
+            font-family: var(--font-sans);
+            line-height: 1.68;
+            color: var(--text);
+            background-color: var(--background);
             margin: 0;
-            font-size: 2.5em;
-            font-weight: 300;
+            padding: 40px 20px 80px;
+            display: flex;
+            justify-content: center;
         }
-        .header p {
-            margin: 10px 0 0 0;
-            opacity: 0.9;
-            font-size: 1.2em;
+
+        .container {
+            width: 100%;
+            max-width: var(--max-width);
+            animation: fadeIn 0.6s ease-out;
         }
-        .package-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 30px;
-            margin-bottom: 40px;
+
+        /* Top Navigation */
+        .nav-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 36px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
         }
-        .package-card {
-            background: white;
-            padding: 30px;
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: var(--text);
+        }
+
+        .nav-brand-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            font-size: 1rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 18px;
+            font-size: 0.9rem;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--primary);
+        }
+
+        /* Hero Header */
+        .hero {
+            text-align: center;
+            padding: 40px 20px 30px;
+            margin-bottom: 36px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(6, 182, 212, 0.08) 100%);
+            border-radius: 20px;
+            border: 1px solid var(--card-border);
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            margin-bottom: 16px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .hero h1 {
+            font-size: 2.7rem;
+            font-weight: 800;
+            margin: 0 0 14px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.03em;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            max-width: 640px;
+            margin: 0 auto 24px;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-hero {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 22px;
             border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
-        .package-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
         }
-        .package-card h3 {
-            margin: 0 0 15px 0;
-            color: #2c3e50;
-            font-size: 1.5em;
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.35);
         }
-        .package-card p {
-            margin: 0 0 20px 0;
-            color: #666;
+
+        .btn-outline {
+            background-color: var(--card-bg);
+            color: var(--text);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        /* Section Titles */
+        h2.section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 40px 0 20px;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h2.section-title::before {
+            content: "";
+            display: inline-block;
+            width: 4px;
+            height: 22px;
+            background: linear-gradient(180deg, var(--primary) 0%, var(--accent) 100%);
+            border-radius: 2px;
+        }
+
+        /* Grid Cards */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .portal-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .portal-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+            border-color: rgba(99, 102, 241, 0.4);
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: 14px;
+        }
+
+        .portal-card h3 {
+            margin: 0 0 8px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .portal-card p {
+            margin: 0 0 16px;
+            font-size: 0.92rem;
+            color: var(--text-muted);
             flex-grow: 1;
         }
-        .package-card a {
+
+        .card-action {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--primary);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .feature-tag {
             display: inline-block;
-            background: #3498db;
-            color: white;
-            padding: 12px 24px;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: 500;
-            transition: background 0.3s ease;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background-color: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            margin-right: 6px;
+            margin-bottom: 6px;
         }
-        .package-card a:hover {
-            background: #2980b9;
-        }
-        .package-card.success {
-            border-left: 4px solid #27ae60;
-        }
-        .package-card.warning {
-            border-left: 4px solid #f39c12;
-            opacity: 0.8;
-        }
-        .package-card.error {
-            border-left: 4px solid #e74c3c;
-            opacity: 0.7;
-        }
-        .package-card.error a {
-            background: #999;
-            cursor: not-allowed;
-        }
-        .status-badge {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 0.8em;
-            font-weight: 500;
-            margin-bottom: 10px;
-        }
-        .status-success {
-            background: #e8f5e8;
-            color: #2e7d32;
-        }
-        .status-warning {
-            background: #fff3e0;
-            color: #f57c00;
-        }
-        .status-error {
-            background: #ffebee;
-            color: #c62828;
-        }
-        .footer {
+
+        footer {
             text-align: center;
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #e9ecef;
-            color: #666;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.88rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 640px) {
+            body { padding: 20px 16px 60px; }
+            .hero h1 { font-size: 2.1rem; }
+            .hero p { font-size: 1rem; }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>Listen Portfolio Flutter</h1>
-        <p>API Documentation for Flutter Application</p>
-    </div>
-    
-    <div class="package-grid">
-        <div class="package-card success">
-            <span class="status-badge status-success">Available</span>
-            <h3>Main Application</h3>
-            <p>Complete API documentation for the Listen Portfolio Flutter application, including all features and components.</p>
-            <a href="listen_portfolio_flutter/">View Documentation</a>
+    <div class="container">
+        <!-- Top Nav -->
+        <nav class="nav-bar">
+            <a href="index.html" class="nav-brand">
+                <div class="nav-brand-icon">L</div>
+                <span>lPortfolio</span>
+            </a>
+            <div class="nav-links">
+                <a href="privacy_policy.html">Privacy Policy</a>
+                <a href="terms_of_service.html">Terms of Service</a>
+                <a href="delete_account.html">Delete Account</a>
+            </div>
+        </nav>
+
+        <!-- Hero -->
+        <header class="hero">
+            <span class="hero-badge">Production Flutter Application</span>
+            <h1>lPortfolio Portal</h1>
+            <p>An enterprise-grade mobile portfolio and architecture showcase built with Flutter, MVI, Clean Architecture, and Google Gemini AI.</p>
+            <div class="hero-actions">
+                <a href="https://github.com/listen2code/ListenPortfolioFlutter" target="_blank" rel="noopener" class="btn-hero btn-primary">
+                    <span>View on GitHub</span> &rarr;
+                </a>
+                <a href="listen_portfolio_flutter/" class="btn-hero btn-outline">
+                    <span>Explore Dartdoc API</span> &rarr;
+                </a>
+            </div>
+        </header>
+
+        <!-- Legal & Compliance Section -->
+        <h2 class="section-title">Legal & Google Play Compliance</h2>
+        <div class="grid-3">
+            <a href="privacy_policy.html" class="portal-card">
+                <div class="card-icon">🛡️</div>
+                <h3>Privacy Policy</h3>
+                <p>Comprehensive Google Play Data Safety breakdown, covering personal data, Firebase AI integration, App Check device attestation, and data encryption.</p>
+                <span class="card-action">Read Policy &rarr;</span>
+            </a>
+
+            <a href="terms_of_service.html" class="portal-card">
+                <div class="card-icon">📜</div>
+                <h3>Terms of Service</h3>
+                <p>Governing terms for app usage, AI assistant disclaimer, Google Play Billing terms for developer tips ("Buy Me a Coffee"), and intellectual property rights.</p>
+                <span class="card-action">View Terms &rarr;</span>
+            </a>
+
+            <a href="delete_account.html" class="portal-card">
+                <div class="card-icon">🗑️</div>
+                <h3>Account Deletion Portal</h3>
+                <p>Dedicated public portal for submitting account & personal data deletion requests in full compliance with Google Play Data Deletion requirements.</p>
+                <span class="card-action">Submit Request &rarr;</span>
+            </a>
         </div>
-    </div>
-    
-    <div class="footer">
-        <p>Generated by <a href="https://dart.dev/tools/dart-doc">dartdoc</a> | 
-        <a href="https://github.com/listen2code/ListenPortfolioFlutter">GitHub Repository</a></p>
+
+        <!-- Engineering & Architecture Highlights -->
+        <h2 class="section-title">Architecture Highlights</h2>
+        <div class="grid-2">
+            <div class="portal-card">
+                <div class="card-icon">⚡</div>
+                <h3>Clean Architecture + MVI Pattern</h3>
+                <p>Strict unidirectional data flow (Intent &rarr; State &rarr; Effect) separating Domain, Data, and Presentation layers with zero context leakage.</p>
+                <div>
+                    <span class="feature-tag">MVI</span>
+                    <span class="feature-tag">Riverpod</span>
+                    <span class="feature-tag">StateNotifier</span>
+                </div>
+            </div>
+
+            <div class="portal-card">
+                <div class="card-icon">🤖</div>
+                <h3>AI Intro Assistant (Gemini 3.7 Flash)</h3>
+                <p>Interactive intelligent assistant powered by Google AI (<code>firebase_ai</code>) and secured by <strong>Firebase App Check / Play Integrity</strong>.</p>
+                <div>
+                    <span class="feature-tag">Firebase AI</span>
+                    <span class="feature-tag">Gemini Flash</span>
+                    <span class="feature-tag">Play Integrity</span>
+                </div>
+            </div>
+
+            <div class="portal-card">
+                <div class="card-icon">📊</div>
+                <h3>Custom Skills Radar & Carousel</h3>
+                <p>Custom-painted 6-dimensional interactive skills radar chart seamlessly coordinated with two-way swipeable detail cards.</p>
+                <div>
+                    <span class="feature-tag">CustomPainter</span>
+                    <span class="feature-tag">Two-way Sync</span>
+                    <span class="feature-tag">M3 Dynamic Color</span>
+                </div>
+            </div>
+
+            <div class="portal-card">
+                <div class="card-icon">🛡️</div>
+                <h3>Observability & Crash Safe Mode</h3>
+                <p>Built-in Zone-level distributed tracing (<code>traceId</code>), APM Frame & Launch Monitor, and multi-tier self-healing Crash Safe Mode.</p>
+                <div>
+                    <span class="feature-tag">Zone Tracing</span>
+                    <span class="feature-tag">APM Monitor</span>
+                    <span class="feature-tag">Crash Safe Mode</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <p>&copy; 2026 <strong>lPortfolio</strong> by <strong>Listen</strong>. All rights reserved.</p>
+            <p>
+                <a href="privacy_policy.html">Privacy Policy</a> &bull; 
+                <a href="terms_of_service.html">Terms of Service</a> &bull; 
+                <a href="delete_account.html">Data Deletion</a> &bull; 
+                <a href="https://github.com/listen2code/ListenPortfolioFlutter" target="_blank" rel="noopener">GitHub</a>
+            </p>
+        </footer>
     </div>
 </body>
 </html>

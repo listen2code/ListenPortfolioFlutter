@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Privacy Policy - lPortfolio</title>
-    <!-- Premium Google Font -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #6366f1; /* Indigo */
@@ -16,40 +16,40 @@
             --background: #f8fafc; /* Slate 50 */
             --text: #0f172a; /* Slate 900 */
             --text-muted: #475569; /* Slate 600 */
-            --card-bg: rgba(255, 255, 255, 0.85);
+            --card-bg: rgba(255, 255, 255, 0.9);
             --card-border: rgba(99, 102, 241, 0.12);
-            --border: #e2e8f0; /* Slate 200 */
+            --border: #e2e8f0;
             --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
             --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            --max-width: 800px;
+            --max-width: 860px;
         }
 
         @media (prefers-color-scheme: dark) {
             :root {
-                --background: #0b0f19; /* Custom deep slate black */
-                --text: #f1f5f9; /* Slate 100 */
-                --text-muted: #94a3b8; /* Slate 400 */
-                --card-bg: rgba(22, 30, 46, 0.75);
-                --card-border: rgba(129, 140, 248, 0.15);
-                --border: #1e293b; /* Slate 800 */
-                --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
-                --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.15);
+                --background: #0b0f19;
+                --text: #f1f5f9;
+                --text-muted: #94a3b8;
+                --card-bg: rgba(22, 30, 46, 0.8);
+                --card-border: rgba(129, 140, 248, 0.18);
+                --border: #1e293b;
+                --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.25), 0 2px 4px -1px rgba(0, 0, 0, 0.15);
+                --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.35), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
             }
         }
 
         * {
             box-sizing: border-box;
-            transition: background-color 0.3s ease, border-color 0.3s ease;
+            transition: background-color 0.25s ease, border-color 0.25s ease;
         }
 
         body {
             font-family: var(--font-sans);
-            line-height: 1.625;
+            line-height: 1.68;
             color: var(--text);
             background-color: var(--background);
             margin: 0;
-            padding: 60px 24px;
+            padding: 40px 20px 80px;
             display: flex;
             justify-content: center;
         }
@@ -57,44 +57,100 @@
         .container {
             width: 100%;
             max-width: var(--max-width);
-            animation: fadeIn 0.8s ease-out;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Top Navigation */
+        .nav-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 32px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text);
+        }
+
+        .nav-brand-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            font-size: 0.95rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 18px;
+            font-size: 0.9rem;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--primary);
         }
 
         header {
-            margin-bottom: 50px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 24px;
+            margin-bottom: 40px;
             text-align: left;
         }
 
         h1 {
             font-size: 2.5rem;
-            font-weight: 700;
+            font-weight: 800;
             margin-top: 0;
             margin-bottom: 12px;
             background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: -0.025em;
+            letter-spacing: -0.03em;
         }
 
         h2 {
-            font-size: 1.5rem;
-            font-weight: 600;
+            font-size: 1.45rem;
+            font-weight: 700;
             margin-top: 40px;
             margin-bottom: 16px;
-            color: var(--primary);
+            color: var(--text);
             letter-spacing: -0.015em;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+        }
+
+        h2::before {
+            content: "";
+            display: inline-block;
+            width: 4px;
+            height: 20px;
+            background: linear-gradient(180deg, var(--primary) 0%, var(--accent) 100%);
+            border-radius: 2px;
         }
 
         h3 {
             font-size: 1.15rem;
             font-weight: 600;
             margin-top: 24px;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             color: var(--text);
         }
 
@@ -122,9 +178,9 @@
         .card {
             background-color: var(--card-bg);
             border: 1px solid var(--card-border);
-            border-radius: 12px;
+            border-radius: 14px;
             padding: 24px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             box-shadow: var(--shadow);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
@@ -134,13 +190,13 @@
         .card:hover {
             transform: translateY(-2px);
             box-shadow: var(--shadow-lg);
-            border-color: rgba(99, 102, 241, 0.3);
+            border-color: rgba(99, 102, 241, 0.35);
         }
 
         .card h3 {
             margin-top: 0;
             color: var(--primary);
-            font-size: 1.2rem;
+            font-size: 1.15rem;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -164,54 +220,8 @@
             background-color: var(--accent);
         }
 
-        a {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 500;
-            position: relative;
-            transition: color 0.2s ease;
-        }
-
-        a:hover {
-            color: var(--primary-hover);
-        }
-
-        a::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            transform: scaleX(0);
-            height: 1.5px;
-            bottom: -1px;
-            left: 0;
-            background-color: var(--primary-hover);
-            transform-origin: bottom right;
-            transition: transform 0.25s ease-out;
-        }
-
-        a:hover::after {
-            transform: scaleX(1);
-            transform-origin: bottom left;
-        }
-
-        .contact-info {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(6, 182, 212, 0.08) 100%);
-            border-left: 4px solid var(--primary);
-            padding: 24px;
-            border-radius: 0 16px 16px 0;
-            margin-top: 40px;
-            box-shadow: var(--shadow);
-        }
-
-        .contact-info h2 {
-            margin-top: 0;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
         .badge {
-            background-color: rgba(99, 102, 241, 0.1);
+            background-color: rgba(99, 102, 241, 0.12);
             color: var(--primary);
             padding: 4px 10px;
             border-radius: 9999px;
@@ -221,10 +231,71 @@
             margin-bottom: 12px;
         }
 
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            margin-bottom: 24px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            background-color: var(--card-bg);
+        }
+
+        th, td {
+            padding: 14px 18px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background-color: rgba(99, 102, 241, 0.06);
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        td {
+            color: var(--text-muted);
+        }
+
+        a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        a:hover {
+            color: var(--primary-hover);
+            text-decoration: underline;
+        }
+
+        .contact-info {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(6, 182, 212, 0.08) 100%);
+            border: 1px solid var(--card-border);
+            border-left: 4px solid var(--primary);
+            padding: 24px;
+            border-radius: 0 16px 16px 0;
+            margin-top: 40px;
+            box-shadow: var(--shadow);
+        }
+
+        .contact-info h2 {
+            margin-top: 0;
+        }
+
+        .contact-info h2::before {
+            display: none;
+        }
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(10px);
+                transform: translateY(8px);
             }
             to {
                 opacity: 1;
@@ -234,106 +305,204 @@
 
         @media (max-width: 640px) {
             body {
-                padding: 30px 16px;
+                padding: 20px 16px 60px;
             }
             h1 {
                 font-size: 2rem;
             }
-            h2 {
-                font-size: 1.3rem;
-            }
-            .card {
-                padding: 16px;
+            .nav-links {
+                gap: 12px;
+                font-size: 0.82rem;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- Navigation -->
+        <nav class="nav-bar">
+            <a href="index.html" class="nav-brand">
+                <div class="nav-brand-icon">L</div>
+                <span>lPortfolio</span>
+            </a>
+            <div class="nav-links">
+                <a href="privacy_policy.html" class="active">Privacy Policy</a>
+                <a href="terms_of_service.html">Terms of Service</a>
+                <a href="delete_account.html">Delete Account</a>
+            </div>
+        </nav>
+
         <header>
             <h1>Privacy Policy</h1>
-            <div class="last-updated">Last Updated: June 2026</div>
+            <div class="last-updated">Last Updated: August 23, 2026</div>
         </header>
 
         <section>
-            <p><strong>lPortfolio</strong> (referred to as "the Application", "the App", "we", "us", or "our") is developed by <strong>Listen</strong>. We are committed to protecting and respecting your privacy. This Privacy Policy describes how we collect, use, and share information when you use our mobile application.</p>
-            <p>By downloading, installing, or using the Application, you agree to the collection and use of information in accordance with this policy.</p>
+            <p><strong>lPortfolio</strong> (referred to as "the Application", "the App", "we", "us", or "our", Package Name: <code>com.listen.portfolio.listen_portfolio_flutter</code>) is developed by independent developer <strong>Listen</strong>. We are committed to protecting your personal information and respecting your privacy.</p>
+            <p>This Privacy Policy explains the collection, usage, storage, security, and deletion of information when you use our mobile application and related services. By downloading, installing, or using the Application, you consent to the data practices described herein.</p>
         </section>
 
+        <!-- Google Play Data Safety Summary -->
         <section>
-            <h2>1. Information We Collect</h2>
-            <p>To provide a functional and reliable mobile portfolio experience, we collect and process limited categories of information:</p>
+            <h2>1. Google Play Data Safety Summary</h2>
+            <p>In accordance with the Google Play Developer Data Safety standards, below is a clear summary of the data processed by lPortfolio:</p>
             
-            <h3>a. Account and Profile Data</h3>
-            <p>If you register or log in to an account within the App, we collect the credentials you provide (such as username, email address, password). This data is used solely to authenticate your identity, secure your account access, and synchronize your profile preferences.</p>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Data Category</th>
+                            <th>Specific Data Type</th>
+                            <th>Purpose & Collection Mode</th>
+                            <th>Shared with 3rd Parties?</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Personal Info</strong></td>
+                            <td>Email address, Username, Password (Hashed)</td>
+                            <td>Account registration, authentication & profile sync (Optional)</td>
+                            <td>No (Stored on dedicated secure backend)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>AI Interactions</strong></td>
+                            <td>User prompts & queries to AI Assistant</td>
+                            <td>Generating interactive AI responses via Google Gemini & Firebase AI</td>
+                            <td>Yes (Transmitted securely to Google AI)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Device & App IDs</strong></td>
+                            <td>FCM Registration Token, Play Integrity Token</td>
+                            <td>Push notifications (FCM) & anti-abuse device attestation (App Check)</td>
+                            <td>Yes (Google Firebase Services)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>App Performance</strong></td>
+                            <td>Trace IDs, crash logs, frame/launch metrics</td>
+                            <td>Transient diagnostics, stability and APM performance monitoring</td>
+                            <td>No (Processed locally or for active session tracing)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Financial Info</strong></td>
+                            <td>Purchase tokens for voluntary support</td>
+                            <td>Google Play In-App Billing ("Buy Me a Coffee")</td>
+                            <td>Handled 100% by Google Play Billing; developer never sees payment info</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
 
-            <h3>b. Local Storage and Preferences</h3>
-            <p>We store configuration settings locally on your device (such as your chosen theme mode, accent color, font size, and language settings) using local storage mechanisms (SharedPreferences/NSUserDefaults and Secure Storage). This data remains on your device unless you clear the cache or uninstall the App.</p>
+        <!-- Detailed Breakdown -->
+        <section>
+            <h2>2. Information We Collect and How We Use It</h2>
+            
+            <h3>a. Account and Authentication Data</h3>
+            <p>You may browse the core portfolio and showcase features without creating an account. If you register or log in to sync settings or access interactive features, we collect your <strong>email address, username, and encrypted password hash</strong>. We use this strictly to authenticate your identity, prevent unauthorized access, and manage your account.</p>
 
-            <h3>c. Technical and Usage Data</h3>
-            <p>We may process transient network data during API requests to our backend servers. This includes trace identifiers (traceId) used purely for debugging, performance logging, and error tracing.</p>
+            <h3>b. AI Assistant (Gemini / Firebase AI)</h3>
+            <p>The Application features an <strong>AI Intro Assistant</strong> powered by Google Gemini (<code>gemini-3.7-flash</code> via the official <code>firebase_ai</code> SDK). When you chat with the AI assistant:</p>
+            <ul>
+                <li>Your query text is transmitted over encrypted HTTPS to Google's AI backend solely to generate relevant, interactive responses about the developer's experience, architecture, and projects.</li>
+                <li>Your prompts are NOT used to build personal advertising profiles or sold to data brokers.</li>
+                <li>We integrate <strong>Firebase App Check</strong> (Play Integrity on Android) to verify that requests originate from legitimate app binaries and prevent unauthorized API abuse.</li>
+            </ul>
+
+            <h3>c. Local Storage and Preferences</h3>
+            <p>We use local storage (<code>SharedPreferences</code> / <code>FlutterSecureStorage</code>) to remember your local preferences on your device, including:</p>
+            <ul>
+                <li>Selected Theme Mode (Light / Dark / System Follow)</li>
+                <li>Custom Font Family and Dynamic Font Size scaling</li>
+                <li>Language preferences (English / Japanese / Chinese)</li>
+                <li>Security tokens (Stored in encrypted hardware-backed storage)</li>
+            </ul>
+            <p>This data stays locally on your device unless you choose to back it up or sync it with your registered account.</p>
 
             <h3>d. Device Permissions</h3>
-            <p>The Application only requests standard, non-sensitive permissions necessary for core operation:</p>
+            <p>The Application requests only minimal, necessary system permissions:</p>
             <ul>
-                <li><strong>Internet Access (INTERNET):</strong> Required to retrieve portfolio data and communicate with our backend servers.</li>
-                <li><strong>Push Notifications (POST_NOTIFICATIONS):</strong> Optional permission to deliver notifications about featured projects or app updates.</li>
+                <li><strong>Internet Access (<code>INTERNET</code>):</strong> Required to fetch portfolio data, communicate with the API, and interact with the AI assistant.</li>
+                <li><strong>Push Notifications (<code>POST_NOTIFICATIONS</code>):</strong> Optional permission requested on Android 13+ to notify you about major app updates, featured technical articles, or interactive responses.</li>
             </ul>
-            <p>We do NOT request or collect sensitive data such as precise location, camera, microphone, contacts, or storage files.</p>
+            <p>We do NOT request access to sensitive hardware permissions such as Camera, Microphone, GPS Location, Contacts, SMS, or external Photo/File Storage.</p>
         </section>
 
+        <!-- Third-Party Services -->
         <section>
-            <h2>2. Third-Party Services and SDKs</h2>
-            <p>The Application integrates specific third-party Software Development Kits (SDKs) and services to enable core app functions. These third parties may collect and process information in accordance with their own privacy policies:</p>
+            <h2>3. Third-Party Services and Sub-processors</h2>
+            <p>We integrate selected, industry-standard Google and Firebase SDKs to power core application infrastructure. Each provider processes data under strict privacy and security standards:</p>
             
             <div class="card">
                 <span class="badge">In-App Purchases</span>
-                <h3>Google Play Services & Google Play Billing</h3>
-                <p>We use Google Play Services for core system functions and the Google Play Billing Library to handle in-app purchases (such as supporting the project through "Buy Me a Coffee"). All payments are processed securely by Google. We do not collect or store your payment details or financial credentials.</p>
-                <p>View: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google Privacy & Terms</a></p>
+                <h3>Google Play Billing</h3>
+                <p>Used to process voluntary developer support donations ("Buy Me a Coffee"). All payment card data and billing transactions are processed directly and securely by Google Play. The developer never receives, stores, or accesses your financial account details.</p>
+                <p>Policy: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google Privacy Policy</a></p>
             </div>
 
             <div class="card">
-                <span class="badge">Push Notifications</span>
+                <span class="badge">AI & Device Security</span>
+                <h3>Firebase AI & Firebase App Check (Google Gemini)</h3>
+                <p>Powers the generative AI assistant and enforces Play Integrity device attestation to safeguard API endpoints against bots and unauthorized tampering.</p>
+                <p>Policy: <a href="https://firebase.google.com/support/privacy" target="_blank" rel="noopener">Firebase Privacy & Security</a> | <a href="https://ai.google.dev/terms" target="_blank" rel="noopener">Google Generative AI Terms</a></p>
+            </div>
+
+            <div class="card">
+                <span class="badge">Cloud Messaging</span>
                 <h3>Firebase Cloud Messaging (FCM)</h3>
-                <p>We use Firebase Cloud Messaging to send push notifications regarding app updates, featured projects, or interactive messages. FCM may collect device tokens, identifiers, and general notification payload status to deliver messages to your device.</p>
-                <p>View: <a href="https://firebase.google.com/support/privacy" target="_blank" rel="noopener">Privacy and Security in Firebase</a></p>
+                <p>Delivers notification payloads and status updates using anonymous device push tokens.</p>
+                <p>Policy: <a href="https://firebase.google.com/docs/cloud-messaging" target="_blank" rel="noopener">Firebase Cloud Messaging Overview</a></p>
             </div>
         </section>
 
+        <!-- Data Security & Encryption -->
         <section>
-            <h2>3. Data Security and Retention</h2>
-            <p>We implement commercially reasonable security measures to protect your account information and local configuration settings. However, please note that no method of transmission over the internet, or method of electronic storage, is 100% secure.</p>
-            <p>Your local configuration settings are retained on your device. Account profile data is stored on our secure backend database and is retained for as long as your account remains active.</p>
-        </section>
-
-        <section>
-            <h2>4. Data Deletion and Account Deletion</h2>
-            <p>We respect your right to control your data. In full compliance with the Google Play App Data Deletion policy, you can manage or request the deletion of your data using the following methods:</p>
+            <h2>4. Data Security and Encryption</h2>
+            <p>We implement robust industry-standard technical measures to protect your information:</p>
             <ul>
-                <li><strong>Clear Cache:</strong> You can clear local app cache at any time through the Settings menu inside the App.</li>
-                <li><strong>Reset Settings:</strong> You can restore local settings to defaults through the Settings menu.</li>
-                <li><strong>In-App Account Deletion:</strong> You can permanently delete your registered account and all associated backend profile data at any time via the "Delete Account" option in the App Settings.</li>
-                <li><strong>Web-Based Deletion Request:</strong> If you are unable to access the App or wish to request data deletion externally through a web browser, you can submit your request via our <a href="https://listen2code.github.io/ListenPortfolioFlutter/pages/delete_account.html" target="_blank" rel="noopener">Web Account Deletion Request Form</a>.</li>
-                <li><strong>Manual Deletion Request:</strong> You can also contact us directly at <a href="mailto:listen2code@gmail.com">listen2code@gmail.com</a>. We will process your deletion request within 30 days.</li>
+                <li><strong>Encryption in Transit:</strong> All communications between the mobile app, our backend servers, and Google APIs are encrypted using <strong>HTTPS / TLS 1.3</strong>.</li>
+                <li><strong>Encryption at Rest:</strong> Authentication tokens stored on the client use Android Keystore / EncryptedSharedPreferences (AES-256). Passwords on our servers are securely hashed using salted cryptographic hashing algorithms.</li>
+                <li><strong>Zero Data Selling:</strong> We do not sell, rent, or trade your personal data to third parties or advertising networks under any circumstances.</li>
             </ul>
-            <p>When an account deletion request is processed (either in-app or via our web form), all your personal profile details, account credentials, and associated user data are permanently purged from our active backend servers.</p>
         </section>
 
+        <!-- Account Deletion Policy -->
         <section>
-            <h2>5. Children's Privacy</h2>
-            <p>Our Services do not address anyone under the age of 13. We do not knowingly collect personally identifiable information from children under 13. In the case we discover that a child under 13 has provided us with personal information, we immediately delete this from our servers. If you are a parent or guardian and you are aware that your child has provided us with personal information, please contact us so that we can take necessary actions.</p>
+            <h2>5. Account & Data Deletion (Google Play Compliance)</h2>
+            <p>In full compliance with Google Play's App Data Deletion Policy, users have the complete right to request the permanent deletion of their account and all associated personal data.</p>
+            
+            <div class="card">
+                <h3>How to Delete Your Account and Data</h3>
+                <p>You can delete your account and associated data through either of the following methods:</p>
+                <ol>
+                    <li><strong>In-App Deletion (Instant):</strong> Open the <strong>lPortfolio</strong> App &rarr; Navigate to <strong>Settings</strong> &rarr; Select <strong>Account</strong> &rarr; Tap <strong>Delete Account</strong>. Your credentials and synced profile are immediately deleted from active servers.</li>
+                    <li><strong>Web Deletion Request Form:</strong> Visit our dedicated <a href="delete_account.html">Web Account Deletion Portal</a> to submit an external deletion request.</li>
+                    <li><strong>Direct Email Request:</strong> Send an email from your registered email address to <a href="mailto:listen2code@gmail.com">listen2code@gmail.com</a> with the subject line <em>"Account Deletion Request"</em>.</li>
+                </ol>
+                <p><strong>Deletion SLA:</strong> In-app deletion takes effect immediately. Web and email requests are verified and processed within <strong>30 days</strong>. All user profile records, email associations, and cloud preferences are permanently purged from our active databases and backup logs.</p>
+            </div>
         </section>
 
+        <!-- Children's Privacy -->
         <section>
-            <h2>6. Changes to This Privacy Policy</h2>
-            <p>We may update our Privacy Policy from time to time. You are advised to review this page periodically for any changes. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last Updated" date at the top of this policy.</p>
+            <h2>6. Children's Privacy (COPPA & GDPR-K)</h2>
+            <p>The Application is intended for general audiences and professional portfolios and is not directed to children under the age of 13. We do not knowingly collect personal information from children under 13. If you become aware that a child has provided us with personal information without parental consent, please contact us at <a href="mailto:listen2code@gmail.com">listen2code@gmail.com</a>, and we will promptly delete such information from our records.</p>
         </section>
 
+        <!-- Policy Changes -->
+        <section>
+            <h2>7. Changes to This Privacy Policy</h2>
+            <p>We may update this Privacy Policy from time to time to reflect application improvements, legal requirements, or Google Play policy updates. We will notify you of any modifications by posting the new Privacy Policy on this page and updating the "Last Updated" date at the top.</p>
+        </section>
+
+        <!-- Contact Section -->
         <section class="contact-info">
             <h2>Contact Us</h2>
-            <p>If you have any questions, suggestions, or requests regarding this Privacy Policy or your data, please contact the developer at:</p>
-            <p><strong>Email:</strong> <a href="mailto:listen2code@gmail.com">listen2code@gmail.com</a></p>
+            <p>If you have any questions, suggestions, or data privacy inquiries regarding this Privacy Policy or your personal information, please feel free to reach out:</p>
+            <p>
+                <strong>Developer:</strong> Listen<br>
+                <strong>Email:</strong> <a href="mailto:listen2code@gmail.com">listen2code@gmail.com</a><br>
+                <strong>GitHub:</strong> <a href="https://github.com/listen2code/ListenPortfolioFlutter" target="_blank" rel="noopener">github.com/listen2code/ListenPortfolioFlutter</a>
+            </p>
         </section>
     </div>
 </body>

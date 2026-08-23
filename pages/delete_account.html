@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Account Deletion Request - lPortfolio</title>
-    <!-- Premium Google Font -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #ef4444; /* Red for deletion/danger actions */
+            --primary: #ef4444; /* Red for deletion actions */
             --primary-hover: #dc2626;
             --accent: #f97316; /* Orange */
             --indigo: #6366f1;
@@ -18,50 +18,97 @@
             --background: #f8fafc; /* Slate 50 */
             --text: #0f172a; /* Slate 900 */
             --text-muted: #475569; /* Slate 600 */
-            --card-bg: rgba(255, 255, 255, 0.85);
-            --card-border: rgba(239, 68, 68, 0.12);
-            --border: #e2e8f0; /* Slate 200 */
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --card-border: rgba(239, 68, 68, 0.15);
+            --border: #e2e8f0;
             --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
             --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            --max-width: 600px;
+            --max-width: 680px;
         }
 
         @media (prefers-color-scheme: dark) {
             :root {
-                --background: #0b0f19; /* Custom deep slate black */
-                --text: #f1f5f9; /* Slate 100 */
-                --text-muted: #94a3b8; /* Slate 400 */
-                --card-bg: rgba(22, 30, 46, 0.75);
-                --card-border: rgba(239, 68, 68, 0.15);
-                --border: #1e293b; /* Slate 800 */
-                --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
-                --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.15);
+                --background: #0b0f19;
+                --text: #f1f5f9;
+                --text-muted: #94a3b8;
+                --card-bg: rgba(22, 30, 46, 0.8);
+                --card-border: rgba(239, 68, 68, 0.22);
+                --border: #1e293b;
+                --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.25), 0 2px 4px -1px rgba(0, 0, 0, 0.15);
+                --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.35), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
             }
         }
 
         * {
             box-sizing: border-box;
-            transition: background-color 0.3s ease, border-color 0.3s ease;
+            transition: background-color 0.25s ease, border-color 0.25s ease;
         }
 
         body {
             font-family: var(--font-sans);
-            line-height: 1.625;
+            line-height: 1.68;
             color: var(--text);
             background-color: var(--background);
             margin: 0;
-            padding: 60px 24px;
+            padding: 40px 20px 80px;
             display: flex;
             justify-content: center;
-            align-items: center;
-            min-height: 100vh;
         }
 
         .container {
             width: 100%;
             max-width: var(--max-width);
-            animation: fadeIn 0.8s ease-out;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Top Navigation */
+        .nav-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 32px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text);
+        }
+
+        .nav-brand-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--indigo) 0%, var(--accent) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            font-size: 0.95rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 18px;
+            font-size: 0.9rem;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--primary);
         }
 
         header {
@@ -69,28 +116,15 @@
             text-align: center;
         }
 
-        .logo-back {
-            display: inline-block;
-            margin-bottom: 16px;
-            color: var(--indigo);
-            font-weight: 600;
-            text-decoration: none;
-            font-size: 0.95rem;
-        }
-
-        .logo-back:hover {
-            text-decoration: underline;
-        }
-
         h1 {
-            font-size: 2.25rem;
-            font-weight: 700;
+            font-size: 2.3rem;
+            font-weight: 800;
             margin-top: 0;
             margin-bottom: 12px;
             background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: -0.025em;
+            letter-spacing: -0.03em;
         }
 
         p {
@@ -107,20 +141,52 @@
             box-shadow: var(--shadow-lg);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
+            margin-bottom: 24px;
         }
 
         .warning-banner {
             background-color: rgba(239, 68, 68, 0.08);
             border-left: 4px solid var(--primary);
-            padding: 16px;
+            padding: 16px 18px;
             border-radius: 0 12px 12px 0;
             margin-bottom: 24px;
-            font-size: 0.9rem;
+            font-size: 0.92rem;
             color: var(--text);
         }
 
         .warning-banner strong {
             color: var(--primary);
+        }
+
+        .guide-box {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .guide-box h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 12px;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .guide-box ol {
+            margin-top: 0;
+            margin-bottom: 0;
+            padding-left: 20px;
+            color: var(--text-muted);
+        }
+
+        .guide-box li {
+            margin-bottom: 8px;
         }
 
         .form-group {
@@ -129,21 +195,22 @@
 
         label {
             display: block;
-            font-weight: 500;
+            font-weight: 600;
             margin-bottom: 8px;
-            font-size: 0.95rem;
+            font-size: 0.92rem;
             color: var(--text);
         }
 
         input[type="text"],
-        input[type="email"] {
+        input[type="email"],
+        textarea {
             width: 100%;
             padding: 12px 16px;
             border: 1px solid var(--border);
-            border-radius: 8px;
+            border-radius: 10px;
             font-family: var(--font-sans);
-            font-size: 1rem;
-            background-color: rgba(255, 255, 255, 0.5);
+            font-size: 0.95rem;
+            background-color: rgba(255, 255, 255, 0.6);
             color: var(--text);
             outline: none;
             transition: border-color 0.2s, box-shadow 0.2s;
@@ -151,22 +218,29 @@
 
         @media (prefers-color-scheme: dark) {
             input[type="text"],
-            input[type="email"] {
-                background-color: rgba(11, 15, 25, 0.5);
+            input[type="email"],
+            textarea {
+                background-color: rgba(11, 15, 25, 0.6);
             }
         }
 
         input[type="text"]:focus,
-        input[type="email"]:focus {
-            border-color: var(--indigo);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+        input[type="email"]:focus,
+        textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
         }
 
         .checkbox-group {
             display: flex;
             flex-direction: column;
             gap: 12px;
-            margin-top: 10px;
+            margin-top: 16px;
             margin-bottom: 24px;
         }
 
@@ -174,14 +248,14 @@
             display: flex;
             align-items: flex-start;
             gap: 10px;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             color: var(--text-muted);
             cursor: pointer;
             user-select: none;
         }
 
         .checkbox-label input[type="checkbox"] {
-            margin-top: 4px;
+            margin-top: 3px;
             width: 16px;
             height: 16px;
             accent-color: var(--primary);
@@ -195,18 +269,18 @@
             background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-family: var(--font-sans);
-            font-weight: 600;
+            font-weight: 700;
             font-size: 1rem;
             cursor: pointer;
-            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2);
-            transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         .btn-submit:hover {
             transform: translateY(-1px);
-            box-shadow: 0 6px 15px rgba(239, 68, 68, 0.3);
+            box-shadow: 0 6px 16px rgba(239, 68, 68, 0.35);
         }
 
         .btn-submit:active {
@@ -224,9 +298,9 @@
         }
 
         .success-icon {
-            font-size: 4rem;
+            font-size: 3.5rem;
             color: #10b981;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             text-align: center;
         }
 
@@ -237,16 +311,19 @@
             padding: 20px;
             margin-bottom: 24px;
             font-size: 0.9rem;
-            position: relative;
         }
 
         .preview-field {
-            margin-bottom: 12px;
+            margin-bottom: 14px;
+        }
+
+        .preview-field:last-child {
+            margin-bottom: 0;
         }
 
         .preview-label {
             font-weight: 600;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             color: var(--indigo);
@@ -256,8 +333,8 @@
         .preview-value {
             font-family: monospace;
             background-color: rgba(0,0,0,0.03);
-            padding: 8px 12px;
-            border-radius: 6px;
+            padding: 10px 14px;
+            border-radius: 8px;
             word-break: break-all;
             white-space: pre-wrap;
             color: var(--text);
@@ -269,20 +346,40 @@
 
         @media (prefers-color-scheme: dark) {
             .preview-value {
-                background-color: rgba(255,255,255,0.03);
+                background-color: rgba(255,255,255,0.04);
             }
+        }
+
+        .btn-action {
+            display: inline-block;
+            text-align: center;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-email {
+            background: linear-gradient(135deg, var(--indigo) 0%, #06b6d4 100%);
+            color: white;
+            border: none;
+            width: 100%;
+            margin-bottom: 12px;
         }
 
         .btn-copy {
             background-color: var(--indigo);
             color: white;
             border: none;
-            border-radius: 4px;
-            padding: 4px 8px;
-            font-size: 0.75rem;
+            border-radius: 6px;
+            padding: 5px 10px;
+            font-size: 0.78rem;
             cursor: pointer;
             font-family: var(--font-sans);
-            font-weight: 500;
+            font-weight: 600;
             margin-left: 10px;
             flex-shrink: 0;
         }
@@ -293,102 +390,116 @@
 
         .toast {
             position: fixed;
-            bottom: 20px;
+            bottom: 24px;
             left: 50%;
             transform: translateX(-50%);
             background-color: #10b981;
             color: white;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.2);
             display: none;
-            animation: toastFade 2.5s ease-in-out forwards;
-            z-index: 100;
-        }
-
-        @keyframes toastFade {
-            0% { opacity: 0; transform: translate(-50%, 10px); }
-            15% { opacity: 1; transform: translate(-50%, 0); }
-            85% { opacity: 1; transform: translate(-50%, 0); }
-            100% { opacity: 0; transform: translate(-50%, -10px); }
+            z-index: 1000;
         }
 
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         @media (max-width: 640px) {
-            body {
-                padding: 30px 16px;
-            }
-            .form-card {
-                padding: 24px 16px;
-            }
-            h1 {
-                font-size: 1.8rem;
-            }
+            body { padding: 20px 16px 60px; }
+            .form-card { padding: 24px 18px; }
+            h1 { font-size: 1.85rem; }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- Top Nav -->
+        <nav class="nav-bar">
+            <a href="index.html" class="nav-brand">
+                <div class="nav-brand-icon">L</div>
+                <span>lPortfolio</span>
+            </a>
+            <div class="nav-links">
+                <a href="privacy_policy.html">Privacy Policy</a>
+                <a href="terms_of_service.html">Terms of Service</a>
+                <a href="delete_account.html" class="active">Delete Account</a>
+            </div>
+        </nav>
+
         <header>
-            <a href="privacy_policy.html" class="logo-back">← Back to Privacy Policy</a>
-            <h1>Delete Account & Data</h1>
-            <p>Request the permanent deletion of your lPortfolio account and associated personal data.</p>
+            <h1>Account & Data Deletion</h1>
+            <p>Request the permanent deletion of your lPortfolio registered account and all associated personal data.</p>
         </header>
 
-        <!-- Form State -->
+        <!-- Method 1: In-App Instructions -->
+        <div class="guide-box">
+            <h2>📱 Method 1: Instant In-App Deletion (Recommended)</h2>
+            <p>If you have the lPortfolio app installed on your device, you can delete your account instantly without waiting for manual verification:</p>
+            <ol>
+                <li>Open the <strong>lPortfolio</strong> app on your Android device.</li>
+                <li>Tap on <strong>Settings</strong> in the bottom navigation bar.</li>
+                <li>Select <strong>Account Management</strong> (or tap your profile header).</li>
+                <li>Tap <strong>Delete Account</strong> at the bottom and confirm the dialog prompt.</li>
+            </ol>
+            <p style="margin-top: 10px; margin-bottom: 0; font-size: 0.88rem; color: var(--text-muted);">
+                <em>* In-app deletion executes immediately and purges your authentication tokens and database records in real-time.</em>
+            </p>
+        </div>
+
+        <!-- Method 2: Web Deletion Form -->
         <div class="form-card" id="requestFormCard">
+            <h2 style="font-size: 1.25rem; margin-top: 0; margin-bottom: 12px; color: var(--text);">🌐 Method 2: Web Deletion Request Form</h2>
             <div class="warning-banner">
-                <strong>Important Notice:</strong> Account deletion is permanent and cannot be undone. All profile data, preferences, and synchronized portfolio data hosted on our backend databases will be permanently purged.
+                <strong>Important Notice:</strong> Account deletion is irreversible. Once processed, your user profile, authentication credentials, synchronized preferences, and cloud-stored data will be permanently wiped.
             </div>
 
             <form id="deletionForm" onsubmit="handleSubmit(event)">
                 <div class="form-group">
                     <label for="email">Registered Email Address <span style="color: var(--primary);">*</span></label>
-                    <input type="email" id="email" required placeholder="example@domain.com">
+                    <input type="email" id="email" required placeholder="name@example.com">
                 </div>
 
                 <div class="form-group">
                     <label for="username">Username (Optional)</label>
-                    <input type="text" id="username" placeholder="Your registered username">
+                    <input type="text" id="username" placeholder="Your registered username in lPortfolio">
                 </div>
 
+                <div class="form-group">
+                    <label for="reason">Reason for Deletion (Optional)</label>
+                    <textarea id="reason" placeholder="Help us improve (e.g. no longer using the app, privacy concerns)"></textarea>
+                </div>
+
+                <!-- Scope of Data Deletion Summary -->
                 <div class="checkbox-group">
                     <label class="checkbox-label">
                         <input type="checkbox" id="deleteAccount" checked disabled>
-                        <span>Delete my registered account profile (Authentication and credentials)</span>
+                        <span><strong>User Credentials:</strong> Permanently purge account email, username, and password hash from server database.</span>
                     </label>
                     <label class="checkbox-label">
-                        <input type="checkbox" id="deleteSyncData" checked>
-                        <span>Delete my synchronized application settings and configuration backups</span>
+                        <input type="checkbox" id="deleteSyncData" checked disabled>
+                        <span><strong>Cloud Sync Data:</strong> Wipe all synchronized settings, theme preferences, and AI chat session logs.</span>
                     </label>
                     <label class="checkbox-label">
                         <input type="checkbox" id="confirmConsent" required>
-                        <span style="color: var(--text); font-weight: 500;">I understand that this action is permanent, and I consent to the removal of all my data. <span style="color: var(--primary);">*</span></span>
+                        <span style="color: var(--text); font-weight: 600;">I understand that this action cannot be undone, and I consent to the permanent deletion of my account data. <span style="color: var(--primary);">*</span></span>
                     </label>
                 </div>
 
-                <button type="submit" class="btn-submit">Generate Deletion Request</button>
+                <button type="submit" class="btn-submit">Submit Account Deletion Request</button>
             </form>
         </div>
 
-        <!-- Success State -->
+        <!-- Success / Email Generation State -->
         <div class="form-card success-state" id="successCard">
             <div class="success-header">
                 <div class="success-icon">✓</div>
-                <h2 style="margin-top: 0; color: #10b981;">Request Generated Successfully</h2>
-                <p>Please send the email below to complete your deletion request.</p>
+                <h2 style="margin-top: 0; color: #10b981; font-size: 1.35rem;">Deletion Request Generated</h2>
+                <p>To verify ownership and protect your security, please send the pre-filled verification email below:</p>
             </div>
 
             <div class="preview-box">
@@ -396,127 +507,100 @@
                     <div class="preview-label">To / Recipient:</div>
                     <div class="preview-value">
                         <span id="toEmailText">listen2code@gmail.com</span>
-                        <button class="btn-copy" onclick="copyText('toEmailText')">Copy</button>
+                        <button class="btn-copy" type="button" onclick="copyText('toEmailText')">Copy</button>
                     </div>
                 </div>
 
                 <div class="preview-field">
                     <div class="preview-label">Subject:</div>
                     <div class="preview-value">
-                        <span id="subjectText">[lPortfolio] Account Deletion Request</span>
-                        <button class="btn-copy" onclick="copyText('subjectText')">Copy</button>
+                        <span id="subjectText">lPortfolio Account Deletion Request</span>
+                        <button class="btn-copy" type="button" onclick="copyText('subjectText')">Copy</button>
                     </div>
                 </div>
 
                 <div class="preview-field">
-                    <div class="preview-label">Email Content / Body:</div>
-                    <div class="preview-value">
-                        <span id="bodyTextContainer">Email template loading...</span>
-                        <button class="btn-copy" onclick="copyText('bodyTextContainer')">Copy Content</button>
+                    <div class="preview-label">Body:</div>
+                    <div class="preview-value" style="display: block; position: relative;">
+                        <pre id="bodyText" style="margin: 0; font-family: monospace; white-space: pre-wrap; font-size: 0.85rem;"></pre>
+                        <div style="text-align: right; margin-top: 8px;">
+                            <button class="btn-copy" type="button" onclick="copyText('bodyText')">Copy Body Text</button>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="warning-banner" style="background-color: rgba(99, 102, 241, 0.05); border-left: 4px solid var(--indigo);">
-                <strong>How to complete:</strong><br>
-                1. If your default mail client didn't launch automatically, please open your personal email inbox (e.g. Gmail, Yahoo, Webmail).<br>
-                2. Compose a new message, copy the recipient, subject, and content blocks above, and paste them in.<br>
-                3. Click <strong>Send</strong>.
-            </div>
-            
-            <p style="font-size: 0.9rem; text-align: center;">We will process the deletion of your account and associated data within <strong>30 days</strong> of receiving your email.</p>
-            
-            <button onclick="resetForm()" class="btn-submit" style="background: var(--indigo); box-shadow: 0 4px 10px rgba(99, 102, 241, 0.2); width: auto; display: block; margin: 20px auto 0 auto;">Submit Another Request</button>
+            <a id="emailClientBtn" href="#" class="btn-action btn-email">Open Default Email Client</a>
+            <button type="button" onclick="resetForm()" style="width: 100%; background: none; border: 1px solid var(--border); padding: 10px; border-radius: 8px; font-weight: 500; color: var(--text-muted); cursor: pointer;">← Back to Form</button>
+        </div>
+
+        <!-- Data Retention & Legal Information -->
+        <div class="guide-box">
+            <h2 style="font-size: 1.1rem;">⚖️ Data Retention & Policy Clarifications</h2>
+            <ul style="margin: 0; padding-left: 20px; font-size: 0.88rem; color: var(--text-muted);">
+                <li><strong>Processing Timeframe:</strong> Web deletion requests are processed within <strong>30 days</strong> of verification.</li>
+                <li><strong>What Data is Deleted:</strong> All personal account data (email, username, hashed passwords, synchronized settings, preferences) is permanently erased from active databases.</li>
+                <li><strong>Data Retained:</strong> We do not retain any personal data. Please note that Google Play transaction receipts ("Buy Me a Coffee") are managed by Google Play and retained in your Google Account purchase history per Google's regulatory accounting obligations.</li>
+            </ul>
         </div>
     </div>
 
-    <!-- Copied Alert Notification -->
-    <div id="copyToast" class="toast">Copied to clipboard!</div>
+    <div class="toast" id="toast">Copied to clipboard!</div>
 
     <script>
-        function handleSubmit(event) {
-            event.preventDefault();
-
+        function handleSubmit(e) {
+            e.preventDefault();
             const email = document.getElementById('email').value.trim();
             const username = document.getElementById('username').value.trim();
-            const deleteSyncData = document.getElementById('deleteSyncData').checked;
+            const reason = document.getElementById('reason').value.trim();
+
+            const subject = `[Account Deletion] lPortfolio - ${email}`;
+            const body = `Dear Developer,
+
+I am requesting the permanent deletion of my lPortfolio account and all associated personal data in accordance with Google Play data safety policies.
+
+Account Details:
+- Registered Email: ${email}
+- Username: ${username || 'N/A'}
+- Reason: ${reason || 'N/A'}
+- Date of Request: ${new Date().toISOString().split('T')[0]}
+
+I confirm that I am the authorized owner of this account and consent to the permanent deletion of all associated profile and synchronized data.
+
+Thank you.`;
+
+            document.getElementById('subjectText').innerText = subject;
+            document.getElementById('bodyText').innerText = body;
             
-            if (!email) {
-                alert('Please enter your registered email address.');
-                return;
-            }
+            const mailtoUrl = `mailto:listen2code@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            document.getElementById('emailClientBtn').href = mailtoUrl;
 
-            const subject = '[lPortfolio] Account Deletion Request';
-            let bodyText = `Hello,\n\nI am writing to request the permanent deletion of my lPortfolio account and all associated personal data from your systems.\n\n`;
-            bodyText += `Account Details:\n`;
-            bodyText += `- Registered Email: ${email}\n`;
-            if (username) {
-                bodyText += `- Username: ${username}\n`;
-            }
-            bodyText += `\nDeletion Scope Requested:\n`;
-            bodyText += `- [X] Registered account profile (Authentication and credentials)\n`;
-            bodyText += `- [${deleteSyncData ? 'X' : ' '}] Synchronized application settings and configuration backups\n`;
-            bodyText += `\nI understand that this action is permanent and cannot be undone.\n\nThank you.`;
-
-            // Display in preview blocks
-            document.getElementById('bodyTextContainer').innerText = bodyText;
-
-            const mailtoLink = `mailto:listen2code@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyText)}`;
-            
-            // Show success state UI
             document.getElementById('requestFormCard').style.display = 'none';
             document.getElementById('successCard').style.display = 'block';
 
-            // Attempt to trigger system mail application
-            try {
-                const link = document.createElement('a');
-                link.href = mailtoLink;
-                link.click();
-            } catch (e) {
-                console.error("Failed to automatically launch mail client:", e);
-            }
-        }
-
-        function resetForm() {
-            document.getElementById('deletionForm').reset();
-            document.getElementById('successCard').style.display = 'none';
-            document.getElementById('requestFormCard').style.display = 'block';
+            // Auto-trigger mailto client
+            window.location.href = mailtoUrl;
         }
 
         function copyText(elementId) {
-            const textToCopy = document.getElementById(elementId).innerText;
-            
-            navigator.clipboard.writeText(textToCopy).then(() => {
-                showToast();
-            }).catch(err => {
-                console.error('Could not copy text: ', err);
-                // Fallback for older browsers
-                const textArea = document.createElement("textarea");
-                textArea.value = textToCopy;
-                document.body.appendChild(textArea);
-                textArea.select();
-                try {
-                    document.execCommand('copy');
-                    showToast();
-                } catch (err2) {
-                    alert('Copy failed, please copy text manually.');
-                }
-                document.body.removeChild(textArea);
+            const text = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                showToast("Copied to clipboard!");
             });
         }
 
-        function showToast() {
-            const toast = document.getElementById('copyToast');
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
             toast.style.display = 'block';
-            
-            // Re-trigger animation
-            toast.style.animation = 'none';
-            toast.offsetHeight; // trigger reflow
-            toast.style.animation = null;
-
             setTimeout(() => {
                 toast.style.display = 'none';
             }, 2500);
+        }
+
+        function resetForm() {
+            document.getElementById('requestFormCard').style.display = 'block';
+            document.getElementById('successCard').style.display = 'none';
         }
     </script>
 </body>
