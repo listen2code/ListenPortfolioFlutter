@@ -55,7 +55,7 @@ extension HomeIntentPatterns on HomeIntent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _TabChanged value)?  tabChanged,TResult Function( _Logout value)?  logout,TResult Function( _ConfirmLogout value)?  confirmLogout,TResult Function( _ToSettings value)?  toSettings,TResult Function( _ToAppearance value)?  toAppearance,TResult Function( _HandleDeepLink value)?  handleDeepLink,TResult Function( _Init value)?  init,TResult Function( _PreviewAvatar value)?  previewAvatar,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _TabChanged value)?  tabChanged,TResult Function( _Logout value)?  logout,TResult Function( _ConfirmLogout value)?  confirmLogout,TResult Function( _ToSettings value)?  toSettings,TResult Function( _ToAppearance value)?  toAppearance,TResult Function( _HandleDeepLink value)?  handleDeepLink,TResult Function( _Init value)?  init,TResult Function( _PreviewAvatar value)?  previewAvatar,TResult Function( _CheckDeferredDeepLink value)?  checkDeferredDeepLink,TResult Function( _HandleDeferredDeepLink value)?  handleDeferredDeepLink,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _TabChanged() when tabChanged != null:
@@ -66,7 +66,9 @@ return toSettings(_that);case _ToAppearance() when toAppearance != null:
 return toAppearance(_that);case _HandleDeepLink() when handleDeepLink != null:
 return handleDeepLink(_that);case _Init() when init != null:
 return init(_that);case _PreviewAvatar() when previewAvatar != null:
-return previewAvatar(_that);case _:
+return previewAvatar(_that);case _CheckDeferredDeepLink() when checkDeferredDeepLink != null:
+return checkDeferredDeepLink(_that);case _HandleDeferredDeepLink() when handleDeferredDeepLink != null:
+return handleDeferredDeepLink(_that);case _:
   return orElse();
 
 }
@@ -84,7 +86,7 @@ return previewAvatar(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _TabChanged value)  tabChanged,required TResult Function( _Logout value)  logout,required TResult Function( _ConfirmLogout value)  confirmLogout,required TResult Function( _ToSettings value)  toSettings,required TResult Function( _ToAppearance value)  toAppearance,required TResult Function( _HandleDeepLink value)  handleDeepLink,required TResult Function( _Init value)  init,required TResult Function( _PreviewAvatar value)  previewAvatar,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _TabChanged value)  tabChanged,required TResult Function( _Logout value)  logout,required TResult Function( _ConfirmLogout value)  confirmLogout,required TResult Function( _ToSettings value)  toSettings,required TResult Function( _ToAppearance value)  toAppearance,required TResult Function( _HandleDeepLink value)  handleDeepLink,required TResult Function( _Init value)  init,required TResult Function( _PreviewAvatar value)  previewAvatar,required TResult Function( _CheckDeferredDeepLink value)  checkDeferredDeepLink,required TResult Function( _HandleDeferredDeepLink value)  handleDeferredDeepLink,}){
 final _that = this;
 switch (_that) {
 case _TabChanged():
@@ -95,7 +97,9 @@ return toSettings(_that);case _ToAppearance():
 return toAppearance(_that);case _HandleDeepLink():
 return handleDeepLink(_that);case _Init():
 return init(_that);case _PreviewAvatar():
-return previewAvatar(_that);case _:
+return previewAvatar(_that);case _CheckDeferredDeepLink():
+return checkDeferredDeepLink(_that);case _HandleDeferredDeepLink():
+return handleDeferredDeepLink(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -112,7 +116,7 @@ return previewAvatar(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _TabChanged value)?  tabChanged,TResult? Function( _Logout value)?  logout,TResult? Function( _ConfirmLogout value)?  confirmLogout,TResult? Function( _ToSettings value)?  toSettings,TResult? Function( _ToAppearance value)?  toAppearance,TResult? Function( _HandleDeepLink value)?  handleDeepLink,TResult? Function( _Init value)?  init,TResult? Function( _PreviewAvatar value)?  previewAvatar,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _TabChanged value)?  tabChanged,TResult? Function( _Logout value)?  logout,TResult? Function( _ConfirmLogout value)?  confirmLogout,TResult? Function( _ToSettings value)?  toSettings,TResult? Function( _ToAppearance value)?  toAppearance,TResult? Function( _HandleDeepLink value)?  handleDeepLink,TResult? Function( _Init value)?  init,TResult? Function( _PreviewAvatar value)?  previewAvatar,TResult? Function( _CheckDeferredDeepLink value)?  checkDeferredDeepLink,TResult? Function( _HandleDeferredDeepLink value)?  handleDeferredDeepLink,}){
 final _that = this;
 switch (_that) {
 case _TabChanged() when tabChanged != null:
@@ -123,7 +127,9 @@ return toSettings(_that);case _ToAppearance() when toAppearance != null:
 return toAppearance(_that);case _HandleDeepLink() when handleDeepLink != null:
 return handleDeepLink(_that);case _Init() when init != null:
 return init(_that);case _PreviewAvatar() when previewAvatar != null:
-return previewAvatar(_that);case _:
+return previewAvatar(_that);case _CheckDeferredDeepLink() when checkDeferredDeepLink != null:
+return checkDeferredDeepLink(_that);case _HandleDeferredDeepLink() when handleDeferredDeepLink != null:
+return handleDeferredDeepLink(_that);case _:
   return null;
 
 }
@@ -140,7 +146,7 @@ return previewAvatar(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( HomeTab tab,  String? targetProjectBusinessId,  bool closeDrawer)?  tabChanged,TResult Function()?  logout,TResult Function()?  confirmLogout,TResult Function()?  toSettings,TResult Function()?  toAppearance,TResult Function( Uri uri)?  handleDeepLink,TResult Function()?  init,TResult Function()?  previewAvatar,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( HomeTab tab,  String? targetProjectBusinessId,  bool closeDrawer)?  tabChanged,TResult Function()?  logout,TResult Function()?  confirmLogout,TResult Function()?  toSettings,TResult Function()?  toAppearance,TResult Function( Uri uri)?  handleDeepLink,TResult Function()?  init,TResult Function()?  previewAvatar,TResult Function()?  checkDeferredDeepLink,TResult Function( InstallReferrerData data)?  handleDeferredDeepLink,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TabChanged() when tabChanged != null:
 return tabChanged(_that.tab,_that.targetProjectBusinessId,_that.closeDrawer);case _Logout() when logout != null:
@@ -150,7 +156,9 @@ return toSettings();case _ToAppearance() when toAppearance != null:
 return toAppearance();case _HandleDeepLink() when handleDeepLink != null:
 return handleDeepLink(_that.uri);case _Init() when init != null:
 return init();case _PreviewAvatar() when previewAvatar != null:
-return previewAvatar();case _:
+return previewAvatar();case _CheckDeferredDeepLink() when checkDeferredDeepLink != null:
+return checkDeferredDeepLink();case _HandleDeferredDeepLink() when handleDeferredDeepLink != null:
+return handleDeferredDeepLink(_that.data);case _:
   return orElse();
 
 }
@@ -168,7 +176,7 @@ return previewAvatar();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( HomeTab tab,  String? targetProjectBusinessId,  bool closeDrawer)  tabChanged,required TResult Function()  logout,required TResult Function()  confirmLogout,required TResult Function()  toSettings,required TResult Function()  toAppearance,required TResult Function( Uri uri)  handleDeepLink,required TResult Function()  init,required TResult Function()  previewAvatar,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( HomeTab tab,  String? targetProjectBusinessId,  bool closeDrawer)  tabChanged,required TResult Function()  logout,required TResult Function()  confirmLogout,required TResult Function()  toSettings,required TResult Function()  toAppearance,required TResult Function( Uri uri)  handleDeepLink,required TResult Function()  init,required TResult Function()  previewAvatar,required TResult Function()  checkDeferredDeepLink,required TResult Function( InstallReferrerData data)  handleDeferredDeepLink,}) {final _that = this;
 switch (_that) {
 case _TabChanged():
 return tabChanged(_that.tab,_that.targetProjectBusinessId,_that.closeDrawer);case _Logout():
@@ -178,7 +186,9 @@ return toSettings();case _ToAppearance():
 return toAppearance();case _HandleDeepLink():
 return handleDeepLink(_that.uri);case _Init():
 return init();case _PreviewAvatar():
-return previewAvatar();case _:
+return previewAvatar();case _CheckDeferredDeepLink():
+return checkDeferredDeepLink();case _HandleDeferredDeepLink():
+return handleDeferredDeepLink(_that.data);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -195,7 +205,7 @@ return previewAvatar();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( HomeTab tab,  String? targetProjectBusinessId,  bool closeDrawer)?  tabChanged,TResult? Function()?  logout,TResult? Function()?  confirmLogout,TResult? Function()?  toSettings,TResult? Function()?  toAppearance,TResult? Function( Uri uri)?  handleDeepLink,TResult? Function()?  init,TResult? Function()?  previewAvatar,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( HomeTab tab,  String? targetProjectBusinessId,  bool closeDrawer)?  tabChanged,TResult? Function()?  logout,TResult? Function()?  confirmLogout,TResult? Function()?  toSettings,TResult? Function()?  toAppearance,TResult? Function( Uri uri)?  handleDeepLink,TResult? Function()?  init,TResult? Function()?  previewAvatar,TResult? Function()?  checkDeferredDeepLink,TResult? Function( InstallReferrerData data)?  handleDeferredDeepLink,}) {final _that = this;
 switch (_that) {
 case _TabChanged() when tabChanged != null:
 return tabChanged(_that.tab,_that.targetProjectBusinessId,_that.closeDrawer);case _Logout() when logout != null:
@@ -205,7 +215,9 @@ return toSettings();case _ToAppearance() when toAppearance != null:
 return toAppearance();case _HandleDeepLink() when handleDeepLink != null:
 return handleDeepLink(_that.uri);case _Init() when init != null:
 return init();case _PreviewAvatar() when previewAvatar != null:
-return previewAvatar();case _:
+return previewAvatar();case _CheckDeferredDeepLink() when checkDeferredDeepLink != null:
+return checkDeferredDeepLink();case _HandleDeferredDeepLink() when handleDeferredDeepLink != null:
+return handleDeferredDeepLink(_that.data);case _:
   return null;
 
 }
@@ -540,5 +552,103 @@ String toString() {
 
 
 
+
+/// @nodoc
+
+
+class _CheckDeferredDeepLink extends HomeIntent {
+  const _CheckDeferredDeepLink(): super._();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CheckDeferredDeepLink);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'HomeIntent.checkDeferredDeepLink()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _HandleDeferredDeepLink extends HomeIntent {
+  const _HandleDeferredDeepLink(this.data): super._();
+  
+
+ final  InstallReferrerData data;
+
+/// Create a copy of HomeIntent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$HandleDeferredDeepLinkCopyWith<_HandleDeferredDeepLink> get copyWith => __$HandleDeferredDeepLinkCopyWithImpl<_HandleDeferredDeepLink>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HandleDeferredDeepLink&&(identical(other.data, data) || other.data == data));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,data);
+
+@override
+String toString() {
+  return 'HomeIntent.handleDeferredDeepLink(data: $data)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$HandleDeferredDeepLinkCopyWith<$Res> implements $HomeIntentCopyWith<$Res> {
+  factory _$HandleDeferredDeepLinkCopyWith(_HandleDeferredDeepLink value, $Res Function(_HandleDeferredDeepLink) _then) = __$HandleDeferredDeepLinkCopyWithImpl;
+@useResult
+$Res call({
+ InstallReferrerData data
+});
+
+
+
+
+}
+/// @nodoc
+class __$HandleDeferredDeepLinkCopyWithImpl<$Res>
+    implements _$HandleDeferredDeepLinkCopyWith<$Res> {
+  __$HandleDeferredDeepLinkCopyWithImpl(this._self, this._then);
+
+  final _HandleDeferredDeepLink _self;
+  final $Res Function(_HandleDeferredDeepLink) _then;
+
+/// Create a copy of HomeIntent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? data = null,}) {
+  return _then(_HandleDeferredDeepLink(
+null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as InstallReferrerData,
+  ));
+}
+
+
+}
 
 // dart format on

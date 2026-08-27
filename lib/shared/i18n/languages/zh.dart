@@ -393,4 +393,14 @@ final Map<String, String> zh = {
   I18nKeys.skillScore: '专业评分: %s 分',
   I18nKeys.tapToInspectDimension: '点击雷达顶点查看技能明细',
   I18nKeys.allSkillsCount: '共 %s 项专业技能',
+
+  // Deferred Deep Link & Referral Welcome
+  I18nKeys.referralWelcomeTitle: '🎉 欢迎使用 lPortfolio',
+  I18nKeys.referralWelcomeMessage: '感谢您安装并体验本应用！检测到您来自专属推荐链接。',
+  I18nKeys.referralSourceLabel: '推荐来源 / 渠道',
+  I18nKeys.referralTargetRouteLabel: '直达目标',
+  I18nKeys.referralGetStarted: '开启探索',
+  I18nKeys.simulateDeferredDeepLink: '模拟 Deferred Deep Link (延迟深度链接)',
+  I18nKeys.simulateDeferredDeepLinkSubtitle: '模拟用户通过包含 refer 参数的推广链接首次安装打开',
+  I18nKeys.referralSimulationTriggered: '已成功触发延迟深度链接模拟！',
 };

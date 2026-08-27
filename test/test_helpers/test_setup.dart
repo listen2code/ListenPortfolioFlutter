@@ -52,6 +52,24 @@ Future<void> setupTestEnvironment() async {
     (MethodCall call) async => ['wifi'],
   );
 
+  // Mock the package_info_plus platform channel
+  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+    const MethodChannel('dev.fluttercommunity.plus/package_info'),
+    (MethodCall call) async {
+      if (call.method == 'getAll') {
+        return {
+          'appName': 'lPortfolio',
+          'packageName': 'com.listen.portfolio.listen_portfolio_flutter',
+          'version': '1.0.0',
+          'buildNumber': '1',
+          'buildSignature': '',
+          'installerStore': null,
+        };
+      }
+      return null;
+    },
+  );
+
   HttpOverrides.global = TestHttpOverrides();
 
   try {

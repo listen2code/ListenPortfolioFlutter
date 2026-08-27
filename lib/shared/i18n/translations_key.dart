@@ -450,4 +450,16 @@ class I18nKeys {
   static const String skillScore = 'Score: %s';
   static const String tapToInspectDimension = 'Tap vertex to view details';
   static const String allSkillsCount = '%s Technical Skills';
+
+  // Deferred Deep Link & Referral Welcome
+  static const String referralWelcomeTitle = '🎉 Welcome to lPortfolio';
+  static const String referralWelcomeMessage =
+      'Thank you for installing and trying out the app! We detected that you came from a referral link.';
+  static const String referralSourceLabel = 'Referral Source';
+  static const String referralTargetRouteLabel = 'Destination';
+  static const String referralGetStarted = 'Get Started';
+  static const String simulateDeferredDeepLink = 'Simulate Deferred Deep Link';
+  static const String simulateDeferredDeepLinkSubtitle =
+      'Simulate first-launch from Google Play referral link';
+  static const String referralSimulationTriggered = 'Deferred deep link simulation triggered!';
 }

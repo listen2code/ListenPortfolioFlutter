@@ -78,6 +78,7 @@ class AppInitializer {
           const ColorPickerProviderImpl(),
           const PrintPdfProviderImpl(),
           const ViewLogProviderImpl(),
+          const ReferralWelcomeProviderImpl(),
         ],
         // Link Core Network to Shared Auth Logic with injected container
         apiDelegate: _ApiAuthHandlerImpl(container),

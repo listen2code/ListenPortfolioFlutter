@@ -148,6 +148,12 @@ class SettingsPage extends ConsumerWidget {
                       subtitle: I18nKeys.simulateTokenExpiredSubtitle.tr,
                       onTap: () => viewModel.handleIntent(const SettingsIntent.simulateTokenExpired()),
                     ),
+                    CommonSettingsTile(
+                      icon: Icons.link_rounded,
+                      title: I18nKeys.simulateDeferredDeepLink.tr,
+                      subtitle: I18nKeys.simulateDeferredDeepLinkSubtitle.tr,
+                      onTap: () => viewModel.handleIntent(const SettingsIntent.simulateDeferredDeepLink()),
+                    ),
                   ],
                 ],
               ),

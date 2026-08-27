@@ -69,6 +69,7 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
       toWebViewTest: () => emitEffect(NavigationEffect<void>(target: Routes.webViewTest)),
       toFaultInjection: () => emitEffect(NavigationEffect<void>(target: Routes.faultInjection)),
       simulateTokenExpired: _onSimulateTokenExpired,
+      simulateDeferredDeepLink: _onSimulateDeferredDeepLink,
       confirmOpenSettings: () => emitEffect(OpenAppSettingsEffect()),
       confirmDownloadUpdate: (url) => emitEffect(LaunchUrlEffect(url)),
     );
@@ -352,5 +353,18 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
   Future<void> _onSimulateTokenExpired() async {
     await SecureStorageUtil.put(AppConstants.authTokenKey, 'invalid_expired_token_for_testing');
     emitEffect(MessageEffect.info(I18nKeys.tokenInvalidatedMessage.tr));
+  }
+
+  Future<void> _onSimulateDeferredDeepLink() async {
+    final service = ref.read(installReferrerServiceProvider);
+    final simulated = await service.simulateReferrer('refer=GooglePlayBeta&target=aboutMe');
+    emitEffect(
+      ReferralWelcomeEffect(
+        data: simulated,
+        onConfirm: () {
+          emitEffect(MessageEffect.info(I18nKeys.referralSimulationTriggered.tr));
+        },
+      ),
+    );
   }
 }

@@ -30,6 +30,7 @@ class SettingsIntent extends BaseIntent with _$SettingsIntent {
   const factory SettingsIntent.toWebViewTest() = _ToWebViewTest;
   const factory SettingsIntent.toFaultInjection() = _ToFaultInjection;
   const factory SettingsIntent.simulateTokenExpired() = _SimulateTokenExpired;
+  const factory SettingsIntent.simulateDeferredDeepLink() = _SimulateDeferredDeepLink;
   const factory SettingsIntent.confirmOpenSettings() = _ConfirmOpenSettings;
   const factory SettingsIntent.confirmDownloadUpdate(String url) = _ConfirmDownloadUpdate;
 
@@ -151,6 +152,11 @@ class SettingsIntent extends BaseIntent with _$SettingsIntent {
       'SettingsIntent',
       'simulateTokenExpired',
       (args) => const SettingsIntent.simulateTokenExpired(),
+    );
+    MviPlaybackRegistry.register(
+      'SettingsIntent',
+      'simulateDeferredDeepLink',
+      (args) => const SettingsIntent.simulateDeferredDeepLink(),
     );
     MviPlaybackRegistry.register(
       'SettingsIntent',

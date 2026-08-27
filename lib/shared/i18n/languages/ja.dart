@@ -395,4 +395,14 @@ final Map<String, String> ja = {
   I18nKeys.skillScore: '専門スコア: %s 点',
   I18nKeys.tapToInspectDimension: '頂点をタップして詳細を表示',
   I18nKeys.allSkillsCount: '全 %s 項目',
+
+  // Deferred Deep Link & Referral Welcome
+  I18nKeys.referralWelcomeTitle: '🎉 lPortfolio へようこそ',
+  I18nKeys.referralWelcomeMessage: 'インストールありがとうございます！紹介リンクからのアクセスを検出しました。',
+  I18nKeys.referralSourceLabel: '紹介元 / 経由チャネル',
+  I18nKeys.referralTargetRouteLabel: 'ダイレクト先',
+  I18nKeys.referralGetStarted: '探索を始める',
+  I18nKeys.simulateDeferredDeepLink: 'Deferred Deep Link 模擬テスト',
+  I18nKeys.simulateDeferredDeepLinkSubtitle: '紹介パラメータ付きGoogle Playリンクからの初回起動を模擬',
+  I18nKeys.referralSimulationTriggered: 'Deferred Deep Linkのシミュレーションを開始しました！',
 };

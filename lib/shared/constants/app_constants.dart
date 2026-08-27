@@ -83,4 +83,9 @@ class AppConstants {
   static const String deepLinkHostHome = 'home';
   static const String deepLinkParamTab = 'tab';
   static const String languageChangedEventKey = 'language_changed_event';
+
+  // Deferred Deep Link / Install Referrer Constants
+  static const String methodChannelInstallReferrer = 'com.listen.portfolio/install_referrer';
+  static const String hasCheckedInstallReferrerKey = 'has_checked_install_referrer';
+  static const String savedInstallReferrerKey = 'saved_install_referrer';
 }

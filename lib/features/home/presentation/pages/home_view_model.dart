@@ -22,6 +22,7 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
     super.onReady();
     handleIntent(const HomeIntent.init());
     _checkShorebirdPatchUpdate();
+    _checkDeferredDeepLink();
 
     // Subscribe to unified deep link event via core EventBus
     subscribeEvent<CommonEvent<Uri>>(
@@ -45,6 +46,46 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
     });
   }
 
+  void _checkDeferredDeepLink() {
+    Future<void>.microtask(() async {
+      handleIntent(const HomeIntent.checkDeferredDeepLink());
+    });
+  }
+
+  Future<void> _onCheckDeferredDeepLink() async {
+    final service = ref.read(installReferrerServiceProvider);
+    final hasProcessed = await service.hasProcessedReferrer();
+    if (hasProcessed) return;
+
+    // Mark as processed immediately so subsequent launches won't query again
+    await service.markReferrerProcessed();
+
+    final data = await service.fetchInstallReferrer();
+    if (data.hasReferral) {
+      await service.saveReferrerData(data);
+      _onHandleDeferredDeepLink(data);
+    }
+  }
+
+  void _onHandleDeferredDeepLink(InstallReferrerData data) {
+    emitEffect(
+      ReferralWelcomeEffect(
+        data: data,
+        onConfirm: () {
+          if (data.targetRoute != null && data.targetRoute!.isNotEmpty) {
+            final target = data.targetRoute!.trim();
+            final targetTab = HomeTab.values.firstWhereOrNull((t) => t.name == target);
+            if (targetTab != null) {
+              _onTabChanged(targetTab, null, false);
+            } else {
+              emitEffect(NavigationEffect<void>(target: target));
+            }
+          }
+        },
+      ),
+    );
+  }
+
   @override
   bool checkNeedLogin(HomeIntent intent) {
     return intent.maybeWhen(tabChanged: (tab, _, _) => tab == HomeTab.aboutMe, orElse: () => false);
@@ -61,6 +102,8 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
       toAppearance: () => emitEffect(NavigationEffect<void>(target: Routes.appearance)),
       handleDeepLink: _onHandleDeepLink,
       previewAvatar: _onPreviewAvatar,
+      checkDeferredDeepLink: _onCheckDeferredDeepLink,
+      handleDeferredDeepLink: _onHandleDeferredDeepLink,
     );
   }
 
