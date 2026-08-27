@@ -499,6 +499,7 @@ jobs:
           releaseFiles: apkOutput/lPortfolio-${{ env.ENVIRONMENT }}-release.aab
           tracks: internal
           status: completed
+          changesNotSentForReview: true
 
       - name: Send Version Update Push Notification
         if: steps.check_version.outputs.should_deploy == 'true'
@@ -538,47 +539,12 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Check if Version Already Uploaded
-        id: check_version
-        env:
-          PLAY_SERVICE_ACCOUNT_KEY: ${{ secrets.PLAY_SERVICE_ACCOUNT_KEY }}
+      - name: Build Flutter Web
         run: |
-          # Get latest version code from Google Play
-          LATEST_VERSION_CODE=$(node tools/get_play_version.js)
-          echo "Latest version code on Google Play: $LATEST_VERSION_CODE"
-          NEXT_VERSION_CODE=$(( LATEST_VERSION_CODE + 1 ))
-          echo "Next Version Code required by Google Play: $NEXT_VERSION_CODE"
-          
-          # Get version name from pubspec.yaml
-          VNAME=$(grep '^version: ' pubspec.yaml | cut -d ' ' -f 2 | cut -d '+' -f 1)
-          echo "Version name in pubspec.yaml: $VNAME"
-          
-          # Calculate project version code (major*10000 + minor*100 + patch)
-          IFS='.' read -r -a parts <<< "$VNAME"
-          major=${parts[0]:-0}
-          minor=${parts[1]:-0}
-          patch=$(echo "${parts[2]:-0}" | tr -cd '0-9')
-          PROJECT_VERSION_CODE=$(( major * 10000 + minor * 100 + patch ))
-          echo "Calculated Project Version Code: $PROJECT_VERSION_CODE"
-          
-          if [ $PROJECT_VERSION_CODE -lt $NEXT_VERSION_CODE ]; then
-            echo "Current version code $PROJECT_VERSION_CODE has already been used on Google Play (latest is $LATEST_VERSION_CODE)."
-            echo "Skipping deployment..."
-            echo "should_deploy=false" >> $GITHUB_OUTPUT
-          else
-            echo "Current version code $PROJECT_VERSION_CODE is valid."
-            echo "should_deploy=true" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Build Flutter Web Release via script
-        if: steps.check_version.outputs.should_deploy == 'true'
-        run: |
-          sed -i 's/\r$//' buildModule.sh
-          chmod +x buildModule.sh
-          ./buildModule.sh web prod
+          echo "Building Flutter Web for environment: ${{ env.ENVIRONMENT }}"
+          flutter build web --release --dart-define=ENVIRONMENT=${{ env.ENVIRONMENT }}
 
       - name: Configure SSH Private Key for AWS
-        if: steps.check_version.outputs.should_deploy == 'true'
         env:
           SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
         run: |
@@ -592,13 +558,24 @@ jobs:
           fi
 
       - name: Deploy Flutter Web to AWS EC2
-        if: steps.check_version.outputs.should_deploy == 'true'
         env:
           AWS_HOST: ${{ secrets.AWS_HOST }}
         run: |
           if [ -f ~/.ssh/id_rsa ] && [ -n "$AWS_HOST" ]; then
-            echo "Checking disk space and preparing Remote Web Directory on EC2..."
-            ssh -i ~/.ssh/id_rsa ec2-user@$AWS_HOST "df -h / && sudo mkdir -p /var/www/listen_portfolio_web && sudo chown -R ec2-user:ec2-user /var/www/listen_portfolio_web && sudo rm -rf /var/www/listen_portfolio_web/*"
+            echo "Preparing and cleaning Remote Web Directory on EC2..."
+            ssh -i ~/.ssh/id_rsa ec2-user@$AWS_HOST "
+              echo '=== Disk Space Before ==='
+              df -h /
+              # Free up system journal and package cache if disk is full
+              sudo journalctl --vacuum-size=50M 2>/dev/null || true
+              sudo yum clean all 2>/dev/null || true
+              sudo docker system prune -af 2>/dev/null || true
+              sudo mkdir -p /var/www/listen_portfolio_web
+              sudo chown -R ec2-user:ec2-user /var/www/listen_portfolio_web
+              sudo rm -rf /var/www/listen_portfolio_web/*
+              echo '=== Disk Space After Cleanup ==='
+              df -h /
+            "
             echo "Uploading Flutter Web Build Artifacts to EC2 (tar streaming)..."
             tar -czf - -C build/web . | ssh -i ~/.ssh/id_rsa ec2-user@$AWS_HOST "tar -xzf - -C /var/www/listen_portfolio_web"
             echo "Setting read & execute permissions for Nginx..."

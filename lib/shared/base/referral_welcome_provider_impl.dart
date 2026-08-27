@@ -24,9 +24,11 @@ class ReferralWelcomeProviderImpl extends BaseProvider<ReferralWelcomeEffect> {
 
   @override
   void handleEffect(ReferralWelcomeEffect effect) {
+    appLogger.i('ReferralWelcomeProvider: Handling ReferralWelcomeEffect -> displaySource: "${effect.data.displaySource}", targetRoute: "${effect.data.targetRoute}"');
     onEffectReceived?.call(effect);
     final context = AppNavConfig.context;
     if (context != null) {
+      appLogger.d('ReferralWelcomeProvider: Showing ReferralWelcomeDialog on current context.');
       showDialog<void>(
         context: context,
         barrierDismissible: true,
@@ -35,6 +37,8 @@ class ReferralWelcomeProviderImpl extends BaseProvider<ReferralWelcomeEffect> {
           onConfirm: effect.onConfirm,
         ),
       );
+    } else {
+      appLogger.w('ReferralWelcomeProvider: AppNavConfig.context is null, cannot present ReferralWelcomeDialog.');
     }
   }
 }

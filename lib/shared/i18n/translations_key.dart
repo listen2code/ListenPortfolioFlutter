@@ -457,6 +457,13 @@ class I18nKeys {
       'Thank you for installing and trying out the app! We detected that you came from a referral link.';
   static const String referralSourceLabel = 'Referral Source';
   static const String referralTargetRouteLabel = 'Destination';
+  static const String referralUtmSourceLabel = 'UTM Source';
+  static const String referralUtmMediumLabel = 'UTM Medium';
+  static const String referralUtmCampaignLabel = 'UTM Campaign';
+  static const String referralUtmContentLabel = 'UTM Content';
+  static const String referralUtmTermLabel = 'UTM Term';
+  static const String referralRawReferrerLabel = 'Raw Referrer Parameter';
+  static const String referralParamsDetailLabel = 'Parameter Details';
   static const String referralGetStarted = 'Get Started';
   static const String simulateDeferredDeepLink = 'Simulate Deferred Deep Link';
   static const String simulateDeferredDeepLinkSubtitle =
