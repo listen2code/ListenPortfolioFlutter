@@ -49,7 +49,7 @@ ListenPortfolioFlutter 是一个基于 Flutter 构建的个人技术作品集应
 - **Zone tracing**：Intent / 页面 / 请求链路支持 `traceId` 和阶段打点
 - **Crash Safe Mode**：快速连续崩溃防护、自动熔断自愈与本地 crash log 持久化
 - **日志浮窗与 APM 性能监控**：内置开发调试窗口（LogOverlay），支持实时帧率/Jank 监测、Net Inspector 抓包、按 `traceId` 过滤全链路日志
-- **零告警工程质量与全量测试套件**：**534 项** 单元与集成测试用例 100% 绿灯通过，内置 MVI Playback 反射自检，代码通过静态分析（`No issues found!`）与架构依赖边界检查（`dependency_rules.dart`）双重零违规验证
+- **零告警工程质量与全量测试套件**：**543 项** 单元与集成测试用例 100% 绿灯通过，内置 MVI Playback 反射自检，代码通过静态分析（`No issues found!`）与架构依赖边界检查（`dependency_rules.dart`）双重零违规验证
 
 ### 更能代表当前项目取向的能力
 
@@ -151,7 +151,7 @@ dart tools/dependency_rules.dart --graph
 - `docs/repository_caching_strategy.md`：BaseRepository 二级缓存与数据降级规范
 - `docs/project_philosophy.md`：项目选型与质量取向说明（为什么优先做观测与稳定性）
 - `docs/push_notification_specification.md`：推送通知设计与集成规格
-- `docs/fido2_implementation_design.md`：FIDO2 / Passkey 免密认证设计方案
+- `docs/fido2_implementation_design.md`：FIDO2 / Passkey 免密认证设计方案（设计方案，尚未实现）
 - `docs/intent_effect_playback_spec.md`：Intent & Effect 录制与回放设计方案
 - `docs/shorebird_code_push_guide.md`：Shorebird OTA Code Push 热更新集成与使用指南
 - `docs/todo.md`：后续执行路线图

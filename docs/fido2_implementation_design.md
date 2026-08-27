@@ -1,5 +1,9 @@
 # FIDO2 / Passkey 免密认证系统 - 详细设计与实现方案 (Java Spring Boot)
 
+> [!IMPORTANT]
+> **Status: 设计方案 (Design Only) — 尚未实现**
+> 本文档为架构设计方案文档，客户端 FIDO2 功能**尚未落地**。当前 `pubspec.yaml` 中未包含 `passkeys` 依赖，`lib/features/auth/domain/passkey_service.dart` 文件不存在。后端 Spring Boot 服务的 WebAuthn 集成亦未启动。
+
 本文档详细阐述了在 **ListenPortfolio** 项目中引入 **FIDO2 / Passkey（通行密钥）** 实现金融级安全免密登录的完整设计方案。本方案涵盖了前端 Flutter 客户端与后端 Java (Spring Boot) 服务的联动交互流程、数据库结构设计、接口规范及安全性分析。
 
 ---

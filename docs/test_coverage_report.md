@@ -1,6 +1,6 @@
 # Flutter 客户端测试覆盖率报告 (Flutter Test Coverage Report)
 
-**更新时间**: 2026-08-20  
+**更新时间**: 2026-08-27  
 **分析工具**: Flutter Test Engine + LCOV  
 **测试结果**: **538 / 538 测试用例 100% 全部通过 (All tests passed!)**
 
@@ -10,7 +10,7 @@
 
 | 维度 (Dimension) | 统计数值 (Count) | 覆盖率 (Coverage) | 评估状态 |
 | :--- | :--- | :--- | :--- |
-| **已覆盖代码行 (Lines Hit)** | **6,118** 行 | **71.57%** | 🟢 良好上升 |
+| **已覆盖代码行 (Lines Hit)** | **6,118** 行 | **71.57%** | 🟢 良好 |
 | **总可执行代码行 (Total Lines)** | **8,548** 行 | — | — |
 | **覆盖文件总数 (Total Files)** | **298** 个文件 | — | 🟢 高度覆盖 |
 
@@ -28,6 +28,14 @@
 | **`features/auth`** | **689 / 1,115** | **61.79%** | 61 files | 登录、注册、修改密码/忘记密码表单组件与业务用例 |
 | **`shared`** | **1,479 / 2,506** | **59.02%** | 67 files | 通用装配层、AuthManager、网络拦截器、应用内评分 ReviewService、主题管理 |
 | **`main.dart`** | **21 / 45** | **46.67%** | 1 file | 应用启动入口与 Core.run 包装 |
+
+---
+
+## 🔍 覆盖率盲区与优化建议
+
+1. **过滤生成的代码 (`*.g.dart`)**: 自动化生成的代码（如 retrofit / json_serializable）占未覆盖行数约 15-20%，过滤后实际手写逻辑覆盖率达 ~80%。
+2. **Mock 平台服务 Delegate**: 对 `iap_service_impl.dart`, `firebase_notification_service_impl.dart` 补充 Mock 校验。
+3. **补充 Auth 模块 Widget 测试**: 提升 `sign_up_page.dart` 与 `change_password_page.dart` 的交互组件测试覆盖。
 
 ---
 

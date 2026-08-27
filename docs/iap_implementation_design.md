@@ -2,7 +2,7 @@
 
 > **功能概述**：在 Settings 页面提供"请喝咖啡"入口，用户点击后弹出 BottomSheet，展示 3 个档位的消耗型商品（coffee1 / coffee2 / coffee3），通过 Google Play / App Store 完成真实支付。
 >
-> **版本**：v1.0.18 &nbsp;|&nbsp; **依赖**：`in_app_purchase` + `in_app_purchase_android`
+> **版本**：v1.0.18 &nbsp;|&nbsp; **依赖**：`in_app_purchase`
 
 ---
 

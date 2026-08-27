@@ -10,7 +10,7 @@
 > **完全适合，甚至非常推荐！** 原因如下：
 >
 > 1. **很多库是纯 Dart / Flutter 实现的，不需要编写任何原生代码**：
->    像 `uuid`、`fpdart`（函数式编程接口）以及自定义日志输出等，它们 100% 运行在 Dart VM 虚拟机层。只要用纯 Dart 编写一次，就能在 Android 和 iOS 上完美运行，不需要你懂任何 iOS 原生开发。
+>    像 `uuid`、`fpdart`（函数式编程接口，已完成自主替换）以及自定义日志输出等，它们 100% 运行在 Dart VM 虚拟机层。只要用纯 Dart 编写一次，就能在 Android 和 iOS 上完美运行，不需要你懂任何 iOS 原生开发。
 > 2. **对于需要原生代码的库，这是学习 Platform Channel 的极佳机会**：
 >    - 很多平台库（如 `device_info_plus` 或 `package_info_plus`）其实只用了极其简单的几行原生代码（例如获取 Android 的 `Build.MODEL` 或 iOS 的 `UIDevice`）。
 >    - iOS 端对应的 Swift / Objective-C 代码通常非常简短（只有十几行固定写法），你完全可以通过 AI 辅助生成 iOS 端代码，而自己专注于编写熟练的 Android (Kotlin) 代码。
@@ -27,7 +27,7 @@
 | 依赖名称 | 原依赖主要功能 | 自定义实现核心思路 | 学习收获与技术价值 | 难度等级 |
 | :--- | :--- | :--- | :--- | :--- |
 | **`uuid`** | 生成 v4 的 UUID 字符串 | 使用 Dart 自带的 `dart:math` 中的 `Random.secure()`，生成 128 位随机数，并按照 UUID v4 的规范格式化为 hex 字符串。 | - 随机数安全机制<br>- 位运算与进制转换 | ⭐ |
-| **`fpdart`** | 提供 `Either`, `Option` 等函数式编程范式 | 编写一个轻量级的泛型类 `Either<L, R>`，实现 `fold`, `map`, `flatMap` 接口。 | - Dart 泛型高级应用<br>- 代数数据类型 (ADT) 思想 | ⭐⭐ |
+| **`fpdart`** | 提供 `Either`, `Option` 等函数式编程范式 | ✅ **已完成替换**：项目已使用自定义 `Either<L, R>` 密封类实现，`fpdart` 已从 `pubspec.yaml` 中移除。 | - Dart 泛型高级应用<br>- 代数数据类型 (ADT) 思想 | ⭐⭐ |
 | **`logger`** | 控制台彩格式化日志输出 | 利用 Dart 的 `print()` 或 `dart:developer` 的 `log()`，配合 ANSI 颜色转义字符（如 `\x1B[31m`）实现彩色输出，定制调用栈解析。 | - 字符串解析与格式化<br>- 控制台渲染原理 | ⭐⭐ |
 
 ---
