@@ -1,10 +1,10 @@
 {
-  "version": "1.1.52",
+  "version": "1.1.53",
   "buildNumber": 1,
   "url": "https://play.google.com/store/apps/details?id=com.listen.portfolio.listen_portfolio_flutter",
   "changelog": {
     "zh": "",
-    "en": "Deferred Deep Link",
+    "en": "Daily Build",
     "ja": ""
   }
 }
