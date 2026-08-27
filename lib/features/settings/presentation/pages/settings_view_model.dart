@@ -357,6 +357,7 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
 
   Future<void> _onSimulateDeferredDeepLink() async {
     final service = ref.read(installReferrerServiceProvider);
+    appLogger.i('[${IInstallReferrerService.tag}] SettingsViewModel: Simulating deferred deep link triggered from Developer Options');
     final simulated = await service.simulateReferrer('refer=GooglePlayBeta&target=aboutMe');
     emitEffect(
       ReferralWelcomeEffect(

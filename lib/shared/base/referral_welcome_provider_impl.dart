@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:listen_core/core.dart';
 
 import '../services/referrer/install_referrer_data.dart';
+import '../services/referrer/install_referrer_service.dart';
 import '../widgets/dialogs/referral_welcome_dialog.dart';
 
 /// Side effect for displaying the first-launch deferred deep link welcome dialog.
@@ -24,11 +25,11 @@ class ReferralWelcomeProviderImpl extends BaseProvider<ReferralWelcomeEffect> {
 
   @override
   void handleEffect(ReferralWelcomeEffect effect) {
-    appLogger.i('ReferralWelcomeProvider: Handling ReferralWelcomeEffect -> displaySource: "${effect.data.displaySource}", targetRoute: "${effect.data.targetRoute}"');
+    appLogger.i('[${IInstallReferrerService.tag}] Handling ReferralWelcomeEffect -> displaySource: "${effect.data.displaySource}", targetRoute: "${effect.data.targetRoute}"');
     onEffectReceived?.call(effect);
     final context = AppNavConfig.context;
     if (context != null) {
-      appLogger.d('ReferralWelcomeProvider: Showing ReferralWelcomeDialog on current context.');
+      appLogger.d('[${IInstallReferrerService.tag}] Showing ReferralWelcomeDialog on current context.');
       showDialog<void>(
         context: context,
         barrierDismissible: true,
@@ -38,7 +39,7 @@ class ReferralWelcomeProviderImpl extends BaseProvider<ReferralWelcomeEffect> {
         ),
       );
     } else {
-      appLogger.w('ReferralWelcomeProvider: AppNavConfig.context is null, cannot present ReferralWelcomeDialog.');
+      appLogger.w('[${IInstallReferrerService.tag}] AppNavConfig.context is null, cannot present ReferralWelcomeDialog.');
     }
   }
 }
