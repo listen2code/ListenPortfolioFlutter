@@ -597,10 +597,10 @@ jobs:
           AWS_HOST: ${{ secrets.AWS_HOST }}
         run: |
           if [ -f ~/.ssh/id_rsa ] && [ -n "$AWS_HOST" ]; then
-            echo "Preparing Remote Web Directory on EC2..."
-            ssh -i ~/.ssh/id_rsa ec2-user@$AWS_HOST "sudo mkdir -p /var/www/listen_portfolio_web && sudo chown -R ec2-user:ec2-user /var/www/listen_portfolio_web"
-            echo "Uploading Flutter Web Build Artifacts to EC2..."
-            scp -i ~/.ssh/id_rsa -r build/web/* ec2-user@$AWS_HOST:/var/www/listen_portfolio_web/
+            echo "Checking disk space and preparing Remote Web Directory on EC2..."
+            ssh -i ~/.ssh/id_rsa ec2-user@$AWS_HOST "df -h / && sudo mkdir -p /var/www/listen_portfolio_web && sudo chown -R ec2-user:ec2-user /var/www/listen_portfolio_web && sudo rm -rf /var/www/listen_portfolio_web/*"
+            echo "Uploading Flutter Web Build Artifacts to EC2 (tar streaming)..."
+            tar -czf - -C build/web . | ssh -i ~/.ssh/id_rsa ec2-user@$AWS_HOST "tar -xzf - -C /var/www/listen_portfolio_web"
             echo "Setting read & execute permissions for Nginx..."
             ssh -i ~/.ssh/id_rsa ec2-user@$AWS_HOST "sudo chmod -R 755 /var/www/listen_portfolio_web"
             echo "Successfully deployed Flutter Web to AWS EC2!"
