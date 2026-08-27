@@ -499,7 +499,6 @@ jobs:
           releaseFiles: apkOutput/lPortfolio-${{ env.ENVIRONMENT }}-release.aab
           tracks: internal
           status: completed
-          changesNotSentForReview: true
 
       - name: Send Version Update Push Notification
         if: steps.check_version.outputs.should_deploy == 'true'
