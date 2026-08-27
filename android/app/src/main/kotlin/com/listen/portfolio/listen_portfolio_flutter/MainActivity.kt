@@ -13,7 +13,7 @@ import com.android.installreferrer.api.ReferrerDetails
 
 class MainActivity : FlutterActivity() {
     private val CHANNEL = "com.listen.portfolio/install_referrer"
-    private val TAG = "InstallReferrer"
+    private val TAG = "Deferred Deep Link"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // 1. Call installSplashScreen() before super.onCreate
