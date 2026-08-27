@@ -53,26 +53,29 @@ class InstallReferrerData {
   static const empty = InstallReferrerData(rawReferrer: '');
 
   /// Checks if valid referral information is present.
-  bool get hasReferral =>
-      (refer != null && refer!.trim().isNotEmpty) ||
-      (utmSource != null && utmSource!.trim().isNotEmpty) ||
-      (utmCampaign != null && utmCampaign!.trim().isNotEmpty);
+  /// Strictly requires a valid, non-empty `refer` parameter (e.g. from test.html or referral links).
+  bool get hasReferral => refer != null && refer!.trim().isNotEmpty;
 
   /// Returns a user-friendly display string for the referral source.
-  String get displaySource {
-    if (refer != null && refer!.trim().isNotEmpty) {
-      return refer!.trim();
+  String get displaySource => (refer != null && refer!.trim().isNotEmpty) ? refer!.trim() : '';
+
+  /// Sanitizes raw query parameter values, discarding Google Play default placeholders.
+  static String? _sanitizeValue(String? val) {
+    if (val == null) return null;
+    final trimmed = val.trim();
+    if (trimmed.isEmpty) return null;
+
+    final lower = trimmed.toLowerCase();
+    if (lower == '(not set)' ||
+        lower == 'not set' ||
+        lower == '(not%20set)' ||
+        lower == 'not%20set' ||
+        lower == 'null' ||
+        lower == '(null)' ||
+        lower == 'undefined') {
+      return null;
     }
-    if (utmSource != null && utmSource!.trim().isNotEmpty) {
-      if (utmCampaign != null && utmCampaign!.trim().isNotEmpty) {
-        return '${utmSource!.trim()} (${utmCampaign!.trim()})';
-      }
-      return utmSource!.trim();
-    }
-    if (rawReferrer.trim().isNotEmpty) {
-      return rawReferrer.trim();
-    }
-    return '';
+    return trimmed;
   }
 
   /// Parses a raw install referrer string into structured [InstallReferrerData].
@@ -98,17 +101,18 @@ class InstallReferrerData {
     final params = _parseQueryString(decoded);
 
     // If query parameters weren't key-value formatted (e.g. just a raw code "Listen2026"), treat the raw string as refer
-    String? refer = params['refer'] ?? params['referrer'] ?? params['ref'] ?? params['source'];
-    if (refer == null && !raw.contains('=') && raw.trim().isNotEmpty) {
-      refer = raw.trim();
+    String? rawRefer = params['refer'] ?? params['referrer'] ?? params['ref'] ?? params['source'];
+    if (rawRefer == null && !raw.contains('=') && raw.trim().isNotEmpty) {
+      rawRefer = raw.trim();
     }
 
-    final utmSource = params['utm_source'];
-    final utmMedium = params['utm_medium'];
-    final utmCampaign = params['utm_campaign'];
-    final utmContent = params['utm_content'];
-    final utmTerm = params['utm_term'];
-    final targetRoute = params['target'] ?? params['route'] ?? params['tab'];
+    final refer = _sanitizeValue(rawRefer);
+    final utmSource = _sanitizeValue(params['utm_source']);
+    final utmMedium = _sanitizeValue(params['utm_medium']);
+    final utmCampaign = _sanitizeValue(params['utm_campaign']);
+    final utmContent = _sanitizeValue(params['utm_content']);
+    final utmTerm = _sanitizeValue(params['utm_term']);
+    final targetRoute = _sanitizeValue(params['target'] ?? params['route'] ?? params['tab']);
 
     return InstallReferrerData(
       rawReferrer: raw,

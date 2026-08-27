@@ -19,7 +19,7 @@ class ReferralWelcomeDialog extends StatefulWidget {
 }
 
 class _ReferralWelcomeDialogState extends State<ReferralWelcomeDialog> {
-  bool _doNotShowAgain = true;
+  bool _doNotShowAgain = false;
 
   @override
   Widget build(BuildContext context) {

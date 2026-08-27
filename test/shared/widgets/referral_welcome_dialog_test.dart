@@ -38,7 +38,6 @@ void main() {
       expect(find.text('ListenCommunity'), findsOneWidget);
       expect(find.text('projects'), findsOneWidget);
       expect(find.text('twitter'), findsOneWidget);
-      expect(find.text('spring2026'), findsOneWidget);
       expect(find.byType(Checkbox), findsOneWidget);
       expect(find.byType(CommonButton), findsOneWidget);
 

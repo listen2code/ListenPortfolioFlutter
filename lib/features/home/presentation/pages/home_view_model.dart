@@ -56,44 +56,44 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
   /// Runs on startup and fetches the referrer payload if not permanently disabled via 'Do not show again'.
   Future<void> _onCheckDeferredDeepLink() async {
     final service = ref.read(installReferrerServiceProvider);
-    appLogger.i('HomeViewModel: [Deferred Deep Link] Checking if install referrer has already been processed...');
+    appLogger.i('[${IInstallReferrerService.tag}] Checking if install referrer has already been processed...');
     final hasProcessed = await service.hasProcessedReferrer();
     if (hasProcessed) {
-      appLogger.d('HomeViewModel: [Deferred Deep Link] Install referrer marked as processed (Do not show again = true). Skipping check.');
+      appLogger.d('[${IInstallReferrerService.tag}] Install referrer marked as processed (Do not show again = true). Skipping check.');
       return;
     }
 
     // 1. Fetch install referrer payload from Google Play
-    appLogger.i('HomeViewModel: [Deferred Deep Link] Fetching install referrer from platform...');
+    appLogger.i('[${IInstallReferrerService.tag}] Fetching install referrer from platform...');
     final data = await service.fetchInstallReferrer();
     if (data.hasReferral) {
-      appLogger.i('HomeViewModel: [Deferred Deep Link] Valid referral detected! refer="${data.refer}", target="${data.targetRoute}", source="${data.utmSource}". Saving data...');
+      appLogger.i('[${IInstallReferrerService.tag}] Valid referral detected! refer="${data.refer}", target="${data.targetRoute}", source="${data.utmSource}". Saving data...');
       await service.saveReferrerData(data);
       _onHandleDeferredDeepLink(data);
     } else {
-      appLogger.d('HomeViewModel: [Deferred Deep Link] No valid referral parameters found in install referrer (raw: "${data.rawReferrer}").');
+      appLogger.d('[${IInstallReferrerService.tag}] No valid referral parameters found in install referrer (raw: "${data.rawReferrer}").');
     }
   }
 
   /// Displays the referral welcome dialog and handles deferred deep link destination navigation when confirmed.
   void _onHandleDeferredDeepLink(InstallReferrerData data) {
     final service = ref.read(installReferrerServiceProvider);
-    appLogger.i('HomeViewModel: [Deferred Deep Link] Emitting ReferralWelcomeEffect -> displaySource: "${data.displaySource}", targetRoute: "${data.targetRoute}"');
+    appLogger.i('[${IInstallReferrerService.tag}] Emitting ReferralWelcomeEffect -> displaySource: "${data.displaySource}", targetRoute: "${data.targetRoute}"');
     emitEffect(
       ReferralWelcomeEffect(
         data: data,
         onConfirm: (bool doNotShowAgain) async {
           if (doNotShowAgain) {
-            appLogger.i('HomeViewModel: [Deferred Deep Link] User checked "Do not show again". Persisting processed mark in SP.');
+            appLogger.i('[${IInstallReferrerService.tag}] User checked "Do not show again". Persisting processed mark in SP.');
             await service.markReferrerProcessed();
           } else {
-            appLogger.i('HomeViewModel: [Deferred Deep Link] User unchecked "Do not show again". Resetting SP so referrer will be fetched again on next start.');
+            appLogger.i('[${IInstallReferrerService.tag}] User unchecked "Do not show again". Resetting SP so referrer will be fetched again on next start.');
             await service.resetReferrerProcessed();
           }
 
           if (data.targetRoute != null && data.targetRoute!.isNotEmpty) {
             final target = data.targetRoute!.trim();
-            appLogger.i('HomeViewModel: [Deferred Deep Link] User clicked Get Started. Navigating to target route: "$target"');
+            appLogger.i('[${IInstallReferrerService.tag}] User clicked Get Started. Navigating to target route: "$target"');
             final targetTab = HomeTab.values.firstWhereOrNull((t) => t.name == target);
             if (targetTab != null) {
               _onTabChanged(targetTab, null, false);
@@ -101,7 +101,7 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
               emitEffect(NavigationEffect<void>(target: target));
             }
           } else {
-            appLogger.d('HomeViewModel: [Deferred Deep Link] No specific targetRoute provided, remaining on initial Home overview tab.');
+            appLogger.d('[${IInstallReferrerService.tag}] No specific targetRoute provided, remaining on initial Home overview tab.');
           }
         },
       ),

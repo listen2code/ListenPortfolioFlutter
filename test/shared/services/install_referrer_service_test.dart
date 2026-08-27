@@ -35,21 +35,39 @@ void main() {
       expect(data.displaySource, 'JohnDoe');
     });
 
-    test('parses utm_source and utm_campaign without explicit refer', () {
+    test('parses utm_source and utm_campaign without explicit refer as hasReferral=false', () {
       const raw = 'utm_source=github&utm_campaign=open_source';
       final data = InstallReferrerData.fromRawReferrer(raw);
 
       expect(data.refer, isNull);
       expect(data.utmSource, 'github');
       expect(data.utmCampaign, 'open_source');
-      expect(data.hasReferral, isTrue);
-      expect(data.displaySource, 'github (open_source)');
+      expect(data.hasReferral, isFalse);
+      expect(data.displaySource, '');
     });
 
     test('handles empty or blank referrer gracefully', () {
       final data = InstallReferrerData.fromRawReferrer('');
       expect(data.hasReferral, isFalse);
       expect(data.displaySource, '');
+    });
+
+    test('ignores Google Play default (not set) and organic placeholders', () {
+      const raw = 'utm_source=(not%20set)&utm_medium=(not%20set)';
+      final data = InstallReferrerData.fromRawReferrer(raw);
+
+      expect(data.refer, isNull);
+      expect(data.utmSource, isNull);
+      expect(data.utmMedium, isNull);
+      expect(data.hasReferral, isFalse);
+      expect(data.displaySource, '');
+    });
+
+    test('ignores google-play organic installs as referrals', () {
+      const raw = 'utm_source=google-play&utm_medium=organic';
+      final data = InstallReferrerData.fromRawReferrer(raw);
+
+      expect(data.hasReferral, isFalse);
     });
 
     test('serializes and deserializes JSON cleanly', () {

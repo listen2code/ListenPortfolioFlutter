@@ -10,6 +10,9 @@ import 'install_referrer_data.dart';
 
 /// Abstract service interface for Google Play Install Referrer and Deferred Deep Linking.
 abstract class IInstallReferrerService {
+  /// Unified logging tag for all Deferred Deep Link / Install Referrer operations.
+  static const String tag = 'Deferred Deep Link';
+
   /// Fetches the install referrer from Google Play on Android.
   Future<InstallReferrerData> fetchInstallReferrer();
 
@@ -50,17 +53,17 @@ class InstallReferrerServiceImpl implements IInstallReferrerService {
   Future<InstallReferrerData> fetchInstallReferrer() async {
     // 1. Install Referrer API is Android specific; return empty for Web or iOS
     if (kIsWeb || !Platform.isAndroid) {
-      appLogger.d('InstallReferrerService: Skipped fetch - Platform is Web or non-Android');
+      appLogger.d('[${IInstallReferrerService.tag}] Skipped fetch - Platform is Web or non-Android');
       return InstallReferrerData.empty;
     }
 
     try {
       appLogger.i(
-        'InstallReferrerService: Invoking MethodChannel [${AppConstants.methodChannelInstallReferrer}] getInstallReferrer...',
+        '[${IInstallReferrerService.tag}] Invoking MethodChannel [${AppConstants.methodChannelInstallReferrer}] getInstallReferrer...',
       );
       final result = await _channel.invokeMethod<Map<dynamic, dynamic>>('getInstallReferrer');
       if (result == null) {
-        appLogger.w('InstallReferrerService: MethodChannel returned null result');
+        appLogger.w('[${IInstallReferrerService.tag}] MethodChannel returned null result');
         return InstallReferrerData.empty;
       }
 
@@ -70,9 +73,9 @@ class InstallReferrerServiceImpl implements IInstallReferrerService {
       final bool instant = (result['googlePlayInstant'] as bool?) ?? false;
 
       appLogger
-        ..i('InstallReferrerService: Native channel returned raw referrer: "$raw"')
+        ..i('[${IInstallReferrerService.tag}] Native channel returned raw referrer: "$raw"')
         ..d(
-          'InstallReferrerService: Metadata -> clickTimestamp: $clickTimestamp, installTimestamp: $installTimestamp, instant: $instant',
+          '[${IInstallReferrerService.tag}] Metadata -> clickTimestamp: $clickTimestamp, installTimestamp: $installTimestamp, instant: $instant',
         );
 
       final parsed = InstallReferrerData.fromRawReferrer(
@@ -83,15 +86,15 @@ class InstallReferrerServiceImpl implements IInstallReferrerService {
       );
 
       appLogger.i(
-        'InstallReferrerService: Successfully parsed referrer -> refer: "${parsed.refer}", targetRoute: "${parsed.targetRoute}", utmSource: "${parsed.utmSource}", utmCampaign: "${parsed.utmCampaign}", hasReferral: ${parsed.hasReferral}',
+        '[${IInstallReferrerService.tag}] Successfully parsed referrer -> refer: "${parsed.refer}", targetRoute: "${parsed.targetRoute}", utmSource: "${parsed.utmSource}", utmCampaign: "${parsed.utmCampaign}", hasReferral: ${parsed.hasReferral}',
       );
       return parsed;
     } on PlatformException catch (e) {
-      appLogger.w('InstallReferrerService: Platform exception fetching install referrer: ${e.message}');
+      appLogger.w('[${IInstallReferrerService.tag}] Platform exception fetching install referrer: ${e.message}');
       return InstallReferrerData.empty;
     } catch (e, stack) {
       appLogger.e(
-        'InstallReferrerService: Unexpected error fetching install referrer: $e',
+        '[${IInstallReferrerService.tag}] Unexpected error fetching install referrer: $e',
         error: e,
         stackTrace: stack,
       );
@@ -102,14 +105,14 @@ class InstallReferrerServiceImpl implements IInstallReferrerService {
   @override
   Future<bool> hasProcessedReferrer() async {
     final processed = (SpUtil.get(AppConstants.hasCheckedInstallReferrerKey) as bool?) ?? false;
-    appLogger.d('InstallReferrerService: hasProcessedReferrer check result -> $processed');
+    appLogger.d('[${IInstallReferrerService.tag}] hasProcessedReferrer check result -> $processed');
     return processed;
   }
 
   @override
   Future<void> markReferrerProcessed() async {
     appLogger.i(
-      'InstallReferrerService: Marking referrer as processed in SpUtil [${AppConstants.hasCheckedInstallReferrerKey} = true]',
+      '[${IInstallReferrerService.tag}] Marking referrer as processed in SpUtil [${AppConstants.hasCheckedInstallReferrerKey} = true]',
     );
     await SpUtil.put(AppConstants.hasCheckedInstallReferrerKey, true);
   }
@@ -117,7 +120,7 @@ class InstallReferrerServiceImpl implements IInstallReferrerService {
   @override
   Future<void> resetReferrerProcessed() async {
     appLogger.i(
-      'InstallReferrerService: Resetting processed state [removing ${AppConstants.hasCheckedInstallReferrerKey} from SpUtil]',
+      '[${IInstallReferrerService.tag}] Resetting processed state [removing ${AppConstants.hasCheckedInstallReferrerKey} from SpUtil]',
     );
     await SpUtil.remove(AppConstants.hasCheckedInstallReferrerKey);
   }
@@ -125,7 +128,7 @@ class InstallReferrerServiceImpl implements IInstallReferrerService {
   @override
   Future<void> saveReferrerData(InstallReferrerData data) async {
     appLogger.i(
-      'InstallReferrerService: Saving referral data to SpUtil [${AppConstants.savedInstallReferrerKey}]: ${data.toJsonString()}',
+      '[${IInstallReferrerService.tag}] Saving referral data to SpUtil [${AppConstants.savedInstallReferrerKey}]: ${data.toJsonString()}',
     );
     await SpUtil.put(AppConstants.savedInstallReferrerKey, data.toJsonString());
   }
@@ -134,14 +137,14 @@ class InstallReferrerServiceImpl implements IInstallReferrerService {
   Future<InstallReferrerData?> getSavedReferrerData() async {
     final jsonStr = (SpUtil.get(AppConstants.savedInstallReferrerKey) as String?) ?? '';
     if (jsonStr.isEmpty) return null;
-    appLogger.d('InstallReferrerService: Retrieved saved referral data: $jsonStr');
+    appLogger.d('[${IInstallReferrerService.tag}] Retrieved saved referral data: $jsonStr');
     return InstallReferrerData.fromJsonString(jsonStr);
   }
 
   @override
   Future<InstallReferrerData> simulateReferrer(String mockReferrer) async {
     appLogger.i(
-      'InstallReferrerService: [SIMULATION] Simulating install referrer with payload: "$mockReferrer"',
+      '[${IInstallReferrerService.tag}] [SIMULATION] Simulating install referrer with payload: "$mockReferrer"',
     );
     final data = InstallReferrerData.fromRawReferrer(
       mockReferrer,
@@ -149,7 +152,7 @@ class InstallReferrerServiceImpl implements IInstallReferrerService {
       installTimestampSeconds: DateTime.now().millisecondsSinceEpoch ~/ 1000,
     );
     appLogger.i(
-      'InstallReferrerService: [SIMULATION] Parsed simulation data -> refer: "${data.refer}", targetRoute: "${data.targetRoute}", hasReferral: ${data.hasReferral}',
+      '[${IInstallReferrerService.tag}] [SIMULATION] Parsed simulation data -> refer: "${data.refer}", targetRoute: "${data.targetRoute}", hasReferral: ${data.hasReferral}',
     );
     await saveReferrerData(data);
     return data;
