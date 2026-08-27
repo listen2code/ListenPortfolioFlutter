@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Play Deferred Deep Link 测试与验证平台</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --bg-gradient: linear-gradient(135deg, #0F172A 0%, #1E1B4B 100%);
+            --card-bg: rgba(30, 41, 59, 0.85);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --text-main: #F8FAFC;
+            --text-sub: #94A3B8;
+            --accent-green: #10B981;
+            --accent-cyan: #06B6D4;
+            --accent-amber: #F59E0B;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', 'Noto Sans SC', -apple-system, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .container {
+            max-width: 860px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(to right, #818CF8, #C084FC, #38BDF8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: var(--text-sub);
+            font-size: 15px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #E2E8F0;
+        }
+
+        .badge {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+        .badge-warning { background: rgba(245, 158, 11, 0.2); color: #FCD34D; border: 1px solid rgba(245, 158, 11, 0.3); }
+        .badge-success { background: rgba(16, 185, 129, 0.2); color: #6EE7B7; border: 1px solid rgba(16, 185, 129, 0.3); }
+
+        .notice-box {
+            background: rgba(79, 70, 229, 0.1);
+            border-left: 4px solid var(--primary);
+            padding: 14px 18px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 20px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #CBD5E1;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 640px) {
+            .form-grid { grid-template-columns: 1fr; }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-sub);
+        }
+
+        input, select {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            padding: 10px 14px;
+            color: var(--text-main);
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.25);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #FFFFFF;
+        }
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--text-main);
+        }
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .preset-btn {
+            padding: 6px 12px;
+            font-size: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 6px;
+            color: #CBD5E1;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: 0.15s;
+        }
+        .preset-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: #FFFFFF;
+        }
+
+        .code-box {
+            background: #090D16;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 13px;
+            color: #38BDF8;
+            word-break: break-all;
+            user-select: all;
+            margin-top: 8px;
+        }
+
+        .steps-list {
+            padding-left: 20px;
+            font-size: 14px;
+            line-height: 1.8;
+            color: #CBD5E1;
+        }
+
+        .steps-list li {
+            margin-bottom: 8px;
+        }
+
+        .highlight {
+            color: #38BDF8;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header class="header">
+        <h1>Google Play 延迟深度链接 (Deferred Deep Link) 测试台</h1>
+        <p>模拟外部推广链接跳转 Google Play 商店安装并验证首次启动来源解析</p>
+    </header>
+
+    <!-- 测试步骤与前置条件 -->
+    <div class="card">
+        <div class="card-title">
+            <span>📋 内测包验证前置准备</span>
+            <span class="badge badge-warning">测试必读</span>
+        </div>
+        <div class="notice-box">
+            <b>为什么需要内测邀请？</b> Google Play 的 Install Referrer API 在用户从真实 Store 页面点击“安装”时会记录并在应用首次启动时下发参数。对于内测包（内部测试/封闭测试），测试手机的 Google 账号必须先接受测试邀请，否则打开详情页会显示“找不到此内容”。
+        </div>
+        <ol class="steps-list">
+            <li><b>第一步：加入内测测试计划</b><br>
+                测试账号在手机浏览器或电脑上访问您的内测邀请链接（形如：<code style="color:#C084FC;">https://play.google.com/apps/testing/com.listen.portfolio.listen_portfolio_flutter</code>），点击<b>【成为测试人员 (Become a Tester)】</b>。
+            </li>
+            <li><b>第二步：确保测试手机卸载现有 App</b><br>
+                Install Referrer 只在<span class="highlight">新安装或全新首次启动</span>时下发。如果手机上已有调试版，请先完整<b>卸载</b>。
+            </li>
+            <li><b>第三步：点击下方生成的测试链接</b><br>
+                在手机浏览器中打开本测试页面，点击<b>【直接跳转 Google Play 商店】</b>或直接扫码进入。
+            </li>
+            <li><b>第四步：在 Google Play 页面点击安装并打开</b><br>
+                安装完成后直接打开应用，App 首次启动将自动弹出欢迎卡片并显示您配置的来源名称与直达模块！
+            </li>
+        </ol>
+    </div>
+
+    <!-- 动态链接生成器 -->
+    <div class="card">
+        <div class="card-title">
+            <span>⚙️ 推广链接动态生成器</span>
+            <span class="badge badge-success">实时生成</span>
+        </div>
+
+        <div style="margin-bottom: 12px;">
+            <span style="font-size: 13px; color: var(--text-sub);">快速预设：</span>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px;">
+                <button class="preset-btn" onclick="setPreset('ListenCommunity', 'projects', 'twitter', 'v1_release')">社区推荐 (直达 Projects)</button>
+                <button class="preset-btn" onclick="setPreset('GithubRepo', 'architecture', 'github', 'readme_link')">Github 开发者 (直达 架构图)</button>
+                <button class="preset-btn" onclick="setPreset('VIP_Partner', 'aboutMe', 'email', 'invitation')">VIP 邀请 (直达 关于我)</button>
+            </div>
+        </div>
+
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="packageName">应用包名 (Package Name)</label>
+                <input type="text" id="packageName" value="com.listen.portfolio.listen_portfolio_flutter" readonly>
+            </div>
+            <div class="form-group">
+                <label for="referSource">推荐人/推广来源 (refer)</label>
+                <input type="text" id="referSource" value="ListenCommunity" placeholder="如: ListenCommunity, JohnDoe">
+            </div>
+            <div class="form-group">
+                <label for="targetRoute">目标页面/模块 (target)</label>
+                <select id="targetRoute">
+                    <option value="projects">Projects (项目集 Tab)</option>
+                    <option value="overview">Overview (总览 Tab)</option>
+                    <option value="architecture">Architecture (架构解析 Tab)</option>
+                    <option value="aboutMe">About Me (个人简历 Tab)</option>
+                    <option value="/settings">Settings (设置页面)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="utmSource">UTM 渠道 (utm_source, 可选)</label>
+                <input type="text" id="utmSource" value="twitter" placeholder="如: twitter, google, email">
+            </div>
+        </div>
+
+        <div style="margin-top: 10px;">
+            <label>生成的 Google Play 网页直达链接：</label>
+            <div class="code-box" id="webUrlBox"></div>
+        </div>
+
+        <div style="margin-top: 10px;">
+            <label>生成的 Android Market 协议直达链接 (直接唤起应用商店)：</label>
+            <div class="code-box" id="marketUrlBox"></div>
+        </div>
+
+        <div style="margin-top: 10px;">
+            <label>本地 ADB 模拟测试指令 (免 Google Play 快速验证)：</label>
+            <div class="code-box" id="adbBox"></div>
+        </div>
+
+        <div class="btn-group">
+            <a href="#" id="launchBtn" class="btn btn-primary" target="_blank">🚀 直接跳转 Google Play 商店</a>
+            <button class="btn btn-outline" onclick="copyLink()">📋 复制推广链接</button>
+            <button class="btn btn-outline" onclick="copyAdb()">⚡ 复制 ADB 调试命令</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const packageInput = document.getElementById('packageName');
+    const referInput = document.getElementById('referSource');
+    const targetInput = document.getElementById('targetRoute');
+    const utmInput = document.getElementById('utmSource');
+
+    const webUrlBox = document.getElementById('webUrlBox');
+    const marketUrlBox = document.getElementById('marketUrlBox');
+    const adbBox = document.getElementById('adbBox');
+    const launchBtn = document.getElementById('launchBtn');
+
+    function updateUrls() {
+        const pkg = packageInput.value.trim();
+        const refer = referInput.value.trim();
+        const target = targetInput.value.trim();
+        const utm = utmInput.value.trim();
+
+        // Build raw query string
+        const params = [];
+        if (refer) params.push(`refer=${encodeURIComponent(refer)}`);
+        if (target) params.push(`target=${encodeURIComponent(target)}`);
+        if (utm) params.push(`utm_source=${encodeURIComponent(utm)}`);
+
+        const rawReferrer = params.join('&');
+        const encodedReferrer = encodeURIComponent(rawReferrer);
+
+        const webUrl = `https://play.google.com/store/apps/details?id=${pkg}&referrer=${encodedReferrer}`;
+        const marketUrl = `market://details?id=${pkg}&referrer=${encodedReferrer}`;
+        const adbCommand = `adb shell am broadcast -a com.android.vending.INSTALL_REFERRER -n ${pkg}/${pkg}.MainActivity --es "referrer" "${rawReferrer}"`;
+
+        webUrlBox.innerText = webUrl;
+        marketUrlBox.innerText = marketUrl;
+        adbBox.innerText = adbCommand;
+        launchBtn.href = webUrl;
+    }
+
+    function setPreset(refer, target, utm) {
+        referInput.value = refer;
+        targetInput.value = target;
+        utmInput.value = utm;
+        updateUrls();
+    }
+
+    function copyLink() {
+        navigator.clipboard.writeText(webUrlBox.innerText).then(() => {
+            alert('推广链接已复制到剪贴板！');
+        });
+    }
+
+    function copyAdb() {
+        navigator.clipboard.writeText(adbBox.innerText).then(() => {
+            alert('ADB 命令已复制到剪贴板！');
+        });
+    }
+
+    [referInput, targetInput, utmInput].forEach(el => {
+        el.addEventListener('input', updateUrls);
+        el.addEventListener('change', updateUrls);
+    });
+
+    updateUrls();
+</script>
+
+</body>
+</html>
