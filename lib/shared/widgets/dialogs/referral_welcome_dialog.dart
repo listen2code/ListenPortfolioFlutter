@@ -7,16 +7,25 @@ import '../../services/referrer/install_referrer_data.dart';
 
 /// A comprehensive welcome dialog displayed on first install when the user arrived via a Google Play referral link.
 /// Uses standard UI Kit components ([CommonButton], [CommonCard], [CommonText]) and displays all parsed parameters.
-class ReferralWelcomeDialog extends StatelessWidget {
+/// Includes a "Don't show again" checkbox that controls whether this referral is permanently marked as processed in SP.
+class ReferralWelcomeDialog extends StatefulWidget {
   final InstallReferrerData data;
-  final VoidCallback? onConfirm;
+  final void Function(bool doNotShowAgain)? onConfirm;
 
   const ReferralWelcomeDialog({super.key, required this.data, this.onConfirm});
+
+  @override
+  State<ReferralWelcomeDialog> createState() => _ReferralWelcomeDialogState();
+}
+
+class _ReferralWelcomeDialogState extends State<ReferralWelcomeDialog> {
+  bool _doNotShowAgain = true;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final data = widget.data;
 
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0)),
@@ -161,15 +170,62 @@ class ReferralWelcomeDialog extends StatelessWidget {
                       if (data.utmTerm != null && data.utmTerm!.isNotEmpty)
                         _buildParamRow(I18nKeys.referralUtmTermLabel.tr, data.utmTerm!, theme),
                       if (data.rawReferrer.isNotEmpty && data.rawReferrer != data.refer)
-                        _buildParamRow(I18nKeys.referralRawReferrerLabel.tr, data.rawReferrer, theme, isMonospace: true),
+                        _buildParamRow(
+                          I18nKeys.referralRawReferrerLabel.tr,
+                          data.rawReferrer,
+                          theme,
+                          isMonospace: true,
+                        ),
                     ],
                   ),
                 ),
               ],
 
-              const SizedBox(height: 24.0),
+              const SizedBox(height: 16.0),
 
-              // 6. Action Button ("Get Started") using CommonButton
+              // 6. "Don't show again" Checkbox
+              CommonClickable(
+                onTap: () {
+                  setState(() {
+                    _doNotShowAgain = !_doNotShowAgain;
+                  });
+                },
+                borderRadius: BorderRadius.circular(8.0),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 4.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(
+                        width: 24.0,
+                        height: 24.0,
+                        child: Checkbox(
+                          value: _doNotShowAgain,
+                          activeColor: colorScheme.primary,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
+                          onChanged: (val) {
+                            setState(() {
+                              _doNotShowAgain = val ?? false;
+                            });
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 8.0),
+                      CommonText(
+                        I18nKeys.doNotShowAgain.tr,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                          fontSize: 13.0,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 16.0),
+
+              // 7. Action Button ("Get Started") using CommonButton
               CommonButton(
                 text: I18nKeys.referralGetStarted.tr,
                 height: 50.0,
@@ -179,7 +235,7 @@ class ReferralWelcomeDialog extends StatelessWidget {
                 foregroundColor: colorScheme.onPrimary,
                 onPressed: () {
                   Navigator.of(context, rootNavigator: true).pop();
-                  onConfirm?.call();
+                  widget.onConfirm?.call(_doNotShowAgain);
                 },
               ),
             ],

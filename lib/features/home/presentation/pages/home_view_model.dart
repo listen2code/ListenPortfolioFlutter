@@ -53,21 +53,18 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
   }
 
   /// Checks whether this app installation came from a Google Play deferred referral link.
-  /// Runs on first startup after install and only triggers once per device installation.
+  /// Runs on startup and fetches the referrer payload if not permanently disabled via 'Do not show again'.
   Future<void> _onCheckDeferredDeepLink() async {
     final service = ref.read(installReferrerServiceProvider);
     appLogger.i('HomeViewModel: [Deferred Deep Link] Checking if install referrer has already been processed...');
     final hasProcessed = await service.hasProcessedReferrer();
     if (hasProcessed) {
-      appLogger.d('HomeViewModel: [Deferred Deep Link] Install referrer already processed previously. Skipping check.');
+      appLogger.d('HomeViewModel: [Deferred Deep Link] Install referrer marked as processed (Do not show again = true). Skipping check.');
       return;
     }
 
-    // 1. Mark as processed immediately so subsequent app cold-starts will not re-query or show duplicates
-    appLogger.i('HomeViewModel: [Deferred Deep Link] First launch detected! Marking as processed and fetching referrer...');
-    await service.markReferrerProcessed();
-
-    // 2. Fetch install referrer payload from Google Play
+    // 1. Fetch install referrer payload from Google Play
+    appLogger.i('HomeViewModel: [Deferred Deep Link] Fetching install referrer from platform...');
     final data = await service.fetchInstallReferrer();
     if (data.hasReferral) {
       appLogger.i('HomeViewModel: [Deferred Deep Link] Valid referral detected! refer="${data.refer}", target="${data.targetRoute}", source="${data.utmSource}". Saving data...');
@@ -80,11 +77,20 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
 
   /// Displays the referral welcome dialog and handles deferred deep link destination navigation when confirmed.
   void _onHandleDeferredDeepLink(InstallReferrerData data) {
+    final service = ref.read(installReferrerServiceProvider);
     appLogger.i('HomeViewModel: [Deferred Deep Link] Emitting ReferralWelcomeEffect -> displaySource: "${data.displaySource}", targetRoute: "${data.targetRoute}"');
     emitEffect(
       ReferralWelcomeEffect(
         data: data,
-        onConfirm: () {
+        onConfirm: (bool doNotShowAgain) async {
+          if (doNotShowAgain) {
+            appLogger.i('HomeViewModel: [Deferred Deep Link] User checked "Do not show again". Persisting processed mark in SP.');
+            await service.markReferrerProcessed();
+          } else {
+            appLogger.i('HomeViewModel: [Deferred Deep Link] User unchecked "Do not show again". Resetting SP so referrer will be fetched again on next start.');
+            await service.resetReferrerProcessed();
+          }
+
           if (data.targetRoute != null && data.targetRoute!.isNotEmpty) {
             final target = data.targetRoute!.trim();
             appLogger.i('HomeViewModel: [Deferred Deep Link] User clicked Get Started. Navigating to target route: "$target"');

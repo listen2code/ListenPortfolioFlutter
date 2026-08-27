@@ -14,17 +14,17 @@ void main() {
   });
 
   group('ReferralWelcomeDialog Widget Tests', () {
-    testWidgets('renders welcome title, referral source and triggers onConfirm', (tester) async {
-      bool confirmed = false;
-      final data = InstallReferrerData.fromRawReferrer('refer=ListenCommunity&target=projects');
+    testWidgets('renders welcome title, referral source, checkbox and triggers onConfirm with checked state', (tester) async {
+      bool? resultDoNotShow;
+      final data = InstallReferrerData.fromRawReferrer('refer=ListenCommunity&target=projects&utm_source=twitter&utm_campaign=spring2026');
 
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
             body: ReferralWelcomeDialog(
               data: data,
-              onConfirm: () {
-                confirmed = true;
+              onConfirm: (doNotShowAgain) {
+                resultDoNotShow = doNotShowAgain;
               },
             ),
           ),
@@ -36,13 +36,49 @@ void main() {
       // Check for festive emoji and referral source text
       expect(find.text('🎉'), findsOneWidget);
       expect(find.text('ListenCommunity'), findsOneWidget);
+      expect(find.byType(Checkbox), findsOneWidget);
       expect(find.byType(CommonButton), findsOneWidget);
+
+      // Default is checked
+      expect(tester.widget<Checkbox>(find.byType(Checkbox)).value, isTrue);
 
       // Tap Get Started button
       await tester.tap(find.byType(CommonButton));
       await tester.pumpAndSettle();
 
-      expect(confirmed, isTrue);
+      expect(resultDoNotShow, isTrue);
+    });
+
+    testWidgets('toggling checkbox passes false to onConfirm', (tester) async {
+      bool? resultDoNotShow;
+      final data = InstallReferrerData.fromRawReferrer('refer=ListenVIP');
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: ReferralWelcomeDialog(
+              data: data,
+              onConfirm: (doNotShowAgain) {
+                resultDoNotShow = doNotShowAgain;
+              },
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Tap the Checkbox to uncheck
+      await tester.tap(find.byType(Checkbox));
+      await tester.pumpAndSettle();
+
+      expect(tester.widget<Checkbox>(find.byType(Checkbox)).value, isFalse);
+
+      // Tap Get Started button
+      await tester.tap(find.byType(CommonButton));
+      await tester.pumpAndSettle();
+
+      expect(resultDoNotShow, isFalse);
     });
   });
 }

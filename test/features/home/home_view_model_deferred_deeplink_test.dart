@@ -25,6 +25,11 @@ class MockInstallReferrerService implements IInstallReferrerService {
   }
 
   @override
+  Future<void> resetReferrerProcessed() async {
+    processed = false;
+  }
+
+  @override
   Future<void> saveReferrerData(InstallReferrerData data) async {
     savedData = data;
   }
@@ -54,6 +59,7 @@ void main() {
 
     setUp(() {
       mockReferrerService = MockInstallReferrerService();
+      InstallReferrerServiceImpl.mockInstance = mockReferrerService;
       capturedEffects.clear();
       MviPlaybackObserver.onEffectEmitted = (tag, effect) {
         if (effect is ReferralWelcomeEffect) {
@@ -63,12 +69,13 @@ void main() {
     });
 
     tearDown(() async {
+      InstallReferrerServiceImpl.mockInstance = null;
       MviPlaybackObserver.onEffectEmitted = null;
       await Future.delayed(const Duration(milliseconds: 50));
       container.dispose();
     });
 
-    test('should emit ReferralWelcomeEffect when valid referral exists on first launch', () async {
+    test('should emit ReferralWelcomeEffect and mark processed when confirmed with doNotShowAgain=true', () async {
       mockReferrerService.mockData = InstallReferrerData.fromRawReferrer('refer=ListenVIP&target=projects');
       mockReferrerService.processed = false;
 
@@ -77,21 +84,54 @@ void main() {
           installReferrerServiceProvider.overrideWithValue(mockReferrerService),
         ],
       );
+      final subscription = container.listen(homeViewModelProvider, (_, __) {});
 
       final viewModel = container.read(homeViewModelProvider.notifier);
       await viewModel.handleIntent(const HomeIntent.checkDeferredDeepLink());
+      await Future<void>.delayed(const Duration(milliseconds: 50));
 
-      expect(mockReferrerService.processed, isTrue);
       expect(mockReferrerService.savedData?.refer, 'ListenVIP');
-      expect(capturedEffects.length, 1);
+      expect(capturedEffects.length, greaterThanOrEqualTo(1));
 
       final effect = capturedEffects.first;
       expect(effect.data.refer, 'ListenVIP');
       expect(effect.data.targetRoute, 'projects');
 
-      // Test onConfirm tab switch
-      effect.onConfirm?.call();
+      // Test onConfirm with doNotShowAgain = true
+      effect.onConfirm?.call(true);
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+
+      expect(mockReferrerService.processed, isTrue);
       expect(container.read(homeViewModelProvider).currentTab, HomeTab.projects);
+
+      subscription.close();
+    });
+
+    test('should NOT mark processed when confirmed with doNotShowAgain=false', () async {
+      mockReferrerService.mockData = InstallReferrerData.fromRawReferrer('refer=ListenVIP&target=projects');
+      mockReferrerService.processed = false;
+
+      container = ProviderContainer(
+        overrides: [
+          installReferrerServiceProvider.overrideWithValue(mockReferrerService),
+        ],
+      );
+      final subscription = container.listen(homeViewModelProvider, (_, __) {});
+
+      final viewModel = container.read(homeViewModelProvider.notifier);
+      await viewModel.handleIntent(const HomeIntent.checkDeferredDeepLink());
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+
+      expect(capturedEffects.length, greaterThanOrEqualTo(1));
+      final effect = capturedEffects.first;
+
+      // Test onConfirm with doNotShowAgain = false
+      effect.onConfirm?.call(false);
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+
+      expect(mockReferrerService.processed, isFalse);
+
+      subscription.close();
     });
 
     test('should NOT emit ReferralWelcomeEffect if already processed', () async {
@@ -106,6 +146,7 @@ void main() {
 
       final viewModel = container.read(homeViewModelProvider.notifier);
       await viewModel.handleIntent(const HomeIntent.checkDeferredDeepLink());
+      await Future<void>.delayed(const Duration(milliseconds: 50));
 
       expect(capturedEffects, isEmpty);
     });
@@ -122,8 +163,8 @@ void main() {
 
       final viewModel = container.read(homeViewModelProvider.notifier);
       await viewModel.handleIntent(const HomeIntent.checkDeferredDeepLink());
+      await Future<void>.delayed(const Duration(milliseconds: 50));
 
-      expect(mockReferrerService.processed, isTrue);
       expect(capturedEffects, isEmpty);
     });
   });

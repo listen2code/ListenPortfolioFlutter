@@ -361,7 +361,7 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
     emitEffect(
       ReferralWelcomeEffect(
         data: simulated,
-        onConfirm: () {
+        onConfirm: (bool doNotShowAgain) {
           emitEffect(MessageEffect.info(I18nKeys.referralSimulationTriggered.tr));
         },
       ),

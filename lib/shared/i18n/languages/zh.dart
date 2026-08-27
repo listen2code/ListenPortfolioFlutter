@@ -407,6 +407,7 @@ final Map<String, String> zh = {
   I18nKeys.referralRawReferrerLabel: '完整原始参数',
   I18nKeys.referralParamsDetailLabel: '参数明细',
   I18nKeys.referralGetStarted: '开启探索',
+  I18nKeys.doNotShowAgain: '下次不再显示',
   I18nKeys.simulateDeferredDeepLink: '模拟 Deferred Deep Link (延迟深度链接)',
   I18nKeys.simulateDeferredDeepLinkSubtitle: '模拟用户通过包含 refer 参数的推广链接首次安装打开',
   I18nKeys.referralSimulationTriggered: '已成功触发延迟深度链接模拟！',

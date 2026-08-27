@@ -465,6 +465,7 @@ class I18nKeys {
   static const String referralRawReferrerLabel = 'Raw Referrer Parameter';
   static const String referralParamsDetailLabel = 'Parameter Details';
   static const String referralGetStarted = 'Get Started';
+  static const String doNotShowAgain = "Don't show again";
   static const String simulateDeferredDeepLink = 'Simulate Deferred Deep Link';
   static const String simulateDeferredDeepLinkSubtitle =
       'Simulate first-launch from Google Play referral link';

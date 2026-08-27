@@ -409,6 +409,7 @@ final Map<String, String> ja = {
   I18nKeys.referralRawReferrerLabel: '完全なRawパラメータ',
   I18nKeys.referralParamsDetailLabel: 'パラメータ詳細',
   I18nKeys.referralGetStarted: '探索を始める',
+  I18nKeys.doNotShowAgain: '次回から表示しない',
   I18nKeys.simulateDeferredDeepLink: 'Deferred Deep Link 模擬テスト',
   I18nKeys.simulateDeferredDeepLinkSubtitle: '紹介パラメータ付きGoogle Playリンクからの初回起動を模擬',
   I18nKeys.referralSimulationTriggered: 'Deferred Deep Linkのシミュレーションを開始しました！',

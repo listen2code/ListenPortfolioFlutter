@@ -7,7 +7,7 @@ import '../widgets/dialogs/referral_welcome_dialog.dart';
 /// Side effect for displaying the first-launch deferred deep link welcome dialog.
 class ReferralWelcomeEffect extends BaseEffect {
   final InstallReferrerData data;
-  final VoidCallback? onConfirm;
+  final void Function(bool doNotShowAgain)? onConfirm;
 
   ReferralWelcomeEffect({
     required this.data,
