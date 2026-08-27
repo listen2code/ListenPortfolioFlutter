@@ -71,119 +71,74 @@ class _ReferralWelcomeDialogState extends State<ReferralWelcomeDialog> {
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 20.0),
+              const SizedBox(height: 18.0),
 
-              // 4. Primary Referral Source Card
-              if (data.displaySource.isNotEmpty)
-                CommonCard(
-                  borderRadius: 16.0,
-                  color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-                  borderSide: BorderSide(color: colorScheme.outlineVariant.withValues(alpha: 0.4)),
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(Icons.campaign_outlined, size: 18.0, color: colorScheme.primary),
-                          const SizedBox(width: 8.0),
-                          CommonText(
-                            I18nKeys.referralSourceLabel.tr,
-                            style: theme.textTheme.labelMedium?.copyWith(
-                              color: colorScheme.primary,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 12.0,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 6.0),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 26.0),
-                        child: CommonText(
-                          data.displaySource,
-                          style: theme.textTheme.bodyLarge?.copyWith(
+              // 4. Debug Referral Parameters Card (matching test.html)
+              CommonCard(
+                borderRadius: 16.0,
+                color: colorScheme.surfaceContainerLow.withValues(alpha: 0.7),
+                borderSide: BorderSide(color: colorScheme.outlineVariant.withValues(alpha: 0.3)),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.tune_outlined, size: 16.0, color: colorScheme.primary),
+                        const SizedBox(width: 8.0),
+                        CommonText(
+                          I18nKeys.referralParamsDetailLabel.tr,
+                          style: theme.textTheme.labelMedium?.copyWith(
+                            color: colorScheme.primary,
                             fontWeight: FontWeight.bold,
-                            color: theme.textTheme.bodyLarge?.color,
-                            fontSize: 15.0,
-                          ),
-                        ),
-                      ),
-                      if (data.targetRoute != null && data.targetRoute!.isNotEmpty) ...[
-                        const SizedBox(height: 8.0),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 26.0),
-                          child: Row(
-                            children: [
-                              Icon(Icons.near_me_outlined, size: 14.0, color: colorScheme.secondary),
-                              const SizedBox(width: 6.0),
-                              CommonText(
-                                '${I18nKeys.referralTargetRouteLabel.tr}: ${data.targetRoute}',
-                                style: theme.textTheme.bodySmall?.copyWith(
-                                  color: colorScheme.secondary,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 13.0,
-                                ),
-                              ),
-                            ],
+                            fontSize: 13.0,
                           ),
                         ),
                       ],
-                    ],
-                  ),
-                ),
-
-              // 5. Detailed Parameters Breakdown Card (UTM parameters & Raw details)
-              if (_hasExtraDetails(data)) ...[
-                const SizedBox(height: 12.0),
-                CommonCard(
-                  borderRadius: 14.0,
-                  color: colorScheme.surfaceContainerLow.withValues(alpha: 0.6),
-                  borderSide: BorderSide(color: colorScheme.outlineVariant.withValues(alpha: 0.25)),
-                  padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 12.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(Icons.tune_outlined, size: 15.0, color: colorScheme.onSurfaceVariant),
-                          const SizedBox(width: 6.0),
-                          CommonText(
-                            I18nKeys.referralParamsDetailLabel.tr,
-                            style: theme.textTheme.labelSmall?.copyWith(
-                              color: colorScheme.onSurfaceVariant,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 11.0,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8.0),
-                      if (data.utmSource != null && data.utmSource!.isNotEmpty)
-                        _buildParamRow(I18nKeys.referralUtmSourceLabel.tr, data.utmSource!, theme),
-                      if (data.utmCampaign != null && data.utmCampaign!.isNotEmpty)
-                        _buildParamRow(I18nKeys.referralUtmCampaignLabel.tr, data.utmCampaign!, theme),
-                      if (data.utmMedium != null && data.utmMedium!.isNotEmpty)
-                        _buildParamRow(I18nKeys.referralUtmMediumLabel.tr, data.utmMedium!, theme),
-                      if (data.utmContent != null && data.utmContent!.isNotEmpty)
-                        _buildParamRow(I18nKeys.referralUtmContentLabel.tr, data.utmContent!, theme),
-                      if (data.utmTerm != null && data.utmTerm!.isNotEmpty)
-                        _buildParamRow(I18nKeys.referralUtmTermLabel.tr, data.utmTerm!, theme),
-                      if (data.rawReferrer.isNotEmpty && data.rawReferrer != data.refer)
-                        _buildParamRow(
-                          I18nKeys.referralRawReferrerLabel.tr,
-                          data.rawReferrer,
-                          theme,
-                          isMonospace: true,
+                    ),
+                    const Divider(height: 16.0, thickness: 0.8),
+                    if (data.refer != null && data.refer!.isNotEmpty)
+                      _buildParamRow('refer', data.refer!, theme, isPrimary: true),
+                    if (data.targetRoute != null && data.targetRoute!.isNotEmpty)
+                      _buildParamRow('target', data.targetRoute!, theme, isPrimary: true),
+                    if (data.utmSource != null && data.utmSource!.isNotEmpty)
+                      _buildParamRow('utm_source', data.utmSource!, theme),
+                    if (data.rawReferrer.isNotEmpty) ...[
+                      const SizedBox(height: 6.0),
+                      CommonText(
+                        '${I18nKeys.referralRawReferrerLabel.tr} (rawReferrer):',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                          fontSize: 11.0,
+                          fontWeight: FontWeight.w600,
                         ),
+                      ),
+                      const SizedBox(height: 4.0),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(8.0),
+                        decoration: BoxDecoration(
+                          color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.6),
+                          borderRadius: BorderRadius.circular(8.0),
+                          border: Border.all(color: colorScheme.outlineVariant.withValues(alpha: 0.2)),
+                        ),
+                        child: SelectableText(
+                          data.rawReferrer,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            fontSize: 11.0,
+                            fontFamily: 'monospace',
+                            color: theme.colorScheme.onSurface,
+                          ),
+                        ),
+                      ),
                     ],
-                  ),
+                  ],
                 ),
-              ],
+              ),
 
               const SizedBox(height: 16.0),
 
-              // 6. "Don't show again" Checkbox
+              // 5. "Don't show again" Checkbox
               CommonClickable(
                 onTap: () {
                   setState(() {
@@ -225,7 +180,7 @@ class _ReferralWelcomeDialogState extends State<ReferralWelcomeDialog> {
 
               const SizedBox(height: 16.0),
 
-              // 7. Action Button ("Get Started") using CommonButton
+              // 6. Action Button ("Get Started") using CommonButton
               CommonButton(
                 text: I18nKeys.referralGetStarted.tr,
                 height: 50.0,
@@ -245,40 +200,36 @@ class _ReferralWelcomeDialogState extends State<ReferralWelcomeDialog> {
     );
   }
 
-  static bool _hasExtraDetails(InstallReferrerData data) {
-    return (data.utmSource != null && data.utmSource!.isNotEmpty) ||
-        (data.utmCampaign != null && data.utmCampaign!.isNotEmpty) ||
-        (data.utmMedium != null && data.utmMedium!.isNotEmpty) ||
-        (data.utmContent != null && data.utmContent!.isNotEmpty) ||
-        (data.utmTerm != null && data.utmTerm!.isNotEmpty) ||
-        (data.rawReferrer.isNotEmpty && data.rawReferrer != data.refer);
-  }
+  static Widget _buildParamRow(String label, String? value, ThemeData theme, {bool isPrimary = false}) {
+    final bool hasValue = value != null && value.isNotEmpty;
+    final displayVal = hasValue ? value : '(null)';
 
-  static Widget _buildParamRow(String label, String value, ThemeData theme, {bool isMonospace = false}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 3.0),
+      padding: const EdgeInsets.symmetric(vertical: 2.5),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: 100.0,
+            width: 105.0,
             child: CommonText(
               '$label:',
               style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-                fontSize: 11.0,
-                fontWeight: FontWeight.w500,
+                color: isPrimary ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant,
+                fontSize: 11.5,
+                fontWeight: isPrimary ? FontWeight.w600 : FontWeight.w500,
               ),
             ),
           ),
           Expanded(
-            child: CommonText(
-              value,
+            child: SelectableText(
+              displayVal,
               style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurface,
+                color: hasValue
+                    ? (isPrimary ? theme.colorScheme.primary : theme.colorScheme.onSurface)
+                    : theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
                 fontSize: 11.5,
-                fontWeight: isMonospace ? FontWeight.normal : FontWeight.w600,
-                fontFamily: isMonospace ? 'monospace' : null,
+                fontWeight: hasValue ? FontWeight.w600 : FontWeight.normal,
+                fontStyle: hasValue ? FontStyle.normal : FontStyle.italic,
               ),
             ),
           ),

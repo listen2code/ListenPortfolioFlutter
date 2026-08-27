@@ -33,14 +33,21 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      // Check for festive emoji and referral source text
+      // Check for festive emoji, parameter details card, refer and utm_source texts
       expect(find.text('🎉'), findsOneWidget);
       expect(find.text('ListenCommunity'), findsOneWidget);
+      expect(find.text('projects'), findsOneWidget);
+      expect(find.text('twitter'), findsOneWidget);
+      expect(find.text('spring2026'), findsOneWidget);
       expect(find.byType(Checkbox), findsOneWidget);
       expect(find.byType(CommonButton), findsOneWidget);
 
       // Default is checked
       expect(tester.widget<Checkbox>(find.byType(Checkbox)).value, isTrue);
+
+      // Ensure button is visible before tapping
+      await tester.ensureVisible(find.byType(CommonButton));
+      await tester.pumpAndSettle();
 
       // Tap Get Started button
       await tester.tap(find.byType(CommonButton));
@@ -73,6 +80,10 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(tester.widget<Checkbox>(find.byType(Checkbox)).value, isFalse);
+
+      // Ensure button is visible before tapping
+      await tester.ensureVisible(find.byType(CommonButton));
+      await tester.pumpAndSettle();
 
       // Tap Get Started button
       await tester.tap(find.byType(CommonButton));
