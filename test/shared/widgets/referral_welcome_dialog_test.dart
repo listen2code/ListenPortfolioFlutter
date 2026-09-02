@@ -41,7 +41,12 @@ void main() {
       expect(find.byType(Checkbox), findsOneWidget);
       expect(find.byType(CommonButton), findsOneWidget);
 
-      // Default is checked
+      // Default is unchecked
+      expect(tester.widget<Checkbox>(find.byType(Checkbox)).value, isFalse);
+
+      // Tap the Checkbox to check it
+      await tester.tap(find.byType(Checkbox));
+      await tester.pumpAndSettle();
       expect(tester.widget<Checkbox>(find.byType(Checkbox)).value, isTrue);
 
       // Ensure button is visible before tapping
@@ -55,7 +60,7 @@ void main() {
       expect(resultDoNotShow, isTrue);
     });
 
-    testWidgets('toggling checkbox passes false to onConfirm', (tester) async {
+    testWidgets('unchecking / leaving checkbox unchecked passes false to onConfirm', (tester) async {
       bool? resultDoNotShow;
       final data = InstallReferrerData.fromRawReferrer('refer=ListenVIP');
 
@@ -74,17 +79,11 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      // Tap the Checkbox to uncheck
-      await tester.tap(find.byType(Checkbox));
-      await tester.pumpAndSettle();
-
-      expect(tester.widget<Checkbox>(find.byType(Checkbox)).value, isFalse);
-
       // Ensure button is visible before tapping
       await tester.ensureVisible(find.byType(CommonButton));
       await tester.pumpAndSettle();
 
-      // Tap Get Started button
+      // Tap Get Started button directly (leaving unchecked)
       await tester.tap(find.byType(CommonButton));
       await tester.pumpAndSettle();
 
