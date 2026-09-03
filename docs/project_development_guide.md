@@ -815,7 +815,7 @@ context.registry.addImportDirective((node) {
 ## 📚 相关文档与资源
 
 ### 核心文档
-- [API 文档](../api.json) - 服务端 API 规范
+- [错误码与 API 规范](error_codes_reference.md) - 服务端 API 与错误契约规范
 - [分析配置](../analysis_options.yaml) - Lint 规则配置
 - [CI/CD 配置](../.github/workflows/ci.yml) - 统一CI/CD工作流
 - [项目配置](../pubspec.yaml) - 依赖和版本管理

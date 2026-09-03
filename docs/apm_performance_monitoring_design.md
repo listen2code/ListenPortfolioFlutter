@@ -172,7 +172,30 @@ static Future<void> show(BuildContext context, {bool startExpanded = false}) asy
 
 ---
 
-## 6. 自动化测试与验证
+## 6. 技术难点与解决方案 (Technical Challenges & Solutions)
+
+### 6.1 悬浮窗上下文与路由穿透问题
+* **难点**：悬浮窗需要在应用处于不同页面甚至无 OverlayContext（如刚启动或发生严重崩溃时）均能稳定挂载，且不能被正常的路由 Pop 给关闭。
+* **解决方案**：在 `LogOverlayManager` 中，采用 `AppNavConfig.navigatorKey.currentState?.overlay` 获取全局唯一顶层 Overlay 并在其上进行 `insert(_overlayEntry)`。与常规页面路由解耦，确保其具有比所有 PageRoute 更高的 Z 轴权重。
+
+### 6.2 观测者效应防护 (Observer Effect)
+* **难点**：高频查询系统内存、实时绘制 120Hz 帧率图本身会导致极其严重的 CPU/GPU 消耗，甚至成为应用卡顿的元凶。
+* **解决方案**：
+  * **绘制降级**：FPS 迷你图表（`_FpsMiniChart`）中，使用 `RepaintBoundary` 进行边界隔离。在 `CustomPainter` (`_MiniChartPainter`) 内强制设置 `paint.isAntiAlias = false` 禁用抗锯齿，并采用 `roundToDouble()` 强制坐标像素对齐，防止次像素混合计算引发的 GPU 过载。
+  * **采样降频**：内存 RSS 采集剥离到独立的 2 秒低频异步节流定时器中进行，彻底避免在帧循环期间进行高昂的 OS 内核态切换。
+
+## 7. 设计亮点 (Implementation Highlights)
+
+1. **自适应 Y 轴动态缩放**：在 `_LineChartPainter` 中，并非使用固定高度。算法会实时遍历当前窗口内显示帧的最大耗时（`localMaxUs`），并自动放大 1.2 倍作为顶盖极限（`maxLatencyUs = (localMaxUs * 1.2).clamp(...)`）。从而在平时（低延迟）拉伸折线凸显微小波动，而在发生严重卡顿时又能完整容纳长达数百毫秒的长条。
+2. **零 GC 的高频渲染**：依靠 `RingBuffer` 固定长度预分配数组，滑动时仅改变指针。画布在迭代帧绘制 `Path` 时也没有实例化额外的对象流，杜绝由于监控器本身导致的 Dart 虚拟机垃圾回收卡顿（GC Pause）。
+3. **安全模式自动防御**：在 `LogOverlayManager.show` 方法中，如果设备启动初期 `MediaQuery.of(context).size` 获取异常（`width < 100`），会自动降级保护分配绝对坐标 `Offset(200, 100)`，防止抛出负数坐标布局异常而白屏。
+
+## 8. 设计思路 (Design Rationale)
+
+* **纯本地闭环 (Local-First Diagnostics)**：相较于将性能指标上报云端再去后台查看，APM 的设计初衷是为了在研发联调和 QA 验收阶段实现**“所见即所得”**。当测试人员发现肉眼可见的卡顿或网络加载慢时，可以一键展开悬浮面板（Window Mode），利用内置十字准星（Crosshair）直接点中那根发红的 Jank 帧，立刻看到是哪个 `PageRoute` 引起的。
+* **编译期剔除 (Tree-Shaking Guarantee)**：监控面板与核心逻辑在 `LogOverlayManager` 的 API 入口处使用了 `if (kReleaseMode) return;` 守卫。借助 Flutter/Dart 强大的 AOT Tree-shaking 机制，这使得整套复杂的监控代码能在正式生产包中做到物理级别的 100% 剥离，实现**开发期大而全，生产期零负担**的完美平衡。
+
+## 9. 自动化测试与验证
 
 本项目建立了严密的自动化测试套件覆盖核心计算与存储链路：
 

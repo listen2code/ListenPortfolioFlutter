@@ -195,8 +195,28 @@ class OverviewViewModel extends BaseViewModel<OverviewIntent, OverviewState, Ove
 [Domain]_[SubDomain]_[DynamicParameters]
 ```
 
-* **模块前缀**：全小写蛇形命名。
 * **示例**：
   * 全局会话：`auth_session`
   * 用户简历：`profile_resume_data`
   * 项目详情：`projects_detail_{projectId}`
+
+---
+
+## 7. 技术难点与解决方案 (Technical Challenges & Solutions)
+
+### 7.1 并发请求的缓存读写踩踏 (Race Conditions)
+* **难点**：在弱网下，当多个组件同时触发针对同一个资源的拉取请求时，可能会导致并发写入相同的缓存 Key，甚至发生新数据被旧数据复写的时序问题。
+* **解决方案**：业务层配合 `ListenCore` 时应利用防抖 (Debounce) 或请求队列机制，并且缓存 DataSource 中的 `cache()` 方法在内部使用异步锁或基于本地文件的原子写入。
+
+### 7.2 动态响应体结构与缓存契约失效
+* **难点**：服务端下发的数据结构发生变化（增删字段）后，由于本地还存在老结构的 JSON，反序列化时将直接触发 `ParseFailure`。
+* **解决方案**：正如前文防脏数据所述，`safeCall` 遇到此类解析异常强制阻断，同时开发时配合 `json_serializable` 的 `unknownEnumValue` 和兼容解析策略，避免硬性 Crash。
+
+## 8. 设计亮点 (Implementation Highlights)
+
+1. **侵入极小的声明式缓存**：通过向 `safeCall` 管道注入 `CacheDataSource` 对象，核心数据获取和缓存回退逻辑被完全封装在底座中。上层 ViewModel 和 Widget 层完全感知不到它是网络最新数据还是缓存数据，极大简化了业务代码。
+2. **SWR 模式无缝衔接**：这套缓存机制天然支持 Stale-While-Revalidate（缓存更新模式），配合 MVI 的 `updateState` 可以瞬间展示旧数据、再平滑过渡到新数据，有效填补了白屏期。
+
+## 9. 设计思路 (Design Rationale)
+
+* **离线优先 (Offline-First) 与安全防御**：移动端应用的网络环境充满了不确定性。将“缓存降级”拔高到框架层面，能够强制开发人员对每一个重要的数据接口进行离线思考。不仅是为了优化首屏启动时间，更是应对服务器短暂无响应、网络劫持等极端灾难时的最后一道防线。不盲目缓存 500 和解析异常，展现了“宁可报错不可错乱”的安全设计哲学。

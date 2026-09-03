@@ -44,7 +44,7 @@ ssh -i tool/listen.pem -o StrictHostKeyChecking=no ec2-user@13.218.192.181 "
 ```
 
 ### 2.2 GitHub Actions CI/CD 自动化部署
-在 [`.github/workflows/ci.yml`](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/.github/workflows/ci.yml) 中配置了独立部署 Job `deploy-to-aws-web`：
+在 [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) 中配置了独立部署 Job `deploy-to-aws-web`：
 - **版本校验**：与 `deploy-to-google-play` 平级，共享 `tools/get_play_version.js` 的构建触发逻辑。
 - **自动编译**：通过 `./buildModule.sh web prod` 统一执行编译。
 - **自动上云**：通过 SSH Key 一键上传并应用 Linux 755 权限。
@@ -57,7 +57,7 @@ ssh -i tool/listen.pem -o StrictHostKeyChecking=no ec2-user@13.218.192.181 "
 
 ### 📌 问题一：原生移动端插件导致网页首帧白屏 (`UnimplementedError`)
 - **现象**：浏览器打开网页后屏幕一片空白，控制台没有挂载任何 DOM Canvas。
-- **根因**：应用启动时 [`app_initializer.dart`](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/shared/utils/app_initializer.dart) 在 `runApp()` 之前无条件调用了移动端原生插件（如 `QuickActionsManager.init()`、`ReviewService`、`iapService` 应用内购买、`shorebirdService` 热更新）。这些插件在 Web 端未实现，抛出 `UnimplementedError`，中断了 `main()` 函数。
+- **根因**：应用启动时 [`app_initializer.dart`](../lib/shared/utils/app_initializer.dart) 在 `runApp()` 之前无条件调用了移动端原生插件（如 `QuickActionsManager.init()`、`ReviewService`、`iapService` 应用内购买、`shorebirdService` 热更新）。这些插件在 Web 端未实现，抛出 `UnimplementedError`，中断了 `main()` 函数。
 - **解决**：在 `AppInitializer` 中使用 `if (!kIsWeb)` 将所有原生平台服务妥善隔离防护，并加入 Try-Catch 兜底保护。
 
 ### 📌 问题二：底层依赖库 `ListenCore` 未做平台防护导致崩溃
@@ -73,7 +73,7 @@ ssh -i tool/listen.pem -o StrictHostKeyChecking=no ec2-user@13.218.192.181 "
 - **现象**：API 请求报错：`The connection errored: The XMLHttpRequest onError callback was called... not a CORS "simple request"`。
 - **根因**：网页从 80 端口向 8080 端口发送 `application/json` 异步请求，浏览器判定为跨域 (Cross-Origin) 并自动发出 `OPTIONS` 预检请求。
 - **解决**：
-  1. **同源映射**：修改 [`env_config.dart`](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/shared/constants/env_config.dart)，将 `prod` 环境 `baseUrl` 统一定义为同源相对路径 `http://13.218.192.181/api`。通过 80 端口同源访问，浏览器彻底不再触发任何 CORS 检查。
+  1. **同源映射**：修改 [`env_config.dart`](../lib/shared/constants/env_config.dart)，将 `prod` 环境 `baseUrl` 统一定义为同源相对路径 `http://13.218.192.181/api`。通过 80 端口同源访问，浏览器彻底不再触发任何 CORS 检查。
   2. **Nginx 兜底**：在 EC2 的 Nginx `/api/` 代理层添加 `if ($request_method = 'OPTIONS')`，自动响应 `204 No Content` 并带上 `Access-Control-Allow-*` 头部。
 
 ### 📌 问题四：默认环境硬编码为 `mock` (`localhost:9999`)
@@ -109,3 +109,16 @@ curl -I -X OPTIONS http://13.218.192.181/api/v1/test \
 # 4. 浏览器强刷验证 (Ctrl + Shift + R)
 # 访问 http://13.218.192.181，打开 F12 Console，确保无 JavaScript 未捕获异常和网络报错。
 ```
+
+---
+
+## ✨ 5. 部署设计亮点 (Deployment Highlights)
+
+1. **零跨域同源代理架构**：放弃了复杂的 CORS 头部配置或前端代理中间件，直接通过 Nginx 的路径匹配将前端静态托管（`/`）与后端 API 接口（`/api`）置于同一个域名和端口之下，从浏览器安全沙箱的最底层彻底消除了 OPTIONS 预检请求的性能损耗与跨域报错。
+2. **移动端代码的防御性降级**：通过 `kIsWeb` 条件编译与 `UnsupportedError` 捕获拦截，使得同一个代码库不仅能完美构建 Android/iOS 的原生强依赖包，也能安全退化为纯纯 Web 静态站点展现，实现了真正意义上的一套代码到处运行（Write Once, Run Anywhere）。
+
+## 🧠 6. 架构演进与设计思路 (Design Rationale)
+
+* **为什么选择 EC2 裸金属托管而不是 AWS Amplify / Vercel？**
+  虽然自动化 Serverless 平台能提供开箱即用的 GitHub 联调部署体验，但在 ListenPortfolio 项目中，后端除了提供 REST API，可能还会涉及到长期驻留的 WebSocket 进程、自定义的持久化磁盘缓存以及特定的服务端防爬策略。采用标准 EC2 + Nginx 提供了最高的灵活性和架构掌控力，使得前端 Web 部署与后端的 Node.js 服务能共享同一个安全内网上下文。
+* **单文件构建策略 (Tarball Publishing)**：在实践中我们发现，直接使用 GitHub Actions 通过 SCP 逐一覆盖几百个小文件，不仅速度极慢，且极其容易因为网络波动造成部署中断和前端页面渲染错乱（新旧文件交织）。改用 `tar.gz` 原子解压部署，确保了上线的强一致性与极速的替换体验。

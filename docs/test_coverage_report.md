@@ -1,8 +1,8 @@
 # Flutter 客户端测试覆盖率报告 (Flutter Test Coverage Report)
 
-**更新时间**: 2026-08-27  
+**更新时间**: 2026-09-03  
 **分析工具**: Flutter Test Engine + LCOV  
-**测试结果**: **538 / 538 测试用例 100% 全部通过 (All tests passed!)**
+**测试结果**: **557 / 557 测试用例 100% 全部通过 (All tests passed!) (覆盖 96 个测试文件)**
 
 ---
 

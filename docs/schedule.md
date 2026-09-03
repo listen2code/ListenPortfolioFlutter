@@ -28,7 +28,7 @@
 | P0 | **截图 / GIF 录制** | 4h | Overview、Login、Settings、LogOverlay、CrashLogs、Architecture 页面。放到 README 顶部。**没有截图的 Portfolio = 不存在** |
 | P0 | ~~**Mock 数据真实化**~~ | 3h | ✅ 已完成。`aboutMe.json`（及中/日多语言）、`projects.json`、`user.json` 替换为真实 11 年履历数据，6 维核心技能与真实评分落地 |
 | P0 | **README 精简优化** | 4h | 当前 692 行太长。顶部加截图 → 一句话定位 → 技术亮点（5 条）→ 架构图 → Quick Start → 详细说明折叠 |
-| P1 | ~~**CI 加 flutter test**~~ | 2h | ✅ 已在 CI 工作流中集成测试步骤，全绿跑通 544 项测试用例，包含覆盖率分析 |
+| P1 | ~~**CI 加 flutter test**~~ | 2h | ✅ 已在 CI 工作流中集成测试步骤，全绿跑通 557 项测试用例，包含覆盖率分析 |
 | P1 | ~~**Release APK 签名**~~ | 3h | ✅ 已在 CI 流程中配置 keystore 解密，成功实现 Release 签名构建 |
 
 **Phase 1 交付物：**
@@ -83,7 +83,7 @@
 
 | 优先级 | 任务 | 预估时间 | 说明 |
 |--------|------|----------|------|
-| P0 | ~~**测试覆盖率 → 60%+**~~ | 20h | ✅ 已完成。全量 544 项单元/Widget/集成测试 100% 绿灯全覆盖（ViewModels、Repositories、UseCases、Widgets、E2E 集成测试） |
+| P0 | ~~**测试覆盖率 → 60%+**~~ | 20h | ✅ 已完成。全量 557 项单元/Widget/集成测试 100% 绿灯全覆盖（ViewModels、Repositories、UseCases、Widgets、E2E 集成测试） |
 | P0 | ~~**ADR 文档**~~ | 8h | ✅ 已完成。已沉淀 `event_bus_vs_base_effect.md`、`repository_caching_strategy.md`、`deep_link_routing_design.md`、`skills_radar_chart_design.md` 等架构决策文档 |
 | P1 | ~~**Architecture Mermaid 图**~~ | 4h | ✅ 已完成。在 README 和 docs 中包含完整模块依赖图与 MVI 数据流架构图 |
 | P1 | ~~**Firebase Push 推送通知**~~ | 12h | ✅ 已完成（todo.md Now §6）。接入 FCM/APNs，并结合 EventBus 实现 Deep Linking 唤醒与路由跳转 |

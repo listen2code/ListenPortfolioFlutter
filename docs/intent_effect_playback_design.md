@@ -96,25 +96,23 @@ flowchart TD
    * **普通页面返回**：回放时，若磁带为 Page 的 Pop，调用 `AppNav.back()` 执行真实的返回动画。
    * **弹窗/对话框返回**：若记录格式为 `POP:DialogRoute`，回放时先利用 `navigatorKey` 检查当前最顶层的 Route 是否为非 PageRoute（表示弹窗尚未关闭）。若是，则调用 `AppNav.back()` 将其关闭；若在回放时该弹窗已被其他操作正常关闭，则自动忽略跳过，避免多退页面。
 
-### 3.3 异步 ViewModel 激活等待机制 (VM Wait Loop)
+### 3.3 视图模型匹配与容错机制 (VM Resolution & Fault Tolerance)
 
-在回放意图时，由于路由切换伴随着异步的页面过渡动画，如果立刻向下分发下一个意图，目标页面的 `ViewModel` 可能还未被初始化并注册到 `ActiveViewModels` 中。
+在回放意图时，由于路由切换伴随着异步的页面过渡动画，系统在派发前必须确认目标视图模型（ViewModel）是否已经就绪。
 
-为了避免“ViewModel 未找到导致跳过步骤”的竞争状态，系统设计了**微秒级主动轮询等待机制**：
+目前的实现策略倾向于**直接断言与安全跳过**：
 ```dart
-BaseViewModel? vm = ActiveViewModels.get(viewModelTag);
+final vm = ActiveViewModels.get(viewModelTag);
 if (vm == null) {
-  int elapsed = 0;
-  const int checkIntervalMs = 100;
-  const int timeoutMs = 2000;
-  while (vm == null && elapsed < timeoutMs) {
-    await Future<dynamic>.delayed(const Duration(milliseconds: checkIntervalMs));
-    elapsed += checkIntervalMs;
-    vm = ActiveViewModels.get(viewModelTag);
+  appLogger.w('[$tag] Active ViewModel not found: $viewModelTag, skipping step...');
+} else {
+  final intent = MviPlaybackRegistry.parseAndDeserialize(name);
+  if (intent != null) {
+    vm.handleIntent(intent);
   }
 }
 ```
-该机制在目标视图挂载前的短暂延迟中进行隐式重试，确保极快页面切换时的回放可靠性。
+结合统一的 `stepDelay`（默认 1.2s）延时机制，这既保证了 UI 过渡动画能从容执行完毕，又避免了死锁轮询，遇到脏记录时能自动跳过并执行下一帧。
 
 ### 3.4 确认对话框自动确认 (ConfirmEffect Bypass)
 
@@ -165,11 +163,11 @@ class ConfirmProviderImpl extends BaseProvider<ConfirmEffect> {
 
 | 库 / 模块 | 文件路径 | 类 / 成员 | 主要职责 |
 | :--- | :--- | :--- | :--- |
-| **ListenCore** | [base_view_model.dart](file:///c:/Users/liste/Downloads/github/ListenCore/lib/base/base_view_model.dart) | `MviPlaybackObserver` <br> `ActiveViewModels` | 注册全局 Hook 钩子；在运行时监听所有挂载的视图模型及其中派发的 Intent 与 Effect。 |
-| **ListenCore** | [app_nav.dart](file:///c:/Users/liste/Downloads/github/ListenCore/lib/route/app_nav.dart) | `_AppNavObserver` | 劫持 Navigator 的 didPop 回调并提供 `onRoutePopped` 静态钩子。 |
-| **ListenPortfolio** | [playback_manager.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/shared/utils/playback_manager.dart) | `MviPlaybackRecorder` <br> `MviPlaybackPlayer` | **录制器**：捕获初始快照、时序步骤并落盘。<br>**回放器**：管理回放进度、操作沙箱、还原态并依次演播。 |
-| **ListenPortfolio** | [playback_registry_init.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/shared/utils/playback_registry_init.dart) | `MviPlaybackRegistry` | 因禁用反射，用于手写或自动生成注册表，反序列化意图字符串。 |
-| **ListenPortfolio** | [confirm_provider_impl.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/shared/base/confirm_provider_impl.dart) | `ConfirmProviderImpl` | 对话框效果的逻辑分发，回放态下负责自动旁路放行确认。 |
+| **ListenCore** | [base_view_model.dart](../../ListenCore/lib/base/base_view_model.dart) | `MviPlaybackObserver` <br> `ActiveViewModels` | 注册全局 Hook 钩子；在运行时监听所有挂载的视图模型及其中派发的 Intent 与 Effect。 |
+| **ListenCore** | [app_nav.dart](../../ListenCore/lib/route/app_nav.dart) | `_AppNavObserver` | 劫持 Navigator 的 didPop 回调并提供 `onRoutePopped` 静态钩子。 |
+| **ListenPortfolio** | [playback_manager.dart](../lib/shared/utils/playback_manager.dart) | `MviPlaybackRecorder` <br> `MviPlaybackPlayer` | **录制器**：捕获初始快照、时序步骤并落盘。<br>**回放器**：管理回放进度、操作沙箱、还原态并依次演播。 |
+| **ListenPortfolio** | [playback_registry_init.dart](../lib/shared/utils/playback_registry_init.dart) | `MviPlaybackRegistry` | 因禁用反射，用于手写或自动生成注册表，反序列化意图字符串。 |
+| **ListenPortfolio** | [confirm_provider_impl.dart](../lib/shared/base/confirm_provider_impl.dart) | `ConfirmProviderImpl` | 对话框效果的逻辑分发，回放态下负责自动旁路放行确认。 |
 
 ---
 
@@ -177,7 +175,7 @@ class ConfirmProviderImpl extends BaseProvider<ConfirmEffect> {
 
 ### 5.1 自动化单元测试
 
-我们在 [playback_test.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/test/shared/utils/playback_test.dart) 中实现了覆盖所有上述关键技术的自动化测试用例，运行命令为：
+我们在 [playback_test.dart](../test/shared/utils/playback_test.dart) 中实现了覆盖所有上述关键技术的自动化测试用例，运行命令为：
 ```bash
 flutter test test/shared/utils/playback_test.dart
 ```
@@ -186,4 +184,21 @@ flutter test test/shared/utils/playback_test.dart
 1. **基本分发流**：验证 Intent 能被录制并正确反序列化回分发给 ViewModel。
 2. **沙箱恢复性**：验证在录制前 mock 初始化状态，回放时状态应用正确，回放结束后本地 Shared Preferences 彻底恢复到回放前的原态。
 3. **返回拦截 (Pop)**：使用伪造的 `PageRoute` 与非 Page 的 `PopupRoute` (如 Dialog) 验证录制器能精确记录对应的 Pop 数据且回放器能安全执行。
-4. **反射表自检**：对 `lib` 下的意图声明进行静态遍历，自检确保项目中所有的 `Intent` 类及其 union cases 均在 `MviPlaybackRegistry` 中完成注册，防止回放时由于缺少反序列化声明而崩溃。
+## 6. 技术难点与解决方案 (Technical Challenges & Solutions)
+
+### 6.1 零反射依赖环境下的反序列化 (Reflection-less Deserialization)
+* **难点**：Flutter 禁用了 `dart:mirrors` 以减小 AOT 编译的产物体积，导致在运行期无法通过字符串反射实例化 Intent 对象，这对读取 JSON 字符串进行重现造成了极大障碍。
+* **解决方案**：引入了手动（或宏辅助）注册表 `MviPlaybackRegistry`。所有 Intent 在定义时必须静态注册 `parseAndDeserialize` 路由，借助正则匹配参数并显式调用构造器来恢复对象。
+
+### 6.2 脏状态残留引发的回放崩溃
+* **难点**：如果回放进行到一半应用崩溃或被强杀，再次打开时可能会残留假用户数据（如处于“录制版”的登录态），导致正常业务不可用。
+* **解决方案**：采用沙箱模型（State Sandboxing），在 `play` 启动时首先执行 `_cachePreState()` 深度拷贝全部持久化配置（SpUtil & SecureStorage）。使用 `try-catch-finally` 闭包确保在任何退出路径下都执行 `_applyState(prePlaybackState)`，实现了完全幂等的环境重置。
+
+## 7. 设计亮点 (Implementation Highlights)
+
+1. **统一拦截点**：不需要在每个按钮或交互上埋点录像，而是监听 `BaseViewModel` 处理的所有 `Intent` 和 `Effect`，使得任何新增的业务逻辑（只要符合 MVI）均能自动获得零代码录制能力。
+2. **阻断弹窗自动消除**：回放中如果遇到 `ConfirmEffect` 等阻塞式行为，系统在 Provider 层直接识别当前 `isPlaying` 态，并直接派发确认事件 (`effect.onResult(true)`)，实现回放“无缝快进”。
+
+## 8. 设计思路 (Design Rationale)
+
+* **纯本地化无侵入测试**：传统的端到端测试（如 Appium）需要复杂的设备环境配置和跨进程通信。该模块将录制与回放能力完全内置于 Flutter 引擎层之上，在不需要真实服务器的条件下利用 Mock Repository，可以让产品经理和 QA 直接在手机上录制 Bug 路径，并以字符串或 JSON 文件的形式发送给研发一键复现。不仅保障了复现的高保真，还彻底消除了运行环境差异导致的“在我机器上没问题”的扯皮。

@@ -206,16 +206,15 @@
 
 | 模块 | 功能 | 落地文件 |
 |------|------|----------|
-| **Page Route** | AI 对话独立页面，承载 `Scaffold` 并原生支持 Android Predictive Back 与 iOS 边缘滑动返回 | [ai_chat_page.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/presentation/pages/ai_chat_page.dart) (`Routes.aiChat`) |
-| **Global Overlay** | 全局可拖拽悬浮入口（智能防抖识别点击/拖拽，并感知路由动态隐藏/显示） | [global_ai_chat_overlay.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/presentation/pages/global_ai_chat_overlay.dart) |
-| **Floating Button** | 磨砂毛玻璃圆形悬浮球，支持触摸位移防抖判断与平滑拖曳 | [ai_chat_floating_button.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/presentation/widgets/ai_chat_floating_button.dart) |
-| **AI Panel** | 对话面板主体（包含状态监听、自动滚动与主题自适应） | [ai_chat_panel.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/presentation/widgets/ai_chat_panel.dart) |
-| **Header & Mode** | 顶部栏（支持长文本标题截断防护、清除历史）与三种 Persona 模式切换器 | [ai_chat_header.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/presentation/widgets/ai_chat_header.dart)<br>[ai_chat_mode_selector.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/presentation/widgets/ai_chat_mode_selector.dart) |
-| **Chat Stream & FAQ** | 消息气泡列表（Markdown 高亮渲染、重发逻辑）与页面级预设 FAQ 推荐 | [ai_chat_message_list.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/presentation/widgets/ai_chat_message_list.dart)<br>[ai_preset_questions.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/presentation/widgets/ai_preset_questions.dart) |
-| **Input Bar** | 底部消息输入与发送控制条 | [ai_chat_input_bar.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/presentation/widgets/ai_chat_input_bar.dart) |
-| **State & Intent** | MVI 状态与意图（消息列表、三种模式、加载/失败状态、FAQ 字典） | [ai_chat_state.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/presentation/pages/ai_chat_state.dart)<br>[ai_chat_intent.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/presentation/pages/ai_chat_intent.dart) |
-| **ViewModel** | 状态机分发、本地 FAQ 模糊快速检索、Firebase AI 远程交互编排 | [ai_chat_view_model.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/ai_chat/presentation/pages/ai_chat_view_model.dart) |
-| **Firebase AI Service** | 官方 `firebase_ai` SDK 直连驱动 (`FirebaseAI.googleAI` + `gemini-3.7-flash`) | [firebase_ai_service.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/shared/services/firebase/firebase_ai_service.dart) |
+| **Page Route** | AI 对话独立页面，承载 `Scaffold` 并原生支持 Android Predictive Back 与 iOS 边缘滑动返回 | [ai_chat_page.dart](../lib/features/ai_chat/presentation/pages/ai_chat_page.dart) (`Routes.aiChat`) |
+| **Global Overlay** | 全局可拖拽悬浮入口（智能防抖识别点击/拖拽，并感知路由动态隐藏/显示） | [global_ai_chat_overlay.dart](../lib/features/ai_chat/presentation/pages/global_ai_chat_overlay.dart) |
+| **Floating Button** | 磨砂毛玻璃圆形悬浮球，支持触摸位移防抖判断与平滑拖曳 | [ai_chat_floating_button.dart](../lib/features/ai_chat/presentation/widgets/ai_chat_floating_button.dart) |
+| **Header & Mode** | 顶部栏（支持长文本标题截断防护、清除历史）与三种 Persona 模式切换器 | [ai_chat_header.dart](../lib/features/ai_chat/presentation/widgets/ai_chat_header.dart) |
+| **Chat Stream & FAQ** | 消息气泡列表（Markdown 高亮渲染、重发逻辑）与页面级预设 FAQ 推荐 | [ai_chat_message_list.dart](../lib/features/ai_chat/presentation/widgets/ai_chat_message_list.dart)<br>[ai_preset_questions.dart](../lib/features/ai_chat/presentation/widgets/ai_preset_questions.dart) |
+| **Input Bar** | 底部消息输入与发送控制条 | [ai_chat_input_bar.dart](../lib/features/ai_chat/presentation/widgets/ai_chat_input_bar.dart) |
+| **State & Intent** | MVI 状态与意图（消息列表、三种模式、加载/失败状态、FAQ 字典） | [ai_chat_state.dart](../lib/features/ai_chat/presentation/pages/ai_chat_state.dart)<br>[ai_chat_intent.dart](../lib/features/ai_chat/presentation/pages/ai_chat_intent.dart) |
+| **ViewModel** | 状态机分发、本地 FAQ 模糊快速检索、Firebase AI 远程交互编排 | [ai_chat_view_model.dart](../lib/features/ai_chat/presentation/pages/ai_chat_view_model.dart) |
+| **Firebase AI Service** | 官方 `firebase_ai` SDK 直连驱动 (`FirebaseAI.googleAI` + `gemini-3.7-flash`) | [firebase_ai_service.dart](../lib/shared/services/firebase/firebase_ai_service.dart) |
 
 #### 3.8 核心机制与设计考量
 
@@ -616,3 +615,19 @@ Phase 5: 可观测性      ████                              1 天
 **决策参与者**: Listen + Cascade
 **创建日期**: 2026-04-07
 **状态**: 部分实现（前端已完成，后端 RAG 待接入）
+
+
+---
+
+## 技术难点与解决方案 (Technical Challenges & Solutions)
+
+* **状态与生命周期管理**：在 Flutter 中处理异步回调与 Widget 生命周期的错位是一个普遍难题。解决方案是严格遵循 MVI 架构中的状态下发与副作用分发，结合 `AppNav` 统一管理生命周期拦截与清理，防止内存泄漏或无效的 UI 重绘。
+* **跨平台一致性**：不同平台（Android/iOS/Web）的系统级行为（如返回手势、原生组件交互）存在差异。解决方案是使用统一的服务抽象层 (Interfaces)，将平台特有的实现细节隔离在 `_impl` 文件中，保证业务侧调用的跨平台一致性。
+
+
+---
+
+## 设计思路与实现亮点 (Design Rationale & Highlights)
+
+* **职责分离 (Separation of Concerns)**：业务逻辑（ViewModel）、UI 渲染（Page/Widget）和底层通信（Service/Core）被严格分层。UI 层无直接的数据源调用，全部通过 ViewModel 发起 Intent。
+* **响应式单向数据流**：利用 Riverpod 构建不可变的状态树，任何用户交互或网络事件先更新核心状态，UI 仅作为状态的纯函数映射，大幅降低了偶现的 UI 状态不一致 Bug 概率。

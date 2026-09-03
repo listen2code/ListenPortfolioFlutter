@@ -114,7 +114,7 @@
 - **底座解耦注册**：`ListenCore` 中不硬编码任何具体业务模型与 Scheme。支持在 `AppNavConfig` 动态注册 Scheme（如 `listenportfolio`、`myapp`），并提供 `AppNav.registerArgumentConverter<T>` 委托进行强类型反序列化。
 - **宿主业务适配**：在 `app_initializer.dart` 中注册转换委托与原生 Schemes。
 - **原生层 Scheme 配置**：配置 Android `AndroidManifest.xml` 的 `intent-filter` 匹配 Scheme 以及 iOS `Info.plist` 的 `CFBundleURLTypes`。
-- **设计决策文档**：输出详细设计与 Native vs `app_links` 的架构权衡文档（详见 [设计与实现文档](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/docs/deep_link_routing_design.md)）。
+- **设计决策文档**：输出详细设计与 Native vs `app_links` 的架构权衡文档（详见 [设计与实现文档](deep_link_routing_design.md)）。
 - **路由重用与去重防冲突（重磅补强）**：
   - 支持可选的 `replaceIfExists` 参数决定是否在已处于目标页面时执行 `pushReplacement` 替换当前路由，抑或直接静默返回（默认）。
   - 在 `BaseViewModel` 引入 `_activeEffectSubscription`，实现新页面绑定时自动同步注销老页面订阅；在 `BaseLifeCyclePage` 实现 `onPop` 同步注销监听句柄，彻底规避 `pushReplacement` 期间 (300ms 动画重叠期) ViewModel 重用导致的双重弹窗问题。
@@ -127,12 +127,12 @@
 - ✅ 路由拦截器与 `AppNav.tryLogin` 体系合并统一（已废弃冗余代码，并实现卫士式的 RouteInterceptor 过滤链流式导航）
 - ✅ `CacheManager` 职责纠偏与重命名（已正式更名为 `DiskCleanupUtil`，规避与 Repository 缓存策略概念冲突）
 - ✅ 在 `ListenCore` 补充高频常用扩展（BuildContext 快捷属性，String 格式校验与转换，消灭样板代码，已合并至主线）
-- ✅ Intent & Effect 录制与回放系统已完成整体设计、沙箱备份恢复、页面/弹窗返回拦截、轮询等待机制、对话框自动旁路并交付生产（详见 [设计与实现文档](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/docs/intent_effect_playback_design.md)）
-- ✅ `_effectController` 与 `EventBus` 的职责评估与规范设计文档已正式沉淀（详见 [设计与实现文档](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/docs/event_bus_vs_base_effect.md)）
+- ✅ Intent & Effect 录制与回放系统已完成整体设计、沙箱备份恢复、页面/弹窗返回拦截、轮询等待机制、对话框自动旁路并交付生产（详见 [设计与实现文档](intent_effect_playback_design.md)）
+- ✅ `_effectController` 与 `EventBus` 的职责评估与规范设计文档已正式沉淀（详见 [设计与实现文档](event_bus_vs_base_effect.md)）
 
 ### 2. Auth 与缓存策略增强
 
-- ✅ `BaseRepository` 缓存与数据降级策略设计规范文档化（已完成 TTL 缓存与 SWR 后台静默刷新模式规约，详见 [设计与实现文档](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/docs/repository_caching_strategy.md)）
+- ✅ `BaseRepository` 缓存与数据降级策略设计规范文档化（已完成 TTL 缓存与 SWR 后台静默刷新模式规约，详见 [设计与实现文档](repository_caching_strategy.md)）
 - [x] 数据库动态内容国际化 (已于 2026-08-04 完成)
   - [x] Flutter 端在 `AuthInterceptor` 请求拦截器中自动注入当前语言请求头 `Accept-Language`，`LocalMockServer` 自动解析并优先匹配多语言资产（`_zh.json` / `_ja.json`）
   - [x] 彻底去除 UI 模型属性上的过渡性 `.tr` 静态翻译映射（`label`、`tag`、`major`、`certifications`），统一由数据源下发对应目标语言文本
@@ -150,26 +150,26 @@
 - Architecture 文档：模块图、状态流、网络链路图
 - 可观测性说明图：trace、log、crash、mock、backend 联调路径如何串起来
 - ✅ ADR：记录 Zone tracing、SafeMode、MockServer、401 refresh queue、DeepLink 路由、技能雷达图自适应计算等关键决策（详见 docs 下各架构设计文档）
-- ✅ 一篇“为什么这个项目优先做可观测性与稳定性”的短文档已沉淀，用于对外解释项目选型与质量取向（详见 [设计与实现文档](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/docs/project_philosophy.md)）
+- ✅ 一篇“为什么这个项目优先做可观测性与稳定性”的短文档已沉淀，用于对外解释项目选型与质量取向（详见 [设计与实现文档](project_philosophy.md)）
 - Screen capture / GIF：Overview、Login、Settings、CrashLogs
 - Tech stack 选型说明
 - AI 助手 Token 用量与提问次数展示：基于 Gemini `countTokens` API 及本地统计，在 `ai_chat` 浮窗面板顶部添加 Token 消耗与提问次数 Badge 展示
 
 ### 4. 质量与工程化
 
-- ✅ Widget tests：登录流程、Settings、Crash logs、技能卡片左右手势滑动与正反向联动全覆盖（全量 544 项测试 100% 绿灯）
+- ✅ Widget tests：登录流程、Settings、Crash logs、技能卡片左右手势滑动与正反向联动全覆盖（全量 557 项测试 100% 绿灯）
 - Golden tests：UIKit 组件与关键页面
 
 ## Later
 
 ### 1. 可展示增强项
 
-- FIDO2 / Passkey 免密安全登录（见 [fido2_implementation_design.md](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/docs/fido2_implementation_design.md)）
+- FIDO2 / Passkey 免密安全登录（见 [fido2_implementation_design.md](fido2_implementation_design.md)）
 - Google 第三方登录
 
 ### 2. 体验与平台能力
 
-- ✅ Error metrics / fault injection 的可视化验证入口（已在 Fault Injection Playground 中完整落地，详见 [fault_injection_playground_spec.md](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/docs/fault_injection_playground_spec.md)）
+- ✅ Error metrics / fault injection 的可视化验证入口（已在 Fault Injection Playground 中完整落地，详见 [fault_injection_playground_spec.md](fault_injection_playground_spec.md)）
 - 布局检查
 - APK/AAB size 监控与拆包分析
 
@@ -224,6 +224,7 @@
 - AI 智能技术咨询助手落地（基于官方 `firebase_ai` 的 `FirebaseAI.googleAI` + Google Gemini `gemini-3.7-flash` 模型，集成 Firebase App Check 强安全防护；全局可拖拽防误触悬浮球 + 独立 `AiChatPage` 页面；支持多模式切换、页面上下文/Tab 智能感知及本地预设 FAQ 零延迟零 Token 问答，已通过全量单元测试与静态检查）
 - 外观设置字体族动态切换（基于 `AppFontFamily` 跨平台标准通用字体矩阵，打通 `SettingManager` -> `BaseSettingPage` -> `AppTheme` 全局字体族热重构与秒级生效；内置实时 `Aa` 字体样式徽标预览，完全零硬编码与多语言支持，已全量覆盖单元测试与 Widget 测试）
 - Skills 交互式技能雷达图与滑动手势联动（基于 `CustomPainter` 自定义绘制 6 维度能力评估多边形、防截断自适应计算、极坐标触摸拾取与探针交互，支持「雷达图/清单」双视图切换，全动态主题取色与三语国际化；详情卡片支持 `PageView` 左右滑动翻页并与上方按钮栏及雷达图双向无缝联动同步；已全量覆盖 Widget 测试与单元测试，详见 `docs/skills_radar_chart_design.md`）
+- Google Play 延迟深度链接 (Deferred Deep Link)（基于 Android 原生 `InstallReferrerClient` 的零三方轻量自研方案，支持安装前来源与目标 Tab 路由无损还原、`(not set)` 与自然流量脏数据自动清洗、专属欢迎弹窗与直达跳转闭环；配备在线落地页 `test.html` 与应用内开发者模拟调试通道；全量 16 项单元与 Widget 测试 100% 绿灯，详见 `docs/deferred_deep_link_specification.md`）
 
 ### 暂时降级的想法池条目
 
@@ -242,5 +243,6 @@
 - [x] 通过firebase_ai或Firebase Genkit实现AI智能助手（已于 2026-08-18 使用官方 `firebase_ai` + `gemini-3.7-flash` + App Check 完整落地）
 - 试用talker_flutter，storybook_flutter，pubviz 
 - [x] 更新我简历的内容，数据库中简历内容的翻译校准（已于 2026-08-21 完成：全量真实 11 年履历数据与 6 维核心技能矩阵中英日三语校准落地并部署至云端）
-- aboutMe中真实简历pdf的审核，下载
+- aboutMe中真实简历pdf的审核和下载，先隐藏下
 - 熟悉性能面版的功能和数据如何使用
+- 添加https://github.com/listen2code/ListenExpenseTracker的数据到项目列表（aws的数据库，和本地的mock数据）

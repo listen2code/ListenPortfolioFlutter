@@ -1,6 +1,6 @@
 # Skills 技能雷达图 (Skills Radar Chart) - 设计与实现文档
 
-**Status**: `Implemented & Verified (100% Green Test Suite - 543 Tests Passed)`
+**Status**: `Implemented & Verified (100% Green Test Suite - 557 Tests Passed)`
 
 ---
 
@@ -8,7 +8,7 @@
 
 在个人技术作品集与招聘面试场景中，如何向面试官直观展示候选人的**多维度技能深度与全栈架构广度**，是决定第一印象的关键。
 
-为了替代传统单一静态的纯文本标签堆叠，我们在 [AboutMeWidget](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/home/presentation/pages/about_me/about_me_widget.dart) 模块的**顶部核心位置（紧跟个人简介之后）**设计并实现了基于 Flutter 底层绘图引擎 (`CustomPainter`) 的 **交互式技能雷达图 (Skills Radar Chart)**。
+为了替代传统单一静态的纯文本标签堆叠，我们在 [AboutMeWidget](../lib/features/home/presentation/pages/about_me/about_me_widget.dart) 模块的**顶部核心位置（紧跟个人简介之后）**设计并实现了基于 Flutter 底层绘图引擎 (`CustomPainter`) 的 **交互式技能雷达图 (Skills Radar Chart)**。
 
 ### 核心设计目标：
 1. **多维度能力真实模型 (6 Dimensions Capability Matrix)**：基于 11 年 Android、3 年 Flutter、1 年 Java 服务端真实履历，建立 6 大核心维度差异化评分：
@@ -82,20 +82,28 @@ $$P_i(t) = \left( c_x + R \cdot S_i \cdot t \cdot \cos\theta_i, \; c_y + R \cdot
 
 | 文件路径 | 职责 |
 |---|---|
-| [skills_radar_chart.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/home/presentation/pages/about_me/widgets/skills_radar_chart.dart) | 底层 `CustomPainter` 雷达图绘制与触摸手势拾取组件 |
-| [comprehensive_skills.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/home/presentation/pages/about_me/widgets/comprehensive_skills.dart) | 技能模块总装组件（视图切换、动画驱动、维度选择器与详情检查卡） |
-| [about_me_model.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/home/data/models/about_me_model.dart) | `SkillCategoryModel` 扩充 `score` 评分字段并生成 Freezed 模型 |
-| [translations_key.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/shared/i18n/translations_key.dart) | 新增 `skillRadar`、`skillScore`、`viewModeRadar` 等多语言 Key 定义 |
-| [zh.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/shared/i18n/languages/zh.dart) / [ja.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/shared/i18n/languages/ja.dart) | 中、英、日三语翻译字典映射 |
-| [aboutMe.json](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/assets/mock/v1/get/aboutMe.json) / `_zh.json` / `_ja.json` | 6 大维度技能数据与 0~100 评分映射 |
-| [skills_radar_widget_test.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/test/features/home/about_me/skills_radar_widget_test.dart) | 雷达图渲染、手势交互、视图切换、空数据防护全量 Widget 测试 |
+| [skills_radar_chart.dart](../lib/features/home/presentation/pages/about_me/widgets/skills_radar_chart.dart) | 底层 `CustomPainter` 雷达图绘制与触摸手势拾取组件 |
+| [comprehensive_skills.dart](../lib/features/home/presentation/pages/about_me/widgets/comprehensive_skills.dart) | 技能模块总装组件（视图切换、动画驱动、维度选择器与详情检查卡） |
+| [about_me_model.dart](../lib/features/home/data/models/about_me_model.dart) | `SkillCategoryModel` 扩充 `score` 评分字段并生成 Freezed 模型 |
+| [translations_key.dart](../lib/shared/i18n/translations_key.dart) | 新增 `skillRadar`、`skillScore`、`viewModeRadar` 等多语言 Key 定义 |
+| [zh.dart](../lib/shared/i18n/languages/zh.dart) / [ja.dart](../lib/shared/i18n/languages/ja.dart) | 中、英、日三语翻译字典映射 |
+| [aboutMe.json](../assets/mock/v1/get/aboutMe.json) / `_zh.json` / `_ja.json` | 6 大维度技能数据与 0~100 评分映射 |
+| [skills_radar_widget_test.dart](../test/features/home/about_me/skills_radar_widget_test.dart) | 雷达图渲染、手势交互、视图切换、空数据防护全量 Widget 测试 |
 
 ---
 
 ## 5. 质量与测试验证
 
 - **单元与 Widget 测试**：新增 `skills_radar_widget_test.dart`（覆盖空状态、雷达模式默认渲染、维度点击切换、雷达与列表双向切换、Canvas 手势命中测试）。
-- **全量测试套件**：全工程 **543 项** 单元与集成测试用例 **100% 绿灯通过**。
+- **全量测试套件**：全工程 **557 项** 单元与集成测试用例 **100% 绿灯通过**。
 - **静态分析与依赖规则**：
   - `flutter analyze` 保持 `No issues found!` 零警告；
   - `dart tools/dependency_rules.dart` 架构单向依赖零违规。
+
+
+---
+
+## 技术难点与解决方案 (Technical Challenges & Solutions)
+
+* **状态与生命周期管理**：在 Flutter 中处理异步回调与 Widget 生命周期的错位是一个普遍难题。解决方案是严格遵循 MVI 架构中的状态下发与副作用分发，结合 `AppNav` 统一管理生命周期拦截与清理，防止内存泄漏或无效的 UI 重绘。
+* **跨平台一致性**：不同平台（Android/iOS/Web）的系统级行为（如返回手势、原生组件交互）存在差异。解决方案是使用统一的服务抽象层 (Interfaces)，将平台特有的实现细节隔离在 `_impl` 文件中，保证业务侧调用的跨平台一致性。

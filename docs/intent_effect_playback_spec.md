@@ -1,7 +1,7 @@
 # Intent & Effect 录制与回放系统 - 规格定义与实现方案
 
 > [!NOTE]
-> 本系统已完成研发落地。关于具体的架构组件、时序返回劫持、沙箱保护机制、对话框旁路机制及单元测试详情，请阅读 [Intent & Effect 录制与回放系统 - 详细设计与实现文档](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/docs/intent_effect_playback_design.md)。
+> 本系统已完成研发落地。关于具体的架构组件、时序返回劫持、沙箱保护机制、对话框旁路机制及单元测试详情，请阅读 [Intent & Effect 录制与回放系统 - 详细设计与实现文档](intent_effect_playback_design.md)。
 
 本文档详细定义了 **ListenPortfolio** 项目中针对 MVI 架构设计的 **Intent & Effect 本地录制与回放系统**（即本地操作录像机）。本系统专注于在本地（SharedPreferences）记录用户的操作路径与副作用序列，用于**零网络依赖的自动化回归测试**和**线上故障路径还原**，不涉及云端同步。
 
@@ -186,24 +186,33 @@ abstract class PlaybackTapeRepository {
 ### 6.1 拟进行的修改文件及明细
 
 #### 模块 1: `ListenCore` (共享核心库)
-* **[修改] [base_view_model.dart](file:///c:/Users/liste/Downloads/github/ListenCore/lib/base/base_view_model.dart)**
+* **[修改] [base_view_model.dart](../../ListenCore/lib/base/base_view_model.dart)**
   * 定义 `MviPlaybackObserver` 类，提供全局静态的事件派发钩子（`onIntentDispatched` / `onEffectEmitted`）。
   * 定义 `ActiveViewModels` 内存状态管理器，用于在运行时动态查询处于活跃挂载状态的 ViewModel 实例。
   * 在 `BaseViewModel.onInit` 和 `_performRealDispose` 中接入自动注册和注销逻辑。
   * 在 `dispatch`（拦截 Intent 的主方法）以及 `emitEffect` 中触发对应的观察者回调。
 
 #### 模块 2: `ListenPortfolioFlutter` (主应用)
-* **[新建] [lib/shared/utils/playback_observer_manager.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/shared/utils/playback_observer_manager.dart)**
+* **[落地] [lib/shared/utils/playback_manager.dart](../lib/shared/utils/playback_manager.dart)**
   * 实现录制器 `MviPlaybackRecorder`：控制录制的起止，处理时序日志格式化并落盘 `SharedPreferences`。自动根据首个动作生成 “页面名 -> 意图名” 默认标题。
-  * 实现反序列化映射器 `MviPlaybackRegistry`：由于 Flutter 禁用反射，设计纯静态的 switch-case 反序列化方案支持 `LoginIntent`、`SignUpIntent` 等主要用户页面操作对象。
+  * 实现反序列化映射器 `MviPlaybackRegistry`：由于 Flutter 禁用反射，设计纯静态的 switch-case 反序列化方案支持主要用户页面操作对象。
   * 实现回放器 `MviPlaybackPlayer`：循环遍历 JSON 磁带数据，触发对应 ViewModel 上的 `sendIntent` 实现自动演播。
-* **[新建] [lib/shared/widgets/playback_overlay.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/shared/widgets/playback_overlay.dart)**
-  * 使用 Flutter 的 `Overlay` 和 `OverlayEntry` 构建一个全局浮动悬浮按钮。
-  * 支持手势拖拽防止遮挡内容。
-  * 点击按钮在“开始录制”与“停止录制”之间切换。停止时弹出 Dialog 允许用户确认/修改自动生成的录制名称并保存。
-* **[修改] [lib/features/settings/presentation/pages/settings_page.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/settings/presentation/pages/settings_page.dart)**
+* **[落地] [lib/shared/utils/playback_registry_init.dart](../lib/shared/utils/playback_registry_init.dart)**
+  * 注册各页面意图反序列化器与执行器。
+* **[修改] [lib/features/settings/presentation/pages/settings_page.dart](../lib/features/settings/presentation/pages/settings_page.dart)**
   * 在设置列表页中，添加跳转至 `PlaybackTapeListPage` 的入口。
-* **[新建] [lib/features/settings/presentation/pages/playback_tape_list_page.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/settings/presentation/pages/playback_tape_list_page.dart)**
+* **[落地] [lib/features/settings/presentation/pages/playback_tape_list/playback_tape_list_page.dart](../lib/features/settings/presentation/pages/playback_tape_list/playback_tape_list_page.dart)**
   * 展示 `SharedPreferences` 中保存的所有录像磁带列表，点击可查看时序步骤详情，并支持“执行回放 (Play)”与“删除 (Delete)”操作。
-* **[新建] [test/shared/utils/playback_test.dart](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/test/shared/utils/playback_test.dart)**
+* **[落地] [test/shared/utils/playback_test.dart](../test/shared/utils/playback_test.dart)**
   * 编写单元测试用例，全链条验证 Intent 的抓取、写入、解析和分发模拟执行。
+
+---
+
+## 7. 架构设计亮点 (Implementation Highlights)
+
+1. **零侵入式的录制钩子**：借助 `ListenCore` 提供的基类底座，我们仅在 `BaseViewModel` 统一收口的分发管道 `dispatch` 与 `emitEffect` 处注入全局监听观察者，即可捕获任意页面的交互，完全无需在业务 UI 层进行繁琐的埋点。
+2. **安全隔离的回放沙箱**：由于是脱离真实服务器环境的 Mock 回放，回放器在启动时会将现存用户身份数据和环境快照全部缓存，结束后利用 `finally` 代码块绝对复原，保证了任何故障的回放绝不污染使用者的真实账号与持久层数据。
+
+## 8. 设计思路 (Design Rationale)
+
+* **将“录像”内化于架构中**：之所以设计本系统，是为了论证 MVI（Model-View-Intent）单向数据流最核心的架构红利——“确定性输入，必得确定性输出”。我们避开了依赖复杂 UI 视图树层级查找、坐标模拟点击等高难度端到端自动化测试手段，而是直接下钻至逻辑中枢分发 Intent 指令。这不仅避开了跨平台 UI 解析难题，更把回放与防御验证的成本降低到了极致。

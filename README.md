@@ -35,6 +35,7 @@ ListenPortfolioFlutter 是一个基于 Flutter 构建的个人技术作品集应
 - **主题切换**：浅色 / 深色 / 跟随系统 + 强调色 / 字号持久化 + **Material You 动态取色** (Android 12+ 平台下支持跟随系统壁纸色调自动变色)
 - **Skills 交互式技能雷达图**：基于底层 `CustomPainter` 自定义绘制 6 大核心维度能力评估多边形（移动端开发、系统架构、性能与 APM、稳定性防御、后端与云原生、DevOps），支持极坐标手势触摸检测、雷达顶点实时交互与下钻详情卡片、多语言与「雷达图/清单」双视图无缝切换
 - **AI 架构与技术介绍助手**：基于官方 Firebase AI SDK (`FirebaseAI.googleAI`) + Google Gemini `gemini-3.7-flash` 模型打造的智能技术咨询助手；集成 Firebase App Check 强安全防护；全局可拖拽悬浮球 + 独立 `AiChatPage` 页面；支持多模式（访客/招聘官/架构师）切换、页面上下文/Tab 智能感知及本地预设 FAQ 零延迟零 Token 问答
+- **Google Play 延迟深度链接 (Deferred Deep Link)**：基于 Android 原生 `InstallReferrerClient` 的零三方轻量级自研延迟深度链接方案 (集成 Install Referrer 跟踪)；支持安装前来源渠道与目标 Tab 路由无损还原、`(not set)` 与自然流量脏数据自动清洗、带「不再显示」选项的专属欢迎弹窗与直达跳转闭环；配备在线落地页 [`test.html`](https://listen2code.github.io/ListenPortfolioFlutter/pages/test.html) 与应用内开发者模拟调试通道（详见 [延迟深度链接技术规范](docs/deferred_deep_link_specification.md)）
 - **故障注入与韧性演练中心 (Fault Injection Playground)**：用于直观验证与展示高可用架构的受控演练平台；内置 **7 大受控演练场景**（401 并发静默重试队列、500 异常契约收敛、网络超时降级、畸形 HTML 网关防崩保护、Zone 异步异常落盘、Safe Mode 连续崩溃熔断自愈、主线程 Jank 卡顿 APM 检测）；配备毫秒级实时终端控制台、`traceId` 一键复制与下钻联动 `LogOverlay` 浮窗调试闭环
 
 ### 架构与基础设施
@@ -49,7 +50,7 @@ ListenPortfolioFlutter 是一个基于 Flutter 构建的个人技术作品集应
 - **Zone tracing**：Intent / 页面 / 请求链路支持 `traceId` 和阶段打点
 - **Crash Safe Mode**：快速连续崩溃防护、自动熔断自愈与本地 crash log 持久化
 - **日志浮窗与 APM 性能监控**：内置开发调试窗口（LogOverlay），支持实时帧率/Jank 监测、Net Inspector 抓包、按 `traceId` 过滤全链路日志
-- **零告警工程质量与全量测试套件**：**543 项** 单元与集成测试用例 100% 绿灯通过，内置 MVI Playback 反射自检，代码通过静态分析（`No issues found!`）与架构依赖边界检查（`dependency_rules.dart`）双重零违规验证
+- **零告警工程质量与全量测试套件**：**557 项** 单元与集成测试用例 100% 绿灯通过，内置 MVI Playback 反射自检，代码通过静态分析（`No issues found!`）与架构依赖边界检查（`dependency_rules.dart`）双重零违规验证
 
 ### 更能代表当前项目取向的能力
 
@@ -154,6 +155,10 @@ dart tools/dependency_rules.dart --graph
 - `docs/fido2_implementation_design.md`：FIDO2 / Passkey 免密认证设计方案（设计方案，尚未实现）
 - `docs/intent_effect_playback_spec.md`：Intent & Effect 录制与回放设计方案
 - `docs/shorebird_code_push_guide.md`：Shorebird OTA Code Push 热更新集成与使用指南
+- `docs/deferred_deep_link_specification.md`：Deferred Deep Link 延迟深度链接技术规格
+- `docs/test_coverage_report.md`：测试覆盖率报告与用例清单
+- `docs/dependency_refactoring_plan.md`：剔除部分三方 Pub 依赖并自主实现的计划与可行性分析
+- `docs/flutter_web_aws_deployment_guide.md`：Flutter Web 打包构建、AWS EC2 部署发布与全流程踩坑指南
 - `docs/todo.md`：后续执行路线图
 
 ## 🎯 目标态（明确未全部实现）

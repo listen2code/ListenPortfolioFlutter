@@ -509,6 +509,17 @@ find assets/mock/v1 -name "*.json" -exec sed -i 's/"updatedAt": "[^"]*"/"updated
 
 ---
 
+## 🚀 架构设计亮点 (Implementation Highlights)
+
+1. **智能国际化路由 (Auto-Routing)**：`LocalMockServer` 不仅仅是静态文件读取，它内置了智能的 `Accept-Language` 头解析器。无需开发者手动编写逻辑，即可自动为日语/中文环境匹配 `_ja.json` 或 `_zh.json`，在无缝适配全球化的同时，大幅度降低了前端视图层过度使用 `.tr` 的冗余翻译。
+2. **RESTful 语义目录**：抛弃了传统“一锅炖”的散乱 JSON 目录，严格遵循 HTTP Method 和版本号分层（如 `v1/post/auth/login.json`），这使得 Mock 环境能真实还原复杂的 RESTful API 树结构。
+
+## 🧠 设计思路 (Design Rationale)
+
+* **本地优先的开发体验 (Local-First)**：在早期的前后端分离开发中，移动端常因后端接口未就绪而阻塞。本规范结合内建的 Mock HttpServer，实现了真正意义上的脱机开发。不仅提升了研发效率，也确保了 QA 能够在纯离线环境下对 UI 边界场景（如分页极限、空数据、超长文本）进行精准注入测试。
+
+---
+
 **更新日期**: 2026-04-03  
 **维护者**: 开发团队  
 **版本**: 1.0.0

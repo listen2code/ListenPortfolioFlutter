@@ -93,7 +93,7 @@ abstract class INotificationService {
 
 ### 4.1 核心服务实现类
 
-创建 `lib/shared/services/firebase_notification_service_impl.dart`：
+落地文件位于：[`lib/shared/services/firebase/firebase_notification_service_impl.dart`](../lib/shared/services/firebase/firebase_notification_service_impl.dart)：
 
 ```dart
 import 'dart:async';
@@ -543,3 +543,11 @@ node tools/send_push_notification.js [options]
    ```bash
    node tools/send_push_notification.js --type tab --tab settings --token "YOUR_FCM_REGISTRATION_TOKEN"
    ```
+
+
+---
+
+## 技术难点与解决方案 (Technical Challenges & Solutions)
+
+* **状态与生命周期管理**：在 Flutter 中处理异步回调与 Widget 生命周期的错位是一个普遍难题。解决方案是严格遵循 MVI 架构中的状态下发与副作用分发，结合 `AppNav` 统一管理生命周期拦截与清理，防止内存泄漏或无效的 UI 重绘。
+* **跨平台一致性**：不同平台（Android/iOS/Web）的系统级行为（如返回手势、原生组件交互）存在差异。解决方案是使用统一的服务抽象层 (Interfaces)，将平台特有的实现细节隔离在 `_impl` 文件中，保证业务侧调用的跨平台一致性。

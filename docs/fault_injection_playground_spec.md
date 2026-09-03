@@ -142,3 +142,14 @@ lib/features/fault_injection/
 ### 6.2 架构与反射测试
 - **依赖边界检查**：运行 `dart tools/dependency_rules.dart`，确保纯单向依赖与 0 架构违规；
 - **MVI Playback 全量 Intent 注册校验**：`test/shared/utils/playback_test.dart` 反射扫描确保 `FaultInjectionIntent` 所有构造器均完成反序列化注册。
+
+---
+
+## 7. 架构设计亮点 (Implementation Highlights)
+
+1. **零侵入式故障模拟**：该演练中心的注入行为全部基于现有架构的拦截器机制和边界防护网。例如“并发 401”并非修改业务逻辑，而是真实发起并拦截 HTTP 请求，完美复原了线上的并发竞态条件。
+2. **可视化的可观测闭环**：通过集成 `ExecutionStepLog` 控制台，用户不仅能看到最终结果是成功还是降级，还能以毫秒级精度观察到 `[INTERCEPT]` 和 `[RECOVER]` 阶段的防御网触发轨迹，并无缝下钻到全链路 Trace。
+
+## 8. 设计思路 (Design Rationale)
+
+* **展示“看不见”的架构内功**：通常，客户端的健壮性（如断网重试、防崩溃沙箱）只有在极端异常发生时才会生效，日常难以向评审专家展示。该演练中心将所有防御机制“显式化”、“可交互化”，通过主动引发异常来证明系统自愈能力，既是绝佳的 Portfolio 展示手段，也是研发和 QA 团队进行回归验证的最佳入口。

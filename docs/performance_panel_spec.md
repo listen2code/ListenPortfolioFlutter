@@ -2,7 +2,7 @@
 
 **Status**: `Implemented`
 
-> 本文档描述的是性能面板的原始设计方案与模块拆分。目前该性能面板（APM 性能监控面板）已在 `ListenCore` 与 Flutter App 中完整实现。最终落地的详细技术设计与实现请参考最新的 [APM 性能监控面板设计与实现文档](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/docs/apm_performance_monitoring_design.md)。
+> 本文档描述的是性能面板的原始设计方案与模块拆分。目前该性能面板（APM 性能监控面板）已在 `ListenCore` 与 Flutter App 中完整实现。最终落地的详细技术设计与实现请参考最新的 [APM 性能监控面板设计与实现文档](apm_performance_monitoring_design.md)。
 
 ## 1. 概述
 
@@ -47,7 +47,7 @@ Log Overlay                               UI 扩展
 ## 2. 系统架构
 
 > [!NOTE]
-> 本章节及后续所描述的系统架构、数据模型、实现细节与 UI 界面已在底座和主工程中完全实现，具体开发细节请看最新的 [设计与实现文档](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/docs/apm_performance_monitoring_design.md)。
+> 本章节及后续所描述的系统架构、数据模型、实现细节与 UI 界面已在底座和主工程中完全实现，具体开发细节请看最新的 [设计与实现文档](apm_performance_monitoring_design.md)。
 
 ### 2.1 模块划分
 
@@ -661,6 +661,17 @@ Phase 3 + 4 在 ListenPortfolioFlutter 中完成，纯 UI。
 | Platform Channel 原生指标 | 需要精确 CPU/内存 | 增加 Android/iOS 原生代码 |
 | Network Inspector 集成 | ✅ 已实现 | `NetworkInspectorStore` + `_NetworkInspectorTab`，详见 `apm_performance_monitoring_design.md` §2.6 |
 | CI 性能基准测试 | CI 就绪后 | `flutter test --profile` + benchmark |
+
+---
+
+## 14. 架构设计亮点 (Implementation Highlights)
+
+1. **零原生依赖 (Zero Native Code)**：在早期设计中，团队曾考虑通过 Platform Channels 调用 Android/iOS 底层 API。但在本方案中，全盘利用了 `SchedulerBinding.addTimingsCallback` 与 `dart:io ProcessInfo`，使得这套 APM 面板完全跨平台，且极大降低了维护成本。
+2. **微秒级十字探针 (Crosshair Drill-down)**：不仅仅是展示平均帧率，UI 面板上的大折线图通过精准的 `GestureDetector` 和画布重绘，实现了对单帧的像素级拾取，开发者能一键获悉某一次长卡顿发生的具体微秒数和对应的页面。
+
+## 15. 设计思路 (Design Rationale)
+
+* **为什么选择 Overlay 而是独立页面？**：性能监控的核心诉求是“边用边看”。如果采用单独的设置页查看，不仅会破坏当前的现场（触发路由栈变更），也无法直观对应“刚才那下划卡了是几帧”。Overlay 悬浮窗结合可推拽、可缩放的设计，完美契合了“现场诊断”的需求。
 
 ---
 

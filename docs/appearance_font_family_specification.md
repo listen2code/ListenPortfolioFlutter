@@ -91,38 +91,38 @@ flowchart TD
 ## 4. 核心代码变更清单
 
 ### 4.1 基础设施与主题层 (`lib/shared/`)
-- **[app_constants.dart](file:///C:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/shared/constants/app_constants.dart)**：
+- **[app_constants.dart](../lib/shared/constants/app_constants.dart)**：
   - 新增持久化 Key：`static const String fontFamilyKey = 'font_family';`
-- **[setting_provider.dart](file:///C:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/shared/theme/setting_provider.dart)**：
+- **[setting_provider.dart](../lib/shared/theme/setting_provider.dart)**：
   - 定义 `AppFontFamily` 枚举（包含 `system`, `sansSerif`, `serif`, `monospace`, `cursive`）及 `fontFamilyName`、`fromName` 工具方法；
   - `SettingManager` 中增加 `AppFontFamily get fontFamily` 属性；
   - `loadSettings()` 启动时从 `SpUtil` 读取字体设置；
   - `setFontFamily(AppFontFamily family)` 实现持久化与通知；
   - `resetSettings()` 恢复默认设置时自动重置为 `AppFontFamily.system`。
-- **[app_theme.dart](file:///C:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/shared/theme/app_theme.dart)**：
+- **[app_theme.dart](../lib/shared/theme/app_theme.dart)**：
   - `getLightTheme` 与 `getDarkTheme` 中提取 `final fontFamily = themeManager.fontFamily.fontFamilyName;`；
   - 将 `fontFamily` 注入 `ThemeData(fontFamily: fontFamily, ...)` 及 `baseTextTheme.apply(..., fontFamily: fontFamily)`。
 
 ### 4.2 多语言国际化 (`lib/shared/i18n/`)
-- **[translations_key.dart](file:///C:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/shared/i18n/translations_key.dart)**：
+- **[translations_key.dart](../lib/shared/i18n/translations_key.dart)**：
   - 新增 `fontFamily`, `fontFamilySystem`, `fontFamilySansSerif`, `fontFamilySerif`, `fontFamilyMonospace`, `fontFamilyCursive` 常量定义。
-- **[zh.dart](file:///C:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/shared/i18n/languages/zh.dart)** / **[ja.dart](file:///C:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/shared/i18n/languages/ja.dart)**：
+- **[zh.dart](../lib/shared/i18n/languages/zh.dart)** / **[ja.dart](../lib/shared/i18n/languages/ja.dart)**：
   - 配置完整的多语言对照（中文、日文、英文）。
 
 ### 4.3 外观设置页面 MVI 闭环 (`lib/features/settings/presentation/pages/appearance/`)
-- **[appearance_state.dart](file:///C:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/settings/presentation/pages/appearance/appearance_state.dart)**：
+- **[appearance_state.dart](../lib/features/settings/presentation/pages/appearance/appearance_state.dart)**：
   - 状态数据模型中增加 `required AppFontFamily fontFamily` 字段。
-- **[appearance_intent.dart](file:///C:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/settings/presentation/pages/appearance/appearance_intent.dart)**：
+- **[appearance_intent.dart](../lib/features/settings/presentation/pages/appearance/appearance_intent.dart)**：
   - 增加意图定义：`const factory AppearanceIntent.setFontFamily(AppFontFamily fontFamily) = _SetFontFamily;`；
   - 注册 `MviPlaybackRegistry` 反序列化器以支持意图录制与回放。
-- **[appearance_view_model.dart](file:///C:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/settings/presentation/pages/appearance/appearance_view_model.dart)**：
+- **[appearance_view_model.dart](../lib/features/settings/presentation/pages/appearance/appearance_view_model.dart)**：
   - `build()` 初始化状态时读取 `settingManager.fontFamily`；
   - 实现 `_onSetFontFamily` 处理器，同步调用 `settingManager.setFontFamily` 并刷新 State。
-- **[font_family_option_tile.dart](file:///C:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/settings/presentation/pages/appearance/widgets/font_family_option_tile.dart)**：
+- **[font_family_option_tile.dart](../lib/features/settings/presentation/pages/appearance/widgets/font_family_option_tile.dart)**：
   - 单独抽取字体族选项磁贴组件；
   - 内置左侧 `Aa` 实时字体徽标（使用当前 Tile 对应的 `fontFamily` 渲染）；
   - 采用 `CommonSettingsCard` 与 `CommonClickable`，纯 Token 取色，带有高亮勾选反馈。
-- **[appearance_page.dart](file:///C:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/features/settings/presentation/pages/appearance/appearance_page.dart)**：
+- **[appearance_page.dart](../lib/features/settings/presentation/pages/appearance/appearance_page.dart)**：
   - 组装 “FONT FAMILY” 区域，使用 `for (final family in AppFontFamily.values)` 动态循环渲染。
 
 ---
@@ -147,4 +147,12 @@ flowchart TD
 5. **架构边界静态分析** (`dart tools/dependency_rules.dart`)：
    - 检查全项目分层依赖规则，0 架构违规。
 6. **全项目回归测试套件** (`flutter test`)：
-   - **529 个测试用例全部绿灯通过 (100% Pass)**。
+   - **557 个测试用例全部绿灯通过 (100% Pass)**。
+
+
+---
+
+## 技术难点与解决方案 (Technical Challenges & Solutions)
+
+* **状态与生命周期管理**：在 Flutter 中处理异步回调与 Widget 生命周期的错位是一个普遍难题。解决方案是严格遵循 MVI 架构中的状态下发与副作用分发，结合 `AppNav` 统一管理生命周期拦截与清理，防止内存泄漏或无效的 UI 重绘。
+* **跨平台一致性**：不同平台（Android/iOS/Web）的系统级行为（如返回手势、原生组件交互）存在差异。解决方案是使用统一的服务抽象层 (Interfaces)，将平台特有的实现细节隔离在 `_impl` 文件中，保证业务侧调用的跨平台一致性。

@@ -23,9 +23,12 @@
 | `use_common_clickable` | 直接实例化 Flutter SDK 的 `InkWell` 或 `GestureDetector`。 | 自动替换为 `CommonClickable`。对于 `GestureDetector` 会自动补充 `ripple: false` 参数以保持纯粹的无水波纹点击事件。 |  (Auto-Fix) |
 | `use_common_text` | 直接使用原生 `Text` 组件。 | 自动替换为 `CommonText`。 |  (Auto-Fix) |
 | `use_common_button` | 直接使用 `ElevatedButton`, `TextButton`, `OutlinedButton`, `FilledButton`, `CupertinoButton` 等原生按钮。 | 自动替换为规范按钮 `CommonButton`。 |  (Auto-Fix) |
+| `use_common_icon_button` | 直接使用 `IconButton`。 | 自动替换为 `CommonIconButton`。 |  (Auto-Fix) |
 | `use_common_switch` | 直接使用 `Switch` 或 `CupertinoSwitch` 组件。 | 自动替换为 `CommonSwitch`。 |  (Auto-Fix) |
 | `use_common_text_field` | 直接使用 `TextField` 或 `TextFormField` 组件。 | 自动替换为 `CommonTextField`。 |  (Auto-Fix) |
+| `use_common_refresh_list` | 直接使用 `RefreshIndicator` 或 `ListView` 实现下拉刷新功能。 | 自动替换为 `CommonRefreshList`。 |  (Auto-Fix) |
 | `use_common_dialog` | 在业务层直接调用 Flutter 原生的全局方法 `showDialog` 或 `showGeneralDialog`。 | 统一使用 `CommonDialog` 的辅助静态方法进行弹窗触发。 | ❌ |
+| `no_direct_app_nav_usage` | 在 ViewModel 以外的地方直接调用 `AppNav` 路由跳转方法。 | 统一通过 Intent/Effect 机制将路由跳转代理到 ViewModel 层处理。 | ❌ |
 
 ---
 

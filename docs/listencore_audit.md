@@ -430,6 +430,18 @@ import 'package:intl/intl.dart';
 
 ---
 
+## 7. 架构设计亮点 (Implementation Highlights)
+
+1. **分层严格的单向数据流 (MVI)**：从基类强制推行 ViewModel -> State -> View 的单向流动，并将副作用隔离至独立的 Effect 管道。这使得 View 层极其轻薄，仅负责渲染，为后期的全链路自动化录制回放（Playback）奠定了决定性基础。
+2. **极简配置与开箱即用**：不同于常规繁重的企业级框架，ListenCore 将基础配置收敛到统一的 `CoreConfig` 和单例初始化工厂中。一行 `Core.init()` 即可激活包含网络拦截、崩溃捕获、环境感知、本地 Mock 服务器在内的完整生态。
+
+## 8. 设计思路 (Design Rationale)
+
+* **平衡“抽象”与“灵活” (Abstractions vs Flexibility)**：在框架演进中，我们始终警惕“过度设计”。例如在缺失的 UI 组件抽象（如 Image Picker、Empty Widget）和重度依赖（如 riverpod）决策上，决定做“减法”，让核心库专注于状态管理和网络传输这些高通用逻辑。
+* **质量驱动迭代 (Test-Driven Evolution)**：在审计出 P0 级无测试用例短板后，项目暂停了业务特性开发，集中突击补齐了 300+ 测试。这种短痛长效的做法，证明了“没有测试基准的重构就是盲人摸象”，重塑了后续长期维护的信心。
+
+---
+
 **文档版本**: v1.1
 **审计者**: Cascade
 **审计日期**: 2026-07-20 (修订)

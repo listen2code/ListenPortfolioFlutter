@@ -242,3 +242,19 @@ public class GoogleAuthService {
 > 
 > **应对策略**：
 > 在 Phase 3（第 11-16 周）接入 Google 登录时，应在 UI 上并排提供 `Google 登录` 和 `Apple 登录` 两个按钮。在 iOS 系统下渲染两者，而在 Android 系统下隐藏 Apple 登录按钮。
+
+
+---
+
+## 技术难点与解决方案 (Technical Challenges & Solutions)
+
+* **状态与生命周期管理**：在 Flutter 中处理异步回调与 Widget 生命周期的错位是一个普遍难题。解决方案是严格遵循 MVI 架构中的状态下发与副作用分发，结合 `AppNav` 统一管理生命周期拦截与清理，防止内存泄漏或无效的 UI 重绘。
+* **跨平台一致性**：不同平台（Android/iOS/Web）的系统级行为（如返回手势、原生组件交互）存在差异。解决方案是使用统一的服务抽象层 (Interfaces)，将平台特有的实现细节隔离在 `_impl` 文件中，保证业务侧调用的跨平台一致性。
+
+
+---
+
+## 设计思路与实现亮点 (Design Rationale & Highlights)
+
+* **职责分离 (Separation of Concerns)**：业务逻辑（ViewModel）、UI 渲染（Page/Widget）和底层通信（Service/Core）被严格分层。UI 层无直接的数据源调用，全部通过 ViewModel 发起 Intent。
+* **响应式单向数据流**：利用 Riverpod 构建不可变的状态树，任何用户交互或网络事件先更新核心状态，UI 仅作为状态的纯函数映射，大幅降低了偶现的 UI 状态不一致 Bug 概率。

@@ -1,6 +1,14 @@
 # 剔除部分三方 Pub 依赖并自主实现的计划与可行性分析
 
+> [!NOTE]
+> **Implementation Progress**:
+> - **已重构 (Refactored)**: `fpdart` 已被自定义 `Either` 实现替换并从 `pubspec.yaml` 移除。
+> - **计划中 (Remaining)**: `uuid`, `logger`, `visibility_detector`, `device_info_plus`, `package_info_plus`, `connectivity_plus` 目前仍在 `pubspec.yaml` 中，将按本计划逐步替换。
+
 作为以学习为目的的重构计划，剔除不必要的三方依赖并自主实现，不仅能让包体积更轻量、减少三方库版本冲突风险（如升级 SDK 时的各种不兼容），更能帮助深挖 Flutter 的底层渲染、Dart 语言高级特性以及原生通道（Platform Channels）机制。
+
+## 设计思路 (Design Rationale)
+本项目并非一味追求“不造轮子”，而是有选择地重构**技术壁垒较低且易于陷入依赖地狱**的周边工具库。对于 `dio` 或 `flutter_riverpod` 等经过长期社区验证的核心基建，保持引入；对于类似 `uuid` 或 `logger` 这种只需不到 100 行代码即可满足业务需求的库，自主实现能带来最高的 ROI（投入产出比）和代码掌控度。
 
 ---
 

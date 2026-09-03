@@ -26,7 +26,7 @@ dependencies:
   shorebird_code_push: ^2.0.0
 ```
 
-### 2. 服务接口与实现 ([`shorebird_service.dart`](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/shared/services/shorebird/shorebird_service.dart))
+### 2. 服务接口与实现 ([`shorebird_service.dart`](../lib/shared/services/shorebird/shorebird_service.dart))
 项目在 `lib/shared/services/shorebird/shorebird_service.dart` 中封装了 `IShorebirdService` 抽象接口与实现：
 
 - **状态判定**：提供 `ShorebirdCodePushStatus` 枚举 (`idle`, `checking`, `updateAvailable`, `downloading`, `patchDownloaded`, `upToDate`, `unavailable`, `error`)。
@@ -39,7 +39,7 @@ dependencies:
   - `downloadUpdate()`：在后台非阻塞下载 Patch 补丁。
   - **`checkAndInstallPatch({onPatchDownloaded})`**：高阶封装全流程，静默检查并下载 Patch，并在成功后触发回调。
 
-### 3. 应用初始化 ([`app_initializer.dart`](file:///c:/Users/liste/Downloads/github/ListenPortfolioFlutter/lib/shared/utils/app_initializer.dart))
+### 3. 应用初始化 ([`app_initializer.dart`](../lib/shared/utils/app_initializer.dart))
 在组合根 `AppInitializer` 中安全完成全局单例装配：
 ```dart
 // 5. Initialize Shorebird OTA Code Push Service
@@ -211,3 +211,19 @@ final formattedVersion = await shorebirdService.getFormattedVersion('1.1.11+1');
      - **网络图片（推荐）**：在 Patch 中新增图片应统一采用网络 URL（CDN / HTTPS），如 `CommonImage.url(...)`。
      - **代码内嵌矢量图**：对于极小的图标，可转为 SVG 文本或 Base64 字符串直接作为 String 变量内嵌在 Dart 代码中。
      - **本地静态图片**：若必须新增大型本地 `assets/` 文件，则必须通过发布全量新版本（`shorebird release`）来更新。
+
+
+---
+
+## 技术难点与解决方案 (Technical Challenges & Solutions)
+
+* **状态与生命周期管理**：在 Flutter 中处理异步回调与 Widget 生命周期的错位是一个普遍难题。解决方案是严格遵循 MVI 架构中的状态下发与副作用分发，结合 `AppNav` 统一管理生命周期拦截与清理，防止内存泄漏或无效的 UI 重绘。
+* **跨平台一致性**：不同平台（Android/iOS/Web）的系统级行为（如返回手势、原生组件交互）存在差异。解决方案是使用统一的服务抽象层 (Interfaces)，将平台特有的实现细节隔离在 `_impl` 文件中，保证业务侧调用的跨平台一致性。
+
+
+---
+
+## 设计思路与实现亮点 (Design Rationale & Highlights)
+
+* **职责分离 (Separation of Concerns)**：业务逻辑（ViewModel）、UI 渲染（Page/Widget）和底层通信（Service/Core）被严格分层。UI 层无直接的数据源调用，全部通过 ViewModel 发起 Intent。
+* **响应式单向数据流**：利用 Riverpod 构建不可变的状态树，任何用户交互或网络事件先更新核心状态，UI 仅作为状态的纯函数映射，大幅降低了偶现的 UI 状态不一致 Bug 概率。

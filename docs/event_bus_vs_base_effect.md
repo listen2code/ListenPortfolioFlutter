@@ -151,3 +151,22 @@ graph TD
     D -->|一次性指令| E[使用 EventBus 普通事件]
     D -->|需要保留状态, 供后来订阅者也能立刻获取| F[使用 EventBus Sticky 粘性事件]
 ```
+
+## 6. 技术难点与解决方案 (Technical Challenges & Solutions)
+
+### 6.1 路由切换期间的 Effect 重复弹起 (Ghost Dialogs)
+* **难点**：Flutter 路由动画期间（如约 300ms 的 Slide 动画），前一个页面的 Widget 虽然看不见，但并未立刻 `dispose`。如果此期间 ViewModel 派发了一个全局 Effect（如 Token 异常弹窗），会导致前后两个页面同时响应，叠加弹出两层对话框。
+* **解决方案**：在框架路由分发器 (`routes.dart`) 的底座隔离逻辑中，一旦新页面开始挂载，当前页面的 BaseEffect 监听总线会被立即注销挂起，确保重叠期内的 UI 污染问题。
+
+### 6.2 ViewModel 的单向数据流闭环与 EventBus 冲突
+* **难点**：开发者习惯在 EventBus 回调中直接使用 `setState` 刷新 UI，但这打破了 MVI 架构统一依靠 `State` 改变来驱动 UI 的约定。
+* **解决方案**：强烈建议开发者仅在 `ViewModel` 中订阅 EventBus。当接收到全局广播（如网络变化）后，在 `ViewModel` 内部转化为自身私有的 `State` 更新（`emitState`），最终经由 `BlocBuilder` 呈现到界面。这一强制解耦是确保状态可被回放（Playback）录制的关键基石。
+
+## 7. 设计亮点 (Implementation Highlights)
+
+1. **去中心化的生命周期联动**：`BaseLifeCyclePage` 中绑定了 `_activeEffectSubscription`，巧妙利用 Widget 的 `dispose` 生命周期去取消由于 `emitEffect` 产生的一次性流监听，开发者无需关心局部 Effect 造成的内存泄漏。
+2. **Sticky 事件的懒加载 (Lazy Dispatch)**：EventBus 的粘性特性允许系统核心服务（如 AuthService）在启动极早期就广播登录态，而此时 UI 首页尚未构建。等 UI 层级（Subscriber）首次初始化时，能立刻收到最近一次 Sticky 状态，杜绝了初始化时机不同步导致的空状态问题。
+
+## 8. 设计思路 (Design Rationale)
+
+* **隔离通信管道 (Segregation of Channels)**：UI 展示需求（如 Toast、Dialog、Snackbar）是高度依赖上下文 `BuildContext` 的，本质是局部的、UI 强相关的，必须使用 `BaseEffect` 并依托页面级的生命周期运行。而业务逻辑需求（如用户注销、全局语言改变）是全局的、上下文无关的，更适合 `EventBus` 广播。强制区分这两种管道，能够从架构根源上遏制 UI 耦合业务底层、或底层越权操控 UI 的“意大利面条式”代码。
