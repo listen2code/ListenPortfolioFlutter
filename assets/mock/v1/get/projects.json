@@ -52,6 +52,16 @@
       "imageUrl": "localhost/images/project5.jpg",
       "githubUrl": "https://github.com/listen2code/article",
       "techStack": ["Markdown", "Documentation", "Knowledge Sharing"]
+    },
+    {
+      "id": "6",
+      "businessId": "listen-expense-tracker",
+      "title": "Listen Expense Tracker",
+      "subtitle": "Android App",
+      "desc": "A modern native Android personal finance app built with Kotlin 2.x, Jetpack Compose, MVI, Room Local-First architecture, Google Credential Manager, and Google Drive cloud backup.",
+      "imageUrl": "localhost/images/project6.jpg",
+      "githubUrl": "https://github.com/listen2code/ListenExpenseTracker",
+      "techStack": ["Kotlin", "Jetpack Compose", "MVI", "Room", "Google Drive API"]
     }
   ]
 }

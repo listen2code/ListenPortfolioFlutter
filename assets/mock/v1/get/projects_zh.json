@@ -52,6 +52,16 @@
       "imageUrl": "localhost/images/project5.jpg",
       "githubUrl": "https://github.com/listen2code/article",
       "techStack": ["Markdown", "Documentation", "Knowledge Sharing"]
+    },
+    {
+      "id": "6",
+      "businessId": "listen-expense-tracker",
+      "title": "Listen Expense Tracker 原生记账",
+      "subtitle": "原生移动应用",
+      "desc": "基于 Kotlin 2.x + Jetpack Compose + MVI + Room 离线优先架构打造的原生 Android 极简记账应用。支持 Google Credential Manager 原生账户认证、Google Drive 云端备份恢复、多维 Canvas 统计图表及桌面小组件。",
+      "imageUrl": "localhost/images/project6.jpg",
+      "githubUrl": "https://github.com/listen2code/ListenExpenseTracker",
+      "techStack": ["Kotlin", "Jetpack Compose", "MVI", "Room", "Google Drive API"]
     }
   ]
 }

@@ -52,6 +52,16 @@
       "imageUrl": "localhost/images/project5.jpg",
       "githubUrl": "https://github.com/listen2code/article",
       "techStack": ["Markdown", "Documentation", "Knowledge Sharing"]
+    },
+    {
+      "id": "6",
+      "businessId": "listen-expense-tracker",
+      "title": "Listen Expense Tracker 家計簿アプリ",
+      "subtitle": "ネイティブAndroidアプリ",
+      "desc": "Kotlin 2.x、Jetpack Compose、MVIパターン、Roomローカルファースト設計で構築されたネイティブAndroid家計簿アプリ。Google Credential Manager認証、Google Driveクラウドバックアップ、Canvasグラフ分析、AppWidgetを搭載。",
+      "imageUrl": "localhost/images/project6.jpg",
+      "githubUrl": "https://github.com/listen2code/ListenExpenseTracker",
+      "techStack": ["Kotlin", "Jetpack Compose", "MVI", "Room", "Google Drive API"]
     }
   ]
 }

@@ -4,245 +4,180 @@
 
 - 本文件只保留执行路线，不再作为“想法池”堆叠所有可能性
 - README.md 只描述当前已实现能力；未来方向、设计稿和探索项统一在此管理
+- 优先级评定核心原则：**优先级 = 面试可见性 × 生产技术深度**
 
-## Now
+---
 
-### 1. 文档与实现继续对齐
+## 🎯 Now (当前高优先级执行主线)
 
-**状态**：✅ 已完成（2026-04-09）  
-**现状**：README 已开始按"现状 / 目标态"分离，但其他文档仍存在历史表述偏理想化的问题。  
-**目标**：确保 README、`docs/`、代码实现三者不再互相打架。  
-**为什么现在做**：这是当前最影响项目可信度的问题。  
-**验收标准**：主文只描述已落地能力；设计性内容下沉到 `docs/`；过时表述放入待删除备份区。
+### 1. 真实项目集扩充与原生跨栈联动 (ListenExpenseTracker 数据打通)
 
-**已完成项**：
-- Backend: `security_features.md`, `development_setup.md` 已修订
-- Flutter: `testing_guide.md`, `mock_data_specification.md` 已修订
-- README.md 已遵循"主文只描述已落地能力"原则
+**状态**：🚀 进行中 (In Progress)  
+**现状**：当前项目列表展示了 5 个核心项目（Portfolio Flutter、Listen Core、Listen UI Kit、Backend 与技术知识库），但尚未纳入作者近期基于现代 Android 原生最新技术栈（Kotlin 2.x + Jetpack Compose + Room Local-First + Google Credential Manager + Google Drive 云端备份）打造的独立商业级记账应用 `ListenExpenseTracker`。  
+**目标**：将 `ListenExpenseTracker` 完整接入到项目库中，打通本地 Mock 数据资产与云端 AWS 生产数据库。  
+**为什么现在做**：这是向面试官直接证明具备 **“Flutter 跨平台 Clean 架构”** 与 **“现代 Android 原生 Jetpack Compose 架构”** 双栖技术专家水平的最有力展示。  
+**技术方案与落地要点**：
+- **客户端 Mock 数据**：在 `assets/mock/v1/get/projects.json`、`projects_zh.json`、`projects_ja.json` 中增补 Project ID 6，配置 5 大技术栈标签（`Kotlin`、`Jetpack Compose`、`MVI`、`Room`、`Google Drive API`），并配齐中/英/日三语本地化描述与 `project6.jpg` 图片映射。
+- **服务端 Flyway 增量迁移**：在 `ListenPortfolioBackend` 中创建 `V3__Add_expense_tracker_project.sql` 迁移脚本，在应用启动时自动向生产 MySQL 执行增量插入（`INSERT IGNORE`），保证无缝迁移与幂等性。
+- **跨端跳转与架构图解联动**：在 Project 详情页与项目卡片中支持点击直达 GitHub 开源仓库，并规划架构图解展示。
 
-**注意**：后续如有新增文档或代码变更导致不一致，需重新激活此任务。
+---
 
-### 2. Flutter / Backend API 契约收口
+### 2. Google OAuth 2.0 / Credential Manager 联合登录与服务端 Token 交换 (Google Sign-In)
 
-**状态**：✅ 已完成（2026-04-09）  
-**现状**：主流程已可联调，但仍有字段与模型边界未彻底收口。  
-**目标**：完成 Flutter mock、真实后端响应、客户端 model 的最终一致性。  
-**为什么现在做**：真实 App 优先，前后端契约必须先稳定。  
-**验收标准**：Flutter dev 环境请求后端时，无解析异常、无字段歧义、无 mock/real 双标准。
+**状态**：📋 待排期 (Design Ready - 详见 [google_signin_specification.md](google_signin_specification.md))  
+**现状**：当前客户端仅支持基于账号密码的传统登录与游客体验模式，缺少主流大厂标准的第三方社交联合登录闭环。  
+**目标**：打通 Flutter 端 Google 授权、Spring Boot 后端 ID Token 验签与本系统双 JWT（Access / Refresh Token）签发的完整 OAuth 2.0 链路。  
+**为什么现在做**：第三方登录是现代移动 App 的标配能力，更是考察开发者对 OAuth 2.0、OpenID Connect (OIDC)、公钥验签、防重放攻击与跨端 Session 绑定的必考架构题。  
+**技术方案与落地要点**：
+- **客户端授权流**：引入 `google_sign_in` 插件（或原生 Android `CredentialManager` 桥接），在登录页面新增 Google 品牌图标登录入口，唤起原生 Google 授权半屏浮层获取 `id_token`。
+- **服务端置换接口**：在 `ListenPortfolioBackend` 新增 `POST /v1/auth/google` 端点，基于 `google-api-client` 校验 Google 签发的 JWT 签名、`aud` 客户端 ID 及有效时钟，提取用户的 Google 主键（`sub`）、电子邮箱及头像。
+- **用户对齐策略**：若用户首次使用 Google 登录则自动在 `users` 表创建账号；若邮箱已存在则完成账号关联；最终返回本系统的标准 JWT，完全复用已有的 401 刷新队列与鉴权拦截器。
 
-重点项：
+---
 
-- `ProjectDto.businessId` 的客户端适配
-- `StatDto.id` 与 `businessId` 的最终映射策略
-- `messageId` 的真实落地边界
+### 3. 生物识别免密解锁与 Keystore 硬件安全防护 (Biometric Authentication)
 
-**已完成项**：
-- `auth_remote_data_source.dart`: `refreshToken` 从 `@Field` 改为 `@Query`，对齐 Backend `@RequestParam`
-- `auth_remote_data_source.g.dart`: 手动更新生成代码，通过 query parameter 发送
-- `projects.json`: 添加 5 个项目的 `businessId` 字段，与 Backend migration 种子数据一致
-- `user.json`, `projects.json`, `aboutMe.json`: `message` 字段从 `"success"` 改为 `""`，对齐 Backend `ApiResponse.success()`
-- Flutter 模型（`ProjectModel`, `AboutMeStatModel`）与 Backend DTO 字段已一致
+**状态**：📋 待排期 (Planned)  
+**现状**：用户登录成功后，Token 存储在本地，但退出应用重新打开时若 Token 过期或重新进入，缺乏金融级 App 的生物识别快捷免密解锁。  
+**目标**：基于设备硬件安全模块（Android KeyStore / iOS Keychain）集成指纹/面容生物识别认证，实现安全高效的应用级免密解锁。  
+**为什么现在做**：作者具备乐天证券等金融证券级 App 架构背景，生物识别认证与硬件安全防护能够直接呼应简历背景，成为面试时的王牌谈资。  
+**技术方案与落地要点**：
+- **服务层抽象与解耦**：在 `ListenCore` 抽象 `IBiometricService` 接口，在宿主 App 基于 `local_auth` 落地实现，支持 `canCheckBiometrics`、`getAvailableBiometrics`（Fingerprint / Face ID）与 `authenticate`。
+- **硬件密钥绑定**：开启生物识别时，将 Refresh Token 通过受保护的密钥存储在 `FlutterSecureStorage`；只有在系统 `BiometricPrompt` 校验成功后才解密提取，确保即使设备 Root 或内存 dump 也无法窃取长期凭据。
+- **降级与防暴力破解**：提供输入密码降级入口；当系统检测到用户在系统设置中新增或修改了指纹时（Biometric Enrollment Change），自动使已有硬件凭证失效，强制要求重新输入密码，确保绝对安全。
 
-**注意**：后续如有新增 API 或字段变更导致不一致，需重新激活此任务。
+---
 
-### 3. 错误契约落地
+### 4. 多语言 PDF 简历动态生成与原生分享导出 (Dynamic PDF Resume Export)
 
-**状态**：✅ 已完成（2026-06-14）  
-**现状**：已打通从“网络数据层错误码（`messageId`）”到“用户层友好文案（`tr`）”的翻译与阻断通道。  
-**目标**：先把最核心的错误码与错误文案映射能力做成真实代码能力。  
-**为什么现在做**：这直接影响跨端一致性、可维护性与后续框架沉淀。  
-**验收标准**：在宿主 App 中拦截并映射 `Failure` 变体，支持多语言动态翻译与回退机制，并在 ViewModels 中统一引入，且通过了完整的测试校验。
+**状态**：📋 待排期 (Planned - 详见 [resume_security_auth.md](resume_security_auth.md))  
+**现状**：当前应用在“关于我”模块展示了极为详实的 11 年技术经历与 6 维核心技能，但猎头、HR 或技术面试官在查看后无法一键存留或离线打印一份规范美观的 PDF 文件。  
+**目标**：在端侧实现基于当前用户真实履历的高保真矢量 PDF 渲染引擎，支持中/英/日多语言动态排版并一键原生调用打印或分享。  
+**为什么现在做**：极大地提升作品集的实用性与求职转化率，同时在技术上展示对复杂矢量绘图、字体嵌入、多页分页流（Pagination）及系统原生分享通道的掌控力。  
+**技术方案与落地要点**：
+- **矢量排版引擎**：集成 `pdf` 与 `printing` 库，设计响应式单页/双页现代工程师简历布局，包含顶部头像与基本信息、6 维能力模型、核心项目概览与履历时间线。
+- **CJK 字体动态嵌入**：根据当前应用选中的语言模式（`zh` / `en` / `ja`），按需从资产加载支持汉字与假名的开源 Noto Sans CJK 矢量字体，彻底杜绝 PDF 乱码与字符方块（Tofu）问题。
+- **原生系统通道集成**：在“关于我”页面顶部操作栏添加 “导出简历 (Export PDF)” 按钮，调用 `Printing.sharePdf(...)` 唤起系统原生分享面板，支持保存到手机本地、隔空投送、微信/Slack 分享或无线打印。
 
+---
 
-### 4. 测试补强
+### 5. AI 智能助手 Token 消耗观测看板与智能上下文防超限 (LLM Token Observability)
 
-**状态**：✅ 已完成（2026-06-14）  
-**现状**：已补齐并加固了最容易出错的核心链路，完成了单元测试和端到端测试闭环。  
-**目标**：优先补强最容易出错的核心链路。  
-**为什么现在做**：没有测试，很多“框架优势”都只是口头优势。  
-**验收标准**：已新增并稳定运行以下测试：
+**状态**：📋 待排期 (Planned - 详见 [ai_intro_assistant_spec.md](ai_intro_assistant_spec.md))  
+**现状**：已基于官方 `firebase_ai`（Gemini 3.7 Flash）和 Firebase App Check 实现了高质量的 AI 对话助手，但目前缺乏商业级 LLMOps 的用量计量、Token 成本感知与上下文溢出保护。  
+**目标**：建立客户端 Token 消耗实时观测机制，增加可视化用量 Badge，并实现基于 Token 预算的滑动窗口会话裁剪。  
+**为什么现在做**：证明自己不仅会调用 AI API，更具备大型商业级 AI 应用的成本控制、可观测性与异常防护（LLMOps）工程素养。  
+**技术方案与落地要点**：
+- **Token 预计算与实时收集**：在 `FirebaseAiService` 中调用 SDK 的 `countTokens` 接口，在发送消息前对 System Prompt、历史上下文和当前输入进行 Token 预算预估；收到模型流式响应后提取 Usage Metadata。
+- **可观测微胶囊看板 (Badge)**：在 `AiChatHeader` 顶部栏集成轻量微胶囊，动态显示当前会话消耗的 Token 数量、提问轮次及单次交互网络延迟（毫秒）。
+- **智能上下文滑动窗口 (Sliding Window)**：当会话轮次过多导致上下文接近阈值时，自动保全首条 System Prompt 并保留最近 N 轮核心问答，自动丢弃久远对话，防止触发 API 上限并有效控制单次请求开销。
 
-- `_AuthInterceptor` 401 并发队列测试 (在 `auth_interceptor_test.dart` 中完全覆盖并跑通)
-- `CrashManager` Safe Mode 管道测试 (在 `crash_manager_test.dart` 中完全覆盖并跑通)
-- i18n key 完整性测试 (在 `i18n_test.dart` 中实现 Key 与 Translation-Map 比对并完全跑通)
-- E2E 自动化集成测试 (已在 `integration_test/app_test.dart` 中跑通，覆盖异常输入格式验证与正常登录/登出业务闭环流)
+---
 
-### 5. 可观测性闭环 MVP
+## ⚡ 核心架构与工程优化点 (Core Engineering & Architectural Optimizations)
 
-**状态**：✅ 已完成（2026-07-09）  
-**现状**：性能指标、错误码、日志与网络请求及崩溃日志已完美闭环。  
-**目标**：先完成性能指标面板、`traceId` 钻取能力、Crash / error / trace 关联与轻量 Net Inspector。  
-**为什么现在做**：这是项目的核心竞争力所在。  
-**验收标准**：完成性能指标面板、`traceId` 钻取能力、Crash / error / trace 关联与轻量 Net Inspector。
-- **性能指标面板**：支持动态 Vsync 帧时延监测、十字准星手势拖拽、Tooltip 悬浮窗、页面路由绑定及收起态迷你图表免缓存自动刷新与视口高度动态自适应。
-- **轻量 Net Inspector**：Dio 拦截并审计所有的 HTTP 流量（ headers/payloads），100 条 FIFO 环形队列防内存泄露。
-- **Crash / Logs / TraceId 联动下钻**：崩溃日志在落盘时自动写入 Trace ID 与当前路由；崩溃详情展示弹窗内置 “Drill Logs” 按钮，点击一键唤起日志悬浮框、强切 Logs Tab 并利用 Trace ID 精确过滤出崩溃前的用户操作与后台网络日志上下文。
+### Opt-1. APM 性能诊断报告一键导出与全链路快照 (APM Diagnostic Report Export)
 
-### 6. 推送通知集成
+**状态**：📋 待排期 (Planned - 详见 [apm_performance_monitoring_design.md](apm_performance_monitoring_design.md))  
+**现状**：项目当前在内存中维护了极其强大的 APM 体系（FPS 滑动窗口、Vsync 动态时钟、Jank 统计、RingBuffer 100 条网络请求审计与启动耗时退化检测），但这些数据在 App 关闭后即丢失，缺少线下/测试提单时的持久化快照导出能力。  
+**优化方案**：
+- 在调试浮窗 `LogOverlay` 中新增 “导出诊断报告 (Export Diagnostic Report)” 动作。
+- 一键捕获当前设备环境（系统版本、屏幕刷新率、内存水位）、最近 50 次冷启动指标、最近 100 条 HTTP 抓包详情及最近出现的报错日志，打包序列化为标准化 JSON 或 Markdown 格式。
+- 支持一键复制到剪贴板或通过系统分享导出，实现线上/线下 Bug 秒级现场还原。
 
-**状态**：✅ 已完成（2026-06-16）  
-**现状**：已完成 FCM 推送通知的全链路接入，覆盖前台/后台/冷启动三种状态。  
-**目标**：实现跨平台推送通知，支持消息接收与点击跳转路由。  
-**为什么现在做**：推送通知是 App 端的核心交互能力，也是作品集中展示 FCM 集成与架构抽象的重要一环。  
-**验收标准**：
-- INotificationService 抽象接口在 ListenCore 中定义，FirebaseNotificationServiceImpl 在宿主 App 中实现
-- 支持前台横幅展示、后台唤醒跳转、冷启动 DeepLink 路由（tab/settings/projectId）
-- Settings 中通知开关联动 FCM Topic 订阅与系统权限请求
-- 权限被拒时弹出引导 Dialog 跳转系统设置
-- 统一 `_handleNotificationNavigation` 方法处理冷启动和后台两种场景
+---
 
-### 7. 启动耗时与首帧时延监测 (Launch Monitor)
+### Opt-2. 网络层指数退避抖动重试与断网自愈策略 (Exponential Backoff Retry & Offline Recovery)
 
-**状态**：✅ 已完成（2026-07-09）  
-**现状**：收集并对比历次 App 启动的各个段落（Dart 入口冷启动、初始化服务及首帧完全绘制）的耗时时延，实现 50 条 FIFO 本地基线存储。  
-**验收标准**：引入基于往期 3 次以上均值偏离的回归检测算法（均值增长 25% 且绝对值增加 150ms），在 APM Dashboard 内通过健康/性能退化（Badges）卡片及可展开历史表进行精细化可视化展示。
+**状态**：📋 待排期 (Planned - 详见 [repository_caching_strategy.md](repository_caching_strategy.md))  
+**现状**：当前 Dio 拦截器已具备 401 并发等待与静默刷新重试机制，但对于弱网抖动、Socket 超时、DNS 解析短暂失败等瞬态故障，接口直接进入失败回调，依赖用户手动下拉刷新。  
+**优化方案**：
+- 在 `ListenCore` 网络层引入 `RetryInterceptor`，针对所有具有幂等性的 GET 请求，在遭遇瞬态网络异常（SocketException、ConnectTimeout）时自动触发 Full Jitter 指数退避重试（最多重试 3 次，间隔 500ms、1000ms、2000ms 随机抖动）。
+- 集成网络连通性广播监听，当设备从断网恢复连网时，通过事件总线自动通知处于 Error 态的活跃 ViewModel 静默重拉数据，实现“断网自愈”。
 
-### 8. Auth 与账户状态安全清理
+---
 
-**状态**：✅ 已完成（2026-07-10）  
-**现状**：完成用户退出登录/多账号切换时的物理持久化缓存彻底抹除与内存 ViewModels 清空，解除敏感残留。  
-**验收标准**：
-- **物理缓存销毁**：在 `clearAuthData()` 时，不仅清理 Token，同步清除 `projectsData`、`aboutMeData`、`resume` 的本地物理缓存键。
-- **内存安全销毁**：采用延后销毁策略，等待注销后路由转换 settles，通过 `ProviderContainer.invalidate()` 销毁 `Overview/AboutMe/Projects/Resume` 的 ViewModels，防范残留脏数据泄露。
-- **设计决策变更（Token 预过期的架构权衡）**：由于本地系统时钟存在偏差（Clock Drift）所带来的高频误刷新和误失效的极高生产风险，同时服务端随时可能吊销/拉黑 Token 导致本地状态与服务端实际权限不一致。因此架构决策上选择**剔除客户端时钟强校验**，统一使用 Dio 拦截器中并发等待/刷新队列对 401 报错做终极静默重试，兼备极高可信度与极佳性能。
+### Opt-3. 核心自绘组件 Golden UI 视觉回归测试 (Golden Widget Regression Tests)
 
-### 9. 强类型路由与 Deep Link 整合
+**状态**：📋 待排期 (Planned - 详见 [testing_guide.md](testing_guide.md))  
+**现状**：当前全工程已拥有 557 项单元与 Widget 测试（100% 绿灯），但主要集中于业务逻辑、状态变更与手势分发，缺少针对底层 Canvas 自绘组件（如 `SkillsRadarChart` 技能雷达图、APM `FrameChart` 帧率曲线）的像素级黄金图像比对。  
+**优化方案**：
+- 引入 Flutter Golden Test 测试框架，针对 6 维度技能雷达图及性能曲线图建立黄金像素基准图（Golden Files）。
+- 覆盖暗黑/浅色主题、不同 DPI 分辨率、多语言文本渲染及极值数据状态下的图形渲染比对，确保后续无论 Flutter SDK 如何升级，自绘组件均能保持零像素级位移与畸变。
 
-**状态**：✅ 已完成（2026-07-10）  
-**现状**：重构应用内路由与外部 URI Scheme 唤起入参为强类型参数，实现解耦和类型安全。  
-**验收标准**：
-- **底座解耦注册**：`ListenCore` 中不硬编码任何具体业务模型与 Scheme。支持在 `AppNavConfig` 动态注册 Scheme（如 `listenportfolio`、`myapp`），并提供 `AppNav.registerArgumentConverter<T>` 委托进行强类型反序列化。
-- **宿主业务适配**：在 `app_initializer.dart` 中注册转换委托与原生 Schemes。
-- **原生层 Scheme 配置**：配置 Android `AndroidManifest.xml` 的 `intent-filter` 匹配 Scheme 以及 iOS `Info.plist` 的 `CFBundleURLTypes`。
-- **设计决策文档**：输出详细设计与 Native vs `app_links` 的架构权衡文档（详见 [设计与实现文档](deep_link_routing_design.md)）。
-- **路由重用与去重防冲突（重磅补强）**：
-  - 支持可选的 `replaceIfExists` 参数决定是否在已处于目标页面时执行 `pushReplacement` 替换当前路由，抑或直接静默返回（默认）。
-  - 在 `BaseViewModel` 引入 `_activeEffectSubscription`，实现新页面绑定时自动同步注销老页面订阅；在 `BaseLifeCyclePage` 实现 `onPop` 同步注销监听句柄，彻底规避 `pushReplacement` 期间 (300ms 动画重叠期) ViewModel 重用导致的双重弹窗问题。
+---
 
-## Next
+### Opt-4. CI/CD AWS 自动化 Flyway 迁移校验与健康探针强化 (CI/CD Pipeline Hardening)
 
-### 1. 路由与状态治理增强
+**状态**：📋 待排期 (Planned - 详见 [flutter_web_aws_deployment_guide.md](flutter_web_aws_deployment_guide.md))  
+**现状**：AWS EC2 后端服务已配置自动化 CI/CD 构建部署，但在服务重启后缺少自动化健康检查探针与数据库版本自检。  
+**优化方案**：
+- 在 `.github/workflows/ci.yml` 的部署流水线中，容器启动后增加 HTTP 健康检查探针轮询（`curl -f http://13.218.192.181:8080/actuator/health`），若 60 秒内服务未就绪自动触发回滚。
+- 确认每次部署自动运行 Flyway 校验，保证生产环境数据库结构与最新的 `V3__Add_expense_tracker_project.sql` 脚本完全一致。
 
-- ✅ `onBackInvoked` 系统返回策略与 IndexedStack 拦截失效治理已完成（对齐 native Predictive Back 行为且保证 IndexedStack 非激活 Tab 不会强行截获返回手势）
-- ✅ 路由拦截器与 `AppNav.tryLogin` 体系合并统一（已废弃冗余代码，并实现卫士式的 RouteInterceptor 过滤链流式导航）
-- ✅ `CacheManager` 职责纠偏与重命名（已正式更名为 `DiskCleanupUtil`，规避与 Repository 缓存策略概念冲突）
-- ✅ 在 `ListenCore` 补充高频常用扩展（BuildContext 快捷属性，String 格式校验与转换，消灭样板代码，已合并至主线）
-- ✅ Intent & Effect 录制与回放系统已完成整体设计、沙箱备份恢复、页面/弹窗返回拦截、轮询等待机制、对话框自动旁路并交付生产（详见 [设计与实现文档](intent_effect_playback_design.md)）
-- ✅ `_effectController` 与 `EventBus` 的职责评估与规范设计文档已正式沉淀（详见 [设计与实现文档](event_bus_vs_base_effect.md)）
+---
 
-### 2. Auth 与缓存策略增强
+## 📅 Next (下一阶段规划)
 
-- ✅ `BaseRepository` 缓存与数据降级策略设计规范文档化（已完成 TTL 缓存与 SWR 后台静默刷新模式规约，详见 [设计与实现文档](repository_caching_strategy.md)）
-- [x] 数据库动态内容国际化 (已于 2026-08-04 完成)
-  - [x] Flutter 端在 `AuthInterceptor` 请求拦截器中自动注入当前语言请求头 `Accept-Language`，`LocalMockServer` 自动解析并优先匹配多语言资产（`_zh.json` / `_ja.json`）
-  - [x] 彻底去除 UI 模型属性上的过渡性 `.tr` 静态翻译映射（`label`、`tag`、`major`、`certifications`），统一由数据源下发对应目标语言文本
-- [x] 静态代码分析警告清理 (已于 2026-08-04 完成)
-  - [x] 修复全部 14 个 `cascade_invocations` 与 `one_member_abstracts` 等 `info` 级别代码风格警告，实现全项目 0 警告 (`No issues found!`)
-- [x] 优化 Logout 流程防止 Session 泄露 (已于 2026-08-04 完成)
-  - [x] 当 Access Token 过期时，在客户端登出前先执行静默刷新（Silent Refresh）拿到新 Token，再发起 Logout API 请求，确保后端能成功销毁服务端的 Refresh Token。
-- [x] 核心技能多语言全链路支持与手势联动 (已于 2026-08-21 完成)
-  - [x] 核心技能扩充至 6 大维度，根据 11 年移动+全栈真实经历差异化评分（Android 97、Flutter 93、APM 96、系统架构 94、Java后端 84、DevOps 89）
-  - [x] 服务端数据库 `skills` & `skill_items` 增加 `_zh` / `_ja` 多语言字段，客户端通过 `Accept-Language` 请求头实现动态本地化下发
-  - [x] 技能详情卡片支持 `PageView` 左右滑动翻页，并与上方维度按钮栏及雷达图高亮实现双向自动聚焦与平滑滚动联动
+### 1. 体验与展示扩展
+- **Interview QA / Architecture FAQ 互动检索页**：把 README 和 docs 中的核心架构决策（Zone tracing、MVI Playback、Safe Mode 熔断、防双重弹窗等）沉淀为一个可在 App 内根据关键词快速检索与查看代码高亮的交互式模块。
+- **布局层级检查器 (Widget Inspector)**：在 `LogOverlay` 增加一键高亮 UI 边界、检测嵌套深度与像素溢出风险的轻量可视化探针。
 
-### 3. 文档与展示补强
+### 2. 跨平台能力与构建包优化
+- **APK / AAB 拆包分析与包体积优化报告**：在 CI 中自动执行 `apk-analyzer`，生成 DEX 代码、静态资产及 SO 库体积分布报告，并在 README 保持可视化。
+- **iOS App Store 提审与证书自动化**：基于 fastlane 配置 iOS 构建签名与 TestFlight 分发流程。
 
-- Architecture 文档：模块图、状态流、网络链路图
-- 可观测性说明图：trace、log、crash、mock、backend 联调路径如何串起来
-- ✅ ADR：记录 Zone tracing、SafeMode、MockServer、401 refresh queue、DeepLink 路由、技能雷达图自适应计算等关键决策（详见 docs 下各架构设计文档）
-- ✅ 一篇“为什么这个项目优先做可观测性与稳定性”的短文档已沉淀，用于对外解释项目选型与质量取向（详见 [设计与实现文档](project_philosophy.md)）
-- Screen capture / GIF：Overview、Login、Settings、CrashLogs
-- Tech stack 选型说明
-- AI 助手 Token 用量与提问次数展示：基于 Gemini `countTokens` API 及本地统计，在 `ai_chat` 浮窗面板顶部添加 Token 消耗与提问次数 Badge 展示
+### 3. 简历深度与项目经历多维穿透
+- **一页式 Performance Case Study**：以可视化时间线方式，完整展现一次乐天证券或有赞电商真实环境下的“卡顿/内存泄漏排查全链路”（从 APM 发现、Trace 定位、日志钻取到代码修复），极具技术说服力。
 
-### 4. 质量与工程化
+---
 
-- ✅ Widget tests：登录流程、Settings、Crash logs、技能卡片左右手势滑动与正反向联动全覆盖（全量 557 项测试 100% 绿灯）
-- Golden tests：UIKit 组件与关键页面
+## ⏳ Later (中远期探索项)
 
-## Later
+- **FIDO2 / Passkey 免密安全登录**：基于 WebAuthn 规范，实现基于客户端安全硬件的无密码公私钥签名认证（详见 [fido2_implementation_design.md](fido2_implementation_design.md)）。
+- **JNI / NDK 底层高性能计算样例**：在 Android 侧集成轻量 C++ 原生库，展示 JNI 通信与底层代码优化经验。
+- **桌面小部件 (AppWidget / WidgetKit)**：在 Android / iOS 桌面提供个人作品集与状态速览（详见 [launcher_widgets.md](launcher_widgets.md)）。
 
-### 1. 可展示增强项
+---
 
-- FIDO2 / Passkey 免密安全登录（见 [fido2_implementation_design.md](fido2_implementation_design.md)）
-- Google 第三方登录
+## 🏛️ Completed Baseline (已落地核心基石 - 历史全量成就归档)
 
-### 2. 体验与平台能力
+项目目前已全面实现并跑通以下 **28 项关键能力与技术基石**（全量 557 项测试 100% 绿灯，静态分析零警告）：
 
-- ✅ Error metrics / fault injection 的可视化验证入口（已在 Fault Injection Playground 中完整落地，详见 [fault_injection_playground_spec.md](fault_injection_playground_spec.md)）
-- 布局检查
-- APK/AAB size 监控与拆包分析
+1. **Clean Architecture + MVI 模式**：基于 `BaseViewModel`、`BaseState`、`BaseEffect` 构建，彻底解耦 UI 与状态机。
+2. **401 并发等待与静默重试队列**：Dio 拦截器捕获 Token 失效，单例排队刷新并一键批量重发请求。
+3. **安全注销与 Token 防泄露**：登出前时间戳校验，过期则静默刷新后再通知服务端彻底销毁会话。
+4. **全链路 Zone Tracing**：基于 Dart `Zone` 上下文为每次 Intent、路由跳转与 HTTP 请求注入全局唯一 `traceId`。
+5. **Crash Safe Mode 熔断自愈**：连续崩溃检测与安全模式拦截，支持本地 crash log 持久化与一键重置。
+6. **APM 性能监控看板 (LogOverlay)**：动态 Vsync 帧时延监测、FPS 滑动窗口滤波、Jank 分类、十字准星探针与 Net Inspector。
+7. **启动耗时监控 (Launch Monitor)**：冷启动分段时延统计，50 条 FIFO 本地基线与回归预警。
+8. **故障注入演练场 (Fault Injection Playground)**：7 大受控演练场景（401并发、500契约、超时、畸形数据、Zone异常、SafeMode、主线程Jank），支持一键 Trace 下钻。
+9. **交互式技能雷达图 (Skills Radar Chart)**：`CustomPainter` 自绘 6 维多边形、防截断钳位算法，卡片左右滑动与雷达图双向手势联动。
+10. **多语言自动路由 (LocalMockServer & Spring Boot)**：请求头注入 `Accept-Language`，支持中/英/日多语言动态下发与自动回退，零硬编码。
+11. **动态主题与外观字体族**：跨平台 5 大通用字体族矩阵，`SettingManager` 全局热重构，内置实时 `Aa` 字体徽标预览。
+12. **强类型路由与 Deep Link 整合**：原生 Scheme 匹配、`replaceIfExists` 路由去重与 Single UI Binder 防双弹窗机制。
+13. **Google Play 延迟深度链接 (Deferred Deep Link)**：基于 `InstallReferrerClient` 原生通道，支持 90 天时钟去重、脏数据清洗与落地页 `test.html` 验证。
+14. **Firebase AI 智能咨询助手**：官方 `firebase_ai` (`gemini-3.7-flash`) + Firebase App Check 强安全防护，可拖拽悬浮球与本地预设 FAQ 检索。
+15. **Firebase 推送通知 (FCM)**：前台横幅、后台唤醒与冷启动路由统一调度，通知开关联动系统权限引导。
+16. **应用内评分引导 (ReviewService)**：启动计数（5次）与 90 天控流策略，支持打赏成功后黄金时机拉起评价。
+17. **应用内打赏购买 (IAP)**：Clean MVI 架构、`CoffeePurchaseProviderImpl` 解耦支付业务。
+18. **Shorebird OTA 热更新**：集成官方代码热修复服务，支持增量补丁非阻塞下载与版本拼接展示。
+19. **商用级 `CommonWebView`**：支持弹窗自适应高度、手势重定向拦截与暗黑/浅色自适应主题。
+20. **Google Play 合规性数据注销页**：提供合规的在线账户数据注销表单与邮件唤起通道。
+21. **Spring Boot 后端核心微服务**：Auth + Portfolio CRUD + 6 维 Skills 多语言 API 全量落地，MyBatis-Plus + Redis 缓存架构。
+22. **AWS EC2 容器化部署**：Docker Compose + Nginx 80 端口同源反代，彻底消除浏览器跨域与 OPTIONS 预检。
+23. **错误契约统一体系**：`Failure` 领域模型与 `messageId` 前后端契约规范，客户端自动映射 i18n 多语言文案。
+24. **自动化版本流与检查更新**：CI 提取 `pubspec.yaml` 自动生成 `version.json`，客户端免签安全解析与更新日志弹窗。
+25. **架构依赖边界治理**：基于 `tools/dependency_rules.dart` 自动化校验架构单向依赖规则，零违规保障。
+26. **自动化 API 文档生成**：配置 `dartdoc` 并通过脚本部署至 GitHub Pages。
+27. **全自动化 CI/CD 流水线**：GitHub Actions 自动执行分析、运行 557 项测试、构建签名 Release AAB 并发布至 Google Play Internal 通道。
+28. **全量测试套件保障**：**557 项** 自动化测试 100% 绿灯通过，代码覆盖率达 **71.57%**。
 
-### 3. 调试与观测扩展
+---
 
-- ✅ 性能指标面板 MVP：基于 `FrameMonitor + PerfTraceStore` 展示 FPS、jank、内存趋势、页面首帧与 Intent traces（已合并至 Now §5）
-- ✅ `traceId` 钻取能力：日志浮窗支持 trace 过滤、定位与回看路径（已合并至 Now §5）
-- ✅ Crash / error / trace 关联：crash log、`messageId`、请求链路形成闭环（已合并至 Now §5）
-- ✅ 轻量 Net Inspector：请求时间线、状态码、错误体、traceId 可视化（已合并至 Now §5）
+## 💡 Idea Pool Backup (想法池备份)
 
-### 4. 更能体现个人强项的增强项
-
-- 一页式 Performance Case Study：展示一次卡顿 / 异常排查从现象、trace、日志到修复的完整链路
-- Resume / Portfolio 数据联动：把项目经历、架构判断、性能与稳定性案例做成可浏览内容，而不是只放静态简介
-- Interview QA / Architecture FAQ 页面：沉淀对架构、观测、稳定性方案的可检索回答
-- ✅ 故障注入演示页（Fault Injection Playground）：已完整落地 7 大受控演练场景（401 并发队列、500 异常契约、网络超时、畸形 HTML 防崩溃、Zone 异步异常落盘、Safe Mode 熔断与主线程 Jank 卡顿 APM 监测），支持实时终端日志输出与一键 LogOverlay Trace 下钻闭环（已全量通过单元测试）
-
-### 5. 工程化扩展
-
-- CD：产物上传到 S3 + Release notes 自动化
-- Channel plugin 示例
-- JNI/NDK 底层能力样例
-
-## Archive / Idea Pool Backup
-
-以下内容不再进入当前执行主线，先保留为备份：
-
-### 已确认存在的能力
-
-- Clean + MVI 基础骨架
-- `BaseUseCase`
-- `BaseResponseModel + ApiResult`
-- `BaseRepository.safeCall`
-- `AuthInterceptor` 的 401 refresh + 并发队列
-- 环境切换 + 本地 MockServer
-- Crash log 落盘 + Safe Mode
-- Zone tracing / performance mark
-- Log overlay
-- Settings 的语言 / 环境 / 清缓存能力
-- Material You 动态取色（集成 dynamic_color，支持主题根据系统壁纸自动着色与回退）
-- 无障碍支持（Accessibility / a11y，包含图片/圆圈按钮语义层修饰与大字号防溢出适配）
-- 依赖边界治理与 dartdoc 生成
-- Release APK 构建与签名配置（CI 流程已跑通，支持自动解密签名）
-- Google Play 发布流程自动化（CI 自动比对商店版本、编译 AAB 并发布至 Internal 通道）
-- 自动检查更新流程（CI 提取 pubspec.yaml 自动生成/托管 version.json，App 端安全免签解析，已全量覆盖单元测试）
-- 推送通知集成（INotificationService 抽象 + FCM 实现，支持前台横幅/后台唤醒/冷启动路由，通知开关联动系统权限引导）
-- 分享当前应用（在“关于我”页面右上角及“设置”中心提供分享入口，触发 `ShareEffect` 调用系统原生分享，已完成单元测试覆盖）
-- 商用级 `CommonWebView`（基于 `flutter_inappwebview` 封装，支持弹窗自适应高度模式、基于手势/重定向标识的跳转拦截）
-- 隐私政策与服务条款落地（基于 `CommonWebView` 加载并适配了全新的 HSL 暗黑/浅色自适应主题，完善了 FCM 及 Billing 声明）
-- Google Play 合规性网页端数据注销页面落地（提供 `delete_account.html` 交互表单并完美支持邮件客户端唤起与剪贴板复制降级方案）
-- App 内评分引导服务集成（基于 `in_app_review` 封装了 `ReviewService`，支持启动计数与 90 天控流，且在赞助成功后黄金时机强制拉起评价）
-- AI 智能技术咨询助手落地（基于官方 `firebase_ai` 的 `FirebaseAI.googleAI` + Google Gemini `gemini-3.7-flash` 模型，集成 Firebase App Check 强安全防护；全局可拖拽防误触悬浮球 + 独立 `AiChatPage` 页面；支持多模式切换、页面上下文/Tab 智能感知及本地预设 FAQ 零延迟零 Token 问答，已通过全量单元测试与静态检查）
-- 外观设置字体族动态切换（基于 `AppFontFamily` 跨平台标准通用字体矩阵，打通 `SettingManager` -> `BaseSettingPage` -> `AppTheme` 全局字体族热重构与秒级生效；内置实时 `Aa` 字体样式徽标预览，完全零硬编码与多语言支持，已全量覆盖单元测试与 Widget 测试）
-- Skills 交互式技能雷达图与滑动手势联动（基于 `CustomPainter` 自定义绘制 6 维度能力评估多边形、防截断自适应计算、极坐标触摸拾取与探针交互，支持「雷达图/清单」双视图切换，全动态主题取色与三语国际化；详情卡片支持 `PageView` 左右滑动翻页并与上方按钮栏及雷达图双向无缝联动同步；已全量覆盖 Widget 测试与单元测试，详见 `docs/skills_radar_chart_design.md`）
-- Google Play 延迟深度链接 (Deferred Deep Link)（基于 Android 原生 `InstallReferrerClient` 的零三方轻量自研方案，支持安装前来源与目标 Tab 路由无损还原、`(not set)` 与自然流量脏数据自动清洗、专属欢迎弹窗与直达跳转闭环；配备在线落地页 `test.html` 与应用内开发者模拟调试通道；全量 16 项单元与 Widget 测试 100% 绿灯，详见 `docs/deferred_deep_link_specification.md`）
-
-### 暂时降级的想法池条目
-
-- switch env: config each api
-- apm: layout check / lag check / app launch / apk size / FPS / CPU / memory
-- `if (!widget.useScaffold)` 等零散页面能力想法
-- IDE plugin：json 模型转换、asset 资源生成到 `R.dart`
-- 剔除部分三方pub，能自定义实现的，尽量自己实现，学习目的
-- 切换账户后，4个tab的刷新问题，LogoutProviderImpl是否要invalidate(overviewViewModelProvider)等代码？
-- 发布到ios市场
-- 跑通web版本的基本功能
-- [x] 基于现在最新代码，更新ArchitectureViewModel里面写死的架构设计的内容
-- 自动执行patrol的时候，我希望每步操作都对屏幕进行截图（主要是intent操作），并保存到当前手机的sd卡目录
-- 如果用户禁用push通知后，如何引导用户重新去打开
-- 发布正式包到Google play，还需要哪些准备工作
-- [x] 通过firebase_ai或Firebase Genkit实现AI智能助手（已于 2026-08-18 使用官方 `firebase_ai` + `gemini-3.7-flash` + App Check 完整落地）
-- 试用talker_flutter，storybook_flutter，pubviz 
-- [x] 更新我简历的内容，数据库中简历内容的翻译校准（已于 2026-08-21 完成：全量真实 11 年履历数据与 6 维核心技能矩阵中英日三语校准落地并部署至云端）
-- aboutMe中真实简历pdf的审核和下载，先隐藏下
-- 熟悉性能面版的功能和数据如何使用
-- 添加https://github.com/listen2code/ListenExpenseTracker的数据到项目列表（aws的数据库，和本地的mock数据）
+- 探索 `talker_flutter`、`storybook_flutter`、`pubviz` 等生态工具在开发期调试中的深度结合。
+- 自动化执行 Patrol E2E 测试时，每步 Intent 操作自动截取屏幕并导出归档。
+- 布局层级过深检测与过度绘制警告探针。
