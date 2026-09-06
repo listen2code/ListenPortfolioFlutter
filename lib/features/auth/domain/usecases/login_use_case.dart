@@ -17,13 +17,16 @@ class LoginUseCase implements UseCase<UserModel?, LoginRequestModel> {
     final loginResult = await repository.login(param: param);
 
     // 2. Orchestration: If login successful, fetch the complete user profile immediately.
-    return loginResult.fold((failure) => Left(failure), (response) async {
-      final userId = response?.userId ?? '';
-      if (userId.isEmpty) {
-        return const Left(ServerFailure('User ID is missing in response'));
-      }
-      // Chain the next operation to get full user data
-      return await repository.getCurrentUser(param: GetCurrentUserRequestModel(userId: userId));
-    });
+    if (loginResult.isLeft()) {
+      return Left(loginResult.getLeft().toNullable()!);
+    }
+
+    final response = loginResult.getRight().toNullable();
+    final userId = response?.userId ?? '';
+    if (userId.isEmpty) {
+      return const Left(ServerFailure('User ID is missing in response'));
+    }
+
+    return await repository.getCurrentUser(param: GetCurrentUserRequestModel(userId: userId));
   }
 }

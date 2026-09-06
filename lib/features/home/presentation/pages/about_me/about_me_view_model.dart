@@ -133,6 +133,12 @@ class AboutMeViewModel extends _$AboutMeViewModel with ViewModelMixin<AboutMeSta
 
     // Perform base64 conversion and upload to backend
     final bytes = await file.readAsBytes();
+    if (bytes.lengthInBytes > 2 * 1024 * 1024) {
+      updateState(state.copyWith(imageFile: null));
+      emitEffect(MessageEffect.error(I18nKeys.avatarUploadFailed.tr));
+      return;
+    }
+
     final String base64Data = base64Encode(bytes);
     final String mimeType = file.path.imageMimeType;
     final String dataUrl = 'data:$mimeType;base64,$base64Data';
