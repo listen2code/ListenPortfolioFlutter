@@ -12,14 +12,13 @@
 
 ### 1. 真实项目集扩充与原生跨栈联动 (ListenExpenseTracker 数据打通)
 
-**状态**：🚀 进行中 (In Progress)  
-**现状**：当前项目列表展示了 5 个核心项目（Portfolio Flutter、Listen Core、Listen UI Kit、Backend 与技术知识库），但尚未纳入作者近期基于现代 Android 原生最新技术栈（Kotlin 2.x + Jetpack Compose + Room Local-First + Google Credential Manager + Google Drive 云端备份）打造的独立商业级记账应用 `ListenExpenseTracker`。  
+**状态**：✅ 已完成 (Completed)  
+**现状**：已成功将作者基于现代 Android 原生最新技术栈（Kotlin 2.x + Jetpack Compose + Room Local-First + Google Credential Manager + Google Drive 云端备份）打造的独立商业级记账应用 `ListenExpenseTracker` 完整接入。  
 **目标**：将 `ListenExpenseTracker` 完整接入到项目库中，打通本地 Mock 数据资产与云端 AWS 生产数据库。  
-**为什么现在做**：这是向面试官直接证明具备 **“Flutter 跨平台 Clean 架构”** 与 **“现代 Android 原生 Jetpack Compose 架构”** 双栖技术专家水平的最有力展示。  
-**技术方案与落地要点**：
-- **客户端 Mock 数据**：在 `assets/mock/v1/get/projects.json`、`projects_zh.json`、`projects_ja.json` 中增补 Project ID 6，配置 5 大技术栈标签（`Kotlin`、`Jetpack Compose`、`MVI`、`Room`、`Google Drive API`），并配齐中/英/日三语本地化描述与 `project6.jpg` 图片映射。
-- **服务端 Flyway 增量迁移**：在 `ListenPortfolioBackend` 中创建 `V3__Add_expense_tracker_project.sql` 迁移脚本，在应用启动时自动向生产 MySQL 执行增量插入（`INSERT IGNORE`），保证无缝迁移与幂等性。
-- **跨端跳转与架构图解联动**：在 Project 详情页与项目卡片中支持点击直达 GitHub 开源仓库，并规划架构图解展示。
+**完成情况**：
+- [x] **客户端 Mock 数据**：在 `assets/mock/v1/get/projects.json`、`projects_zh.json`、`projects_ja.json` 中增补 Project ID 6，配置 5 大技术栈标签（`Kotlin`、`Jetpack Compose`、`MVI`、`Room`、`Google Drive API`），并配齐中/英/日三语本地化描述与 `project6.jpg` 图片映射。
+- [x] **服务端 Flyway 增量迁移**：在 `ListenPortfolioBackend` 中创建 `V3__Add_expense_tracker_project.sql` 迁移脚本，自动向生产 MySQL 执行增量插入（`INSERT IGNORE`），保证无缝迁移与幂等性。
+- [x] **跨端跳转与架构图解联动**：在 Project 详情页与项目卡片中支持点击直达 GitHub 开源仓库。
 
 ---
 
@@ -173,6 +172,9 @@
 26. **自动化 API 文档生成**：配置 `dartdoc` 并通过脚本部署至 GitHub Pages。
 27. **全自动化 CI/CD 流水线**：GitHub Actions 自动执行分析、运行 557 项测试、构建签名 Release AAB 并发布至 Google Play Internal 通道。
 28. **全量测试套件保障**：**557 项** 自动化测试 100% 绿灯通过，代码覆盖率达 **71.57%**。
+29. **原生跨栈项目资产打通 (ListenExpenseTracker)**：增补 Project ID 6，打通本地中/英/日三语 Mock 与云端 AWS MySQL 生产库（Flyway V3 迁移）。
+30. **头像数据流安全防腐与高弹性渲染**：`CommonImage` 异步解码错误隔离（`errorBuilder`）、`Base64ImageCache` 复合指纹 Key 优化、Web/HTTP 存储平滑降级，彻底根除 UI 假死与 Event Loop 饿死风险（详见 [avatar_security_and_rendering_architecture.md](avatar_security_and_rendering_architecture.md)）。
+31. **云端 Docker 孤儿构建层自动深度清理引擎**：基于 GraphDriver 依赖拓扑反查，彻底解决 EC2 磁盘构建层雪崩堆积问题。
 
 ---
 

@@ -174,7 +174,10 @@ if (userId.isEmpty) {
 | `BIZ_0501` | 邮箱已注册 | 注册时邮箱重复 | "Email already registered" |
 | `BIZ_0502` | 原密码错误 | 修改密码验证失败 | "Current password is incorrect" |
 | `BIZ_0503` | 账户删除失败 | 删除账户时失败 | "Failed to delete account" |
-| `BIZ_0504` | 密码重试次数过多 | 忘记密码限制 | "Too many attempts, please try again later" |
+| `BIZ_0504` | 登出失败 / 密码重试超限 | 登出或重试超限 | "Too many attempts, please try again later" |
+| `BIZ_0505` | 个人履历未找到 | 获取 AboutMe 失败 | "About me profile not found" |
+| `BIZ_0506` | 项目列表未找到 | 获取 Projects 失败 | "Projects not found" |
+| `BIZ_0507` | 头像格式或大小无效 | 上传非合法图片魔数或超大数据 | "Invalid avatar image format or size" |
 
 ---
 
