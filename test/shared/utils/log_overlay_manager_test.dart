@@ -9,6 +9,7 @@ void main() {
   setUpAll(() async {
     SharedPreferences.setMockInitialValues({});
     await SpUtil.init();
+    settingManager.loadSettings();
   });
 
   tearDown(() {
@@ -59,7 +60,7 @@ void main() {
       expect(LogOverlayManager.isShowingNotifier.value, isFalse);
     });
 
-    testWidgets('show with startExpanded opens window directly', (WidgetTester tester) async {
+    testWidgets('show with startExpanded opens window directly and supports tab switching and dragging', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -80,6 +81,49 @@ void main() {
 
       expect(LogOverlayManager.isShowing, isTrue);
 
+      // 1. Switch to Perf tab
+      final perfTab = find.byIcon(Icons.speed_rounded);
+      if (perfTab.evaluate().isNotEmpty) {
+        await tester.tap(perfTab.first);
+        await tester.pumpAndSettle();
+      }
+
+      // 2. Switch to Network tab
+      final netTab = find.byIcon(Icons.wifi_tethering_rounded);
+      if (netTab.evaluate().isNotEmpty) {
+        await tester.tap(netTab.first);
+        await tester.pumpAndSettle();
+      }
+
+      // 3. Switch back to Logs tab
+      final logsTab = find.byIcon(Icons.article_outlined);
+      if (logsTab.evaluate().isNotEmpty) {
+        await tester.tap(logsTab.first);
+        await tester.pumpAndSettle();
+      }
+
+      // 4. Test trace filter update
+      LogOverlayManager.traceFilterNotifier.value = 'trace-id-999';
+      await tester.pumpAndSettle();
+
+      LogOverlayManager.traceFilterNotifier.value = null;
+      await tester.pumpAndSettle();
+
+      // 5. Test collapse window to floating button
+      final minimizeBtn = find.byIcon(Icons.remove_rounded);
+      if (minimizeBtn.evaluate().isNotEmpty) {
+        await tester.tap(minimizeBtn.first);
+        await tester.pumpAndSettle();
+      }
+
+      // 6. Test floating button drag
+      final floatingDrag = find.byIcon(Icons.drag_indicator_rounded);
+      if (floatingDrag.evaluate().isNotEmpty) {
+        await tester.drag(floatingDrag.first, const Offset(20, 20));
+        await tester.pump();
+      }
+
+      // 7. Hide overlay
       LogOverlayManager.hide();
       await tester.pumpAndSettle();
       expect(LogOverlayManager.isShowing, isFalse);

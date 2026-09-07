@@ -60,6 +60,7 @@ void main() {
         titleKey: I18nKeys.faultScenario401Title,
         descKey: I18nKeys.faultScenario401Desc,
         status: ScenarioStatus.idle,
+        lastExecutionDurationMs: 120,
       );
 
       await tester.pumpWidget(
@@ -75,12 +76,60 @@ void main() {
 
       expect(find.text(I18nKeys.faultScenario401Title.tr), findsOneWidget);
       expect(find.text(I18nKeys.faultScenario401Desc.tr), findsOneWidget);
+      expect(find.text('120ms'), findsOneWidget);
       expect(find.byType(CommonButton), findsOneWidget);
 
       final button = tester.widget<CommonButton>(find.byType(CommonButton));
       button.onPressed?.call();
 
       expect(ran, isTrue);
+    });
+
+    testWidgets('FaultScenarioCard renders different categories and statuses', (WidgetTester tester) async {
+      final scenarios = [
+        const FaultScenarioModel(
+          type: FaultScenarioType.zoneAsyncCrash,
+          category: FaultCategory.stability,
+          titleKey: I18nKeys.faultScenarioZoneCrashTitle,
+          descKey: I18nKeys.faultScenarioZoneCrashDesc,
+          status: ScenarioStatus.running,
+        ),
+        const FaultScenarioModel(
+          type: FaultScenarioType.mainThreadJank,
+          category: FaultCategory.performance,
+          titleKey: I18nKeys.faultScenarioJankTitle,
+          descKey: I18nKeys.faultScenarioJankDesc,
+          status: ScenarioStatus.recovered,
+        ),
+        const FaultScenarioModel(
+          type: FaultScenarioType.networkTimeout,
+          category: FaultCategory.all,
+          titleKey: I18nKeys.faultScenarioTimeoutTitle,
+          descKey: I18nKeys.faultScenarioTimeoutDesc,
+          status: ScenarioStatus.failed,
+        ),
+        const FaultScenarioModel(
+          type: FaultScenarioType.serverError500,
+          category: FaultCategory.network,
+          titleKey: I18nKeys.faultScenario500Title,
+          descKey: I18nKeys.faultScenario500Desc,
+          status: ScenarioStatus.success,
+        ),
+      ];
+
+      for (final s in scenarios) {
+        await tester.pumpWidget(
+          createTestWidget(
+            FaultScenarioCard(
+              scenario: s,
+              isRunning: s.status == ScenarioStatus.running,
+              onRun: () {},
+            ),
+          ),
+        );
+        await tester.pump(const Duration(milliseconds: 50));
+        expect(find.text(s.titleKey.tr), findsOneWidget);
+      }
     });
 
     testWidgets('FaultExecutionConsole renders logs, trace actions, and handles drill/copy/clear', (WidgetTester tester) async {
