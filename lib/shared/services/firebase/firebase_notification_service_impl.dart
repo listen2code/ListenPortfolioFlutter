@@ -10,19 +10,46 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import '../../shared.dart';
 import 'firebase_options.dart';
 
-/// Concrete implementation of INotificationService using Firebase Cloud Messaging (FCM)
-/// and flutter_local_notifications.
+/// Concrete implementation of [INotificationService] combining Firebase Cloud Messaging (FCM)
+/// for remote push delivery and [FlutterLocalNotificationsPlugin] for local foreground banners.
+///
+/// ### Architecture & Design Decisions:
+/// 1. **Vendor Decoupling via Inversion of Control**:
+///    Implements [INotificationService] from `ListenCore`. The rest of the app interacts
+///    strictly with the abstract interface, allowing effortless mocking in tests or swapping
+///    for alternative providers (e.g. Huawei Push Kit) without modifying UI/Domain logic.
+///
+/// 2. **Resilience & Graceful Network Fallbacks**:
+///    FCM connections can freeze indefinitely in regions where Google APIs are unreachable
+///    (e.g., mainland China or restricted enterprise proxies). To prevent freezing the app's
+///    cold startup sequence, all asynchronous Firebase calls are guarded with explicit timeouts
+///    ([_kInitTimeout], [_kConfigTimeout], [_kNetworkTimeout]). Upon timeout or failure,
+///    the service falls back to a disabled/mock mode gracefully.
+///
+/// 3. **Three-State Push Lifecycle Management**:
+///    - **Foreground**: FCM does not display system banners by default on Android. This class
+///      intercepts `FirebaseMessaging.onMessage` and synthesizes a heads-up banner via
+///      [FlutterLocalNotificationsPlugin].
+///    - **Background**: Handled automatically by the OS notification shade. Clicking the banner
+///      triggers `FirebaseMessaging.onMessageOpenedApp`, which routes into [_handleNotificationNavigation].
+///    - **Terminated**: When the app is launched from a cold state by tapping a notification,
+///      `FirebaseMessaging.getInitialMessage()` retrieves the intent payload and routes navigation.
+///
+/// 4. **Deep Link Event Bus Routing**:
+///    When a notification containing a `link` parameter is tapped, the service unwinds existing
+///    modal/sub-route stacks to [Routes.home] and dispatches a sticky [CommonEvent] on [eventBus],
+///    reusing the unified [DeepLinkManager] routing table.
 class FirebaseNotificationServiceImpl implements INotificationService {
-  /// Timeout for Firebase core initialization.
+  /// Maximum duration to wait for [Firebase.initializeApp] before falling back.
   static const Duration _kInitTimeout = Duration(seconds: 10);
 
-  /// Timeout for local configuration calls (foreground options, initial message query).
+  /// Maximum duration for local configuration calls (presentation options, initial message).
   static const Duration _kConfigTimeout = Duration(seconds: 5);
 
-  /// Timeout for FCM network operations (getToken, subscribe/unsubscribe topic).
+  /// Maximum duration for remote FCM network operations (token acquisition, topic subscriptions).
   static const Duration _kNetworkTimeout = Duration(seconds: 10);
 
-  /// Timeout for system permission dialog (user interaction required).
+  /// Maximum duration to await user response on system permission prompt.
   static const Duration _kPermissionTimeout = Duration(seconds: 5);
 
   FirebaseMessaging get _fcm => FirebaseMessaging.instance;
@@ -164,7 +191,21 @@ class FirebaseNotificationServiceImpl implements INotificationService {
   }
 
   /// Unified handler for notification click navigation routing.
-  /// Called from both terminated launch (getInitialMessage) and background wakeup (onMessageOpenedApp).
+  /// Called from both terminated launch ([FirebaseMessaging.getInitialMessage]) and
+  /// background wakeup ([FirebaseMessaging.onMessageOpenedApp]).
+  ///
+  /// ### Navigation Strategy:
+  /// 1. **Stack Unwinding**:
+  ///    Calls `popUntil` to pop any active sub-routes (such as SettingsPage or Dialogs)
+  ///    until [Routes.home] or the root route is reached. This prevents multiple nested
+  ///    sub-pages from accumulating in the backstack.
+  ///
+  /// 2. **Sticky Deep Link Dispatch**:
+  ///    Parses the `link` URI query parameter (e.g. `listen://app/project/detail?id=1`).
+  ///    Fires a [CommonEvent] with `sticky: true` and `autoClear: true`.
+  ///    Using sticky events is critical during cold start (terminated launch): if the target
+  ///    view's event listener has not yet registered when the notification is processed,
+  ///    the event is retained and automatically delivered as soon as the listener attaches.
   void _handleNotificationNavigation(NotificationPayload payload) {
     appLogger.i('FirebaseNotificationService: _handleNotificationNavigation=$payload');
     final data = payload.data;

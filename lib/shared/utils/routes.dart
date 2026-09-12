@@ -22,9 +22,17 @@ import '../../features/home/presentation/pages/resume/resume_page.dart';
 import '../../features/fault_injection/presentation/pages/fault_injection_page.dart';
 
 /// Centralized route definitions and registry for the application.
+/// Maps string route paths to page widgets and provides helpers for constructing deep links.
 class Routes {
   Routes._();
 
+  /// Constructs a standardized [Uri] targeting a specific tab within the [HomePage].
+  ///
+  /// Example:
+  /// ```dart
+  /// final uri = Routes.makeHomeTabDeepLink('projects');
+  /// // Produces: listenportfolio://home?tab=projects
+  /// ```
   static Uri makeHomeTabDeepLink(String tabName) {
     return Uri(
       scheme: AppConstants.deepLinkScheme,
@@ -33,28 +41,72 @@ class Routes {
     );
   }
 
+  // ==========================================
   // Route Path Constants
+  // ==========================================
+
+  /// Splash / Launch screen path.
   static const String root = '/splash';
+
+  /// Primary multi-tab home page path.
   static const String home = '/home';
+
+  /// AI Assistant conversation page path.
   static const String aiChat = '/ai_chat';
+
+  /// User authentication login page path.
   static const String login = '/login';
+
+  /// User account sign-up page path.
   static const String signUp = '/signUp';
+
+  /// Password retrieval page path.
   static const String forgotPassword = '/forgot_password';
+
+  /// Password change page path.
   static const String changePassword = '/change_password';
+
+  /// Application settings page path.
   static const String settings = '/settings';
+
+  /// Theme, typography, and appearance configuration page path.
   static const String appearance = '/appearance';
+
+  /// GDPR / Account deletion compliance page path.
   static const String deleteAccount = '/delete_account';
+
+  /// Crash dump inspection list page path.
   static const String crashLogs = '/crash_logs';
+
+  /// Web-based Terms of Service page path.
   static const String termsOfService = '/terms_of_service';
+
+  /// Web-based Privacy Policy page path.
   static const String privacyPolicy = '/privacy_policy';
+
+  /// Debug test page for embedded InAppWebView.
   static const String webViewTest = '/webview_test';
+
+  /// Resume overview page path.
   static const String resume = '/resume';
+
+  /// MVI interaction playback tape list page path.
   static const String playbackTapeList = '/playback_tape_list';
+
+  /// Architectural fault injection test playground page path.
   static const String faultInjection = '/fault_injection';
 
-  // Argument Keys - Enforce consistency between caller and receiver
+  // ==========================================
+  // Argument Keys (Uniform Caller-Receiver Contract)
+  // ==========================================
+
+  /// Name parameter key used across profile and authentication routes.
   static const String argName = 'name';
+
+  /// File path parameter key for crash log inspection and file viewers.
   static const String argFilePath = 'file_path';
+
+  /// Query parameter flag indicating whether to trigger an in-app update check.
   static const String argCheckUpdate = 'check_update';
 
   /// The complete route map linking paths to their respective widget builders.

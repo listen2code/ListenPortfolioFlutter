@@ -1,42 +1,78 @@
 #!/usr/bin/env dart
+// ignore_for_file: avoid_print, avoid_classes_with_only_static_members
 
 import 'dart:convert';
 import 'dart:io';
 
-/// Dependency boundary check tool
+/// ============================================================================
+/// Dependency Boundary & Architecture Gatekeeper CLI Tool
+/// ============================================================================
 ///
-/// Dependency hierarchy rules (from bottom to top):
-/// 1. core (listen_core) - Base framework layer
-/// 2. uikit (listen_uikit) - UI component layer
-/// 3. shared - Shared utility layer
-/// 4. features - Business feature layer
+/// A standalone, high-performance static analysis utility designed to verify
+/// architectural dependency compliance and generate dependency graph visualizations.
 ///
-/// Forbidden dependency directions:
-/// - features depending on other features (cross-module dependency)
-/// - shared depending on features
-/// - core depending on any upper layer modules
-/// - uikit depending on features
-/// - circular dependencies
+/// ### Architecture Layer Hierarchy (Bottom to Top):
+/// 1. **Core Framework Layer** (`listen_core`): Low-level primitives, networking, storage, logging.
+/// 2. **UI Component Layer** (`listen_uikit`): Atoms, molecules, widgets, design tokens.
+/// 3. **Shared Utility Layer** (`lib/shared/`): Common business widgets, themes, route bindings.
+/// 4. **Business Feature Layer** (`lib/features/`): Isolated feature pods (about_me, auth, home, settings).
+///
+/// ### Invariant Architectural Rules:
+/// - **Unidirectional Flow**: Lower layers MUST NOT import from upper layers.
+/// - **Feature Isolation**: Features MUST NOT directly import internal classes from peer features.
+/// - **Encapsulation**: Private implementations (`_impl.dart`, `impl/`, `_private.dart`) are inaccessible
+///   from outside their declared boundary, with exceptions for dependency injection providers.
+/// - **Cycle Freedom**: The dependency graph across modules must remain a Directed Acyclic Graph (DAG).
+///
+/// ### CLI Usage:
+/// ```bash
+/// dart tools/dependency_rules.dart                  # Run standard validation
+/// dart tools/dependency_rules.dart --graph          # Export dependency_graph.json
+/// dart tools/dependency_rules.dart --check-circular # Check circular dependencies
+/// dart tools/dependency_rules.dart --check-layers   # Check layer boundary violations
+/// ```
 
+/// Definition of an architectural boundary enforcement rule.
 class DependencyRule {
+  /// Regular expression pattern matching illegal import lines.
   final String pattern;
+
+  /// Human-readable explanation of the architectural violation.
   final String description;
+
+  /// Category classification of this rule.
   final DependencyViolationType type;
 
   const DependencyRule({required this.pattern, required this.description, required this.type});
 }
 
+/// Categorization of dependency boundary violations.
 enum DependencyViolationType {
-  crossFeature, // Cross-feature module dependency
-  upwardDependency, // Upward dependency
-  circularDependency, // Circular dependency
-  forbiddenPattern, // Forbidden pattern
+  /// Illegal coupling between independent business feature modules.
+  crossFeature,
+
+  /// Illegal reverse dependency where a lower-level module depends on an upper-level module.
+  upwardDependency,
+
+  /// Cyclic import loop between two or more files/modules.
+  circularDependency,
+
+  /// Forbidden pattern, such as directly importing private implementation files.
+  forbiddenPattern,
 }
 
+/// Represents an individual architectural violation detected within a source file.
 class DependencyViolation {
+  /// Absolute or relative path to the offending Dart source file.
   final String file;
+
+  /// The offending `import '...'` line content.
   final String import;
+
+  /// The specific rule that was violated.
   final DependencyRule rule;
+
+  /// 1-based line number where the violation occurred.
   final int line;
 
   const DependencyViolation({
@@ -52,6 +88,7 @@ class DependencyViolation {
   }
 }
 
+/// Core analyzer engine that scans Dart source trees and evaluates dependency rules.
 class DependencyAnalyzer {
   static const List<DependencyRule> _rules = [
     // Forbidden cross-features module dependency
@@ -74,17 +111,24 @@ class DependencyAnalyzer {
 
     // Forbidden direct import of private implementation files (excluding common public file patterns)
     DependencyRule(
-      pattern: r"import.*listen_portfolio_flutter/.*_(impl|mock|test|internal|private)\.dart",
+      pattern: r'import.*listen_portfolio_flutter/.*_(impl|mock|test|internal|private)\.dart',
       description:
           'Direct import of private implementation files not allowed (_impl, _mock, _test, _internal, _private)',
       type: DependencyViolationType.forbiddenPattern,
     ),
   ];
 
+  /// Analyzes an individual Dart source file against registered architectural dependency rules.
+  ///
+  /// Processing Pipeline:
+  /// 1. Determines the owning architectural module (`features`, `shared`, or `core`) from [filePath].
+  /// 2. Iterates line-by-line looking for `import ` declarations.
+  /// 3. Evaluates regex pattern matches for each declared [DependencyRule].
+  /// 4. Dispatches to [_isContextualViolation] to apply semantic exception filters (such as DI providers).
   static List<DependencyViolation> analyzeFile(String filePath, List<String> lines) {
     final violations = <DependencyViolation>[];
 
-    // Determine which module this file belongs to
+    // Determine which module this file belongs to based on directory hierarchy
     final fileModule = _getFileModule(filePath);
 
     for (int i = 0; i < lines.length; i++) {
@@ -94,7 +138,7 @@ class DependencyAnalyzer {
         for (final rule in _rules) {
           final regex = RegExp(rule.pattern);
           if (regex.hasMatch(line)) {
-            // Additional context-aware checking
+            // Apply context-aware checks to eliminate false positives in valid DI / internal setups
             if (_isContextualViolation(line, filePath, fileModule, rule)) {
               violations.add(
                 DependencyViolation(file: filePath, import: line.trim(), rule: rule, line: i + 1),
@@ -108,19 +152,39 @@ class DependencyAnalyzer {
     return violations;
   }
 
-  /// Determine which module the file belongs to
+  /// Determines which architectural layer the given file path belongs to.
+  ///
+  /// Normalizes path semantics across operating systems (both `/` and `\` directory separators).
   static String? _getFileModule(String filePath) {
-    if (filePath.contains('features/')) {
+    if (filePath.contains('features/') || filePath.contains(r'features\')) {
       return 'features';
-    } else if (filePath.contains('shared/')) {
+    } else if (filePath.contains('shared/') || filePath.contains(r'shared\')) {
       return 'shared';
-    } else if (filePath.contains('core/')) {
+    } else if (filePath.contains('core/') || filePath.contains(r'core\')) {
       return 'core';
     }
     return null;
   }
 
-  /// Context-aware violation checking
+  /// Evaluates context-aware exception heuristics for potential architectural violations.
+  ///
+  /// Rationale for Heuristic Exceptions:
+  /// 1. **Upward Dependency Rule**:
+  ///    - `core` represents the foundational framework layer and must never import upward
+  ///      into `features` or `shared`.
+  ///    - `features` and `shared` exist within the same host client package and are permitted
+  ///      to cross-reference utility widgets and routes.
+  /// 2. **Cross-Feature Rule**:
+  ///    - Independent business features (e.g. `auth` vs `home`) must remain isolated pods.
+  ///    - An import is flagged if and only if both the importing file and imported URI belong
+  ///      to different feature pods (`currentFeature != importedFeature`).
+  /// 3. **Forbidden Private Implementation Rule**:
+  ///    - Clean Architecture mandates that presentation and domain layers depend strictly on
+  ///      abstract repository contracts (`auth_repository.dart`).
+  ///    - **Exception A (Dependency Injection)**: Files located inside `/provider/` directories
+  ///      are designated DI composition roots responsible for binding contracts to implementations.
+  ///    - **Exception B (Internal Data Layer)**: Data sources and repositories within the *same*
+  ///      feature pod are allowed to reference their own private DTOs and database models.
   static bool _isContextualViolation(
     String importLine,
     String filePath,
@@ -129,15 +193,14 @@ class DependencyAnalyzer {
   ) {
     switch (rule.type) {
       case DependencyViolationType.upwardDependency:
-      // NOTE: Allow features and shared to reference each other
-      // Only check core upward dependencies
-      if (fileModule == 'core' && (importLine.contains('features/') || importLine.contains('shared/'))) {
-        return true;
-      }
-      return false;
+        // Core framework module must never import upward into application layers
+        if (fileModule == 'core' && (importLine.contains('features/') || importLine.contains('shared/'))) {
+          return true;
+        }
+        return false;
 
       case DependencyViolationType.crossFeature:
-        // Check cross-feature dependencies
+        // Enforce strict feature pod boundary isolation
         if (fileModule == 'features') {
           final currentFeature = _extractFeatureName(filePath);
           final importedFeature = _extractFeatureName(importLine);
@@ -146,30 +209,33 @@ class DependencyAnalyzer {
         return false;
 
       case DependencyViolationType.forbiddenPattern:
-        // Allow provider files to import implementations (they are dependency injection)
-        if (filePath.contains('/provider/') || filePath.contains('\\provider\\')) {
-          return false; // Provider files are allowed to import implementations
+        // Exception A: Provider composition roots must instantiate concrete implementations
+        if (filePath.contains('/provider/') ||
+            filePath.contains(r'\provider\') ||
+            filePath.contains('/providers/') ||
+            filePath.contains(r'\providers\')) {
+          return false;
         }
-        // Allow data layer files to import implementations within the same feature
-        if (fileModule == 'features' && filePath.contains('/data/')) {
-          // Check if it's importing from the same feature's data layer
+        // Exception B: Allow data layer files to reference implementations within the same feature pod
+        if (fileModule == 'features' && (filePath.contains('/data/') || filePath.contains(r'\data\'))) {
           final currentFeature = _extractFeatureName(filePath);
           final importedFeature = _extractFeatureName(importLine);
           if (currentFeature != null && importedFeature != null && currentFeature == importedFeature) {
-            return false; // Same feature data layer imports are allowed
+            return false;
           }
         }
-        return true; // Default case: forbidden pattern is a violation
+        return true; // Any other layer importing private _impl files is flagged
 
       case DependencyViolationType.circularDependency:
-        // These are pattern-based, no additional context needed
         return true;
     }
   }
 
-  /// Extract feature name from path or import line
+  /// Extracts the feature pod name (e.g. 'auth', 'home', 'settings') from a file path or import URI.
+  ///
+  /// Handles both POSIX (`features/xyz/`) and Windows (`features\xyz\`) directory patterns.
   static String? _extractFeatureName(String path) {
-    final match = RegExp(r'features/([^/]+)/').firstMatch(path);
+    final match = RegExp(r'features[/\\]([^/\\]+)[/\\]').firstMatch(path);
     return match?.group(1);
   }
 
@@ -248,7 +314,14 @@ class DependencyAnalyzer {
     }
   }
 
-  /// Generate dependency graph for visualization
+  /// Constructs a Directed Acyclic Graph (DAG) representation of internal imports across `lib/`.
+  ///
+  /// Output Schema:
+  /// - `nodes`: Array of relative Dart source file paths.
+  /// - `edges`: Directed linkages mapping an importing file (`from`) to its dependencies (`to`).
+  /// - `statistics`: Aggregated metrics covering total file count, coupled files, and edge count.
+  ///
+  /// Used by CI/CD pipelines to export `dependency_graph.json` as a build artifact for architectural tracking.
   static Future<Map<String, dynamic>> generateDependencyGraph() async {
     final graph = <String, Set<String>>{};
     final projectDir = Directory.current.path;
@@ -270,7 +343,7 @@ class DependencyAnalyzer {
             }
           }
         } catch (e) {
-          // Ignore read errors
+          // Ignore read errors for inaccessible or locked files
         }
 
         graph[relativePath] = imports;
@@ -292,6 +365,11 @@ class DependencyAnalyzer {
   }
 }
 
+/// CLI Entrypoint for Dependency Boundary Verification.
+///
+/// Exit Codes:
+/// - `0`: All architectural boundary checks passed successfully.
+/// - `1`: One or more violations detected (fails CI gate).
 Future<void> main(List<String> args) async {
   // Handle special command line options
   if (args.contains('--check-circular')) {

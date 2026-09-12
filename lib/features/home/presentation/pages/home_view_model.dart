@@ -36,6 +36,16 @@ class HomeViewModel extends _$HomeViewModel with ViewModelMixin<HomeState, HomeI
     );
   }
 
+  /// Non-Blocking Background OTA Code Push Inspection Hook:
+  ///
+  /// ### Cold Start Optimization Strategy:
+  /// We defer the update check using [Future.microtask] until after the initial UI
+  /// tree has rendered its first frame. This ensures zero Jank and zero milliseconds
+  /// added to application launch time (TTR / Cold Boot).
+  ///
+  /// When a patch is detected, it is downloaded silently in the background. Once ready,
+  /// a non-modal [MessageEffect] info toast is displayed, advising the user that
+  /// the update will seamlessly activate on their next cold launch.
   void _checkShorebirdPatchUpdate() {
     Future<void>.microtask(() async {
       await shorebirdService.checkAndInstallPatch(

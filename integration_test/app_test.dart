@@ -23,6 +23,12 @@ import 'package:visibility_detector/visibility_detector.dart';
 // ==========================================
 // Robust Page Transition Wait Helpers
 // ==========================================
+
+/// Polls until either [LoginPage] or [HomePage] is rendered in the Widget tree.
+///
+/// Designed to absorb variable splash screen initialization delays (e.g. database migration,
+/// theme loading, asynchronous service bootstrapping) without using brittle fixed `sleep()` calls.
+/// Performs up to 40 iterations with 300ms frame pumps and 150ms delays before calling [WidgetTester.pumpAndSettle].
 Future<void> waitForPageTransition(PatrolTester $) async {
   final tester = $.tester;
   for (int i = 0; i < 40; i++) {
@@ -36,6 +42,10 @@ Future<void> waitForPageTransition(PatrolTester $) async {
   await tester.pumpAndSettle();
 }
 
+/// Generic polling helper that waits for a specific [pageType] Widget to mount in the tree.
+///
+/// Overcomes asynchronous route transitions, hero animations, and lazy module loading.
+/// Iterates up to 40 times with 200ms pumps before settling the widget tree.
 Future<void> waitForPage(PatrolTester $, Type pageType) async {
   final tester = $.tester;
   for (int i = 0; i < 40; i++) {
@@ -51,6 +61,14 @@ Future<void> waitForPage(PatrolTester $, Type pageType) async {
 // ==========================================
 // UI Helpers for Isolated & Re-entrant Runs
 // ==========================================
+
+/// Ensures the application is running and safely positioned at the [LoginPage].
+///
+/// Provides self-healing and re-entrancy guarantees:
+/// 1. Auto-dismisses lingering alert dialogs left over from previous failed tests.
+/// 2. If already on [LoginPage], returns immediately (zero-cost re-entrancy).
+/// 3. If currently on [HomePage], opens the navigation drawer, clicks logout, and confirms dismissal.
+/// 4. If the app is not running, triggers [app.main] and waits for the initial transition.
 Future<void> bootAppAndGoToLogin(PatrolTester $) async {
   final tester = $.tester;
   // If an alert dialog is left open from previous test, dismiss it
@@ -139,6 +157,14 @@ Future<void> bootAppAndGoToLogin(PatrolTester $) async {
   await waitForPage($, LoginPage);
 }
 
+/// Helper performing an automated UI login flow with [username] and [password].
+///
+/// Features:
+/// - Idempotent bypass: If already logged in on [HomePage] as an authenticated user, skips redundant login.
+/// - Explicit keyboard unfocus: Calls [FocusManager.primaryFocus?.unfocus] to prevent the virtual keyboard
+///   from overlaying or pushing down the submit button.
+/// - Toast overlay suppression: Calls [CommonToast.hide] immediately after successful login to prevent
+///   floating toast messages from absorbing touch events intended for the bottom navigation bar.
 Future<void> performUiLogin(PatrolTester $, String username, String password) async {
   final tester = $.tester;
   if (find.byType(HomePage).evaluate().isNotEmpty && !authManager.state.isGuest) {
@@ -164,6 +190,10 @@ Future<void> performUiLogin(PatrolTester $, String username, String password) as
   }
 }
 
+/// Helper navigating directly to [SettingsPage] from anywhere in the application.
+///
+/// Handles automatic login if not authenticated, opens the [Scaffold] navigation drawer,
+/// taps the settings navigation item, and waits for [SettingsPage] transition to complete.
 Future<void> navigateToSettings(PatrolTester $) async {
   final tester = $.tester;
   if (find.byType(HomePage).evaluate().isEmpty) {
@@ -183,22 +213,27 @@ Future<void> navigateToSettings(PatrolTester $) async {
   }
 }
 
+/// Main entry point for the End-to-End (E2E) integration test suite.
+///
+/// Configures global test harnesses before executing 22 modular, self-healing test groups.
 void main() {
   setUpAll(() {
-    // Prevent visibility animations from lagging and blocking pumpAndSettle
+    // Prevent visibility animations from lagging and blocking pumpAndSettle.
+    // Setting updateInterval to Duration.zero disables internal debounce timers.
     VisibilityDetectorController.instance.updateInterval = Duration.zero;
 
-    // Pre-initialize mock services to prevent native hangs during tests
+    // Pre-initialize mock/fake service replacements to eliminate dependencies on native platform channels
     iapService = FakeIapService();
     notificationService = FakeNotificationService();
     ShareProviderImpl.skipShareForTesting = true;
 
-    // Configure LocalMockServer with low latency for fast execution
+    // Configure LocalMockServer with minimal latency (10ms) to maximize test throughput
     LocalMockServer.initConfig(const MockServerConfig(networkLatency: Duration(milliseconds: 10)));
   });
 
   group('E2E UI Flow Integration Tests (Patrol)', () {
     setUp(() async {
+      // Suppress automated In-App Review prompts to prevent review dialogs from hijacking test focus
       await SpUtil.put(AppConstants.hasReviewKey, true);
     });
 

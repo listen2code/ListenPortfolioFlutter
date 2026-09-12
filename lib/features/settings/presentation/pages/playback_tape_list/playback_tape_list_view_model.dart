@@ -11,6 +11,14 @@ import 'playback_tape_list_state.dart';
 
 part 'playback_tape_list_view_model.g.dart';
 
+/// MVI Presentation ViewModel managing the recorded tape list view, playback triggering, and tape deletion.
+///
+/// Architectural Highlights:
+/// - **Clean Architecture Adherence**: Interacts exclusively with domain use cases
+///   ([GetPlaybackTapesUseCase], [GetPlaybackTapeStepsUseCase], [DeletePlaybackTapeUseCase])
+///   rather than accessing persistent storage or SharedPreferences directly.
+/// - **Unidirectional Data Flow (MVI)**: Accepts [PlaybackTapeListIntent] actions, executes domain logic,
+///   updates [PlaybackTapeListState], and emits single-use UI side-effects ([ConfirmEffect], [PlayTapeEffect], [ShowTapeDetailsEffect]).
 @riverpod
 class PlaybackTapeListViewModel extends _$PlaybackTapeListViewModel
     with ViewModelMixin<PlaybackTapeListState, PlaybackTapeListIntent> {
@@ -22,6 +30,7 @@ class PlaybackTapeListViewModel extends _$PlaybackTapeListViewModel
   @override
   void onReady() {
     super.onReady();
+    // Automatically trigger initial tape catalog fetch once the widget tree is mounted
     handleIntent(const PlaybackTapeListIntent.loadTapes());
   }
 
@@ -36,6 +45,9 @@ class PlaybackTapeListViewModel extends _$PlaybackTapeListViewModel
     );
   }
 
+  /// Loads all recorded tapes from persistent storage via domain use case and updates state.
+  ///
+  /// Reverses the list so newly recorded tapes appear at the top of the UI list.
   Future<void> _loadTapes() async {
     await call(
       ref.execute<List<PlaybackTapeMetadata>, BaseParam>(getPlaybackTapesUseCaseProvider),
@@ -50,6 +62,10 @@ class PlaybackTapeListViewModel extends _$PlaybackTapeListViewModel
     );
   }
 
+  /// Prompts the user with a modal confirmation dialog before permanently deleting a tape.
+  ///
+  /// In automated playback mode, this [ConfirmEffect] is intercepted and automatically approved
+  /// by `ConfirmProviderImpl`.
   void _deleteTape(String tapeKey) {
     emitEffect(
       ConfirmEffect(
@@ -66,6 +82,7 @@ class PlaybackTapeListViewModel extends _$PlaybackTapeListViewModel
     );
   }
 
+  /// Executes the actual deletion use case once the user (or playback engine) confirms deletion.
   Future<void> _onConfirmDeleteTape(String tapeKey) async {
     await call(
       ref.execute<void, String>(deletePlaybackTapeUseCaseProvider, param: tapeKey),
@@ -80,6 +97,7 @@ class PlaybackTapeListViewModel extends _$PlaybackTapeListViewModel
     );
   }
 
+  /// Fetches the full chronological step payload for [tapeKey] and emits a [PlayTapeEffect] to launch playback.
   Future<void> _startPlayback(String tapeKey) async {
     await call(
       ref.execute<List<PlaybackStep>, String>(getPlaybackTapeStepsUseCaseProvider, param: tapeKey),
@@ -89,7 +107,7 @@ class PlaybackTapeListViewModel extends _$PlaybackTapeListViewModel
           appLogger.e('steps is empty');
           return;
         }
-        // Start playback
+        // Emit effect handled by UI provider to launch MviPlaybackPlayer
         emitEffect(PlayTapeEffect(tapeKey, steps));
       },
       onFailure: (failure) {
@@ -98,6 +116,7 @@ class PlaybackTapeListViewModel extends _$PlaybackTapeListViewModel
     );
   }
 
+  /// Fetches step details and emits [ShowTapeDetailsEffect] to display step inspection bottom sheet or dialog.
   Future<void> _showTapeDetails(String tapeKey, String tapeName) async {
     await call(
       ref.execute<List<PlaybackStep>, String>(getPlaybackTapeStepsUseCaseProvider, param: tapeKey),
@@ -113,3 +132,4 @@ class PlaybackTapeListViewModel extends _$PlaybackTapeListViewModel
     );
   }
 }
+

@@ -9,44 +9,53 @@ import '../../constants/app_constants.dart';
 import 'install_referrer_data.dart';
 
 /// Abstract service interface for Google Play Install Referrer and Deferred Deep Linking.
+///
+/// ### Architecture & Responsibilities:
+/// - Provides platform abstraction over Google Play's `InstallReferrerClient`.
+/// - Encapsulates SharedPreferences state checks (`has_checked_install_referrer`)
+///   to ensure idempotency and prevent annoying duplicate dialog prompts on successive launches.
+/// - Enables unit and integration testing via [mockInstance] injection.
 abstract class IInstallReferrerService {
-  /// Unified logging tag for all Deferred Deep Link / Install Referrer operations.
+  /// Unified logging tag prefix for all Deferred Deep Link / Install Referrer operations.
   static const String tag = 'Deferred Deep Link';
 
-  /// Fetches the install referrer from Google Play on Android.
+  /// Fetches the install referrer payload and metadata from Google Play on Android.
+  /// Safely returns [InstallReferrerData.empty] on non-Android platforms (iOS, Web).
   Future<InstallReferrerData> fetchInstallReferrer();
 
   /// Checks if the install referrer has already been processed on this device.
+  /// Returns `true` if the user previously confirmed with "Don't show again" or completed onboarding.
   Future<bool> hasProcessedReferrer();
 
-  /// Marks the install referrer as processed so that it won't trigger duplicate dialogs.
+  /// Marks the install referrer as processed in local storage so that it won't trigger duplicate dialogs.
   Future<void> markReferrerProcessed();
 
-  /// Resets the processed state so that the referrer will be fetched again on next startup.
+  /// Resets the processed state in local storage so that the referrer will be fetched again on next startup.
   Future<void> resetReferrerProcessed();
 
-  /// Persists the detected referral data to local storage.
+  /// Persists the detected referral data to local storage for long-term offline attribution.
   Future<void> saveReferrerData(InstallReferrerData data);
 
-  /// Retrieves previously saved referral data, if any.
+  /// Retrieves previously saved referral data from local storage, if any exists.
   Future<InstallReferrerData?> getSavedReferrerData();
 
-  /// Simulates an install referrer for development and testing.
+  /// Simulates an install referrer payload for local development, demoing, and automated testing.
   Future<InstallReferrerData> simulateReferrer(String mockReferrer);
 }
 
-/// Global provider for [IInstallReferrerService].
+/// Global Riverpod provider for accessing [IInstallReferrerService].
 final installReferrerServiceProvider = Provider<IInstallReferrerService>((ref) {
   return InstallReferrerServiceImpl.instance;
 });
 
-/// Default implementation of [IInstallReferrerService].
+/// Production implementation of [IInstallReferrerService] backed by Android MethodChannel and SpUtil.
 class InstallReferrerServiceImpl implements IInstallReferrerService {
   static const MethodChannel _channel = MethodChannel(AppConstants.methodChannelInstallReferrer);
 
-  /// For unit testing overrides.
+  /// Test hook allowing unit and widget tests to override the singleton instance.
   static IInstallReferrerService? mockInstance;
 
+  /// Global singleton accessor with mock override support.
   static IInstallReferrerService get instance => mockInstance ?? InstallReferrerServiceImpl();
 
   @override

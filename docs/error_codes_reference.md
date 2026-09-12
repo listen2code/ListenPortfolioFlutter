@@ -1,529 +1,480 @@
-# 错误码速查表
+# 全链路统一错误码与异常处理架构规范 (Error Handling Architecture & Error Codes Reference)
 
-**Status**: `Partially Implemented`
-
-> 本文档同时包含当前代码中已经存在的错误处理机制，以及仍在规划中的统一错误码 / `messageId` / i18n 映射方案。阅读时请以代码实现为准，不要默认本文所有条目都已落地。
-
-本文档整理了 Listen Portfolio Flutter 项目中的错误码体系，包括 `AppException` 子类、业务错误码和对应的处理方式，方便快速排查线上问题。
-
-## 🏗️ 错误处理架构
-
-### 📋 核心组件
-
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Presentation  │    │    Domain       │    │     Data        │
-│                 │    │                 │    │                 │
-│  UI Layer       │───▶│  Use Cases      │───▶│  Repositories   │
-│                 │    │                 │    │                 │
-│ Error Handling  │    │ Either<Failure,  │    │ safeCall()      │
-│                 │    │      T>         │    │                 │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-```
-
-### 🔄 错误流转
-
-1. **Data Layer** → API 调用失败 → 创建 `Failure` 对象
-2. **Domain Layer** → UseCase 处理 → 返回 `Either<Failure, T>`
-3. **Presentation Layer** → ViewModel 处理 → 显示用户友好消息
+**Status**: `Active & Implemented (Standard Architecture Reference)`  
+**Latest Update**: 2026-09-12  
+**Maintainer**: Architecture & Core Infrastructure Team
 
 ---
 
-## 📊 错误码分类体系
+## 1. 架构愿景与设计哲学 (Architectural Philosophy)
 
-### 🎯 标准响应格式
+在现代高可用移动端工程与分布式后端交互中，错误处理不仅是简单的 `try-catch` 或弹窗提示，而是贯穿**网络传输层 (Transport)、网关防腐层 (Gateway Antifragile)、领域模型层 (Domain/Failure)、展示状态机 (Presentation/MVI) 以及用户感知层 (User Experience)** 的端到端闭环系统。
 
-#### **成功响应**
+本项目（Listen Portfolio Flutter / ListenCore / ListenPortfolioBackend）确立了以下四大核心设计哲学：
+
+```
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│                             端到端错误流转与防腐管道                              │
+└──────────────────────────────────────────────────────────────────────────────────┘
+
+ [Edge Gateway / Nginx] ──(413/502/504 HTML or JSON)──┐
+                                                      ▼
+ [Transport / Dio]        ── ErrorInterceptor / AuthInterceptor ──▶ AppException (Data)
+                                                                           │
+ [Repository Boundary]    ── BaseRepository.safeCall()          ──▶ Either<Failure, T>
+                                                                           │
+ [Presentation / MVI]     ── BaseViewModel.handleResult()       ──▶ ErrorMapper.map()
+                                                                           │
+ [UI & User Perception]   ── MessageEffect (Dialog / Toast)    ──▶ Localized i18n
+```
+
+1. **类型安全与领域纯洁性 (Domain Decoupling)**：
+   - 外部基础设施异常（如 Dio 的 `DioException`、数据库 `SqliteException`、JSON 序列化 `TypeError`）严禁穿透进入 Domain 层和 Presentation 层。
+   - 数据层将底层原始异常捕获并统一抽象为领域层无副作用的不可变对象 `Failure`，通过函数式编程 `Either<Failure, T>` 显式传递错误轨道（Railway Oriented Programming）。
+2. **边缘网关韧性防腐 (Edge Gateway Antifragile Defense)**：
+   - 在生产环境下，反向代理网关（Nginx、Cloudflare、AWS ALB）在遭遇文件过大（413 Payload Too Large）、节点崩溃（502 Bad Gateway）或超时（504 Gateway Timeout）时，会抛出原生的非 JSON HTML 错误网页。
+   - 客户端解析器实施防御性解析，通过正则提取 HTML `<title>` 摘要，杜绝 Dart `TypeError` 造成的二次崩溃，并将网关错误平滑转化为标准的 `ServerException`。
+3. **静默自愈优先 (Self-Healing Concurrency Queue)**：
+   - 针对 HTTP 401 Unauthorized 凭据失效，利用 Dio 逆序拦截器管道在最底层由 `AuthInterceptor` 挂起并发请求并执行单例刷新（`onRefreshToken()`）。只有在刷新彻底失败后，才将终态错误向外抛出。
+4. **三级级联多语言本地化 (3-Tier Cascade Fallback)**：
+   - `ErrorMapper` 提供 `messageId` 错误契约码 $\rightarrow$ 原始文本翻译 $\rightarrow$ 兜底技术文案的三级级联解析，确保全球化语言无缝回退，杜绝空文案或未经处理的技术乱码。
+
+---
+
+## 2. 标准契约协议 (Envelope Specification)
+
+前后端通信严格遵循规范化的统一 JSON 数据包络（Envelope）。
+
+### 2.1 成功响应格式 (Success Envelope)
+
+当 HTTP 状态码为 200 OK 且业务逻辑执行成功时：
+
 ```json
 {
   "result": "0",
   "messageId": "SUCCESS",
   "message": "Operation successful",
-  "body": { ... }
+  "body": {
+    "userId": "usr_9981",
+    "email": "user@example.com",
+    "avatarUrl": "https://cdn.listen.dev/avatars/u9981.webp"
+  }
 }
 ```
 
-#### **错误响应**
+- **`result`**: `"0"`（表示业务成功，定义于 `ApiResult.success` / Java `ApiResponse.success`）。
+- **`messageId`**: 可选契约码，默认空字符串或 `"SUCCESS"`。
+- **`message`**: 可选成功附带文案。
+- **`body`**: 强类型有效载荷实体。
+
+### 2.2 业务失败响应格式 (Business Failure Envelope)
+
+当服务器端业务逻辑拦截或鉴权不通过时（例如密码错误、账户已被锁定）：
+
 ```json
 {
   "result": "1",
-  "messageId": "ERROR_CODE",
-  "message": "Error description",
-  "body": {
-    "error": "Detailed error information"
-  }
+  "messageId": "AUTH_0300",
+  "message": "Invalid username or password",
+  "body": null
 }
 ```
 
-### 📋 错误码层级
+- **`result`**: `"1"`（表示业务错误，定义于 `ApiResult.serverError`）。若为会话超时，`result` 为 `"3"`（`ApiResult.sessionTimeout`）。
+- **`messageId`**: 唯一契约错误码（如 `AUTH_0300`），作为客户端 `ErrorMapper` 映射多语言的最高优先级 Key。
+- **`message`**: 服务端生成的默认诊断描述（作为多语言缺失时的第二级回退）。
+- **`body`**: 错误时通常为 `null`，或携带字段级校验明细字典。
 
-| 层级 | 前缀 | 说明 | 示例 |
-|------|------|------|------|
-| **系统级** | `SYS_` | 框架、网络、存储错误 | `SYS_NETWORK_ERROR` |
-| **业务级** | `BIZ_` | 业务逻辑错误 | `BIZ_LOGIN_FAILED` |
-| **验证级** | `VAL_` | 数据验证错误 | `VAL_EMAIL_INVALID` |
-| **权限级** | `AUTH_` | 认证授权错误 | `AUTH_TOKEN_EXPIRED` |
-| **外部级** | `EXT_` | 第三方服务错误 | `EXT_PAYMENT_FAILED` |
+### 2.3 错误码层级划分 (Classification Tiers)
+
+| 层级 | 前缀 | 责任边界 | 示例 | 治理责任 |
+|:---|:---|:---|:---|:---|
+| **网络与系统级** | `NET_` / `SYS_` | 传输物理连接、DNS 解析、TLS 握手、超时、本地存储 | `NET_0001`, `SYS_CANCEL` | 移动基础设施组 |
+| **认证与权限级** | `AUTH_` | Token 失效、签名错误、越权拦截、密码防刷锁定、AppCheck | `AUTH_0300`, `AUTH_0303` | 统一身份认证组 (IAM) |
+| **数据校验级** | `VAL_` | 前端表单约束校验、后端 DTO 强类型绑定与 JSR-303 验证 | `VAL_0400`, `VAL_0403` | 全栈业务协同 |
+| **业务逻辑级** | `BIZ_` | 领域业务约束（用户名重复、个人信息缺失、支付异常） | `BIZ_0500`, `BIZ_0507` | 各垂直业务领域组 |
+| **服务端与网关级** | `SRV_` | Nginx 反代限流、Spring 内部未捕获异常、数据库宕机 | `SRV_0100`, `SRV_0105` | 服务端与 DevOps 组 |
 
 ---
 
-## 🔧 Failure 类型详解
+## 3. 核心组件与时序流转 (Core Components & Lifecycle)
 
-### 🌐 **NetworkFailure** - 网络错误
+### 3.1 异常体系与领域失败模型映射
 
-#### **错误码范围**: `NET_0001` - `NET_0099`
+系统将错误严格划分为**数据层异常 (`AppException`)** 与 **领域层失败 (`Failure`)**：
 
-| 错误码 | 说明 | 触发场景 | 用户消息 |
-|--------|------|----------|----------|
-| `NET_0001` | 网络连接失败 | 无网络连接 | "No internet connection" |
-| `NET_0002` | 请求超时 | 网络超时 | "Request timeout" |
-| `NET_0003` | DNS 解析失败 | 域名无法解析 | "Unable to connect to server" |
-| `NET_0004` | SSL/TLS 错误 | 证书问题 | "Secure connection failed" |
-| `NET_0005` | 服务器无响应 | 服务器宕机 | "Server unavailable" |
+```
+ 数据层异常 (lib/errors/exceptions.dart)          领域层失败 (lib/errors/failures.dart)
+ ┌────────────────────────────────────┐         ┌───────────────────────────────────┐
+ │ AppException (Base)                │         │ Failure (Abstract Base, Equatable)│
+ ├────────────────────────────────────┤         ├───────────────────────────────────┤
+ │ ├─ ServerException                 │──safeCall──▶ ├─ ServerFailure / ServerApiFailure │
+ │ ├─ NetworkException                │──safeCall──▶ ├─ NetworkFailure                   │
+ │ ├─ AuthException                   │──safeCall──▶ ├─ AuthFailure                      │
+ │ ├─ CacheException                  │──safeCall──▶ ├─ CacheFailure                     │
+ │ ├─ ParseException (or TypeError)   │──safeCall──▶ ├─ ParseFailure                     │
+ │ └─ Unknown / Third-Party Exception │──safeCall──▶ └─ UnknownFailure                   │
+ └────────────────────────────────────┘         └───────────────────────────────────┘
+```
 
-#### **处理方式**
+#### 关键源码定位
+- **数据层异常**: [exceptions.dart](../../ListenCore/lib/errors/exceptions.dart)
+- **领域层失败**: [failures.dart](../../ListenCore/lib/errors/failures.dart)
+- **网络错误拦截器**: [error_interceptor.dart](../../ListenCore/lib/network/interceptors/error_interceptor.dart)
+- **错误映射器**: [error_mapper.dart](../../ListenCore/lib/errors/error_mapper.dart)
+- **基础仓储封装**: [base_repository.dart](../../ListenCore/lib/network/base_repository.dart)
+- **展示层 ViewModel**: [base_view_model.dart](../../ListenCore/lib/base/base_view_model.dart)
+- **后端统一响应**: [ApiResponse.java](../../ListenPortfolioBackend/src/main/java/com/listen/portfolio/common/ApiResponse.java)
+- **后端全局异常捕获**: [GlobalExceptionHandler.java](../../ListenPortfolioBackend/src/main/java/com/listen/portfolio/common/config/GlobalExceptionHandler.java)
+
+---
+
+## 4. 重点难点实现解析 (Deep Dive into Key Implementations)
+
+### 4.1 难点一：网关非 JSON / HTML 异常防腐解析 (Gateway HTML Error Defense)
+
+#### 问题背景
+在移动端上传大图片（如未压缩的高清头像）或服务端微服务短时间假死时，请求常在到达 Spring Boot 应用程序前就被 Nginx 或 AWS ALB 拦截。Nginx 会直接返回标准 HTML 网页：
+
+```html
+<html>
+<head><title>413 Request Entity Too Large</title></head>
+<body bgcolor="white">
+<center><h1>413 Request Entity Too Large</h1></center>
+<hr><center>nginx/1.24.0</center>
+</body>
+</html>
+```
+
+若客户端直接使用 `jsonDecode(response.data)` 或 `data['message']`，在 Dart 强类型运行时会立即抛出不可控的 `type 'String' is not a subtype of type 'Map<String, dynamic>'`，掩盖了真实的 413 原因并引发崩溃。
+
+#### 代码实现方案
+在 [error_interceptor.dart](../../ListenCore/lib/network/interceptors/error_interceptor.dart) 中采用复合形态探针：
+
 ```dart
-// 在 ViewModel 中处理
-return result.fold(
-  (failure) {
-    if (failure is NetworkFailure) {
-      emitEffect(MessageEffect.error('Please check your internet connection'));
+// 提取错误文本：同时支持结构化 Map 与非结构化 HTML / 纯文本
+if (data is Map) {
+  message = data[BaseResponseModel.messageKey]?.toString();
+  messageId = data[BaseResponseModel.messageIdKey]?.toString();
+} else if (data is String) {
+  final trimmed = data.trim();
+  if (trimmed.startsWith('<')) {
+    // 关键突破：通过轻量正则提取 <title> 中的纯文本，避免将庞大 HTML 注入错误提示
+    final titleMatch = RegExp(r'<title>(.*?)</title>', caseSensitive: false).firstMatch(trimmed);
+    if (titleMatch != null && titleMatch.group(1) != null) {
+      message = titleMatch.group(1)!.trim(); // 提取出: "413 Request Entity Too Large"
     }
-  },
-  (success) => handleSuccess(success),
-);
-```
-
-### 🖥️ **ServerFailure** - 服务器错误
-
-#### **错误码范围**: `SRV_0100` - `SRV_0199`
-
-| 错误码 | HTTP状态码 | 说明 | 用户消息 |
-|--------|------------|------|----------|
-| `SRV_0100` | 500 | 内部服务器错误 | "Server error occurred" |
-| `SRV_0101` | 502 | 网关错误 | "Service temporarily unavailable" |
-| `SRV_0102` | 503 | 服务不可用 | "Service under maintenance" |
-| `SRV_0103` | 504 | 网关超时 | "Request timeout" |
-| `SRV_0104` | 429 | 请求过于频繁 | "Too many requests, please try again later" |
-
-#### **处理方式**
-```dart
-if (failure is ServerFailure) {
-  switch (failure.messageId) {
-    case 'SRV_0104':
-      emitEffect(MessageEffect.warning('Please wait before trying again'));
-      break;
-    default:
-      emitEffect(MessageEffect.error('Server error, please try again later'));
+  } else if (trimmed.isNotEmpty) {
+    message = trimmed;
   }
 }
 ```
 
-### 💾 **CacheFailure** - 缓存错误
-
-#### **错误码范围**: `CAC_0200` - `CAC_0299`
-
-| 错误码 | 说明 | 触发场景 | 用户消息 |
-|--------|------|----------|----------|
-| `CAC_0200` | 缓存未命中 | 首次访问 | "Loading from server..." |
-| `CAC_0201` | 缓存过期 | 数据过期 | "Updating data..." |
-| `CAC_0202` | 缓存损坏 | 数据损坏 | "Data corrupted, refreshing..." |
-| `CAC_0203` | 存储空间不足 | 本地存储满 | "Storage full, clearing cache..." |
-
-### 🔐 **AuthFailure** - 认证错误
-
-#### **错误码范围**: `AUTH_0300` - `AUTH_0399`
-
-| 错误码 | 说明 | 触发场景 | 用户消息 |
-|--------|------|----------|----------|
-| `AUTH_0300` | 登录失败 | 用户名密码错误 | "Invalid username or password" |
-| `AUTH_0301` | 账户不存在 | 用户未注册 | "Account not found" |
-| `AUTH_0302` | 账户已锁定 | 多次失败尝试 | "Account locked, please contact support" |
-| `AUTH_0303` | Token 过期 | JWT 过期 | "Session expired, please login again" |
-| `AUTH_0304` | Token 无效 | Token 被篡改 | "Invalid session, please login again" |
-| `AUTH_0305` | 权限不足 | 无权限访问 | "Access denied" |
-| `AUTH_0306` | 刷新令牌失败 | RefreshToken 无效 | "Session expired, please login again" |
-
-#### **处理示例**
-```dart
-// LoginUseCase 中的处理
-if (userId.isEmpty) {
-  return const Left(ServerFailure('User ID is missing in response'));
-}
-```
-
-### ✅ **ValidationFailure** - 验证错误
-
-#### **错误码范围**: `VAL_0400` - `VAL_0499`
-
-| 错误码 | 说明 | 触发场景 | 用户消息 |
-|--------|------|----------|----------|
-| `VAL_0400` | 邮箱格式错误 | 邮箱验证失败 | "Please enter a valid email address" |
-| `VAL_0401` | 密码长度不足 | 密码太短 | "Password must be at least 8 characters" |
-| `VAL_0402` | 密码不匹配 | 确认密码不一致 | "Passwords do not match" |
-| `VAL_0403` | 必填字段为空 | 表单验证 | "Please fill in all required fields" |
-| `VAL_0404` | 手机号格式错误 | 手机号验证 | "Please enter a valid phone number" |
-
-### 🏢 **BusinessFailure** - 业务逻辑错误
-
-#### **错误码范围**: `BIZ_0500` - `BIZ_0599`
-
-| 错误码 | 说明 | 触发场景 | 用户消息 |
-|--------|------|----------|----------|
-| `BIZ_0500` | 用户已存在 | 注册时用户名重复 | "Username already exists" |
-| `BIZ_0501` | 邮箱已注册 | 注册时邮箱重复 | "Email already registered" |
-| `BIZ_0502` | 原密码错误 | 修改密码验证失败 | "Current password is incorrect" |
-| `BIZ_0503` | 账户删除失败 | 删除账户时失败 | "Failed to delete account" |
-| `BIZ_0504` | 登出失败 / 密码重试超限 | 登出或重试超限 | "Too many attempts, please try again later" |
-| `BIZ_0505` | 个人履历未找到 | 获取 AboutMe 失败 | "About me profile not found" |
-| `BIZ_0506` | 项目列表未找到 | 获取 Projects 失败 | "Projects not found" |
-| `BIZ_0507` | 头像格式或大小无效 | 上传非合法图片魔数或超大数据 | "Invalid avatar image format or size" |
+通过这一层防御，用户界面将清晰展现 `HTTP 413: 413 Request Entity Too Large`，而非晦涩难懂的 `TypeError: String is not a subtype of Map`。
 
 ---
 
-## 🎨 UI 消息映射
+### 4.2 难点二：Dio 拦截器执行逆序机制与 401 并发静默重试队列
 
-### 📱 **用户友好消息**
+#### 问题背景
+当用户 Access Token 过期时，若页面同时触发了多个并行请求（例如首页同时请求个人信息、项目列表、关于我），若每个请求都弹出“登录过期”，将造成 UI 灾难性的多重弹窗。同时，如果多个请求同时发起刷新 Token，会导致并发刷新竞争与凭据失效。
 
-#### **网络错误**
-```dart
-const Map<String, String> networkErrorMessages = {
-  'NET_0001': 'Please check your internet connection',
-  'NET_0002': 'Request timeout, please try again',
-  'NET_0003': 'Unable to connect to server',
-  'NET_0004': 'Secure connection failed',
-  'NET_0005': 'Server is temporarily unavailable',
-};
+#### 关键实现机理
+1. **Dio 拦截器执行顺序法则**：
+   - `onRequest` 按照添加顺序执行：`ZoneContext` $\rightarrow$ `ErrorInterceptor` $\rightarrow$ `AuthInterceptor` $\rightarrow$ `Logging`。
+   - `onError` 按照**逆序**执行：`NetworkInspector` $\rightarrow$ `Logging` $\rightarrow$ `AuthInterceptor` $\rightarrow$ `ErrorInterceptor` $\rightarrow$ `ZoneContext`。
+2. **`AuthInterceptor` 的拦截与排队**：
+   由于逆序执行，`AuthInterceptor` **先于** `ErrorInterceptor` 捕获 401。
+   - 第一个到达的 401 请求将 `_isRefreshing` 设为 `true`，调用后端 `onRefreshToken()`。
+   - 后续到达的 401 请求被压入 `List<Completer<void>> _refreshQueue` 挂起等待。
+   - 刷新成功后，调用 `completer.complete()` 唤醒队列中所有请求，并通过 `options.extra['is_refreshed'] = true` 重新发起 `ApiClient.dio.fetch(options)`。
+   - 只有当刷新彻底失败或已被标记为重试过时，才继续调用 `handler.next(err)`，流转给 `ErrorInterceptor` 包装为 `AuthException`。
+
+---
+
+### 4.3 难点三：`ErrorMapper` 三级级联多语言本地化算法
+
+在 [error_mapper.dart](../../ListenCore/lib/errors/error_mapper.dart) 中实现了无损类型保留的三级级联映射：
+
+```
+       Failure (带 messageId 与 raw message)
+                        │
+       ┌────────────────▼────────────────┐
+  1级  │ messageId 是否在语言包中存在?   │ ──(是)──▶ 返回 messageId.tr
+       └────────────────┬────────────────┘
+                       (否)
+       ┌────────────────▼────────────────┐
+  2级  │ raw message 是否在语言包中存在? │ ──(是)──▶ 返回 raw message.tr
+       └────────────────┬────────────────┘
+                       (否)
+       ┌────────────────▼────────────────┐
+  3级  │ 保留原有的 failure.message      │ ──(兜底)─▶ 返回原始文本
+       └─────────────────────────────────┘
 ```
 
-#### **认证错误**
+#### 类型保留模式
+映射后不将对象退化为通用的 `UnknownFailure`，而是通过模式匹配精准重建对应的子类：
 ```dart
-const Map<String, String> authErrorMessages = {
-  'AUTH_0300': 'Invalid username or password',
-  'AUTH_0301': 'Account not found',
-  'AUTH_0302': 'Account locked due to too many failed attempts',
-  'AUTH_0303': 'Session expired, please login again',
-  'AUTH_0304': 'Invalid session, please login again',
-  'AUTH_0305': 'You don\'t have permission to access this resource',
-  'AUTH_0306': 'Session expired, please login again',
-};
-```
-
-### 🌍 **国际化支持**
-
-#### **错误消息键名**
-
-> [!WARNING]
-> 以下代码为设计草稿，当前代码库中尚未实现，仅供开发参考。
-
-```dart
-// DESIGN ONLY - NOT YET IMPLEMENTED
-class I18nErrorKeys {
-  // Network Errors
-  static const String networkError = 'error.network';
-  static const String timeoutError = 'error.timeout';
-  static const String serverUnavailable = 'error.server_unavailable';
-  
-  // Auth Errors
-  static const String invalidCredentials = 'error.invalid_credentials';
-  static const String accountNotFound = 'error.account_not_found';
-  static const String sessionExpired = 'error.session_expired';
-  
-  // Validation Errors
-  static const String emailInvalid = 'error.email_invalid';
-  static const String passwordTooShort = 'error.password_too_short';
-  static const String passwordsNotMatch = 'error.passwords_not_match';
-}
-```
-
-#### **多语言配置示例**
-
-> [!WARNING]
-> 以下多语言 JSON 配置项为设计草稿，当前实际语言包文件（如 `.tr` 或 `.json` 文件）中尚未完整添加这些 key，仅供开发参考。
-
-```json
-// DESIGN ONLY - NOT YET IMPLEMENTED
-// en.json
-{
-  "error": {
-    "network": "Please check your internet connection",
-    "timeout": "Request timeout, please try again",
-    "invalid_credentials": "Invalid username or password",
-    "session_expired": "Session expired, please login again"
-  }
-}
-
-// zh.json
-{
-  "error": {
-    "network": "请检查网络连接",
-    "timeout": "请求超时，请重试",
-    "invalid_credentials": "用户名或密码错误",
-    "session_expired": "会话已过期，请重新登录"
-  }
-}
+if (failure is ServerApiFailure) {
+  return ServerApiFailure(translatedMessage, messageId: messageId);
+} else if (failure is AuthFailure) {
+  return AuthFailure(translatedMessage, messageId: messageId);
+} // 保留具体类型，便于 ViewModel 进行针对性业务处理 (如 AuthFailure 触发登出)
 ```
 
 ---
 
-## 🔍 错误排查指南
+## 5. 全量错误码速查表 (Comprehensive Error Code Catalog)
 
-### 🚨 **线上问题排查流程**
+### 5.1 网络与传输错误 (`NET_` / `SYS_`)
 
-#### **1. 收集错误信息**
-```dart
-// 在 CrashManager 中记录详细错误
-class CrashManager {
-  static void logError({
-    required String errorCode,
-    required String errorMessage,
-    required String stackTrace,
-    required Map<String, dynamic> context,
-  }) {
-    final errorReport = {
-      'timestamp': DateTime.now().toIso8601String(),
-      'errorCode': errorCode,
-      'errorMessage': errorMessage,
-      'stackTrace': stackTrace,
-      'context': context,
-      'appVersion': PackageInfo.fromPlatform().version,
-      'buildNumber': PackageInfo.fromPlatform().buildNumber,
-    };
-    
-    // 保存到本地或上传到服务器
-    _saveErrorReport(errorReport);
-  }
-}
-```
-
-#### **2. 错误分类处理**
-
-| 错误类型 | 紧急程度 | 处理方式 | 通知方式 |
-|---------|----------|----------|----------|
-| **系统崩溃** | 🔴 高 | 立即修复 | 紧急通知 |
-| **认证失败** | 🟡 中 | 检查认证逻辑 | 用户反馈 |
-| **网络错误** | 🟡 中 | 检查网络配置 | 监控告警 |
-| **验证错误** | 🟢 低 | 优化用户体验 | 用户反馈 |
-
-#### **3. 常见问题排查**
-
-##### **登录失败率高**
-```
-排查步骤:
-1. 检查 AUTH_0300 错误码频率
-2. 验证密码加密逻辑
-3. 检查服务器端认证接口
-4. 分析用户行为日志
-```
-
-##### **网络请求超时**
-```
-排查步骤:
-1. 检查 NET_0002 错误码分布
-2. 分析网络环境统计
-3. 检查超时配置是否合理
-4. 优化重试机制
-```
-
-##### **缓存数据异常**
-```
-排查步骤:
-1. 检查 CAC_0202 错误码
-2. 验证缓存序列化逻辑
-3. 检查存储空间使用情况
-4. 优化缓存清理策略
-```
-
-### 📊 **错误监控指标**
-
-#### **关键指标**
-
-> [!WARNING]
-> 以下代码为设计草稿，当前代码库中尚未实现，仅供开发参考。
-
-```dart
-// DESIGN ONLY - NOT YET IMPLEMENTED
-class ErrorMetrics {
-  // 错误率统计
-  static double getErrorRate(String errorCode) {
-    final totalRequests = _getTotalRequests();
-    final errorCount = _getErrorCount(errorCode);
-    return errorCount / totalRequests;
-  }
-  
-  // 错误趋势分析
-  static List<ErrorTrend> getErrorTrend(String errorCode, Duration period) {
-    return _calculateTrend(errorCode, period);
-  }
-  
-  // 错误影响范围
-  static Map<String, double> getErrorImpact(String errorCode) {
-    return _calculateImpact(errorCode);
-  }
-}
-```
-
-#### **告警阈值**
-| 指标 | 阈值 | 告警级别 |
-|------|------|----------|
-| **总错误率** | > 5% | 🟡 中等 |
-| **系统错误率** | > 2% | 🔴 高 |
-| **认证错误率** | > 10% | 🟡 中等 |
-| **网络错误率** | > 15% | 🟡 中等 |
-| **单错误码频率** | > 100次/小时 | 🟡 中等 |
+| 错误码 | HTTP状态 | 触发场景 | 默认技术消息 | 多语言键 (`zh` / `en` / `ja`) | 推荐处理策略 |
+|:---|:---|:---|:---|:---|:---|
+| `NET_0001` | - | 设备断网 / 飞行模式 | `No internet connection` | 网络连接失败，请检查网络设置<br>No internet connection<br>ネットワーク接続に失敗しました | 提示网络检查，若有本地离线缓存则自动加载缓存 |
+| `NET_0002` | - | 连接 / 发送 / 接收超时 | `Network connection timeout` | 请求超时，请稍后重试<br>Request timeout, please try again<br>リクエストがタイムアウトしました | 允许用户点击重试，检查边缘节点时延 |
+| `NET_0003` | - | DNS 域名无法解析 | `Unable to resolve host` | 无法连接到服务器<br>Unable to connect to server<br>サーバーに接続できません | 引导检查本地 DNS 设置或代理软件 |
+| `NET_0004` | - | SSL/TLS 证书无效 / 抓包 | `Bad certificate` | 安全连接失败，证书验证异常<br>Secure connection failed<br>安全な接続の確立に失敗しました | 阻断危险传输，提示系统时间或代理证书风险 |
+| `NET_0005` | - | TCP Socket 连接拒绝 | `Connection error` | 服务器无法连接<br>Connection error<br>接続エラーが発生しました | 检查服务端集群是否停机或被防火墙拦截 |
+| `SYS_CANCEL` | - | 用户主动取消 / 页面销毁 | `Request cancelled` | 请求已取消<br>Request cancelled<br>リクエストがキャンセルされました | 静默丢弃，不触发 UI 弹窗 |
 
 ---
 
-## 🛠️ 开发调试
+### 5.2 认证与鉴权错误 (`AUTH_`)
 
-### 🐛 **本地调试**
+| 错误码 | HTTP状态 | 触发场景 | 默认技术消息 | 多语言键 (`zh` / `en` / `ja`) | 推荐处理策略 |
+|:---|:---|:---|:---|:---|:---|
+| `AUTH_0300` | 400/401 | 用户名或密码输入错误 | `Invalid username or password` | 用户名或密码错误<br>Invalid username or password<br>ユーザー名またはパスワードが正しくありません | 清空密码输入框，高亮错误提示 |
+| `AUTH_0301` | 404 | 账号不存在 | `Account not found` | 账户不存在<br>Account not found<br>アカウントが見つかりません | 引导前往注册页面 |
+| `AUTH_0302` | 423 | 密码连续错误达到 5 次 | `Account locked due to security policy` | 账户已锁定，请稍后再试<br>Account locked, please try again later<br>アカウントがロックされました | 锁定登录按钮，启动倒计时冷却限制 |
+| `AUTH_0303` | 401 | Access Token 过期且刷新失败 | `Session expired, please login again` | 登录已过期，请重新登录<br>Session expired, please login again<br>セッションが切れました。再ログインしてください | 触发 `LogoutEffect` 清除凭据并跳转登录页 |
+| `AUTH_0304` | 401 | Token 签名非法或被篡改 | `Invalid authorization token` | 无效凭证，请重新登录<br>Invalid session, please login again<br>無効なセッションです | 清理本地存储，引导重新认证 |
+| `AUTH_0305` | 403 | 试图越权访问非本人数据 | `Forbidden: insufficient permissions` | 权限不足，拒绝访问<br>Access denied<br>アクセスが拒否されました | 提示无权限，记录安全风控审计日志 |
+| `AUTH_0306` | 401 | Refresh Token 过期或已拉黑 | `Refresh token expired or revoked` | 认证状态失效，请重新登录<br>Authentication revoked<br>認証が取り消されました | 清除本地 Refresh Token，跳转至登录页 |
+| `AUTH_0307` | 403 | Firebase App Check 校验不通过 | `App Check verification failed` | 环境安全校验未通过<br>Security verification failed<br>セキュリティ検証に失敗しました | 提示请从官方 Google Play 安装正版客户端 |
 
-#### **错误注入测试**
+---
 
-> [!WARNING]
-> 以下代码为设计草稿，当前代码库中尚未实现，仅供开发参考.
+### 5.3 格式校验与表单错误 (`VAL_`)
+
+| 错误码 | HTTP状态 | 触发场景 | 默认技术消息 | 多语言键 (`zh` / `en` / `ja`) | 推荐处理策略 |
+|:---|:---|:---|:---|:---|:---|
+| `VAL_0400` | 400 | 邮箱不符合 RFC 5322 规则 | `Please enter a valid email address` | 请输入有效的邮箱地址<br>Invalid email address<br>有効なメールアドレスを入力してください | 表单 Field 红色辅助文本高亮 |
+| `VAL_0401` | 400 | 密码长度低于 8 位或缺少复杂度 | `Password must be at least 8 characters` | 密码至少需要 8 位字符<br>Password too short<br>パスワードは8文字以上である必要があります | 输入框实时校验指示条反馈 |
+| `VAL_0402` | 400 | 两次密码输入不一致 | `Passwords do not match` | 两次输入的密码不一致<br>Passwords do not match<br>パスワードが一致しません | 实时校验二次密码匹配状态 |
+| `VAL_0403` | 400 | 必填字段缺失或为空字符串 | `Required fields missing` | 请填写所有必填字段<br>Please fill in all required fields<br>必須項目を入力してください | 定位至首个未填写的输入焦点 |
+| `VAL_0404` | 400 | 手机号格式校验失败 | `Invalid phone number format` | 手机号格式不正确<br>Invalid phone number<br>電話番号の形式が正しくありません | 检查国际区号与号码位数 |
+| `VAL_0405` | 400 | 请求体 JSON 畸变无法解析 | `Malformed request body` | 请求数据格式畸变<br>Malformed request<br>リクエスト形式が不正です | 拦截并上报 APM 诊断 |
+
+---
+
+### 5.4 业务领域错误 (`BIZ_`)
+
+| 错误码 | HTTP状态 | 触发场景 | 默认技术消息 | 多语言键 (`zh` / `en` / `ja`) | 推荐处理策略 |
+|:---|:---|:---|:---|:---|:---|
+| `BIZ_0500` | 409 | 用户名已被占用 | `Username already exists` | 用户名已存在<br>Username already exists<br>ユーザー名は既に使用されています | 提示更换用户名，提供候选昵称建议 |
+| `BIZ_0501` | 409 | 邮箱已被注册绑定 | `Email already registered` | 邮箱已被注册<br>Email already registered<br>メールアドレスは既に登録されています | 提示直接登录或找回密码 |
+| `BIZ_0502` | 400 | 修改密码时原密码验证失败 | `Current password is incorrect` | 原密码输入不正确<br>Current password incorrect<br>現在のパスワードが正しくありません | 重新聚焦原密码输入框 |
+| `BIZ_0503` | 500 | 账户注销业务处理失败 | `Failed to delete account` | 注销账户失败，请重试<br>Failed to delete account<br>アカウント削除に失敗しました | 弹窗展示技术支持邮箱指引 |
+| `BIZ_0504` | 429 | 密码重试超过频次上限 | `Too many attempts, please try again` | 操作过于频繁，请稍后再试<br>Too many attempts<br>試行回数が多すぎます | 强制冷却 15 分钟 |
+| `BIZ_0505` | 404 | 个人履历详情不存在 | `About me profile not found` | 未找到个人履历资料<br>Profile not found<br>プロフィールが見つかりません | 展示空状态缺省插画与重试按钮 |
+| `BIZ_0506` | 404 | 作品集项目列表不存在 | `Projects not found` | 未找到相关项目列表<br>Projects not found<br>プロジェクトが見つかりません | 展示空列表视图并提供刷新手势 |
+| `BIZ_0507` | 400 | 头像非合法图片魔数或体积超限 | `Invalid avatar format or size` | 头像格式或大小不符合要求<br>Invalid avatar image<br>アバター画像の形式が無効です | 引导裁剪或选择 JPG/PNG/WebP 格式 |
+| `BIZ_0508` | 402 | Google Play / IAP 购买处理失败 | `In-app purchase verification failed` | 内购凭证验证失败<br>Purchase verification failed<br>購入の検証に失敗しました | 保留本地 Pending 交易并提示恢复购买 |
+
+---
+
+### 5.5 服务端与基础设施错误 (`SRV_`)
+
+| 错误码 | HTTP状态 | 触发场景 | 默认技术消息 | 多语言键 (`zh` / `en` / `ja`) | 推荐处理策略 |
+|:---|:---|:---|:---|:---|:---|
+| `SRV_0100` | 500 | Spring Boot 未捕获未知异常 | `Internal Server Error` | 服务器发生内部错误，请稍后重试<br>Internal server error<br>サーバーエラーが発生しました | 弹出友好错误提示，上报全局 Trace ID |
+| `SRV_0101` | 502 | Nginx 反向代理无法连通后端 | `Bad Gateway` | 服务暂时不可用，正在恢复中<br>Service temporarily unavailable<br>サービスが一時的に利用不能です | 展示服务器恢复提示，延迟 3 秒重试 |
+| `SRV_0102` | 503 | 系统正在停机发布维护 | `Service Unavailable` | 系统维护中，请稍后访问<br>Service under maintenance<br>システムメンテナンス中です | 展示全屏停机维护广播公告与预计完成时间 |
+| `SRV_0103` | 504 | 网关反代后端执行超时 | `Gateway Timeout` | 网关响应超时，请重试<br>Gateway timeout<br>ゲートウェイがタイムアウトしました | 优化后端 SQL 查询，客户端展示重试操作 |
+| `SRV_0104` | 429 | 触发 API 限流阈值 (RateLimit) | `Too Many Requests` | 访问过于频繁，请稍后再试<br>Too many requests<br>リクエストが多すぎます | 展示 Warning Toast，按照 Retry-After 降频 |
+| `SRV_0105` | 413 | 上传体积超过 Nginx `client_max_body_size` | `413 Request Entity Too Large` | 上传文件体积过大<br>File size too large<br>ファイルサイズが大きすぎます | 本地前置图像压缩，限制单次上传 $<2$MB |
+
+---
+
+## 6. 业务层实战范式 (Implementation Patterns in Practice)
+
+### 6.1 仓储层标准调用与缓存降级 (`safeCall`)
+
+在数据仓储层（Repository Layer），利用 `ListenCore` 提供的 `BaseRepository.safeCall()` 统一收敛网络前置探针、远端调用、本地持久化与错误降级：
 
 ```dart
-// DESIGN ONLY - NOT YET IMPLEMENTED
-class ErrorInjector {
-  static void injectError(String errorCode) {
-    switch (errorCode) {
-      case 'NET_0001':
-        // 模拟网络连接失败
-        throw NetworkFailure('Network connection failed');
-      case 'AUTH_0300':
-        // 模拟登录失败
-        throw AuthFailure('Invalid credentials');
-      case 'SRV_0100':
-        // 模拟服务器错误
-        throw ServerFailure('Internal server error');
+class AboutMeRepositoryImpl with BaseRepository implements AboutMeRepository {
+  final AboutMeRemoteDataSource remoteDataSource;
+  final AboutMeLocalDataSource localDataSource;
+
+  AboutMeRepositoryImpl(this.remoteDataSource, this.localDataSource);
+
+  @override
+  Future<Either<Failure, AboutMeEntity>> getAboutMe() async {
+    return safeCall<AboutMeEntity>(
+      call: () => remoteDataSource.getAboutMe(),
+      cacheDataSource: localDataSource, // 发生网络错误时自动回退至本地缓存
+      useCacheCondition: (failure) => failure is NetworkFailure || failure is ServerFailure,
+    );
+  }
+}
+```
+
+#### `safeCall` 核心防腐流转机制
+1. **网络连通性前置嗅探**：如果 `_networkInfo.isConnected` 为 `false` 且提供了 `cacheDataSource`，直接尝试返回本地缓存；若无缓存则直接短路返回 `Left(NetworkFailure('No internet connection'))`，杜绝无意义的底层超时等待。
+2. **状态码自动解包与类型分流**：
+   - 若 `response.result == ApiResult.success`（`"0"`），执行 `saveCache` 并返回 `Right(data)`。
+   - 若 `response.result == ApiResult.sessionTimeout`（`"3"`），包装为 `AuthFailure`。
+   - 若 `response.result == ApiResult.serverError`（`"1"`），提取 `response.messageId` 包装为 `ServerApiFailure`。
+3. **低级异常刚性捕获与安全边界**：
+   - `on DioException`: 提取 inner `AppException` 还原为对应 `Failure`。
+   - `on TypeError`: 捕获字段类型解析不一致（如后端返回字符串而模型声明为 int），转为 `ParseFailure('Unexpected data format from server')`，杜绝未捕获异常导致页面白屏。
+   - `catch (e, t)`: 兜底转化为 `UnknownFailure(e.toString())` 并记录 `appLogger.e`。
+
+---
+
+### 6.2 领域层与 UseCase 函数式单轨处理 (`Either<Failure, T>`)
+
+在 Domain 层中，所有的 UseCase 均遵循纯函数式单轨设计，严格返回 `Future<Either<Failure, T>>`：
+
+```dart
+class GetAboutMeUseCase {
+  final AboutMeRepository repository;
+
+  GetAboutMeUseCase(this.repository);
+
+  Future<Either<Failure, AboutMeEntity>> execute() {
+    return repository.getAboutMe();
+  }
+}
+```
+
+---
+
+### 6.3 展示层 MVI 统一处理范式 (`handleResult` & `handleFailure`)
+
+在 Presentation 层的 `BaseViewModel` 中，通过 `handleResult()` 驱动状态转移与 UI 效果分发：
+
+```dart
+class AboutMeViewModel extends BaseViewModel<AboutMeIntent> {
+  final GetAboutMeUseCase _getAboutMeUseCase;
+
+  AboutMeViewModel(this._getAboutMeUseCase);
+
+  @override
+  Future<void> onIntent(AboutMeIntent intent) async {
+    if (intent is LoadAboutMeIntent) {
+      await _loadAboutMe();
     }
   }
+
+  Future<void> _loadAboutMe() async {
+    emitEffect(LoadingEffect(true));
+
+    final result = await _getAboutMeUseCase.execute();
+
+    await handleResult(
+      result,
+      onSuccess: (aboutMe) {
+        updateState(state.copyWith(aboutMe: aboutMe, isLoading: false));
+      },
+      // onFailure 可缺省：缺省时自动调用 handleFailure() 触发 ErrorMapper 多语言映射
+      onFailure: (failure) {
+        updateState(state.copyWith(isLoading: false));
+        handleFailure(failure);
+      },
+    );
+  }
 }
 ```
 
-#### **错误日志查看**
-```dart
-// 在开发环境中显示详细错误
-if (kDebugMode) {
-  result.fold(
-    (failure) {
-      print('=== ERROR DEBUG ===');
-      print('Type: ${failure.runtimeType}');
-      print('Code: ${failure.messageId}');
-      print('Message: ${failure.message}');
-      print('Timestamp: ${DateTime.now()}');
-      print('==================');
-    },
-    (success) => print('Operation successful'),
-  );
-}
-```
+#### `handleFailure` 默认行为与差异化展现
+- **`AuthFailure`**：自动发射 `LogoutEffect(message: mappedFailure.message)`，触发系统注销、清除本地 Token 并路由跳转至登录页。
+- **`ServerApiFailure`**：若属于契约业务错误（如修改密码失败），通过 `MessageEffect.dialog(mappedFailure.message, title: Core.uiConfig.apiErrorTitle.tr)` 弹出对话框提醒用户。
+- **其他 `Failure`（`NetworkFailure` / `ServerFailure`）**：通过 `MessageEffect.error(mappedFailure.message)` 触发轻量级顶部浮动横幅或 SnackBar / Toast。
 
-### 🧪 **单元测试**
+---
 
-#### **错误场景测试**
+### 6.4 单元测试最佳实践 (Unit Testing with Failures & ErrorMapper)
+
+在针对 ViewModel 和 Repository 编写单元测试时，无需 Mock 真实的 HTTP 异常，只需构造强类型的 `Left(Failure)`：
+
 ```dart
-test('should handle network failure', () async {
+test('should emit dialog effect when ServerApiFailure is encountered', () async {
   // Arrange
-  when(mockRepository.login(any()))
-      .thenAnswer((_) async => Left(NetworkFailure('NET_0001')));
-  
-  // Act
-  final result = await loginUseCase.call(param: loginRequest);
-  
-  // Assert
-  expect(result.isLeft(), true);
-  expect(result.fold((l) => l, (r) => null), isA<NetworkFailure>());
+  when(mockUseCase.execute()).thenAnswer(
+    (_) async => const Left(ServerApiFailure('Original Error', messageId: 'BIZ_0500')),
+  );
+
+  // Act & Assert
+  expectLater(
+    viewModel.effectStream,
+    emitsInOrder([
+      isA<LoadingEffect>(),
+      predicate<MessageEffect>((e) => e.type == MessageType.dialog && e.message.contains('用户名已存在')),
+    ]),
+  );
+
+  viewModel.sendIntent(LoadAboutMeIntent());
 });
 ```
 
 ---
 
-## 📋 快速参考
+## 7. 生产环境常见故障排查指南 (Production Troubleshooting Matrix)
 
-### 🎯 **常用错误码速查**
+### 7.1 故障场景一：接口频繁报 `413 Request Entity Too Large`
+- **故障排查链路**：
+  1. 确认客户端是否上传了原尺寸图像（例如手机相册中 8MB~15MB 的高清原始照片）。
+  2. 检查 Nginx 虚拟主机配置中 `client_max_body_size` 参数。若该值小于上传文件大小，请求将被 Nginx 反代直接切断，根本不会进入 Spring Boot。
+- **治理措施**：
+  - 在移动端实施前置下采样（详见 [todo.md](todo.md#opt-9-s3--cloudflare-r2-对象存储直传与端侧高质量图像下采样-s3r2-direct-upload--client-side-image-compression)），限制图像边长 $\le 512$ 像素，编码为 WebP（体积压制在 50KB 以内）。
+  - Nginx 侧调整 `client_max_body_size 10M;` 保留合理的网关缓冲区。
 
-| 错误码 | 类型 | 用户消息 | 处理建议 |
-|--------|------|----------|----------|
-| `NET_0001` | Network | "No internet connection" | 检查网络设置 |
-| `AUTH_0300` | Auth | "Invalid credentials" | 重新输入账号密码 |
-| `AUTH_0303` | Auth | "Session expired" | 重新登录 |
-| `VAL_0400` | Validation | "Invalid email" | 检查邮箱格式 |
-| `SRV_0100` | Server | "Server error" | 稍后重试 |
-| `BIZ_0500` | Business | "Username exists" | 使用其他用户名 |
+### 7.2 故障场景二：大量请求同时报 401 且出现界面多次重定向
+- **故障排查链路**：
+  1. 查看移动端控制台日志是否包含 `[REFRESH] -> Starting flow` 与 `[QUEUE] -> Refresh in progress`。
+  2. 检查后端 Refresh Token 是否已被注销或已跨越有效期限（通常为 7 天或 30 天）。
+  3. 检查是否有业务接口遗漏配置了 `extra: { ApiClient.kNoAuthKey: true }`，导致访客公共接口因未带凭证被误判为 401。
+- **治理措施**：
+  - 验证 `AuthInterceptor` 的并发锁与重发逻辑是否正常运作，确保刷新期间仅发出单笔 `/auth/refresh` 请求。
 
-### 🔄 **错误处理模式**
-
-```dart
-// 标准错误处理模式
-Future<void> handleOperation() async {
-  final result = await someOperation();
-  
-  await result.fold(
-    (failure) async {
-      // 1. 记录错误
-      CrashManager.logError(
-        errorCode: failure.messageId,
-        errorMessage: failure.message,
-        stackTrace: StackTrace.current,
-        context: {'operation': 'someOperation'},
-      );
-      
-      // 2. 显示用户友好消息
-      final userMessage = _getUserFriendlyMessage(failure);
-      emitEffect(MessageEffect.error(userMessage));
-      
-      // 3. 特殊处理
-      if (failure is AuthFailure) {
-        await _handleAuthError(failure);
-      }
-    },
-    (success) async {
-      // 处理成功情况
-      await _handleSuccess(success);
-    },
-  );
-}
-```
-
-### 📱 **用户体验优化**
-
-```dart
-String _getUserFriendlyMessage(Failure failure) {
-  // 网络错误 - 提供解决方案
-  if (failure is NetworkFailure) {
-    return 'Please check your internet connection and try again.';
-  }
-  
-  // 认证错误 - 提供具体指导
-  if (failure is AuthFailure) {
-    switch (failure.messageId) {
-      case 'AUTH_0300':
-        return 'Invalid username or password. Please check your credentials.';
-      case 'AUTH_0303':
-        return 'Your session has expired. Please login again.';
-      default:
-        return 'Authentication failed. Please try again.';
-    }
-  }
-  
-  // 默认消息
-  return failure.message;
-}
-```
+### 7.3 故障场景三：接口返回 200 OK 但页面提示 `Unexpected data format from server`
+- **故障排查链路**：
+  1. 查看本地 APM 日志中的 `Data Type Mismatch: TypeError`。
+  2. 核对服务端实体字段类型。例如后端数据库自增 ID 字段由 `Integer` 改为 `Long`，前端实体模型仍声明为 `int`，在部分平台上可能发生溢出；或服务端本应返回 `List` 的字段返回了空字符串 `""`。
+- **治理措施**：
+  - 在 DTO 的 `fromJson` 构造函数中使用 `as String?`、`num.tryParse()` 或 defensive casting 进行防御性兼容。
 
 ---
 
-## 📚 相关文档
+## 8. 存在不足与演进方向 (Limitations & Future Roadmap)
 
-- [标准化开发工作流](development_workflow.md)
-- [Mock 数据维护规范](mock_data_specification.md)
-- [项目开发指南](project_development_guide.md)
-- [文档生成指南](documentation_generation.md)
+针对当前错误处理体系在实际运行与长效维护中暴露的瓶颈，已在项目待办清单 [todo.md](todo.md) 中建立专项演进课题：
+
+### 8.1 Opt-23: 全链路异常指纹哈希与 APM 错误聚合去重
+- **现状瓶颈**：当前在弱网频繁重试或并发请求批量失败时，相同错误（相同接口、HTTP 码与堆栈）会频繁弹跳重复 Toast，且日志缓冲区被无谓刷屏。
+- **演进规划**：引入 `errorFingerprint` 64-bit 哈希算法与 3~5 秒滑动窗口冷却抑制器，重复错误静默聚合计数，消除 UI 界面抖动与遥测雪崩。（详见 [todo.md](todo.md#opt-23-全链路异常指纹哈希与-apm-错误聚合去重-error-fingerprint-hashing--apm-de-duplication)）。
+
+### 8.2 Opt-24: 前后端契约错误码自动化代码生成与双端类型安全强校验
+- **现状瓶颈**：Java 后端 `ErrorCode.java`、Flutter 前端常量及 `zh/en/ja` 多语言字典依赖人工手工维护，缺乏编译期刚性约束，存在漏配和文案脱节风险。
+- **演进规划**：建立单一真实来源 `contracts/error_codes.yaml` 契约定义，基于 Dart CLI 自动化代码生成双端枚举和翻译模板，并在 CI 中建立 100% 键值对齐静态门禁。（详见 [todo.md](todo.md#opt-24-前后端契约错误码自动化代码生成与双端类型安全强校验-automated-error-code-contract-code-gen--end-to-end-type-safety)）。
 
 ---
 
-**更新日期**: 2026-04-03  
-**维护者**: 开发团队  
-**版本**: 1.0.0
+## 9. 相关文档与源码参考 (References)
+
+- **待办任务清单**: [todo.md](todo.md)
+- **仓储缓存策略**: [repository_caching_strategy.md](repository_caching_strategy.md)
+- **开发与调试工作流**: [development_workflow.md](development_workflow.md)
+- **Mock 数据维护规范**: [mock_data_specification.md](mock_data_specification.md)
+- **核心源码参考**:
+  - [error_interceptor.dart](../../ListenCore/lib/network/interceptors/error_interceptor.dart) - 传输层 Dio 错误拦截与网关 HTML 防腐
+  - [exceptions.dart](../../ListenCore/lib/errors/exceptions.dart) - 数据层强类型异常层次结构
+  - [failures.dart](../../ListenCore/lib/errors/failures.dart) - 领域层不可变失败模型
+  - [error_mapper.dart](../../ListenCore/lib/errors/error_mapper.dart) - 三级级联多语言映射器
+  - [base_repository.dart](../../ListenCore/lib/network/base_repository.dart) - safeCall 统一防腐与缓存降级
+  - [base_view_model.dart](../../ListenCore/lib/base/base_view_model.dart) - MVI handleResult 与 handleFailure
+  - [ApiResponse.java](../../ListenPortfolioBackend/src/main/java/com/listen/portfolio/common/ApiResponse.java) - 后端标准统一响应包络
+  - [GlobalExceptionHandler.java](../../ListenPortfolioBackend/src/main/java/com/listen/portfolio/common/config/GlobalExceptionHandler.java) - 后端全局异常处理与契约转换
+

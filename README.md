@@ -21,36 +21,44 @@ ListenPortfolioFlutter 是一个基于 Flutter 构建的个人技术作品集应
 | `listen_core` | 业务无关、可复用的基础设施 | MVI 基类、网络、错误、日志、崩溃保护、Zone tracing、存储等 |
 | `listen_uikit` | 业务无关的 UI 组件库 | Button、Dialog、Loading、Empty、Input 等通用组件 |
 | `shared/` | 当前 App 的装配层与项目级共通逻辑 | `SettingManager`、`Routes`、`AuthManager`、导航/分享 effect、App 初始化 |
-| `features/` | 业务功能模块 | auth / home / settings 等实际页面与用例 |
+| `features/` | 业务功能模块 | auth / home / settings / ai_chat / fault_injection 等实际页面与用例 |
 
 ## 当前已实现
 
 ### 应用能力
 
-- **认证流程**：登录、注册、忘记密码、修改密码、账号注销、游客模式
+- **认证流程**：登录、注册、忘记密码、修改密码、账号注销、游客模式（具备退出前 JWT 令牌时间戳校验与静默会话销毁防泄漏机制）
 - **作品集展示**：Overview、AboutMe（右上角支持分享当前应用）、Projects、Architecture 页面
-- **设置中心**：主题、语言、环境切换、缓存清理、崩溃日志入口、检查更新（显示多语言日志并引导至下载或应用商店）、分享当前应用
-- **推送通知**：基于 FCM 的推送通知接入，支持前台横幅、后台唤醒、冷启动深度跳转；Settings 中可开关通知并联动系统权限引导
+- **设置中心**：主题、语言、外观字体族、环境切换、缓存清理、崩溃日志入口、检查更新（显示多语言日志并引导至下载或应用商店）、分享当前应用
+- **推送通知**：基于 FCM 的推送通知接入，支持前台横幅、后台唤醒、冷启动深度跳转；Settings 中可开关通知并联动系统权限引导（详见 [推送通知设计与集成规格](docs/push_notification_specification.md)）
 - **多语言切换**：中 / 英 / 日运行时切换，无需重启；**数据库动态内容国际化**（支持拦截器注入 `Accept-Language` 请求头，由 Backend / `LocalMockServer` 直发目标语言 JSON 数据，前端移除 UI 模型上的过渡性 `.tr` 映射）
-- **主题切换**：浅色 / 深色 / 跟随系统 + 强调色 / 字号持久化 + **Material You 动态取色** (Android 12+ 平台下支持跟随系统壁纸色调自动变色)
-- **Skills 交互式技能雷达图**：基于底层 `CustomPainter` 自定义绘制 6 大核心维度能力评估多边形（移动端开发、系统架构、性能与 APM、稳定性防御、后端与云原生、DevOps），支持极坐标手势触摸检测、雷达顶点实时交互与下钻详情卡片、多语言与「雷达图/清单」双视图无缝切换
-- **AI 架构与技术介绍助手**：基于官方 Firebase AI SDK (`FirebaseAI.googleAI`) + Google Gemini `gemini-3.7-flash` 模型打造的智能技术咨询助手；集成 Firebase App Check 强安全防护；全局可拖拽悬浮球 + 独立 `AiChatPage` 页面；支持多模式（访客/招聘官/架构师）切换、页面上下文/Tab 智能感知及本地预设 FAQ 零延迟零 Token 问答
+- **动态主题与外观字体族**：浅色 / 深色 / 跟随系统 + 强调色 / 字号持久化 + **Material You 动态取色** (Android 12+ 平台下支持跟随系统壁纸色调自动变色)；支持系统默认、经典无衬线、现代无衬线、人文楷体与手写圆体 5 大跨平台字体族矩阵，内置实时 `Aa` 徽标预览（详见 [动态外观字体族规格说明](docs/appearance_font_family_specification.md)）
+- **Skills 交互式技能雷达图**：基于底层 `CustomPainter` 自定义绘制 6 大核心维度能力评估多边形（移动端开发、系统架构、性能与 APM、稳定性防御、后端与云原生、DevOps），支持极坐标手势触摸检测、10px 奇异点防抖死区、雷达顶点实时交互与下钻详情卡片、三向三角函数标签锚定与「雷达图/清单」双视图无缝切换（详见 [技能雷达图自绘引擎设计规范](docs/skills_radar_chart_design.md)）
+- **动态简历 Markdown 解析与高保真矢量 PDF 导出**：基于 `GetResumeUseCase` 动态拉取 Markdown 简历，通过 `PrintPdfProviderImpl` 桥接调用原生打印通道，支持系统打印机唤起、高保真矢量 PDF 生成与跨应用分享；登出时自动执行会话凭证与敏感内存彻底擦除（详见 [简历安全访问与 PDF 导出技术规范](docs/resume_security_auth.md)）
+- **AI 架构与技术介绍助手**：基于官方 Firebase AI SDK (`FirebaseAI.googleAI`) + Google Gemini `gemini-3.7-flash` 模型打造的智能技术咨询助手；集成 Firebase App Check 强安全防护；全局可拖拽悬浮球 + 独立 `AiChatPage` 页面；支持多模式（访客/招聘官/架构师）切换、页面上下文/Tab 智能感知及本地预设 FAQ 零延迟零 Token 问答（详见 [AI 助手规格说明与架构设计](docs/ai_intro_assistant_spec.md)）
 - **Google Play 延迟深度链接 (Deferred Deep Link)**：基于 Android 原生 `InstallReferrerClient` 的零三方轻量级自研延迟深度链接方案 (集成 Install Referrer 跟踪)；支持安装前来源渠道与目标 Tab 路由无损还原、`(not set)` 与自然流量脏数据自动清洗、带「不再显示」选项的专属欢迎弹窗与直达跳转闭环；配备在线落地页 [`test.html`](https://listen2code.github.io/ListenPortfolioFlutter/pages/test.html) 与应用内开发者模拟调试通道（详见 [延迟深度链接技术规范](docs/deferred_deep_link_specification.md)）
-- **故障注入与韧性演练中心 (Fault Injection Playground)**：用于直观验证与展示高可用架构的受控演练平台；内置 **7 大受控演练场景**（401 并发静默重试队列、500 异常契约收敛、网络超时降级、畸形 HTML 网关防崩保护、Zone 异步异常落盘、Safe Mode 连续崩溃熔断自愈、主线程 Jank 卡顿 APM 检测）；配备毫秒级实时终端控制台、`traceId` 一键复制与下钻联动 `LogOverlay` 浮窗调试闭环
+- **故障注入与韧性演练中心 (Fault Injection Playground)**：用于直观验证与展示高可用架构的受控演练平台；内置 **7 大受控演练场景**（401 并发静默重试队列、500 异常契约收敛、网络超时降级、畸形 HTML 网关防崩保护、Zone 异步异常落盘、Safe Mode 连续崩溃熔断自愈、主线程 Jank 卡顿 APM 检测）；配备毫秒级实时终端控制台、`traceId` 一键复制与下钻联动 `LogOverlay` 浮窗调试闭环（详见 [故障注入演练中心设计](docs/fault_injection_playground_spec.md)）
+- **应用内打赏购买 (IAP)**：遵循 Clean MVI 架构，基于 `CoffeePurchaseProviderImpl` 彻底剥离业务与 Google Play 结算细节；支持脱机模拟沙箱环境下的交易状态回显与安全掉单补偿（详见 [应用内打赏与购买集成设计](docs/iap_implementation_design.md)）
+- **应用内评分引导 (IAR)**：基于 `ReviewService` 建立 5 次冷启动与 90 天严格控流策略；支持在用户打赏成功黄金时机调起官方 Google Play In-App Review 原生评分弹窗（详见 [应用内评分引导设计](docs/iar_implementation_design.md)）
+- **Shorebird OTA 增量热更新**：集成官方代码热修复服务，采用 IoC 控制反转与空对象模式（`NoOpShorebirdService`）；构建 8 状态响应式状态机，支持非阻塞后台下载与运行时动态补丁版本拼接展示（详见 [Shorebird OTA 热更新集成指南](docs/shorebird_code_push_guide.md)）
+- **头像数据流安全防腐与多模态渲染**：`CommonImage` 异步解码错误隔离（`errorBuilder`）、`Base64ImageCache` 复合指纹 Key 缓存、本地沙箱与 Web/HTTP 存储平滑降级，彻底根除 UI 假死与 Event Loop 饿死风险（详见 [头像数据流安全与弹性渲染架构](docs/avatar_security_and_rendering_architecture.md)）
 
 ### 架构与基础设施
 
 - **MVI 基础骨架**：`BaseViewModel`、`BaseState`、`BaseEffect`、`BaseLifecyclePage`
-- **网络层**：`ApiClient` + `BaseRepository.safeCall()` + `Either<Failure, T>`
+- **网络层与二级缓存**：`ApiClient` + `BaseRepository.safeCall()` 5 阶段确定性状态机 + `Either<Failure, T>`；支持 SWR (Stale-While-Revalidate) 模式与离线无网秒开降级（详见 [仓储层数据缓存与离线降级策略](docs/repository_caching_strategy.md)）
 - **安全注销与 Token 防泄露**：登出前进行 JWT 载荷时间戳校验，已过期则触发静默刷新后再通知服务端注销会话，确保后端 Session 彻底销毁与客户端本地状态无缝抹除
 - **版本更新自动流**：基于 `pubspec.yaml` 的描述在 CI 构建时自动提取多语言描述生成并托管 `version.json`；App 端在所有环境下均通过 Retrofit 免签拉取静态配置文件并在 repository 层手工解码（规避 GitHub 静态资源的 Content-Type 匹配与认证 Token 冲突问题）
 - **401 自动刷新与并发重试队列**：Token 失效期间并发发起的请求自动挂起排队，触发 1 次静默刷新后自动批量重发
+- **强类型路由与 Deep Link 整合**：基于原生 Scheme 匹配、`replaceIfExists` 路由去重以及 Single UI Binder 机制，彻底杜绝路由重入与过渡期双重弹窗（详见 [深度链接与强类型路由设计](docs/deep_link_routing_design.md)）
+- **MVI 交互行为录制与回放引擎**：`PlaybackRecorder` 与 `TapePlayer` 支持用户交互序列全生命周期时间轴录制、导出 JSON 磁带与状态单步倒带复现（详见 [Intent & Effect 录制与回放设计](docs/intent_effect_playback_design.md)）
 - **环境切换**：支持 `mock / dev / test / prod`
-- **本地 MockServer**：`APP_ENV=mock` 时提供本地 JSON / 图片资源，支持 `Accept-Language` 多语言资产路径自动路由与回退机制
+- **本地 MockServer**：`APP_ENV=mock` 时由 `LocalMockServer` 提供本地 RFC 级 HTTP 服务，支持 `Accept-Language` 多语言资产路径自动路由与回退机制（详见 [Mock 数据设计规范](docs/mock_data_specification.md)）
 - **Zone tracing**：Intent / 页面 / 请求链路支持 `traceId` 和阶段打点
 - **Crash Safe Mode**：快速连续崩溃防护、自动熔断自愈与本地 crash log 持久化
-- **日志浮窗与 APM 性能监控**：内置开发调试窗口（LogOverlay），支持实时帧率/Jank 监测、Net Inspector 抓包、按 `traceId` 过滤全链路日志
-- **零告警工程质量与全量测试套件**：**557 项** 单元与集成测试用例 100% 绿灯通过，内置 MVI Playback 反射自检，代码通过静态分析（`No issues found!`）与架构依赖边界检查（`dependency_rules.dart`）双重零违规验证
+- **日志浮窗与 APM 性能监控**：内置开发调试窗口（LogOverlay），支持实时帧率/Jank 监测、Net Inspector 抓包、按 `traceId` 过滤全链路日志（详见 [APM 性能监控设计](docs/apm_performance_monitoring_design.md)）
+- **Flutter 3.44.1 现代工具链全面对齐**：全面升级至 Flutter 3.44.1 (Dart 3.12.1)，宽色域浮点色彩重构、移除冗余 KGP、对齐 AGP 8.11.1、Kotlin 2.2.20 与 Java 17，解决 win32 ^6.0.1 跨平台依赖冲突（详见 [Flutter 3.44.1 升级适配全记录](docs/upgrade_flutter_3_44_1.md)）
+- **零告警工程质量与全量测试套件**：**589 项** 自动化测试 100% 绿灯通过，代码覆盖率达 **77.53%**（涵盖 103 个测试文件，6,196 / 7,992 行纯净代码覆盖），代码通过静态分析（`No issues found!`）与架构依赖边界检查（`dependency_rules.dart`）双重零违规验证（详见 [测试策略与执行指南](docs/testing_guide.md) 与 [测试覆盖率报告](docs/test_coverage_report.md)）
 
 ### 更能代表当前项目取向的能力
 
@@ -63,8 +71,8 @@ ListenPortfolioFlutter 是一个基于 Flutter 构建的个人技术作品集应
 
 ```text
 lib/
-├── features/                  # 业务模块
-├── shared/                    # App 装配层与共通逻辑
+├── features/                  # 业务功能模块 (auth / home / settings / ai_chat / fault_injection)
+├── shared/                    # App 装配层与共通逻辑 (theme / utils / services / base)
 ├── main.dart                  # 应用入口，使用 Core.run() 包裹
 └── ...
 ```
@@ -97,8 +105,7 @@ lib/
 
 ## ⚠️ 当前限制与已知差距
 
-- **文档与实现刚开始收口**：部分历史文档会比代码更理想化，正在逐步收敛
-
+- **文档与实现持续收口**：已完成全量文档校准，代码注释与文档保持同步更新
 - **调试能力尚未模块化**：日志浮窗仍属于当前 App 的 `shared`，目标态会拆到独立调试模块
 - **`listen_core` 边界仍在收紧**：部分适合 App 装配层的能力，历史上放置位置并不完全理想
 
@@ -116,8 +123,11 @@ flutter run --dart-define=APP_ENV=mock
 ```
 
 ```bash
-# 运行测试
+# 运行全量 589 项测试
 flutter test
+
+# 计算并输出格式化覆盖率报告
+dart run tools/calculate_coverage.dart
 ```
 
 ```bash
@@ -137,46 +147,75 @@ dart tools/dependency_rules.dart --graph
 | `test` | 预留给集成测试或 QA 环境 |
 | `prod` | 生产环境配置 |
 
-## 📚 文档索引
+## 📚 文档全景索引 (37 Documents Catalog)
 
-- `docs/project_development_guide.md`：项目开发指南
-- `docs/testing_guide.md`：测试策略与执行说明
-- `docs/error_codes_reference.md`：错误码设计参考（当前仍以设计为主）
-- `docs/performance_panel_spec.md`：性能面板原始设计方案（已实现，最新请参考 `apm_performance_monitoring_design.md`）
-- `docs/apm_performance_monitoring_design.md`：APM 性能监控面板设计与实现文档
-- `docs/fault_injection_playground_spec.md`：故障注入与韧性演练中心设计与实现文档（已实现）
-- `docs/ai_intro_assistant_spec.md`：AI 助手规格说明与架构设计（已实现）
-- `docs/skills_radar_chart_design.md`：Skills 交互式技能雷达图设计与实现文档（已实现）
-- `docs/listencore_audit.md`：`listen_core` 架构审计报告
-- `docs/event_bus_vs_base_effect.md`：EventBus 与 BaseEffect 架构通信设计规范
-- `docs/repository_caching_strategy.md`：BaseRepository 二级缓存与数据降级规范
-- `docs/project_philosophy.md`：项目选型与质量取向说明（为什么优先做观测与稳定性）
-- `docs/push_notification_specification.md`：推送通知设计与集成规格
-- `docs/fido2_implementation_design.md`：FIDO2 / Passkey 免密认证设计方案（设计方案，尚未实现）
-- `docs/intent_effect_playback_spec.md`：Intent & Effect 录制与回放设计方案
-- `docs/shorebird_code_push_guide.md`：Shorebird OTA Code Push 热更新集成与使用指南
-- `docs/deferred_deep_link_specification.md`：Deferred Deep Link 延迟深度链接技术规格
-- `docs/test_coverage_report.md`：测试覆盖率报告与用例清单
-- `docs/dependency_refactoring_plan.md`：剔除部分三方 Pub 依赖并自主实现的计划与可行性分析
-- `docs/flutter_web_aws_deployment_guide.md`：Flutter Web 打包构建、AWS EC2 部署发布与全流程踩坑指南
-- `docs/todo.md`：后续执行路线图
+全工程所有架构演进、规格说明与最佳实践已下沉至 `docs/` 目录，按业务与架构领域划分为 6 大核心矩阵：
+
+### 1. 核心架构与工程哲学
+- [项目选型与质量取向说明 (Philosophy)](docs/project_philosophy.md)：阐述为什么优先做可观测性与稳定性
+- [项目开发指南 (Development Guide)](docs/project_development_guide.md)：规范分层、命名、提交与架构门禁
+- [标准化开发工作流规范 (Workflow)](docs/development_workflow.md)：单机 Local-First 范式与自动化发布管线
+- [ListenCore 架构审计报告 (Core Audit)](docs/listencore_audit.md)：底层核心基础设施能力与设计解耦评估
+- [架构依赖保护与自定义 Lint 规则](docs/custom_lint_rules.md)：基于 AST 的单向依赖扫描与规则约束
+- [三方依赖精简与自研重构方案](docs/dependency_refactoring_plan.md)：剥离重型外部包并自主实现的计划
+- [Flutter 3.44.1 升级适配全记录](docs/upgrade_flutter_3_44_1.md)：宽色域浮点色彩重构与现代 Gradle/Kotlin 对齐
+
+### 2. 可观测性、韧性与性能调优 (APM & Resilience)
+- [APM 性能监控面板设计与实现](docs/apm_performance_monitoring_design.md)：Vsync 物理时钟与瞬态 Jank 监测
+- [性能面板原始规格设计方案](docs/performance_panel_spec.md)：APM 监控看板原始设计演进底稿
+- [故障注入与韧性演练中心设计](docs/fault_injection_playground_spec.md)：7 大受控演练场景与毫秒级 Trace 下钻
+- [全链路统一错误码设计参考](docs/error_codes_reference.md)：前后端契约与多语言文案映射标准
+- [双通道通信架构规范 (EventBus vs Effect)](docs/event_bus_vs_base_effect.md)：粘性总线与 MVI 副作用对比选型
+- [Intent & Effect 录制与回放实现设计](docs/intent_effect_playback_design.md)：用户交互序列录制与 JSON 磁带生成
+- [Intent & Effect 录制与回放原始规格](docs/intent_effect_playback_spec.md)：状态录制与单步倒带原始设计方案
+
+### 3. 测试策略与质量保障 (Testing & QA)
+- [测试策略与执行指南 (Testing Guide)](docs/testing_guide.md)：三层测试金字塔与平台通道拦截策略
+- [测试覆盖率报告与用例清单](docs/test_coverage_report.md)：589 项测试与 77.53% 纯净代码覆盖率全景明细
+- [端到端集成测试计划 (Integration Tests)](docs/integration_test_plan.md)：基于 Patrol 的跨组件全链路自动化测试
+
+### 4. 业务功能与 UI/UX 规格
+- [Skills 交互式技能雷达图设计与实现](docs/skills_radar_chart_design.md)：极坐标手势碰撞检测与全视口防截断钳位
+- [AI 架构与技术介绍助手规格说明](docs/ai_intro_assistant_spec.md)：Firebase AI (Gemini 3.7) 智能助手设计
+- [动态外观字体族规格说明](docs/appearance_font_family_specification.md)：5 大跨平台字体族矩阵与 SettingManager 热重构
+- [头像数据流安全防腐与多模态渲染](docs/avatar_security_and_rendering_architecture.md)：异步解码隔离与 Base64 复合指纹 Key
+- [简历安全访问与矢量 PDF 导出技术规范](docs/resume_security_auth.md)：Markdown 矢量打印与敏感数据会话销毁
+- [推送通知设计与集成规格](docs/push_notification_specification.md)：FCM 前台横幅、后台唤醒与冷启动路由
+- [应用内打赏与购买集成设计 (IAP)](docs/iap_implementation_design.md)：Google Play 结算与 Clean MVI 业务解耦
+- [应用内评分引导设计 (IAR)](docs/iar_implementation_design.md)：冷启动计数与 90 天控流策略
+
+### 5. 路由、网络与云端部署
+- [深度链接与强类型路由设计 (Deep Link)](docs/deep_link_routing_design.md)：Scheme 匹配、replaceIfExists 与 Single UI Binder
+- [Google Play 延迟深度链接技术规格](docs/deferred_deep_link_specification.md)：Install Referrer 跟踪与渠道还原
+- [仓储层数据缓存与离线降级策略](docs/repository_caching_strategy.md)：BaseRepository 5 阶段状态机与 SWR 模式
+- [Mock 数据与多语言资产规范](docs/mock_data_specification.md)：LocalMockServer 动态路由与 Trace 上下文染色
+- [Flutter Web 打包与 AWS EC2 部署指南](docs/flutter_web_aws_deployment_guide.md)：Docker Compose 与 Nginx 反代跨域解决
+- [Shorebird OTA 热更新集成指南](docs/shorebird_code_push_guide.md)：代码热修复 8 状态响应式状态机
+- [自动化 API 文档生成指南 (Dartdoc)](docs/documentation_generation.md)：GitHub Pages 自动化静态文档托管
+
+### 6. 前瞻探索与演进路线
+- [FIDO2 / Passkey 免密认证设计方案](docs/fido2_implementation_design.md)：WebAuthn 客户端安全硬件认证预研
+- [Google 联合登录认证集成规范](docs/google_signin_specification.md)：ID Token 验证与后端账号合并设计
+- [桌面小部件架构方案 (Launcher Widgets)](docs/launcher_widgets.md)：Android AppWidget / iOS WidgetKit 预研
+- [执行路线图与待办事项追踪 (TODO)](docs/todo.md)：已落地的 35 项基石与 Opt-1 至 Opt-70 演进清单
+- [开发排期与里程碑规划 (Schedule)](docs/schedule.md)：Phase 1 至 Phase 5 阶段目标与交付时间表
 
 ## 🎯 目标态（明确未全部实现）
 
-以下内容是我希望后续逐步完成的方向，不代表已经全部落地：
+以下内容是我希望后续逐步推进的方向，不代表已经全部落地：
 
-- `LogOverlay / PerformancePanel / NetInspector` 独立调试模块化
-- Golden Tests 补齐
-- PDF 简历导出与在线预览拓展
+- `LogOverlay / PerformancePanel / NetInspector` 独立调试模块化抽离
+- 核心自绘组件 Golden UI 像素级视觉回归测试 (Opt-3)
+- FIDO2 / Passkey 硬件生物特征免密安全登录 (Opt-23)
+- 桌面小部件 (AppWidget / WidgetKit) 双端生态扩展 (Opt-44)
+- 技能雷达图 Catmull-Rom 极坐标平滑曲线拟合与动态推演沙盒 (Opt-61 & Opt-70)
 
-## 🧾 待删除备份区
+## 🧾 架构演进说明
 
-以下表述因“目标态与现状混写”风险已从主文降级，先保留在此，后续继续清理：
+项目自建立以来经历了系统性的架构重构与边界收敛：
 
-- `NavigationEffect`、`ShareEffect` 不再作为 `listen_core` 已内建能力在主文强调
-- `BaseScaffoldPage` 不再描述为“已内置完整 loading / empty / error / effect 页面框架”
-- `BaseMaterialApp` 不再承担“全局错误处理中心”的主叙事；当前全局崩溃主入口仍是 `main.dart -> Core.run()`
-- 调试能力（日志浮窗、性能面板、网络抓包）后续统一按“独立调试模块”思路整理
+- `NavigationEffect`、`ShareEffect` 统一由宿主应用 `shared/` 层装配承载，保障底座 `listen_core` 极致纯洁
+- `BaseMaterialApp` 不再承担全局错误拦截中心的主叙事，全局未捕获异常统一由 `main.dart -> Core.run()` 收敛
+- 调试能力（日志浮窗、性能面板、网络抓包）按“独立可插拔调试模块”思路进行依赖解耦与架构治理
 
 ---
-

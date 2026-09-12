@@ -7,7 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:listen_core/core.dart';
 import 'package:listen_portfolio_flutter/shared/services/shorebird/shorebird_service.dart';
 
-// Mock environment configuration class for AppEnv initialization.
+/// Mock environment configuration class for AppEnv initialization during unit tests.
 class DevEnvConfig implements BaseEnvConfig {
   @override
   AppEnvironment get env => AppEnvironment.dev;
@@ -25,6 +25,7 @@ class DevEnvConfig implements BaseEnvConfig {
   int get receiveTimeout => 5000;
 }
 
+/// Mock environment configuration for local mock server tests.
 class MockEnvConfig implements BaseEnvConfig {
   @override
   AppEnvironment get env => AppEnvironment.mock;
@@ -42,7 +43,22 @@ class MockEnvConfig implements BaseEnvConfig {
   int get receiveTimeout => 5000;
 }
 
-/// Initialize test environment for all tests that require network access
+/// Initializes the global headless testing harness across all unit and widget test suites.
+///
+/// ### Testing Architecture & Mocking Strategy:
+/// 1. **Binary Messenger Mocking**:
+///    Intercepts native platform channels (`connectivity_plus`, `package_info_plus`) via
+///    `setMockMethodCallHandler`. This enables tests to run completely headless on CI/CD
+///    runners without requiring a real Android/iOS emulator or Gradle device.
+///
+/// 2. **Global HttpOverrides Protection**:
+///    Replaces `dart:io` HttpClient with [_MockHttpClient]. When widgets attempt to load
+///    remote SVG badges or network images, it yields an immediate 200 OK with mock vector
+///    bytes, eliminating socket timeouts and offline test failures.
+///
+/// 3. **Defensive Environment Bootstrap**:
+///    Pre-initializes [AppEnv] and [shorebirdService] to prevent `LateInitializationError`
+///    when services and repositories are invoked.
 Future<void> setupTestEnvironment() async {
   TestWidgetsFlutterBinding.ensureInitialized();
 

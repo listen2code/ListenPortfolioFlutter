@@ -5,9 +5,17 @@ import '../services/referrer/install_referrer_data.dart';
 import '../services/referrer/install_referrer_service.dart';
 import '../widgets/dialogs/referral_welcome_dialog.dart';
 
-/// Side effect for displaying the first-launch deferred deep link welcome dialog.
+/// MVI side effect emitted by [HomeViewModel] to request the presentation
+/// of the personalized onboarding / deferred deep link welcome dialog.
+///
+/// Encapsulates parsed [InstallReferrerData] and the callback [onConfirm]
+/// invoked when the user proceeds past the dialog.
 class ReferralWelcomeEffect extends BaseEffect {
+  /// The parsed referral data containing refer identification, UTM parameters, and target route.
   final InstallReferrerData data;
+
+  /// Callback invoked when the user confirms the welcome modal, providing the state
+  /// of the "Don't show again" checkbox.
   final void Function(bool doNotShowAgain)? onConfirm;
 
   ReferralWelcomeEffect({
@@ -17,8 +25,14 @@ class ReferralWelcomeEffect extends BaseEffect {
 }
 
 /// Provider implementation for handling [ReferralWelcomeEffect].
+///
+/// ### Architecture & Clean MVI Separation:
+/// In accordance with Clean Architecture and MVI principles, ViewModels do not
+/// hold references to [BuildContext]. Instead, [HomeViewModel] emits
+/// [ReferralWelcomeEffect]. This provider intercepts the effect and uses
+/// [AppNavConfig.context] to display the [ReferralWelcomeDialog] on the current navigator stack.
 class ReferralWelcomeProviderImpl extends BaseProvider<ReferralWelcomeEffect> {
-  /// Optional hook for testing effect dispatch.
+  /// Optional hook for testing effect dispatching in automated unit and widget tests.
   static void Function(ReferralWelcomeEffect)? onEffectReceived;
 
   const ReferralWelcomeProviderImpl();

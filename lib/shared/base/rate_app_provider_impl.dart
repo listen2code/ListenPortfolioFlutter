@@ -1,18 +1,24 @@
 
 import '../shared.dart';
 
-/// Actions supported by the rate app effect.
+/// Actions supported by [RateAppEffect] for directing rating and review workflows.
 enum RateAppAction {
-  /// Checks rate limits and prompts in-app review dialog if eligible.
+  /// Evaluates gatekeeping rate limits and prompts the native in-app review dialog if eligible.
   checkAndPrompt,
 
-  /// Opens the store listing page directly.
+  /// Directly navigates to the external store listing page (Google Play / App Store).
   openStoreListing,
 }
 
-/// Effect to trigger in-app review prompting or redirecting to store rating.
+/// Side-effect dispatched by ViewModels to trigger rating or store review workflows.
+///
+/// Decouples ViewModels (e.g., `SettingsViewModel`, `CoffeePurchaseViewModel`, `HomeViewModel`)
+/// from Flutter UI widgets and direct [ReviewService] singletons.
 class RateAppEffect extends BaseEffect {
+  /// The targeted rating action.
   final RateAppAction action;
+
+  /// Whether to force bypass rate-limiting constraints (e.g., upon successful IAP completion).
   final bool force;
 
   RateAppEffect({
@@ -21,7 +27,9 @@ class RateAppEffect extends BaseEffect {
   });
 }
 
-/// Provider to handle [RateAppEffect].
+/// Global [BaseProvider] implementation responsible for consuming [RateAppEffect].
+///
+/// Intercepts dispatched rating effects and routes them to the appropriate [ReviewService] methods.
 class RateAppProviderImpl extends BaseProvider<RateAppEffect> {
   const RateAppProviderImpl();
 

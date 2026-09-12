@@ -4,11 +4,23 @@ import 'package:listen_uikit/uikit.dart';
 import '../../../../../shared/shared.dart';
 import '../../../domain/models/fault_injection_scenario.dart';
 
+/// Card widget presenting an individual fault scenario with interactive execution controls.
+///
+/// ### Visual Layout:
+/// 1. **Header Row**: Domain category badge, status badge (idle, running, recovered, failed), and latency badge (e.g. '120ms').
+/// 2. **Content Area**: Localized title and technical scenario description.
+/// 3. **Action Bar**: Trigger button with integrated loading spinner during execution.
 class FaultScenarioCard extends StatelessWidget {
+  /// The scenario data model containing metadata, title/description keys, and execution status.
   final FaultScenarioModel scenario;
+
+  /// Whether this specific scenario is currently executing.
   final bool isRunning;
+
+  /// Callback to initiate this scenario's fault injection sequence.
   final VoidCallback onRun;
 
+  /// Creates a [FaultScenarioCard] widget.
   const FaultScenarioCard({
     super.key,
     required this.scenario,

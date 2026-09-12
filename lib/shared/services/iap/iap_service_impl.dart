@@ -6,6 +6,10 @@ import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:listen_core/core.dart';
 import 'iap_service.dart';
 
+/// Production implementation of [IIapService] utilizing the official `in_app_purchase` plugin.
+///
+/// Handles platform differences between Android (Google Play Billing client) and
+/// iOS (StoreKit 1/2), with dedicated logic for consumable item consumption.
 class IapServiceImpl implements IIapService {
   final InAppPurchase _iap = InAppPurchase.instance;
 
@@ -47,17 +51,17 @@ class IapServiceImpl implements IIapService {
   Future<void> completePurchase(PurchaseDetails purchase) async {
     try {
       // Android (Google Play) requires explicit consumption for consumable items (like buying coffee/tips).
-      // If a purchase is not consumed, Google Play considers it owned by the user and will block
-      // any future purchase attempts for the same product ID.
+      // If a purchase is not consumed via consumePurchase(), Google Play considers it owned by the user
+      // and will block any future purchase attempts for the same product SKU with BillingResponseCode.ITEM_ALREADY_OWNED.
       if (Platform.isAndroid) {
         final androidAddition = _iap.getPlatformAddition<InAppPurchaseAndroidPlatformAddition>();
         await androidAddition.consumePurchase(purchase);
         appLogger.i('IapService: Successfully consumed Android purchase ${purchase.purchaseID}');
       }
       
-      // Both platforms require completing the purchase transaction (finishTransaction on iOS).
-      // This tells the app store that the digital product has been successfully delivered to the user.
-      // Failing to complete the purchase will result in the app store auto-refunding the user after a few days.
+      // Both platforms require completing the purchase transaction (finishTransaction on iOS,
+      // acknowledgePurchase on Android). This confirms to the billing server that the digital asset
+      // was safely delivered. If omitted, Google Play and Apple will auto-refund the charge after a grace period.
       await _iap.completePurchase(purchase);
       appLogger.i('IapService: Completed purchase transaction ${purchase.purchaseID}');
     } catch (e, stackTrace) {

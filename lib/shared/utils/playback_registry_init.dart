@@ -21,6 +21,13 @@ import '../../features/settings/presentation/pages/widgets/coffee_purchase/coffe
 import '../../features/fault_injection/presentation/pages/fault_injection_intent.dart';
 
 /// Initializes the MVI Playback registry with deserializers by delegating to each specific Intent class.
+///
+/// In Flutter's AOT (Ahead-Of-Time) compiled runtime, reflection (`dart:mirrors`) is disabled
+/// to preserve tree-shaking and minimal binary size. Therefore, Intent reconstruction from
+/// persisted tape strings must rely on explicit static registrations.
+///
+/// This bootstrap method registers deserialization closures for every feature's Intent family
+/// before playback sessions are executed.
 void initMviPlaybackRegistry() {
   LoginIntent.registerPlayback();
   SignUpIntent.registerPlayback();
@@ -43,15 +50,33 @@ void initMviPlaybackRegistry() {
   FaultInjectionIntent.registerPlayback();
 }
 
-/// Static deserializer registry to reconstruct Intent instances in a reflectionless Flutter environment.
+/// Static deserializer registry to reconstruct concrete [BaseIntent] instances in a reflectionless Flutter environment.
+///
+/// Design Pattern:
+/// - **Registry Pattern**: Maintains a two-level lookup table: `[ClassName] -> [ConstructorName] -> DeserializerClosure`.
+/// - **Zero Mirrors**: Achieves 100% tree-shakeable, type-safe deserialization without `dart:mirrors`.
+/// - **Decoupled Registration**: Individual feature modules register their own intent factories,
+///   maintaining Clean Architecture boundary isolation.
 mixin MviPlaybackRegistry {
+  /// Internal registry mapping: `ClassName -> {ConstructorName -> DeserializerClosure}`.
   static final Map<String, Map<String, BaseIntent? Function(Map<String, String> args)>> _deserializers = {};
 
-  /// Returns all registered classes and their constructor names for testing verification.
+  /// Returns all registered class names and their associated constructor names.
+  ///
+  /// Useful for automated unit tests verifying that all required features have registered their intents.
   static Map<String, Set<String>> get registeredKeys =>
       _deserializers.map((k, v) => MapEntry(k, v.keys.toSet()));
 
-  /// Register a custom deserializer dynamically for modular/decoupled features.
+  /// Registers a deserializer closure for a given [className] and [constructorName].
+  ///
+  /// Example:
+  /// ```dart
+  /// MviPlaybackRegistry.register(
+  ///   'LoginIntent',
+  ///   'inputAccount',
+  ///   (args) => LoginIntent.inputAccount(args['account'] ?? ''),
+  /// );
+  /// ```
   static void register(
     String className,
     String constructorName,
@@ -60,6 +85,22 @@ mixin MviPlaybackRegistry {
     _deserializers.putIfAbsent(className, () => {})[constructorName] = deserializer;
   }
 
+  /// Parses a serialized Intent string representation and reconstructs the typed [BaseIntent] object.
+  ///
+  /// Supported string format:
+  /// `ClassName.constructorName(param1: value1, param2: value2)`
+  /// or
+  /// `ClassName.constructorName()`
+  ///
+  /// Parsing Algorithm:
+  /// 1. Uses a regular expression `^([a-zA-Z0-9_]+)\.([a-zA-Z0-9_]+)\((.*)\)$` to extract:
+  ///    - Group 1: Class Name (e.g. `LoginIntent`)
+  ///    - Group 2: Constructor / Named Factory (e.g. `inputAccount`)
+  ///    - Group 3: Argument parameter body (e.g. `account: test@example.com`)
+  /// 2. Splits parameter body by `, ` and key-values by `: `.
+  /// 3. Forwards extracted arguments to [deserialize].
+  ///
+  /// Returns null if the format is invalid or no matching deserializer is found.
   static BaseIntent? parseAndDeserialize(String intentStr) {
     final regex = RegExp(r'^([a-zA-Z0-9_]+)\.([a-zA-Z0-9_]+)\((.*)\)$');
     final match = regex.firstMatch(intentStr.trim());
@@ -82,6 +123,9 @@ mixin MviPlaybackRegistry {
     return deserialize(className, constructorName, args);
   }
 
+  /// Looks up and invokes the registered deserializer closure with parsed [args].
+  ///
+  /// Returns the instantiated [BaseIntent], or null if the class or constructor is unregistered.
   static BaseIntent? deserialize(String className, String constructorName, Map<String, String> args) {
     final classMap = _deserializers[className];
     if (classMap != null) {
@@ -93,3 +137,4 @@ mixin MviPlaybackRegistry {
     return null;
   }
 }
+

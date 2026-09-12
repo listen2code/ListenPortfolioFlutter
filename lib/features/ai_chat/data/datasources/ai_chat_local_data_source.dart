@@ -1,12 +1,25 @@
 import 'dart:convert';
 
-
 import '../../../../shared/shared.dart';
 import '../models/ai_preset_qa_response_model.dart';
 
+/// ============================================================================
+/// AiChatLocalDataSource
+/// ============================================================================
+/// Local cache data source for AI Preset Q&A items conforming to [CacheDataSource].
+///
+/// ### Architecture & UX Rationale:
+/// - **Offline-First & Instant Startup**:
+///   Persists the serialized JSON representation of [AiPresetQaResponseModel]
+///   into persistent storage via [SpUtil] (backed by SharedPreferences).
+/// - **Network Fallback & Resilience**:
+///   When the device is offline or the remote API is temporarily unavailable,
+///   cached Q&A data is immediately returned to ensure zero-latency question
+///   chips and uninterrupted Tier-1 fuzzy question matching.
 class AiChatLocalDataSource implements CacheDataSource<AiPresetQaResponseModel> {
   AiChatLocalDataSource();
 
+  /// Persists the given [model] into shared preferences as a JSON string.
   @override
   Future<void> cache(AiPresetQaResponseModel model) async {
     appLogger.d('AiChatLocalDataSource: Starting to cache preset QAs');
@@ -19,6 +32,9 @@ class AiChatLocalDataSource implements CacheDataSource<AiPresetQaResponseModel> 
     }
   }
 
+  /// Retrieves and deserializes the cached [AiPresetQaResponseModel] from shared preferences.
+  ///
+  /// Returns `null` if no cache entry exists or if deserialization fails.
   @override
   Future<AiPresetQaResponseModel?> getCached() async {
     appLogger.d('AiChatLocalDataSource: Fetching preset QAs from cache');
@@ -37,3 +53,4 @@ class AiChatLocalDataSource implements CacheDataSource<AiPresetQaResponseModel> 
     return null;
   }
 }
+

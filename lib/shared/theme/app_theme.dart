@@ -1,11 +1,33 @@
 import 'package:flutter/material.dart';
 import '../shared.dart';
 
-/// Application theme configuration
+/// ============================================================================
+/// AppTheme
+/// ============================================================================
+/// Centralized factory for generating Material 3 Light and Dark [ThemeData] configurations.
+///
+/// ### Typography & Font Family Architecture:
+/// 1. **Zero-Overhead Font Family Propagation**:
+///    Derives primary [fontFamily] and ordered [fontFamilyFallback] directly from
+///    the active [SettingManager.fontFamily]. Injects these properties at both the root
+///    [ThemeData] level and within individual component sub-themes (AppBar, Dialogs,
+///    Tabs, Chips, Inputs, Buttons) to prevent platform-level style overrides.
+/// 2. **Multi-Platform Typography Merge & Fallback Pipeline**:
+///    Merges Material 2021 platform geometries with [Typography.englishLike2021],
+///    and invokes [TextTheme.apply] to uniformly enforce `fontSizeFactor`, `fontFamily`,
+///    and `fontFamilyFallback` across all 15 Material typography scale tiers (display,
+///    headline, title, body, label).
+/// 3. **Material You Dynamic Color Interoperability**:
+///    Seamlessly synthesizes accent colors with Android 12+ [dynamicColorScheme] without
+///    breaking custom font family inheritance.
 class AppTheme {
   AppTheme._();
 
-  /// Generates Light theme based on accent color, font size factor, and font family
+  /// Generates a Material 3 Light [ThemeData] instance fully configured with the
+  /// user's active brand accent color, typography scaling, font family, and fallback chains.
+  ///
+  /// - [themeManager]: The singleton holding user appearance preferences.
+  /// - [dynamicColorScheme]: Optional platform-derived color scheme from Wallpaper/System.
   static ThemeData getLightTheme(SettingManager themeManager, {ColorScheme? dynamicColorScheme}) {
     final accentColor = themeManager.accentColor;
     final fontSizeFactor = themeManager.fontSize.factor;
@@ -131,7 +153,12 @@ class AppTheme {
     );
   }
 
-  /// Generates Dark theme based on accent color, font size factor, and font family
+  /// Generates a Material 3 Dark [ThemeData] instance with high-contrast surfaces,
+  /// dark-adapted elevation overlays, accent colors, typography scaling, font family,
+  /// and fallback chains.
+  ///
+  /// - [themeManager]: The singleton holding user appearance preferences.
+  /// - [dynamicColorScheme]: Optional platform-derived color scheme from Wallpaper/System.
   static ThemeData getDarkTheme(SettingManager themeManager, {ColorScheme? dynamicColorScheme}) {
     final accentColor = themeManager.accentColor;
     final fontSizeFactor = themeManager.fontSize.factor;

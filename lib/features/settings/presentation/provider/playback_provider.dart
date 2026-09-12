@@ -7,25 +7,38 @@ import '../../domain/usecases/get_playback_tapes_use_case.dart';
 
 part 'playback_provider.g.dart';
 
+/// Riverpod dependency injection provider supplying the concrete [PlaybackTapeRepository].
+///
+/// Returns a const instance of [PlaybackTapeRepositoryImpl], encapsulating local storage operations.
 @riverpod
 PlaybackTapeRepository playbackTapeRepository(Ref ref) {
   return const PlaybackTapeRepositoryImpl();
 }
 
+/// Provider supplying an initialized [GetPlaybackTapesUseCase].
+///
+/// Injects the resolved [PlaybackTapeRepository] into the domain use case.
 @riverpod
 Future<GetPlaybackTapesUseCase> getPlaybackTapesUseCase(Ref ref) async {
   final repository = ref.watch(playbackTapeRepositoryProvider);
   return GetPlaybackTapesUseCase(repository);
 }
 
+/// Provider supplying an initialized [GetPlaybackTapeStepsUseCase].
+///
+/// Injects the resolved [PlaybackTapeRepository] into the domain use case.
 @riverpod
 Future<GetPlaybackTapeStepsUseCase> getPlaybackTapeStepsUseCase(Ref ref) async {
   final repository = ref.watch(playbackTapeRepositoryProvider);
   return GetPlaybackTapeStepsUseCase(repository);
 }
 
+/// Provider supplying an initialized [DeletePlaybackTapeUseCase].
+///
+/// Injects the resolved [PlaybackTapeRepository] into the domain use case.
 @riverpod
 Future<DeletePlaybackTapeUseCase> deletePlaybackTapeUseCase(Ref ref) async {
   final repository = ref.watch(playbackTapeRepositoryProvider);
   return DeletePlaybackTapeUseCase(repository);
 }
+

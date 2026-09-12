@@ -6,9 +6,26 @@ import '../pages/ai_chat_intent.dart';
 import '../pages/ai_chat_state.dart';
 import '../pages/ai_chat_view_model.dart';
 
+/// ============================================================================
+/// AiChatHeader
+/// ============================================================================
+/// The top navigation and control bar for the AI Assistant chat page.
+///
+/// ### Architecture & UX Rationale:
+/// - **Text Truncation Defense**:
+///   Uses [Expanded] and [TextOverflow.ellipsis] to protect title and subtitle
+///   labels from overflowing on compact mobile devices or with long translated CJK text.
+/// - **Session Controls**:
+///   Includes a clear history icon button ([AiChatIntent.clearHistory]) to allow
+///   users to reset conversational memory at will, and a standard close button.
 class AiChatHeader extends StatelessWidget {
+  /// Reference to ViewModel for intent dispatching
   final AiChatViewModel chatViewModel;
+
+  /// Current immutable chat state
   final AiChatState chatState;
+
+  /// Callback executed when tapping the close navigation icon
   final VoidCallback onClose;
 
   const AiChatHeader({
@@ -25,6 +42,7 @@ class AiChatHeader extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
+        // 1. Left Section: AI Robot Branding, Title and Status Subtitle
         Expanded(
           child: Row(
             children: [
@@ -54,6 +72,8 @@ class AiChatHeader extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 8),
+
+        // 2. Right Section: Session Actions (Clear History & Close View)
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -74,3 +94,4 @@ class AiChatHeader extends StatelessWidget {
     );
   }
 }
+

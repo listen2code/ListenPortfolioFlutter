@@ -82,15 +82,16 @@ categories:
         title: "Settings"
         description: "Application settings and configuration"
 
-# Link customization
+# Link customization & Cross-Package Documentation Mapping
 linkResolution:
-  # Resolve links to external packages
+  # Resolve links to external dependencies to enable seamless cross-package navigation
   external:
     'package:flutter/material.dart': 'https://api.flutter.dev/flutter/material/material-library.html'
     'package:flutter_riverpod/flutter_riverpod.dart': 'https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/flutter_riverpod-library.html'
-    'package:fpdart/fpdart.dart': 'https://pub.dev/documentation/fpdart/latest/fpdart/fpdart-library.html'
     'package:dio/dio.dart': 'https://pub.dev/documentation/dio/latest/dio/dio-library.html'
     'package:freezed_annotation/freezed_annotation.dart': 'https://pub.dev/documentation/freezed_annotation/latest/freezed_annotation/freezed_annotation-library.html'
+    'package:listen_core/core.dart': 'https://pub.dev/documentation/listen_core/latest/'
+    'package:listen_uikit/listen_uikit.dart': 'https://pub.dev/documentation/listen_uikit/latest/'
 
 # Exclude patterns
 exclude:

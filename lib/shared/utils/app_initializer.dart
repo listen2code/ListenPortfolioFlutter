@@ -116,6 +116,8 @@ class AppInitializer {
     );
 
     // 2. Shared Layer Services Initialization
+    // Guarded by [!kIsWeb] to prevent UnimplementedError crashes on Flutter Web where native
+    // platform channels (e.g. QuickActions, Google Play In-App Review) are unavailable.
     if (!kIsWeb) {
       QuickActionsManager.init();
     }
@@ -128,8 +130,8 @@ class AppInitializer {
     // 3. Initialize push notification service & configure deep link routing listeners
     // Run push notification initialization asynchronously so slow/blocked
     // network or platform behaviors in release (Play signing, network latency,
-    // permission dialogs) won't delay or clutter app startup. Errors and
-    // timing will still be logged for diagnosis.
+    // permission dialogs) won't delay or clutter app startup.
+    // Guarded by [!kIsWeb] because mobile FCM/APNs requires native APNs/GooglePlayServices.
     if (!kIsWeb) {
       Future<void>.microtask(() async {
         final start = DateTime.now();
@@ -154,6 +156,7 @@ class AppInitializer {
     }
 
     // 4. Initialize in-app purchase service
+    // In-app billing (Google Play Billing / Apple StoreKit) is unavailable in standard Web builds.
     if (!kIsWeb) {
       try {
         iapService = IapServiceImpl();
@@ -164,12 +167,16 @@ class AppInitializer {
     }
 
     // 5. Initialize Shorebird OTA Code Push Service
+    // Shorebird binary patching is specific to Android/iOS compiled binaries and unsupported on Web.
     if (!kIsWeb) {
       try {
         shorebirdService = ShorebirdServiceImpl();
       } catch (e, stackTrace) {
         appLogger.e('AppInitializer: Shorebird Code Push initialization failed.', error: e, stackTrace: stackTrace);
+        shorebirdService = const NoOpShorebirdService();
       }
+    } else {
+      shorebirdService = const NoOpShorebirdService();
     }
     LaunchMonitor.recordInitEnd();
   }

@@ -6,7 +6,21 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:listen_core/core.dart';
 import 'package:mocktail/mocktail.dart';
 
-// Mock environment configuration class for AppEnv initialization.
+/// ============================================================================
+/// AuthInterceptor Concurrency & Token Refresh Unit Tests
+/// ============================================================================
+///
+/// Tests the token refresh state machine in [AuthInterceptor]:
+/// 1. **Header Injection**: Verifies Bearer tokens are attached to outgoing requests.
+/// 2. **Concurrency Serialization (Thundering Herd Defense)**:
+///    Simulates N concurrent requests receiving HTTP 401 Unauthorized responses.
+///    Guarantees that exactly ONE refresh request is dispatched while pending
+///    requests queue into a [Completer] FIFO pipeline.
+/// 3. **Transparent Replay**:
+///    Once token refresh completes, queued requests are automatically retried
+///    with the fresh Bearer token and resolved to their callers.
+
+/// Mock environment configuration class for AppEnv initialization.
 class TestEnvConfig implements BaseEnvConfig {
   @override
   int get apiTimeout => 5000;
@@ -20,15 +34,19 @@ class TestEnvConfig implements BaseEnvConfig {
   int get receiveTimeout => 5000;
 }
 
-// Mock interceptor delegate to control token injection and refresh in tests.
+/// Mock interceptor delegate to control token injection and refresh in tests.
 class MockApiInterceptorDelegate extends Mock implements IApiInterceptorDelegate {}
 
-// Custom HttpClientAdapter that returns queued responses per path.
-// Needed because DioAdapter's FullHttpRequestMatcher can't match
-// headers that are dynamically injected by interceptors.
+/// Custom [HttpClientAdapter] that serves FIFO queued responses per route path.
+///
+/// **Why this is needed**: Standard mock adapters (like `http_mock_adapter`'s `DioAdapter`)
+/// perform static request header matching. However, [AuthInterceptor] dynamically
+/// alters headers across 401 retries. This sequential adapter allows testing
+/// the transition from an unauthenticated request to a refreshed, authenticated retry.
 class _SequentialMockAdapter implements HttpClientAdapter {
   final Map<String, List<(int, dynamic)>> _queue = {};
 
+  /// Enqueues an HTTP status code and response body for a given path.
   void enqueue(String path, int statusCode, dynamic data) {
     _queue.putIfAbsent(path, () => []).add((statusCode, data));
   }

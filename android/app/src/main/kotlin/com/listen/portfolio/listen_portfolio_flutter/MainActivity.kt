@@ -39,8 +39,13 @@ class MainActivity : FlutterActivity() {
     }
 
     /**
-     * Connects to Google Play Install Referrer service to retrieve install URL parameters
-     * (e.g., refer=xxx&target=xxx&utm_source=xxx) passed from Google Play.
+     * Connects asynchronously to Google Play's Install Referrer AIDL IPC service to retrieve
+     * URL parameters passed when installing the application (e.g., `refer=xxx&target=xxx&utm_source=xxx`).
+     *
+     * ### Lifecycle & Resource Management:
+     * - The Google Play Store app caches install referrer metadata for up to 90 days.
+     * - To prevent Android ServiceConnection leaks, [InstallReferrerClient.endConnection]
+     *   MUST be invoked on every terminal execution branch (success, failure, or exception).
      */
     private fun fetchInstallReferrer(result: MethodChannel.Result) {
         try {

@@ -3,10 +3,34 @@ import 'package:listen_uikit/uikit.dart';
 
 import '../../../../../../shared/shared.dart';
 
+/// ============================================================================
+/// FontFamilyOptionTile
+/// ============================================================================
+/// Interactive settings tile for selecting a specific [AppFontFamily].
+///
+/// ### Architecture & UX Rationale:
+/// - **WYSIWYG Live Typography Preview**:
+///   Both the left-hand 'Aa' badge container and the tile's [title] are explicitly
+///   rendered using the target option's [AppFontFamily.fontFamilyName] and
+///   [AppFontFamily.fontFamilyFallback]. This gives users an instant, true visual
+///   preview of the typeface geometry, weight, and stroke characteristics prior to selection.
+/// - **Responsive Scaling**:
+///   Uses the `.f` extension (`32.f`, `14.f`) to ensure that the preview badge and
+///   typography scale in harmony with the active global font factor.
+/// - **Selection Feedback**:
+///   Highlights the badge boundary and displays a distinct checkmark trailing icon
+///   in the active [accentColor].
 class FontFamilyOptionTile extends StatelessWidget {
+  /// Localized title string for this font family option.
   final String label;
+
+  /// The font family represented by this tile.
   final AppFontFamily fontFamily;
+
+  /// The currently active font family in the application state.
   final AppFontFamily currentFontFamily;
+
+  /// Callback executed when the user taps this option tile.
   final VoidCallback onTap;
 
   const FontFamilyOptionTile({

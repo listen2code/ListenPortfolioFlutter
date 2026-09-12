@@ -11,9 +11,15 @@ import 'widgets/fault_category_selector.dart';
 import 'widgets/fault_execution_console.dart';
 import 'widgets/fault_scenario_card.dart';
 
-/// Playground Page for interactive fault injection, self-healing observation,
-/// and live trace log correlation.
+/// Playground Page for interactive chaos engineering and defensive architecture verification.
+///
+/// Provides a sandbox UI for developers, QA engineers, and interviewers to:
+/// 1. Trigger 7 controlled failure scenarios spanning Network, Stability, and Performance domains.
+/// 2. Observe real-time recovery mechanics and step-by-step diagnostic execution logs.
+/// 3. Inspect unique distributed trace IDs and drill down into the global [LogOverlayManager].
+/// 4. Track session-wide resilience statistics and Safe Mode circuit breaker statuses.
 class FaultInjectionPage extends ConsumerWidget {
+  /// Default const constructor for [FaultInjectionPage].
   const FaultInjectionPage({super.key});
 
   @override
@@ -34,6 +40,7 @@ class FaultInjectionPage extends ConsumerWidget {
         ),
       ],
       body: (context, child, viewModel, state) {
+        // Filter scenarios based on user's active category chip selection
         final filteredScenarios = state.selectedCategory == FaultCategory.all
             ? state.scenarios
             : state.scenarios.where((s) => s.category == state.selectedCategory).toList();
@@ -71,7 +78,7 @@ class FaultInjectionPage extends ConsumerWidget {
 
               SizedBox(height: 20.f),
 
-              // 4. Interactive Execution Console
+              // 4. Interactive Execution Console with live step logs and trace drill-down
               FaultExecutionConsole(
                 logs: state.consoleLogs,
                 activeTraceId: state.activeTraceId,
@@ -97,6 +104,7 @@ class FaultInjectionPage extends ConsumerWidget {
     );
   }
 
+  /// Builds the top telemetry summary banner displaying session statistics.
   Widget _buildStatsBanner(BuildContext context, FaultInjectionState state) {
     return Container(
       decoration: BoxDecoration(
@@ -167,6 +175,7 @@ class FaultInjectionPage extends ConsumerWidget {
     );
   }
 
+  /// Builds an individual metric stat item with an icon, numeric value, and label.
   Widget _buildStatItem(
     BuildContext context, {
     required String title,

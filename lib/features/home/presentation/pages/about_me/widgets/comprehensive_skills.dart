@@ -8,7 +8,29 @@ import 'skills_inspector_detail_card.dart';
 import 'skills_radar_chart.dart';
 import 'skills_view_mode_toggle.dart';
 
+/// High-level orchestrator widget managing the candidate's comprehensive skills display.
+///
+/// ### Core Architectural Responsibilities:
+/// 1. **Dual Representation Modes**:
+///    - **Radar Mode ([SkillsViewMode.radar])**:
+///      Presents the custom-painted 6D radar canvas alongside an interactive dimension inspector
+///      card and quick-switcher chips.
+///    - **List Mode ([SkillsViewMode.list])**:
+///      Presents a linear vertical list of all skill category cards, optimal for quick scanning
+///      or accessibility readers.
+///
+/// 2. **Two-Way Synchronization Triad**:
+///    Harmonizes user interactions across three simultaneous components:
+///    - Canvas vertex tap or pan gesture in [SkillsRadarChart].
+///    - Horizontal scrollable quick-switcher chips ([_buildQuickSwitcherChips]).
+///    - Horizontally swipeable [PageView] cards displaying in-depth category details.
+///
+/// 3. **Feedback Loop Prevention**:
+///    Uses [_isProgrammaticScroll] and [ScrollStartNotification] to differentiate between
+///    user-initiated touch drags and programmatic controller animations, eliminating infinite
+///    re-trigger loops and visual stutter.
 class ComprehensiveSkills extends StatefulWidget {
+  /// Category models containing skill scores and technical stack bullet points.
   final List<SkillCategoryModel> skills;
 
   const ComprehensiveSkills({super.key, required this.skills});
@@ -19,13 +41,23 @@ class ComprehensiveSkills extends StatefulWidget {
 
 class _ComprehensiveSkillsState extends State<ComprehensiveSkills>
     with SingleTickerProviderStateMixin {
+  /// Drives the entry polygon expansion animation from 0.0 to 1.0.
   late final AnimationController _animController;
   late final Animation<double> _curveAnimation;
+
+  /// Controls the synchronized horizontal PageView for detailed inspector cards.
   late final PageController _pageController;
+
+  /// Controls the horizontal scroll position of the dimension switcher chip row.
   final ScrollController _chipsScrollController = ScrollController();
 
+  /// Active presentation mode (radar vs list).
   SkillsViewMode _viewMode = SkillsViewMode.radar;
+
+  /// Currently active dimension index in `[0, skills.length - 1]`.
   int _selectedDimensionIndex = 0;
+
+  /// Guard flag to suppress circular page-changed events while programmatic animation is in-flight.
   bool _isProgrammaticScroll = false;
 
   @override
@@ -46,6 +78,7 @@ class _ComprehensiveSkillsState extends State<ComprehensiveSkills>
   @override
   void didUpdateWidget(covariant ComprehensiveSkills oldWidget) {
     super.didUpdateWidget(oldWidget);
+    // Restart animation and realign page controller if the skills dataset changes
     if (oldWidget.skills != widget.skills) {
       _animController.forward(from: 0.0);
       if (_selectedDimensionIndex >= widget.skills.length) {
@@ -65,6 +98,13 @@ class _ComprehensiveSkillsState extends State<ComprehensiveSkills>
     super.dispose();
   }
 
+  /// Selects a dimension, smoothly synchronizing the radar chart, chips row, and PageView.
+  ///
+  /// ### Synchronization Flow:
+  /// 1. Update `_selectedDimensionIndex` via `setState` to trigger radar vertex highlight.
+  /// 2. Scroll the horizontal chips list so the selected chip is centered and visible.
+  /// 3. Flag `_isProgrammaticScroll = true` and animate `_pageController` to the target page.
+  /// 4. Reset `_isProgrammaticScroll = false` upon animation completion.
   void _onSelectDimension(int index) {
     if (index < 0 || index >= widget.skills.length) return;
     if (_selectedDimensionIndex == index &&
@@ -94,6 +134,7 @@ class _ComprehensiveSkillsState extends State<ComprehensiveSkills>
     }
   }
 
+  /// Horizontally scrolls the chips row so the target chip remains in the user's viewport.
   void _scrollToChip(int index) {
     if (!_chipsScrollController.hasClients) return;
     const double approxChipWidth = 115.0;
@@ -108,6 +149,7 @@ class _ComprehensiveSkillsState extends State<ComprehensiveSkills>
     );
   }
 
+  /// Computes the total count of individual skill items across all categories.
   int get _totalSkillsCount {
     int count = 0;
     for (final s in widget.skills) {
@@ -240,7 +282,9 @@ class _ComprehensiveSkillsState extends State<ComprehensiveSkills>
           SizedBox(
             height: 215.f,
             child: NotificationListener<ScrollNotification>(
+              // Differentiate user drag gestures from programmatic animateToPage calls
               onNotification: (notification) {
+                // If a drag begins with non-null dragDetails, it originates from real user finger touch
                 if (notification is ScrollStartNotification &&
                     notification.dragDetails != null) {
                   _isProgrammaticScroll = false;
@@ -252,12 +296,14 @@ class _ComprehensiveSkillsState extends State<ComprehensiveSkills>
                 itemCount: widget.skills.length,
                 physics: const BouncingScrollPhysics(),
                 onPageChanged: (index) {
+                  // Ignore notifications triggered by programmatic controller animation
                   if (_isProgrammaticScroll) {
                     if (index == _selectedDimensionIndex) {
                       _isProgrammaticScroll = false;
                     }
                     return;
                   }
+                  // Handle user horizontal swipe: update active dimension and scroll chips row
                   if (_selectedDimensionIndex != index) {
                     setState(() {
                       _selectedDimensionIndex = index;

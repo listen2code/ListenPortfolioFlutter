@@ -4,7 +4,25 @@ import 'package:listen_uikit/uikit.dart';
 import '../../../../shared/shared.dart';
 import '../../domain/entities/chat_message.dart';
 
+/// ============================================================================
+/// AiChatMessageBubble
+/// ============================================================================
+/// Renders an individual conversation message bubble (User or Model).
+///
+/// ### Architecture & UX Rationale:
+/// - **Role-Based Asymmetric Alignment & Styling**:
+///   Aligns user prompts to [Alignment.centerRight] with a distinct primary
+///   tint and asymmetric rounded corners (`bottomRight: Radius.zero`).
+///   Aligns AI model responses to [Alignment.centerLeft] with a neutral surface
+///   background and (`bottomLeft: Radius.zero`).
+/// - **Error State Indication**:
+///   Inspects [ChatMessage.isFailed] to display an inline error indicator
+///   when transmission encounters network dropouts or API quota limits.
+/// - **Readability Constraints**:
+///   Caps width at 75% of screen width to prevent single-line text stretching
+///   across wide tablets or desktop displays.
 class AiChatMessageBubble extends StatelessWidget {
+  /// The chat message entity to display
   final ChatMessage message;
 
   const AiChatMessageBubble({super.key, required this.message});
@@ -16,10 +34,12 @@ class AiChatMessageBubble extends StatelessWidget {
     final primaryColor = theme.colorScheme.primary;
 
     return Align(
+      // Asymmetric alignment according to sender role
       alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 6.0),
         padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 10.0),
+        // Limit max width for optimal reading line-length
         constraints: BoxConstraints(maxWidth: context.mediaQuery.size.width * 0.75),
         decoration: BoxDecoration(
           color: isUser
@@ -36,6 +56,7 @@ class AiChatMessageBubble extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Message body text
             CommonText(
               message.content,
               useFittedBox: false,
@@ -45,6 +66,7 @@ class AiChatMessageBubble extends StatelessWidget {
                 height: 1.5,
               ),
             ),
+            // Optional failure warning badge shown if message transmission failed
             Visibility(
               visible: message.isFailed,
               child: Padding(
@@ -68,3 +90,4 @@ class AiChatMessageBubble extends StatelessWidget {
     );
   }
 }
+

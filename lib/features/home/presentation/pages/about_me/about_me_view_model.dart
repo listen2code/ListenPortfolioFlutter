@@ -128,10 +128,16 @@ class AboutMeViewModel extends _$AboutMeViewModel with ViewModelMixin<AboutMeSta
     }
   }
 
+  /// Handles cropped avatar image files, performs pre-upload binary size validation,
+  /// converts to Base64 data URI format, and dispatches upload UseCase.
+  ///
+  /// ### Defenses:
+  /// - Enforces a strict client-side 2MB file size guard before serialization,
+  ///   preventing redundant base64 conversion and wasted network bandwidth.
   Future<void> _onImageCropped(File file) async {
     updateState(state.copyWith(imageFile: file));
 
-    // Perform base64 conversion and upload to backend
+    // 1. Read binary bytes and enforce client-side 2MB payload guard
     final bytes = await file.readAsBytes();
     if (bytes.lengthInBytes > 2 * 1024 * 1024) {
       updateState(state.copyWith(imageFile: null));
@@ -139,10 +145,12 @@ class AboutMeViewModel extends _$AboutMeViewModel with ViewModelMixin<AboutMeSta
       return;
     }
 
+    // 2. Synthesize Base64 data URL conforming to backend validation contracts
     final String base64Data = base64Encode(bytes);
     final String mimeType = file.path.imageMimeType;
     final String dataUrl = 'data:$mimeType;base64,$base64Data';
 
+    // 3. Dispatch upload UseCase with progress spinner
     await call(
       ref.execute<UserModel?, String>(uploadAvatarUseCaseProvider, param: dataUrl),
       showLoading: true,

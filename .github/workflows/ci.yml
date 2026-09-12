@@ -538,11 +538,15 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      # Step 1: Compile Flutter Web Release with both APP_ENV and ENVIRONMENT flags
       - name: Build Flutter Web
         run: |
           echo "Building Flutter Web for environment: ${{ env.ENVIRONMENT }}"
-          flutter build web --release --dart-define=ENVIRONMENT=${{ env.ENVIRONMENT }}
+          flutter build web --release \
+            --dart-define=APP_ENV=${{ env.ENVIRONMENT }} \
+            --dart-define=ENVIRONMENT=${{ env.ENVIRONMENT }}
 
+      # Step 2: Configure SSH credentials for passwordless EC2 communication
       - name: Configure SSH Private Key for AWS
         env:
           SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
@@ -556,6 +560,10 @@ jobs:
             echo "AWS_SSH_KEY or AWS_HOST is not configured, skipping AWS SSH setup."
           fi
 
+      # Step 3: Atomic deployment via disk vacuuming and SSH tar-streaming pipeline
+      # 1. System journal, yum cache, and Docker layers are cleaned to avoid EBS exhaustion.
+      # 2. Tar-stream avoids creating intermediate .tar.gz archives on EC2 disk.
+      # 3. Chmod 755 ensures the Nginx worker process can read all assets without HTTP 403.
       - name: Deploy Flutter Web to AWS EC2
         env:
           AWS_HOST: ${{ secrets.AWS_HOST }}
@@ -575,7 +583,7 @@ jobs:
               echo '=== Disk Space After Cleanup ==='
               df -h /
             "
-            echo "Uploading Flutter Web Build Artifacts to EC2 (tar streaming)..."
+            echo "Uploading Flutter Web Build Artifacts to EC2 (tar streaming pipeline)..."
             tar -czf - -C build/web . | ssh -i ~/.ssh/id_rsa ec2-user@$AWS_HOST "tar -xzf - -C /var/www/listen_portfolio_web"
             echo "Setting read & execute permissions for Nginx..."
             ssh -i ~/.ssh/id_rsa ec2-user@$AWS_HOST "sudo chmod -R 755 /var/www/listen_portfolio_web"

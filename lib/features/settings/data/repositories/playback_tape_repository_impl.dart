@@ -5,7 +5,13 @@ import '../../domain/repositories/playback_tape_repository.dart';
 import '../models/playback_step.dart';
 import '../models/playback_tape_metadata.dart';
 
-/// Concrete implementation of [PlaybackTapeRepository] using [SpUtil] for persistent storage.
+/// Concrete data-layer implementation of [PlaybackTapeRepository] backed by [SpUtil].
+///
+/// Storage Architecture:
+/// - **Global Catalog Key** ([AppConstants.playbackTapesListKey]): Stores a JSON array of [PlaybackTapeMetadata]
+///   descriptors, providing rapid listing and deletion without loading heavy step payloads into memory.
+/// - **Individual Tape Step Keys** ([AppConstants.playbackTapeKey] + timestamp): Stores the full JSON array
+///   of serialized [PlaybackStep] objects, loaded on-demand only when a user inspects or executes a tape.
 class PlaybackTapeRepositoryImpl implements PlaybackTapeRepository {
   const PlaybackTapeRepositoryImpl();
 
@@ -53,10 +59,10 @@ class PlaybackTapeRepositoryImpl implements PlaybackTapeRepository {
   @override
   Future<Either<Failure, void>> saveTape(String tapeKey, List<PlaybackStep> steps, PlaybackTapeMetadata metadata) async {
     try {
-      // 1. Save detailed steps
+      // Step 1: Persist detailed chronological step sequence under unique tape key
       await SpUtil.put(tapeKey, jsonEncode(steps.map((s) => s.toJson()).toList()));
 
-      // 2. Add metadata to tapes list and save
+      // Step 2: Append metadata header to the global catalog index
       final tapesEither = await getTapes();
       return await tapesEither.fold<Future<Either<Failure, void>>>(
         (failure) async => Left(failure),
@@ -74,10 +80,10 @@ class PlaybackTapeRepositoryImpl implements PlaybackTapeRepository {
   @override
   Future<Either<Failure, void>> deleteTape(String tapeKey) async {
     try {
-      // 1. Remove detailed step data
+      // Step 1: Remove detailed step data payload from storage
       await SpUtil.remove(tapeKey);
 
-      // 2. Remove from metadata list
+      // Step 2: Filter out corresponding metadata entry from the global catalog index
       final tapesEither = await getTapes();
       return await tapesEither.fold<Future<Either<Failure, void>>>(
         (failure) async => Left(failure),
@@ -93,3 +99,4 @@ class PlaybackTapeRepositoryImpl implements PlaybackTapeRepository {
     }
   }
 }
+

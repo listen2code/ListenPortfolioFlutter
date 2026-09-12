@@ -4,10 +4,21 @@ import 'package:listen_uikit/uikit.dart';
 import '../../../../../shared/shared.dart';
 import '../../../domain/models/fault_injection_scenario.dart';
 
+/// Horizontal chip selector widget for filtering fault scenarios by domain category.
+///
+/// Provides quick, animated switching between:
+/// - [FaultCategory.all]: All available scenarios.
+/// - [FaultCategory.network]: HTTP status, timeouts, token invalidations, and gateway anomalies.
+/// - [FaultCategory.stability]: Unhandled async crashes, Zone trapping, and Safe Mode resets.
+/// - [FaultCategory.performance]: Main thread computational jank and APM frame drop alerts.
 class FaultCategorySelector extends StatelessWidget {
+  /// The currently active category filter.
   final FaultCategory selectedCategory;
+
+  /// Callback triggered when the user taps on a different category chip.
   final ValueChanged<FaultCategory> onCategoryChanged;
 
+  /// Creates a [FaultCategorySelector] widget.
   const FaultCategorySelector({
     super.key,
     required this.selectedCategory,

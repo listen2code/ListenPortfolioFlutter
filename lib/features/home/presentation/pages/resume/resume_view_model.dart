@@ -10,6 +10,22 @@ import 'resume_state.dart';
 
 part 'resume_view_model.g.dart';
 
+/// ViewModel managing resume presentation, authentication lifecycle invalidation,
+/// and client-side Markdown-to-PDF compilation.
+///
+/// ### Architectural Responsibilities:
+/// 1. **Auth Lifecycle Awareness**:
+///    Subscribes to [authManager] notifications. Whenever login/logout occurs,
+///    the resume state is reset immediately to ensure sensitive personal details
+///    are not retained across different user sessions.
+///
+/// 2. **Clean Architecture & MVI State Machine**:
+///    Dispatches [ResumeIntent.init] on first visibility via [onVisible].
+///    Fetches markdown content via [GetResumeUseCase] and manages loading/error states.
+///
+/// 3. **High-Fidelity PDF Generation**:
+///    Compiles raw Markdown into clean, responsive HTML with custom CSS typography
+///    and `@media print` rules, then emits a [PrintPdfEffect] handled by [PrintPdfProviderImpl].
 @riverpod
 class ResumeViewModel extends _$ResumeViewModel with ViewModelMixin<ResumeState, ResumeIntent> {
   @override
@@ -21,10 +37,21 @@ class ResumeViewModel extends _$ResumeViewModel with ViewModelMixin<ResumeState,
     return const ResumeState();
   }
 
+  /// Session Security Invalidation Hook:
+  /// Listens to global [authManager] events (login, logout, token expiry).
+  ///
+  /// ### Security Defense Rationale:
+  /// When a user logs out or switches accounts, any in-memory resume state
+  /// containing personal phone numbers, emails, and employment history is
+  /// instantly wiped to prevent cross-session data leakage on shared devices.
   void _onAuthStatusChanged() {
+    appLogger.d('ResumeViewModel: Auth status changed, invalidating resume state');
     updateState(const ResumeState());
   }
 
+  /// Page Lifecycle Hook:
+  /// Invoked when the resume screen becomes visible in the navigator stack.
+  /// Lazily fetches the resume Markdown if not already loaded.
   @override
   void onVisible() {
     super.onVisible();
@@ -41,6 +68,10 @@ class ResumeViewModel extends _$ResumeViewModel with ViewModelMixin<ResumeState,
     );
   }
 
+  /// Fetches raw resume Markdown text via [GetResumeUseCase].
+  ///
+  /// Utilizes the [ViewModelMixin.call] pipeline to manage asynchronous loading,
+  /// automatic state transitions, and error handling with localized UI effects.
   Future<void> _onInit() async {
     await call<String>(
       ref.execute<String, BaseParam>(getResumeUseCaseProvider),
@@ -55,6 +86,15 @@ class ResumeViewModel extends _$ResumeViewModel with ViewModelMixin<ResumeState,
     );
   }
 
+  /// Compiles the current Markdown document to a responsive vector HTML string,
+  /// then triggers the native platform print spooler via [PrintPdfEffect].
+  ///
+  /// ### High-Fidelity PDF Generation Strategy:
+  /// 1. Converts Markdown syntax into semantic HTML using `package:markdown`.
+  /// 2. Wraps the HTML inside a standalone document with custom typography and
+  ///    `@media print` CSS rules (e.g. `page-break-inside: avoid;` for tables).
+  /// 3. Emits a [PrintPdfEffect] so the presentation layer remains decoupled
+  ///    from the concrete printing plugin (`package:printing`).
   Future<void> _onExportPDF() async {
     if (state.markdownContent.isEmpty) return;
 

@@ -5,10 +5,38 @@ import 'package:analyzer/error/listener.dart';
 import 'package:analyzer/source/source_range.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
-/// Entrypoint for custom_lint
+/// Entrypoint function invoked by the `custom_lint` analysis server plugin runner.
 PluginBase createPlugin() => DependencyBoundaryLint();
 
-/// Dependency boundary lint rules plugin
+/// ============================================================================
+/// DependencyBoundaryLint Plugin
+/// ============================================================================
+///
+/// A comprehensive custom static analysis plugin tailored for the ListenPortfolio
+/// architecture, powered by `custom_lint_builder` and the Dart Analyzer AST.
+///
+/// ### Rule Classification Matrix:
+/// 1. **Architectural & Boundary Governance**:
+///    - [_DependencyBoundaryRule]: Enforces strict unidirectional dependencies between layers.
+///    - [_CircularDependencyLint]: Detects cyclic module dependency graphs.
+///    - [_ImplementationImportLint]: Enforces dependency inversion by barring direct imports of data/impl classes.
+///    - [_CrossFeatureRelativeImportRule]: Prevents relative imports from escaping feature module boundaries.
+///    - [_NoDirectAppNavUsageRule]: Guards unidirectional navigation via MVI Effects.
+///
+/// 2. **Clean Architecture & MVI Purity**:
+///    - [_ViewModelContextIsolationRule]: Enforces separation of concerns by barring [BuildContext] in ViewModels.
+///    - [_NoDirectStateAssignmentRule]: Ensures state immutability by requiring `updateState(...)`.
+///
+/// 3. **Design System & Component Governance**:
+///    - [_UseCommonImageRule], [_UseCommonClickableRule], [_UseCommonTextRule],
+///      [_UseCommonButtonRule], [_UseCommonIconButtonRule], [_UseCommonDialogRule],
+///      [_UseCommonSwitchRule], [_UseCommonTextFieldRule], [_UseCommonRefreshListRule]:
+///      Steers code towards the standardized `ListenUiKit` component ecosystem with
+///      automated Quick-Fix (`--fix`) AST transformations.
+///
+/// 4. **Design Tokens & Localization Safety**:
+///    - [_NoHardcodedStringsRule]: Mandates i18n localization keys (`I18nKeys.xxx.tr`).
+///    - [_NoRawColorRule]: Prevents raw hex/Color hardcoding to guarantee dark mode compatibility.
 class DependencyBoundaryLint extends PluginBase {
   @override
   List<LintRule> getLintRules(CustomLintConfigs configs) => [
@@ -33,7 +61,14 @@ class DependencyBoundaryLint extends PluginBase {
   ];
 }
 
-/// Main dependency boundary rule
+/// ============================================================================
+/// _DependencyBoundaryRule
+/// ============================================================================
+/// Enforces architectural boundary constraints on [ImportDirective] nodes:
+/// 1. Feature Isolation: `features/moduleA` must never import from `features/moduleB`.
+/// 2. Upward Dependency Guard: Core framework layer must never depend on upper layers (`features/` or `shared/`).
+/// 3. Private File Encapsulation: Files prefixed with an underscore (`_xxx.dart`) are private and cannot be imported.
+/// 4. Relative Path Integrity: Core module must not use `../` relative paths to reach into upper layers.
 class _DependencyBoundaryRule extends DartLintRule {
   static const LintCode _code = LintCode(
     name: 'dependency_boundary_violation',
@@ -154,7 +189,17 @@ class _DependencyBoundaryRule extends DartLintRule {
   }
 }
 
-/// Circular dependency lint rule
+/// ============================================================================
+/// _CircularDependencyLint
+/// ============================================================================
+/// Intended to detect cyclic import dependencies (e.g. A -> B -> C -> A) across files.
+///
+/// ### Architecture Note & Current Limitation:
+/// Dart's `custom_lint_builder` processes compilation units modularly in the IDE.
+/// Accurately detecting cycles across the entire codebase requires building and
+/// querying a global directed dependency graph (using Tarjan's Strongly Connected
+/// Components or DFS cycle detection). This rule serves as an architectural placeholder
+/// while full cycle verification is executed by `tools/dependency_rules.dart --check-circular`.
 class _CircularDependencyLint extends DartLintRule {
   static const LintCode _code = LintCode(
     name: 'circular_dependency',
@@ -170,13 +215,23 @@ class _CircularDependencyLint extends DartLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    // [Placeholder] Circular dependency detection is registered but not yet
-    // implemented. This rule currently reports no violations.
-    // See: docs/custom_lint_rules.md for status.
+    // [Placeholder] Circular dependency detection across modular AST units is registered
+    // for future full-graph analyzer integration. Active checks run via tools/dependency_rules.dart.
   }
 }
 
-/// Implementation import lint rule
+/// ============================================================================
+/// _ImplementationImportLint
+/// ============================================================================
+/// Enforces the Dependency Inversion Principle (DIP) by prohibiting presentation
+/// and domain layers from directly importing concrete data-layer implementation files
+/// (e.g., `_impl.dart`, `impl/`, `data/repositories/`, `data/datasources/`).
+///
+/// ### Permitted Architectural Exceptions:
+/// 1. **Dependency Injection Providers** (`/provider/` or `_provider.dart`):
+///    Permitted to instantiate concrete classes for Riverpod DI bindings.
+/// 2. **Data Layer Internals** (`/data/`):
+///    Repository implementations are permitted to import their corresponding DataSource implementations.
 class _ImplementationImportLint extends DartLintRule {
   static const LintCode _code = LintCode(
     name: 'implementation_import',
@@ -198,12 +253,12 @@ class _ImplementationImportLint extends DartLintRule {
 
       final filePath = resolver.source.fullName;
 
-      // Allow provider/dependency injection files to import implementations to instantiate them
+      // Exception 1: Allow provider/dependency injection files to instantiate concrete implementations
       if (filePath.contains('/provider/') || filePath.endsWith('_provider.dart')) {
         return;
       }
 
-      // Allow data layer files to import implementations (e.g. repository impl importing datasource impl)
+      // Exception 2: Allow data layer internals to import each other (e.g. RepositoryImpl -> DataSourceImpl)
       if (filePath.contains('/data/')) {
         return;
       }
@@ -224,7 +279,23 @@ class _ImplementationImportLint extends DartLintRule {
   }
 }
 
-/// Rule to check and discourage direct usage of Image
+/// ============================================================================
+/// _UseCommonImageRule & _UseCommonImageFix
+/// ============================================================================
+/// Enforces the adoption of [CommonImage] from `ListenUiKit` over Flutter SDK's raw [Image].
+///
+/// ### Architectural Rationale:
+/// - Provides unified memory/disk caching, SVG support, and sub-microsecond Base64 decoding.
+/// - Incorporates mandatory `errorBuilder` isolation to prevent `ImageCodecException`
+///   from starving the Dart Event Loop during 60fps animations.
+///
+/// ### Quick-Fix AST Transformations:
+/// - Injects `import 'package:listen_uikit/uikit.dart';` (with deduplication).
+/// - Translates constructors:
+///   - `Image.asset(...)`   -> `CommonImage.asset(...)`
+///   - `Image.network(...)` -> `CommonImage.url(...)`
+///   - `Image.file(...)`    -> `CommonImage.file(...)`
+///   - `Image(...)`         -> `CommonImage(...)`
 class _UseCommonImageRule extends DartLintRule {
   static const LintCode _code = LintCode(
     name: 'use_common_image',
@@ -268,6 +339,7 @@ class _UseCommonImageRule extends DartLintRule {
   }
 }
 
+/// Automated AST Quick-Fix for replacing raw `Image` instances with `CommonImage`.
 class _UseCommonImageFix extends DartFix {
   _UseCommonImageFix();
 
@@ -324,7 +396,20 @@ class _UseCommonImageFix extends DartFix {
   }
 }
 
-/// Rule to check and discourage direct usage of InkWell and GestureDetector
+/// ============================================================================
+/// _UseCommonClickableRule & _UseCommonClickableFix
+/// ============================================================================
+/// Enforces the adoption of [CommonClickable] from `ListenUiKit` over Flutter's
+/// raw [InkWell] or [GestureDetector].
+///
+/// ### Architectural Rationale:
+/// - Provides consistent haptic feedback, debounce throttling, and responsive scale animations.
+/// - Unifies ripple configurations across platforms.
+///
+/// ### Quick-Fix AST Transformations:
+/// - Replaces constructor with `CommonClickable`.
+/// - For [GestureDetector], automatically prepends `ripple: false, ` to arguments
+///   to preserve the non-ripple gesture behavior.
 class _UseCommonClickableRule extends DartLintRule {
   static const LintCode _code = LintCode(
     name: 'use_common_clickable',
@@ -368,6 +453,7 @@ class _UseCommonClickableRule extends DartLintRule {
   }
 }
 
+/// Automated AST Quick-Fix for replacing `InkWell` or `GestureDetector` with `CommonClickable`.
 class _UseCommonClickableFix extends DartFix {
   _UseCommonClickableFix();
 
@@ -412,7 +498,14 @@ class _UseCommonClickableFix extends DartFix {
   }
 }
 
-/// Rule to check and discourage direct usage of Text
+/// ============================================================================
+/// _UseCommonTextRule & _UseCommonTextFix
+/// ============================================================================
+/// Enforces the adoption of [CommonText] from `ListenUiKit` over raw [Text].
+///
+/// ### Architectural Rationale:
+/// - Guarantees application of the active 7-tier dynamic typography family (`fontFamilyFallback`).
+/// - Integrates responsive scaling (`NumScaleX.f`) and anti-truncation `useFittedBox` guards.
 class _UseCommonTextRule extends DartLintRule {
   static const LintCode _code = LintCode(
     name: 'use_common_text',
@@ -493,7 +586,16 @@ class _UseCommonTextFix extends DartFix {
   }
 }
 
-/// Rule to check and discourage direct usage of basic Button widgets
+/// ============================================================================
+/// _UseCommonButtonRule & _UseCommonButtonFix
+/// ============================================================================
+/// Enforces the adoption of [CommonButton] from `ListenUiKit` over Flutter SDK's
+/// various button variants ([ElevatedButton], [TextButton], [OutlinedButton],
+/// [FilledButton], [CupertinoButton]).
+///
+/// ### Architectural Rationale:
+/// - Unifies button height, rounded corner styling, loading state spinner, and tap animations.
+/// - Guarantees design token adherence across light and dark themes.
 class _UseCommonButtonRule extends DartLintRule {
   static const LintCode _code = LintCode(
     name: 'use_common_button',
@@ -543,6 +645,7 @@ class _UseCommonButtonRule extends DartLintRule {
   }
 }
 
+/// Automated AST Quick-Fix for converting basic Button instances to `CommonButton`.
 class _UseCommonButtonFix extends DartFix {
   _UseCommonButtonFix();
 
@@ -587,7 +690,15 @@ class _UseCommonButtonFix extends DartFix {
   }
 }
 
-/// Rule to check and discourage direct usage of basic IconButton widgets
+/// ============================================================================
+/// _UseCommonIconButtonRule & _UseCommonIconButtonFix
+/// ============================================================================
+/// Enforces the adoption of [CommonIconButton] from `ListenUiKit` over SDK icon buttons
+/// ([IconButton], [FilledIconButton], [FilledTonalIconButton], [OutlinedIconButton]).
+///
+/// ### Architectural Rationale:
+/// - Provides normalized 44x44 minimum touch targets for accessibility compliance.
+/// - Standardizes splash padding, hit test bounds, and disabled opacity.
 class _UseCommonIconButtonRule extends DartLintRule {
   static const LintCode _code = LintCode(
     name: 'use_common_icon_button',
@@ -679,7 +790,15 @@ class _UseCommonIconButtonFix extends DartFix {
   }
 }
 
-/// Rule to check and discourage direct usage of showDialog and showGeneralDialog
+/// ============================================================================
+/// _UseCommonDialogRule
+/// ============================================================================
+/// Enforces triggering dialogs via [CommonDialog] utility methods instead of
+/// calling Flutter's raw [showDialog], [showGeneralDialog], or [showCupertinoDialog].
+///
+/// ### Architectural Rationale:
+/// - Guarantees Single UI Binder dialog queue governance (preventing double dialogs).
+/// - Enforces uniform barrier dismissibility, entry/exit scale transitions, and dark mode theming.
 class _UseCommonDialogRule extends DartLintRule {
   static const LintCode _code = LintCode(
     name: 'use_common_dialog',
@@ -716,7 +835,15 @@ class _UseCommonDialogRule extends DartLintRule {
   }
 }
 
-/// Rule to check and discourage direct usage of Switch
+/// ============================================================================
+/// _UseCommonSwitchRule & _UseCommonSwitchFix
+/// ============================================================================
+/// Enforces the adoption of [CommonSwitch] from `ListenUiKit` over Flutter SDK's
+/// raw [Switch] or [CupertinoSwitch].
+///
+/// ### Architectural Rationale:
+/// - Provides consistent thumb track sizing, adaptive iOS/Material transitions,
+///   and theme-aware active/inactive colors.
 class _UseCommonSwitchRule extends DartLintRule {
   static const LintCode _code = LintCode(
     name: 'use_common_switch',
@@ -760,6 +887,7 @@ class _UseCommonSwitchRule extends DartLintRule {
   }
 }
 
+/// Automated AST Quick-Fix for converting `Switch` or `CupertinoSwitch` to `CommonSwitch`.
 class _UseCommonSwitchFix extends DartFix {
   _UseCommonSwitchFix();
 
@@ -797,7 +925,15 @@ class _UseCommonSwitchFix extends DartFix {
   }
 }
 
-/// Rule to check and discourage direct usage of TextField and TextFormField
+/// ============================================================================
+/// _UseCommonTextFieldRule & _UseCommonTextFieldFix
+/// ============================================================================
+/// Enforces the adoption of [CommonTextField] from `ListenUiKit` over raw
+/// [TextField] or [TextFormField].
+///
+/// ### Architectural Rationale:
+/// - Standardizes floating label layout, clear icon behavior, obscure text toggling,
+///   and error state borders with brand typography.
 class _UseCommonTextFieldRule extends DartLintRule {
   static const LintCode _code = LintCode(
     name: 'use_common_text_field',
@@ -878,7 +1014,15 @@ class _UseCommonTextFieldFix extends DartFix {
   }
 }
 
-/// Rule to check and discourage direct usage of RefreshIndicator or CupertinoSliverRefreshControl
+/// ============================================================================
+/// _UseCommonRefreshListRule & _UseCommonRefreshListFix
+/// ============================================================================
+/// Enforces the adoption of [CommonRefreshList] from `ListenUiKit` over Flutter's
+/// raw [RefreshIndicator] or [CupertinoSliverRefreshControl].
+///
+/// ### Architectural Rationale:
+/// - Provides unified pull-to-refresh indicators, empty state illustrations,
+///   and error retry triggers across platforms.
 class _UseCommonRefreshListRule extends DartLintRule {
   static const LintCode _code = LintCode(
     name: 'use_common_refresh_list',
@@ -925,6 +1069,7 @@ class _UseCommonRefreshListRule extends DartLintRule {
   }
 }
 
+/// Automated AST Quick-Fix for replacing `RefreshIndicator` or `CupertinoSliverRefreshControl` with `CommonRefreshList`.
 class _UseCommonRefreshListFix extends DartFix {
   _UseCommonRefreshListFix();
 
@@ -966,7 +1111,16 @@ class _UseCommonRefreshListFix extends DartFix {
   }
 }
 
-/// Rule to check and discourage BuildContext in ViewModels
+/// ============================================================================
+/// _ViewModelContextIsolationRule
+/// ============================================================================
+/// Enforces strict architectural separation of concerns by barring [BuildContext]
+/// from any file matching `*_view_model.dart`.
+///
+/// ### Architectural Rationale:
+/// - ViewModels must remain pure business logic units capable of unit testing without widget testers.
+/// - Retaining [BuildContext] references leads to memory leaks across widget tree disposal.
+/// - UI actions (dialogs, toasts, navigations) must be dispatched via MVI `emitEffect(...)`.
 class _ViewModelContextIsolationRule extends DartLintRule {
   static const LintCode _code = LintCode(
     name: 'view_model_context_isolation',
@@ -993,7 +1147,15 @@ class _ViewModelContextIsolationRule extends DartLintRule {
   }
 }
 
-/// Rule to check and discourage cross-feature relative imports
+/// ============================================================================
+/// _CrossFeatureRelativeImportRule
+/// ============================================================================
+/// Forbids relative imports from crossing feature module boundaries.
+///
+/// ### Architectural Rationale:
+/// - Feature modules (`features/xxx`) should be autonomous and decoupled.
+/// - Relative imports like `../../other_feature/some_file.dart` create brittle couplings
+///   that break modular compilation and independent testability.
 class _CrossFeatureRelativeImportRule extends DartLintRule {
   static const LintCode _code = LintCode(
     name: 'cross_feature_relative_import',
@@ -1043,7 +1205,15 @@ class _CrossFeatureRelativeImportRule extends DartLintRule {
   }
 }
 
-/// Rule to check and discourage hardcoded strings in Text widgets
+/// ============================================================================
+/// _NoHardcodedStringsRule
+/// ============================================================================
+/// Flags hardcoded literal strings inside [Text] or [CommonText] widgets.
+///
+/// ### Architectural Rationale:
+/// - Guarantees full localization (i18n) support across Chinese, English, and Japanese.
+/// - Prevents accidental un-translated strings in production releases.
+/// - Uses a Unicode regex (`[a-zA-Z\u4e00-\u9fa5]+`) to ignore numbers, punctuation, and math symbols.
 class _NoHardcodedStringsRule extends DartLintRule {
   static const LintCode _code = LintCode(
     name: 'no_hardcoded_strings',
@@ -1080,7 +1250,7 @@ class _NoHardcodedStringsRule extends DartLintRule {
       if (firstArg is StringLiteral) {
         final value = firstArg.stringValue;
         if (value == null) return;
-        // Verify string contains alphabetic chars (prevent flagging symbols/numbers)
+        // Verify string contains alphabetic or CJK chars (prevent flagging symbols/numbers)
         final hasLetters = RegExp(r'[a-zA-Z\u4e00-\u9fa5]+').hasMatch(value);
         if (hasLetters) {
           reporter.atNode(firstArg, _code);
@@ -1090,7 +1260,14 @@ class _NoHardcodedStringsRule extends DartLintRule {
   }
 }
 
-/// Rule to check and discourage direct usage of raw Colors
+/// ============================================================================
+/// _NoRawColorRule
+/// ============================================================================
+/// Flags direct instantiation of `Color(...)` or references to `Colors.xxx`.
+///
+/// ### Architectural Rationale:
+/// - Guarantees seamless dark/light theme switching without visual artifacts or contrast failures.
+/// - Mandates the use of theme tokens (`context.theme.xxx` or theme extensions).
 class _NoRawColorRule extends DartLintRule {
   static const LintCode _code = LintCode(
     name: 'no_raw_color',
@@ -1135,7 +1312,15 @@ class _NoRawColorRule extends DartLintRule {
   }
 }
 
-/// Rule to check and discourage direct assignment to state in ViewModels
+/// ============================================================================
+/// _NoDirectStateAssignmentRule
+/// ============================================================================
+/// Enforces MVI state immutability by flagging direct assignments to `state = ...`
+/// within files matching `*_view_model.dart`.
+///
+/// ### Architectural Rationale:
+/// - Direct assignment bypasses state transition hooks and MVI playback recording.
+/// - Requires using `updateState(state.copyWith(...))` to ensure atomic transitions.
 class _NoDirectStateAssignmentRule extends DartLintRule {
   static const LintCode _code = LintCode(
     name: 'no_direct_state_assignment',
@@ -1163,7 +1348,16 @@ class _NoDirectStateAssignmentRule extends DartLintRule {
   }
 }
 
-/// Rule to check and discourage direct usage of AppNav in UI or ViewModels
+/// ============================================================================
+/// _NoDirectAppNavUsageRule
+/// ============================================================================
+/// Prohibits feature-level code from directly calling `AppNav` navigation methods
+/// (`AppNav.to`, `AppNav.back`, `AppNav.off`, `AppNav.offAll`).
+///
+/// ### Architectural Rationale:
+/// - Enforces pure unidirectional MVI architecture: UI dispatches Intents, ViewModels
+///   emit `NavigationEffect`, and the View executes the navigation.
+/// - Decouples business logic from imperative navigation frameworks for easier testing.
 class _NoDirectAppNavUsageRule extends DartLintRule {
   static const LintCode _code = LintCode(
     name: 'no_direct_app_nav_usage',

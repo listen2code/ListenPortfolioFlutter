@@ -123,7 +123,26 @@ else {
     New-Item -ItemType Directory -Path $GhPagesDir -Force | Out-Null
 }
 
-# Copy documentation with robocopy for reliable copying
+# --- Copy Documentation via Robocopy (Bypassing Windows MAX_PATH Limitation) ---
+# Windows NTFS imposes a legacy MAX_PATH limit (260 characters). Deeply nested DartDoc HTML
+# structures (e.g. operators, generic class hierarchies, library namespaces) frequently exceed
+# this limit, causing standard PowerShell `Copy-Item -Recurse` to throw `PathTooLongException`.
+#
+# Robocopy (Robust File Copy) natively supports extended-length paths (\\?\) up to 32,767 characters.
+# Parameters:
+#   /E   : Copies subdirectories, including empty ones.
+#   /NFL : Suppresses file logging for cleaner console output.
+#   /NDL : Suppresses directory logging.
+#   /NJH : Suppresses job header.
+#   /NJS : Suppresses job summary.
+#
+# Robocopy Return Code Semantics (Bitmask):
+#   0 = No files copied (identical).
+#   1 = Files copied successfully.
+#   2 = Extra files detected in destination.
+#   4 = Mismatched files detected.
+#   Values <= 7 denote successful operations or non-fatal informational warnings.
+#   Values >= 8 represent fatal hardware/permissions/disk failures.
 Write-Info "Organizing documentation structure..."
 
 try {
@@ -131,20 +150,20 @@ try {
     $MainDestDir = Join-Path $GhPagesDir "listen_portfolio_flutter"
     New-Item -ItemType Directory -Path $MainDestDir -Force | Out-Null
     
-    # Use robocopy for reliable copying with long paths
+    # Execute robocopy with suppressed verbose output
     robocopy $TempMainDir $MainDestDir /E /NFL /NDL /NJH /NJS | Out-Null
     
     if ($LASTEXITCODE -le 7) {
         $MainSuccess = $true
-        Write-Success "Main application documentation copied successfully"
+        Write-Success "Main application documentation copied successfully (Robocopy ExitCode: $LASTEXITCODE)"
     }
     else {
-        Write-Warning "Robocopy failed with exit code: $LASTEXITCODE"
+        Write-Warning "Robocopy failed with fatal exit code: $LASTEXITCODE"
         $MainSuccess = $false
     }
 }
 catch {
-    Write-Warning "Failed to copy main application documentation"
+    Write-Warning "Failed to copy main application documentation: $_"
     $MainSuccess = $false
 }
 

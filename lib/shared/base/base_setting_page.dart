@@ -1,11 +1,24 @@
 import 'package:flutter/material.dart';
 import '../shared.dart';
 
-/// A base widget that listens to theme changes and provides a consistent
-/// background gradient and system UI overlay style.
-/// This widget does NOT include a Scaffold, making it ideal for fragments or tabs.
+/// ============================================================================
+/// BaseSettingPage
+/// ============================================================================
+/// A root-level reactive wrapper widget connecting [SettingManager] to Flutter's
+/// widget hierarchy via [ListenableBuilder].
+///
+/// ### Architecture & Rebuild Minimization:
+/// - By wrapping the top-level [BaseMaterialApp] inside `BaseSettingPage`, any change
+///   to theme mode, accent color, font size, or font family immediately triggers a
+///   targeted rebuild of the root theme without reconstructing unrelated background
+///   singletons or tear-downs of navigational state.
+/// - Merges [settingManager] with optional [extraListenable] instances for flexible
+///   multi-observable synchronization.
 class BaseSettingPage extends StatelessWidget {
+  /// Builder function constructing the reactive child tree.
   final TransitionBuilder builder;
+
+  /// Optional auxiliary listenables to observe alongside [settingManager].
   final List<Listenable>? extraListenable;
 
   const BaseSettingPage({super.key, required this.builder, this.extraListenable});

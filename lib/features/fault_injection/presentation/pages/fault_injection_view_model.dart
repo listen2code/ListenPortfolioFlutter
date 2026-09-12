@@ -10,6 +10,17 @@ import 'fault_injection_state.dart';
 
 part 'fault_injection_view_model.g.dart';
 
+/// ViewModel managing the business logic and chaos state machine for the Fault Injection Playground.
+///
+/// Implements the MVI (Model-View-Intent) architectural pattern by consuming [FaultInjectionIntent]
+/// and emitting updated immutable [FaultInjectionState] snapshots.
+///
+/// ### Core Responsibilities:
+/// 1. **Scenario Orchestration**: Coordinates the 7 chaos simulation sequences across Network, Stability, and Performance domains.
+/// 2. **Concurrency Mutex**: Guarantees that only one fault injection scenario runs at a time via `runningType != null` checks.
+/// 3. **Precision Timing**: Uses [Stopwatch] to capture millisecond-accurate execution latencies.
+/// 4. **Live Execution Console**: Streams chronological [ExecutionStepLog] entries into the UI terminal.
+/// 5. **Traceability & APM Integration**: Assigns unique UUID v4 trace IDs to each run, enabling drill-down into [LogOverlayManager].
 @riverpod
 class FaultInjectionViewModel extends _$FaultInjectionViewModel
     with ViewModelMixin<FaultInjectionState, FaultInjectionIntent> {
@@ -41,6 +52,7 @@ class FaultInjectionViewModel extends _$FaultInjectionViewModel
     );
   }
 
+  /// Handles playground initialization by loading default scenario configurations.
   Future<void> _onInit() async {
     updateState(
       state.copyWith(
@@ -49,10 +61,17 @@ class FaultInjectionViewModel extends _$FaultInjectionViewModel
     );
   }
 
+  /// Updates the active category filter for scenario cards.
   void _onSelectCategory(FaultCategory category) {
     updateState(state.copyWith(selectedCategory: category));
   }
 
+  /// Executes the selected fault injection scenario within a protected sandbox.
+  ///
+  /// Enforces a concurrency mutex: if another scenario is actively running,
+  /// the request is safely discarded. Generates a fresh distributed trace ID,
+  /// tracks wall-clock execution time via [Stopwatch], appends diagnostic logs,
+  /// and updates the scenario status to [ScenarioStatus.recovered] or [ScenarioStatus.failed].
   Future<void> _onRunScenario(FaultScenarioType type) async {
     if (state.runningType != null) return;
 
@@ -149,6 +168,13 @@ class FaultInjectionViewModel extends _$FaultInjectionViewModel
     }
   }
 
+  /// Simulates 5 simultaneous authenticated API requests after token expiry.
+  ///
+  /// ### Defensive Architectural Verification:
+  /// Verifies that `AuthInterceptor` intercepts the 401 Unauthorized status,
+  /// activates the concurrency mutex lock, queues requests #2-#5 behind a [Completer],
+  /// executes exactly one single-flight refresh token request, and automatically
+  /// replays all 5 requests with the new JWT without throwing errors to the UI layer.
   Future<void> _executeConcurrent401(String traceId) async {
     _addLog('[Step 1] Invalidating active Access Token to simulate expiry...');
     await Future<void>.delayed(const Duration(milliseconds: 60));
@@ -167,6 +193,13 @@ class FaultInjectionViewModel extends _$FaultInjectionViewModel
     _addLog('[Step 7] All 5 concurrent requests returned 200 OK with zero user disruption.');
   }
 
+  /// Simulates an upstream HTTP 500 Internal Server Error.
+  ///
+  /// ### Defensive Architectural Verification:
+  /// Verifies that `BaseRepository.safeCall()` catches the DioException, binds
+  /// the contract error code to `ServerApiFailure`, maps it to an internationalized
+  /// string via `ErrorMapper`, and returns a clean `Left(Failure)` without escaping
+  /// as an unhandled exception into the Flutter engine.
   Future<void> _executeServerError500(String traceId) async {
     _addLog('[Step 1] Sending API request to simulated fault endpoint...');
     await Future<void>.delayed(const Duration(milliseconds: 70));
@@ -179,6 +212,12 @@ class FaultInjectionViewModel extends _$FaultInjectionViewModel
     _addLog('[Step 5] Either<Failure, T> returned cleanly to ViewModel. Zero unhandled exceptions in UI.');
   }
 
+  /// Simulates an aggressive 100ms connection timeout.
+  ///
+  /// ### Defensive Architectural Verification:
+  /// Verifies that `ErrorInterceptor` classifies the timeout as `NetworkException`,
+  /// enabling `BaseRepository` to activate offline fallback reading from local cache
+  /// and displaying an informational offline banner to the user.
   Future<void> _executeNetworkTimeout(String traceId) async {
     _addLog('[Step 1] Simulating network connection timeout (100ms budget exceeded)...');
     await Future<void>.delayed(const Duration(milliseconds: 110));
@@ -188,6 +227,12 @@ class FaultInjectionViewModel extends _$FaultInjectionViewModel
     _addLog('[Step 4] UI successfully displayed cached data with offline banner notice.');
   }
 
+  /// Simulates an edge gateway or Nginx proxy returning an HTML error page (e.g. 413 or 502).
+  ///
+  /// ### Defensive Architectural Verification:
+  /// Verifies that `ErrorInterceptor` and `BaseResponseModel.fromJson` perform defensive
+  /// type checks (`data is Map<String, dynamic>`) and extract `<title>` text via regex,
+  /// preventing Dart runtime `_TypeError: type 'String' is not a subtype of type 'Map'`.
   Future<void> _executeMalformedGateway(String traceId) async {
     _addLog('[Step 1] Simulating Nginx proxy returning HTML 413 string instead of JSON payload...');
     await Future<void>.delayed(const Duration(milliseconds: 50));
@@ -197,6 +242,12 @@ class FaultInjectionViewModel extends _$FaultInjectionViewModel
     _addLog('[Step 4] TypeError: type \'String\' is not a subtype of type \'int\' completely prevented.');
   }
 
+  /// Simulates an unhandled asynchronous exception escaping standard try-catch inside a Dart Zone.
+  ///
+  /// ### Defensive Architectural Verification:
+  /// Verifies that `ZoneManager` captures the escaping async error at the root Zone level,
+  /// records the active trace ID, and invokes `CrashManager.saveCrashLog` to persist
+  /// the stack trace to sandbox storage while keeping the Flutter engine alive.
   Future<void> _executeZoneAsyncCrash(String traceId) async {
     _addLog('[Step 1] Injected unhandled asynchronous error inside active Dart Zone...');
     await Future<void>.delayed(const Duration(milliseconds: 40));
@@ -210,6 +261,12 @@ class FaultInjectionViewModel extends _$FaultInjectionViewModel
     _addLog('[Step 4] Flutter engine remained healthy and UI continued running smoothly.');
   }
 
+  /// Simulates 3 fatal consecutive crashes within a 30-second window.
+  ///
+  /// ### Defensive Architectural Verification:
+  /// Verifies that `CrashManager` tracks crash frequencies against the rapid crash threshold,
+  /// automatically engages Safe Mode protection, resets potentially corrupt preferences,
+  /// and updates the UI state flag `isSafeModeTriggered: true`.
   Future<void> _executeConsecutiveSafeMode(String traceId) async {
     _addLog('[Step 1] Simulating rapid consecutive fatal crashes (3 times in 30 seconds)...');
     await Future<void>.delayed(const Duration(milliseconds: 50));
@@ -224,6 +281,11 @@ class FaultInjectionViewModel extends _$FaultInjectionViewModel
     updateState(state.copyWith(isSafeModeTriggered: true));
   }
 
+  /// Simulates an intensive synchronous computation blocking the UI main thread for 250ms.
+  ///
+  /// ### Defensive Architectural Verification:
+  /// Verifies that `FrameMonitor` detects the vsync budget violation (>16.6ms per frame),
+  /// logs a dropped frame warning (<30 FPS), and surfaces an APM jank telemetry event.
   Future<void> _executeMainThreadJank(String traceId) async {
     _addLog('[Step 1] Inducing heavy CPU work on UI main thread (250ms sync block)...');
     final start = DateTime.now();
@@ -236,6 +298,7 @@ class FaultInjectionViewModel extends _$FaultInjectionViewModel
     _addLog('[Step 3] FrameMonitor recorded Jank (<30 FPS drop) and emitted APM performance warning.');
   }
 
+  /// Appends a new [ExecutionStepLog] to the real-time console buffer.
   void _addLog(String message, {bool isError = false, bool isSuccess = false}) {
     final now = DateTime.now();
     final log = ExecutionStepLog(
@@ -248,20 +311,24 @@ class FaultInjectionViewModel extends _$FaultInjectionViewModel
     updateState(state.copyWith(consoleLogs: updatedLogs));
   }
 
+  /// Clears the real-time terminal output logs.
   void _onClearConsole() {
     updateState(state.copyWith(consoleLogs: [], activeTraceId: null));
   }
 
+  /// Copies the active trace ID to the system clipboard and displays a Toast effect.
   Future<void> _onCopyTraceId(String traceId) async {
     await Clipboard.setData(ClipboardData(text: traceId));
     emitEffect(MessageEffect.info(I18nKeys.faultTraceCopied.tr));
   }
 
+  /// Filters logs in [LogOverlayManager] by the current trace ID and emits an info effect.
   void _onDrillTrace(String traceId) {
     LogOverlayManager.traceFilterNotifier.value = traceId;
     emitEffect(MessageEffect.info(I18nKeys.faultDrillTrace.tr));
   }
 
+  /// Resets all scenario statistics, console logs, and safe mode indicators back to initial defaults.
   void _onResetAll() {
     updateState(
       state.copyWith(
@@ -275,6 +342,7 @@ class FaultInjectionViewModel extends _$FaultInjectionViewModel
     );
   }
 
+  /// Resolves the localized title for the given [FaultScenarioType].
   String _getScenarioName(FaultScenarioType type) {
     switch (type) {
       case FaultScenarioType.concurrent401:
@@ -294,6 +362,7 @@ class FaultInjectionViewModel extends _$FaultInjectionViewModel
     }
   }
 
+  /// Constructs the default baseline list of 7 fault injection scenarios.
   List<FaultScenarioModel> _createInitialScenarios() {
     return const [
       FaultScenarioModel(

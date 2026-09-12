@@ -3,10 +3,24 @@ import 'package:listen_uikit/uikit.dart';
 
 import '../../../../../../shared/shared.dart';
 
+/// ============================================================================
+/// FontSizeOptionTile
+/// ============================================================================
+/// Interactive settings tile for selecting an [AppFontSize] scaling multiplier.
+///
+/// Features proportional leading iconography reflecting the relative size of
+/// the typography option, title rendering via [CommonText], and active checkmark feedback.
 class FontSizeOptionTile extends StatelessWidget {
+  /// Localized display label for this font size tier.
   final String label;
+
+  /// The font size tier represented by this option.
   final AppFontSize fontSize;
+
+  /// The currently active font size tier in state.
   final AppFontSize currentFontSize;
+
+  /// Callback executed when tapping this tile.
   final VoidCallback onTap;
 
   const FontSizeOptionTile({

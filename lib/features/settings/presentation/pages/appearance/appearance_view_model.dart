@@ -9,6 +9,21 @@ import 'appearance_state.dart';
 
 part 'appearance_view_model.g.dart';
 
+/// ============================================================================
+/// AppearanceViewModel
+/// ============================================================================
+/// MVI ViewModel managing appearance customization (theme mode, brand accent color,
+/// typography font scaling, font family switching, and dynamic theming).
+///
+/// ### Architecture & Dual Synchronization:
+/// 1. **MVI Intent Handling**:
+///    Encapsulates all incoming UI intents ([AppearanceIntent]) through a declarative
+///    `when` pattern, maintaining unidirectional state flow.
+/// 2. **Immediate State Reflection & Global Propagation**:
+///    When [AppearanceIntent.setFontFamily] or [AppearanceIntent.setFontSize] is received,
+///    the ViewModel updates its local [AppearanceState] for instant tile checkmark
+///    feedback and delegates to [SettingManager] to broadcast root [ThemeData] hot-reloads
+///    and persist choices to persistent storage ([SpUtil]).
 @riverpod
 class AppearanceViewModel extends _$AppearanceViewModel
     with ViewModelMixin<AppearanceState, AppearanceIntent> {

@@ -11,6 +11,29 @@ import 'login_state.dart';
 
 part 'login_view_model.g.dart';
 
+/// StateNotifier ViewModel orchestrating the user authentication flow.
+///
+/// ### Architecture & Authentication Modes:
+/// 1. **Password Authentication (Current)**:
+///    - Validates user input (username and password lengths/formats).
+///    - Dispatches [LoginRequestModel] via [loginUseCaseProvider].
+///    - Upon success, persists tokens and notifies [authManager] to transition application state.
+///
+/// 2. **FIDO2 / Passkey Passwordless Extension (Opt-29 / Opt-30)**:
+///    - When biometric authentication is enabled, the UI will trigger a Passkey login intent.
+///    - The ViewModel retrieves an assertion challenge from the server Relying Party endpoint.
+///    - Invokes [PasskeyService.authenticate] to display Face ID / Touch ID / Fingerprint prompt.
+///    - Posts the resulting cryptographic assertion (`clientDataJSON`, `authenticatorData`, `signature`)
+///      to `/api/v1/auth/fido2/authenticate`.
+///    - Eliminates the need to store passwords in [SecureStorageUtil] while retaining seamless auto-login.
+///
+/// 3. **Federated Google OAuth 2.0 / OIDC Authentication (Now-2 / Opt-33 / Opt-34)**:
+///    - Triggered by user selecting "Sign in with Google" on the login screen.
+///    - Invokes [GoogleSignInService.signIn] to launch native OAuth consent or One Tap prompt.
+///    - Retrieves [GoogleAuthCredential] encapsulating the Google-signed OIDC JWT [idToken].
+///    - Submits [idToken] to backend endpoint `POST /v1/auth/google`.
+///    - Spring Boot backend verifies Google signature against Google JWKS, validates audience (`aud`),
+///      performs progressive account linking by email, and issues custom JWT access & refresh tokens.
 @riverpod
 class LoginViewModel extends _$LoginViewModel with ViewModelMixin<LoginState, LoginIntent> {
   @override

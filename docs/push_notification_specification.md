@@ -1,52 +1,84 @@
-# 推送通知集成与抽象设计方案 (Push Notification Specification)
+# 推送通知跨端集成与架构规范 (Push Notification Specification)
 
-为了在作品集 App 中实现推送通知能力，同时保持基础库（`ListenCore`）与具体第三方推送平台（`Firebase Cloud Messaging`）的解耦，我们在此设计一套符合整洁架构原则的**推送通知抽象与集成方案**。
-
----
-
-## 1. 设计目标与原则
-
-* **平台无关性（Decoupling）**：基础库 `ListenCore` 不引入任何具体推送平台的依赖（如 Firebase、极光推送等），仅定义通信协议（接口与数据实体）。
-* **生命周期感知**：能够支持 App 在**前台（Foreground）**、**后台（Background）**以及**已终止/未启动（Terminated）**三种状态下的消息接收和点击响应。
-* **深度链接路由（Deep Linking）**：支持点击推送通知后自动解析 Payload 载荷，并通过 `AppNav` 与事件总线进行特定页面（如项目详情、CV页）的跳转。
+> **设计哲学**：  
+> **基础底座零三方侵入，业务层面向契约编程，兼具网络弱网/离线容灾、冷启动粘性路由与开发者本地沙箱仿真。**  
+> 推送通知不仅是一套简单的消息到达机制，更是串联“设备唤醒”、“冷启动生命周期”、“深度链接路由栈重塑”与“权限合规管控”的关键工程通道。
 
 ---
 
-## 2. 核心架构设计
+## 1. 核心架构与设计目标
 
-我们采用**控制反转（IoC）**的思路，在 `ListenCore` 中提供接口定义与契约，在 `ListenPortfolioFlutter` 中使用 Firebase Cloud Messaging 进行具体实现。
+为了在作品集 App 中实现商用级推送通知，同时保持基础库（`ListenCore`）与具体第三方云推送平台（`Firebase Cloud Messaging` / APNs / 极光推送）的绝对解耦，本项目遵循**依赖倒置原则（Dependency Inversion Principle, DIP）**与**整洁架构（Clean Architecture）**规范，构建了双层推送服务体系。
+
+### 1.1 核心设计目标
+1. **基础库纯洁性与平台无关（Vendor Decoupling）**：底座核心库 `ListenCore` 仅定义平台无关的数据载荷模型 `NotificationPayload` 与操作契约 `INotificationService`，绝不直接依赖 `firebase_messaging` 或原生插件。
+2. **全生命周期精准感知（Three Lifecycle States）**：
+   - **前台（Foreground）**：应用活跃运行时静默接收消息，结合 `flutter_local_notifications` 自动调度系统高优先级浮动横幅（Heads-up Banner），并向事件流广播。
+   - **后台唤醒（Background Wakeup）**：用户从系统下拉通知栏点击消息，唤醒后台挂起或休眠的 App，安全拉回前台并调度路由。
+   - **冷启动/终止态（Terminated Launch）**：应用未运行或被系统杀死时，用户点击通知触发冷启动，通过粘性事件（Sticky Event）完成页面重定向，彻底避免因页面未挂载完毕引发的路由丢失。
+3. **网络弹性与防冻结超时熔断（Resilience & Timeout Safeguards）**：针对弱网、特定受限网络（如部分地区无法访问 Google Play 服务或 Firebase 端点）的环境，所有异步网络调用均配备硬超时防护（5s~10s），彻底规避冷启动挂死风险。
+4. **统一深度链接与路由栈回退（Deep Link Unwinding）**：点击通知唤醒时，自动先将路由栈安全弹出回退至根页面（`Routes.home`），再通过事件总线派发深度链接 URI，防止页面栈无限堆叠导致内存泄露。
+5. **本地沙箱仿真器（In-App Notification Simulator）**：在开发者设置中内建推送消息模拟器，支持在无真实 Firebase 后端或测试设备离线环境下，100% 高保真演练前台横幅与路由流转。
+
+---
+
+## 2. 系统架构与交互拓扑
 
 ```mermaid
 graph TD
-    subgraph ListenCore [基础库 ListenCore]
-        A[INotificationService 接口] --> B[NotificationPayload 实体]
+    classDef core fill:#1E293B,stroke:#38BDF8,stroke-width:2px,color:#F8FAFC;
+    classDef host fill:#0F172A,stroke:#34D399,stroke-width:2px,color:#F8FAFC;
+    classDef third fill:#334155,stroke:#F59E0B,stroke-width:1px,color:#F8FAFC;
+
+    subgraph CoreLayer ["1. 底座核心层 (ListenCore) - 纯接口契约"]
+        A["INotificationService<br/>(抽象服务契约)"]:::core
+        B["NotificationPayload<br/>(标准化载荷领域模型)"]:::core
+        A --> B
     end
-    
-    subgraph ListenPortfolioFlutter [宿主应用]
-        C[FirebaseNotificationServiceImpl] --实现--> A
-        D[AppInitializer] --初始化注入--> C
-        E[AppNav / EventBus] --路由联动--> C
+
+    subgraph HostLayer ["2. 宿主实现层 (ListenPortfolioFlutter)"]
+        C["FirebaseNotificationServiceImpl<br/>(具体服务实现)"]:::host
+        D["AppInitializer<br/>(初始化组装与容灾降级)"]:::host
+        E["FlutterLocalNotificationsPlugin<br/>(前台悬浮横幅引擎)"]:::host
+        F["EventBus / DeepLinkManager<br/>(粘性事件分发与路由解耦)"]:::host
+        G["SettingsViewModel<br/>(主题开关与权限联动)"]:::host
     end
-    
-    subgraph ThirdParty [三方平台]
-        F[Firebase Cloud Messaging] -.提供服务.-> C
+
+    subgraph VendorLayer ["3. 外部推送底座与基础设施"]
+        H["Firebase Cloud Messaging (FCM)<br/>(全球分发网络)"]:::third
+        I["Firebase App Check<br/>(Play Integrity / DeviceCheck 验签)"]:::third
+        J["tools/send_push_notification.js<br/>(CI/CD 自动化测试脚本)"]:::third
     end
+
+    C -.->|"实现契约"| A
+    C --> B
+    D -->|"超时受控初始化"| C
+    C -->|"前台横幅调度"| E
+    C -->|"粘性 URI 广播"| F
+    G -->|"订阅/退订主题"| C
+    H -->|"数据报送"| C
+    I -->|"合规安全加固"| C
+    J -->|"云端下发"| H
 ```
 
 ---
 
-## 3. 基础库接口定义 (`ListenCore`)
+## 3. 核心领域契约定义 (`ListenCore`)
 
-在 `ListenCore` 的 `lib/services/` 目录下（建议新建 `lib/services/notification_service.dart`）定义以下接口和数据模型：
+在 `ListenCore/lib/services/notification_service.dart` 中，抽象出了平台无关的实体与服务契约：
 
-### 3.1 数据实体定义
-
+### 3.1 标准化通知载荷实体 (`NotificationPayload`)
 ```dart
-/// 推送通知载荷实体
+// 选自 ListenCore/lib/services/notification_service.dart
 class NotificationPayload {
+  /// 用户可见的消息标题
   final String title;
+
+  /// 消息正文描述
   final String body;
-  final Map<String, dynamic> data; // 自定义键值对参数
+
+  /// 随通知携带的业务自定义扩展键值对 (如 link, id, campaign_id 等)
+  final Map<String, dynamic> data;
 
   const NotificationPayload({
     required this.title,
@@ -54,6 +86,7 @@ class NotificationPayload {
     this.data = const {},
   });
 
+  /// 鲁棒的安全反序列化构造器，对缺失或非法字段进行默认兜底
   factory NotificationPayload.fromJson(Map<String, dynamic> json) {
     return NotificationPayload(
       title: json['title'] as String? ?? '',
@@ -64,50 +97,52 @@ class NotificationPayload {
 }
 ```
 
-### 3.2 抽象服务接口
-
+### 3.2 抽象服务接口 (`INotificationService`)
 ```dart
-import 'notification_payload.dart';
-
+// 选自 ListenCore/lib/services/notification_service.dart
 abstract class INotificationService {
+  /// 初始化推送服务配置、渠道注册与生命周期监听器
   Future<void> initialize();
+
+  /// 动态向操作系统申请推送通知权限 (Android 13+ POST_NOTIFICATIONS / iOS APNs)
   Future<bool> requestPermission();
+
+  /// 获取设备当前唯一的远程推送注册 Token
   Future<String?> getToken();
+
+  /// 设备 Token 刷新事件流 (用于 Token 轮转同步)
   Stream<String> get onTokenRefresh;
+
+  /// 前台收到新消息时的事件流
   Stream<NotificationPayload> get onMessageReceived;
+
+  /// 用户从系统通知栏点击消息唤醒应用时的事件流
   Stream<NotificationPayload> get onMessageOpenedApp;
 
-  /// Subscribe to a notification topic
+  /// 订阅特定业务广播主题 (如 version_updates)
   Future<void> subscribeToTopic(String topic);
 
-  /// Unsubscribe from a notification topic
+  /// 取消订阅特定业务广播主题
   Future<void> unsubscribeFromTopic(String topic);
 }
 ```
 
 ---
 
-## 4. 宿主应用实现 (`ListenPortfolioFlutter`)
+## 4. 宿主服务核心实现 (`FirebaseNotificationServiceImpl`)
 
-在宿主 App 中，我们使用 Firebase Cloud Messaging (FCM) 与本地通知插件 `flutter_local_notifications` 联合实现该接口。
+宿主应用落地文件位于：[`lib/shared/services/firebase/firebase_notification_service_impl.dart`](../lib/shared/services/firebase/firebase_notification_service_impl.dart)。该类承担了多维度的底层适配与容灾管理。
 
-### 4.1 核心服务实现类
-
-落地文件位于：[`lib/shared/services/firebase/firebase_notification_service_impl.dart`](../lib/shared/services/firebase/firebase_notification_service_impl.dart)：
+### 4.1 核心状态与安全超时机制
+在初始化与网络请求中，若遇到网络不可达（如无梯环境下的 Google 服务阻塞），未设超时的 `await` 会直接造成应用在启动期永久卡死。因此，系统设立了严格的分级超时常数：
 
 ```dart
-import 'dart:async';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:listen_core/core.dart';
-import 'package:listen_uikit/uikit.dart';
-
-import '../../features/home/presentation/pages/home_state.dart';
-import '../shared.dart';
-import 'firebase_options.dart';
-
 class FirebaseNotificationServiceImpl implements INotificationService {
+  static const Duration _kInitTimeout = Duration(seconds: 10);     // Firebase 核心初始化超时
+  static const Duration _kConfigTimeout = Duration(seconds: 5);    // 渠道与前台展示配置超时
+  static const Duration _kNetworkTimeout = Duration(seconds: 10);  // FCM Token 与主题订阅网络超时
+  static const Duration _kPermissionTimeout = Duration(seconds: 5);// 权限交互弹窗响应超时
+
   FirebaseMessaging get _fcm => FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin _localNotifications = FlutterLocalNotificationsPlugin();
 
@@ -117,437 +152,296 @@ class FirebaseNotificationServiceImpl implements INotificationService {
       StreamController<NotificationPayload>.broadcast();
 
   bool _isFirebaseInitialized = false;
-
-  @override
-  Future<void> initialize() async {
-    try {
-      // 1. Initialize Firebase Core
-      if (Firebase.apps.isEmpty) {
-        await Firebase.initializeApp(
-          options: DefaultFirebaseOptions.currentPlatform,
-        );
-      }
-      _isFirebaseInitialized = true;
-      appLogger.i('FirebaseNotificationService: Firebase initialized successfully.');
-    } catch (e) {
-      appLogger.w(
-        'FirebaseNotificationService: Firebase initialization failed. '
-        'Push notifications will fall back to mock/disabled mode. Error: $e',
-      );
-      _isFirebaseInitialized = false;
-    }
-
-    // Initialize Local Notifications regardless of Firebase state
-    try {
-      await _initLocalNotifications();
-    } catch (e) {
-      appLogger.w(
-        'FirebaseNotificationService: Local notification initialization failed. Error: $e',
-      );
-    }
-
-    if (!_isFirebaseInitialized) return;
-
-    try {
-      // 2. Configure Android high-importance channel
-      const AndroidNotificationChannel channel = AndroidNotificationChannel(
-        AppConstants.notificationChannelId,
-        AppConstants.notificationChannelName,
-        description: AppConstants.notificationChannelDescription,
-        importance: Importance.high,
-      );
-
-      await _localNotifications
-          .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
-          ?.createNotificationChannel(channel);
-
-      // 3. Configure iOS foreground presentation settings
-      await _fcm.setForegroundNotificationPresentationOptions(alert: true, badge: true, sound: true);
-
-      // 4. Listen to foreground FCM messages
-      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-        // Discard if notifications are disabled in settings
-        if (!SpUtil.getBool(AppConstants.notificationsKey, defaultValue: true)) return;
-
-        _messageReceivedController.add(_convertMessage(message));
-
-        // Show local banner for Android in foreground
-        if (message.notification != null) {
-          _showLocalNotification(message, channel);
-        }
-      });
-
-      // 5. Listen to background click wakeup events
-      FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-        // Discard if notifications are disabled in settings
-        if (!SpUtil.getBool(AppConstants.notificationsKey, defaultValue: true)) return;
-
-        final payload = _convertMessage(message);
-        _messageOpenedController.add(payload);
-        _handleNotificationNavigation(payload);
-      });
-
-      // 6. Handle terminated startup click
-      final initialMessage = await _fcm.getInitialMessage();
-      if (initialMessage != null) {
-        // Discard if notifications are disabled in settings
-        if (SpUtil.getBool(AppConstants.notificationsKey, defaultValue: true)) {
-          final payload = _convertMessage(initialMessage);
-          _messageOpenedController.add(payload);
-          _handleNotificationNavigation(payload);
-        }
-      }
-
-      // 7. Sync subscription to the version updates topic based on settings
-      final isEnabled = SpUtil.getBool(AppConstants.notificationsKey, defaultValue: true);
-      if (isEnabled) {
-        await subscribeToTopic(AppConstants.versionUpdatesTopic);
-      } else {
-        await unsubscribeFromTopic(AppConstants.versionUpdatesTopic);
-      }
-    } catch (e) {
-      appLogger.e('FirebaseNotificationService: Failed to setup FCM handlers: $e');
-    }
-  }
-
-  /// Unified handler for notification click navigation routing.
-  void _handleNotificationNavigation(NotificationPayload payload) {
-    final data = payload.data;
-
-    // Bring HomePage back to the front by popping sub-routes (e.g. SettingsPage)
-    AppNavConfig.navigatorKey.currentState?.popUntil((route) {
-      return route.settings.name == Routes.home || route.isFirst;
-    });
-
-    // Check for tab redirection
-    if (data.containsKey(AppConstants.notificationParamTab)) {
-      final tabStr = data[AppConstants.notificationParamTab] as String;
-      if (tabStr == AppConstants.notificationTabSettings) {
-        // Dispatch a sticky event to handle Settings page navigation via core deep link manager
-        eventBus.fire(
-          CommonEvent<Uri>(
-            DeepLinkManager.deepLinkEventKey,
-            data: Uri.parse('listen://settings?check_update=true'),
-            sticky: true,
-            autoClear: true,
-          ),
-        );
-      } else {
-        final targetTab = HomeTab.values.firstWhereOrNull((tab) => tab.name == tabStr);
-
-        if (targetTab != null) {
-          eventBus.fire(
-            CommonEvent<Uri>(
-              DeepLinkManager.deepLinkEventKey,
-              data: Uri.parse('listen://home?tab=$tabStr'),
-              sticky: true,
-              autoClear: true,
-            ),
-          );
-        }
-      }
-    }
-
-    // Check for project deep link
-    if (data.containsKey(AppConstants.notificationParamProjectId)) {
-      final projectId = data[AppConstants.notificationParamProjectId] as String;
-      eventBus.fire(
-        CommonEvent<Uri>(
-          DeepLinkManager.deepLinkEventKey,
-          data: Uri.parse('listen://home?tab=projects'),
-          sticky: true,
-          autoClear: true,
-        ),
-      );
-      CommonToast.show('Deep Link Triggered: Project ID $projectId');
-    }
-  }
-
-  Future<void> _initLocalNotifications() async {
-    const AndroidInitializationSettings androidSettings = AndroidInitializationSettings(
-      AppConstants.defaultNotificationIcon,
-    );
-    const DarwinInitializationSettings iosSettings = DarwinInitializationSettings();
-
-    await _localNotifications.initialize(
-      settings: const InitializationSettings(android: androidSettings, iOS: iosSettings),
-      onDidReceiveNotificationResponse: (NotificationResponse response) {
-        final payloadData = response.payload;
-        if (payloadData != null) {
-          try {
-            final decoded = jsonDecode(payloadData) as Map<String, dynamic>;
-            final title = decoded['title'] as String? ?? '';
-            final body = decoded['body'] as String? ?? '';
-            final data = Map<String, String>.from((decoded['data'] as Map?) ?? {});
-            final payload = NotificationPayload(title: title, body: body, data: data);
-
-            _messageOpenedController.add(payload);
-            _handleNotificationNavigation(payload);
-          } catch (e) {
-            appLogger.e('FirebaseNotificationService: Failed to parse local notification click payload: $e');
-          }
-        }
-      },
-    );
-  }
-
-  @override
-  Future<bool> requestPermission() async {
-    if (!_isFirebaseInitialized) return false;
-    try {
-      final settings = await _fcm.requestPermission(alert: true, badge: true, sound: true);
-      return settings.authorizationStatus == AuthorizationStatus.authorized;
-    } catch (e) {
-      appLogger.w('FirebaseNotificationService: Failed to request push permission: $e');
-      return false;
-    }
-  }
-
-  @override
-  Future<String?> getToken() async {
-    if (!_isFirebaseInitialized) return null;
-    try {
-      return await _fcm.getToken();
-    } catch (e) {
-      appLogger.w('FirebaseNotificationService: Failed to get push token: $e');
-      return null;
-    }
-  }
-
-  @override
-  Stream<String> get onTokenRefresh {
-    if (!_isFirebaseInitialized) return const Stream.empty();
-    return _fcm.onTokenRefresh;
-  }
-
-  @override
-  Stream<NotificationPayload> get onMessageReceived => _messageReceivedController.stream;
-
-  @override
-  Stream<NotificationPayload> get onMessageOpenedApp => _messageOpenedController.stream;
-
-  @override
-  Future<void> subscribeToTopic(String topic) async {
-    if (!_isFirebaseInitialized) return;
-    try {
-      await _fcm.subscribeToTopic(topic);
-      appLogger.i('FirebaseNotificationService: Subscribed to topic "$topic".');
-    } catch (e) {
-      appLogger.e('FirebaseNotificationService: Failed to subscribe to topic "$topic": $e');
-    }
-  }
-
-  @override
-  Future<void> unsubscribeFromTopic(String topic) async {
-    if (!_isFirebaseInitialized) return;
-    try {
-      await _fcm.unsubscribeFromTopic(topic);
-      appLogger.i('FirebaseNotificationService: Unsubscribed from topic "$topic".');
-    } catch (e) {
-      appLogger.e('FirebaseNotificationService: Failed to unsubscribe from topic "$topic": $e');
-    }
-  }
-
-  NotificationPayload _convertMessage(RemoteMessage message) {
-    return NotificationPayload(
-      title: message.notification?.title ?? '',
-      body: message.notification?.body ?? '',
-      data: message.data,
-    );
-  }
-
-  void _showLocalNotification(RemoteMessage message, AndroidNotificationChannel channel) {
-    final notification = message.notification;
-    if (notification == null) return;
-
-    _localNotifications.show(
-      id: notification.hashCode,
-      title: notification.title,
-      body: notification.body,
-      notificationDetails: NotificationDetails(
-        android: AndroidNotificationDetails(
-          channel.id,
-          channel.name,
-          channelDescription: channel.description,
-          icon: AppConstants.defaultNotificationIcon,
-        ),
-      ),
-      payload: jsonEncode({
-        'title': notification.title ?? '',
-        'body': notification.body ?? '',
-        'data': message.data,
-      }),
-    );
-  }
-}
 ```
 
+---
 
+## 5. 六大重点与难点技术实现剖析 (Deep-Dive: 6 Key Code Implementations)
 
-## 5. 深度链接与页面跳转流程 (Deep Linking Flow)
+### 5.1 全生命周期（前台/后台/终止态）统一收敛处理
 
-当用户点击通知栏的推送时，通知的 `payload.data` 包含路由跳转指示（如跳转到某一个 Feature 的 Tab 页或打开特定项目）：
+#### 难点痛点
+Android 原生机制下，当 App 处于前台时，FCM 默认**不会**弹出系统通知栏悬浮横幅；而当 App 处于已终止（Terminated）状态时，用户点击通知会拉起全新的 Flutter Engine，此时监听器若绑定过晚，初次启动的消息 payload 将永久丢失。
 
+#### 核心实现
 ```mermaid
 sequenceDiagram
-    actor User as 用户
-    participant OS as 手机系统通知栏
-    participant App as App (NotificationServiceImpl)
-    participant Nav as AppNav (路由管理器)
-    participant HomeVM as HomeViewModel (主页VM)
+    autonumber
+    actor User as 外部/用户
+    participant FCM as Firebase / APNs
+    participant Service as FirebaseNotificationServiceImpl
+    participant Local as FlutterLocalNotificationsPlugin
+    participant Nav as AppNav / EventBus
+    participant Home as HomePage
 
-    User->>OS: 点击推送通知
-    OS->>App: 唤醒 App (带入 Payload: {tab: "projects", projectId: "4"})
-    App->>App: 解析 Payload -> NotificationPayload
-    App->>Nav: 触发推送事件广播
-    Nav->>HomeVM: 发送 CommonEvent(tabChanged, HomeTab.projects)
-    HomeVM->>HomeVM: 切换至 Featured Projects Tab
-    alt 如果指定了项目 ID
-        Nav->>Nav: 导航跳转至 /project_detail?id=4
+    alt 场景 A: 前台运行 (Foreground)
+        FCM->>Service: FirebaseMessaging.onMessage(RemoteMessage)
+        Service->>Service: 检查本地开关 (notificationsKey)
+        Service->>Local: _showLocalNotification() 弹出前台横幅
+        Service->>Nav: 广播 onMessageReceived
+    else 场景 B: 后台唤醒 (Background Wakeup)
+        FCM->>User: 操作系统弹出系统通知栏横幅
+        User->>Service: 点击横幅 -> onMessageOpenedApp(RemoteMessage)
+        Service->>Nav: _handleNotificationNavigation() 栈回退并广播 URI
+    else 场景 C: 终止冷启动 (Terminated Launch)
+        User->>Service: 点击横幅拉起冷启动
+        Service->>Service: await _fcm.getInitialMessage()
+        Service->>Nav: 派发粘性事件 (Sticky Deep Link)
+        Home->>Nav: 页面渲染完成后消费粘性事件完成跳转
     end
 ```
 
-### 5.1 宿主应用中的事件监听与路由跳转
-
-在宿主 App 的全局入口（例如 `AppInitializer` 完成初始化后）订阅点击推送事件：
-
+在代码中，统一通过 `_handleNotificationNavigation` 统一路由入口：
 ```dart
-void setupNotificationNavigation(INotificationService notificationService) {
-  notificationService.onMessageOpenedApp.listen((NotificationPayload payload) {
-    final data = payload.data;
-    
-    // 1. 判断是否需要切换 Home 选项卡
-    if (data.containsKey(AppConstants.notificationParamTab)) {
-      final tabStr = data[AppConstants.notificationParamTab] as String;
-      final targetTab = HomeTab.values.firstWhereOrNull((tab) => tab.name == tabStr);
-      
-      if (targetTab != null) {
-        // 利用全局 EventBus 发送 Uri，由 HomeViewModel 进行拦截与更新
-        eventBus.fire(
-          CommonEvent<Uri>(
-            DeepLinkManager.deepLinkEventKey,
-            data: Uri.parse('listen://home?tab=$tabStr'),
-            sticky: true,
-            autoClear: true,
-          ),
-        );
-      }
-    }
-    
-    // 2. 判断是否包含特定的深度跳转（例如打开具体的项目详情）
-    if (data.containsKey(AppConstants.notificationParamProjectId)) {
-      final projectId = data[AppConstants.notificationParamProjectId] as String;
-      AppNav.to(Routes.projectDetail, arguments: {Routes.argProjectId: projectId});
-    }
-  });
+// 1. 前台消息监听
+FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+  if (!SpUtil.getBool(AppConstants.notificationsKey, defaultValue: true)) return;
+  final payload = _convertMessage(message);
+  _messageReceivedController.add(payload);
+  if (message.notification != null) {
+    _showLocalNotification(message, channel); // 触发前台 Heads-up Banner
+  }
+});
+
+// 2. 后台点击唤醒监听
+FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+  if (!SpUtil.getBool(AppConstants.notificationsKey, defaultValue: true)) return;
+  final payload = _convertMessage(message);
+  _messageOpenedController.add(payload);
+  _handleNotificationNavigation(payload);
+});
+
+// 3. 终止态冷启动获取
+final initialMessage = await _fcm.getInitialMessage().timeout(
+  _kConfigTimeout,
+  onTimeout: () => null,
+);
+if (initialMessage != null && SpUtil.getBool(AppConstants.notificationsKey, defaultValue: true)) {
+  final payload = _convertMessage(initialMessage);
+  _messageOpenedController.add(payload);
+  _handleNotificationNavigation(payload);
 }
 ```
 
 ---
 
-## 6. 环境接入与配置指南
+### 5.2 路由栈回退防溢出与粘性深度链接（Deep Link Unwinding）
 
-### 6.1 Android 配置
-1. 在 [Firebase Console](https://console.firebase.google.com/) 注册 Android 应用，下载 `google-services.json` 放入 `android/app/`。
-2. 配置 SHA-1 指纹（由于涉及 Release 签名自动构建，需要在 Firebase 控制台同时关联 Debug keystore 和 Release keystore 的 SHA-1 证书）。
-3. 动态配置 `AndroidManifest.xml` 中的通知图标与默认渠道属性。
+#### 难点痛点
+当用户在浏览多层嵌套页面（例如“设置” -> “字体调整” -> “关于我” -> “更新说明”）时突然点击了一条推送通知，如果直接执行 `AppNav.to(targetRoute)`，会导致底层页面堆栈被无限叠加，用户按下物理返回键时需要连续返回十余次才能回到首页，极大损害体验，甚至引发内存泄漏。同时，在终止态冷启动时，目标页面还未初始化完成，普通的临时事件广播会被丢弃。
 
-### 6.2 iOS 配置
-1. 在 Apple Developer 平台为 App ID 开启 **Push Notifications** 功能。
-2. 配置并在 App Store Connect 中生成并上传 APNs 证书，或者使用 APNs 授权密钥 (p8) 关联至 Firebase Console。
-3. 在 Xcode 的 Capabilities 中开启 **Push Notifications** 和 **Background Modes** (Remote notifications)。
+#### 核心实现
+`FirebaseNotificationServiceImpl._handleNotificationNavigation` 采取了**“先解开栈、再发粘性事件”**的优雅解法：
 
-### 6.3 Firebase CLI 自动初始化配置步骤 (FlutterFire)
-为方便跨平台（Android、iOS、Web）统一自动管理 Firebase 配置文件和选项代码，推荐采用 FlutterFire CLI 自动化生成方案，具体步骤如下：
-1. **控制台项目注册**：在 [Firebase Console](https://console.firebase.google.com/) 创建一个 Firebase 项目（仅需创建空项目，无需手动在后台注册应用或下载任何凭证）。
-2. **本地安装 CLI 工具**：在开发机器上执行以下命令安装 Firebase 官方命令行工具：
-   ```bash
-   npm install -g firebase-tools
-   ```
-3. **命令行登录验证**：通过浏览器授权，登录您的 Google / Firebase 账号：
-   ```bash
-   firebase login
-   ```
-4. **激活 FlutterFire 辅助 CLI**：激活 Dart 环境下的官方 Flutter 扩展脚手架：
-   ```bash
-   dart pub global activate flutterfire_cli
-   ```
-   *注意：请确保您已将 Dart SDK 的全局 `pub` 二进制文件路径（如 Windows 的 `%APPDATA%\Pub\Cache\bin` 或 macOS/Linux 的 `$HOME/.pub-cache/bin`）添加到系统的 PATH 环境变量中，以便能够在任意路径直接调用 `flutterfire` 命令。*
-5. **自动化配置项目**：在 Flutter 项目的根目录下执行：
-   ```bash
-   flutterfire configure
-   ```
-   *该命令会列出您账号下的所有 Firebase 项目。选择刚才创建的项目，并勾选您需要支持的平台（Android、iOS 等）。FlutterFire CLI 会自动连接 Firebase 控制台、在后台注册相应的 Android / iOS 应用，并全自动为您下载 `google-services.json` 和 `GoogleService-Info.plist` 配置文件放入正确的 Native 目录下，最后在 `lib/shared/services/`（或者您指定的路径）下自动生成统一的 `firebase_options.dart` 文件。*
+```dart
+void _handleNotificationNavigation(NotificationPayload payload) {
+  appLogger.i('FirebaseNotificationService: _handleNotificationNavigation=$payload');
+  final data = payload.data;
 
+  // 1. 弹出所有子路由与模态弹窗，平滑重置至 HomePage 根路由
+  AppNavConfig.navigatorKey.currentState?.popUntil((route) {
+    return route.settings.name == Routes.home || route.isFirst;
+  });
 
----
-
-## 7. 隐私与数据合规 (GDPR / Google Play 政策)
-
-> [!IMPORTANT]
-> 根据 Google Play 及 App Store 政策，推送通知属于用户敏感授权：
-> 1. **首次打开禁强弹**：App 首次启动进入首页或登录页时，禁止在无引导的前提下强行弹出系统通知权限请求。本 App 的 `initialize()` 默认不发起任何权限申请弹窗。
-> 2. **延迟与上下文式授权 (Scheme C)**：虽然本地设置中的推送开关默认开启，但当用户首次进入“设置页面” (`SettingsPage`) 时，系统才会主动检测并触发 `requestPermission()` 申请系统推送权限。若用户此时选择拒绝授权，App 会自动将推送开关校准更新为关闭状态，以保持 UI 显示与 OS 实际状态的完全一致，避免产生逻辑不一致的问题。
-> 3. **隐私协议声明**：在下个版本的 `privacy_policy_page` 中，需明确增加一栏声明：说明本 App 使用 Firebase 服务在匿名（或用户授权绑定）前提下收集设备 Token 以用于传送个人作品集更新消息。
-
----
-
-## 8. 推送测试与自动化部署脚本 (send_push_notification.js)
-
-为了便于在本地或 CI/CD 流水线中进行消息推送测试，我们在 [tools/send_push_notification.js](../tools/send_push_notification.js) 中提供了一个便捷的 Node.js 脚本。
-
-### 8.1 环境准备
-在运行该脚本前，需具备以下条件：
-1. **安装 Node.js**（支持 TLS/HTTPS 等模块）。
-2. **下载 Firebase 服务账号密钥**：
-   - 登录 [Firebase 控制台](https://console.firebase.google.com/) -> 选择项目 -> 项目设置 -> 服务账号。
-   - 点击 **生成新的私钥**，下载 JSON 文件。
-   - 将密钥内容配置到环境变量中，或保存在项目根目录下，命名为 `firebase-service-account.json`。
-     - **环境变量**：`FIREBASE_SERVICE_ACCOUNT_KEY`（其值为服务账号 JSON 的完整字符串内容）。
-     - **本地文件**：`firebase-service-account.json`（脚本会自动识别并读取）。
-
-### 8.2 命令格式与选项
-```bash
-node tools/send_push_notification.js [options]
+  // 2. 解析深度链接并派发粘性事件 (Sticky Event)
+  if (data.containsKey(AppConstants.notificationParamLink)) {
+    final linkStr = data[AppConstants.notificationParamLink] as String;
+    final uri = Uri.tryParse(linkStr);
+    if (uri != null) {
+      eventBus.fire(
+        CommonEvent<Uri>(
+          DeepLinkManager.deepLinkEventKey,
+          data: uri,
+          sticky: true,   // 粘性：如果目标监听器尚未就绪，暂存此事件
+          autoClear: true,// 消费后自动清除，杜绝重复触发
+        ),
+      );
+      return;
+    }
+  }
+}
 ```
 
-#### 可用选项：
-- `--type <type>`：推送消息的类型。可选值为：
-  - `update`：默认类型，表示新版本升级推送。
-  - `tab`：跳转特定 Tab 页推送。
-- `--tab <tab>`：目标 Tab 页名称。仅当 `--type` 为 `tab` 时生效，支持以下 Tab：
-  - `overview`（概览）
-  - `aboutMe`（关于我）
-  - `projects`（项目列表）
-  - `architecture`（架构）
-  - `settings`（设置）
-- `--token <token>`：特定设备的 FCM Token（单点目标投递）。
-  - **提示**：如果省略该参数，推送会默认发往 `'version_updates'` 广播主题，使所有已安装并订阅该主题的设备都收到推送。建议在本地测试时指定 `--token` 以免干扰其他测试设备。
-- `--title <title>`：自定义推送标题。默认优先采用英文标题。
-- `--body <body>`：自定义推送正文。默认优先采用英文文案。
-- `-h, --help`：打印脚本的使用帮助信息。
+---
 
-### 8.3 典型测试命令示例
+### 5.3 Android 13+ (API 33) 权限合规与按需上下文式授权 (Contextual Permission)
 
-1. **测试 A：向全局发送默认的新版本更新推送**
-   ```bash
-   node tools/send_push_notification.js
+#### 难点痛点
+Google Play 与工信部合规政策严令禁止应用在冷启动第一帧未给用户任何解释就粗暴弹窗索取 `POST_NOTIFICATIONS` 权限。若用户在启动时被突兀弹窗吓退点击了拒绝，后续将很难引导用户去系统深层设置中重新开启。
+
+#### 核心实现
+本项目采用**“延迟与上下文感知授权（Contextual On-Demand Authorization）”**：
+1. **冷启动静默**：`AppInitializer` 在应用启动时调用 `initialize()` 仅注册底层渠道与监听器，绝不调用 `requestPermission()`。
+2. **设置页交互触发**：在用户进入“设置页面”（[`SettingsPage`](../lib/features/settings/presentation/pages/settings_page.dart)）或点击“通知开关”时，由 `SettingsViewModel` 显式调用：
+   ```dart
+   // 选自 SettingsViewModel
+   Future<void> onNotificationToggled(bool enable) async {
+     updateState(state.copyWith(notificationsEnabled: enable));
+     await SpUtil.put(AppConstants.notificationsKey, enable);
+
+     if (enable) {
+       final granted = await notificationService.requestPermission();
+       if (!granted) {
+         // 用户拒绝系统授权，UI 开关自动回弹复原为关闭态，并弹出提示引导
+         updateState(state.copyWith(notificationsEnabled: false));
+         await SpUtil.put(AppConstants.notificationsKey, false);
+
+         emitEffect(
+           ConfirmEffect(
+             title: I18nKeys.notificationPermissionTitle.tr,
+             message: I18nKeys.notificationPermissionMessage.tr,
+             okText: I18nKeys.openSettings.tr,
+             onResult: (confirmed) {
+               if (confirmed) {
+                 handleIntent(const SettingsIntent.confirmOpenSettings());
+               }
+             },
+           ),
+         );
+         return;
+       }
+       await notificationService.subscribeToTopic(AppConstants.versionUpdatesTopic);
+     } else {
+       await notificationService.unsubscribeFromTopic(AppConstants.versionUpdatesTopic);
+     }
+   }
    ```
-
-2. **测试 B：测试发送特定 Tab（例如项目 Tab）的切换通知**
-   ```bash
-   node tools/send_push_notification.js --type tab --tab projects --title "test title" --body "test body"
-   ```
-
-3. **测试 D：向您本人的开发设备发送单点推送（不干扰全局）**
-   ```bash
-   node tools/send_push_notification.js --type tab --tab settings --token "YOUR_FCM_REGISTRATION_TOKEN"
-   ```
-
+3. **软硬状态自愈校准**：如果本地持久化配置显示为 `true`，但系统实际权限已被用户在系统设置中收回，下一次交互时能够平滑探测并自动将本地配置降级为 `false`，保持系统与应用状态的强一致性。
 
 ---
 
-## 技术难点与解决方案 (Technical Challenges & Solutions)
+### 5.4 Firebase App Check 安全防护与平台凭证隔离
 
-* **状态与生命周期管理**：在 Flutter 中处理异步回调与 Widget 生命周期的错位是一个普遍难题。解决方案是严格遵循 MVI 架构中的状态下发与副作用分发，结合 `AppNav` 统一管理生命周期拦截与清理，防止内存泄漏或无效的 UI 重绘。
-* **跨平台一致性**：不同平台（Android/iOS/Web）的系统级行为（如返回手势、原生组件交互）存在差异。解决方案是使用统一的服务抽象层 (Interfaces)，将平台特有的实现细节隔离在 `_impl` 文件中，保证业务侧调用的跨平台一致性。
+#### 难点痛点
+移动端直接连接 Firebase 服务极易被逆向工程提取 `google-services.json` 中的公钥与 API Key，从而遭受伪造的垃圾流量或滥用配额。
+
+#### 核心实现
+服务在初始化阶段深度绑定了 `FirebaseAppCheck`，在调试期与生产期自动隔离 Provider：
+```dart
+try {
+  await FirebaseAppCheck.instance.activate(
+    // Android: 生产环境使用 Google Play Integrity 硬件级验签，Debug 使用测试令牌
+    androidProvider: kDebugMode ? AndroidProvider.debug : AndroidProvider.playIntegrity,
+    // iOS: 生产环境使用 Apple DeviceCheck 硬件级安全证书，Debug 使用测试令牌
+    appleProvider: kDebugMode ? AppleProvider.debug : AppleProvider.deviceCheck,
+  );
+  appLogger.i('FirebaseNotificationService: FirebaseAppCheck activated successfully.');
+} catch (appCheckError) {
+  appLogger.w('FirebaseNotificationService: FirebaseAppCheck activation skipped/error: $appCheckError');
+}
+```
+
+---
+
+### 5.5 开发者设置推送仿真引擎 (`simulateMessageReceived`)
+
+#### 难点痛点
+在日常 UI 调试、集成测试或无外网开发场景下，开发者每次测试通知跳转都需要打开 Firebase Console 或运行 Node.js 脚本，操作繁琐且受网络与 Token 有效期制约。
+
+#### 核心实现
+`FirebaseNotificationServiceImpl` 提供了开箱即用的内存级仿真器：
+```dart
+void simulateMessageReceived(NotificationPayload payload) {
+  // 检查当前应用开关是否允许展示通知
+  if (!SpUtil.getBool(AppConstants.notificationsKey, defaultValue: true)) return;
+
+  _messageReceivedController.add(payload);
+  
+  // 本地直接构造并激活 Android Heads-up 系统通知
+  _localNotifications.show(
+    id: payload.hashCode,
+    title: payload.title,
+    body: payload.body,
+    notificationDetails: const NotificationDetails(
+      android: AndroidNotificationDetails(
+        AppConstants.notificationChannelId,
+        AppConstants.notificationChannelName,
+        channelDescription: AppConstants.notificationChannelDescription,
+        icon: AppConstants.defaultNotificationIcon,
+      ),
+    ),
+    payload: jsonEncode({'title': payload.title, 'body': payload.body, 'data': payload.data}),
+  );
+}
+```
+**成效**：在 `DeveloperSettingsPage` 中，开发者可一键触发“版本升级测试通知”或“特定 Tab 跳转通知”，直接在模拟器上验证横幅样式与点击后的粘性深度链接跳转，大幅缩短测试闭环。
+
+---
+
+### 5.6 统一异常捕获与弱网超时降级熔断
+
+#### 难点痛点
+当应用在地铁、电梯或海外特定受限网络环境中冷启动时，FCM 的 `subscribeToTopic` 或 `getToken` 可能会发生无限挂起或抛出 `FirebaseException`，从而引发主线程卡顿甚至未捕获异常崩溃。
+
+#### 核心实现
+所有网络操作均设置了 `_kNetworkTimeout`（10秒）超时包裹与静默降级捕获：
+```dart
+@override
+Future<void> subscribeToTopic(String topic) async {
+  if (!_isFirebaseInitialized) return;
+  try {
+    appLogger.i('FirebaseNotificationService: subscribeToTopic start for "$topic"...');
+    await _fcm
+        .subscribeToTopic(topic)
+        .timeout(
+          _kNetworkTimeout,
+          onTimeout: () {
+            appLogger.w('FirebaseNotificationService: subscribeToTopic("$topic") timed out after $_kNetworkTimeout');
+          },
+        );
+    appLogger.i('FirebaseNotificationService: Subscribed to topic "$topic".');
+  } catch (e) {
+    appLogger.w('FirebaseNotificationService: Failed to subscribe to topic "$topic": $e');
+  }
+}
+```
+
+---
+
+## 6. 自动化测试脚本与 CI/CD 联动 (`tools/send_push_notification.js`)
+
+为了支撑服务端或 GitHub Actions CI/CD 流水线在发版后自动向所有用户下发升级广播，项目在 [`tools/send_push_notification.js`](../tools/send_push_notification.js) 中提供了高弹性的 Node.js 运维脚本。
+
+### 6.1 典型推送命令
+
+```bash
+# 1. 向全局广播主题 (version_updates) 发送默认升级通知
+node tools/send_push_notification.js
+
+# 2. 发送特定项目详情页的跳转通知 (深度链接测试)
+node tools/send_push_notification.js \
+  --title "New Project Available!" \
+  --body "Check out the ListenExpenseTracker architecture!" \
+  --link "listen://app/project/detail?id=6"
+
+# 3. 发送单设备调试推送 (避免打扰线上测试设备)
+node tools/send_push_notification.js \
+  --token "fcm_device_token_here..." \
+  --title "Debug Push" \
+  --body "Hello Developer"
+```
+
+---
+
+## 7. 架构反模式与踩坑警示 (Anti-Patterns & Pitfalls)
+
+| 序号 | 常见反模式 (Anti-Pattern) | 潜在危害与线上事故 | 本工程的规避与标准实践 |
+| :--- | :--- | :--- | :--- |
+| **1** | **未设超时的直接 Await 初始化**<br/>(Unbounded Firebase Init) | 在受限局域网或部分特殊网络下，`Firebase.initializeApp()` 或 `getToken()` 永不返回，导致启动图永久卡死。 | **全链路硬超时熔断**：为所有异步初始化配置 `timeout(_kInitTimeout)`，超时自动回退到离线禁用态。 |
+| **2** | **启动首屏粗暴索权**<br/>(Aggressive Permission Prompt) | 首次打开 App 尚未进入主页就弹出系统通知权限，用户点击拒绝率高达 80%，并违反应用商店合规规范。 | **按需上下文式授权**：仅在用户进入设置页主动开启开关时才调用 `requestPermission()`，保证合规与高转化。 |
+| **3** | **通知点击引发路由栈无限堆叠**<br/>(Route Stack Memory Explosion) | 连续点击多条通知时不断向当前栈执行 `to()`，导致返回时需要连退数十次，产生严重的内存泄露。 | **栈解包重置策略**：在路由跳转前统一执行 `popUntil(Routes.home)`，确保回退栈干净健康。 |
+| **4** | **冷启动使用普通 EventBus 广播**<br/>(Transient Event Loss on Cold Boot) | 在终止态点击通知拉起 App 时，如果使用普通广播，目标页面的监听器尚未完成注册，导致深度链接直接丢失。 | **粘性事件 (Sticky Event)**：使用 `CommonEvent(sticky: true, autoClear: true)` 确保监听器挂载后立即补发消费。 |
+| **5** | **忽视通知渠道分级与振动配置**<br/>(Channel Configuration Hazard) | 未为 Android 8.0+ 配置高优先级通知渠道，导致推送在前台或息屏时仅静默出现在通知栏，无浮动横幅。 | **显式声明 NotificationChannel**：配置 `importance: Importance.max` 与 `priority: Priority.high`，保障强提醒触达。 |
+
+---
+
+## 8. 演进路线与中远期规划 (Roadmap & Evolution)
+
+当前推送系统在单端与全局广播层面已稳定落地，针对企业级场景的进一步演进规划如下（详见 [todo.md](todo.md)）：
+
+* **[Opt-56. 动态通知频道分级治理与富媒体扩展呈现](todo.md#opt-56-动态通知频道分级治理与富媒体扩展呈现-dynamic-notification-channels--rich-media-push-presentation)**：
+  增补 Android 渠道分级矩阵（更新/社交/营销三维频道隔离）、BigPicture 高清大图富文本展开与快捷操作 Action 按钮。
+* **[Opt-57. 推送 Token 离线刷新容灾队列与服务端用户会话对齐](todo.md#opt-57-推送-token-离线刷新容灾队列与服务端用户会话对齐-fcm-token-refresh-offline-sync--server-session-binding-protocol)**：
+  在 `ListenPortfolioBackend` 提供设备 Token 鉴权登记接口，实现客户端离线持久化队列、指数退避重试上报与坏死 Token 自动剔除。
+* **[Opt-66. 基于后台静默推送 (Data Messages / Silent Push) 的本地离线缓存增量预同步引擎](todo.md#opt-66-基于后台静默推送-data-messages--silent-push-的本地离线缓存增量预同步引擎-background-silent-push--cache-warm-up-pipeline)**：
+  通过 `FirebaseMessaging.onBackgroundMessage` 在后台静默接收无感知高优先级数据推送，提前唤醒并预热项目与简历本地缓存，实现用户点开 App 瞬间 0 毫秒即开即看。

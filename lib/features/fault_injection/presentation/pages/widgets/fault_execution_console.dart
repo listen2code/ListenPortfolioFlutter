@@ -5,13 +5,30 @@ import 'package:listen_uikit/uikit.dart';
 import '../../../../../shared/shared.dart';
 import '../../../domain/models/fault_injection_scenario.dart';
 
+/// Interactive terminal console widget rendering real-time chaos execution logs.
+///
+/// ### Capabilities:
+/// 1. **Chronological Streaming**: Renders millisecond-timestamped [ExecutionStepLog] entries.
+/// 2. **Visual Differentiation**: Highlights errors in red, recovery successes in green, and normal steps in standard theme colors.
+/// 3. **Trace Bar**: Displays the active distributed trace ID with one-click clipboard copying and [LogOverlayManager] drill-down.
+/// 4. **Terminal Actions**: Provides a quick action to purge previous output.
 class FaultExecutionConsole extends StatelessWidget {
+  /// Ordered list of step log entries to display.
   final List<ExecutionStepLog> logs;
+
+  /// The active trace ID associated with the current scenario execution.
   final String? activeTraceId;
+
+  /// Callback to clear all terminal logs.
   final VoidCallback onClear;
+
+  /// Callback triggered when the user taps the copy icon for the trace ID.
   final ValueChanged<String> onCopyTrace;
+
+  /// Callback triggered when the user taps the drill-down icon to open [LogOverlayManager].
   final ValueChanged<String> onDrillTrace;
 
+  /// Creates a [FaultExecutionConsole] widget.
   const FaultExecutionConsole({
     super.key,
     required this.logs,

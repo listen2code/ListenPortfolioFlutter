@@ -101,6 +101,16 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
     updateState(state.copyWith(cacheSize: size));
   }
 
+  /// Handles user toggling the push notification switch in the Settings UI.
+  ///
+  /// Contextual Permission & Resilience Flow:
+  /// 1. **Optimistic Local State Update**: Immediately reflects toggle state in UI and [SpUtil].
+  /// 2. **On-Demand System Permission (Android 13+ / iOS)**:
+  ///    When enabling, prompts for OS notification permission.
+  ///    - If granted: Subscribes the device to the global [AppConstants.versionUpdatesTopic].
+  ///    - If rejected: Rollbacks the toggle switch to `false`, syncs persistence, and emits
+  ///      a [ConfirmEffect] modal guiding the user to the system app settings page.
+  /// 3. **Unsubscription**: When disabled, cleanly unsubscribes from the FCM topic.
   void _onToggleNotifications(bool enabled) async {
     updateState(state.copyWith(notificationsEnabled: enabled));
     // Persist the notifications toggle setting
@@ -108,14 +118,14 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
 
     // Sync FCM topic subscription state
     if (enabled) {
-      // Request system-level notification permission
+      // Request system-level notification permission (contextual, user-initiated)
       final granted = await notificationService.requestPermission();
       if (!granted) {
-        // Permission denied: revert toggle and prompt user to open system settings
+        // Permission denied: revert toggle state and prompt user to open system settings
         updateState(state.copyWith(notificationsEnabled: false));
         await SpUtil.put(AppConstants.notificationsKey, false);
 
-        /// Shows a dialog prompting the user to enable notification permission in system settings.
+        // Shows a dialog prompting the user to enable notification permission in system settings.
         emitEffect(
           ConfirmEffect(
             title: I18nKeys.notificationPermissionTitle.tr,
@@ -255,7 +265,13 @@ class SettingsViewModel extends _$SettingsViewModel with ViewModelMixin<Settings
         ),
       );
     } else {
-      // Primary native version is up to date, check and install Shorebird OTA patch
+      // ----------------------------------------------------------------------
+      // Tier 2: Secondary Over-The-Air (OTA) Code Push Check
+      // ----------------------------------------------------------------------
+      // When the native binary (store release) is already on the latest version,
+      // we query Shorebird Cloud for incremental Dart-level hotfix patches.
+      // If a patch is successfully downloaded, it stages silently in the app sandbox
+      // and prompts the user that the patch is ready for activation upon next restart.
       final patchInstalled = await shorebirdService.checkAndInstallPatch(
         onPatchDownloaded: () {
           emitEffect(MessageEffect.dialog(I18nKeys.shorebirdPatchReadyMsg.tr, title: I18nKeys.checkUpdates.tr));

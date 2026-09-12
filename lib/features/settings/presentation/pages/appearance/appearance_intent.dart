@@ -5,17 +5,39 @@ import '../../../../../shared/shared.dart';
 
 part 'appearance_intent.freezed.dart';
 
+/// ============================================================================
+/// AppearanceIntent
+/// ============================================================================
+/// Sealed MVI Intent union capturing all user interactions on the Appearance screen.
+///
+/// Encapsulates user actions to change theme mode, accent color, font size,
+/// font family, dynamic color toggles, and invoking the custom color picker dialog.
 @freezed
 class AppearanceIntent extends BaseIntent with _$AppearanceIntent {
+  /// Updates the application theme mode (system, light, or dark).
   const factory AppearanceIntent.setThemeMode(ThemeMode mode) = _SetThemeMode;
+
+  /// Sets the primary brand accent color.
   const factory AppearanceIntent.setAccentColor(Color color) = _SetAccentColor;
+
+  /// Updates global typography font scaling factor (standard vs large).
   const factory AppearanceIntent.setFontSize(AppFontSize size) = _SetFontSize;
+
+  /// Switches the active font family and fallback chain.
   const factory AppearanceIntent.setFontFamily(AppFontFamily fontFamily) = _SetFontFamily;
+
+  /// Toggles Material You dynamic wallpaper color harmonization on Android.
   const factory AppearanceIntent.setUseDynamicColor(bool use) = _SetUseDynamicColor;
+
+  /// Requests presentation of the custom HSL color picker dialog.
   const factory AppearanceIntent.showColorPicker(Color initialColor) = _ShowColorPicker;
+
   const AppearanceIntent._();
 
-  /// Registers deserializers for MVI playback.
+  /// Registers intent deserializers with [MviPlaybackRegistry].
+  ///
+  /// Enables complete tape recording, serialization, and deterministic replay
+  /// of user appearance interactions during automated testing or telemetry playback.
   static void registerPlayback() {
     MviPlaybackRegistry.register('AppearanceIntent', 'setThemeMode', (args) {
       final modeStr = args['mode'] ?? '';

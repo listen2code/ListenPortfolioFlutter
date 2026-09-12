@@ -12,6 +12,16 @@ import 'widgets/font_family_option_tile.dart';
 import 'widgets/font_size_option_tile.dart';
 import 'widgets/theme_option_tile.dart';
 
+/// ============================================================================
+/// AppearancePage
+/// ============================================================================
+/// Full settings view allowing users to customize global application styling:
+/// 1. Theme Mode: System Default, Light Mode, or Dark Mode.
+/// 2. Brand Accent Color: Curated palette selection, custom color picker, or Android Material You.
+/// 3. Typography Scaling (Font Size): Standard (1.0x) or Large (1.3x).
+/// 4. Font Family (Typography Typeface): Dynamic selection across 7 cross-platform generic font families.
+///
+/// Built on [BaseRefreshPage] with MVI state-binding via [AppearanceViewModel].
 class AppearancePage extends ConsumerWidget {
   const AppearancePage({super.key});
 

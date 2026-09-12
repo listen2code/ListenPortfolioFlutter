@@ -14,15 +14,33 @@ import '../playback_registry_init.dart';
 import '../routes.dart';
 import 'playback_progress.dart';
 
-/// Global MVI playback player to execute recorded tapes.
+/// Global MVI playback engine that faithfully replays recorded tapes.
+///
+/// Core Capabilities:
+/// - **State Sandboxing & Snapshot Isolation**: Caches the live user session before playback starts,
+///   loads the tape's initial state, and guarantees restoration in a `finally` block even if the replay aborts.
+/// - **Reflection-less Intent Dispatching**: Integrates with [MviPlaybackRegistry] to deserialize recorded
+///   intent strings back into concrete typed [BaseIntent] instances without runtime reflection (`dart:mirrors`).
+/// - **Intelligent Navigation Pop Handling**: Replays both named page pops and modal dialog/bottom-sheet dismissals,
+///   safely inspecting the current top route to prevent double-pop anomalies.
+/// - **Real-Time Telemetry**: Broadcasts progress updates via [onProgressChanged] and logs every step to [appLogger]
+///   for in-app inspection via the APM LogOverlay.
 class MviPlaybackPlayer {
   MviPlaybackPlayer._();
+
+  /// Log tag prefix used for APM telemetry and debugging.
   static final String tag = 'PLAYBACK';
+
+  /// Global singleton instance of the playback player.
   static final MviPlaybackPlayer instance = MviPlaybackPlayer._();
 
-  /// Configurable delay between replaying each step.
+  /// Configurable delay interval between consecutive replay steps.
+  ///
+  /// Defaults to 1200ms to allow smooth Flutter transition animations (Hero, route pushes,
+  /// dialog popups, keyboard dismissals) to settle before dispatching the next user intent.
   static Duration stepDelay = const Duration(milliseconds: 1200);
 
+  /// Current immutable progress state snapshot.
   PlaybackProgress _progress = const PlaybackProgress(
     isPlaying: false,
     status: PlaybackStatus.idle,
@@ -31,11 +49,13 @@ class MviPlaybackPlayer {
     currentStepName: '',
   );
 
+  /// Current immutable progress state snapshot.
   PlaybackProgress get progress => _progress;
 
-  /// Callback when playback progress changes.
+  /// Optional listener callback invoked whenever playback progress, step index, or status changes.
   void Function(PlaybackProgress progress)? onProgressChanged;
 
+  /// Atomically updates internal [_progress] using the `copyWith` pattern and notifies [onProgressChanged].
   void _updateProgress({
     bool? isPlaying,
     PlaybackStatus? status,
@@ -53,6 +73,22 @@ class MviPlaybackPlayer {
     onProgressChanged?.call(_progress);
   }
 
+  /// Replays a recorded tape identified by [tapeKey], or directly from provided [steps].
+  ///
+  /// Execution Lifecycle:
+  /// 1. **Guard Against Concurrent Playback**: If already playing, immediately exits.
+  /// 2. **Step Resolution**: Loads serialized JSON from [SpUtil] unless explicit [steps] are supplied.
+  /// 3. **Environment Caching**: Dumps the user's active persistent storage and credentials ([_cachePreState]).
+  /// 4. **Initial State Injection**: If the tape contains an `initState` step, applies it to reset storage
+  ///    and memory login state ([_applyState]).
+  /// 5. **Route Synchronization**: Resets navigation stack to [Routes.home], then navigates to the starting route.
+  /// 6. **Sequential Step Dispatching**:
+  ///    - For `intent`: Finds active ViewModel via [ActiveViewModels.get], deserializes via [MviPlaybackRegistry],
+  ///      and invokes `handleIntent`.
+  ///    - For `pop`: Checks top route via [Navigator.popUntil]; dismisses modal popups or pops page routes safely.
+  ///    - Waits for [stepDelay] between steps.
+  /// 7. **Guaranteed Cleanup**: In a `finally` block, restores the cached pre-playback state ([prePlaybackState]),
+  ///    resets [isPlaying] to false, and schedules a status cleanup after 3 seconds.
   Future<void> play(String tapeKey, [List<PlaybackStep>? steps]) async {
     if (_progress.isPlaying) return;
     _updateProgress(
@@ -86,6 +122,7 @@ class MviPlaybackPlayer {
       rethrow;
     }
 
+    // Step 1: Deep snapshot of current user session to ensure a clean sandbox rollback
     final Map<String, Map<String, dynamic>> prePlaybackState = await _cachePreState();
 
     try {
@@ -96,11 +133,13 @@ class MviPlaybackPlayer {
       }
       _updateProgress(totalSteps: mutableSteps.length);
 
+      // Step 2: Inject baseline state recorded when the tape was created
       if (initialStateStep != null) {
         appLogger.i('[$tag] Applying init user state');
         await _applyState(jsonDecode(initialStateStep.name) as Map<String, dynamic>);
       }
 
+      // Step 3: Align navigation stack to starting screen
       final PlaybackStep? firstStep = mutableSteps.firstWhereOrNull(
         (tape) => tape.type == PlaybackStep.intent,
       );
@@ -120,6 +159,7 @@ class MviPlaybackPlayer {
 
       _updateProgress(status: PlaybackStatus.playing);
 
+      // Step 4: Step-by-step playback loop
       for (int i = 0; i < mutableSteps.length; i++) {
         final step = mutableSteps[i];
         final type = step.type;
@@ -135,18 +175,18 @@ class MviPlaybackPlayer {
         );
 
         if (type == PlaybackStep.intent) {
-          // 1. Locate the active ViewModel
+          // 1. Locate the active ViewModel instance registered in ActiveViewModels
           final vm = ActiveViewModels.get(viewModelTag);
           if (vm == null) {
             appLogger.w(
               '[$tag] Active ViewModel not found: $viewModelTag, skipping step, Active ViewModels: ${ActiveViewModels.all.keys.toList()}',
             );
           } else {
-            // 2. Deserialize the intent string to a concrete Intent object
+            // 2. Deserialize the intent string to a concrete Intent object without mirrors
             final intent = MviPlaybackRegistry.parseAndDeserialize(name);
             if (intent != null) {
               appLogger.i('[$tag][$viewModelTag] Success to handleIntent: $intent');
-              // 3. Dispatch the intent
+              // 3. Dispatch the intent to the ViewModel's state machine
               vm.handleIntent(intent);
             } else {
               appLogger.w('[$tag][$viewModelTag] Failed to deserialize Intent: $name');
@@ -161,6 +201,7 @@ class MviPlaybackPlayer {
           });
 
           if (isRecordedPopup) {
+            // Check if the current top route is a dialog, sheet, or popup menu
             final isCurrentRoutePopup = currentTopRoute != null && currentTopRoute is! PageRoute;
             if (isCurrentRoutePopup) {
               appLogger.i('[$tag] Replaying popup dismissal (pop) for: $name');
@@ -169,6 +210,7 @@ class MviPlaybackPlayer {
               appLogger.i('[$tag] Skipping popup dismissal (pop) for: $name (already dismissed)');
             }
           } else {
+            // Verify route settings name to avoid popping the wrong page
             if (currentTopRoute?.settings.name == name) {
               appLogger.i('[$tag] Replaying page transition back navigation (pop) from: $name');
               AppNav.back();
@@ -190,6 +232,7 @@ class MviPlaybackPlayer {
       _updateProgress(status: PlaybackStatus.error, currentStepName: 'Playback error: $e');
       appLogger.e('[$tag] Playback encountered an error: $e');
     } finally {
+      // Step 5: Guaranteed sandbox restoration - roll back SpUtil, SecureStorage, and AuthManager
       appLogger.i('[$tag] Restoring pre-playback user state sandbox...');
       await _applyState(prePlaybackState);
 
@@ -203,6 +246,7 @@ class MviPlaybackPlayer {
     }
   }
 
+  /// Restores storage state and in-memory auth state from a serialized or cached snapshot map.
   Future<void> _applyState(Map<String, dynamic> stateMap) async {
     try {
       appLogger.i('[$tag] Restoring initial state snapshot: $stateMap');
@@ -217,6 +261,9 @@ class MviPlaybackPlayer {
     }
   }
 
+  /// Dumps the current persistent state into an in-memory map prior to replaying a tape.
+  ///
+  /// Preserves tape data keys so tapes themselves are never wiped during the sandbox cycle.
   Future<Map<String, Map<String, dynamic>>> _cachePreState() async {
     final Map<String, dynamic> prePlaybackSp = {};
     for (final key in SpUtil.getKeys()) {
@@ -233,6 +280,7 @@ class MviPlaybackPlayer {
     return {PlaybackStep.sp: prePlaybackSp, PlaybackStep.secure: prePlaybackSecure};
   }
 
+  /// Clears non-tape preferences and repopulates them from [spMap].
   Future<void> _applySpState(Map<String, dynamic>? spMap) async {
     if (spMap == null) return;
     for (final key in SpUtil.getKeys()) {
@@ -249,6 +297,12 @@ class MviPlaybackPlayer {
     await SpUtil.reload();
   }
 
+  /// Rewrites secure tokens to [SecureStorageUtil] and synchronizes [authManager] in-memory state.
+  ///
+  /// Crucial Rationale:
+  /// Protected routes and navigation guards check [authManager.isLoggedIn] synchronously in memory.
+  /// Simply updating persistent disk storage without notifying [authManager] leaves the app in an
+  /// inconsistent state where route navigation will fail or redirect unexpectedly to login.
   Future<void> _applySecureAndAuthState(Map<String, dynamic>? secureMap, Map<String, dynamic>? spMap) async {
     if (secureMap == null) return;
     final authToken = secureMap[AppConstants.authTokenKey] as String?;

@@ -1,8 +1,10 @@
 part of '../log_overlay_manager.dart';
 
-/// A mini real-time FPS chart widget drawn using CustomPainter.
+/// A mini real-time FPS sparkline chart widget drawn using [CustomPainter].
 ///
-/// Implements [RepaintBoundary] and disables anti-aliasing for optimized drawing.
+/// Wraps the mini canvas in a [RepaintBoundary] to isolate rendering passes from the
+/// parent floating overlay button. Disables anti-aliasing to minimize GPU rasterization
+/// overhead during continuous 4-times-per-second APM snapshot updates.
 class _FpsMiniChart extends StatelessWidget {
   const _FpsMiniChart();
 
@@ -16,6 +18,9 @@ class _FpsMiniChart extends StatelessWidget {
         final double fps = snapshot.fps;
         final Color color = _fpsColor(fps);
 
+        // RepaintBoundary creates an isolated RenderRepaintBoundary layer in the layer tree.
+        // When FrameMonitor dispatches snapshot updates, only this tiny 70x40 canvas repaints,
+        // preventing cascading repaints to the draggable floating overlay container.
         return RepaintBoundary(
           child: SizedBox(
             width: 70,
@@ -40,6 +45,11 @@ class _FpsMiniChart extends StatelessWidget {
     );
   }
 
+  /// Categorizes frame rate into four distinct color-coded performance tiers:
+  /// - 55+ FPS: Smooth 60Hz baseline (Green)
+  /// - 50-54 FPS: Minor jitter threshold (Yellow)
+  /// - 30-49 FPS: Noticeable frame drop (Orange)
+  /// - <30 FPS: Severe stutter or blocking Jank (Red)
   Color _fpsColor(double fps) {
     if (fps >= 55) return Colors.greenAccent;
     if (fps >= 50) return Colors.yellowAccent;
@@ -49,6 +59,12 @@ class _FpsMiniChart extends StatelessWidget {
 }
 
 /// Fast CustomPainter for drawing chronological frame latencies on a mini canvas.
+///
+/// Key performance characteristics:
+/// 1. Zero-allocation rendering: directly indexes the shared [RingBuffer].
+/// 2. Disabled anti-aliasing: bypasses multi-sample anti-aliasing (MSAA) for single-pixel sparklines.
+/// 3. Dynamic Y-axis autoscaling: adapts to peak frame latency with a 1.2x headroom factor.
+/// 4. Pixel snapping: rounds coordinates to physical pixel boundaries to eliminate sub-pixel blur.
 class _MiniChartPainter extends CustomPainter {
   final RingBuffer<FrameMetric> frames;
   final Color color;
@@ -66,11 +82,13 @@ class _MiniChartPainter extends CustomPainter {
       ..isAntiAlias = false; // Disable anti-aliasing for batch-rendering acceleration
 
     final int len = frames.length;
+    // Display the latest 25 frames (~400ms window on 60Hz)
     final int displayCount = len > 25 ? 25 : len;
     final int startIndex = len - displayCount;
 
     final double stepX = size.width / 24.0;
-    // Find local worst frame latency to auto-scale the Y axis adaptively
+
+    // Scan visible slice to find worst latency for adaptive dynamic range
     double localMaxUs = 16670.0;
     for (int i = 0; i < displayCount; i++) {
       final metric = frames[startIndex + i];
@@ -79,6 +97,7 @@ class _MiniChartPainter extends CustomPainter {
         localMaxUs = latencyUs;
       }
     }
+    // Provide 20% headroom while clamping between 16.67ms (60Hz baseline) and 500ms (severe freeze)
     final double maxLatencyUs = (localMaxUs * 1.2).clamp(16670.0, 500000.0);
 
     final path = Path();
@@ -87,10 +106,11 @@ class _MiniChartPainter extends CustomPainter {
     for (int i = 0; i < displayCount; i++) {
       final metric = frames[startIndex + i];
 
-      // Perform pixel snapping to avoid sub-pixel rendering blur
+      // Perform pixel snapping (roundToDouble) to avoid fractional pixel rasterization blur
       final double x = (i * stepX).roundToDouble();
       final double latencyUs = math.max(metric.buildDurationUs, metric.rasterDurationUs).toDouble();
       final double yFraction = (latencyUs / maxLatencyUs).clamp(0.0, 1.0);
+      // Invert Y-axis: Flutter canvas origin (0, 0) is top-left, whereas lower latency is at the bottom
       final double y = (size.height - (yFraction * size.height)).roundToDouble();
 
       if (first) {
@@ -108,7 +128,14 @@ class _MiniChartPainter extends CustomPainter {
   bool shouldRepaint(covariant _MiniChartPainter oldDelegate) => true;
 }
 
-/// A line chart displaying real-time FPS frame rendering latency with reference lines.
+/// An interactive line chart displaying real-time frame rendering latencies over a ~2-second timeline.
+///
+/// Features:
+/// - Real-time continuous latency line plot with automatic Y-axis headroom scaling.
+/// - Fixed horizontal reference dashed lines for 60Hz (16.6ms) and 120Hz (8.3ms) budgets.
+/// - Batch-rendered Jank anchor points highlighting dropped frames.
+/// - Interactive touch probe: drag/tap across the chart to freeze a crosshair at any specific
+///   historical frame, inspecting its exact millisecond duration, calculated FPS, and route attribution.
 class _FpsLineChart extends StatefulWidget {
   final FrameMonitorSnapshot snapshot;
 
@@ -119,8 +146,16 @@ class _FpsLineChart extends StatefulWidget {
 }
 
 class _FpsLineChartState extends State<_FpsLineChart> {
+  /// Zero-based index within the current visible display window (0 to displayCount - 1)
+  /// of the user-selected frame, or null when not interacting.
   int? _selectedIndex;
 
+  /// Translates a local horizontal touch coordinate (in logical pixels) into a discrete
+  /// historical frame index within the visible ring buffer slice.
+  ///
+  /// Mathematical projection:
+  /// - `stepX = width / (displayCount - 1)`: horizontal spacing per frame.
+  /// - `index = (localX / stepX).round().clamp(0, displayCount - 1)`: nearest-neighbor snapping.
   void _updateTouchPosition(double localX, double width) {
     final frames = widget.snapshot.recentFrames;
     if (frames.isEmpty) return;
@@ -138,12 +173,19 @@ class _FpsLineChartState extends State<_FpsLineChart> {
     });
   }
 
+  /// Clears the touch probe and dismisses the inspection crosshair.
   void _clearTouch() {
     setState(() {
       _selectedIndex = null;
     });
   }
 
+  /// Builds the top inspection tooltip banner when a specific historical frame is probed.
+  ///
+  /// Displays:
+  /// - Status icon: Green checkmark for normal frames, Red warning for Janks.
+  /// - Route Attribution: The active Flutter route name (from `AppNav.currentRouteName`).
+  /// - Latency & FPS: Formatted duration in milliseconds and derived instantaneous FPS.
   Widget _buildTooltipBar(FrameMetric metric, double fpsVal) {
     final isJank = metric.isJank;
     final page = metric.routeName ?? 'Unknown';
@@ -202,10 +244,12 @@ class _FpsLineChartState extends State<_FpsLineChart> {
     final int displayCount = len > 120 ? 120 : len;
     final int startIndex = len - displayCount;
 
+    // Resolve probed frame details if the user is currently touching or dragging
     FrameMetric? selectedMetric;
     double calculatedFps = 0.0;
     if (_selectedIndex != null && _selectedIndex! < displayCount) {
       selectedMetric = frames[startIndex + _selectedIndex!];
+      // Instantaneous FPS calculation: 1,000,000 us / frameDurationUs
       calculatedFps = selectedMetric.totalDurationUs > 0
           ? (1000000.0 / selectedMetric.totalDurationUs).clamp(1.0, 120.0)
           : 0.0;
@@ -215,6 +259,7 @@ class _FpsLineChartState extends State<_FpsLineChart> {
       builder: (context, constraints) {
         return Column(
           children: [
+            // Top information banner: shows crosshair probe details or helpful tip
             SizedBox(
               height: 24,
               child: selectedMetric != null
@@ -229,6 +274,7 @@ class _FpsLineChartState extends State<_FpsLineChart> {
             const SizedBox(height: 6),
             Expanded(
               child: RepaintBoundary(
+                // Captures touch gestures across the entire chart area to drive interactive inspection
                 child: GestureDetector(
                   onPanStart: (details) =>
                       _updateTouchPosition(details.localPosition.dx, constraints.maxWidth),
@@ -256,7 +302,14 @@ class _FpsLineChartState extends State<_FpsLineChart> {
   }
 }
 
-/// Canvas painter optimized using batch-rendering instruction.
+/// Canvas painter optimized using batch-rendering instructions and pixel snapping.
+///
+/// Rendering Pipeline:
+/// 1. Auto-scales Y-axis dynamic range based on worst frame in the current 120-frame viewport.
+/// 2. Renders 16.6ms (60Hz) and 8.3ms (120Hz) horizontal dashed reference threshold lines.
+/// 3. Builds and strokes continuous latency path using green accent paint.
+/// 4. Batch-renders Jank frame markers using [Canvas.drawPoints] in [PointMode.points] for peak efficiency.
+/// 5. Renders vertical crosshair dashed guide and dual-layer concentric selection rings if inspected.
 class _LineChartPainter extends CustomPainter {
   final RingBuffer<FrameMetric> frames;
   final int? selectedIndex;
@@ -268,11 +321,12 @@ class _LineChartPainter extends CustomPainter {
     if (frames.isEmpty) return;
 
     final int len = frames.length;
-    // Map to maximum 120 frames in the viewport (~2 seconds of timeline)
+    // Map to maximum 120 frames in the viewport (~2 seconds of timeline @ 60Hz)
     final int displayCount = len > 120 ? 120 : len;
     final int startIndex = len - displayCount;
 
     final double stepX = size.width / 119.0;
+
     // Find local worst frame latency to auto-scale the Y axis adaptively
     double localMaxUs = 16670.0;
     for (int i = 0; i < displayCount; i++) {
@@ -282,6 +336,7 @@ class _LineChartPainter extends CustomPainter {
         localMaxUs = latencyUs;
       }
     }
+    // Add 20% visual headroom, clamped between 16.67ms (60Hz baseline) and 500ms (0.5s freeze)
     final double maxLatencyUs = (localMaxUs * 1.2).clamp(16670.0, 500000.0);
 
     // 1. Draw horizontal reference threshold grid lines
@@ -309,10 +364,12 @@ class _LineChartPainter extends CustomPainter {
 
     for (int i = 0; i < displayCount; i++) {
       final metric = frames[startIndex + i];
-      final double x = (i * stepX).roundToDouble(); // Pixel snapping
+      // Pixel snapping prevents sub-pixel blurring on high-DPI screens
+      final double x = (i * stepX).roundToDouble();
 
       final double latencyUs = math.max(metric.buildDurationUs, metric.rasterDurationUs).toDouble();
       final double yFraction = (latencyUs / maxLatencyUs).clamp(0.0, 1.0);
+      // Invert Y coordinate so 0ms latency sits at the bottom of the canvas
       final double y = (size.height - (yFraction * size.height)).roundToDouble();
 
       if (first) {
@@ -336,7 +393,7 @@ class _LineChartPainter extends CustomPainter {
 
     canvas.drawPath(path, linePaint);
 
-    // 4. Batch-draw drop-frame Jank anchors as red dots
+    // 4. Batch-draw drop-frame Jank anchors as red dots using a single draw call
     if (jankPoints.isNotEmpty) {
       final dotPaint = Paint()
         ..color = Colors.redAccent
@@ -344,6 +401,8 @@ class _LineChartPainter extends CustomPainter {
         ..strokeWidth = 4.0
         ..strokeCap = StrokeCap.round;
 
+      // drawPoints is significantly faster than looping drawCircle because it issues
+      // a single batched vertex buffer call to Skia/Impeller.
       canvas.drawPoints(PointMode.points, jankPoints, dotPaint);
     }
 
@@ -355,7 +414,7 @@ class _LineChartPainter extends CustomPainter {
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1.0;
 
-      // Draw dashed crosshair line
+      // Draw dashed crosshair guide line
       double curY = 0;
       const double dashHeight = 4.0;
       const double spaceHeight = 4.0;
@@ -372,13 +431,13 @@ class _LineChartPainter extends CustomPainter {
       final double yFraction = (selectedLatencyUs / maxLatencyUs).clamp(0.0, 1.0);
       final double targetY = (size.height - (yFraction * size.height)).roundToDouble();
 
-      // Outer halo circle
+      // Outer halo circle (diffuse highlight)
       final haloPaint = Paint()
         ..color = (selectedMetric.isJank ? Colors.redAccent : Colors.greenAccent).withValues(alpha: 0.3)
         ..style = PaintingStyle.fill;
       canvas.drawCircle(Offset(targetX, targetY), 6.0, haloPaint);
 
-      // Inner solid dot
+      // Inner solid dot (precise point anchor)
       final dotPaint = Paint()
         ..color = selectedMetric.isJank ? Colors.redAccent : Colors.greenAccent
         ..style = PaintingStyle.fill;
@@ -386,6 +445,7 @@ class _LineChartPainter extends CustomPainter {
     }
   }
 
+  /// Draws a horizontal dashed reference guideline at [targetUs] across the canvas.
   void _drawReferenceLine(
     Canvas canvas,
     Size size,
@@ -412,7 +472,7 @@ class _LineChartPainter extends CustomPainter {
       curX += dashWidth + spaceWidth;
     }
 
-    // Draw indicator label text
+    // Draw indicator label text at the top-left of the reference line
     TextPainter(
       text: TextSpan(
         text: label,

@@ -5,11 +5,20 @@ import 'package:listen_uikit/uikit.dart';
 import '../../i18n/translations_key.dart';
 import '../../services/referrer/install_referrer_data.dart';
 
-/// A comprehensive welcome dialog displayed on first install when the user arrived via a Google Play referral link.
-/// Uses standard UI Kit components ([CommonButton], [CommonCard], [CommonText]) and displays all parsed parameters.
-/// Includes a "Don't show again" checkbox that controls whether this referral is permanently marked as processed in SP.
+/// A comprehensive, brand-aligned welcome dialog presented upon first install
+/// when the user arrives via a Google Play referral link.
+///
+/// ### Features & Design:
+/// - Built exclusively with design system UI Kit components ([CommonButton], [CommonCard], [CommonText], [CommonClickable]).
+/// - Visualizes parsed parameters ([InstallReferrerData.refer], [InstallReferrerData.targetRoute], [InstallReferrerData.utmSource]).
+/// - Displays the full [InstallReferrerData.rawReferrer] inside an expandable, monospace code card for transparent debugging.
+/// - Includes a "Don't show again" checkbox which allows users and testers to toggle
+///   whether the referral prompt is permanently suppressed in SharedPreferences.
 class ReferralWelcomeDialog extends StatefulWidget {
+  /// The referral and deferred deep link metadata to render.
   final InstallReferrerData data;
+
+  /// Callback invoked when the user confirms and dismisses the dialog.
   final void Function(bool doNotShowAgain)? onConfirm;
 
   const ReferralWelcomeDialog({super.key, required this.data, this.onConfirm});

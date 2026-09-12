@@ -4,6 +4,13 @@ import '../../../../../shared/shared.dart';
 
 part 'appearance_state.freezed.dart';
 
+/// ============================================================================
+/// AppearanceState
+/// ============================================================================
+/// Immutable UI state model for the Appearance settings screen.
+///
+/// Encapsulates user appearance preferences, including active [themeMode],
+/// [accentColor], typography [fontSize], [fontFamily], and [useDynamicColor].
 @freezed
 abstract class AppearanceState extends BaseState with _$AppearanceState {
   const factory AppearanceState({

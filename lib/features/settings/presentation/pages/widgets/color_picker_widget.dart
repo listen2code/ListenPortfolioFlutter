@@ -1,6 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:listen_uikit/uikit.dart';
 
+/// ============================================================================
+/// Modern Color Picker Widget (Flutter 3.44.1 / Wide Gamut Compatible)
+/// ============================================================================
+///
+/// This component provides interactive RGB channel sliders to customize the
+/// application's accent color.
+///
+/// Flutter 3.44.1 Architectural Migration:
+/// 1. **Wide Gamut Floating-Point Channels (`Color.r`, `Color.g`, `Color.b`)**:
+///    Starting with Flutter 3.44+ (and Dart 3.12+), `Color.red`, `Color.green`,
+///    and `Color.blue` (integer 0-255) are deprecated in favor of floating-point
+///    channels (`r`, `g`, `b`, `a`) in range [0.0, 1.0] to support Display P3
+///    and extended dynamic range gamuts.
+/// 2. **`Color.withValues(alpha:)` vs `withOpacity()`**:
+///    Replaced legacy `withOpacity(0.2)` with `withValues(alpha: 0.2)` to ensure
+///    high-precision alpha blending without integer clamping artifacts.
 class ColorPickerWidget extends StatefulWidget {
   final Color initialColor;
   final ValueChanged<Color> onColorChanged;
@@ -29,6 +45,7 @@ class _ColorPickerWidgetState extends State<ColorPickerWidget> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
+        // Live color preview circle with wide-gamut border opacity
         Container(
           width: 100,
           height: 100,
@@ -39,18 +56,21 @@ class _ColorPickerWidgetState extends State<ColorPickerWidget> {
           ),
         ),
         const SizedBox(height: 20),
+        // Red Slider: Converts normalized float channel (0.0~1.0) to integer range (0~255)
         _buildRGBSlider('R', (_selectedColor.r * 255.0).round().clamp(0, 255), (val) {
           setState(() {
             _selectedColor = _selectedColor.withRed(val.toInt());
           });
           widget.onColorChanged(_selectedColor);
         }),
+        // Green Slider
         _buildRGBSlider('G', (_selectedColor.g * 255.0).round().clamp(0, 255), (val) {
           setState(() {
             _selectedColor = _selectedColor.withGreen(val.toInt());
           });
           widget.onColorChanged(_selectedColor);
         }),
+        // Blue Slider
         _buildRGBSlider('B', (_selectedColor.b * 255.0).round().clamp(0, 255), (val) {
           setState(() {
             _selectedColor = _selectedColor.withBlue(val.toInt());
